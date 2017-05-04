@@ -15,18 +15,10 @@ import vn.com.zalopay.wallet.business.data.Log;
  * get map bank account list
  */
 public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
-    private AdapterBase mAdapter;
     private IGetBankAccountList mGetBankAccountCallback;
-
-    public MapBankAccountListTask(AdapterBase pAdapter) {
-        super();
-        this.mAdapter = pAdapter;
-        this.mGetBankAccountCallback = null;
-    }
 
     public MapBankAccountListTask(IGetBankAccountList pGetCardInfoCallBack) {
         super();
-        this.mAdapter = null;
         this.mGetBankAccountCallback = pGetCardInfoCallBack;
     }
 
@@ -48,9 +40,6 @@ public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
 
     @Override
     public void onRequestSuccess(BankAccountListResponse pResponse) {
-        if (mAdapter != null) {
-            mAdapter.onEvent(EEventType.ON_GET_BANKACCOUNT_LIST_COMPLETE, pResponse);
-        }
         if (mGetBankAccountCallback != null) {
             mGetBankAccountCallback.onGetBankAccountListComplete(pResponse);
         }
@@ -61,9 +50,6 @@ public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
         BankAccountListResponse bankAccountListResponse = new BankAccountListResponse();
         bankAccountListResponse.returncode = -1;
         bankAccountListResponse.returnmessage = getDefaulErrorNetwork();
-        if (mAdapter != null) {
-            mAdapter.onEvent(EEventType.ON_GET_BANKACCOUNT_LIST_COMPLETE, bankAccountListResponse);
-        }
         if (mGetBankAccountCallback != null) {
             mGetBankAccountCallback.onGetBankAccountListComplete(bankAccountListResponse);
         }

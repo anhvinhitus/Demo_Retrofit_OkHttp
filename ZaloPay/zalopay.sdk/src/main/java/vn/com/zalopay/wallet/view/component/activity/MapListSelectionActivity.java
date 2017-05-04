@@ -1,13 +1,17 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -17,7 +21,9 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
-import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
+import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
+import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
+import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
 public class MapListSelectionActivity extends BasePaymentDialogActivity {
@@ -25,25 +31,37 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     public static final String BANKCODE_EXTRA = "bankcode_extra";
     public static final String CARDNUMBER_EXTRA = "cardnumber_extra";
     protected static WeakReference<ZPWOnCloseDialogListener> mCloseDialog;
+    protected ChannelAdapter mChannelAdapter;
     protected String mCloseButtonText = null;
     protected String mBankCode = null;
     protected String mCardNumber = null;
-    protected ListView mChannelListView;
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
-    protected GatewayChannelListViewAdapter mChannelListViewAdapter = null;
     protected ArrayList<DPaymentChannelView> mChannelList = new ArrayList<>();
     protected WeakReference<IMoveToChannel> mMoveToChannelListener;
     protected WeakReference<BasePaymentActivity> mGatewayActivity;
-    private AdapterView.OnItemClickListener mChannelItemClick = (parent, view, position, id) -> {
-        boolean selectedChannel = selectChannel(position);
-        if (selectedChannel) {
-            finish();
-        }
-    };
+    private RecyclerView mChannelRecyclerView;
 
     public static void setCloseDialogListener(ZPWOnCloseDialogListener pListener) {
         MapListSelectionActivity.mCloseDialog = new WeakReference<>(pListener);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
+        boolean selectedChannel = selectChannel(pMessage.position);
+        if (selectedChannel) {
+            finish();
+        }
+    }
+
+    protected void initializeChannelRecycleView(List<DPaymentChannelView> pChannelList) {
+        mChannelAdapter = new ChannelAdapter(getApplicationContext(), pChannelList, R.layout.channel_item_recyclerview);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mChannelRecyclerView.setHasFixedSize(true);
+        mChannelRecyclerView.setLayoutManager(mLayoutManager);
+        mChannelRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mChannelRecyclerView.setAdapter(mChannelAdapter);
+        mChannelRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mChannelRecyclerView));
     }
 
     public ZPWOnCloseDialogListener getListener() {
@@ -70,11 +88,9 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mChannelListViewAdapter != null) {
-            mChannelListViewAdapter.clear();
-            mChannelListViewAdapter = null;
+        if (mChannelAdapter != null) {
+            mChannelAdapter = null;
         }
-
         mGatewayActivity = null;
         mBankCode = null;
         mCloseButtonText = null;
@@ -104,7 +120,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
             this.mMoveToChannelListener = new WeakReference<>(getGatewayActivity().getMoveToChannelListener());
         }
 
-        this.mChannelListView = (ListView) findViewById(R.id.channelListView);
+        this.mChannelRecyclerView = (RecyclerView) findViewById(R.id.channel_recycler_view);
         this.mContentTextView = (TextView) findViewById(R.id.contentTextView);
 
         this.mSelectButton = findViewById(R.id.selectButton);
@@ -138,9 +154,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
     @Override
     public void initData() {
-        this.mChannelListViewAdapter = new GatewayChannelListViewAdapter(this, RS.getLayout(RS.layout.listview__item__channel__gateway), createChannels());
-        this.mChannelListView.setAdapter(mChannelListViewAdapter);
-        this.mChannelListView.setOnItemClickListener(mChannelItemClick);
+        initializeChannelRecycleView(createChannels());
     }
 
     protected List<DPaymentChannelView> createChannels() {

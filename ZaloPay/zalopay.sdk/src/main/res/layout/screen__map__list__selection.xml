@@ -23,13 +23,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/text_color_bold" />
 
-    <ListView
-        android:id="@+id/channelListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/channel_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/zpw_bg_top_bottom_side_border"
-        android:divider="@null"
-        android:dividerHeight="0dp"
         android:scrollbars="none" />
 
     <RelativeLayout

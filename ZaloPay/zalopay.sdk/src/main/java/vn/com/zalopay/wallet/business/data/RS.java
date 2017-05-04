@@ -153,8 +153,6 @@ public class RS {
 
         public static final String zpw_string_error_storage = "zpw_string_error_storage";
 
-        public static final String zpw_string_error_parse_web = "zpw_string_error_parse_web";
-
         public static final String zpw_alert_error_resource_not_download = "zpw_alert_error_resource_not_download";
 
         public static final String walletsdk_string_bar_title = "walletsdk_string_bar_title";
@@ -167,10 +165,7 @@ public class RS {
 
         public static final String zpw_string_alert_loading_bank = "zpw_string_alert_loading_bank";
 
-        public static final String zpw_string_fee_label = "zpw_string_fee_label";
         public static final String zpw_string_fee_format = "zpw_string_fee_format";
-
-        public static final String zpw_string_vnd = "zpw_string_vnd";
 
         public static final String zpw_string_title_select_card = "zpw_string_title_select_card";
 
@@ -472,8 +467,6 @@ public class RS {
         public static final String screen__gateway = "screen__gateway";
 
         public static final String screen__zalopay = "screen__zalopay";
-
-        public static final String listview__item__channel__gateway = "listview__item__channel__gateway";
 
         public static final String screen__local__card__authen = "screen__local__card__authen";
 

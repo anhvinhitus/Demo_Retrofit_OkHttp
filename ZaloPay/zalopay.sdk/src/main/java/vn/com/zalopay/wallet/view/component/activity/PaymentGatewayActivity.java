@@ -76,12 +76,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
     };
     protected ChannelAdapter mChannelAdapter;
-    //region variable
-    //injector for channel
     private BaseChannelInjector baseChannelInjector;
     private RecyclerView mChannelRecyclerView;
 
-    //endregion
     //prevent click duplicate
     private boolean mMoreClick = true;
     /***
@@ -153,7 +150,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         setContentView(RS.getLayout(RS.layout.screen__gateway));
 
-        //mChannelListView = (ListView) findViewById(R.id.zpw_channel_listview);
         mChannelRecyclerView = (RecyclerView) findViewById(R.id.channel_recycler_view);
 
         initializeChannelRecycleView();
@@ -178,7 +174,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     protected void initializeChannelRecycleView() {
         baseChannelInjector = BaseChannelInjector.createChannelInjector();
-        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList());
+        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mChannelRecyclerView.setHasFixedSize(true);
         mChannelRecyclerView.setLayoutManager(mLayoutManager);

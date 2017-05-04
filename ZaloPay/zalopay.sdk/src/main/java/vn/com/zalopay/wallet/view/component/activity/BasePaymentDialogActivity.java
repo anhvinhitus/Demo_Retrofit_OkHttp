@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public abstract class BasePaymentDialogActivity extends Activity {
@@ -31,10 +32,21 @@ public abstract class BasePaymentDialogActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
         //BaseEffects animator = Effectstype.Shake.getAnimator();
         //animator.start(findViewById(R.id.container));
         initData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PaymentEventBus.shared().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PaymentEventBus.shared().unregister(this);
     }
 
     @Override

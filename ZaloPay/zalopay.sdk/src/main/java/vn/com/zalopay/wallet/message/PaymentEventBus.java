@@ -1,11 +1,12 @@
 package vn.com.zalopay.wallet.message;
 
+import android.app.Activity;
+
 import org.greenrobot.eventbus.EventBus;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PaymentEventBus<T> extends SingletonBase {
 
@@ -26,7 +27,7 @@ public class PaymentEventBus<T> extends SingletonBase {
         return EventBus.getDefault();
     }
 
-    public void register(BasePaymentActivity activity) {
+    public void register(Activity activity) {
         getBus().register(activity);
         Log.d(this, "registered activity to bus");
     }
@@ -36,7 +37,7 @@ public class PaymentEventBus<T> extends SingletonBase {
         Log.d(this, "registered plaforminfo loader to bus");
     }
 
-    public void unregister(BasePaymentActivity activity) {
+    public void unregister(Activity activity) {
         getBus().unregister(activity);
         Log.d(this, "unregistered activity out of bus");
     }

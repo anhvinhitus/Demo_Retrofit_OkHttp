@@ -564,21 +564,6 @@ public abstract class AdapterBase {
                     Log.e(this, ex);
                 }
             }
-            //reload bank account list
-            if (pEventType == EEventType.ON_GET_BANKACCOUNT_LIST_COMPLETE) {
-                showProgressBar(false, null);
-                try {
-                    BankAccountListResponse cardInfoListResponse = (BankAccountListResponse) pAdditionParams[0];
-                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
-                        getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
-                    }
-                } catch (Exception ex) {
-                    if (getActivity() != null && isTransactionSuccess()) {
-                        getActivity().showInfoDialog(null, GlobalData.getStringResource(RS.string.zpw_string_get_bank_account_error));
-                    }
-                    Log.e(this, ex);
-                }
-            }
             //callback finish transation from webview
             else if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
                 //ending timer loading site

@@ -32,10 +32,12 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
     protected static final int mAlphaColor = 100;
     protected Context mContext;
     protected List<DPaymentChannelView> mChannelList;
+    protected int mLayoutId;
 
-    public ChannelAdapter(Context pContext, List<DPaymentChannelView> pChannelList) {
+    public ChannelAdapter(Context pContext, List<DPaymentChannelView> pChannelList, int pLayoutId) {
         mContext = pContext;
         mChannelList = pChannelList;
+        mLayoutId = pLayoutId;
     }
 
     protected String getChannelSubTitle(DPaymentChannelView pChannel) {
@@ -49,10 +51,9 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
             mess = GlobalData.getStringResource(RS.string.zpw_string_bank_maintenance);
         } else if (pChannel.isMaintenance()) {
             mess = GlobalData.getStringResource(RS.string.zpw_string_channel_maintenance);
-        } else if (!pChannel.isAllowByAmountAndFee())
-        {
+        } else if (!pChannel.isAllowByAmountAndFee()) {
             if (pChannel.hasFee()) {
-                mess = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format),  StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee)));
+                mess = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee)));
             }
             mess += ". " + GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_fee);
         } else {
@@ -64,7 +65,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
     @Override
     public ChannelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_item_recyclerview, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(mLayoutId, parent, false);
         return new ChannelViewHolder(itemView);
     }
 
@@ -141,7 +142,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
                 feeDescription = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), feeDescription);
             }
 
-            holder.channelFeeTextView.setText(Html.fromHtml(feeDescription));
+            holder.channelFeeTextView.setText(feeDescription);
 
         } catch (Exception ex) {
             Log.e(this, ex);
