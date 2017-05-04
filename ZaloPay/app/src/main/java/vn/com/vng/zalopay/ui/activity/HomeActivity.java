@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 
+import com.zalopay.apploader.ReactBaseFragment;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -181,6 +183,22 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         int tab_menu = intent.getIntExtra("tab_menu", -1);
         if (tab_menu >= 0 && tab_menu < mHomePagerAdapter.getCount()) {
             mBottomNavigationView.setSelected(tab_menu);
+        }
+    }
+
+    @Override
+    protected Fragment getActiveFragment() {
+        return mHomePagerAdapter.getPage(mCurrentPosition);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Fragment fragment = getActiveFragment();
+
+        if (fragment instanceof ReactBaseFragment) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 }
