@@ -4,15 +4,15 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
-import android.os.CancellationSignal;
+import android.support.v4.os.CancellationSignal;
 import android.text.TextUtils;
 
 import javax.crypto.Cipher;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.exception.FingerprintException;
 
 /**
@@ -25,7 +25,7 @@ public class FingerprintProvider implements AuthenticationProvider {
 
     static final long SUCCESS_DELAY_MILLIS = 1300;
 
-    private FingerprintManager mFingerprintManager;
+    private FingerprintManagerCompat mFingerprintManagerCompat;
     private KeyguardManager mKeyguardManager;
 
     private KeyTools mKeyTools;
@@ -45,6 +45,7 @@ public class FingerprintProvider implements AuthenticationProvider {
         this.mContext = context;
         this.mCallback = callback;
         this.mKeyTools = keyTools;
+        mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
 
         if (!checkAndroidMVersion()) {
             return;
@@ -52,52 +53,21 @@ public class FingerprintProvider implements AuthenticationProvider {
 
         try {
             mKeyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
-            mFingerprintManager = (FingerprintManager) context.getSystemService(Activity.FINGERPRINT_SERVICE);
         } catch (Exception ex) {
             Timber.d(ex, " create instance fingerprint api error");
         }
     }
 
-    public boolean isFingerprintAuthAvailable() {
-        if (!checkAndroidMVersion()) {
-            return false;
-        }
-
+    boolean isFingerprintAuthAvailable() {
         return isHardwarePresent() && hasFingerprintRegistered();
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    public boolean isHardwarePresent() {
-        if (!checkAndroidMVersion() || mFingerprintManager == null) {
-            return false;
-        }
-
-        try {
-            return mFingerprintManager.isHardwareDetected();
-        } catch (SecurityException ignored) {
-            return false;
-        }
+    boolean isHardwarePresent() {
+        return mFingerprintManagerCompat.isHardwareDetected();
     }
 
-    public boolean isKeyguardSecure() {
-        if (!checkAndroidMVersion() || mKeyguardManager == null) {
-            return false;
-        }
-
-        return mKeyguardManager.isKeyguardSecure();
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public boolean hasFingerprintRegistered() {
-        if (!checkAndroidMVersion() || mFingerprintManager == null) {
-            return false;
-        }
-
-        try {
-            return mFingerprintManager.hasEnrolledFingerprints();
-        } catch (SecurityException ignored) {
-            return false;
-        }
+    boolean hasFingerprintRegistered() {
+        return mFingerprintManagerCompat.hasEnrolledFingerprints();
     }
 
     static boolean checkAndroidMVersion() {
@@ -130,7 +100,7 @@ public class FingerprintProvider implements AuthenticationProvider {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+    void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
         final Cipher c = result.getCryptoObject().getCipher();
         String string = mKeyTools.decrypt(c);
         if (TextUtils.isEmpty(string)) {
@@ -141,16 +111,16 @@ public class FingerprintProvider implements AuthenticationProvider {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public void startListening(FingerprintManager.CryptoObject cryptoObject) throws SecurityException {
-        if (!isFingerprintAuthAvailable() || mFingerprintManager == null) {
+    public void startListening(FingerprintManagerCompat.CryptoObject cryptoObject) throws SecurityException {
+        if (!isFingerprintAuthAvailable()) {
             return;
         }
 
         mCancellationSignal = new CancellationSignal();
         mSelfCancelled = false;
-        mFingerprintManager
-                .authenticate(cryptoObject, mCancellationSignal, 0
-                        , getFingerCallBack(), null);
+        mFingerprintManagerCompat.authenticate(cryptoObject, 0, mCancellationSignal
+                , getFingerCallBack(), null);
+
     }
 
     @Override
@@ -175,7 +145,7 @@ public class FingerprintProvider implements AuthenticationProvider {
 
         try {
             if (mKeyTools.initDecryptCipher()) {
-                startListening(new FingerprintManager.CryptoObject(mKeyTools.getDecryptCipher()));
+                startListening(new FingerprintManagerCompat.CryptoObject(mKeyTools.getDecryptCipher()));
             }
         } catch (Exception ex) {
             Timber.d(ex, "start verify");

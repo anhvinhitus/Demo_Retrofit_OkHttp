@@ -9,12 +9,13 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 
 /**
  * Created by hieuvm on 12/29/16.
  */
 @TargetApi(Build.VERSION_CODES.M)
-final class FingerprintAuthenticationCallback extends FingerprintManager.AuthenticationCallback {
+final class FingerprintAuthenticationCallback extends FingerprintManagerCompat.AuthenticationCallback {
     private WeakReference<FingerprintProvider> fingerprintProvider;
     private Context mContext;
 
@@ -80,7 +81,7 @@ final class FingerprintAuthenticationCallback extends FingerprintManager.Authent
     }
 
     @Override
-    public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+    public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
         if (fingerprintProvider.get() == null) {
             return;
         }
@@ -95,4 +96,7 @@ final class FingerprintAuthenticationCallback extends FingerprintManager.Authent
         }
         fingerprintProvider.get().onAuthenticationFailed();
     }
+
+
+
 }
