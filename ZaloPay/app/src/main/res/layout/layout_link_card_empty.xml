@@ -63,15 +63,12 @@
                 android:orientation="horizontal">
 
                 <com.zalopay.ui.widget.IconFontTextView
+                    style="@style/IconFontText.IconLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/link.card"
-                    android:textColor="@color/white"
-                    app:iconLeftColor="@color/white"
-                    app:iconLeftName="@string/linkaccount_add"
-                    app:iconLeftPadding="@dimen/spacing.small"
-                    app:iconLeftSize="@dimen/font_size_link_card_add" />
+                    app:iconLeftName="@string/linkaccount_add" />
             </LinearLayout>
         </LinearLayout>
 
