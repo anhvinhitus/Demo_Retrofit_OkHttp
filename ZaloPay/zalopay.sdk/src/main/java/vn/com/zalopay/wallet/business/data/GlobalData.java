@@ -359,18 +359,8 @@ public class GlobalData {
 
     }
 
-    /***
-     * this is zalopay channel.
-     */
     public static boolean isZalopayChannel() {
-        try {
-            long zaloPayID = Long.parseLong(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay);
-
-            return zaloPayID == GlobalData.appID;
-        } catch (Exception ignored) {
-
-        }
-        return false;
+        return Long.parseLong(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay)) == GlobalData.appID;
     }
 
     public static void selectBankFunctionByTransactionType() {

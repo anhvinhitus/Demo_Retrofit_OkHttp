@@ -28,7 +28,6 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
@@ -95,6 +94,7 @@ public abstract class AdapterBase {
     public static final String PAGE_CONFIRM = RS.layout.screen__confirm;
     //detect card info is mapped by logged user
     public static boolean existedMapCard = false;
+    protected final DPaymentCard mCard;
     //payment config
     public DPaymentChannel mConfig;
     protected WeakReference<PaymentChannelActivity> mOwnerActivity = null;
@@ -103,7 +103,6 @@ public abstract class AdapterBase {
     protected StatusResponse mResponseStatus;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
-    protected final DPaymentCard mCard;
     protected DMappedCard mMapCard;
     protected String mTransactionID;
     protected String mPageCode;
@@ -122,12 +121,21 @@ public abstract class AdapterBase {
     protected long mOtpBeginTime = 0, mOtpEndTime = 0;
     //whether show dialog or not?
     protected boolean mIsShowDialog = true;
+    private final View.OnClickListener onSupportClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            getActivity().showSupportView(mTransactionID);
+        }
+    };
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
+        GlobalData.setResultUpgradeCMND();
+        onClickSubmission();
+    };
     //need to switch to cc or atm
     protected boolean mNeedToSwitchChannel = false;
     protected boolean mIsOrderSubmit = false;
     protected boolean mCanEditCardInfo = false;
     protected String mLayoutId = null;
-
     @BankFlow
     protected int mECardFlowType;
     /**
@@ -138,10 +146,22 @@ public abstract class AdapterBase {
     protected boolean preventRetryLoadMapCardList = false;
     //prevent click duplicate
     private boolean mMoreClick = true;
-    private final View.OnClickListener onSupportClickListener = new View.OnClickListener() {
+    private final View.OnClickListener okClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            getActivity().showSupportView(mTransactionID);
+            Log.d(this, "===okClickListener===starting...click");
+            if (mMoreClick) {
+                mMoreClick = false;
+                AdapterBase.this.onClickSubmission();
+                Log.d(this, "===okClickListener===onClickSubmission");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMoreClick = true;
+                        Log.d(this, "===okClickListener===release click event");
+                    }
+                }, 3000);
+            }
         }
     };
     private String olderPassword = null;
@@ -183,28 +203,6 @@ public abstract class AdapterBase {
             olderPassword = pHashPin;
             GlobalData.setTransactionPin(pHashPin);
             startSubmitTransaction();
-        }
-    };
-    private final View.OnClickListener onUpdateInfoClickListener = v -> {
-        GlobalData.setResultUpgradeCMND();
-        onClickSubmission();
-    };
-    private final View.OnClickListener okClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(this, "===okClickListener===starting...click");
-            if (mMoreClick) {
-                mMoreClick = false;
-                AdapterBase.this.onClickSubmission();
-                Log.d(this, "===okClickListener===onClickSubmission");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMoreClick = true;
-                        Log.d(this, "===okClickListener===release click event");
-                    }
-                }, 3000);
-            }
         }
     };
 
@@ -1652,20 +1650,17 @@ public abstract class AdapterBase {
 
     public void terminate(String pMessage, boolean pExitSDK) {
         //full of 2 activity: payment gateway and payment channel
-        if (GlobalData.getChannelActivityCallBack() != null) {
-            if (pExitSDK) {
-                GlobalData.getChannelActivityCallBack().onExitAction();
-            } else {
-                GlobalData.getChannelActivityCallBack().onCallBackAction(mIsShowDialog, pMessage);
-            }
+        if (pExitSDK && GlobalData.getChannelActivityCallBack() != null) {
+            getActivity().recycleActivity();
+        } else if(GlobalData.getChannelActivityCallBack() != null){
+            GlobalData.getChannelActivityCallBack().onCallBackAction(mIsShowDialog, pMessage);
             getActivity().finish();
-            Log.d(this, "===terminate===GlobalData.getChannelActivityCallBack() != null");
         }
         // one of 2 activty is destroyed
         else {
             ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
-            Log.d(this, "===terminate===GlobalData.getChannelActivityCallBack() = null");
         }
+        Log.d(this, "terminate transaction");
     }
 
     protected void showDialogWithCallBack(String pMessage, String pButtonText, ZPWOnEventDialogListener pCallBack) {

@@ -46,6 +46,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
     private View.OnClickListener mOnClickExitListener = v -> {
+        Log.d(this, "on exit");
         //get status again if user back when payment in bank's site
         if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
                 (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
@@ -71,24 +72,19 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
             if (getAdapter().isTransactionSuccess()) {
                 GlobalData.setResultSuccess();
-                if (GlobalData.getChannelActivityCallBack() != null) {
-                    GlobalData.getChannelActivityCallBack().onExitAction();
-                }
+                recycleActivity();
             } else if (getAdapter().isTransactionFail()) {
                 GlobalData.setResultFail();
-                if (GlobalData.getChannelActivityCallBack() != null) {
-                    GlobalData.getChannelActivityCallBack().onExitAction();
-                }
+                recycleActivity();
+            } else if (GlobalData.getChannelActivityCallBack() != null) {
+                GlobalData.getChannelActivityCallBack().onBackAction();
+                finish();
             } else {
-                if (GlobalData.getChannelActivityCallBack() != null) {
-                    GlobalData.getChannelActivityCallBack().onBackAction();
-                }
+                recycleActivity();
             }
-            finish();
-            return;
+        } else{
+            confirmQuitPayment();
         }
-
-        confirmQuitPayment();
     };
 
     public PaymentPassword getPaymentPassword() {
@@ -153,7 +149,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     protected void readyForPayment() {
-        //render resource again after finishing loading resource.
+        Log.d(this, "ready for payment");
         renderByResource();
         showProgress(false, null);
         /***
@@ -411,8 +407,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void setListener() {
         super.setListener();
-
-        //event exit button
         View exitView = findViewById(R.id.zpsdk_exit_ctl);
         if (exitView != null) {
             exitView.setOnClickListener(mOnClickExitListener);
@@ -445,10 +439,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     getActivityRender().render();
                     getActivityRender().render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
                 } else {
-                    Log.e(this, "PaymentChannelActivity.render acctivityRendering=null");
+                    Log.d(this, "PaymentChannelActivity.render acctivityRendering=null");
                 }
             } else {
-                Log.e(this, "PaymentChannelActivity.render resourceManager=null");
+                Log.d(this, "PaymentChannelActivity.render resourceManager=null");
             }
 
             //enableSubmitBtn(false);
@@ -665,10 +659,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 case 0:
                     break;
                 case 1:
-                    if (GlobalData.getChannelActivityCallBack() != null) {
-                        GlobalData.getChannelActivityCallBack().onExitAction();
-                    }
-                    finish();
+                    recycleActivity();
                     break;
                 case 2:
                     getAdapter().onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
@@ -714,10 +705,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
             @Override
             public void onOKevent() {
-                if (GlobalData.getChannelActivityCallBack() != null) {
-                    GlobalData.getChannelActivityCallBack().onExitAction();
-                }
-                finish();
+                recycleActivity();
             }
         }, message, GlobalData.getStringResource(RS.string.dialog_co_button), GlobalData.getStringResource(RS.string.dialog_khong_button));
 
@@ -725,15 +713,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     public void recycleActivity() {
+        Log.d(this, "recycle activity");
         if (GlobalData.getChannelActivityCallBack() != null) {
             GlobalData.getChannelActivityCallBack().onExitAction();
-            Log.d(this, "===recycleActivity===GlobalData.getChannelActivityCallBack().onExitAction()");
         } else if (GlobalData.getPaymentListener() != null) {
-            //callback to app
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-            Log.d(this, "===recycleActivity===GlobalData.getPaymentListener() != null");
-        } else {
-            Log.e(this, "===recycleActivity===ERROR");
         }
         finish();
     }

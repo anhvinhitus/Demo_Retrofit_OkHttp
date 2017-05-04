@@ -39,9 +39,7 @@ public class PlatformInfoLoader extends SingletonBase {
             if (pMessage != null) {
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-            SdkResourceInitMessage message = new SdkResourceInitMessage();
-            message.success = false;
-            message.message = pMessage != null ? pMessage.returnmessage : null;
+            SdkResourceInitMessage message = new SdkResourceInitMessage(false,pMessage != null ? pMessage.returnmessage : null);
             PaymentEventBus.shared().post(message);
         }
 
@@ -53,10 +51,7 @@ public class PlatformInfoLoader extends SingletonBase {
                     ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
                 }
             }
-            SdkUpVersionMessage message = new SdkUpVersionMessage();
-            message.forceupdate = pForceUpdate;
-            message.version = pVersion;
-            message.message = pMessage;
+            SdkUpVersionMessage message = new SdkUpVersionMessage(pForceUpdate,pVersion,pVersion);
             PaymentEventBus.shared().post(message);
         }
     };
@@ -107,8 +102,7 @@ public class PlatformInfoLoader extends SingletonBase {
         }
         //everything is ok now.
         else {
-            SdkResourceInitMessage message = new SdkResourceInitMessage();
-            message.success = true;
+            SdkResourceInitMessage message = new SdkResourceInitMessage(true);
             PaymentEventBus.shared().post(message);
         }
     }

@@ -38,7 +38,6 @@ public class ViewUtils {
      * @param pPercent
      */
     public static int setCardViewSize(Context pContext, View pView, float pPercent) {
-
         try {
             Display display = ((WindowManager) pContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             int densityDpi = display.getWidth();

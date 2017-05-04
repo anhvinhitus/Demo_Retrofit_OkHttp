@@ -160,7 +160,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected List<DPaymentChannelView> createChannels() {
         mChannelList.clear();
         if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
-            ArrayList<DPaymentChannelView> channelList = getGatewayActivity().getChannelList();
+            List<DPaymentChannelView> channelList = getGatewayActivity().getChannelList();
             for (DPaymentChannelView channel : channelList) {
                 if (channel.isMapCardChannel() && !TextUtils.isEmpty(channel.bankcode) && channel.bankcode.equals(mBankCode)) {
                     mChannelList.add(channel.clone());

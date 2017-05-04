@@ -39,6 +39,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -242,49 +243,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
     /***
-     * check static resource listener.
-     */
-    private PlatformInfoLoader.onCheckResourceStaticListener checkResourceStaticListener = new PlatformInfoLoader.onCheckResourceStaticListener() {
-        @Override
-        public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
-            if (isSuccess) {
-                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false, GlobalData.getPaymentInfo().userInfo),
-                        BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new SingleSubscriber<Boolean>() {
-                            @Override
-                            public void onSuccess(Boolean aBoolean) {
-                                readyForPayment();
-                            }
-
-                            @Override
-                            public void onError(Throwable error) {
-                                showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
-                                Log.d("onError", error);
-                            }
-                        });
-                mCompositeSubscription.add(subscription);
-            } else {
-                String message = pError;
-                if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-                }
-                showDialogAndExit(message, ErrorManager.shouldShowDialog());   //notify error and close sdk
-            }
-        }
-
-        /*@Override
-        public void onCheckResourceStaticInProgress() {
-            showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_loading_resource));
-        }*/
-
-        @Override
-        public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-            //showProgress(false, null);
-            notifyUpVersionToApp(pForceUpdate, pVersion, pMessage);
-        }
-    };
-    /***
      * load app info listener
      */
     private ILoadAppInfoListener loadAppInfoListener = new ILoadAppInfoListener() {
@@ -478,9 +436,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (result.success) {
             initializeResource();
         } else {
-            SdkResourceInitMessage message = new SdkResourceInitMessage();
-            message.success = result.success;
-            message.message = result.message;
+            SdkResourceInitMessage message = new SdkResourceInitMessage(result.success, result.message);
             PaymentEventBus.shared().post(message);
         }
     }
@@ -494,13 +450,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
-                    SdkResourceInitMessage message = new SdkResourceInitMessage();
-                    message.success = true;
+                    SdkResourceInitMessage message = new SdkResourceInitMessage(true);
                     PaymentEventBus.shared().post(message);
                 }, throwable -> {
-                    SdkResourceInitMessage message = new SdkResourceInitMessage();
-                    message.success = false;
-                    message.message = GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download);
+                    SdkResourceInitMessage message = new SdkResourceInitMessage(false, GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download));
                     PaymentEventBus.shared().post(message);
                     Log.d("init resource fail", throwable);
                 });
@@ -629,6 +582,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         PaymentEventBus.shared().register(this);
+        Log.d(this, "onStart");
     }
 
     @Override
@@ -691,6 +645,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         PaymentEventBus.shared().unregister(this);
+        Log.d(this, "onStop");
     }
 
     /***
@@ -895,7 +850,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return findViewById(RS.getID(pName));
     }
 
-    protected void showApplicationInfo() throws Exception {
+    protected void showApplicationInfo() {
         //withdraw no need to show app name
         if (GlobalData.isWithDrawChannel()) {
             return;

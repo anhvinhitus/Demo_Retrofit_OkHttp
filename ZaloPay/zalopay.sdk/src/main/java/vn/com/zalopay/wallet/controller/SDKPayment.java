@@ -217,7 +217,19 @@ public class SDKPayment {
 
     private static void startGateway() {
         Activity pOwner = GlobalData.getMerchantActivity();
-        Intent intent = new Intent(pOwner, PaymentGatewayActivity.class);
+        Intent intent;
+        //this is link card , go to channel directly
+        if (GlobalData.isLinkCardChannel()) {
+            intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+        }
+        //this is link acc , go to channel directly
+        else if (GlobalData.isBankAccountLink()) {
+            intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
+        } else {
+            intent = new Intent(pOwner, PaymentGatewayActivity.class);
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         pOwner.startActivity(intent);
     }

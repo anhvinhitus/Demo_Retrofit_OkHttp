@@ -16,7 +16,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -92,7 +92,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         @Override
         public void onComplete() {
-
             showPaymentChannel();
             Log.d(this, "===show Channel===ILoadBankListListener() onComplete");
         }
@@ -102,7 +101,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             if (TextUtils.isEmpty(pMessage)) {
                 pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
             }
-
             onExit(pMessage, true);
         }
     };
@@ -120,27 +118,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         if (!ConnectionUtil.isOnline(this)) {
             onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection));
-
             return;
         }
 
         //keep callback listener
         GlobalData.setChannelActivityCallBack(this);
-
-        //this is link acc , go to channel directly
-        if (GlobalData.isBankAccountLink()) {
-            startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
-            isUniqueChannel = true;
-            return;
-        }
-
-        //this is link card , go to channel directly
-        if (GlobalData.isLinkCardChannel()) {
-            startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
-            isUniqueChannel = true;
-            return;
-        }
-
         //clear card number on cache if this's not link card channel
         try {
             SharedPreferencesManager.getInstance().pickCachedCardNumber();
@@ -323,26 +305,17 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * prepare show channel and show header.
      */
     private synchronized void showPaymentChannel() {
-
         showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         //show header
-        if (GlobalData.isTopupChannel() || GlobalData.isPayChannel() || GlobalData.isWithDrawChannel())
-            try {
-
-                showApplicationInfo();
-                Log.d(this, "===show Channel===showPaymentChannel()==showApplicationInfo()");
-
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-
-        //get channel from cache for this transaction
+        if (GlobalData.isTopupChannel() || GlobalData.isPayChannel() || GlobalData.isWithDrawChannel()) {
+            Log.d(this, "show app info");
+            showApplicationInfo();
+        }
         try {
-            getPaymentChannel();
-            Log.d(this, "===show Channel===showPaymentChannel()== getPaymentChannel()");
+            Log.d(this, "show channels");
+            getPaymentChannel();   //get channel from cache for this transaction
         } catch (Exception e) {
             Log.e(this, e);
-
             onExit(e != null ? e.getMessage() : GlobalData.getStringResource(RS.string.zpw_alert_error_data), true);
         }
 
@@ -373,8 +346,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     protected void readyForPayment() {
         showProgress(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         BankLoader.loadBankList(mLoadBankListListener);
-        Log.d(this, "===show Channel===readyForPayment()");
-
+        Log.d(this, "ready for payment");
     }
 
     @Override
@@ -402,12 +374,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void recycleActivity() {
-
-        Log.d(this, "===recycleActivity===");
+        Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
-
         finish();
-
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
         }
@@ -420,9 +389,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * @return
      */
     public String getAmountAlert() {
-
         String strAlert = "";
-
         if (baseChannelInjector.hasMinValueChannel() && GlobalData.getOrderAmount() < baseChannelInjector.getMinValueChannel()) {
             strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_min_amount_input),
                     StringUtil.formatVnCurrence(String.valueOf(baseChannelInjector.getMinValueChannel())));
@@ -430,7 +397,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_max_amount_input),
                     StringUtil.formatVnCurrence(String.valueOf(baseChannelInjector.getMaxValueChannel())));
         }
-
         return strAlert;
     }
 
@@ -593,15 +559,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void onCallBackAction(boolean pIsShowDialog, String pMessage) {
         if (pIsShowDialog) {
             showWarningDialog(this::notifyToMerchant, pMessage);
-
         } else {
             notifyToMerchant();
         }
     }
 
-    public ArrayList<DPaymentChannelView> getChannelList() {
+    public List<DPaymentChannelView> getChannelList() {
         if (baseChannelInjector != null) {
-            return (ArrayList<DPaymentChannelView>) baseChannelInjector.getChannelList();
+            return baseChannelInjector.getChannelList();
         }
         return null;
     }

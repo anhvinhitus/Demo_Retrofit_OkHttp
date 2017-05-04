@@ -29,7 +29,7 @@ public class PaymentEventBus<T> extends SingletonBase {
 
     public void register(Activity activity) {
         getBus().register(activity);
-        Log.d(this, "registered activity to bus");
+        Log.d(this, "registered activity to bus "+ activity.toString());
     }
 
     public void register(PlatformInfoLoader gatewayLoader) {
@@ -39,7 +39,7 @@ public class PaymentEventBus<T> extends SingletonBase {
 
     public void unregister(Activity activity) {
         getBus().unregister(activity);
-        Log.d(this, "unregistered activity out of bus");
+        Log.d(this, "unregistered activity out of bus "+ activity.toString());
     }
 
     public void unregister(PlatformInfoLoader gatewayLoader) {
