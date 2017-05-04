@@ -146,14 +146,15 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     void getListBankSupport() {
         Timber.d("Show list bank that support link account.");
-        getListBankSupport(new DefaultSubscriber<List<ZPCard>>() {
+        DefaultSubscriber subscriber = new DefaultSubscriber<List<ZPCard>>() {
             @Override
             public void onCompleted() {
-
+                unsubscribe();
             }
 
             @Override
             public void onError(Throwable e) {
+                unsubscribe();
                 Timber.d("Get card support error : message [%s]", e.getMessage());
                 hideLoadingView();
                 showRetryDialog(getContext().getString(R.string.exception_generic),
@@ -172,11 +173,14 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
             @Override
             public void onNext(List<ZPCard> cardList) {
+                unsubscribe();
                 Timber.d("Get card support onComplete : cardSupportList [%s]", cardList);
                 hideLoadingView();
                 onGetCardSupportSuccess(cardList);
             }
-        });
+        };
+
+        getListBankSupport(subscriber);
     }
 
     void addLinkAccount() {
