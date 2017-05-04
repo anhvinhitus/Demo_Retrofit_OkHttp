@@ -23,6 +23,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by hieuvm on 1/3/17.
@@ -50,7 +51,7 @@ public class KeyTools {
         try {
             return KeyStore.getInstance(ANDROID_KEY_STORE);
         } catch (KeyStoreException e) {
-            Timber.e(e, "Failed to get an instance of KeyStore");
+            Timber.w(e, "Failed to get an instance of KeyStore");
             return null;
         }
     }
@@ -76,7 +77,7 @@ public class KeyTools {
             return createKey();
 
         } catch (Exception e) {
-            Timber.e(e, "get secret key fail ");
+            Timber.w(e, "get secret key fail ");
         }
         return null;
     }
@@ -100,7 +101,7 @@ public class KeyTools {
             keyGenerator.generateKey();
 
         } catch (Exception e) {
-            Timber.e(e, "create secret key fail");
+            Timber.w(e, "create secret key fail");
         }
         return null;
     }
@@ -144,7 +145,7 @@ public class KeyTools {
 
     public boolean initEncryptCipher() {
         Timber.d("initEncryptCipher %s", mEncryptCipher);
-        if (!FingerprintProvider.checkAndroidMVersion()) {
+        if (!AndroidUtils.checkAndroidMVersion()) {
             return false;
         }
 
@@ -160,7 +161,7 @@ public class KeyTools {
 
     public boolean initDecryptCipher() {
         Timber.d("initDecryptCipher");
-        if (!FingerprintProvider.checkAndroidMVersion()) {
+        if (!AndroidUtils.checkAndroidMVersion()) {
             return false;
         }
 
@@ -180,7 +181,7 @@ public class KeyTools {
             Timber.d("decrypt: %s", result);
             return result;
         } catch (Exception e) {
-            Timber.e(e, "Failed to decrypt the data with the generated key.");
+            Timber.w(e, "Failed to decrypt the data with the generated key.");
         }
         return null;
     }
@@ -190,7 +191,7 @@ public class KeyTools {
     }
 
     private boolean encrypt(String secret, boolean isSha256) {
-        if (!FingerprintProvider.checkAndroidMVersion()) {
+        if (!AndroidUtils.checkAndroidMVersion()) {
             return false;
         }
 
@@ -222,7 +223,7 @@ public class KeyTools {
             Timber.d("iv : [%s]", iv);
             return true;
         } catch (Exception ex) {
-            Timber.e(ex, "Failed to encrypt the data with the generated key.");
+            Timber.w(ex, "Failed to encrypt the data with the generated key.");
         }
         return false;
     }

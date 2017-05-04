@@ -27,10 +27,6 @@ public class PermissionUtil {
         return true;
     }
 
-    public static boolean checkAndroidMVersion() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-    }
-
     public static int[] getSelfPermission(Context context, String[] permission) {
         int[] selfPermission = new int[permission.length];
         for (int i = 0; i < permission.length; i++) {

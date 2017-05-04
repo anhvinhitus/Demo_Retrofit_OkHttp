@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Arrays;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 
 /**
@@ -17,7 +18,7 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
     protected abstract void permissionGranted(int permissionRequestCode, boolean isGranted);
 
     protected boolean isPermissionGrantedAndRequest(String[] permissions, int requestPermissionCode) {
-        if (!PermissionUtil.checkAndroidMVersion()) {
+        if (!AndroidUtils.checkAndroidMVersion()) {
             return true;
         }
 
@@ -37,7 +38,7 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
     }
 
     protected boolean isPermissionGranted(String[] permissions) {
-        if (!PermissionUtil.checkAndroidMVersion()) {
+        if (!AndroidUtils.checkAndroidMVersion()) {
             return true;
         }
 

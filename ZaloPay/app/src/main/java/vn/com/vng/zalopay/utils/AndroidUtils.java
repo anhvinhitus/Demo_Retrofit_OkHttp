@@ -1149,4 +1149,8 @@ public class AndroidUtils {
         Matcher matcher = pattern.matcher(input);
         return matcher.find();
     }
+
+    public static boolean checkAndroidMVersion() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    }
 }

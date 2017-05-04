@@ -105,7 +105,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
                 mAuthenticationProvider = new FingerprintProvider(mApplicationContext, mKeyTools, this);
                 break;
             case PASSWORD:
-                mAuthenticationProvider = new PasswordAuthenticationProvider(mApplicationContext, mAccountRepository, this);
+                mAuthenticationProvider = new PasswordAuthenticationProvider(mAccountRepository, this);
                 break;
         }
 
