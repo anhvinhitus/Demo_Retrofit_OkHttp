@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -102,18 +101,21 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (Lists.isEmptyOrNull(listLinkedAccount) || !linkedVcbAccount(listLinkedAccount)) {
             return;
         }
-        getListBankSupport(new DefaultSubscriber<List<ZPCard>>() {
+        DefaultSubscriber subscriber = new DefaultSubscriber<List<ZPCard>>() {
             @Override
             public void onCompleted() {
+                unsubscribe();
             }
 
             @Override
             public void onError(Throwable e) {
+                unsubscribe();
                 Timber.d("Get card support to check support vcb only error : message [%s]", e.getMessage());
             }
 
             @Override
             public void onNext(List<ZPCard> cardList) {
+                unsubscribe();
                 if (mView == null) {
                     return;
                 }
@@ -126,7 +128,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                     mView.hideSupportVcbOnly();
                 }
             }
-        });
+        };
+
+        getListBankSupport(subscriber);
     }
 
     void removeLinkAccount(BankAccount bankAccount) {
