@@ -32,23 +32,23 @@
             <RelativeLayout
                 android:id="@+id/tab_personal_rl_info"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/personal.info.height"
+                android:layout_height="@dimen/personal_info_height"
                 android:background="@drawable/default_white_selector">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/tab_personal_iv_avatar"
                     style="@style/AvatarDraweeView"
-                    android:layout_width="@dimen/personal.avatar"
-                    android:layout_height="@dimen/personal.avatar"
+                    android:layout_width="@dimen/personal_avatar"
+                    android:layout_height="@dimen/personal_avatar"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/personal.margin"
+                    android:layout_marginLeft="@dimen/personal_margin_12"
                     app:roundingBorderColor="@color/leftmenu.avatar.bg" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/personal.margin"
+                    android:layout_marginLeft="@dimen/personal_margin_12"
                     android:layout_toRightOf="@+id/tab_personal_iv_avatar"
                     android:orientation="vertical">
 
@@ -57,14 +57,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/personal_text"
-                        android:textSize="@dimen/personal.name" />
+                        android:textSize="@dimen/personal_name" />
 
                     <TextView
                         android:id="@+id/tab_personal_tv_zalopayid"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/personal_zalopayid"
-                        android:textSize="@dimen/personal.zalopayid" />
+                        android:textSize="@dimen/personal_zalopayid" />
                 </LinearLayout>
 
                 <com.zalopay.ui.widget.IconFont
@@ -72,40 +72,40 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/personal.margin"
+                    android:layout_marginRight="@dimen/personal_margin_12"
                     android:textColor="@color/arrow_right"
                     app:iconName="@string/general_arrowright"
-                    app:iconSize="@dimen/personal.margin" />
+                    app:iconSize="@dimen/personal_margin_12" />
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/tab_personal_ll_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/personal.margin"
+                android:layout_marginTop="@dimen/personal_margin_18"
                 android:background="@color/white"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:id="@+id/tab_personal_rl_balance"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:layout_height="@dimen/personal_menu_item_height"
                     android:background="@drawable/default_white_selector">
 
                     <com.zalopay.ui.widget.IconFontTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/personal.margin"
-                        android:layout_marginRight="@dimen/personal.margin"
+                        android:layout_marginLeft="@dimen/personal_margin_12"
+                        android:layout_marginRight="@dimen/personal_margin_12"
                         android:gravity="center_vertical"
                         android:text="@string/personal_item_balance_title"
                         android:textColor="@color/personal_text"
-                        android:textSize="@dimen/personal.iconfont.text"
+                        android:textSize="@dimen/personal_iconfont_text"
                         app:iconLeftColor="@color/personal_ic_balance"
                         app:iconLeftName="@string/personal_balance"
-                        app:iconLeftPadding="@dimen/personal.margin"
-                        app:iconLeftSize="@dimen/personal.iconfont"
+                        app:iconLeftPadding="@dimen/personal_margin_12"
+                        app:iconLeftSize="@dimen/personal_iconfont"
                         app:iconRightColor="@color/arrow_right"
                         app:iconRightName="@string/general_arrowright"
                         app:iconRightSize="@dimen/font_size_arrow_right" />
@@ -118,35 +118,35 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="36dp"
                         android:textColor="@color/personal_text"
-                        android:textSize="@dimen/personal.balance" />
+                        android:textSize="@dimen/personal_balance" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/separate"
-                    android:layout_marginLeft="44dp"
+                    android:layout_height="@dimen/personal_dashline_height"
+                    android:layout_marginLeft="@dimen/personal_dashline_margin_left"
                     android:background="@color/separate" />
 
                 <RelativeLayout
                     android:id="@+id/tab_personal_rl_bank"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:layout_height="@dimen/personal_menu_item_height"
                     android:background="@drawable/default_white_selector">
 
                     <com.zalopay.ui.widget.IconFontTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/personal.margin"
-                        android:layout_marginRight="@dimen/personal.margin"
+                        android:layout_marginLeft="@dimen/personal_margin_12"
+                        android:layout_marginRight="@dimen/personal_margin_12"
                         android:gravity="center_vertical"
                         android:text="@string/personal_item_bank_title"
                         android:textColor="@color/personal_text"
-                        android:textSize="@dimen/personal.iconfont.text"
+                        android:textSize="@dimen/personal_iconfont_text"
                         app:iconLeftColor="@color/personal_ic_bank"
                         app:iconLeftName="@string/personal_linkbank"
-                        app:iconLeftPadding="@dimen/personal.margin"
-                        app:iconLeftSize="@dimen/personal.iconfont"
+                        app:iconLeftPadding="@dimen/personal_margin_12"
+                        app:iconLeftSize="@dimen/personal_iconfont"
                         app:iconRightColor="@color/arrow_right"
                         app:iconRightName="@string/general_arrowright"
                         app:iconRightSize="@dimen/font_size_arrow_right" />
@@ -159,7 +159,7 @@
                         android:layout_marginRight="36dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/personal_ic_link"
-                        android:textSize="@dimen/personal.link.text" />
+                        android:textSize="@dimen/personal_link_text" />
                 </RelativeLayout>
 
                 <!--<View-->
@@ -240,75 +240,75 @@
                 android:id="@+id/tab_personal_ll_support"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/personal.margin"
+                android:layout_marginTop="@dimen/personal_margin_18"
                 android:background="@color/white"
                 android:orientation="vertical">
 
                 <com.zalopay.ui.widget.IconFontTextView
                     android:id="@+id/tab_personal_tv_support_center"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:layout_height="@dimen/personal_menu_item_height"
                     android:background="@drawable/default_white_selector"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/personal.margin"
-                    android:paddingRight="@dimen/personal.margin"
+                    android:paddingLeft="@dimen/personal_margin_12"
+                    android:paddingRight="@dimen/personal_margin_12"
                     android:text="@string/personal_item_support_center_title"
                     android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/personal.iconfont.text"
+                    android:textSize="@dimen/personal_iconfont_text"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_supportcenter"
-                    app:iconLeftPadding="@dimen/personal.margin"
-                    app:iconLeftSize="@dimen/personal.iconfont"
+                    app:iconLeftPadding="@dimen/personal_margin_12"
+                    app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
                     app:iconRightName="@string/general_arrowright"
                     app:iconRightSize="@dimen/font_size_arrow_right" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="44dp"
+                    android:layout_height="@dimen/personal_dashline_height"
+                    android:layout_marginLeft="@dimen/personal_dashline_margin_left"
                     android:background="@color/separate" />
 
                 <com.zalopay.ui.widget.IconFontTextView
                     android:id="@+id/tab_personal_tv_quick_feedback"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:layout_height="@dimen/personal_menu_item_height"
                     android:background="@drawable/default_white_selector"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/personal.margin"
-                    android:paddingRight="@dimen/personal.margin"
+                    android:paddingLeft="@dimen/personal_margin_12"
+                    android:paddingRight="@dimen/personal_margin_12"
                     android:text="@string/personal_item_quick_feedback_title"
                     android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/personal.iconfont.text"
+                    android:textSize="@dimen/personal_iconfont_text"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_feedback"
-                    app:iconLeftPadding="@dimen/personal.margin"
-                    app:iconLeftSize="@dimen/personal.iconfont"
+                    app:iconLeftPadding="@dimen/personal_margin_12"
+                    app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
                     app:iconRightName="@string/general_arrowright"
                     app:iconRightSize="@dimen/font_size_arrow_right" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="44dp"
+                    android:layout_height="@dimen/personal_dashline_height"
+                    android:layout_marginLeft="@dimen/personal_dashline_margin_left"
                     android:background="@color/separate" />
 
                 <com.zalopay.ui.widget.IconFontTextView
                     android:id="@+id/tab_personal_tv_app_info"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:layout_height="@dimen/personal_menu_item_height"
                     android:background="@drawable/default_white_selector"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/personal.margin"
-                    android:paddingRight="@dimen/personal.margin"
+                    android:paddingLeft="@dimen/personal_margin_12"
+                    android:paddingRight="@dimen/personal_margin_12"
                     android:text="@string/personal_item_app_info_title"
                     android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/personal.iconfont.text"
+                    android:textSize="@dimen/personal_iconfont_text"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_infomation"
-                    app:iconLeftPadding="@dimen/personal.margin"
-                    app:iconLeftSize="@dimen/personal.iconfont"
+                    app:iconLeftPadding="@dimen/personal_margin_12"
+                    app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
                     app:iconRightName="@string/general_arrowright"
                     app:iconRightSize="@dimen/font_size_arrow_right" />
@@ -318,8 +318,8 @@
             <RelativeLayout
                 android:id="@+id/tab_personal_rl_logout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/personal.menu_item_height"
-                android:layout_marginTop="@dimen/personal.margin"
+                android:layout_height="@dimen/personal_menu_item_height"
+                android:layout_marginTop="@dimen/personal_margin_18"
                 android:background="@drawable/default_white_selector">
 
                 <com.zalopay.ui.widget.IconFontTextView
@@ -329,11 +329,11 @@
                     android:layout_centerInParent="true"
                     android:text="@string/txt_leftmenu_sigout"
                     android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/personal.iconfont.text"
+                    android:textSize="@dimen/personal_iconfont_text"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_logout"
-                    app:iconLeftPadding="@dimen/personal.margin"
-                    app:iconLeftSize="@dimen/personal.iconfont" />
+                    app:iconLeftPadding="@dimen/personal_margin_12"
+                    app:iconLeftSize="@dimen/personal_iconfont" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
