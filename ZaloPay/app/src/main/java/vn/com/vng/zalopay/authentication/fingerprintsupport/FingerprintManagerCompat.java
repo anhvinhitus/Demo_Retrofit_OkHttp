@@ -19,7 +19,7 @@ import javax.crypto.Mac;
 
 public final class FingerprintManagerCompat {
 
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Get a {@link FingerprintManagerCompat} instance for a provided context.
@@ -32,24 +32,13 @@ public final class FingerprintManagerCompat {
         mContext = context;
     }
 
-    static final FingerprintManagerCompat.FingerprintManagerCompatImpl IMPL;
-
-    static {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 23) {
-            IMPL = new Api23FingerprintManagerCompatImpl();
-        } else {
-            IMPL = new LegacyFingerprintManagerCompatImpl();
-        }
-    }
-
     /**
      * Determine if there is at least one fingerprint enrolled.
      *
      * @return true if at least one fingerprint is enrolled, false otherwise
      */
     public boolean hasEnrolledFingerprints() {
-        return IMPL.hasEnrolledFingerprints(mContext);
+        return ReprintInternal.IMPL.hasEnrolledFingerprints(mContext);
     }
 
     /**
@@ -58,7 +47,7 @@ public final class FingerprintManagerCompat {
      * @return true if hardware is present and functional, false otherwise.
      */
     public boolean isHardwareDetected() {
-        return IMPL.isHardwareDetected(mContext);
+        return ReprintInternal.IMPL.isHardwareDetected(mContext);
     }
 
     /**
@@ -78,7 +67,7 @@ public final class FingerprintManagerCompat {
     public void authenticate(@Nullable FingerprintManagerCompat.CryptoObject crypto, int flags,
                              @Nullable CancellationSignal cancel, @NonNull FingerprintManagerCompat.AuthenticationCallback callback,
                              @Nullable Handler handler) {
-        IMPL.authenticate(mContext, crypto, flags, cancel, callback, handler);
+        ReprintInternal.IMPL.authenticate(mContext, crypto, flags, cancel, callback, handler);
     }
 
     /**

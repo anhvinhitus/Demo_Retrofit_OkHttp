@@ -9,10 +9,10 @@ import android.support.v4.os.CancellationSignal;
  * *
  */
 
-public class LegacyFingerprintManagerCompatImpl
+final class LegacyFingerprintManagerCompatImpl
         implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
 
-    public LegacyFingerprintManagerCompatImpl() {
+    LegacyFingerprintManagerCompatImpl() {
     }
 
     @Override
