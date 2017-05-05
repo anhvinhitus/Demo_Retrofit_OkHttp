@@ -366,8 +366,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract boolean needToWarningNotSupportCard();
 
-    protected abstract void setWebViewUserAgent();
-
     public abstract CardCheck getCardFinder();
 
     public abstract boolean isAllowValidateCardNumberByLuhn();
@@ -456,8 +454,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         if (mWebView != null) {
             mWebView.setPaymentWebViewClient(getAdapter());
-
-            setWebViewUserAgent();
         }
     }
 
@@ -1252,10 +1248,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void reloadUrl() {
         if (mWebView == null) {
             initWebView();
-            Log.d(this, "===reloadUrl===mWebView == null");
             return;
         }
-
         mWebView.reloadPaymentUrl();
     }
 

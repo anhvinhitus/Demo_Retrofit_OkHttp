@@ -37,7 +37,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
+import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -108,17 +108,19 @@ public class AdapterLinkAcc extends AdapterBase {
             @Override
             public void onCheckExistBankAccountComplete(boolean pExisted) {
                 hideLoadingDialog();
-                if (pExisted) {
-                    linkAccSuccess();
+                if (!pExisted) {
+                    unlinkAccSuccess();
                 } else {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
                 }
             }
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 hideLoadingDialog();
-                linkAccFail(pMessage, mTransactionID);
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
+                unlinkAccFail(pMessage, mTransactionID);
             }
         }, CardType.PVCB);
     };
@@ -1116,7 +1118,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 // show webview && hide web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.GONE);
-                mWebViewProcessor = new LinkAccWebViewClient(this, (LinkAccWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
+                mWebViewProcessor = new LinkAccWebViewClient(this, (PaymentWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
             } else {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);

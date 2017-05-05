@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
-import vn.com.zalopay.wallet.business.webview.atm.NewBankWebViewClient;
+import vn.com.zalopay.wallet.business.webview.atm.BidvWebViewClient;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 public abstract class PaymentWebViewClient extends WebViewClient {
@@ -34,7 +34,7 @@ public abstract class PaymentWebViewClient extends WebViewClient {
 
     public static PaymentWebViewClient createPaymentWebViewClientByBank(AdapterBase pAdapter) {
         if (pAdapter instanceof AdapterBankCard && ((AdapterBankCard) pAdapter).isBidvBankPayment()) {
-            return new NewBankWebViewClient(pAdapter);
+            return new BidvWebViewClient(pAdapter);
         } else {
             return new BankWebViewClient(pAdapter);
         }
@@ -47,10 +47,10 @@ public abstract class PaymentWebViewClient extends WebViewClient {
         return null;
     }
 
-    public void setPaymentWebView( PaymentWebView pPaymentWebView)
-    {
+    public void setPaymentWebView(PaymentWebView pPaymentWebView) {
         mWebPaymentBridge = pPaymentWebView;
     }
+
     public String getCurrentUrl() {
         return mWebPaymentBridge.getUrl();
     }
