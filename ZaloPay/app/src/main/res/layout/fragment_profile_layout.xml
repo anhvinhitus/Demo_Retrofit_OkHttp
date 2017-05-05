@@ -14,42 +14,42 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/layoutChangePin"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:orientation="vertical">-->
+            <LinearLayout
+            android:id="@+id/layoutChangePin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-            <!--<com.zalopay.ui.widget.IconFontTextView-->
-            <!--style="@style/TextView.Profile.Edit"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="48dp"-->
-            <!--android:background="@color/white"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:paddingLeft="@dimen/spacing.medium"-->
-            <!--android:paddingRight="@dimen/spacing.medium"-->
-            <!--android:text="@string/establish.and.protect.account"-->
-            <!--android:textColor="@color/black"-->
-            <!--app:iconLeftColor="@color/menu_font_ic_blue"-->
-            <!--app:iconLeftName="@string/profile_lock"-->
-            <!--app:iconLeftPadding="@dimen/spacing.medium"-->
-            <!--app:iconLeftSize="@dimen/font_size_profile_lock"-->
-            <!--app:iconRightColor="@color/arrow_right"-->
-            <!--app:iconRightName="@string/general_arrowright"-->
-            <!--app:iconRightSize="@dimen/font_size_arrow_right" />-->
+            <com.zalopay.ui.widget.IconFontTextView
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:text="@string/establish.and.protect.account"
+            android:textColor="@color/black"
+            app:iconLeftColor="@color/menu_font_ic_blue"
+            app:iconLeftName="@string/profile_lock"
+            app:iconLeftPadding="@dimen/spacing.medium"
+            app:iconLeftSize="@dimen/font_size_profile_lock"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
 
-            <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/separate"-->
-            <!--android:background="@color/separate" />-->
+            <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
 
-            <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/separate"-->
-            <!--android:layout_marginTop="@dimen/spacing.medium"-->
-            <!--android:background="@color/separate" />-->
-            <!--</LinearLayout>-->
+            <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/separate" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
 
                 <View
@@ -106,7 +106,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -115,6 +115,16 @@
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/profile_dob_and_gender_edit_hint_text"
+                android:textColor="@color/personal_text_steel_grey"
+                android:textSize="@dimen/personal_link_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -151,7 +161,7 @@
                         android:drawablePadding="@dimen/spacing.small"
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
 
                 <View
@@ -183,7 +193,7 @@
                         android:drawablePadding="@dimen/spacing.small"
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -191,6 +201,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
+
+            <TextView
+                android:id="@+id/profile_tv_phone_and_zalopayid_suggest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/profile_phone_and_zpid_update_hint_text"
+                android:textColor="@color/personal_text_steel_grey"
+                android:textSize="@dimen/personal_link_text"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -227,7 +250,7 @@
                         android:drawablePadding="@dimen/spacing.small"
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
 
                 <View
@@ -259,7 +282,7 @@
                         android:drawablePadding="@dimen/spacing.small"
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
-                        android:hint="@string/not_update" />
+                        android:hint="@string/update_information" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -267,6 +290,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
+
+            <TextView
+                android:id="@+id/profile_tv_email_and_id_suggest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/profile_email_and_id_update_hint_text"
+                android:textColor="@color/personal_text_steel_grey"
+                android:textSize="@dimen/personal_link_text"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -294,7 +330,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:hint="@string/not_update" />
+                    android:hint="@string/update_information" />
             </LinearLayout>
 
             <!--<View

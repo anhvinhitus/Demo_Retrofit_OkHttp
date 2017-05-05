@@ -65,7 +65,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="36dp"
-                        android:textColor="@color/personal_text"
+                        android:textColor="@color/personal_text_dark_grey"
                         android:textSize="@dimen/personal_balance" />
                 </RelativeLayout>
 
@@ -247,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@string/txt_leftmenu_sigout"
-                    android:textColor="@color/personal_text"
+                    android:textColor="@color/personal_text_dark_grey"
                     android:textSize="@dimen/personal_iconfont_text"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_logout"

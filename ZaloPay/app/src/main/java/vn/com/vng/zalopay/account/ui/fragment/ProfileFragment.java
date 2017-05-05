@@ -66,8 +66,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.tvAccountName)
     TextView mAccountNameView;
 
-//    @BindView(R.id.layoutChangePin)
-//    View layoutChangePin;
+    @BindView(R.id.profile_tv_phone_and_zalopayid_suggest)
+    TextView tvPhoneAndZalopayidSuggest;
+
+    @BindView(R.id.profile_tv_email_and_id_suggest)
+    TextView tvEmailAndIdSuggest;
+
+    @BindView(R.id.layoutChangePin)
+    View layoutChangePin;
 
     @Override
     protected void setupFragmentComponent() {
@@ -142,8 +148,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         String strPhoneNumber = PhoneUtil.formatPhoneNumber(phone);
         if (!TextUtils.isEmpty(strPhoneNumber)) {
             tvPhone.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvPhoneAndZalopayidSuggest.setVisibility(View.GONE);
         } else {
             tvPhone.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+            tvPhoneAndZalopayidSuggest.setVisibility(View.VISIBLE);
         }
         tvPhone.setText(strPhoneNumber);
     }
@@ -152,8 +160,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     public void setZaloPayName(String zaloPayName) {
         if (!TextUtils.isEmpty(zaloPayName)) {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvPhoneAndZalopayidSuggest.setVisibility(View.GONE);
         } else {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+            tvPhoneAndZalopayidSuggest.setVisibility(View.VISIBLE);
         }
         mAccountNameView.setText(zaloPayName);
     }
@@ -180,6 +190,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     private void setCMND(String cmnd) {
         if (!TextUtils.isEmpty(cmnd)) {
             tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvEmailAndIdSuggest.setVisibility(View.GONE);
         } else {
             if (mPresenter == null) {
                 return;
@@ -190,7 +201,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
                 tvCMND.setHint(getString(R.string.waiting_approve));
             } else {
                 tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
-                tvCMND.setHint(getString(R.string.not_update));
+                tvCMND.setHint(getString(R.string.update_information));
+                tvEmailAndIdSuggest.setVisibility(View.VISIBLE);
             }
         }
 
@@ -200,6 +212,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     private void setEmail(String email) {
         if (!TextUtils.isEmpty(email)) {
             tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvEmailAndIdSuggest.setVisibility(View.GONE);
         } else {
             if (mPresenter == null) {
                 return;
@@ -210,7 +223,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
                 tvEmail.setHint(getString(R.string.waiting_approve));
             } else {
                 tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
-                tvEmail.setHint(getString(R.string.not_update));
+                tvEmail.setHint(getString(R.string.update_information));
+                tvEmailAndIdSuggest.setVisibility(View.VISIBLE);
             }
         }
 
@@ -258,17 +272,17 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         mPresenter.updateZaloPayID();
     }
 
-//    @OnClick(R.id.layoutChangePin)
-//    public void onClickChangePin() {
-//        navigator.startProtectAccount(getActivity());
-//    }
+    @OnClick(R.id.layoutChangePin)
+    public void onClickChangePin() {
+        navigator.startProtectAccount(getActivity());
+    }
 
     @Override
     public void showHideChangePinView(boolean isShow) {
         if (isShow) {
-//            layoutChangePin.setVisibility(View.VISIBLE);
+            layoutChangePin.setVisibility(View.VISIBLE);
         } else {
-//            layoutChangePin.setVisibility(View.GONE);
+            layoutChangePin.setVisibility(View.GONE);
         }
     }
 }

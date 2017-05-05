@@ -145,6 +145,7 @@
     <string name="user_info">Thông tin cá nhân</string>
 
     <string name="not_update">Chưa cập nhật</string>
+    <string name="update_information">Cập nhật thông tin</string>
     <string name="waiting_approve">Đang chờ duyệt</string>
     <string name="cmnd_passpost">CMND/Hộ chiếu</string>
     <string name="zalopay_id">Mã định danh</string>
@@ -397,6 +398,9 @@
     <string name="personal_item_app_info_title">Thông Tin Ứng Dụng</string>
     <string name="personal_link_now_text">Liên kết ngay</string>
     <string name="personal_view_detail_text">Xem chi tiết</string>
+    <string name="profile_dob_and_gender_edit_hint_text">Chỉnh sửa Ngày sinh và Giới tính tại ứng dụng Zalo</string>
+    <string name="profile_phone_and_zpid_update_hint_text">Cập nhật Số điện thoại và Zalo Pay ID để thực hiện các giao dịch chuyển tiền, rút tiền và lì xì cho bạn bè</string>
+    <string name="profile_email_and_id_update_hint_text">Cập nhật Email và CMND/Hộ chiếu để tăng hạn mức tối đa các giao dịch</string>
 
     <string name="link.account.support.only.vietcombank">Hiện tại Zalo Pay chỉ hỗ trợ liên kết tài khoản Vietcombank. Liên kết tài khoản các ngân hàng khác sẽ được hỗ trợ trong thời gian tới.</string>
 

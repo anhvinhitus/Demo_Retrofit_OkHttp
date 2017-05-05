@@ -79,11 +79,18 @@
         <item name="android:textSize">@dimen/textsize.text.main</item>
     </style>
 
+    <!-- datnt10 04052017 edit -->
     <style name="TextView.Item.Title" parent="android:Widget.TextView">
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/txt_item_sub</item>
-        <item name="android:textSize">@dimen/textsize.small</item>
+        <item name="android:textColor">@color/personal_text_steel_grey</item>
+        <item name="android:textSize">@dimen/personal_iconfont_text</item>
     </style>
+    <!--<style name="TextView.Item.Title" parent="android:Widget.TextView">-->
+        <!--<item name="android:singleLine">true</item>-->
+        <!--<item name="android:textColor">@color/txt_item_sub</item>-->
+        <!--<item name="android:textSize">@dimen/textsize.small</item>-->
+    <!--</style>-->
+    <!-- datnt10 04052017 edit -->
 
     <style name="TextView.Item.Sub" parent="android:Widget.TextView">
         <item name="android:singleLine">true</item>
@@ -146,10 +153,16 @@
         <item name="android:layout_alignParentBottom">true</item>
     </style>
 
+    <!-- datnt10 04052017 edit -->
     <style name="TextView.Profile.Edit" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/c_text_black</item>
-        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:textColor">@color/personal_text_steel_grey</item>
+        <item name="android:textSize">@dimen/personal_iconfont_text</item>
     </style>
+    <!--<style name="TextView.Profile.Edit" parent="android:Widget.TextView">-->
+        <!--<item name="android:textColor">@color/c_text_black</item>-->
+        <!--<item name="android:textSize">@dimen/font_size_medium</item>-->
+    <!--</style>-->
+    <!-- datnt10 04052017 edit -->
 
     <style name="Passcode.EditText" parent="android:Widget.EditText">
         <item name="android:textColor">@color/transparent</item>
@@ -299,7 +312,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@drawable/default_white_selector</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/personal_text</item>
+        <item name="android:textColor">@color/personal_text_dark_grey</item>
         <item name="android:textSize">@dimen/personal_iconfont_text</item>
     </style>
 </resources>

@@ -26,14 +26,14 @@
             android:id="@+id/profile_tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/personal_text"
+            android:textColor="@color/personal_text_dark_grey"
             android:textSize="@dimen/personal_name" />
 
         <TextView
             android:id="@+id/profile_tv_zalopay_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/personal_zalopayid"
+            android:textColor="@color/personal_text_steel_grey"
             android:textSize="@dimen/personal_zalopayid" />
     </LinearLayout>
 

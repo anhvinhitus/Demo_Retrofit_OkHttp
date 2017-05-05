@@ -150,8 +150,8 @@
     <color name="loading_progress_bar">#04be04</color>
     
     <!-- Tab personal -->
-    <color name="personal_text">#24272b</color>
-    <color name="personal_zalopayid">#727f8c</color>
+    <color name="personal_text_dark_grey">#24272b</color>
+    <color name="personal_text_steel_grey">#727f8c</color>
     <color name="personal_ic_balance">#129d5a</color>
     <color name="personal_ic_bank">#f6b501</color>
     <color name="personal_ic_bill">#4286f5</color>
