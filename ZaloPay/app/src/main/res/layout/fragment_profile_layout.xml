@@ -66,14 +66,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/birthday" />
 
                     <TextView
                         android:id="@+id/tvBirthday"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -95,14 +95,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/gender" />
 
                     <TextView
                         android:id="@+id/tvGender"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -148,14 +148,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hint_phone" />
 
                     <TextView
                         android:id="@+id/tvPhone"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/spacing.small"
@@ -180,14 +180,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/account_name" />
 
                     <TextView
                         android:id="@+id/tvAccountName"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/spacing.small"
@@ -237,14 +237,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hint_email" />
 
                     <TextView
                         android:id="@+id/tvEmail"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/spacing.small"
@@ -269,14 +269,14 @@
                     android:paddingRight="@dimen/spacing.medium">
 
                     <TextView
-                        style="@style/TextView.Item.Title"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cmnd_passpost" />
 
                     <TextView
                         android:id="@+id/tvCMND"
-                        style="@style/TextView.Profile.Edit"
+                        style="@style/TextView.Profile.Item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/spacing.small"
@@ -319,14 +319,14 @@
                 android:padding="@dimen/spacing.medium">
 
                 <TextView
-                    style="@style/TextView.Item.Title"
+                    style="@style/TextView.Profile.Item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/zalopay_id" />
 
                 <TextView
                     android:id="@+id/tvZaloPayId"
-                    style="@style/TextView.Profile.Edit"
+                    style="@style/TextView.Profile.Item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
