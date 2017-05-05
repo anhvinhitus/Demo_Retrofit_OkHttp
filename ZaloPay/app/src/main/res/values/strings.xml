@@ -110,7 +110,7 @@
     <string name="txt_home_bank">Ngân Hàng</string>
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_link_account">Liên Kết Tài Khoản</string>
-    <string name="txt_home_scantopay">Trả Tiền</string>
+    <string name="txt_home_scantopay">Thanh Toán</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

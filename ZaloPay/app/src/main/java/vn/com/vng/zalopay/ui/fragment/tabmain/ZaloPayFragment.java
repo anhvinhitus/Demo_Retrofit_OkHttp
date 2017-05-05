@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
@@ -89,8 +90,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    @BindView(R.id.tv_balance)
-    TextView mBalanceView;
+    @BindView(R.id.home_tv_balance)
+    IconFontTextView mBalanceView;
+
+//    @BindView(R.id.tv_balance)
+//    TextView mBalanceView;
 
     @BindView(R.id.tvNotificationCount)
     RoundTextView mNotifyView;
@@ -260,7 +264,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void setBalance(long balance) {
-        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
+//        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
+        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     @Override

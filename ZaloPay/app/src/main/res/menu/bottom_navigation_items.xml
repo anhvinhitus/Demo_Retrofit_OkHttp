@@ -5,8 +5,8 @@
         android:title="Trang Chủ" />
 
     <item
-        android:id="@+id/menu_nearby"
-        android:title="Gần Đây" />
+        android:id="@+id/menu_transaction"
+        android:title="Giao Dịch" />
 
     <item
         android:id="@+id/menu_promotion"

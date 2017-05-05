@@ -20,7 +20,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
     private static final int TAB_COUNT = 4;
     public static final int TAB_MAIN_INDEX = 0;
-    public static final int TAB_SHOW_SHOW_INDEX = 1;
+    public static final int TAB_TRANSACTION_INDEX = 1;
     public static final int TAB_PROMOTION_INDEX = 2;
     public static final int TAB_PERSONAL_INDEX = 3;
 
@@ -34,7 +34,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
         switch (position) {
             case TAB_MAIN_INDEX:
                 return ZaloPayFragment.newInstance();
-            case TAB_SHOW_SHOW_INDEX:
+            case TAB_TRANSACTION_INDEX:
                 return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
             case TAB_PROMOTION_INDEX:
                 return PromotionFragment.newInstance();

@@ -58,7 +58,7 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         int paddingBottom = (int) getResources().getDimension(R.dimen.spacing_tiny_s);
         View tabHome = findViewById(R.id.menu_home);
         tabHome.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
-        View tabNearby = findViewById(R.id.menu_nearby);
+        View tabNearby = findViewById(R.id.menu_transaction);
         tabNearby.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
         View tabPromotion = findViewById(R.id.menu_promotion);
         tabPromotion.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
@@ -85,9 +85,9 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
                 createStateListDrawable(R.string.tab_home_active, R.color.colorPrimary,
                         R.string.tab_home, R.color.txt_item_sub));
 
-        menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX).setIcon(
-                createStateListDrawable(R.string.tab_showshow_active, R.color.colorPrimary,
-                        R.string.tab_showshow, R.color.txt_item_sub));
+        menu.getItem(HomePagerAdapter.TAB_TRANSACTION_INDEX).setIcon(
+                createStateListDrawable(R.string.tab_history_active, R.color.colorPrimary,
+                        R.string.tab_history, R.color.txt_item_sub));
 
         menu.getItem(HomePagerAdapter.TAB_PROMOTION_INDEX).setIcon(
                 createStateListDrawable(R.string.tab_promotion_active, R.color.colorPrimary,
@@ -102,8 +102,8 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         setSelectedInternal(position);
         if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
             setSelectedItemId(R.id.menu_home);
-        } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
-            setSelectedItemId(R.id.menu_nearby);
+        } else if (position == HomePagerAdapter.TAB_TRANSACTION_INDEX) {
+            setSelectedItemId(R.id.menu_transaction);
         } else if (position == HomePagerAdapter.TAB_PROMOTION_INDEX) {
             setSelectedItemId(R.id.menu_promotion);
         } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
@@ -135,8 +135,8 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
             case R.id.menu_home:
                 setSelectedInternal(HomePagerAdapter.TAB_MAIN_INDEX);
                 return true;
-            case R.id.menu_nearby:
-                setSelectedInternal(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
+            case R.id.menu_transaction:
+                setSelectedInternal(HomePagerAdapter.TAB_TRANSACTION_INDEX);
                 return true;
             case R.id.menu_promotion:
                 setSelectedInternal(HomePagerAdapter.TAB_PROMOTION_INDEX);

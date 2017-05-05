@@ -80,7 +80,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @OnPageChange(value = R.id.pager, callback = OnPageChange.Callback.PAGE_SELECTED)
     public void onPageSelected(int newPosition) {
-
+        trackEvent(newPosition);
         Fragment fragmentToShow = mHomePagerAdapter.getPage(newPosition);
         if (fragmentToShow instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToShow).onStartFragment();
@@ -104,7 +104,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
                 }
                 ZPAnalytics.trackEvent(ZPEvents.TOUCHTABHOME);
                 break;
-            case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
+            case HomePagerAdapter.TAB_TRANSACTION_INDEX:
                 if (EVENT_FIRST_TOUCH_NEARBY) {
                     ZPAnalytics.trackEvent(ZPEvents.TOUCHTABNEARBYFIRST);
                     EVENT_FIRST_TOUCH_NEARBY = false;
