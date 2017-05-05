@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,12 +22,14 @@ import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
 public class MapListSelectionActivity extends BasePaymentDialogActivity {
     public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
-    public static final String BANKCODE_EXTRA = "bankcode_extra";
-    public static final String CARDNUMBER_EXTRA = "cardnumber_extra";
+    public static final String BANKCODE_EXTRA = "bankcode";
+    public static final String CARDNUMBER_EXTRA = "cardnumber";
+    public static final String NOTICE_CONTENT_EXTRA = "content";
     protected static WeakReference<ZPWOnCloseDialogListener> mCloseDialog;
     protected String mCloseButtonText = null;
     protected String mBankCode = null;
     protected String mCardNumber = null;
+    protected String mContent = null;
     protected ListView mChannelListView;
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
@@ -92,6 +95,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
             mCloseButtonText = bundle.getString(BUTTON_LEFT_TEXT_EXTRA);
             mBankCode = bundle.getString(BANKCODE_EXTRA);
             mCardNumber = bundle.getString(CARDNUMBER_EXTRA);
+            mContent = bundle.getString(NOTICE_CONTENT_EXTRA);
         }
     }
 
@@ -121,6 +125,9 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
         if (!TextUtils.isEmpty(mCloseButtonText)) {
             ((ZPWRippleButton) findViewById(R.id.selectOtherButton)).setText(mCloseButtonText);
+        }
+        if (!TextUtils.isEmpty(mContent)) {
+            this.mContentTextView.setText(Html.fromHtml(mContent));
         }
     }
 
