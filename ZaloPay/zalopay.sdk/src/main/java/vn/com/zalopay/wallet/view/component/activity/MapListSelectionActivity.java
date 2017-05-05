@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
@@ -28,13 +28,15 @@ import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
 public class MapListSelectionActivity extends BasePaymentDialogActivity {
     public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
-    public static final String BANKCODE_EXTRA = "bankcode_extra";
-    public static final String CARDNUMBER_EXTRA = "cardnumber_extra";
+    public static final String BANKCODE_EXTRA = "bankcode";
+    public static final String CARDNUMBER_EXTRA = "cardnumber";
+    public static final String NOTICE_CONTENT_EXTRA = "content";
     protected static WeakReference<ZPWOnCloseDialogListener> mCloseDialog;
     protected ChannelAdapter mChannelAdapter;
     protected String mCloseButtonText = null;
     protected String mBankCode = null;
     protected String mCardNumber = null;
+    protected String mContent = null;
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
     protected ArrayList<DPaymentChannelView> mChannelList = new ArrayList<>();
@@ -109,6 +111,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
             mCloseButtonText = bundle.getString(BUTTON_LEFT_TEXT_EXTRA);
             mBankCode = bundle.getString(BANKCODE_EXTRA);
             mCardNumber = bundle.getString(CARDNUMBER_EXTRA);
+            mContent = bundle.getString(NOTICE_CONTENT_EXTRA);
         }
     }
 
@@ -138,6 +141,9 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
         if (!TextUtils.isEmpty(mCloseButtonText)) {
             ((ZPWRippleButton) findViewById(R.id.selectOtherButton)).setText(mCloseButtonText);
+        }
+        if (!TextUtils.isEmpty(mContent)) {
+            this.mContentTextView.setText(Html.fromHtml(mContent));
         }
     }
 

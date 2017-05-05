@@ -553,6 +553,7 @@ public class AdapterBankCard extends AdapterBase {
             Intent intentBankList = new Intent(getActivity(), MapListSelectionActivity.class);
             intentBankList.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PBIDV);
             intentBankList.putExtra(MapListSelectionActivity.CARDNUMBER_EXTRA, getGuiProcessor().getCardNumber());
+            intentBankList.putExtra(MapListSelectionActivity.NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
             getActivity().startActivity(intentBankList);
 
             return true;

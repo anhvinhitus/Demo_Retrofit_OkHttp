@@ -503,8 +503,8 @@
 
     <string name="zpw_sdkreport_error_message">%1$s | %2$s | %3$s </string>
 
-    <string name="zpw_warning_vietcombank_select_linkcard_payment">Bạn đã liên kết tài khoản của Vietcombank. Hãy chọn tài khoản liên kết để giao dịch.</string>
-    <string name="zpw_warning_vietcombank_linkcard_before_payment">Ngân hàng Vietcombank chỉ hỗ trợ Liên kết tài khoản. Hãy Liên kết tài khoản để tiếp tục thanh toán.</string>
+    <string name="zpw_warning_vietcombank_select_linkcard_payment">Bạn đã liên kết tài khoản của <b>Vietcombank</b>. Hãy chọn tài khoản liên kết để giao dịch.</string>
+    <string name="zpw_warning_vietcombank_linkcard_before_payment"><![CDATA[Ngân hàng <b>Vietcombank</b> chỉ hỗ trợ Liên kết tài khoản. Hãy Liên kết tài khoản để tiếp tục thanh toán.]]></string>
 
     <string name="zpw_warning_vietcombank_linkbankaccount_not_linkcard">Ngân hàng Vietcombank chỉ hỗ trợ Liên kết tài khoản</string>
 
@@ -521,8 +521,8 @@
     <string name="zpw_string_cardpassword_hint">Mật khẩu thẻ</string>
     <string name="zpw_error_message_bidv_website_wrong_password">Mật khẩu không đúng</string>
     <string name="zpw_error_message_bidv_website_wrong_captcha">CAPTCHA</string>
-    <string name="zpw_warning_bidv_select_linkcard_payment">Ngân hàng BIDV chỉ hỗ trợ hình thức thanh toán qua thẻ liên kết. Vui lòng chọn thẻ liên kết BIDV để thanh toán.</string>
-    <string name="zpw_warning_bidv_linkcard_before_payment">BIDV chỉ hỗ trợ thanh toán qua thẻ đã liên kết. Bạn có muốn liên kết thẻ để tiếp tục thanh toán không?</string>
+    <string name="zpw_warning_bidv_select_linkcard_payment"><![CDATA[Ngân hàng <b>BIDV</b> chỉ hỗ trợ hình thức thanh toán qua thẻ liên kết. Vui lòng chọn thẻ liên kết <b>BIDV</b> để thanh toán.]]></string>
+    <string name="zpw_warning_bidv_linkcard_before_payment"><![CDATA[<b>BIDV</b> chỉ hỗ trợ thanh toán qua thẻ đã liên kết. Bạn có muốn liên kết thẻ để tiếp tục thanh toán không?]]></string>
     <string name="zpw_alert_networking_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng.\nVui lòng thực hiện lại giao dịch!</string>
     <string name="zpw_alert_error_networking_when_load_banklist">Không tải được thông tin ngân hàng. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_ssl_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng!</string>
