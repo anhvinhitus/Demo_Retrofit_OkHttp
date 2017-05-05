@@ -859,11 +859,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    protected void setWebViewUserAgent() {
-
-    }
-
-    @Override
     public CardCheck getCardFinder() {
         return null;
     }

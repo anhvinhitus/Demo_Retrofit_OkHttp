@@ -26,15 +26,10 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
-public class NewBankWebViewClient extends PaymentWebViewClient {
+public class BidvWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;
     public static final int MAX_INTERVAL_CHECK_COUNT = 15;
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
-    // value is used for
-    // detect valid url
-    // in the case
-    // webview on
-    // Android 2.3
     protected int countIntervalCheck = 0;
 
     ;
@@ -56,14 +51,10 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
 
     private boolean mIsFirst = true;
 
-    public NewBankWebViewClient(AdapterBase pAdapter) {
+    public BidvWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
-
         if (getAdapter() != null) {
-
             mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
-            //mWebPaymentBridge = new BankWebView(getAdapter().getActivity().getApplicationContext());
-
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
         }
@@ -336,7 +327,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
         return ret;
     }
 
-    public static enum EJavaScriptType {
+    public enum EJavaScriptType {
         AUTO, HIT
     }
 }

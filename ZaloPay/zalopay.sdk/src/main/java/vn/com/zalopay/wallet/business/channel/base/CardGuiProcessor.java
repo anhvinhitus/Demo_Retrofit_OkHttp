@@ -122,25 +122,22 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /***
      * user tap on done on keyboard
      */
-    protected TextView.OnEditorActionListener mEditorActionListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (getAdapter().isInputStep()) {
-                    onDoneTapped();
-                    return true;
-                } else if (checkEnableSubmitButton()) {
-                    getAdapter().onClickSubmission();
-                }
-
-            } else if ((actionId == EditorInfo.IME_ACTION_NEXT) && getAdapter().isInputStep()) {
-                showNext();
-
+    protected TextView.OnEditorActionListener mEditorActionListener = (v, actionId, event) -> {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (getAdapter().isInputStep()) {
+                onDoneTapped();
                 return true;
+            } else if (checkEnableSubmitButton()) {
+                getAdapter().onClickSubmission();
             }
 
-            return false;
+        } else if ((actionId == EditorInfo.IME_ACTION_NEXT) && getAdapter().isInputStep()) {
+            showNext();
+
+            return true;
         }
+
+        return false;
     };
     protected View.OnClickListener mClickOnEditTextListener = new View.OnClickListener() {
         @Override
@@ -295,30 +292,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         }
     };
-    protected View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                moveScrollViewToCurrentFocusView();
-            }
-            return false;
+    protected View.OnTouchListener mOnTouchListener = (view, motionEvent) -> {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            moveScrollViewToCurrentFocusView();
         }
+        return false;
     };
-    protected ZPWOnCloseDialogListener mCloseDialogListener = new ZPWOnCloseDialogListener() {
-        @Override
-        public void onCloseCardSupportDialog() {
-            clearCardNumberAndShowKeyBoard();
-        }
-    };
+    protected ZPWOnCloseDialogListener mCloseDialogListener = this::clearCardNumberAndShowKeyBoard;
     /***
      * click on delete icon / bank support icon
      */
-    protected View.OnClickListener mOnQuestionIconClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (!isCardInputSupport()) {
-                showSupportCardList();
-            }
+    protected View.OnClickListener mOnQuestionIconClick = view -> {
+        if (!isCardInputSupport()) {
+            showSupportCardList();
         }
     };
     /***
@@ -378,8 +364,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected abstract boolean checkValidRequiredEditText(EditText pEditText);
 
     protected abstract boolean needToWarningNotSupportCard();
-
-    protected abstract void setWebViewUserAgent();
 
     public abstract CardCheck getCardFinder();
 
@@ -470,8 +454,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         if (mWebView != null) {
             mWebView.setPaymentWebViewClient(getAdapter());
-
-            setWebViewUserAgent();
         }
     }
 
@@ -1328,10 +1310,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void reloadUrl() {
         if (mWebView == null) {
             initWebView();
-            Log.d(this, "===reloadUrl===mWebView == null");
             return;
         }
-
         mWebView.reloadPaymentUrl();
     }
 

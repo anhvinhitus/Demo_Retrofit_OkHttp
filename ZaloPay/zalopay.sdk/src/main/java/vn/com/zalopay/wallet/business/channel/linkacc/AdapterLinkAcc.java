@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
+import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.request.SubmitMapAccount;
@@ -80,6 +80,26 @@ public class AdapterLinkAcc extends AdapterBase {
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
+    protected Runnable runnableWaitingNotifyLinkAcc = () -> {
+        // get & check bankaccount list
+        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+            @Override
+            public void onCheckExistBankAccountComplete(boolean pExisted) {
+                hideLoadingDialog();
+                if (pExisted) {
+                    linkAccSuccess();
+                } else {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
+                }
+            }
+
+            @Override
+            public void onCheckExistBankAccountFail(String pMessage) {
+                hideLoadingDialog();
+                linkAccFail(pMessage, mTransactionID);
+            }
+        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+    };
     private List<DBankAccount> mBankAccountList = null;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -100,26 +120,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 hideLoadingDialog();
                 Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
                 unlinkAccFail(pMessage, mTransactionID);
-            }
-        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-    };
-    protected Runnable runnableWaitingNotifyLinkAcc = () -> {
-        // get & check bankaccount list
-        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-            @Override
-            public void onCheckExistBankAccountComplete(boolean pExisted) {
-                hideLoadingDialog();
-                if (pExisted) {
-                    linkAccSuccess();
-                } else {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
-                }
-            }
-
-            @Override
-            public void onCheckExistBankAccountFail(String pMessage) {
-                hideLoadingDialog();
-                linkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
@@ -1076,7 +1076,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 // show webview && hide web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.GONE);
-                mWebViewProcessor = new LinkAccWebViewClient(this, (LinkAccWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
+                mWebViewProcessor = new LinkAccWebViewClient(this, (PaymentWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
             } else {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);

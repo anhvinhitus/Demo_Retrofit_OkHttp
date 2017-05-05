@@ -27,6 +27,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
+import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
@@ -53,7 +54,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private boolean isRedirected = false;
 
     private AdapterLinkAcc mAdapter = null;
-    private LinkAccWebView mWebPaymentBridge = null;
+    private PaymentWebView mWebPaymentBridge = null;
 
     private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
     private String mCurrentUrl = null;
@@ -81,9 +82,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         super(pAdapter);
         if (pAdapter != null) {
             mAdapter = (AdapterLinkAcc) pAdapter;
-            // Avoid memory-leak in WebView:
-            // http://stackoverflow.com/questions/3130654/memory-leak-in-webview
-            mWebPaymentBridge = new LinkAccWebView(GlobalData.getAppContext());
+            mWebPaymentBridge = new PaymentWebView(GlobalData.getAppContext());
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
@@ -91,12 +90,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
 
-    public LinkAccWebViewClient(AdapterBase pAdapter, LinkAccWebView pWeb) {
+    public LinkAccWebViewClient(AdapterBase pAdapter, PaymentWebView pWeb) {
         super(pAdapter);
         if (pAdapter != null) {
             mAdapter = (AdapterLinkAcc) pAdapter;
-            // Avoid memory-leak in WebView:
-            // http://stackoverflow.com/questions/3130654/memory-leak-in-webview
             mWebPaymentBridge = pWeb;
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);

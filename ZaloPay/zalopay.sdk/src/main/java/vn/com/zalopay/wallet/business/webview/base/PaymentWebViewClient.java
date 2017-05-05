@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebView;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
-import vn.com.zalopay.wallet.business.webview.atm.NewBankWebViewClient;
+import vn.com.zalopay.wallet.business.webview.atm.BidvWebViewClient;
 
 public abstract class PaymentWebViewClient extends WebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
@@ -17,12 +17,12 @@ public abstract class PaymentWebViewClient extends WebViewClient {
     protected BankWebView mWebPaymentBridge = null;
 
     public PaymentWebViewClient(AdapterBase pAdapter) {
-        mAdapter = new WeakReference<AdapterBase>(pAdapter);
+        mAdapter = new WeakReference<>(pAdapter);
     }
 
     public static PaymentWebViewClient createPaymentWebViewClientByBank(AdapterBase pAdapter) {
         if (pAdapter instanceof AdapterBankCard && ((AdapterBankCard) pAdapter).isBidvBankPayment()) {
-            return new NewBankWebViewClient(pAdapter);
+            return new BidvWebViewClient(pAdapter);
         } else {
             return new BankWebViewClient(pAdapter);
         }
