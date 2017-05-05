@@ -1,3 +1,7 @@
+Zalo Pay (Sandbox v2.11.0 - build 232) - Released on 2017-05-05
+- [SDK] Vcb Mở lại auto fill otp trên đường web
+- [SDK] Add Paymentinfo.mapBank unlink acc success
+
 Zalo Pay (Sandbox v2.11.0 - build 231) - Released on 2017-05-03
 - [App] Add FileLog
 - [App] Update link card/account.
