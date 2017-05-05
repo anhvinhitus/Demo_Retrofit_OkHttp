@@ -36,16 +36,8 @@ final class FingerprintProvider implements AuthenticationProvider {
         this.mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
     }
 
-    private boolean isFingerprintAuthAvailable() {
-        return isHardwarePresent() && hasFingerprintRegistered();
-    }
-
-    private boolean isHardwarePresent() {
-        return mFingerprintManagerCompat.isHardwareDetected();
-    }
-
-    private boolean hasFingerprintRegistered() {
-        return mFingerprintManagerCompat.hasEnrolledFingerprints();
+    private boolean isFingerprintAvailable() {
+        return mFingerprintManagerCompat.isFingerprintAvailable();
     }
 
     private FingerprintAuthenticationCallback mFingerCallBack;
@@ -99,7 +91,7 @@ final class FingerprintProvider implements AuthenticationProvider {
     }
 
     private void startListening(FingerprintManagerCompat.CryptoObject cryptoObject) throws SecurityException {
-        if (!isFingerprintAuthAvailable()) {
+        if (!isFingerprintAvailable()) {
             return;
         }
 

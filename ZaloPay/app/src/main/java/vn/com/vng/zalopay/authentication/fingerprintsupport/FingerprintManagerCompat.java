@@ -29,7 +29,8 @@ public final class FingerprintManagerCompat {
     }
 
     private FingerprintManagerCompat(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
+        ReprintInternal.initialize(mContext);
     }
 
     /**
@@ -38,7 +39,7 @@ public final class FingerprintManagerCompat {
      * @return true if at least one fingerprint is enrolled, false otherwise
      */
     public boolean hasEnrolledFingerprints() {
-        return ReprintInternal.IMPL.hasEnrolledFingerprints(mContext);
+        return ReprintInternal.hasEnrolledFingerprints(mContext);
     }
 
     /**
@@ -47,7 +48,11 @@ public final class FingerprintManagerCompat {
      * @return true if hardware is present and functional, false otherwise.
      */
     public boolean isHardwareDetected() {
-        return ReprintInternal.IMPL.isHardwareDetected(mContext);
+        return ReprintInternal.isHardwareDetected(mContext);
+    }
+
+    public boolean isFingerprintAvailable() {
+        return isHardwareDetected() && hasEnrolledFingerprints();
     }
 
     /**
@@ -67,7 +72,7 @@ public final class FingerprintManagerCompat {
     public void authenticate(@Nullable FingerprintManagerCompat.CryptoObject crypto, int flags,
                              @Nullable CancellationSignal cancel, @NonNull FingerprintManagerCompat.AuthenticationCallback callback,
                              @Nullable Handler handler) {
-        ReprintInternal.IMPL.authenticate(mContext, crypto, flags, cancel, callback, handler);
+        ReprintInternal.authenticate(mContext, crypto, flags, cancel, callback, handler);
     }
 
     /**

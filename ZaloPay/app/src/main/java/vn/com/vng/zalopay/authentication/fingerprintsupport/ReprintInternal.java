@@ -3,8 +3,14 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.os.CancellationSignal;
 
 import com.samsung.android.sdk.SsdkVendorCheck;
+
+import timber.log.Timber;
 
 /**
  * Created by hieuvm on 5/5/17.
@@ -13,9 +19,9 @@ import com.samsung.android.sdk.SsdkVendorCheck;
 
 class ReprintInternal {
 
-    static FingerprintManagerCompat.FingerprintManagerCompatImpl IMPL;
+    private static FingerprintManagerCompat.FingerprintManagerCompatImpl IMPL;
 
-    public static void initialize(Context context) {
+    synchronized static void initialize(Context context) {
         if (IMPL != null) {
             return;
         }
@@ -34,6 +40,8 @@ class ReprintInternal {
             }
         }
 
+        Timber.d("initialize: IMPL SamSung %s", IMPL);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Api23FingerprintManagerCompatImpl fingerprintManagerCompat = new Api23FingerprintManagerCompatImpl();
             if (fingerprintManagerCompat.isHardwareDetected(context)) {
@@ -41,11 +49,38 @@ class ReprintInternal {
             }
         }
 
+        Timber.d("initialize: IMPL Android %s", IMPL);
+
         if (IMPL == null) {
             IMPL = new LegacyFingerprintManagerCompatImpl();
         }
     }
 
+    static boolean isHardwareDetected(Context context) {
+        if (IMPL == null) {
+            throw new IllegalStateException("FingerprintManagerCompat not initialized");
+        }
+
+        return IMPL.isHardwareDetected(context);
+    }
+
+    static boolean hasEnrolledFingerprints(Context context) {
+        if (IMPL == null) {
+            throw new IllegalStateException("FingerprintManagerCompat not initialized");
+        }
+
+        return IMPL.hasEnrolledFingerprints(context);
+    }
+
+    static void authenticate(Context context, @Nullable FingerprintManagerCompat.CryptoObject crypto, int flags,
+                             @Nullable CancellationSignal cancel, @NonNull FingerprintManagerCompat.AuthenticationCallback callback,
+                             @Nullable Handler handler) {
+        if (IMPL == null) {
+            throw new IllegalStateException("FingerprintManagerCompat not initialized");
+        }
+
+        IMPL.authenticate(context, crypto, flags, cancel, callback, handler);
+    }
 
   /*  static {
         final int version = Build.VERSION.SDK_INT;
