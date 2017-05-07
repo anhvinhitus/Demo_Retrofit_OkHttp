@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.authentication;
 
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 

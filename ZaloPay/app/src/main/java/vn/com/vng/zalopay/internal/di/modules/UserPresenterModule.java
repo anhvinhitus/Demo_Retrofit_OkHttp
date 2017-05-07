@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
-import vn.com.vng.zalopay.authentication.KeyTools;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 

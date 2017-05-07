@@ -12,7 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
-import vn.com.vng.zalopay.authentication.KeyTools;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;

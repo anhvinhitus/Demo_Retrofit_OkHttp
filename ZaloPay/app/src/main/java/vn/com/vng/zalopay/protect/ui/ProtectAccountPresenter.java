@@ -11,12 +11,10 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.FingerprintUtil;
-import vn.com.vng.zalopay.authentication.KeyTools;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by hieuvm on 12/26/16.

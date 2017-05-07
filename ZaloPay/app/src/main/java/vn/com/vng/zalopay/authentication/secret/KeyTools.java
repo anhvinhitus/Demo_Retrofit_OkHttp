@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.authentication;
+package vn.com.vng.zalopay.authentication.secret;
 
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
@@ -139,13 +139,13 @@ public class KeyTools {
 
     }
 
-    boolean initDecryptCipher() {
+    public boolean initDecryptCipher() {
         mDecryptCipher = getCipher(Cipher.DECRYPT_MODE);
         Timber.d("decrypt cipher: [%s]", mDecryptCipher);
         return (mDecryptCipher != null);
     }
 
-    String decrypt(Cipher cipher) {
+    public String decrypt(Cipher cipher) {
         Timber.d("decrypt : [%s]", cipher);
         try {
             String keyPassword = mUserConfig.getEncryptedPassword();
@@ -199,11 +199,11 @@ public class KeyTools {
         return false;
     }
 
-    Cipher getDecryptCipher() {
+    public Cipher getDecryptCipher() {
         return mDecryptCipher;
     }
 
-    void updatePassword(String newPassword) {
+    public void updatePassword(String newPassword) {
         if (shouldUpdatePassword(mUserConfig.getEncryptedPassword(), newPassword)) {
             encrypt(newPassword, true);
         }

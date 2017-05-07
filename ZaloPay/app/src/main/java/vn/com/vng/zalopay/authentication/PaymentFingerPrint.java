@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;

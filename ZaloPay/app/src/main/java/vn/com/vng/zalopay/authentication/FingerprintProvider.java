@@ -9,6 +9,7 @@ import javax.crypto.Cipher;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.exception.FingerprintException;
 
 /**
