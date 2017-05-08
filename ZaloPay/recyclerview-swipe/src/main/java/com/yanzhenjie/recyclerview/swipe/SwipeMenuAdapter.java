@@ -27,6 +27,8 @@ import java.util.List;
  */
 public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
+    public abstract void onBindSwipeMenuViewHolder(SwipeMenuView swipeLeftMenuView, SwipeMenuView swipeRightMenuView, int position);
+
     /**
      * Swipe menu creator。
      */
@@ -118,6 +120,7 @@ public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> exten
         View itemView = holder.itemView;
         if (itemView instanceof SwipeMenuLayout) {
             SwipeMenuLayout swipeMenuLayout = (SwipeMenuLayout) itemView;
+            onCompatBindSwipeMenuViewHolder(swipeMenuLayout, position);
             int childCount = swipeMenuLayout.getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View childView = swipeMenuLayout.getChildAt(i);
@@ -141,4 +144,11 @@ public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> exten
     public void onCompatBindViewHolder(VH holder, int position, List<Object> payloads) {
         onBindViewHolder(holder, position);
     }
+
+    public void onCompatBindSwipeMenuViewHolder(SwipeMenuLayout swipeMenuLayout, int position) {
+        SwipeMenuView swipeLeftMenuView = (SwipeMenuView) swipeMenuLayout.findViewById(R.id.swipe_left);
+        SwipeMenuView swipeRightMenuView = (SwipeMenuView) swipeMenuLayout.findViewById(R.id.swipe_right);
+        onBindSwipeMenuViewHolder(swipeLeftMenuView, swipeRightMenuView, position);
+    }
+
 }
