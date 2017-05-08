@@ -11,16 +11,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
-import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
@@ -30,19 +27,20 @@ import vn.com.vng.zalopay.utils.FrescoHelper;
  * Created by AnhHieu on 5/10/16.
  * *
  */
-class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.ViewHolder> {
+class LinkAccountAdapter extends AbstractSwipeMenuRecyclerAdapter<BankAccount, RecyclerView.ViewHolder> {
 
-    private OnClickBankAccListener mListener;
-
-    LinkAccountAdapter(Context context, OnClickBankAccListener listener) {
+    LinkAccountAdapter(Context context) {
         super(context);
-        mListener = listener;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false),
-                onItemClickListener);
+    public View onCreateContentView(ViewGroup parent, int viewType) {
+        return mInflater.inflate(R.layout.row_bank_account_layout, parent, false);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCompatCreateViewHolder(View realContentView, int viewType) {
+        return new ViewHolder(realContentView);
     }
 
     @Override
@@ -56,29 +54,20 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
-        @Override
-        public void onListItemClick(View anchor, int position) {
-            if (mListener == null) {
-                return;
-            }
-
-            int id = anchor.getId();
-
-            if (id == R.id.root) {
-                BankAccount bankAccount = getItem(position);
-                if (bankAccount != null) {
-                    mListener.onClickBankAccount(bankAccount);
-                }
-            }
-
+    @Override
+    public void onBindSwipeMenuViewHolder(SwipeMenuView swipeLeftMenuView, SwipeMenuView swipeRightMenuView, int position) {
+        boolean isLastItem = (position == getItemCount() - 1);
+        FrameLayout.LayoutParams params = new FrameLayout
+                .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int margin = getContext().getResources().getDimensionPixelSize(R.dimen.spacing_medium_s);
+        int marginBottom = 0;
+        if (isLastItem) {
+            marginBottom = getContext().getResources()
+                    .getDimensionPixelSize(R.dimen.linkcard_margin_bottom_lastitem);
         }
-
-        @Override
-        public boolean onListItemLongClick(View anchor, int position) {
-            return false;
-        }
-    };
+        params.setMargins(0, margin, 0, marginBottom);
+        swipeRightMenuView.setLayoutParams(params);
+    }
 
     @Override
     public int getItemCount() {
@@ -98,19 +87,9 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         @BindView(R.id.tvAccountName)
         TextView mTvAccountName;
 
-        @OnClick(R.id.root)
-        public void onClickMore(View v) {
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onListItemClick(v, getAdapterPosition());
-            }
-        }
-
-        OnItemClickListener mOnItemClickListener;
-
-        public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+        public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            mOnItemClickListener = onItemClickListener;
         }
 
         public void bindView(final BankAccount bankAccount, boolean isLastItem) {
@@ -132,7 +111,7 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
                 marginBottom = getContext().getResources()
                         .getDimensionPixelSize(R.dimen.linkcard_margin_bottom_lastitem);
             }
-            params.setMargins(margin, margin, margin, marginBottom);
+            params.setMargins(0, margin, 0, marginBottom);
             mRoot.setLayoutParams(params);
         }
     }

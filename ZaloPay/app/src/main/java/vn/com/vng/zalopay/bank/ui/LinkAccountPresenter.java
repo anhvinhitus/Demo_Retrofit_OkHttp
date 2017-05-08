@@ -62,6 +62,10 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     void refreshLinkedBankAccount() {
         List<BankAccount> bankAccounts = getLinkedBankAccount();
+        /*List<BankAccount> bankAccounts = new ArrayList<>();
+        bankAccounts.add(new BankAccount("0123456", "1231", CardType.PSCB));
+        bankAccounts.add(new BankAccount("098765", "4321", CardType.PVCB));
+        bankAccounts.add(new BankAccount("054321", "6789", CardType.PVTB));*/
         mView.refreshLinkedAccount(bankAccounts);
         checkSupportVcbOnly(bankAccounts);
     }

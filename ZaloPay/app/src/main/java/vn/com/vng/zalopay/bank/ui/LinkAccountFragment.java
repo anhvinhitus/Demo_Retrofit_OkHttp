@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,11 +11,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.yanzhenjie.recyclerview.swipe.Closeable;
+import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -45,10 +45,8 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Use the {@link LinkAccountFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkAccountFragment extends AbstractLinkBankFragment implements ILinkAccountView,
-        OnClickBankAccListener {
+public class LinkAccountFragment extends AbstractLinkBankFragment implements ILinkAccountView {
 
-    private Dialog mBottomSheetDialog;
     private LinkAccountAdapter mAdapter;
 
     @BindView(R.id.layoutLinkAccountEmpty)
@@ -61,7 +59,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     View mBtnAddMore;
 
     @BindView(R.id.listView)
-    RecyclerView mRecyclerView;
+    SwipeMenuRecyclerView mRecyclerView;
 
     @BindView(R.id.txt_note_support_only_vcb)
     TextView mTxtNoteSupportOnlyVcb;
@@ -109,7 +107,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new LinkAccountAdapter(getContext(), this);
+        mAdapter = new LinkAccountAdapter(getContext());
     }
 
     @Override
@@ -126,6 +124,10 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         }
         mRecyclerView.setAdapter(mAdapter);
         initBankSupportFragment();
+
+        mRecyclerView.setSwipeMenuCreator(swipeMenuCreator);
+        mRecyclerView.setSwipeMenuItemClickListener(menuItemClickListener);
+
         getLinkedBankAccount();
     }
 
@@ -291,55 +293,26 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         super.onDestroy();
     }
 
-    private void showBottomSheet(final BankAccount bankAccount) {
-        if (mBottomSheetDialog == null) {
-            mBottomSheetDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar);
-            mBottomSheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            mBottomSheetDialog.setContentView(R.layout.bottom_sheet_link_acc_layout);
-            mBottomSheetDialog.setTitle("");
-            final Window window = mBottomSheetDialog.getWindow();
-            if (window != null) {
-                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
+    private SwipeMenuCreator swipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
+        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
+                .setBackgroundDrawable(R.color.red)
+                .setText(getString(R.string.delete))
+                .setTextColor(Color.WHITE)
+                .setWidth(width)
+                .setHeight(height);
+        swipeRightMenu.addMenuItem(deleteItem);
+    };
+
+    private OnSwipeMenuItemClickListener menuItemClickListener = this::showConfirmRemoveSaveCard;
+
+    private void showConfirmRemoveSaveCard(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
+        if (mAdapter == null) {
+            return;
         }
-
-        View root = mBottomSheetDialog.findViewById(R.id.root);
-        View layoutRemoveLink = mBottomSheetDialog.findViewById(R.id.layoutRemoveLink);
-        View verticalLine = mBottomSheetDialog.findViewById(R.id.line);
-
-        View.OnClickListener mOnClickListener = v -> {
-            int itemId = v.getId();
-            if (itemId == R.id.layoutRemoveLink) {
-                showConfirmRemoveSaveCard(bankAccount);
-                ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
-            } else if (itemId == R.id.root) {
-                mBottomSheetDialog.dismiss();
-            }
-        };
-
-        root.setOnClickListener(mOnClickListener);
-        layoutRemoveLink.setOnClickListener(mOnClickListener);
-
-        ImageView imgLogo = (ImageView) mBottomSheetDialog.findViewById(R.id.iv_logo);
-        if (mAdapter != null) {
-            mAdapter.bindBankImage(verticalLine, imgLogo, bankAccount);
-        }
-
-        TextView tvAccountName = (TextView) mBottomSheetDialog.findViewById(R.id.tvAccountName);
-        if (bankAccount != null && tvAccountName != null) {
-            tvAccountName.setText(bankAccount.getAccountInfo());
-        }
-        mBottomSheetDialog.show();
-    }
-
-    @Override
-    public void onClickBankAccount(BankAccount bankAccount) {
-        showBottomSheet(bankAccount);
-    }
-
-    private void showConfirmRemoveSaveCard(final BankAccount bankAccount) {
+        BankAccount bankAccount = mAdapter.getItem(adapterPosition);
         if (bankAccount == null) {
             return;
         }
@@ -349,20 +322,24 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         } else {
             message = getString(R.string.txt_confirm_remove_account);
         }
-
         super.showConfirmDialog(message,
-                getString(R.string.accept),
+                getString(R.string.btn_confirm),
                 getString(R.string.btn_cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onOKevent() {
-                        mPresenter.removeLinkAccount(bankAccount);
-                        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
-                        mBottomSheetDialog.dismiss();
+                        closeable.smoothCloseMenu();
+                        if (menuPosition == 0 && direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+                            /*mAdapter.remove(adapterPosition);
+                            mAdapter.notifyItemRemoved(adapterPosition);*/
+                            mPresenter.removeLinkAccount(bankAccount);
+                            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+                        }
                     }
 
                     @Override
                     public void onCancelEvent() {
+                        closeable.smoothCloseMenu();
                     }
                 });
     }
