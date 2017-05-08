@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.StringRes;
 import android.support.v4.os.CancellationSignal;
 
 import com.samsung.android.sdk.pass.Spass;
@@ -66,12 +65,10 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
             return;
         }
 
-        if (mSpassFingerprint == null) {
-            mSpassFingerprint = new SpassFingerprint(context);
-        }
-
-        cancelFingerprintRequest(mSpassFingerprint);
         try {
+
+            cancelFingerprintRequest(mSpassFingerprint);
+
             mSpassFingerprint.startIdentify(new SpassFingerprint.IdentifyListener() {
                 @Override
                 public void onFinished(int status) {

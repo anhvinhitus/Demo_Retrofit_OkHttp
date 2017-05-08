@@ -136,7 +136,7 @@ public class FingerprintSuggestDialog extends DialogFragment {
     @OnClick(R.id.second_dialog_button)
     public void onSecondClick(View v) {
         Timber.d("on Second Click : mHashPassword [%s]", mHashPassword);
-        mKeytool.updatePassword(mHashPassword);
+        mKeytool.storePassword(mHashPassword);
         dismiss();
     }
 

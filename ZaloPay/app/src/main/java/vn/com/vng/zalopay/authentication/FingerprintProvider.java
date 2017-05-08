@@ -79,7 +79,11 @@ final class FingerprintProvider implements AuthenticationProvider {
     }
 
     void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult result) {
-        final Cipher c = result.getCryptoObject().getCipher();
+        Cipher c = null;
+        if (result.getCryptoObject() != null) {
+            c = result.getCryptoObject().getCipher();
+        }
+
         String string = mKeyTools.decrypt(c);
         if (TextUtils.isEmpty(string)) {
             Timber.d("on Authentication succeeded : decrypt empty");
@@ -91,7 +95,7 @@ final class FingerprintProvider implements AuthenticationProvider {
         }
     }
 
-    private void startListening(FingerprintManagerCompat.CryptoObject cryptoObject) throws SecurityException {
+    private void startListening(FingerprintManagerCompat.CryptoObject cryptoObject) {
         if (!isFingerprintAvailable()) {
             return;
         }
@@ -117,9 +121,8 @@ final class FingerprintProvider implements AuthenticationProvider {
         stopVerify();
 
         try {
-            if (mKeyTools.initDecryptCipher()) {
-                startListening(new FingerprintManagerCompat.CryptoObject(mKeyTools.getDecryptCipher()));
-            }
+            Cipher cipher = mKeyTools.getDecryptCipher();
+            startListening(new FingerprintManagerCompat.CryptoObject(cipher));
         } catch (Exception ex) {
             Timber.d(ex, "start verify");
         }

@@ -80,7 +80,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
     public void updatePassword(String s, String s1) throws Exception {
         Timber.d("Update password : passwordOld %s passwordNew %s", s, s1);
         if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
-            mKeyTools.updatePassword(s1);
+            mKeyTools.storePassword(s1);
         }
     }
 

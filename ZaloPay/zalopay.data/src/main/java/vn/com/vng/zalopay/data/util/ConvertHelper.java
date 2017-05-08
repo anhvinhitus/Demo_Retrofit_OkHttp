@@ -31,4 +31,12 @@ public class ConvertHelper {
             return value;
         }
     }
+
+    public static byte unboxValue(Byte value, byte defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    }
 }

@@ -114,7 +114,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             @Override
             public void onAuthenticated(String password) {
 
-                boolean result = mKeyTools.encrypt(password);
+                boolean result = mKeyTools.storePassword(password);
                 Timber.d("encrypt cipher result %s", result);
                 if (!result) {
                     return;
