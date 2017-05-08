@@ -17,12 +17,15 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <android.support.v7.widget.RecyclerView
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
             android:id="@+id/listView"
             style="@style/RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
+            android:layout_weight="1.0"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:scrollbarStyle="outsideOverlay" />
 
         <LinearLayout
             android:id="@+id/btn_add_more"
