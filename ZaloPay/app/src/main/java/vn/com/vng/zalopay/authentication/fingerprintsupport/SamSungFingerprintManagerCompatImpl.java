@@ -127,7 +127,7 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
             } else if (eventStatus == SpassFingerprint.STATUS_TIMEOUT_FAILED) {
                 callback.onAuthenticationError(FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT, "The time for identify is finished.");
             } else if (eventStatus == SpassFingerprint.STATUS_QUALITY_FAILED) {
-                callback.onAuthenticationHelp(FingerprintManagerCompat.STATUS_QUALITY_FAILED,"Authentification fail for identify");
+                callback.onAuthenticationFailed();
                 needRetryIdentify = true;
             } else {
                 callback.onAuthenticationFailed();

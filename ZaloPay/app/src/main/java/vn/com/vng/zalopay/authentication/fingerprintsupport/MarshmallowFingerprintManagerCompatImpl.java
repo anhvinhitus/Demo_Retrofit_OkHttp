@@ -12,24 +12,23 @@ import android.support.v4.os.CancellationSignal;
  * *
  */
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 final class MarshmallowFingerprintManagerCompatImpl implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
 
     MarshmallowFingerprintManagerCompatImpl() {
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
     public boolean hasEnrolledFingerprints(Context context) {
         return FingerprintManagerCompatApi23.hasEnrolledFingerprints(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean isHardwareDetected(Context context) {
         return FingerprintManagerCompatApi23.isHardwareDetected(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void authenticate(Context context, FingerprintManagerCompat.CryptoObject crypto, int flags,
                              CancellationSignal cancel, FingerprintManagerCompat.AuthenticationCallback callback, Handler handler) {
