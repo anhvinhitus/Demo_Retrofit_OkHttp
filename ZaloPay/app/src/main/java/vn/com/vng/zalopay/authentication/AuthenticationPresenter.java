@@ -1,10 +1,7 @@
 package vn.com.vng.zalopay.authentication;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.fingerprint.FingerprintManager;
-import android.os.Build;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
@@ -167,7 +164,6 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private void handleErrorFingerprint(Throwable e) {
         if (mView == null) {
             return;
@@ -182,7 +178,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         boolean notRetry = (fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT
                 || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_LOCKOUT
                 || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_CANCELED
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE);
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_HW_UNAVAILABLE);
 
         mView.showFingerprintError(e.getMessage(), !notRetry);
     }
