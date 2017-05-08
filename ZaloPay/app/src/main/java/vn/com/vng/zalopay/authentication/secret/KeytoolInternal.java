@@ -7,7 +7,7 @@ import javax.crypto.Cipher;
  * *
  */
 
-interface IKeytool {
+interface KeytoolInternal {
     Cipher getCipher(int mode);
 
     String decrypt(Cipher cipher);

@@ -15,7 +15,7 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    IChangePinPresenter providesChangePinPresenter(Context context, AccountStore.Repository accountRepository, KeyTools keyTools) {
-        return new ChangePinPresenter(context, accountRepository, keyTools);
+    IChangePinPresenter providesChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
+        return new ChangePinPresenter(context, accountRepository);
     }
 }

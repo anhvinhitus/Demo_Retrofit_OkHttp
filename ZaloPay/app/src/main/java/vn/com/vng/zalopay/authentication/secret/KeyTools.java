@@ -1,16 +1,11 @@
 package vn.com.vng.zalopay.authentication.secret;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.text.TextUtils;
 
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-
 import javax.crypto.Cipher;
-import javax.inject.Inject;
 
-import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 
 /**
@@ -19,41 +14,40 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
  */
 
 public class KeyTools {
-    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";// KeyStore.getDefaultType();
 
-    private final IKeytool mKeytool;
-    private final UserConfig mUserConfig;
-    
-    @Inject
-    public KeyTools(UserConfig userConfig) {
-        mKeytool = new MarshmallowKeytool(providesKeyStore());
-        mUserConfig = userConfig;
+    private static final KeytoolInternal IMPL;
+
+    static {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            IMPL = new MarshmallowKeytool();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            IMPL = new JellyBeanMR2KeyTool();
+        } else {
+            IMPL = null;
+        }
     }
 
-    private KeyStore providesKeyStore() {
-        try {
-            return KeyStore.getInstance(ANDROID_KEY_STORE);
-        } catch (KeyStoreException e) {
-            Timber.w(e, "Failed to get an instance of KeyStore");
-            return null;
-        }
+    private final UserConfig mUserConfig;
+
+    public KeyTools() {
+        mUserConfig = AndroidApplication.instance().getAppComponent().userConfig();
     }
 
     public boolean storePassword(String hashPassword) {
         String oldPassword = mUserConfig.getEncryptedPassword();
-        if (TextUtils.isEmpty(hashPassword) || hashPassword.equals(oldPassword)) {
-            return true;
-        }
+        return TextUtils.isEmpty(hashPassword) || hashPassword.equals(oldPassword) || encrypt(hashPassword);
+    }
 
-        return mKeytool.encrypt(hashPassword);
+    private boolean encrypt(String hashPassword) {
+        return IMPL != null && IMPL.encrypt(hashPassword);
     }
 
     public String decrypt(Cipher cipher) {
-        return mKeytool.decrypt(cipher);
+        return IMPL == null ? "" : IMPL.decrypt(cipher);
     }
 
     public Cipher getDecryptCipher() {
-        return mKeytool.getCipher(Cipher.DECRYPT_MODE);
+        return IMPL == null ? null : IMPL.getCipher(Cipher.DECRYPT_MODE);
     }
 
     public boolean isHavePassword() {

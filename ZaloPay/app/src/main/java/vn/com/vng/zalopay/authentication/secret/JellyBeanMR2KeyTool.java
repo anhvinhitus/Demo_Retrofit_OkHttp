@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
@@ -13,6 +14,7 @@ import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,23 +37,32 @@ import vn.com.vng.zalopay.data.util.ConvertHelper;
  */
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-final class PreMarshmallowKeyTool implements IKeytool {
+final class JellyBeanMR2KeyTool implements KeytoolInternal {
 
     //  static final String CIPHER_PROVIDER = "AndroidOpenSSL";
     private static final String RSA_MODE = "RSA/ECB/PKCS1Padding";
     private static final String AES_MODE = "AES/ECB/PKCS7Padding";
-    private static final String ENCRYPTEDKEY_KEY = "encrypted_key";
+    private static final String ENCRYPTED_KEY = "encrypted_key";
 
     private final KeyStore mKeyStore;
     private final Context mContext;
     private final SharedPreferences mPreferences;
     private final UserConfig mUserConfig;
 
-    PreMarshmallowKeyTool(KeyStore keystore) {
+    JellyBeanMR2KeyTool() {
         this.mContext = AndroidApplication.instance();
-        this.mKeyStore = keystore;
+        this.mKeyStore = providesKeyStore();
         this.mPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
         this.mUserConfig = AndroidApplication.instance().getAppComponent().userConfig();
+    }
+
+    private static KeyStore providesKeyStore() {
+        try {
+            return KeyStore.getInstance("AndroidKeyStore");
+        } catch (KeyStoreException e) {
+            Timber.w(e, "Failed to get an instance of KeyStore");
+            return null;
+        }
     }
 
     private void generateKeyPair() {
@@ -81,7 +92,7 @@ final class PreMarshmallowKeyTool implements IKeytool {
     }
 
     private void generateAESKey() throws Exception {
-        String enryptedKeyB64 = mPreferences.getString(ENCRYPTEDKEY_KEY, null);
+        String enryptedKeyB64 = mPreferences.getString(ENCRYPTED_KEY, null);
         if (enryptedKeyB64 == null) {
             byte[] key = new byte[16];
             SecureRandom secureRandom = new SecureRandom();
@@ -89,7 +100,7 @@ final class PreMarshmallowKeyTool implements IKeytool {
             byte[] encryptedKey = rsaEncrypt(key);
             enryptedKeyB64 = Base64.encodeToString(encryptedKey, Base64.DEFAULT);
             SharedPreferences.Editor edit = mPreferences.edit();
-            edit.putString(ENCRYPTEDKEY_KEY, enryptedKeyB64);
+            edit.putString(ENCRYPTED_KEY, enryptedKeyB64);
             edit.apply();
         }
     }
@@ -98,14 +109,14 @@ final class PreMarshmallowKeyTool implements IKeytool {
         generateKeyPair();
         generateAESKey();
 
-        String enryptedKeyB64 = mPreferences.getString(ENCRYPTEDKEY_KEY, null);
+        String enryptedKeyB64 = mPreferences.getString(ENCRYPTED_KEY, null);
         byte[] encryptedKey = Base64.decode(enryptedKeyB64, Base64.DEFAULT);
         byte[] key = rsaDecrypt(encryptedKey);
         return new SecretKeySpec(key, "AES");
     }
 
     private String encrypt(byte[] input) throws Exception {
-        Cipher c = getCipher(Cipher.ENCRYPT_MODE, false);
+        Cipher c = getCipherObject(Cipher.ENCRYPT_MODE);
         if (c != null) {
             byte[] encodedBytes = c.doFinal(input);
             String secretBase64 = Base64.encodeToString(encodedBytes, Base64.DEFAULT);
@@ -115,7 +126,7 @@ final class PreMarshmallowKeyTool implements IKeytool {
     }
 
     private byte[] decrypt(byte[] encrypted) throws Exception {
-        Cipher c = getCipher(Cipher.DECRYPT_MODE, false);
+        Cipher c = getCipherObject(Cipher.DECRYPT_MODE);
         if (c != null) {
             return c.doFinal(encrypted);
         }
@@ -158,13 +169,11 @@ final class PreMarshmallowKeyTool implements IKeytool {
 
     @Override
     public Cipher getCipher(int mode) {
-        return getCipher(mode, true);
+        return null;
     }
 
-    Cipher getCipher(int mode, boolean fingerprint) {
-        if (fingerprint) {
-            return null;
-        }
+    @Nullable
+    private Cipher getCipherObject(int mode) {
 
         try {
             Cipher c = Cipher.getInstance(AES_MODE, "BC");
@@ -182,7 +191,9 @@ final class PreMarshmallowKeyTool implements IKeytool {
 
     @Override
     public String decrypt(Cipher cipher) {
+
         try {
+
             String keyPassword = mUserConfig.getEncryptedPassword();
             Timber.d("secret base64: [%s] ", keyPassword);
 

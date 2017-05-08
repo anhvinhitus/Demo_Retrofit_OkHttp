@@ -20,17 +20,15 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
 public class PaymentFingerPrint implements IPaymentFingerPrint {
 
-    private Context mContext;
-    private KeyTools mKeyTools;
-
-    private Navigator mNavigator;
+    private final Context mContext;
+    private final KeyTools mKeyTools;
+    private final Navigator mNavigator;
 
     public PaymentFingerPrint(AndroidApplication context) {
         mContext = context;
-        mKeyTools = new KeyTools(context.getAppComponent().userConfig());
+        mKeyTools = new KeyTools();
         mNavigator = context.getAppComponent().navigator();
     }
-
 
     /**
      * Null khi fingerprint not available

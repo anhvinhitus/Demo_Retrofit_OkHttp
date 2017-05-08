@@ -60,10 +60,13 @@ public class FingerprintSuggestDialog extends DialogFragment {
     @Inject
     SharedPreferences mPreferences;
 
-    @Inject
     KeyTools mKeytool;
 
     private String mHashPassword;
+
+    public FingerprintSuggestDialog() {
+        mKeytool = new KeyTools();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

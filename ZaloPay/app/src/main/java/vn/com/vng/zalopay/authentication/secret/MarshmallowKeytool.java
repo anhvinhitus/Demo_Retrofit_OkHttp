@@ -3,12 +3,12 @@ package vn.com.vng.zalopay.authentication.secret;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -28,15 +28,24 @@ import vn.com.vng.zalopay.data.util.Utils;
  */
 
 @RequiresApi(api = Build.VERSION_CODES.M)
-final class MarshmallowKeytool implements IKeytool {
+final class MarshmallowKeytool implements KeytoolInternal {
 
     private final KeyStore mKeyStore;
 
     private final UserConfig mUserConfig;
 
-    MarshmallowKeytool(@NonNull KeyStore keyStore) {
-        this.mKeyStore = keyStore;
+    MarshmallowKeytool() {
+        this.mKeyStore = providesKeyStore();
         this.mUserConfig = AndroidApplication.instance().getAppComponent().userConfig();
+    }
+
+    private KeyStore providesKeyStore() {
+        try {
+            return KeyStore.getInstance("AndroidKeyStore");
+        } catch (KeyStoreException e) {
+            Timber.w(e, "Failed to get an instance of KeyStore");
+            return null;
+        }
     }
 
     private SecretKey getSecretKey() {
@@ -75,6 +84,7 @@ final class MarshmallowKeytool implements IKeytool {
         return null;
     }
 
+    @Override
     public Cipher getCipher(int mode) {
 
         Cipher cipher;
@@ -104,17 +114,17 @@ final class MarshmallowKeytool implements IKeytool {
         return null;
     }
 
-    private String decrypt() {
-        Cipher decryptCipher = getCipher(Cipher.DECRYPT_MODE);
-        if (decryptCipher == null) {
+    public String decrypt(Cipher cipher) {
+        Timber.d("decrypt : [%s]", cipher);
+
+        if (cipher == null) {
+            cipher = getCipher(Cipher.DECRYPT_MODE);
+        }
+
+        if (cipher == null) {
             return null;
         }
 
-        return decrypt(decryptCipher);
-    }
-
-    public String decrypt(Cipher cipher) {
-        Timber.d("decrypt : [%s]", cipher);
         try {
             String keyPassword = mUserConfig.getEncryptedPassword();
             Timber.d("secret base64: [%s] ", keyPassword);
@@ -126,6 +136,7 @@ final class MarshmallowKeytool implements IKeytool {
         } catch (Exception e) {
             Timber.w(e, "Failed to decrypt the data with the generated key.");
         }
+
         return null;
     }
 

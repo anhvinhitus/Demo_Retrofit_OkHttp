@@ -47,12 +47,12 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
 
     private String mNewPassword;
 
-    KeyTools mKeyTools;
+    private final KeyTools mKeyTools;
 
-    public ChangePinPresenter(Context context, AccountStore.Repository accountRepository, KeyTools keytool) {
+    public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
         mApplicationContext = context;
         mAccountRepository = accountRepository;
-        mKeyTools = keytool;
+        mKeyTools = new KeyTools();
     }
 
     @Override

@@ -25,7 +25,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     @Inject
     public Context mContext;
 
-    @Inject
     KeyTools mKeyTools;
 
     @Inject
@@ -33,6 +32,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
     @Inject
     ProtectAccountPresenter() {
+        mKeyTools = new KeyTools();
     }
 
     void useFingerprintToAuthenticate(boolean enable) {

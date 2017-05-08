@@ -34,7 +34,6 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
-    @Inject
     KeyTools mKeyTools;
 
     private AuthenticationProvider mAuthenticationProvider;
@@ -44,6 +43,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
                             Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
+        mKeyTools = new KeyTools();
     }
 
 
