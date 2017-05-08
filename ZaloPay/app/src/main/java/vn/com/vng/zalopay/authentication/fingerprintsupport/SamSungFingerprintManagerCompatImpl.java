@@ -2,12 +2,18 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.os.CancellationSignal;
+import android.widget.Toast;
 
 import com.samsung.android.sdk.pass.Spass;
 import com.samsung.android.sdk.pass.SpassFingerprint;
 
+import java.lang.ref.WeakReference;
+
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by hieuvm on 5/5/17.
@@ -16,10 +22,18 @@ import timber.log.Timber;
 
 final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
 
+    private static final int MSG_AUTH = 1000;
     private final Spass mSpass;
+    private final Handler mHandler;
+
     private SpassFingerprint mSpassFingerprint;
+    private boolean needRetryIdentify = false;
+    private boolean onReadyIdentify = false;
+
+    private WeakReference<FingerprintManagerCompat.AuthenticationCallback> mCallbackFingerprint;
 
     SamSungFingerprintManagerCompatImpl(Context context) {
+        mHandler = new Handler(mCallback);
         Spass s;
         try {
             s = new Spass();
@@ -32,6 +46,17 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
 
         mSpass = s;
     }
+
+    private Handler.Callback mCallback = msg -> {
+        switch (msg.what) {
+            case MSG_AUTH:
+                startIdentify();
+                break;
+            default:
+                break;
+        }
+        return true;
+    };
 
 
     @Override
@@ -60,71 +85,111 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
     @Override
     public void authenticate(Context context, FingerprintManagerCompat.CryptoObject crypto, int flags, CancellationSignal cancel, FingerprintManagerCompat.AuthenticationCallback callback, Handler handler) {
 
+
+        Timber.d("authenticate: ");
+        mCallbackFingerprint = new WeakReference<>(callback);
+
         if (!hasEnrolledFingerprints(context)) {
-            //// TODO: 5/5/17 onFailure
+            callback.onAuthenticationFailed();
             return;
         }
 
-        try {
+        cancelIdentify();
 
-            cancelFingerprintRequest(mSpassFingerprint);
-
-            mSpassFingerprint.startIdentify(new SpassFingerprint.IdentifyListener() {
-                @Override
-                public void onFinished(int status) {
-                    Timber.d("onFinished: %s", status);
-                    switch (status) {
-                        case SpassFingerprint.STATUS_AUTHENTIFICATION_SUCCESS:
-                        case SpassFingerprint.STATUS_AUTHENTIFICATION_PASSWORD_SUCCESS:
-                            callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(crypto));
-                            break;
-                        case SpassFingerprint.STATUS_QUALITY_FAILED:
-                            break;
-                        case SpassFingerprint.STATUS_SENSOR_FAILED:
-                            break;
-                        case SpassFingerprint.STATUS_AUTHENTIFICATION_FAILED:
-                            callback.onAuthenticationFailed();
-                            break;
-                        case SpassFingerprint.STATUS_TIMEOUT_FAILED:
-                            break;
-                        case SpassFingerprint.STATUS_USER_CANCELLED:
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                @Override
-                public void onReady() {
-
-                }
-
-                @Override
-                public void onStarted() {
-
-                }
-
-                @Override
-                public void onCompleted() {
-
-                }
-            });
-        } catch (Exception e) {
-            Timber.w(e, "Fingerprint startIdentify error");
-            // TODO: 5/5/17 onFailure
-            return;
-        }
-
-
-        cancel.setOnCancelListener(() -> cancelFingerprintRequest(mSpassFingerprint));
-
+        Timber.d("startIdentify");
+        startIdentify();
+        cancel.setOnCancelListener(this::cancelIdentify);
     }
 
-    private void cancelFingerprintRequest(SpassFingerprint spassFingerprint) {
+    private SpassFingerprint.IdentifyListener mIdentifyListener = new SpassFingerprint.IdentifyListener() {
+        @Override
+        public void onFinished(int eventStatus) {
+            Timber.d("onFinished: %s", eventStatus);
+
+            FingerprintManagerCompat.AuthenticationCallback callback = null;
+            if (mCallbackFingerprint != null) {
+                callback = mCallbackFingerprint.get();
+            }
+
+            if (callback == null) {
+                return;
+            }
+
+            if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_SUCCESS) {
+                callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(null));
+            } else if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_PASSWORD_SUCCESS) {
+                callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(null));
+            } else if (eventStatus == SpassFingerprint.STATUS_OPERATION_DENIED) {
+                callback.onAuthenticationError(eventStatus, "Authentification is blocked because of fingerprint service internally.");
+            } else if (eventStatus == SpassFingerprint.STATUS_USER_CANCELLED) {
+                callback.onAuthenticationError(eventStatus, "User cancel this identify.");
+            } else if (eventStatus == SpassFingerprint.STATUS_TIMEOUT_FAILED) {
+                callback.onAuthenticationError(eventStatus, "The time for identify is finished.");
+            } else if (eventStatus == SpassFingerprint.STATUS_QUALITY_FAILED) {
+                callback.onAuthenticationError(eventStatus, " Authentification fail for identify.");
+                needRetryIdentify = true;
+            } else {
+                callback.onAuthenticationError(eventStatus, "Authentification fail for identify");
+                needRetryIdentify = true;
+            }
+        }
+
+        @Override
+        public void onReady() {
+            Timber.d("identify is ready");
+        }
+
+        @Override
+        public void onStarted() {
+            Timber.d("identify is Started");
+        }
+
+        @Override
+        public void onCompleted() {
+            Timber.d("identify is completed : needRetry %s", needRetryIdentify);
+            onReadyIdentify = false;
+            if (needRetryIdentify) {
+                needRetryIdentify = false;
+                mHandler.sendEmptyMessageDelayed(MSG_AUTH, 100);
+            }
+        }
+    };
+
+
+    private void startIdentify() {
+        if (onReadyIdentify) {
+            return;
+        }
+
+        onReadyIdentify = true;
+
         try {
-            spassFingerprint.cancelIdentify();
-        } catch (IllegalStateException t) {
-            Timber.d(t);
+            if (mSpassFingerprint != null) {
+                mSpassFingerprint.startIdentify(mIdentifyListener);
+            }
+        } catch (Exception e) {
+            onReadyIdentify = false;
+            Timber.w(e, "start Identify fail");
+            FingerprintManagerCompat.AuthenticationCallback callback = null;
+
+            if (mCallbackFingerprint != null) {
+                callback = mCallbackFingerprint.get();
+            }
+
+            if (callback != null) {
+                callback.onAuthenticationError(-1, "Fingerprint startIdentify error");
+            }
+        }
+    }
+
+
+    private void cancelIdentify() {
+        try {
+            Timber.d("cancel Identify");
+            onReadyIdentify = false;
+            needRetryIdentify = false;
+            mSpassFingerprint.cancelIdentify();
+        } catch (IllegalStateException ignore) {
         }
     }
 }

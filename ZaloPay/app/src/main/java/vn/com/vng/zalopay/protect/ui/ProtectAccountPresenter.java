@@ -7,12 +7,13 @@ import android.text.TextUtils;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
-import vn.com.vng.zalopay.authentication.FingerprintUtil;
-import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.authentication.Stage;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
@@ -30,9 +31,12 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     @Inject
     UserConfig mUserConfig;
 
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
+
     @Inject
     ProtectAccountPresenter() {
         mKeyTools = new KeyTools();
+        mFingerprintManagerCompat = FingerprintManagerCompat.from(AndroidApplication.instance());
     }
 
     void useFingerprintToAuthenticate(boolean enable) {
@@ -76,7 +80,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             return;
         }
 
-        if (!FingerprintUtil.isHardwarePresent(mContext)) {
+        if (!mFingerprintManagerCompat.isHardwareDetected()) {
             mView.hideFingerprintLayout();
         }
 
@@ -87,20 +91,20 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         String password = mUserConfig.getEncryptedPassword();
         Timber.d("onViewCreated: password [%s] ", password);
 
-        boolean isFingerprintAuthAvailable = FingerprintUtil.isFingerprintAuthAvailable(mContext);
+        boolean isFingerprintAuthAvailable = mFingerprintManagerCompat.isFingerprintAvailable();
 
         mView.setCheckedFingerprint(!TextUtils.isEmpty(password) & isFingerprintAuthAvailable);
     }
 
     private void enableFingerprint() {
-        if (!FingerprintUtil.isKeyguardSecure(mContext)) {
+        if (!mFingerprintManagerCompat.isKeyguardSecure()) {
             // user hasn't set up a fingerprint or lock screen.
             mView.showError(mContext.getString(R.string.tutorial_keyguard_secure_disable));
             mView.setCheckedFingerprint(false);
             return;
         }
 
-        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
+        if (!mFingerprintManagerCompat.isFingerprintAvailable()) {
             mView.setCheckedFingerprint(false);
             mView.showError(mContext.getString(R.string.tutorial_fingerprint_unavailable));
             return;
@@ -155,7 +159,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         });
     }
 
-    void setUseProtectAccount(boolean enable) {
+    private void setUseProtectAccount(boolean enable) {
         mUserConfig.useProtectAccount(enable);
     }
 

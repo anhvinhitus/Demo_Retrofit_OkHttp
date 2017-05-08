@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -38,19 +39,22 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private AuthenticationProvider mAuthenticationProvider;
 
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
+
     @Inject
     AuthenticationPresenter(AccountStore.Repository accountRepository,
                             Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
         mKeyTools = new KeyTools();
+        mFingerprintManagerCompat = FingerprintManagerCompat.from(applicationContext);
     }
 
 
     void onViewCreated() {
         updateStage();
-        if (!FingerprintUtil.isKeyguardSecure(mApplicationContext)
-                || !FingerprintUtil.isFingerprintAuthAvailable(mApplicationContext)
+        if (!mFingerprintManagerCompat.isKeyguardSecure()
+                || !mFingerprintManagerCompat.isFingerprintAvailable()
                 || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {

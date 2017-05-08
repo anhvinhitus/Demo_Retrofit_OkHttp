@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -52,6 +54,19 @@ public final class FingerprintManagerCompat {
 
     public boolean isFingerprintAvailable() {
         return isHardwareDetected() && hasEnrolledFingerprints();
+    }
+
+    public boolean isKeyguardSecure() {
+        KeyguardManager keyguardManager = getKeyguardManager(mContext);
+        return keyguardManager != null && keyguardManager.isKeyguardSecure();
+    }
+
+    private static KeyguardManager getKeyguardManager(Context context) {
+        try {
+            return (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

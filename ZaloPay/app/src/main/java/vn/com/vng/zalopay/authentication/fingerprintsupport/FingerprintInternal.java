@@ -26,7 +26,7 @@ class FingerprintInternal {
             return;
         }
 
-        if (Build.VERSION.SDK_INT < 17) {
+        if (Build.VERSION.SDK_INT < 18) {
             IMPL = new LegacyFingerprintManagerCompatImpl();
             return;
         }

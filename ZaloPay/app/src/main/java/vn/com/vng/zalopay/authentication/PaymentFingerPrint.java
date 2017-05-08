@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
@@ -20,14 +21,15 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
 public class PaymentFingerPrint implements IPaymentFingerPrint {
 
-    private final Context mContext;
     private final KeyTools mKeyTools;
     private final Navigator mNavigator;
 
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
+
     public PaymentFingerPrint(AndroidApplication context) {
-        mContext = context;
         mKeyTools = new KeyTools();
         mNavigator = context.getAppComponent().navigator();
+        mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
     }
 
     /**
@@ -43,7 +45,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
             return null;
         }
 
-        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
+        if (!mFingerprintManagerCompat.isFingerprintAvailable()) {
             Timber.d("Fingerprint not Available");
             return null;
         }
