@@ -164,6 +164,7 @@ public class ZPEvents {
     public static final int API_UM_LISTCARDINFOFORCLIENT = 2047;
     public static final int API_NOTIFICATION_PING_PONG = 2048;
     public static final int API_V001_TPE_SUBMITMAPACCOUNT = 2049;
+    public static final int API_V001_ZP_UPLOAD_CLIENTLOGS = 2050;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -288,7 +289,6 @@ public class ZPEvents {
     public static final int TRANSACTIONLOG_SLIDEOPENMENU = 2904;
     public static final int TRANSACTIONLOG_FILTER_TOUCHOUTSIDE = 2905;
     public static final int TRANSACTIONLOG_FILTER_DONE = 2906;
-    public static final int TRANSACTIONLOG_FILTER_RESET = 2907;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -612,6 +612,8 @@ public class ZPEvents {
                 return "api_notification_ping_pong";
             case API_V001_TPE_SUBMITMAPACCOUNT:
                 return "api_v001_tpe_submitmapaccount";
+            case API_V001_ZP_UPLOAD_CLIENTLOGS:
+                return "api_v001_zp_upload_clientlogs";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -860,8 +862,6 @@ public class ZPEvents {
                 return "TransactionLog_Filter_TouchOutside";
             case TRANSACTIONLOG_FILTER_DONE:
                 return "TransactionLog_Filter_Done";
-            case TRANSACTIONLOG_FILTER_RESET:
-                return "TransactionLog_Filter_Reset";
             default:
                 return "DefaultAction";
         }
@@ -1189,6 +1189,8 @@ public class ZPEvents {
                 return "Timing Notification";
             case API_V001_TPE_SUBMITMAPACCOUNT:
                 return "Timing TPE";
+            case API_V001_ZP_UPLOAD_CLIENTLOGS:
+                return "Timing TPE";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -1436,8 +1438,6 @@ public class ZPEvents {
             case TRANSACTIONLOG_FILTER_TOUCHOUTSIDE:
                 return "Transaction Logs";
             case TRANSACTIONLOG_FILTER_DONE:
-                return "Transaction Logs";
-            case TRANSACTIONLOG_FILTER_RESET:
                 return "Transaction Logs";
             default:
                 return "DefaultCategory";

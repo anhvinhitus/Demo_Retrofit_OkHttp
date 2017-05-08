@@ -159,6 +159,7 @@ EventId,Category,Action
 2047,Timing UM,api_um_listcardinfoforclient
 2048,Timing Notification,api_notification_ping_pong
 2049,Timing TPE,api_v001_tpe_submitmapaccount
+2050,Timing TPE,api_v001_zp_upload_clientlogs
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
@@ -283,4 +284,3 @@ EventId,Category,Action
 2904,Transaction Logs,TransactionLog_SlideOpenMenu
 2905,Transaction Logs,TransactionLog_Filter_TouchOutside
 2906,Transaction Logs,TransactionLog_Filter_Done
-2907,Transaction Logs,TransactionLog_Filter_Reset
