@@ -43,7 +43,7 @@ class ReprintInternal {
         Timber.d("initialize: IMPL SamSung %s", IMPL);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Api23FingerprintManagerCompatImpl fingerprintManagerCompat = new Api23FingerprintManagerCompatImpl();
+            MarshmallowFingerprintManagerCompatImpl fingerprintManagerCompat = new MarshmallowFingerprintManagerCompatImpl();
             if (fingerprintManagerCompat.isHardwareDetected(context)) {
                 IMPL = fingerprintManagerCompat;
             }
@@ -85,7 +85,7 @@ class ReprintInternal {
   /*  static {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 23) {
-            IMPL = new Api23FingerprintManagerCompatImpl();
+            IMPL = new MarshmallowFingerprintManagerCompatImpl();
         }
 
         if (IMPL == null || !IMPL.isHardwareDetected(AndroidApplication.instance())) {

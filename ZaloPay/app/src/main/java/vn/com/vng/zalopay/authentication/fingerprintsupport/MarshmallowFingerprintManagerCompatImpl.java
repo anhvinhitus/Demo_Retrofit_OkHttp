@@ -12,9 +12,9 @@ import android.support.v4.os.CancellationSignal;
  * *
  */
 
-final class Api23FingerprintManagerCompatImpl implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
+final class MarshmallowFingerprintManagerCompatImpl implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
 
-    Api23FingerprintManagerCompatImpl() {
+    MarshmallowFingerprintManagerCompatImpl() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
