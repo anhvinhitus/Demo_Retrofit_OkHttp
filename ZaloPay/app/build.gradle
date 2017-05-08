@@ -464,6 +464,8 @@ dependencies {
     }
 //    compile project(':zalopay.feedback')
     compile project(':zalopay.sdk')
+
+    compile project(':recyclerview-swipe')
 }
 
 apply plugin: 'com.google.gms.google-services'
