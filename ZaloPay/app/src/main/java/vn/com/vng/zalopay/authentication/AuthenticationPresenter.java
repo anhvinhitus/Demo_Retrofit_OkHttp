@@ -179,9 +179,10 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
         FingerprintException fingerException = (FingerprintException) e;
 
-        boolean notRetry = (fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_CANCELED
+        boolean notRetry = (fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_LOCKOUT
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_CANCELED
+                || fingerException.mErrorCode == FingerprintManagerCompat.STATUS_QUALITY_FAILED
                 || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE);
 
         mView.showFingerprintError(e.getMessage(), !notRetry);

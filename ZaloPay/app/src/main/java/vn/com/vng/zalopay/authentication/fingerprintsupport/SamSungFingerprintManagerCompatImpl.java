@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
 import android.content.Context;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.os.CancellationSignal;
@@ -120,16 +121,16 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
             } else if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_PASSWORD_SUCCESS) {
                 callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(null));
             } else if (eventStatus == SpassFingerprint.STATUS_OPERATION_DENIED) {
-                callback.onAuthenticationError(eventStatus, "Authentification is blocked because of fingerprint service internally.");
+                callback.onAuthenticationError(FingerprintManagerCompat.STATUS_OPERATION_DENIED, "Authentification is blocked because of fingerprint service internally.");
             } else if (eventStatus == SpassFingerprint.STATUS_USER_CANCELLED) {
-                callback.onAuthenticationError(eventStatus, "User cancel this identify.");
+                callback.onAuthenticationError(FingerprintManagerCompat.FINGERPRINT_ERROR_CANCELED, "User cancel this identify.");
             } else if (eventStatus == SpassFingerprint.STATUS_TIMEOUT_FAILED) {
-                callback.onAuthenticationError(eventStatus, "The time for identify is finished.");
+                callback.onAuthenticationError(FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT, "The time for identify is finished.");
             } else if (eventStatus == SpassFingerprint.STATUS_QUALITY_FAILED) {
-                callback.onAuthenticationError(eventStatus, " Authentification fail for identify.");
+                callback.onAuthenticationHelp(FingerprintManagerCompat.STATUS_QUALITY_FAILED,"Authentification fail for identify");
                 needRetryIdentify = true;
             } else {
-                callback.onAuthenticationError(eventStatus, "Authentification fail for identify");
+                callback.onAuthenticationFailed();
                 needRetryIdentify = true;
             }
         }

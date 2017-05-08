@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,17 @@ import javax.crypto.Mac;
  */
 
 public final class FingerprintManagerCompat {
+
+    public static final int FINGERPRINT_ERROR_HW_UNAVAILABLE = 1;
+    public static final int FINGERPRINT_ERROR_TIMEOUT = 3;
+    public static final int FINGERPRINT_ERROR_CANCELED = 5;
+    public static final int FINGERPRINT_ERROR_LOCKOUT = 7;
+
+    public static final int FINGERPRINT_ACQUIRED_TOO_SLOW = 4;
+    public static final int FINGERPRINT_ACQUIRED_TOO_FAST = 5;
+    public static final int STATUS_QUALITY_FAILED = 12;
+
+    public static final int STATUS_OPERATION_DENIED = 51;
 
     private final Context mContext;
 
