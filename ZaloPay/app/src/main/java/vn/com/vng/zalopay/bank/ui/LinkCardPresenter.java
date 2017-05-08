@@ -58,11 +58,36 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
     void getListCard() {
         List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        /*List<DMappedCard> mapCardLis = new ArrayList<>();
+        DMappedCard vtbCard = new DMappedCard();
+        vtbCard.bankcode = CardType.PVTB;
+        vtbCard.first6cardno = "970415";
+        vtbCard.last4cardno = "3538";
+        mapCardLis.add(vtbCard);
+
+        DMappedCard vcbCard = new DMappedCard();
+        vcbCard.bankcode = CardType.PVCB;
+        vcbCard.first6cardno = "686868";
+        vcbCard.last4cardno = "1231";
+        mapCardLis.add(vcbCard);
+
+        DMappedCard sCard = new DMappedCard();
+        sCard.bankcode = CardType.PSCB;
+        sCard.first6cardno = "970403";
+        sCard.last4cardno = "1234";
+        mapCardLis.add(sCard);
+
+        DMappedCard sgCard = new DMappedCard();
+        sgCard.bankcode = CardType.PSGCB;
+        sgCard.first6cardno = "157979";
+        sgCard.last4cardno = "9999";
+        mapCardLis.add(sgCard);*/
         mView.setData(transformBankCard(mapCardLis));
     }
 
     @Override
     public void resume() {
+
     }
 
     void removeLinkCard(BankCard bankCard) {
