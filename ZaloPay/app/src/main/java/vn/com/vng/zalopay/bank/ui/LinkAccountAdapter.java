@@ -87,6 +87,9 @@ class LinkAccountAdapter extends AbstractSwipeMenuRecyclerAdapter<BankAccount, R
             return;
         }
         ((ViewHolder) holder).changeBackgroundCorner(false);
+
+        params.setMargins(0, margin, 0, marginBottom);
+        swipeRightMenuView.setLayoutParams(params);
     }
 
     @Override

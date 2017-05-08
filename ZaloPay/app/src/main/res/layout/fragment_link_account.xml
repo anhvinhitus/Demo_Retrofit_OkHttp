@@ -25,7 +25,8 @@
             android:layout_weight="1.0"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:scrollbars="none" />
+            android:scrollbars="none"
+            android:scrollbarStyle="outsideOverlay" />
 
         <LinearLayout
             android:id="@+id/btn_add_more"

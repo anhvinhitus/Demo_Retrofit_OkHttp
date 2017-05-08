@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,12 +11,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,8 +126,11 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
             }
         }
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setSwipeMenuCreator(mSwipeMenuCreator);
-        mRecyclerView.setSwipeMenuItemClickListener(mMenuItemClickListener);
+//        initBankSupportFragment();
+
+        mRecyclerView.setSwipeMenuCreator(swipeMenuCreator);
+        mRecyclerView.setSwipeMenuItemClickListener(menuItemClickListener);
+
         getLinkedBankAccount();
     }
 
@@ -301,7 +308,20 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         super.onDestroy();
     }
 
-    private OnSwipeMenuItemClickListener mMenuItemClickListener = this::showConfirmRemoveSaveCard;
+    private SwipeMenuCreator swipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
+        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
+                .setBackgroundDrawable(R.color.red)
+                .setText(getString(R.string.delete))
+                .setTextColor(Color.WHITE)
+                .setWidth(width)
+                .setHeight(height);
+        swipeRightMenu.addMenuItem(deleteItem);
+    };
+
+    private OnSwipeMenuItemClickListener menuItemClickListener = this::showConfirmRemoveSaveCard;
 
     private void showConfirmRemoveSaveCard(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
         if (mAdapter == null) {
