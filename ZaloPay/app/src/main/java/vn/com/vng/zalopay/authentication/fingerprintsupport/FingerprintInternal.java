@@ -17,7 +17,7 @@ import timber.log.Timber;
  * *
  */
 
-class ReprintInternal {
+class FingerprintInternal {
 
     private static FingerprintManagerCompat.FingerprintManagerCompatImpl IMPL;
 

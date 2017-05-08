@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +29,7 @@ public final class FingerprintManagerCompat {
 
     private FingerprintManagerCompat(Context context) {
         mContext = context.getApplicationContext();
-        ReprintInternal.initialize(mContext);
+        FingerprintInternal.initialize(mContext);
     }
 
     /**
@@ -39,7 +38,7 @@ public final class FingerprintManagerCompat {
      * @return true if at least one fingerprint is enrolled, false otherwise
      */
     public boolean hasEnrolledFingerprints() {
-        return ReprintInternal.hasEnrolledFingerprints(mContext);
+        return FingerprintInternal.hasEnrolledFingerprints(mContext);
     }
 
     /**
@@ -48,7 +47,7 @@ public final class FingerprintManagerCompat {
      * @return true if hardware is present and functional, false otherwise.
      */
     public boolean isHardwareDetected() {
-        return ReprintInternal.isHardwareDetected(mContext);
+        return FingerprintInternal.isHardwareDetected(mContext);
     }
 
     public boolean isFingerprintAvailable() {
@@ -72,7 +71,7 @@ public final class FingerprintManagerCompat {
     public void authenticate(@Nullable FingerprintManagerCompat.CryptoObject crypto, int flags,
                              @Nullable CancellationSignal cancel, @NonNull FingerprintManagerCompat.AuthenticationCallback callback,
                              @Nullable Handler handler) {
-        ReprintInternal.authenticate(mContext, crypto, flags, cancel, callback, handler);
+        FingerprintInternal.authenticate(mContext, crypto, flags, cancel, callback, handler);
     }
 
     /**
