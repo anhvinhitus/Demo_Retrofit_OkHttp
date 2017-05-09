@@ -109,6 +109,11 @@ public class PaymentWrapper {
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
         User mUser = getUserComponent().currentUser();
+        if (mUser == null) {
+            Timber.i("payWithOrder: current user is null");
+            responseListener.onParameterError("Thông tin người dùng không hợp lệ");
+            return;
+        }
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
         callPayAPI(activity, paymentInfo, transactionType);
@@ -124,7 +129,13 @@ public class PaymentWrapper {
         }
         Timber.d("payWithOrder: Order is valid");
 
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        User user = getUserComponent().currentUser();
+
+        if (user == null) {
+            Timber.i("payWithOrder: current user is null");
+            responseListener.onParameterError("Thông tin người dùng không hợp lệ");
+            return;
+        }
 
         if (!user.hasZaloPayId()) {
             Timber.i("payWithOrder: zaloPayId is invalid");
@@ -163,7 +174,14 @@ public class PaymentWrapper {
     }
 
     public void linkCard(Activity activity) {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        User user = getUserComponent().currentUser();
+        
+        if (user == null) {
+            Timber.i("payWithOrder: current user is null");
+            responseListener.onParameterError("Thông tin người dùng không hợp lệ");
+            return;
+        }
+
         if (!user.hasZaloPayId()) {
             Timber.i("payWithOrder: zaloPayId is invalid");
             responseListener.onParameterError("uid");
@@ -191,7 +209,14 @@ public class PaymentWrapper {
     }
 
     private void callManagerAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        User user = getUserComponent().currentUser();
+
+        if (user == null) {
+            Timber.i("payWithOrder: current user is null");
+            responseListener.onParameterError("Thông tin người dùng không hợp lệ");
+            return;
+        }
+
         if (!user.hasZaloPayId()) {
             Timber.i("Manager link account, zaloPayId is invalid");
             responseListener.onParameterError("uid");
