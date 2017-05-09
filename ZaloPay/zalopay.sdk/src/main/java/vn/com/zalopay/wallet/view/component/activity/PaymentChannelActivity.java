@@ -292,6 +292,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         updateFontCardNumber();
         if (!mIsStart && ( getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
+                setConfirmTitle();
                 getAdapter().moveToConfirmScreen();
                 mIsStart = true;
                 Log.d(this, "moved to confirm screen");
@@ -683,12 +684,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             mPaymentPassword.reset();
         }
 
-        mPaymentPassword.setOnEnterPinListener(new PaymentPassword.onEnterPinListener() {
-            @Override
-            public void onEnterPinComplete() {
-                if (getAdapter() != null)
-                    getAdapter().onClickSubmission();
-            }
+        mPaymentPassword.setOnEnterPinListener(() -> {
+            if (getAdapter() != null)
+                getAdapter().onClickSubmission();
         });
 
         mPaymentPassword.showSoftKeyBoard();

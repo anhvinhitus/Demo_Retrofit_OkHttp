@@ -13,6 +13,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
+import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -108,11 +109,11 @@ public class MiniPmcTransType implements Parcelable {
         isAllowByAmountAndFee = in.readByte() != 0;
     }
 
-    public static String getPmcKey(int pPmcId) {
+    public static String getPmcKey(long pAppId, String pTranstype, int pPmcId) {
         StringBuilder transtypePmcKey = new StringBuilder();
-        transtypePmcKey.append(GlobalData.appID)
+        transtypePmcKey.append(pAppId)
                 .append(Constants.UNDERLINE)
-                .append(GlobalData.getTransactionType().toString())
+                .append(pTranstype)
                 .append(Constants.UNDERLINE)
                 .append(pPmcId);
         return transtypePmcKey.toString();

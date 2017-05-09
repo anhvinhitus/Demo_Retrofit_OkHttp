@@ -339,6 +339,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * fill channel to listview
      */
     private void populateListView() {
+        Log.d(this,"populate channel list to view ",baseChannelInjector.getChannelList());
         mChannelListViewAdapter = new GatewayChannelListViewAdapter(this, RS.getLayout(RS.layout.listview__item__channel__gateway), baseChannelInjector.getChannelList());
         mChannelListView.setAdapter(mChannelListViewAdapter);
         mChannelListView.setOnItemClickListener(mChannelItemClick);

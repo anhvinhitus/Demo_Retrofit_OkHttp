@@ -558,7 +558,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public String getPmcConfigByPmcID(String pPmcID, String pBankCode) {
         StringBuilder channelIDkey = new StringBuilder();
-        channelIDkey.append(MiniPmcTransType.getPmcKey(Integer.parseInt(pPmcID)));
+        channelIDkey.append(MiniPmcTransType.getPmcKey(GlobalData.appID, GlobalData.getTransactionType().toString(), Integer.parseInt(pPmcID)));
         if (!TextUtils.isEmpty(pBankCode)) {
             channelIDkey.append(Constants.UNDERLINE).append(pBankCode);
         }
@@ -612,8 +612,8 @@ public class SharedPreferencesManager extends SingletonBase {
         return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_credit_card), pBankCode);
     }
 
-    public String getZaloPayChannelConfig() {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_zalopay), null);
+    public String getZaloPayChannelConfig(String pBankCode) {
+        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_zalopay), pBankCode);
     }
 
     /****

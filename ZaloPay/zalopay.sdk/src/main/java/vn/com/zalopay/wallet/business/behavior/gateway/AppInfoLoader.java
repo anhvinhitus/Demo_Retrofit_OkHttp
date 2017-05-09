@@ -140,7 +140,7 @@ public class AppInfoLoader extends SingletonBase {
      * call api get app info,used for app
      */
     public void loadAppInfoForApp() {
-        BaseRequest getAppInfoTask = new GetAppInfo(String.valueOf(appId), zaloUserId, accessToken, mLoadAppInfoListener);
+        BaseRequest getAppInfoTask = new GetAppInfo(appId, zaloUserId, accessToken, mLoadAppInfoListener);
         getAppInfoTask.makeRequest();
     }
 

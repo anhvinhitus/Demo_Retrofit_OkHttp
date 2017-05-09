@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.utils.Log;
  */
 public class GetAppInfo extends BaseRequest<AppInfoResponse> {
     private ILoadAppInfoListener mLoadAppInfoListener;
-    private String appID;
+    private long appID;
     private String zaloUserId;
     private String accessToken;
 
@@ -39,7 +39,7 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
         super();
         mLoadAppInfoListener = pListener;
         if (GlobalData.getPaymentInfo() != null && GlobalData.getPaymentInfo().userInfo != null && GlobalData.getPaymentInfo().userInfo.isUserInfoValid()) {
-            appID = String.valueOf(GlobalData.getPaymentInfo().appID);
+            appID = GlobalData.getPaymentInfo().appID;
             zaloUserId = GlobalData.getPaymentInfo().userInfo.zaloPayUserId;
             accessToken = GlobalData.getPaymentInfo().userInfo.accessToken;
         } else {
@@ -53,7 +53,7 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
      * this's used by app
      * @param pListener
      */
-    public GetAppInfo(String pAppId, String pZaloUserId, String pAccessToken, ILoadAppInfoListener pListener) {
+    public GetAppInfo(long pAppId, String pZaloUserId, String pAccessToken, ILoadAppInfoListener pListener) {
         super();
         mLoadAppInfoListener = pListener;
         appID = pAppId;
@@ -80,15 +80,14 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
             return;
         }
         long expiredTime = getResponse().expiredtime + System.currentTimeMillis();
-        SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(appID, expiredTime);
+        SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(appID), expiredTime);
         if (isNeedToUpdateAppInfo(getResponse())) {
-            SharedPreferencesManager.getInstance().setCheckSumAppChannel(appID, getResponse().checksum);
+            SharedPreferencesManager.getInstance().setCheckSumAppChannel(String.valueOf(appID), getResponse().checksum);
             if (getResponse().pmctranstypes == null || getResponse().pmctranstypes.size() <= 0) {
                 getResponse().returncode = -1;
                 getResponse().returnmessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
             } else {
                 long minValue, maxValue;
-                int checkPmc = -1;
                 for (int transtype : getResponse().pmctranstypes.keySet()) {
                     List<MiniPmcTransType> miniPmcTransTypeList = getResponse().pmctranstypes.get(transtype);
                     minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
@@ -100,19 +99,13 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
                             .append(Constants.UNDERLINE)
                             .append(transtype);
                     for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
-                        String pmcKey = miniPmcTransType.getPmcKey(miniPmcTransType.pmcid);
+                        String pmcKey = miniPmcTransType.getPmcKey(appID, String.valueOf(transtype), miniPmcTransType.pmcid);
                         //save default pmc for new atm/cc
-                        if (checkPmc != miniPmcTransType.pmcid) {
+                        if (!transtypePmcIdList.contains(pmcKey)) {
                             transtypePmcIdList.add(pmcKey);
                             SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
                             Log.d(this, "save channel to cache key " + pmcKey, miniPmcTransType);
                         }
-                        checkPmc = miniPmcTransType.pmcid;
-
-                        StringBuilder pmcId = new StringBuilder();
-                        pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
-                        SharedPreferencesManager.getInstance().setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
-                        Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
                         if (!miniPmcTransType.isEnable()) {
                             continue;
                         }
@@ -123,6 +116,13 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
                         if (miniPmcTransType.maxvalue > maxValue) {
                             maxValue = miniPmcTransType.maxvalue;
                         }
+                        if (TextUtils.isEmpty(miniPmcTransType.bankcode)) {
+                            continue;
+                        }
+                        StringBuilder pmcId = new StringBuilder();
+                        pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
+                        SharedPreferencesManager.getInstance().setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
+                        Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
                     }
                     //set ids channel list
                     SharedPreferencesManager.getInstance().setPmcConfigList(transtypePmcKey.toString(), transtypePmcIdList);
@@ -185,11 +185,11 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
     protected boolean doParams() {
         String checkSum = null;
         try {
-            checkSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(appID);
+            checkSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(String.valueOf(appID));
         } catch (Exception e) {
             Log.e(this, e);
         }
-        DataParameter.prepareGetAppInfoParams(zaloUserId, appID, accessToken, checkSum, getDataParams());
+        DataParameter.prepareGetAppInfoParams(zaloUserId, String.valueOf(appID), accessToken, checkSum, getDataParams());
         return true;
     }
 }
