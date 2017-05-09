@@ -230,6 +230,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         mAdapter = AdapterFactory.produce(this);
 =======
         MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        Log.d(this,"start payment channel", miniPmcTransType);
         if (miniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -278,7 +279,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         Log.d(this, "onStart");
         updateFontCardNumber();
-        if (!mIsStart && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
+        if (!mIsStart && ( getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
                 getAdapter().moveToConfirmScreen();
                 Log.d(this, "moved to confirm screen");
@@ -286,6 +287,19 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 Log.e(this, e);
             }
         }
+<<<<<<< HEAD
+=======
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(this, "onResume");
+        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
+            showKeyBoardForPin();
+        }
+        //showKeyBoardOnFocusingViewAgain();
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         //this is link account and the first call
         if (GlobalData.isBankAccountLink() && !mIsStart) {
             try {
@@ -369,9 +383,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+<<<<<<< HEAD
 
         Log.d(this, "==== onRestart ====");
 
+=======
+        Log.d(this, "onRestart");
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         showKeyBoardOnFocusingViewAgain();
     }
 

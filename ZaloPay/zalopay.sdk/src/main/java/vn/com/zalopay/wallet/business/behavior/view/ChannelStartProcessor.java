@@ -17,6 +17,11 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
+<<<<<<< HEAD
+=======
+import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.ZPWUtils;
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -78,6 +83,10 @@ public class ChannelStartProcessor extends SingletonBase {
      * start payment channel
      */
     public void startGateWay() {
+<<<<<<< HEAD
+=======
+        Log.d(this, "user selected channel for payment", mChannel);
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         // Lost connection,show alert dialog
         if (getActivity() != null && !ConnectionUtil.isOnline(getActivity())) {
             if (getActivity() != null && !getActivity().isFinishing())
@@ -99,6 +108,10 @@ public class ChannelStartProcessor extends SingletonBase {
             }
 
             //validate in maptable
+<<<<<<< HEAD
+=======
+            Log.d(this, "table map payment", GlobalData.getUserProfileList());
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
             int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
             if (iCheck == Constants.LEVELMAP_INVALID) {
                 getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
@@ -139,6 +152,7 @@ public class ChannelStartProcessor extends SingletonBase {
             }
             //reload bank account
             if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+<<<<<<< HEAD
                 try {
                     BankLoader.loadBankList(mLoadBankListListener);
                 } catch (Exception e) {
@@ -146,6 +160,12 @@ public class ChannelStartProcessor extends SingletonBase {
 
                     Log.e(this, e);
                 }
+=======
+                BankLoader.loadBankList(mLoadBankListListener);
+            } else if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
             } else {
                 startChannel();
             }

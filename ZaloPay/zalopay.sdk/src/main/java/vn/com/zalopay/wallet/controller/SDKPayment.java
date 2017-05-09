@@ -126,8 +126,14 @@ public class SDKPayment {
                 }
             }
         }
+<<<<<<< HEAD
         Log.d("pay", "payment transaction type " + pTransactionType);
         Log.d("pay", "payment info " + GsonUtils.toJsonString(pPaymentInfo));
+=======
+
+        Log.d("pay", "info payment", info);
+
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         //check where context is end?
         try {
             GlobalData.getTransactionType();

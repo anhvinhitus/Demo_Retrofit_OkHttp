@@ -43,7 +43,7 @@ public class ActivityRendering {
         List<DKeyBoardConfig> keyBoardConfigs = mResourceManager.getKeyBoardConfig();
         if (keyBoardConfigs != null && keyBoardConfigs.size() > 0 && mOwnerActivity != null) {
             for (DKeyBoardConfig keyboard : keyBoardConfigs) {
-                Log.d("renderKeyBoard", "preparing to set keyboard " + (keyboard != null ? GsonUtils.toJsonString(keyboard) : "NULL"));
+                Log.d("renderKeyBoard", "preparing to set keyboard ", keyboard);
 
                 /***
                  * "keyboard":[
@@ -62,14 +62,24 @@ public class ActivityRendering {
                  */
                 //set keyboard for some view
                 if (TextUtils.isEmpty(keyboard.bankcode)) {
+<<<<<<< HEAD
                     mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for view" + (keyboard != null ? GsonUtils.toJsonString(keyboard) : "NULL"));
+=======
+                    mOwnerActivity.setKeyBoard(keyboard.view, EKeyBoardType.fromString(keyboard.type));
+                    Log.d("renderKeyBoard", "set keyboard for view", keyboard);
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
                     continue;
                 }
                 //set keyboard by bank
                 if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
+<<<<<<< HEAD
                     mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for bank" + (BankCardCheck.getInstance().getDetectBankCode() + "-" + (keyboard != null ? GsonUtils.toJsonString(keyboard) : "NULL")));
+=======
+                    mOwnerActivity.setKeyBoard(keyboard.view, EKeyBoardType.fromString(keyboard.type));
+                    Log.d("renderKeyBoard", "set keyboard for bank" + BankCardCheck.getInstance().getDetectBankCode(),keyboard);
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
                 }
             }
         }

@@ -189,7 +189,7 @@ public abstract class AdapterBase {
         public void onError(FPError pError) {
             dismissDialogFingerPrint();
             //has an error in authen fingerprint
-            Log.d(this, "===onError===" + GsonUtils.toJsonString(pError));
+            Log.d(this, "onError", pError);
             showDialogWithCallBack(GlobalData.getStringResource(RS.string.zpw_error_authen_pin),
                     GlobalData.getStringResource(RS.string.dialog_continue_button), AdapterBase.this::moveToRequirePin);
         }
@@ -475,8 +475,7 @@ public abstract class AdapterBase {
      */
     protected void startSubmitTransaction() {
         if (GlobalData.getPaymentInfo() == null || !GlobalData.getPaymentInfo().isPaymentInfoValid()) {
-            Log.e(this, "===startSubmitTransaction===" + GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
-
+            Log.d(this, "startSubmitTransaction", GlobalData.getPaymentInfo());
             if (GlobalData.getPaymentResult() != null) {
                 GlobalData.setResultInvalidInput();
             }
@@ -944,13 +943,13 @@ public abstract class AdapterBase {
             //fail transaction
             if (isTransactionFail()) {
                 terminate(null, true);
-                Log.d(this, "payment result Fail" + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
+                Log.d(this, "payment result fail", GlobalData.getPaymentResult());
                 return;
             }
             //pay successfully
             if (isTransactionSuccess()) {
                 finishTransaction(null);
-                Log.d(this, "payment result Success" + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
+                Log.d(this, "payment result Success", GlobalData.getPaymentResult());
                 return;
             }
             //confirm transaction pharse
@@ -1368,7 +1367,7 @@ public abstract class AdapterBase {
     protected boolean needUserPasswordPayment() {
         Log.d(this, "start check require for using password");
         MiniPmcTransType pmcTransType = getConfig();
-        Log.d(this, "pmc transype for checking require pin "+ GsonUtils.toJsonString(pmcTransType));
+        Log.d(this, "pmc transype for checking require pin", pmcTransType);
         if (pmcTransType == null) {
             mIsShowDialog = true;
             terminate(GlobalData.getStringResource(RS.string.sdk_config_invalid), false);

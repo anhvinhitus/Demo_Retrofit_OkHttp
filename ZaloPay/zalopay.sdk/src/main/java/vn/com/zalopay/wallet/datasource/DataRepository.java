@@ -102,6 +102,16 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         releaseLock();
     }
 
+<<<<<<< HEAD
+=======
+    protected boolean needRetry(Throwable t) {
+        Log.d(this, t);
+        verifyException(t);
+        return true;
+    }
+
+
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
     protected boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
             SdkNetworkEventMessage networkEventMessage = new SdkNetworkEventMessage();

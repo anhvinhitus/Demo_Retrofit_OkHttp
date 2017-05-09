@@ -196,11 +196,21 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
         getAdapter().getActivity().runOnUiThread(() -> {
             DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+<<<<<<< HEAD
             Log.d("=====onJsPaymentResult=====", GsonUtils.toJsonString(scriptOutput));
             EEventType eventType = convertPageIdToEvent(mEventID);
             BaseResponse response = genResponse(eventType, scriptOutput);
             if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                 mIsFirst = false; // Auto hit at first step
+=======
+            Log.d("onJsPaymentResult", scriptOutput);
+            EEventType eventType = convertPageIdToEvent(mEventID);
+            BaseResponse response = genResponse(eventType, scriptOutput);
+
+            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                // Auto hit at first step
+                mIsFirst = false;
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
                 hit();
             } else {
                 if (eventType == EEventType.ON_REQUIRE_RENDER) {
@@ -209,6 +219,12 @@ public class BankWebViewClient extends PaymentWebViewClient {
                     getAdapter().onEvent(eventType, response, mPageCode, mEventID);
                 }
             }
+<<<<<<< HEAD
+=======
+
+        });
+    }
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
 
         });
     }

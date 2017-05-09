@@ -509,7 +509,7 @@ public class AdapterLinkAcc extends AdapterBase {
             List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(GlobalData.getPaymentInfo().linkAccInfo.getBankCode());
             if (patternList != null && patternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
-                    Log.d(this, "checking pattern " + GsonUtils.toJsonString(otpReceiverPattern));
+                    Log.d(this, "checking pattern", otpReceiverPattern);
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                         int start;
                         pOtp = pOtp.trim();
@@ -1101,7 +1101,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 runnableWaitingNotifyUnLinkAcc.run();
             } else {
-                Log.d(this, "notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
+                Log.d(this, "notification=", mNotification);
                 hideLoadingDialog();
             }
         }

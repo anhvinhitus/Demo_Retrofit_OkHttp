@@ -105,14 +105,14 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
                         if (checkPmc != miniPmcTransType.pmcid) {
                             transtypePmcIdList.add(pmcKey);
                             SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
-                            Log.d(this, "save channel to cache key " + pmcKey + " " + GsonUtils.toJsonString(miniPmcTransType));
+                            Log.d(this, "save channel to cache key " + pmcKey, miniPmcTransType);
                         }
                         checkPmc = miniPmcTransType.pmcid;
 
                         StringBuilder pmcId = new StringBuilder();
                         pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
                         SharedPreferencesManager.getInstance().setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
-                        Log.d(this, "save channel to cache key " + pmcId.toString() + " " + GsonUtils.toJsonString(miniPmcTransType));
+                        Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
                         if (!miniPmcTransType.isEnable()) {
                             continue;
                         }

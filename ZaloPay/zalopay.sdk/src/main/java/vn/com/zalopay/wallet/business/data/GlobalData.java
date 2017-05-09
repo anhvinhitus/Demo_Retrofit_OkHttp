@@ -449,7 +449,7 @@ public class GlobalData {
     }
 
     public static void setUserInfo(UserInfo pUserInfo) {
-        Log.d("GlobalData", "setUserInfo=" + GsonUtils.toJsonString(pUserInfo));
+        Log.d("GlobalData", "setUserInfo" + pUserInfo);
         if (GlobalData.mPaymentInfo == null) {
             GlobalData.mPaymentInfo = new ZPWPaymentInfo();
         }
@@ -690,13 +690,12 @@ public class GlobalData {
 >>>>>>> 9fd9a35... [SDK] Apply app info v1
     public static UserProfile getUserProfileAtChannel(int pPmcID) {
         if (getUserProfileList() == null) {
-            Log.d("===UserProfile===", "is null");
-
+            Log.d("UserProfile", "is null");
             return null;
         }
 
         try {
-            Log.d("===UserProfile=====", GsonUtils.toJsonString(getUserProfileList()));
+            Log.d("UserProfile", getUserProfileList());
 
             for (int i = 0; i < getUserProfileList().profilelevelpermisssion.size(); i++) {
                 if (getUserProfileList().profilelevelpermisssion.get(i).pmcid == pPmcID
@@ -705,7 +704,7 @@ public class GlobalData {
                 }
             }
         } catch (Exception ex) {
-            Log.e("===getUserProfileAtChannel===", ex);
+            Log.e("etUserProfileAtChannel", ex);
         }
 
         return null;

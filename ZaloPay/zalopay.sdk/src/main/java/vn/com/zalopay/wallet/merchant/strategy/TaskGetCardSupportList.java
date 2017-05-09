@@ -39,7 +39,7 @@ public class TaskGetCardSupportList extends TaskBase {
             ArrayList<ZPCard> cardArrayList = populateCardSuportList();
 
             if (getListener() instanceof IGetCardSupportListListener) {
-                Log.d(this, "===onComplete===callback to app" + GsonUtils.toJsonString(cardArrayList));
+                Log.d(this, "===onComplete===callback to app",cardArrayList);
                 ((IGetCardSupportListListener) getListener()).onComplete(cardArrayList);
             } else {
                 Log.d(this, "====onComplete====getListener()=NULL");

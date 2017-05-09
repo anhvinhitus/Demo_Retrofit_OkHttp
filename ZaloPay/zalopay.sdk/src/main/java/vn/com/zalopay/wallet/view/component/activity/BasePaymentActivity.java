@@ -76,12 +76,16 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 <<<<<<< HEAD
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 =======
+=======
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -539,8 +543,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         showWarningDialog(() -> {
             GlobalData.updateResultNetworkingError(pMessage);
+<<<<<<< HEAD
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
 
+=======
+            if (GlobalData.getPaymentListener() != null) {
+                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+            }
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
             finish();
         }, pMessage);
     }
@@ -687,9 +697,59 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * load app info from cache or api
      */
     protected void checkAppInfo() {
+<<<<<<< HEAD
         AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
         ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+=======
+        AppInfoLoader.getInstance().setOnLoadAppInfoListener(loadAppInfoListener).execute();
+    }
+
+    protected void reloadMapCardList() {
+        Log.d(this, "===starting reload map card list====");
+        mLoadingMapCard = true;
+        MapCardHelper.loadMapCardList(false, new IReloadMapInfoListener<DMappedCard>() {
+            @Override
+            public void onComplete(List<DMappedCard> pMapCardList) {
+                Log.d("loadMapCardList", "===onComplete===", pMapCardList);
+                mLoadingMapCard = false;
+                checkLoadMapCardAndBankAccountToFinish();
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Log.d("loadMapCardList", "===onError=" + pErrorMess);
+                mLoadingMapCard = false;
+                checkLoadMapCardAndBankAccountToFinish();
+            }
+        });
+    }
+
+    protected void reloadBankAccountList() {
+        Log.d(this, "===starting reload bank account list====");
+        mLoadingBankAccount = true;
+        BankAccountHelper.loadBankAccountList(false, new IReloadMapInfoListener<DBankAccount>() {
+            @Override
+            public void onComplete(List<DBankAccount> pMapList) {
+                Log.d("reloadBankAccountList", "===onComplete===", pMapList);
+                mLoadingBankAccount = false;
+                checkLoadMapCardAndBankAccountToFinish();
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Log.d("reloadBankAccountList", "===onError=" + pErrorMess);
+                mLoadingBankAccount = false;
+                checkLoadMapCardAndBankAccountToFinish();
+            }
+        });
+    }
+
+    protected synchronized void checkLoadMapCardAndBankAccountToFinish() {
+        if (!mLoadingBankAccount && !mLoadingMapCard) {
+            readyForPayment();
+        }
+>>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
     }
 
     /***
