@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -13,18 +12,28 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.adapter.IntroAppPagerAdapter;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link IntroAppFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class IntroAppFragment extends BaseFragment {
+
+    public static IntroAppFragment newInstance() {
+        return new IntroAppFragment();
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getAppComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.fragment_intro_app;
+    }
+
 
     @BindView(R.id.tvStart)
     View tvStart;
@@ -41,6 +50,35 @@ public class IntroAppFragment extends BaseFragment {
     @BindView(R.id.viewPager)
     ViewPager mViewPager;
 
+    private IntroAppPagerAdapter mPagerAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPagerAdapter = new IntroAppPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mViewPager.setAdapter(mPagerAdapter);
+        mIndicator.setViewPager(mViewPager);
+        IntroAppUtils.setShowedIntro(true);
+    }
+
+    @OnPageChange(R.id.viewPager)
+    public void onPageSelected(int position) {
+        if (position == (mPagerAdapter.getCount() - 1)) {
+            tvStart.setVisibility(View.GONE);
+            imgContinue.setVisibility(View.GONE);
+            tvClose.setVisibility(View.VISIBLE);
+        } else {
+            tvStart.setVisibility(View.VISIBLE);
+            imgContinue.setVisibility(View.VISIBLE);
+            tvClose.setVisibility(View.GONE);
+        }
+    }
+
     @OnClick(R.id.tvStart)
     public void onClickStart() {
         navigator.startLoginActivity(getContext());
@@ -52,7 +90,7 @@ public class IntroAppFragment extends BaseFragment {
         if (mViewPager.getCurrentItem() >= mPagerAdapter.getCount()) {
             getActivity().finish();
         } else {
-            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
         }
     }
 
@@ -61,8 +99,6 @@ public class IntroAppFragment extends BaseFragment {
         navigator.startLoginActivity(getContext());
         getActivity().finish();
     }
-
-    private IntroAppPagerAdapter mPagerAdapter;
 
     private List<Integer> getIntroResourceIds() {
         List<Integer> introResourceIds = new ArrayList<>();
@@ -74,57 +110,4 @@ public class IntroAppFragment extends BaseFragment {
         return introResourceIds;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment IntroAppFragment.
-     */
-    public static IntroAppFragment newInstance() {
-        return new IntroAppFragment();
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getAppComponent().inject(this);
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.fragment_intro_app;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mPagerAdapter = new IntroAppPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
-        mViewPager.setAdapter(mPagerAdapter);
-        mIndicator.setViewPager(mViewPager);
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == (mPagerAdapter.getCount() - 1)) {
-                    tvStart.setVisibility(View.GONE);
-                    imgContinue.setVisibility(View.GONE);
-                    tvClose.setVisibility(View.VISIBLE);
-                } else {
-                    tvStart.setVisibility(View.VISIBLE);
-                    imgContinue.setVisibility(View.VISIBLE);
-                    tvClose.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        IntroAppUtils.setShowedIntro(true);
-    }
 }
