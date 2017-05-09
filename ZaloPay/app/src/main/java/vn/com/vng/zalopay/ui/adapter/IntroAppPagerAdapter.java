@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.ui.fragment.SubIntroAppFragment;
  */
 public class IntroAppPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<Integer> mResources;
+    private final List<Integer> mResources;
 
     public IntroAppPagerAdapter(FragmentManager fm, List<Integer> resources) {
         super(fm);
@@ -23,7 +23,7 @@ public class IntroAppPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return SubIntroAppFragment.newInstance(this.mResources.get(position));
+        return SubIntroAppFragment.newInstance(mResources.get(position));
     }
 
     @Override
