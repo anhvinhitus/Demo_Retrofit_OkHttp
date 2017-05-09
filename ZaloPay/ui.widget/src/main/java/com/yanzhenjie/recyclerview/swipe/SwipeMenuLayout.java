@@ -24,21 +24,18 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.OverScroller;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.R;
 
-import timber.log.Timber;
-
 /**
  * Created by Yan Zhenjie on 2016/7/27.
  */
 public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
-    public static final int DEFAULT_SCROLLER_DURATION = 400;
+    public static final int DEFAULT_SCROLLER_DURATION = 200;
 
     private int mLeftViewId = 0;
     private int mContentViewId = 0;
@@ -114,10 +111,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
         }
     }
 
-    public void setSwipeMenuListener(SwipeRightHorizontal.ISwipeRightMenuListener swipeMenuListener) {
-        mSwipeRightHorizontal.setSwipeRightMenuListener(swipeMenuListener);
-    }
-
     /**
      * Set whether open swipe. Default is true.
      *
@@ -165,7 +158,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Timber.d("onInterceptTouchEvent action [%s]", ev.getAction());
         boolean isIntercepted = super.onInterceptTouchEvent(ev);
         int action = ev.getAction();
         switch (action) {
@@ -199,7 +191,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        Timber.d("onTouchEvent action [%s]", ev.getAction());
         if (mVelocityTracker == null) mVelocityTracker = VelocityTracker.obtain();
         mVelocityTracker.addMovement(ev);
         int dx;
@@ -327,7 +318,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
     }
 
     private void judgeOpenClose(int dx, int dy) {
-        Timber.d("judgeOpenClose [x,y]:[%s,%s]", dx, dy);
         if (mSwipeCurrentHorizontal != null) {
             if (Math.abs(getScrollX()) >= (mSwipeCurrentHorizontal.getMenuView().getWidth() * mOpenPercent)) { // auto open
                 if (Math.abs(dx) > mScaledTouchSlop || Math.abs(dy) > mScaledTouchSlop) { // swipe up
@@ -345,7 +335,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
     @Override
     public void scrollTo(int x, int y) {
-        Timber.d("scrollTo [x,y]:[%s,%s]", x, y);
         if (mSwipeCurrentHorizontal == null) {
             super.scrollTo(x, y);
         } else {
@@ -361,27 +350,13 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
     public void computeScroll() {
         if (mScroller.computeScrollOffset() && mSwipeCurrentHorizontal != null) {
             if (mSwipeCurrentHorizontal instanceof SwipeRightHorizontal) {
-                Timber.d("computeScroll auto scroll right menu");
                 scrollTo(Math.abs(mScroller.getCurrX()), 0);
                 invalidate();
             } else {
-                Timber.d("computeScroll auto scroll left menu");
                 scrollTo(-Math.abs(mScroller.getCurrX()), 0);
                 invalidate();
             }
         }
-    }
-
-    private void showWithFadeAnimation(View view, int duration) {
-        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(duration);
-        view.startAnimation(anim);
-    }
-
-    private void hideWithFadeAnimation(View view, int duration) {
-        AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
-        anim.setDuration(duration);
-        view.startAnimation(anim);
     }
 
     public boolean hasLeftMenu() {
@@ -449,9 +424,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
     @Override
     public void smoothOpenRightMenu() {
-        /*if (mSwipeRightHorizontal != null) {
-            showWithFadeAnimation(mSwipeRightHorizontal.menuView, mScrollerDuration);
-        }*/
         smoothOpenRightMenu(mScrollerDuration);
     }
 
@@ -480,9 +452,6 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
 
     @Override
     public void smoothCloseMenu() {
-        /*if (mSwipeCurrentHorizontal != null) {
-            hideWithFadeAnimation(mSwipeCurrentHorizontal.menuView, mScrollerDuration);
-        }*/
         smoothCloseMenu(mScrollerDuration);
     }
 

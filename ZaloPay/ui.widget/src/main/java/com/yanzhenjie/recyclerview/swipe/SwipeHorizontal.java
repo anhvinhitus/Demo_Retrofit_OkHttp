@@ -25,7 +25,7 @@ import android.widget.OverScroller;
 abstract class SwipeHorizontal {
 
     private int direction;
-    protected View menuView;
+    private View menuView;
     protected Checker mChecker;
 
     public SwipeHorizontal(int direction, View menuView) {

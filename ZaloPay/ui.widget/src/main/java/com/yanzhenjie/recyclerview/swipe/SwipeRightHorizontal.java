@@ -18,41 +18,29 @@ package com.yanzhenjie.recyclerview.swipe;
 import android.view.View;
 import android.widget.OverScroller;
 
-import com.zalopay.ui.widget.R;
-
-import timber.log.Timber;
-
 /**
  * Created by Yan Zhenjie on 2016/7/22.
  */
 class SwipeRightHorizontal extends SwipeHorizontal {
-
-    private ISwipeRightMenuListener mSwipeRightMenuListener;
 
     public SwipeRightHorizontal(View menuView) {
         super(SwipeMenuRecyclerView.RIGHT_DIRECTION, menuView);
     }
 
     @Override
-    public boolean isCompleteClose(int scrollX) {
-        int i = -getWidth() * getDirection();
-        return scrollX == 0 && i != 0;
-    }
-
-    @Override
     public boolean isMenuOpen(int scrollX) {
-        int i = -getWidth() * getDirection();
+        int i = -getMenuView().getWidth() * getDirection();
         return scrollX >= i && i != 0;
     }
 
     @Override
     public boolean isMenuOpenNotEqual(int scrollX) {
-        return scrollX > -getWidth() * getDirection();
+        return scrollX > -getMenuView().getWidth() * getDirection();
     }
 
     @Override
     public void autoOpenMenu(OverScroller scroller, int scrollX, int duration) {
-        scroller.startScroll(Math.abs(scrollX), 0, getWidth() - Math.abs(scrollX), 0, duration);
+        scroller.startScroll(Math.abs(scrollX), 0, getMenuView().getWidth() - Math.abs(scrollX), 0, duration);
     }
 
     @Override
@@ -62,44 +50,20 @@ class SwipeRightHorizontal extends SwipeHorizontal {
 
     @Override
     public Checker checkXY(int x, int y) {
-        float alpha = (float) x / getWidth();
-        menuView.setAlpha(alpha);
         mChecker.x = x;
         mChecker.y = y;
         mChecker.shouldResetSwipe = mChecker.x == 0;
         if (mChecker.x < 0) {
             mChecker.x = 0;
         }
-        if (mChecker.x > getWidth()) {
-            mChecker.x = getWidth();
-        }
-        if (mSwipeRightMenuListener != null) {
-            if (alpha <= 0.1) {
-                mSwipeRightMenuListener.onHideRightMenu();
-            } else {
-                mSwipeRightMenuListener.onShowRightMenu();
-            }
+        if (mChecker.x > getMenuView().getWidth()) {
+            mChecker.x = getMenuView().getWidth();
         }
         return mChecker;
     }
 
     @Override
     public boolean isClickOnContentView(int contentViewWidth, float x) {
-        return x < (contentViewWidth - getWidth());
-    }
-
-    private int getWidth() {
-        int offset = (int) menuView.getContext().getResources().getDimension(R.dimen.swipe_menu_margin_offset);
-        return getMenuView().getWidth() - offset;
-    }
-
-    public void setSwipeRightMenuListener(ISwipeRightMenuListener listener) {
-        mSwipeRightMenuListener = listener;
-    }
-
-    interface ISwipeRightMenuListener {
-        void onShowRightMenu();
-
-        void onHideRightMenu();
+        return x < (contentViewWidth - getMenuView().getWidth());
     }
 }

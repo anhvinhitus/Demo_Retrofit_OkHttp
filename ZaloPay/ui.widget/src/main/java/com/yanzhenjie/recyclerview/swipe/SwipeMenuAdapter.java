@@ -20,12 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.yanzhenjie.recyclerview.swipe.SwipeRightHorizontal.ISwipeRightMenuListener;
 import com.zalopay.ui.widget.R;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * Created by Yan Zhenjie on 2016/7/27.
@@ -121,21 +118,10 @@ public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> exten
     public abstract VH onCompatCreateViewHolder(View realContentView, int viewType);
 
     @Override
-    public final void onBindViewHolder(final VH holder, final int position, List<Object> payloads) {
+    public final void onBindViewHolder(VH holder, int position, List<Object> payloads) {
         View itemView = holder.itemView;
         if (itemView instanceof SwipeMenuLayout) {
             SwipeMenuLayout swipeMenuLayout = (SwipeMenuLayout) itemView;
-            swipeMenuLayout.setSwipeMenuListener(new ISwipeRightMenuListener() {
-                @Override
-                public void onShowRightMenu() {
-                    SwipeMenuAdapter.this.onShowRightMenu(holder, position);
-                }
-
-                @Override
-                public void onHideRightMenu() {
-                    SwipeMenuAdapter.this.onHideRightMenu(holder, position);
-                }
-            });
             onCompatBindSwipeMenuViewHolder(swipeMenuLayout, position);
             int childCount = swipeMenuLayout.getChildCount();
             for (int i = 0; i < childCount; i++) {
@@ -146,14 +132,6 @@ public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> exten
             }
         }
         onCompatBindViewHolder(holder, position, payloads);
-    }
-
-    public void onHideRightMenu(VH holder, int position) {
-        Timber.d("onHideRightMenu position [%s]", position);
-    }
-
-    public void onShowRightMenu(VH holder, int position) {
-        Timber.d("onShowRightMenu position [%s]", position);
     }
 
     /**
@@ -174,4 +152,5 @@ public abstract class SwipeMenuAdapter<VH extends RecyclerView.ViewHolder> exten
         SwipeMenuView swipeRightMenuView = (SwipeMenuView) swipeMenuLayout.findViewById(R.id.swipe_right);
         onBindSwipeMenuViewHolder(swipeLeftMenuView, swipeRightMenuView, position);
     }
+
 }

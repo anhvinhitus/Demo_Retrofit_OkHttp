@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.R;
+
 import java.util.List;
 
 /**
@@ -95,6 +97,8 @@ public class SwipeMenuView extends LinearLayout {
     private ImageView createIcon(SwipeMenuItem item) {
         ImageView imageView = new ImageView(getContext());
         imageView.setImageDrawable(item.getImage());
+        int paddingBottom = (int) getContext().getResources().getDimension(R.dimen.swipe_menu_item_margin_top);
+        imageView.setPadding(0, 0, 0, paddingBottom);
         return imageView;
     }
 

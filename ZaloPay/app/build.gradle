@@ -473,8 +473,6 @@ dependencies {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
     compile project(':zalopay.sdk')
-
-    compile project(':recyclerview-swipe')
 }
 
 apply plugin: 'com.google.gms.google-services'
