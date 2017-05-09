@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -34,7 +35,6 @@ public class IntroAppFragment extends BaseFragment {
         return R.layout.fragment_intro_app;
     }
 
-
     @BindView(R.id.tvStart)
     View tvStart;
 
@@ -52,10 +52,14 @@ public class IntroAppFragment extends BaseFragment {
 
     private IntroAppPagerAdapter mPagerAdapter;
 
+    private boolean startup;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPagerAdapter = new IntroAppPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
+        Intent intent = getActivity().getIntent();
+        startup = intent.getBooleanExtra("startup", true);
     }
 
     @Override
@@ -64,10 +68,20 @@ public class IntroAppFragment extends BaseFragment {
         mViewPager.setAdapter(mPagerAdapter);
         mIndicator.setViewPager(mViewPager);
         IntroAppUtils.setShowedIntro(true);
+
+        if (!startup) {
+            tvStart.setVisibility(View.GONE);
+            imgContinue.setVisibility(View.GONE);
+            tvClose.setVisibility(View.GONE);
+        }
     }
 
     @OnPageChange(R.id.viewPager)
     public void onPageSelected(int position) {
+        if (!startup) {
+            return;
+        }
+
         if (position == (mPagerAdapter.getCount() - 1)) {
             tvStart.setVisibility(View.GONE);
             imgContinue.setVisibility(View.GONE);

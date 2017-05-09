@@ -458,4 +458,16 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         return writableMap;
     }
 
+
+    @ReactMethod
+    public void navigateIntro(String title) {
+        Timber.d("navigateIntro : %s", title);
+
+        if (getCurrentActivity() == null) {
+            return;
+        }
+
+        navigator.startIntroAppActivity(getCurrentActivity(), false, title);
+    }
+
 }

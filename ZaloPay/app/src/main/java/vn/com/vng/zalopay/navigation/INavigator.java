@@ -52,4 +52,6 @@ public interface INavigator {
     boolean promptPIN(Context context, int channel, Promise promise);
 
     void startWebAppActivity(Context context, String url);
+
+    void startIntroAppActivity(Context context, boolean startup, String title);
 }
