@@ -344,6 +344,7 @@
     <string name="image.gallery">Thư viện hình ảnh</string>
     <string name="total">Tổng cộng</string>
     <string name="avatar">Ảnh của bạn</string>
+    <string name="zero">0</string>
     <string name="zero.currency">0 VND</string>
     <string name="account_holders">Số ĐT:</string>
     <string name="tutorial.keyguard.secure.disable">Khóa màn hình chưa được thiết thập.\nVào \'Cài đặt -> Bảo mật -> Vân tay\' để thiết lập xác thực vân tay</string>

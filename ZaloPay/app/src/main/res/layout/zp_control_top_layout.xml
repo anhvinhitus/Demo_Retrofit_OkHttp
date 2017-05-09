@@ -40,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:text="@string/zero"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_large"

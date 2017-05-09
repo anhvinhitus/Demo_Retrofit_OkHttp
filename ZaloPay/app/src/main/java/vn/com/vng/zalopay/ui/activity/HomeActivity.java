@@ -70,7 +70,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mPresenter.initialize();
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
-        params.setMargins(0, AndroidUtils.getStatusBarHeight(this), 0, (int) AndroidUtils.dpToPixels(this, 56));
+        params.setMargins(0, 0, 0, (int) AndroidUtils.dpToPixels(this, 56));
         mViewPager.setAdapter(mHomePagerAdapter);
         mViewPager.setOffscreenPageLimit(mHomePagerAdapter.getCount() - 1);
         mBottomNavigationView.setViewPager(mViewPager);

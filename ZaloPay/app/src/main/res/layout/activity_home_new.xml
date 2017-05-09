@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical"
-             tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
 
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
-        />
+        android:layout_marginBottom="56dp" />
 
     <vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView
         android:id="@+id/navigation"
@@ -22,7 +22,6 @@
         android:paddingTop="0dp"
         app:itemBackground="@color/white"
         app:itemIconTint="@color/bottom_nav_icon_color_selector"
-        app:itemTextColor="@color/bottom_nav_icon_color_selector"
-        />
+        app:itemTextColor="@color/bottom_nav_icon_color_selector" />
 
 </FrameLayout>

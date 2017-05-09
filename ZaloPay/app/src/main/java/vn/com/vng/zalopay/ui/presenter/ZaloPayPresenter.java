@@ -107,6 +107,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (NetworkHelper.isNetworkAvailable(mContext)) {
             if (mView != null) {
                 mView.hideNetworkError();
+                mView.setBalance(mBalanceRepository.currentBalance());
+                fetchBalance();
             }
         }
     }
