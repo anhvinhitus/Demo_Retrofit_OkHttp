@@ -845,6 +845,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
+<<<<<<< HEAD
+=======
+
+            if (isInputBankMaintenance()) {
+                return;
+            }
+            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                showWarningBankVersionSupport();
+                return;
+            }
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         } catch (Exception e) {
             Log.e(this, e);
         }

@@ -177,7 +177,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
          * check pattern get from bundle
          */
         if (mIsPattern && mAdapter != null) {
-            mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, mAdapter.getChannelID());
+            mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(mAdapter.getChannelID()));
 
             if (mPattern == null) {
                 mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, "all");

@@ -112,6 +112,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         return false;
     }
 
+<<<<<<< HEAD
     protected <T> Observable.Transformer<T, T> applySchedulers() {
         return observable -> observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -123,11 +124,135 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 return Observable.just(mDataSource.getFile(pUrlFile).execute());
             } catch (IOException e) {
                 return Observable.error(e);
+=======
+    private boolean retry(final retrofit2.Callback pCallback, Throwable t) {
+        if (retryCount <= Constants.API_MAX_RETRY && needRetry(t)) {
+            try {
+                retryCount++;
+                if (mCallable == null) {
+                    Log.d(this, "retry request but mCallable = NULL, retryCount" + retryCount);
+                    return false;
+                }
+                mCallable.clone().enqueue(pCallback);
+                Log.d(this, mCallable.toString() + ",retryCount=" + (retryCount - 1));
+                return true;
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+        return false;
+    }
+
+    public DataRepository setDataSourceListener(IDataSourceListener pListener) {
+        this.mDataSourceLitener = pListener;
+
+        return this;
+    }
+
+    protected String getErrorMessageFormat(int pCode, String pErrorMessage) {
+        try {
+            String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+            if (!TextUtils.isEmpty(paymentError)) {
+                int apitrackingID = 0;
+                if (mCurrentTask != null && mCurrentTask.get() != null) {
+                    apitrackingID = mCurrentTask.get().getTaskEventId();
+                }
+                paymentError = String.format(paymentError, apitrackingID, pCode, pErrorMessage);
+
+                return paymentError;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             }
         });
     }
 
+<<<<<<< HEAD
     public synchronized void downloadResource(String pUrl) {
+=======
+    protected void onRequest(Call pCall, final IPaymentApiCallBack pCallback) {
+        if (pCall != null) {
+            pCall.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    try {
+                        //send tracking timing to tracking source, for example : GA,vvv
+                        if (mCurrentTask != null && mCurrentTask.get() != null && PaymentPermission.allowUseTrackingTiming()) {
+                            Long timeRequest = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
+                            ZPAnalytics.trackTiming(mCurrentTask.get().getTaskEventId(), timeRequest);
+                            Log.d(this, "ZPAnalytics.trackTiming " + mCurrentTask.get().getTaskEventId() + " timing(ms)=" + (timeRequest));
+                        }
+                        if (pCallback != null) {
+                            pCallback.onFinish(call, response);
+                        }
+                        //send log to server if http code is error
+                        //sendErrorLogHttpErrorCode(response);
+                    } catch (Exception ex) {
+                        Log.e(this, ex);
+                        if (pCallback != null) {
+                            pCallback.onFinish(call, response);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    try {
+                        if (pCallback != null) {
+                            pCallback.onFail(this, t);
+                        }
+                        //sendErrorLogResponseNULL(t);
+                    } catch (Exception ex) {
+                        Log.e(this, ex);
+                        if (pCallback != null) {
+                            pCallback.onFail(this, t);
+                        }
+                    }
+                }
+            });
+        } else {
+            Log.e(this, "onRequest pCall=NULL");
+        }
+    }
+
+    /***
+     * get data api
+     *
+     * @param pTask
+     * @param pParams
+     */
+    public synchronized void getData(final ITask pTask, HashMap<String, String> pParams) {
+        try {
+            inProgress();
+            mCurrentTask = new WeakReference<ITask>(pTask);
+            mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, pParams);
+            onRequest(mCallable, new IPaymentApiCallBack<T>() {
+                @Override
+                public void onFinish(Call call, Response<T> response) {
+                    onSuccessRequest(response.isSuccessful(), response.body());
+                }
+
+                @Override
+                public void onFail(Callback pCall, Throwable t) {
+                    if (!retry(pCall, t)) {
+                        Log.d(pTask.toString() + ".onFailure." + pTask.toString(), t != null ? t.getMessage() : "error");
+                        onErrorRequest(t != null ? t.getMessage() : "");
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            Log.e(this, e);
+            onErrorRequest(e.getMessage());
+        }
+    }
+
+    /***
+     * push data to server
+     *
+     * @param pTask
+     * @param params
+     */
+    public synchronized void pushData(final ITask pTask, HashMap<String, String> params) {
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         if (haveRequestRunning()) {
             Log.d(this, mTask.toString() + " there're a task is running...");
             return;

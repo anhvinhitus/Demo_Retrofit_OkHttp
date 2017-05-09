@@ -90,6 +90,7 @@
 
     <string name="zpw_alert_order_not_submit">Mạng không ổn định, giao dịch chưa được gửi đi. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
 
+    <string name="sdk_config_invalid">Cấu hình kênh giao dịch không còn hiệu lực. Vui lòng chọn kênh giao dịch khác!</string>
     <string name="zingpaysdk_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
     <string name="zpw_error_paymentinfo">Dữ liệu không còn hiệu lực.\nVui lòng thực hiện lại thao tác.</string>
     <string name="zingpaysdk_alert_context_error">Ngữ cảnh ứng dụng đã kết thúc.\nVui lòng đóng ứng dụng và khởi động lại ứng dụng để thực hiện lại!</string>

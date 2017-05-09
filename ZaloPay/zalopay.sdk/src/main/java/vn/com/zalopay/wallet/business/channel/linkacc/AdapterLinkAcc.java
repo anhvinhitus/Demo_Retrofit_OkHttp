@@ -34,7 +34,7 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
@@ -217,8 +217,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     };
 
-    public AdapterLinkAcc(PaymentChannelActivity pOwnerActivity) {
-        super(pOwnerActivity);
+    public AdapterLinkAcc(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) {
+        super(pOwnerActivity, pMiniPmcTransType);
         mLayoutId = SCREEN_LINK_ACC;
         mPageCode = SCREEN_LINK_ACC;
     }
@@ -297,11 +297,6 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     @Override
-    public DPaymentChannel getChannelConfig() throws Exception {
-        return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(), DPaymentChannel.class);
-    }
-
-    @Override
     public boolean shouldFocusAfterCloseQuitDialog() {
         return isOtpStep() || isConfirmStep();
     }
@@ -322,6 +317,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     }
 
+<<<<<<< HEAD
 
     @Override
     public String getChannelID() {
@@ -329,6 +325,16 @@ public class AdapterLinkAcc extends AdapterBase {
             return String.valueOf(mConfig.pmcid);
         }
         return String.valueOf(BuildConfig.channel_bankaccount);
+=======
+    protected int getDefaultChannelId() {
+        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+    }
+
+    @Override
+    public int getChannelID() {
+        int channelId = super.getChannelID();
+        return channelId != -1 ? channelId : getDefaultChannelId();
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     public boolean isLoginStep() {

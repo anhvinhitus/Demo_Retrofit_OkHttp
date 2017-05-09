@@ -30,8 +30,23 @@ public class BankConfig {
     @FeeType
     public String feecaltype = null;
 
+<<<<<<< HEAD
     @BankStatus
     public int status;
+=======
+    public boolean isVersionSupport(String pAppVersion) {
+        Log.d(this, "start check support bank version in bank config");
+        if (TextUtils.isEmpty(pAppVersion)) {
+            return true;
+        }
+        int minAppVersionSupport = getMinAppVersionSupport();
+        if (minAppVersionSupport == 0) {
+            return true;
+        }
+        pAppVersion = pAppVersion.replace(".", "");
+        return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
+    }
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 
     @Override
     public boolean equals(Object object) {

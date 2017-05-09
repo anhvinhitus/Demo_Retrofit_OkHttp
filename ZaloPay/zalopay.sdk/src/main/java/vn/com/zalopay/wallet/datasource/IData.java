@@ -21,7 +21,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.vng.zalopay.network.API_NAME;
 
@@ -43,8 +43,12 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_APP_INFO)
+<<<<<<< HEAD
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
     Observable<DAppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
+=======
+    Call<AppInfoResponse> getAppInfo(@QueryMap Map<String, String> params);
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 
     /**
      * load bank list

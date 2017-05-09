@@ -92,7 +92,7 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
         if (mIsPattern && mAdapter != null) {
             try {
 
-                mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, mAdapter.getChannelID());
+                mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(mAdapter.getChannelID()));
 
                 if (mPattern == null) {
                     mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, "all");

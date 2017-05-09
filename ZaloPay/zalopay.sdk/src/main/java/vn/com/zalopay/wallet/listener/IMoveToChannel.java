@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.listener;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 
 public interface IMoveToChannel {
-    void moveToChannel(DPaymentChannelView pChannel);
+    void moveToChannel(PaymentChannel pChannel);
 }

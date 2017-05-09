@@ -77,8 +77,15 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+=======
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.IFBCallback;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
@@ -285,8 +292,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         @Override
+<<<<<<< HEAD
         public void onError(DAppInfoResponse pMessage) {
             Log.d(this, "load appinfo on error");
+=======
+        public void onError(AppInfoResponse pMessage) {
+            Log.d(this, "===onError===");
+
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
             String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
             if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
@@ -1287,6 +1300,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     }
 
+<<<<<<< HEAD
+=======
+    protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 
     private long checkTranID(String pTransID) {
         return (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
@@ -1404,7 +1421,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /**
      * show fee
      */
-    public void showConfirmView(boolean pHidden, boolean pShow, DPaymentChannel pChannel) {
+    public void showConfirmView(boolean pHidden, boolean pShow, MiniPmcTransType pChannel) {
         if (GlobalData.isChannelHasInputCard() && pHidden) {
             visibleTranferWalletInfo(false);
             visibleAppInfo(false);

@@ -175,12 +175,7 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, pZaloUserId);
         params.put(ConstantParams.APP_ID, pAppId);
         params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
-
-        if (pCheckSum == null) {
-            pCheckSum = "";
-        }
-
-        params.put(ConstantParams.CHECKSUM, pCheckSum);
+        params.put(ConstantParams.CHECKSUM, !TextUtils.isEmpty(pCheckSum) ? pCheckSum : "");
     }
 
     /**
@@ -244,10 +239,18 @@ public class DataParameter {
      */
     public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, Map<String, String> params) throws Exception {
         putBaseParameter(params);
+<<<<<<< HEAD
         if (pAdapter != null) {
             params.put(ConstantParams.PMC_ID, pAdapter.getChannelID());
         }
         if (!TextUtils.isEmpty(pmcID)) {
+=======
+
+        if (pAdapter != null)
+            params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
+
+        if (!TextUtils.isEmpty(pmcID))
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             params.put(ConstantParams.PMC_ID, pmcID);
         }
         if (GlobalData.isMapCardChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {

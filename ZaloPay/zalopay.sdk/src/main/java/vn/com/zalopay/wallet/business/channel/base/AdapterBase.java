@@ -37,18 +37,26 @@ import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+<<<<<<< HEAD
+=======
+import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+=======
+import vn.com.zalopay.wallet.constants.TransAuthenType;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.CheckOrderStatusFailSubmit;
@@ -98,9 +106,12 @@ public abstract class AdapterBase {
     public static final String PAGE_CONFIRM = RS.layout.screen__confirm;
     //detect card info is mapped by logged user
     public static boolean existedMapCard = false;
+<<<<<<< HEAD
     protected final DPaymentCard mCard;
     //payment config
     public DPaymentChannel mConfig;
+=======
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
     protected WeakReference<PaymentChannelActivity> mOwnerActivity = null;
     protected CardGuiProcessor mGuiProcessor = null;
     protected DialogFragment mFingerPrintDialog = null;
@@ -140,6 +151,7 @@ public abstract class AdapterBase {
     protected boolean mIsOrderSubmit = false;
     protected boolean mCanEditCardInfo = false;
     protected String mLayoutId = null;
+<<<<<<< HEAD
     @BankFlow
     protected int mECardFlowType;
     /**
@@ -147,7 +159,10 @@ public abstract class AdapterBase {
      *
      * @param pMessage
      */
+=======
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
     protected boolean preventRetryLoadMapCardList = false;
+    protected MiniPmcTransType mMiniPmcTransType;
     //prevent click duplicate
     private boolean mMoreClick = true;
     private final View.OnClickListener okClickListener = new View.OnClickListener() {
@@ -209,6 +224,7 @@ public abstract class AdapterBase {
             startSubmitTransaction();
         }
     };
+<<<<<<< HEAD
 
     public AdapterBase(PaymentChannelActivity pOwnerActivity) {
         if (pOwnerActivity != null) {
@@ -223,7 +239,35 @@ public abstract class AdapterBase {
             Log.e(this, e);
         }
 
+=======
+    private View.OnClickListener okClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(this, "===okClickListener===starting...click");
+            if (mMoreClick) {
+                mMoreClick = false;
+                AdapterBase.this.onClickSubmission();
+                Log.d(this, "===okClickListener===onClickSubmission");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMoreClick = true;
+                        Log.d(this, "===okClickListener===release click event");
+                    }
+                }, 3000);
+            }
+        }
+    };
+
+    public AdapterBase(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) {
+        mOwnerActivity = new WeakReference<>(pOwnerActivity);
+        mMiniPmcTransType = pMiniPmcTransType;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         mCard = new DPaymentCard();
+    }
+
+    public MiniPmcTransType getConfig() {
+        return mMiniPmcTransType;
     }
 
     /**
@@ -239,11 +283,12 @@ public abstract class AdapterBase {
 
     public abstract void init() throws Exception;
 
-    public abstract DPaymentChannel getChannelConfig() throws Exception;
-
     public abstract void onProcessPhrase() throws Exception;
 
-    public abstract String getChannelID();
+    public int getChannelID() {
+        MiniPmcTransType miniPmcTransType = getConfig();
+        return miniPmcTransType != null ? miniPmcTransType.pmcid : -1;
+    }
 
     public boolean isInputStep() {
         return false;
@@ -278,10 +323,8 @@ public abstract class AdapterBase {
     }
 
     public String getChannelName() {
-        if (mConfig != null) {
-            return mConfig.pmcname;
-        }
-        return getClass().getName();
+        MiniPmcTransType miniPmcTransType = getConfig();
+        return miniPmcTransType != null ? miniPmcTransType.pmcname : getClass().getSimpleName();
     }
 
     public boolean isRequirePinPharse() {
@@ -311,11 +354,19 @@ public abstract class AdapterBase {
     public void onFinish() {
         Log.d(this, "onFinish");
         if (getGuiProcessor() != null) {
+<<<<<<< HEAD
             Log.d(this, "start release GuiProcessor");
+=======
+            Log.d(this, "start dispose GuiProcessor");
+
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
+        Log.d(this, "start dismiss dialog fingerprint");
         dismissDialogFingerPrint();
+        Log.d(this, "release pmc config");
+        mMiniPmcTransType = null;
     }
 
     public void detectCard(String pCardNumber) {
@@ -867,7 +918,12 @@ public abstract class AdapterBase {
             if (!shouldSendLogToServer()) {
                 return;
             }
+<<<<<<< HEAD
             BaseTask sendLogTask = new SendLogTask(mConfig.pmcid, mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
+=======
+
+            BaseRequest sendLogTask = new SendLog(getChannelID(), mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             sendLogTask.makeRequest();
         } catch (Exception e) {
             Log.e(this, e);
@@ -876,11 +932,15 @@ public abstract class AdapterBase {
 
     public void onClickSubmission() {
         try {
-            mIsShowDialog = false;
             Log.d(this, "page name " + getPageName());
+<<<<<<< HEAD
 
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
+=======
+            mIsShowDialog = false;
+            ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
             //fail transaction
             if (isTransactionFail()) {
                 terminate(null, true);
@@ -893,19 +953,12 @@ public abstract class AdapterBase {
                 Log.d(this, "payment result Success" + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
                 return;
             }
-
             //confirm transaction pharse
-            if (isConfirmTransactionPharse()) {
-                int iCheck = onRequirePin();
-
-                if (iCheck == Constants.INPUT_INVALID) {
-                    mIsShowDialog = true;
-                    terminate(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), false);
-
-                    return;
-                } else if (iCheck == Constants.REQUIRE_PIN) {
-                    try {
+            if (isConfirmTransactionPharse() && needUserPasswordPayment()) {
+                try {
+                    if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
                         //ask user use finger print
+<<<<<<< HEAD
                         //  if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
                         long start = System.currentTimeMillis();
                         Log.d(this, "===starting get dialog fingerprint===" + start);
@@ -919,19 +972,26 @@ public abstract class AdapterBase {
                                 moveToRequirePin();
                                 Log.d(this, "mFingerPrintDialog=NULL");
                             }
+=======
+                        mPageCode = PAGE_REQUIRE_PIN;
+                        mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
+                        if (getDialogFingerPrint() != null) {
+                            getDialogFingerPrint().show(getActivity().getFragmentManager(), null);
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
                         } else {
                             moveToRequirePin();
+                            Log.d(this, "use password instend of use fingerprint");
                         }
-                    } catch (Exception ex) {
+                    } else {
                         moveToRequirePin();
-                        Log.d(this, ex);
                     }
-                    return;
+                } catch (Exception ex) {
+                    moveToRequirePin();
+                    Log.d(this, ex);
                 }
+            } else {
+                onProcessPhrase();
             }
-
-            onProcessPhrase();
-
         } catch (Exception ex) {
             sdkReportErrorOnPharse(Constants.UNDEFINE, GsonUtils.toJsonString(mResponseStatus) + (ex != null ? ex.getMessage() : "onClickSubmission"));
             if (GlobalData.isLinkCardChannel()) {
@@ -939,7 +999,6 @@ public abstract class AdapterBase {
             } else {
                 showDialog(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
             }
-
             Log.e(this, ex);
         }
     }
@@ -1013,7 +1072,7 @@ public abstract class AdapterBase {
     protected void showConfrimScreenForCardChannel() throws Exception {
         try {
             getActivity().enableSubmitBtn(true);
-            getActivity().showConfirmView(true, true, mConfig);
+            getActivity().showConfirmView(true, true, getConfig());
             setBankInfoConfirmView();
 
             getActivity().setToolBarTitle();
@@ -1281,7 +1340,7 @@ public abstract class AdapterBase {
      * set Pmc to payment Result
      */
     protected void setPmcToResult() {
-        GlobalData.getPaymentResult().channelID = getChannelID();
+        GlobalData.getPaymentResult().channelID = String.valueOf(getChannelID());
         GlobalData.getPaymentResult().channelDetail = getChannelName();
     }
 
@@ -1298,27 +1357,31 @@ public abstract class AdapterBase {
         terminate(pMessage, false);
     }
 
+<<<<<<< HEAD
     protected int onRequirePin() {
         int requirePin = Constants.REQUIRE_OTP;
 
         //reset pmc to zalopay if this is withdraw channel
         if (mConfig != null && GlobalData.getTransactionType() == TransactionType.WITHDRAW) {
             mConfig.pmcid = BuildConfig.channel_zalopay;
+=======
+    protected boolean needUserPasswordPayment() {
+        Log.d(this, "start check require for using password");
+        MiniPmcTransType pmcTransType = getConfig();
+        Log.d(this, "pmc transype for checking require pin "+ GsonUtils.toJsonString(pmcTransType));
+        if (pmcTransType == null) {
+            mIsShowDialog = true;
+            terminate(GlobalData.getStringResource(RS.string.sdk_config_invalid), false);
+            return false;
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         }
-
-        if (mConfig == null) {
-            requirePin = Constants.INPUT_INVALID;
-        } else if (!mConfig.isRequireOtp() || mConfig.isBankAccount())
-            requirePin = Constants.REQUIRE_PIN;
-
-        if (requirePin == Constants.REQUIRE_PIN) {
-            if (mConfig != null && mConfig.isNeedToCheckTransactionAmount() && GlobalData.orderAmountTotal > mConfig.amountrequireotp)
-                requirePin = Constants.REQUIRE_OTP;
-
+        int transAuthenType = TransAuthenType.PIN;
+        if (pmcTransType.isNeedToCheckTransactionAmount() && GlobalData.orderAmountTotal > pmcTransType.amountrequireotp) {
+            transAuthenType = pmcTransType.overamounttype;
+        } else if (pmcTransType.isNeedToCheckTransactionAmount() && GlobalData.orderAmountTotal < pmcTransType.amountrequireotp) {
+            transAuthenType = pmcTransType.inamounttype;
         }
-
-
-        return requirePin;
+        return transAuthenType == TransAuthenType.PIN || transAuthenType == TransAuthenType.BOTH;
     }
 
     /**
@@ -1326,7 +1389,6 @@ public abstract class AdapterBase {
      */
     protected void setSuccessLabel() {
         String strMessage = GlobalData.getStringResource(RS.string.zpw_string_payment_success_label);
-
         if (GlobalData.isLinkCardChannel()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_linkcard_success_label);
         } else if (GlobalData.isTopupChannel()) {
@@ -1338,7 +1400,6 @@ public abstract class AdapterBase {
         } else if (GlobalData.isRedPacketChannel()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_lixi_success_label);
         }
-
         getActivity().setText(R.id.zpw_payment_success_textview, strMessage);
     }
 
@@ -1642,7 +1703,7 @@ public abstract class AdapterBase {
      */
     public void setBankInfoConfirmView() {
         try {
-            DPaymentChannelView channel = ChannelStartProcessor.getInstance(null).getChannel();
+            PaymentChannel channel = ChannelStartProcessor.getInstance(null).getChannel();
             if (channel != null) {
                 getActivity().setImage(R.id.zpw_zalopay_logo_imageview, channel.channel_icon);
                 getActivity().setVisible(R.id.linearlayout_price, false);

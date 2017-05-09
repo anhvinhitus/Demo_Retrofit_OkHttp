@@ -13,8 +13,6 @@ public class DPlatformInfo extends BaseResponse {
     public List<DBankAccount> bankaccounts = null;
     public String bankaccountchecksum = null;
 
-    public List<DChannelMapApp> transtypepmcs = null;
-
     public DAppInfo info = null;
 
     public boolean isupdateresource = false;

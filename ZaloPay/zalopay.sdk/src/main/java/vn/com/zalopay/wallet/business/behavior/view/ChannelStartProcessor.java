@@ -10,7 +10,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -27,7 +27,7 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 public class ChannelStartProcessor extends SingletonBase {
     private static ChannelStartProcessor _object;
     private PaymentGatewayActivity mOwnerActivity;
-    private DPaymentChannelView mChannel;
+    private PaymentChannel mChannel;
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -65,13 +65,12 @@ public class ChannelStartProcessor extends SingletonBase {
         return mOwnerActivity;
     }
 
-    public DPaymentChannelView getChannel() {
+    public PaymentChannel getChannel() {
         return mChannel;
     }
 
-    public ChannelStartProcessor setChannel(DPaymentChannelView pChannel) {
+    public ChannelStartProcessor setChannel(PaymentChannel pChannel) {
         mChannel = pChannel;
-
         return this;
     }
 
@@ -221,7 +220,12 @@ public class ChannelStartProcessor extends SingletonBase {
 
     private void startChannel() {
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+<<<<<<< HEAD
         intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, mChannel.pmcid);
+=======
+        intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), String.valueOf(mChannel.pmcid));
+        intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, mChannel);
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getActivity().startActivity(intent);
     }

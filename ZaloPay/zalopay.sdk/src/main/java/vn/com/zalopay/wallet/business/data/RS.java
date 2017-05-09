@@ -77,7 +77,11 @@ public class RS {
         public static final String zpw_string_vcb_phonenumber_notfound_register = "zpw_string_vcb_phonenumber_notfound_register";
         public static final String zpw_string_vcb_phonenumber_notfound_unregister = "zpw_string_vcb_phonenumber_notfound_unregister";
         public static final String zpw_alert_networking_error_parse_website = "zpw_alert_networking_error_parse_website";
+<<<<<<< HEAD
 
+=======
+        public static final String zpw_string_vcb_error_password = "zpw_string_vcb_error_password";
+>>>>>>> 9fd9a35... [SDK] Apply app info v1
         public static final String zpw_warning_bidv_select_linkcard_payment = "zpw_warning_bidv_select_linkcard_payment";
         public static final String zpw_warning_bidv_linkcard_before_payment = "zpw_warning_bidv_linkcard_before_payment";
 
@@ -316,6 +320,7 @@ public class RS {
         public static final String zpw_string_alert_linkcard_channel_withdraw = "zpw_string_alert_linkcard_channel_withdraw";
 
         public static final String zingpaysdk_alert_input_error = "zingpaysdk_alert_input_error";
+        public static final String sdk_config_invalid = "sdk_config_invalid";
 
         public static final String zpw_alert_error_data = "zpw_alert_error_data";
 
