@@ -95,7 +95,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-        Log.d(this, "there're error ssl on page " + GsonUtils.toJsonString(error));
+        Log.d(this, "there're error ssl on page", error);
     }
 
 }

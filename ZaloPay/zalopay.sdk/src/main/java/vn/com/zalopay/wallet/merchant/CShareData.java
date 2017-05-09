@@ -23,7 +23,6 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -37,7 +36,6 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
-import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 import vn.com.zalopay.wallet.merchant.listener.IDetectCardTypeListener;
@@ -220,7 +218,7 @@ public class CShareData extends SingletonBase {
     }
 
     protected void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
-        Log.d(this, GsonUtils.toJsonString(pObject));
+        Log.d(this,"send notify finish link/unlink bank account ", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
@@ -229,15 +227,15 @@ public class CShareData extends SingletonBase {
             try {
                 IReloadMapInfoListener reloadMapInfoListener = (IReloadMapInfoListener) pObject[1];
                 BankAccountHelper.loadBankAccountList(true, reloadMapInfoListener);
-            }catch (Exception ex){
-                Log.e(this,ex);
+            } catch (Exception ex) {
+                Log.e(this, ex);
             }
         }
     }
 
     protected void sendNotifyTransactionFinishToAdapter(Object... pObject) {
         //user in sdk now.
-        Log.d(this, GsonUtils.toJsonString(pObject));
+        Log.d(this, "send notify finish transaction", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);

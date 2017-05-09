@@ -248,6 +248,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        Log.d(this,"start payment channel", miniPmcTransType);
         if (miniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -289,7 +290,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         applyFont();
         updateFontCardNumber();
-        if (!mIsStart && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
+        if (!mIsStart && ( getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
                 getAdapter().moveToConfirmScreen();
                 mIsStart = true;
@@ -303,7 +304,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(this, "==== onResume ====");
+        Log.d(this, "onResume");
         if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
             showKeyBoardForPin();
         }
@@ -387,7 +388,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(this, "==== onRestart ====");
+        Log.d(this, "onRestart");
         showKeyBoardOnFocusingViewAgain();
     }
 

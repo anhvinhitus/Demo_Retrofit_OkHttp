@@ -15,7 +15,6 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
@@ -87,7 +86,7 @@ public class ChannelStartProcessor extends SingletonBase {
      * start payment channel
      */
     public void startGateWay() {
-        Log.d(this, "user selected channel for payment " + GsonUtils.toJsonString(mChannel));
+        Log.d(this, "user selected channel for payment", mChannel);
         // Lost connection,show alert dialog
         if (getActivity() != null && !ConnectionUtil.isOnline(getActivity()) && getActivity() != null) {
             getActivity().askToOpenSettingNetwoking(null);
@@ -107,7 +106,7 @@ public class ChannelStartProcessor extends SingletonBase {
             }
 
             //validate in maptable
-            Log.d(this, "table map payment " + GsonUtils.toJsonString(GlobalData.getUserProfileList()));
+            Log.d(this, "table map payment", GlobalData.getUserProfileList());
             int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
             if (iCheck == Constants.LEVELMAP_INVALID) {
                 getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
@@ -149,7 +148,7 @@ public class ChannelStartProcessor extends SingletonBase {
                 BankLoader.loadBankList(mLoadBankListListener);
             } else if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                showSupportBankVersionDialog(String.format(message,mChannel.pmcname), mChannel.minappversion);
+                showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
             } else {
                 startChannel();
             }

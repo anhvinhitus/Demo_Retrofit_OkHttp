@@ -152,7 +152,7 @@ public class MapCardHelper {
     }
 
     public static void notifyNewMapCardToApp(DMappedCard saveCardInfo) {
-        Log.d("notifyNewMapCardToApp", "===saveCardInfo=" + GsonUtils.toJsonString(saveCardInfo));
+        Log.d("notifyNewMapCardToApp", "===saveCardInfo=", saveCardInfo);
 
         DMapCardResult mapCardResult = new DMapCardResult();
 
@@ -191,6 +191,6 @@ public class MapCardHelper {
         mapCardResult.setBankName(bankName);
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
 
-        Log.d("notifyNewMapCardToApp", "===mapCardResult=" + GsonUtils.toJsonString(mapCardResult));
+        Log.d("notifyNewMapCardToApp", "===mapCardResult=", mapCardResult);
     }
 }

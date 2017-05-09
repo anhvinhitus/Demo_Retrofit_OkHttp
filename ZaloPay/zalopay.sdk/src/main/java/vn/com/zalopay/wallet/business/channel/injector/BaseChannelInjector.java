@@ -220,7 +220,7 @@ public abstract class BaseChannelInjector {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mappCard.bankcode), MiniPmcTransType.class);
                 }
 
-                Log.d(this, activeChannel != null ? GsonUtils.toJsonString(activeChannel) : "activeChannel is null");
+                Log.d(this, "active channel is", activeChannel);
 
                 if (activeChannel != null) {
                     //check this map card is support or not
@@ -304,7 +304,7 @@ public abstract class BaseChannelInjector {
         }
         //get zalopay channel from cache
         MiniPmcTransType zaloPayChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), MiniPmcTransType.class);
-        Log.d(this, "pmc zalopay for withdraw " + GsonUtils.toJsonString(zaloPayChannel));
+        Log.d(this, "pmc zalopay for withdraw", zaloPayChannel);
         if (zaloPayChannel == null) {
             Log.d(this, "skip load cache card for withdraw because zalopay channel is not configured");
             return;
@@ -389,7 +389,7 @@ public abstract class BaseChannelInjector {
         }
         //get zalopay channel from cache
         MiniPmcTransType zaloPayChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), MiniPmcTransType.class);
-        Log.d(this, "pmc zalopay for withdraw " + GsonUtils.toJsonString(zaloPayChannel));
+        Log.d(this, "pmc zalopay for withdraw", zaloPayChannel);
         if (zaloPayChannel == null) {
             Log.d(this, "skip load cache bank account for withdraw because zalopay channel is not configured");
             return;
@@ -528,7 +528,7 @@ public abstract class BaseChannelInjector {
             }
             //remove it
             if (!isExist) {
-                Log.d("filterForceChannel", "===remove channel by force" + GsonUtils.toJsonString(channelView));
+                Log.d("filterForceChannel", "remove channel by force", channelView);
                 iterator.remove();
             }
 

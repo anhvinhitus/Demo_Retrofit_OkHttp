@@ -56,8 +56,8 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -477,7 +477,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         showWarningDialog(() -> {
             GlobalData.updateResultNetworkingError(pMessage);
-            if(GlobalData.getPaymentListener() != null){
+            if (GlobalData.getPaymentListener() != null) {
                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
             }
             finish();
@@ -657,7 +657,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         MapCardHelper.loadMapCardList(false, new IReloadMapInfoListener<DMappedCard>() {
             @Override
             public void onComplete(List<DMappedCard> pMapCardList) {
-                Log.d("loadMapCardList", "===onComplete===" + GsonUtils.toJsonString(pMapCardList));
+                Log.d("loadMapCardList", "===onComplete===", pMapCardList);
                 mLoadingMapCard = false;
                 checkLoadMapCardAndBankAccountToFinish();
             }
@@ -677,7 +677,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         BankAccountHelper.loadBankAccountList(false, new IReloadMapInfoListener<DBankAccount>() {
             @Override
             public void onComplete(List<DBankAccount> pMapList) {
-                Log.d("reloadBankAccountList", "===onComplete===" + GsonUtils.toJsonString(pMapList));
+                Log.d("reloadBankAccountList", "===onComplete===", pMapList);
                 mLoadingBankAccount = false;
                 checkLoadMapCardAndBankAccountToFinish();
             }

@@ -160,7 +160,7 @@ public class SDKPayment {
             }
         }
 
-        Log.d("pay", "===info payment===" + GsonUtils.toJsonString(info));
+        Log.d("pay", "info payment", info);
 
         //check where context is end?
         try {

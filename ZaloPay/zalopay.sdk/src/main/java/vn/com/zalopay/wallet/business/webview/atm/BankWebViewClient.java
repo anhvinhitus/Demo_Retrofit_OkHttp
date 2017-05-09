@@ -260,29 +260,24 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
         final String result = pResult;
 
-        getAdapter().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+        getAdapter().getActivity().runOnUiThread(() -> {
+            DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+            Log.d("onJsPaymentResult", scriptOutput);
+            EEventType eventType = convertPageIdToEvent(mEventID);
+            BaseResponse response = genResponse(eventType, scriptOutput);
 
-                Log.d("=====onJsPaymentResult=====", GsonUtils.toJsonString(scriptOutput));
-
-                EEventType eventType = convertPageIdToEvent(mEventID);
-                BaseResponse response = genResponse(eventType, scriptOutput);
-
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                    // Auto hit at first step
-                    mIsFirst = false;
-                    hit();
+            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                // Auto hit at first step
+                mIsFirst = false;
+                hit();
+            } else {
+                if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                    getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
                 } else {
-                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
-                    } else {
-                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
-                    }
+                    getAdapter().onEvent(eventType, response, mPageCode, mEventID);
                 }
-
             }
+
         });
     }
 

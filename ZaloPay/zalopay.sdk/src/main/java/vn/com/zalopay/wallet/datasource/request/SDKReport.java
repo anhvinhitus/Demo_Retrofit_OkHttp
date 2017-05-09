@@ -8,7 +8,6 @@ import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class SDKReport extends BaseRequest<BaseResponse> {
@@ -68,7 +67,7 @@ public class SDKReport extends BaseRequest<BaseResponse> {
     }
 
     private void onPostResult() {
-        Log.d(this, GsonUtils.toJsonString(getResponse()));
+        Log.d(this, getResponse());
     }
 
     @Override

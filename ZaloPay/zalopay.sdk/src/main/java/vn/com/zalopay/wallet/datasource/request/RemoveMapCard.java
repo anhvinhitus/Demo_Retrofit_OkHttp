@@ -20,7 +20,6 @@ import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class RemoveMapCard extends BaseRequest<BaseResponse> {
@@ -43,13 +42,13 @@ public class RemoveMapCard extends BaseRequest<BaseResponse> {
             @Override
             public void onComplete(List<DMappedCard> pMapCardList) {
                 callbackSuccessToMerchant();
-                Log.d(this, "===onComplete===" + GsonUtils.toJsonString(pMapCardList));
+                Log.d(this, "===onComplete===", pMapCardList);
             }
 
             @Override
             public void onError(String pErrorMess) {
                 callbackSuccessToMerchant();
-                Log.d(this, "===onError=" + pErrorMess);
+                Log.d(this, "===onError=", pErrorMess);
             }
         });
     }
@@ -112,7 +111,7 @@ public class RemoveMapCard extends BaseRequest<BaseResponse> {
 
     @Override
     protected void onRequestInProcess() {
-        Log.d(this, "==removing map card===" + GsonUtils.toJsonString(mMapCardParams));
+        Log.d(this, "==removing map card===", mMapCardParams);
     }
 
     @Override

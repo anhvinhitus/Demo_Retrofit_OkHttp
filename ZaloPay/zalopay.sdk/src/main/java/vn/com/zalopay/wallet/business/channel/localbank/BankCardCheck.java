@@ -143,8 +143,8 @@ public class BankCardCheck extends CardCheck {
 
                         mFoundIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectedBank.code);
 
-                        Log.d(this, "===otp pattern===" + GsonUtils.toJsonString(mOtpReceiverPatternList));
-                        Log.d(this, "===identifier===" + GsonUtils.toJsonString(mFoundIdentifier));
+                        Log.d(this, "otp pattern" + mOtpReceiverPatternList);
+                        Log.d(this, "identifier" + mFoundIdentifier);
                     }
                 } catch (Exception e) {
                     Log.e(this, e);

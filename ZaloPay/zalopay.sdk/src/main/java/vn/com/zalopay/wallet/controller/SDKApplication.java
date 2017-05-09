@@ -139,7 +139,7 @@ public class SDKApplication extends Application {
      */
     public synchronized static void refreshGatewayInfo(ZPWPaymentInfo pPaymentInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
-            Log.d("refreshGatewayInfo", "===refreshGatewayInfo===pPaymentInfo=" + GsonUtils.toJsonString(pPaymentInfo));
+            Log.d("refreshGatewayInfo", "pPaymentInfo", pPaymentInfo);
             GlobalData.initApplicationUserInfo(pPaymentInfo);
             refreshGatewayInfo(pGatewayInfoCallback);
         } catch (Exception e) {

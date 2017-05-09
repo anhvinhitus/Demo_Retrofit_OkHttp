@@ -99,7 +99,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     }
 
     protected boolean needRetry(Throwable t) {
-        Log.d(this, GsonUtils.toJsonString(t));
+        Log.d(this, t);
         verifyException(t);
         return true;
     }

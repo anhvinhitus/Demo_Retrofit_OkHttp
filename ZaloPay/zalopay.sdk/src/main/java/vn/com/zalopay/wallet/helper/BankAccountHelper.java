@@ -137,7 +137,7 @@ public class BankAccountHelper {
         //update checksum
         SharedPreferencesManager.getInstance().setBankAccountCheckSum(pInfoCheckSum);
         Log.d("updateBankAccountListOnCache", "===pInfoCheckSum=" + pInfoCheckSum);
-        Log.d("updateBankAccountListOnCache", "===pMapList=" + GsonUtils.toJsonString(pMapList));
+        Log.d("updateBankAccountListOnCache", "===pMapList=", pMapList);
         //map card list
         if (pMapList != null && pMapList.size() > 0) {
             StringBuilder mappedCardID = new StringBuilder();
