@@ -4,12 +4,15 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
+=======
+import vn.com.zalopay.wallet.utils.Log;
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterZaloPay extends AdapterBase {

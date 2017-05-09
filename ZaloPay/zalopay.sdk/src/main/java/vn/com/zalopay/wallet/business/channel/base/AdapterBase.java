@@ -287,6 +287,9 @@ public abstract class AdapterBase {
 
     public int getChannelID() {
         MiniPmcTransType miniPmcTransType = getConfig();
+        if (GlobalData.isWithDrawChannel()) {
+            miniPmcTransType.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        }
         return miniPmcTransType != null ? miniPmcTransType.pmcid : -1;
     }
 
@@ -1057,6 +1060,7 @@ public abstract class AdapterBase {
     }
 
     public void moveToConfirmScreen() throws Exception {
+<<<<<<< HEAD
 
         getActivity().setConfirmTitle();
 
@@ -1064,6 +1068,16 @@ public abstract class AdapterBase {
         ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
         if (scrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
+=======
+        try {
+            //add overswipe for rootview scrollview
+            ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
+            if (scrollViewRoot != null) {
+                OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
+            }
+        } catch (Exception ex) {
+            throw ex;
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
         }
 
     }

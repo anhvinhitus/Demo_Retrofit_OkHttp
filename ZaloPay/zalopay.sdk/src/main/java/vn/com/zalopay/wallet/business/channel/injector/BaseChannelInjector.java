@@ -226,14 +226,16 @@ public abstract class BaseChannelInjector {
                 }
 
                 MiniPmcTransType activeChannel = null;
-                ECardType eCardType = ECardType.fromString(bankAccount.bankcode);
-                if (eCardType != ECardType.UNDEFINE && ECardType.isBankAccount(eCardType)) {
+                if (GlobalData.isWithDrawChannel()) {
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(bankAccount.bankcode), MiniPmcTransType.class);
+                } else if (BankAccountHelper.isBankAccount(bankAccount.bankcode)) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(bankAccount.bankcode), MiniPmcTransType.class);
                 }
-                Log.d(this, activeChannel != null ? GsonUtils.toJsonString(activeChannel) : "activeChannel is null");
+                Log.d(this, "active channel ", activeChannel);
                 if (activeChannel != null) {
                     //check this map card/map bankaccount is support or not
                     allowPaymentChannel(activeChannel);
+                    resetPmc(activeChannel);
                     if (isBankMaintenance(bankAccount.bankcode, EBankFunction.PAY_BY_BANKACCOUNT_TOKEN)) {
                         activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                     }
@@ -278,6 +280,19 @@ public abstract class BaseChannelInjector {
             }
         }
 
+    }
+
+    protected void resetPmc(MiniPmcTransType pChannel) {
+        if (pChannel == null) {
+            return;
+        }
+        if (BankAccountHelper.isBankAccount(pChannel.bankcode)) {
+            pChannel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+        } else if (Constants.CCCode.equals(pChannel.bankcode)) {
+            pChannel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+        } else {
+            pChannel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+        }
     }
 
     /***
@@ -331,25 +346,24 @@ public abstract class BaseChannelInjector {
                 if (TextUtils.isEmpty(mapCardID)) {
                     continue;
                 }
-
-                //get card info from cache.
-                String strMapCard = SharedPreferencesManager.getInstance().getMapCardByKey(mapCardID);
+                String strMapCard = SharedPreferencesManager.getInstance().getMapCardByKey(mapCardID); //get card info from cache
                 if (TextUtils.isEmpty(strMapCard)) {
                     continue;
                 }
-                DMappedCard mappCard = GsonUtils.fromJsonString(strMapCard, DMappedCard.class);
-                if (mappCard == null) {
+                DMappedCard mapCard = GsonUtils.fromJsonString(strMapCard, DMappedCard.class);
+                if (mapCard == null) {
                     continue;
                 }
-                Log.d(this, "map card " + GsonUtils.toJsonString(mappCard));
-
+                Log.d(this, "map card ", mapCard);
                 MiniPmcTransType activeChannel;
-                ECardType eCardType = ECardType.fromString(mappCard.bankcode);
-                if (eCardType != ECardType.UNDEFINE) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mappCard.bankcode), MiniPmcTransType.class);
+                if (GlobalData.isWithDrawChannel()) {
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mapCard.bankcode), MiniPmcTransType.class);
+                } else if (Constants.CCCode.equals(mapCard.bankcode)) {
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mapCard.bankcode), MiniPmcTransType.class);
                 } else {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mappCard.bankcode), MiniPmcTransType.class);
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mapCard.bankcode), MiniPmcTransType.class);
                 }
+<<<<<<< HEAD
 >>>>>>> 9fd9a35... [SDK] Apply app info v1
 
 <<<<<<< HEAD
@@ -399,6 +413,21 @@ public abstract class BaseChannelInjector {
                 if (channel.isEnable()) {
                     checkSupportAmount(channel);
                 }
+=======
+                Log.d(this, "active channel is", activeChannel);
+                if (activeChannel != null) {
+                    //check this map card is support or not
+                    allowPaymentChannel(activeChannel);
+                    resetPmc(activeChannel);
+
+                    if (isBankMaintenance(mapCard.bankcode, EBankFunction.PAY_BY_CARD_TOKEN)) {
+                        activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
+                    }
+                    PaymentChannel channel = new PaymentChannel(activeChannel);
+                    channel.l4no = mapCard.last4cardno;
+                    channel.f6no = mapCard.first6cardno;
+                    channel.bankcode = mapCard.bankcode;
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
 
                 //this is bank
                 if (isBankCard) {
@@ -434,8 +463,18 @@ public abstract class BaseChannelInjector {
                         populateSupportAmount(channel);
                     }
 
-                    if (channel.isAtmChannel()) {
-                        CChannelHelper.inflatChannelIcon(channel, mappCard.bankcode);
+                    if (Constants.CCCode.equals(channel.bankcode)) {
+                        CreditCardCheck.getInstance().detectCard(channel.f6no);
+                        if (CreditCardCheck.getInstance().isDetected()) {
+                            //populate channel name
+                            channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mapCard.last4cardno;
+                            ECardType cardType = ECardType.fromString(CreditCardCheck.getInstance().getCodeBankForVerify());
+                            CChannelHelper.inflatChannelIcon(channel, cardType.toString());
+                        }
+                    }
+                    //this is atm
+                    else {
+                        CChannelHelper.inflatChannelIcon(channel, mapCard.bankcode);
                         BankCardCheck.getInstance().detectCard(channel.f6no);
                         if (BankCardCheck.getInstance().isDetected()) {
                             //populate channel name
@@ -448,24 +487,17 @@ public abstract class BaseChannelInjector {
                             } else {
                                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), bankName);
                             }
-                            channel.pmcname = bankName + mappCard.last4cardno;
+                            channel.pmcname = bankName + mapCard.last4cardno;
                         }
-                    }
-                    //this is cc
-                    else {
-                        CreditCardCheck.getInstance().detectCard(channel.f6no);
-                        if (CreditCardCheck.getInstance().isDetected()) {
-                            //populate channel name
-                            channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mappCard.last4cardno;
-                            ECardType cardType = ECardType.fromString(CreditCardCheck.getInstance().getCodeBankForVerify());
-                            CChannelHelper.inflatChannelIcon(channel, cardType.toString());
-                        }
+<<<<<<< HEAD
 >>>>>>> 9fd9a35... [SDK] Apply app info v1
 
                         //populate channel name
                         channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mappCard.last4cardno;
                         String cardType = CardTypeUtils.fromBankCode(CreditCardCheck.getInstance().getCodeBankForVerify());
                         CChannelHelper.inflatChannelIcon(channel, cardType);
+=======
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
                     }
 <<<<<<< HEAD
 
@@ -478,8 +510,7 @@ public abstract class BaseChannelInjector {
 
 =======
                     if (!CreditCardCheck.getInstance().isDetected() && !BankCardCheck.getInstance().isDetected()) {
-                        //channel name
-                        channel.pmcname = GlobalData.getStringResource(RS.string.zpw_save_credit_card_default) + mappCard.last4cardno;
+                        channel.pmcname = GlobalData.getStringResource(RS.string.zpw_save_credit_card_default) + mapCard.last4cardno;
                     }
                     //add channel to list
                     if (!mChannelList.contains(channel)) {
@@ -491,12 +522,19 @@ public abstract class BaseChannelInjector {
                 if (!mChannelList.contains(channel)) {
                     mChannelList.add(channel);
                 }
+<<<<<<< HEAD
 
             }
+=======
+            }
+        } catch (Exception ex) {
+            throw ex;
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
         }
 
     }
 
+<<<<<<< HEAD
     /***
      * load map card for withddraw
      * user just can withdraw to map card atm
@@ -714,6 +752,8 @@ public abstract class BaseChannelInjector {
         }
     }
 
+=======
+>>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
     protected void addChannelToList(PaymentChannel pChannel) {
         if (pChannel != null) {
             //sometimes network not stable, so 2 channels same in listview, we must exclude it if it existed
@@ -816,7 +856,7 @@ public abstract class BaseChannelInjector {
             return;
         }
         if (pmcConfigList == null || (pmcConfigList != null &&
-                !pmcConfigList.contains(pChannel.getPmcKey(pChannel.pmcid)))) {
+                !pmcConfigList.contains(pChannel.getPmcKey(GlobalData.appID, GlobalData.getTransactionType().toString(), pChannel.pmcid)))) {
             pChannel.setStatus(EPaymentChannelStatus.DISABLE);
         }
 >>>>>>> 9fd9a35... [SDK] Apply app info v1

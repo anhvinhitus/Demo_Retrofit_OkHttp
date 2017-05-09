@@ -21,11 +21,8 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
     @Override
     protected void detectChannel(ZPWOnGetChannelListener pListener) throws Exception {
         mGetChannelListener = pListener;
-        //load mapped card from cached.
-        loadMapCardFromCacheForWithDraw();
-        //load bank account
-        loadBankAccountFromCacheForWithDraw();
-        //check where bank allow withdrawing.
+        getMapBankAccount();
+        getMapCard();
         crossCheckWithDraw();
     }
 
@@ -44,8 +41,6 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
             if (bankConfig == null) {
                 continue;
             }
-            //withdraw fee count from bank config
-            channelView.totalfee = bankConfig.calculateFee();
             if (!bankConfig.isAllowWithDraw()) {
                 channelView.setStatus(PaymentChannelStatus.DISABLE);
             } else if (bankConfig.isBankMaintenence(BankFunctionCode.WITHDRAW)) {
