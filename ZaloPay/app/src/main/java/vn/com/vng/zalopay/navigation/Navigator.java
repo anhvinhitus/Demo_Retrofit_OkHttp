@@ -660,7 +660,13 @@ public class Navigator implements INavigator {
     }
 
     public void startIntroAppActivity(Context context) {
+        startIntroAppActivity(context, true, "");
+    }
+
+    public void startIntroAppActivity(Context context, boolean startup, String title) {
         Intent intent = new Intent(context, IntroAppActivity.class);
+        intent.putExtra("startup", startup);
+        intent.putExtra("title", title);
         context.startActivity(intent);
     }
 
