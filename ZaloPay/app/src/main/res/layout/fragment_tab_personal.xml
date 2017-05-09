@@ -15,10 +15,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/personal_title"
-            android:textColor="@color/white" />
+            android:text="@string/personal_title" />
 
+        <RelativeLayout
+            android:id="@+id/personal_rl_setting"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true">
+
+            <com.zalopay.ui.widget.IconFont
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/personal_margin_12"
+                android:textColor="@color/white"
+                app:iconName="@string/personal_history"
+                app:iconSize="@dimen/personal_margin_18" />
+        </RelativeLayout>
     </RelativeLayout>
+    <!--<include layout="@layout/toolbar_profile" />-->
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -230,6 +246,7 @@
                     app:iconLeftPadding="@dimen/personal_margin_12"
                     app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
+                    app:iconRightName="@string/general_arrowright"
                     app:iconRightSize="@dimen/font_size_arrow_right" />
 
             </LinearLayout>

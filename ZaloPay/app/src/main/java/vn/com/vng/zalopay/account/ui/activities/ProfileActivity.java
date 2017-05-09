@@ -11,6 +11,7 @@ import com.zalopay.ui.widget.IconFont;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
@@ -43,6 +44,9 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     @BindView(R.id.profile_icfont_right_arrow)
     IconFont icfontRightArrow;
 
+    @BindView(R.id.toolbar_profile_tv_title)
+    TextView tvToolbarTitle;
+
     public void updateUserInfo(User user) {
         if (user == null) {
             return;
@@ -50,6 +54,11 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         tvName.setText(user.displayName);
         imgAvatar.setImageURI(user.avatar);
         setZaloPayName(user.zalopayname);
+    }
+
+    @OnClick(R.id.toolbar_profile_rl_setting)
+    public void goToProtectAccount() {
+        navigator.startProtectAccount(this);
     }
 
     @Override
@@ -87,7 +96,8 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         presenter.attachView(this);
         mZaloSdkApi.getProfile();
         icfontRightArrow.setVisibility(View.GONE);
-        getSupportActionBar().setTitle(getString(R.string.title_activity_profile));
+//        getSupportActionBar().setTitle(getString(R.string.title_activity_profile));
+        tvToolbarTitle.setText(getString(R.string.title_activity_profile));
     }
 
     @Override

@@ -149,6 +149,11 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         }
     }
 
+    @OnClick(R.id.personal_rl_setting)
+    public void goToProtectAccount() {
+        navigator.startProtectAccount(getActivity());
+    }
+
     @OnClick(R.id.personal_profile_header_info)
     public void onProfileInfoClick() {
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_PROFILE);

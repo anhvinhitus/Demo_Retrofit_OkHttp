@@ -54,29 +54,5 @@ public class HeaderViewTop extends LinearLayout {
             rlHeaderCollapsed.setAlpha(alpha);
             rlHeaderSearchView.setAlpha(1 - alpha);
         }
-
-//        switch (code) {
-//            case 0:
-//                rlHeaderCollapsed.setVisibility(View.GONE);
-//                rlHeaderSearchView.setVisibility(View.VISIBLE);
-//                rlHeaderPersonal.setVisibility(View.GONE);
-//                rlHeaderCollapsed.setAlpha(alpha);
-//                rlHeaderSearchView.setAlpha(1 - alpha);
-//                break;
-//            case 1:
-//                rlHeaderPersonal.setVisibility(View.GONE);
-//                if (alpha > 0.3f) {
-//                    rlHeaderSearchView.setVisibility(View.GONE);
-//                    rlHeaderCollapsed.setVisibility(View.VISIBLE);
-//                }
-//                rlHeaderCollapsed.setAlpha(alpha);
-//                rlHeaderSearchView.setAlpha(1 - alpha);
-//                break;
-//            case 2:
-//                rlHeaderPersonal.setVisibility(View.VISIBLE);
-//                rlHeaderCollapsed.setVisibility(View.GONE);
-//                rlHeaderSearchView.setVisibility(View.GONE);
-//                break;
-//        }
     }
 }
