@@ -7,7 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
@@ -17,7 +17,6 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
     @Override
     protected void detectChannel(ZPWOnGetChannelListener pListener) throws Exception {
         mGetChannelListener = pListener;
-
         //load mapped card from cached.
         loadMapCardFromCacheForWithDraw();
         //load bank account
@@ -28,22 +27,17 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
 
     /***
      * check which map card type is allow from banklist
-     *
      * @throws Exception
      */
     protected void crossCheckWithDraw() throws Exception {
-        for (Iterator<DPaymentChannelView> iterator = mChannelList.iterator(); iterator.hasNext(); ) {
-            DPaymentChannelView channelView = iterator.next();
-
+        for (Iterator<PaymentChannel> iterator = mChannelList.iterator(); iterator.hasNext(); ) {
+            PaymentChannel channelView = iterator.next();
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(channelView.bankcode), BankConfig.class);
-
             if (bankConfig == null) {
                 continue;
             }
-
             //withdraw fee count from bank config
             channelView.totalfee = bankConfig.calculateFee();
-
             if (!bankConfig.isAllowWithDraw()) {
                 channelView.setStatus(EPaymentChannelStatus.DISABLE);
             } else if (bankConfig.isBankMaintenence(EBankFunction.WITHDRAW)) {
@@ -54,10 +48,9 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
                 channelView.setAllowByAmountAndFee(false);
             }
         }
-
         sortChannels();
-
-        if (mGetChannelListener != null)
+        if (mGetChannelListener != null) {
             mGetChannelListener.onGetChannelComplete();
+        }
     }
 }

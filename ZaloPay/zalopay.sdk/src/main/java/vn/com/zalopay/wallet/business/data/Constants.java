@@ -15,7 +15,7 @@ public class Constants {
     public static final String URL_CHECK_SUBMIT_ORDER_STATUS = "v001/tpe/getstatusbyapptransidforclient";
     public static final String URL_SAVE_CARD = "v001/tpe/mapcard";
     public static final String URL_GETBALANCE_ZALOPAY = "v001/tpe/getbalance";
-    public static final String URL_APP_INFO = "v001/tpe/getappinfo";
+    public static final String URL_APP_INFO = "v001/tpe/getappinfov1";
     public static final String URL_REMOVE_MAPCARD = "v001/tpe/removemapcard";
     public static final String URL_GET_BANKLIST = "v001/tpe/getbanklist";
     public static final String URL_ATM_AUTHEN = "v001/tpe/atmauthenpayer";
@@ -81,9 +81,6 @@ public class Constants {
     public static final int LEVELMAP_INVALID = -1;
     public static final int LEVELMAP_BAN = 1;
     public static final int LEVELMAP_ALLOW = 0;
-    public static final int INPUT_INVALID = -1;
-    public static final int REQUIRE_PIN = 1;
-    public static final int REQUIRE_OTP = 2;
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;

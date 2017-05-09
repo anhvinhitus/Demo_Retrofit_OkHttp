@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.listener;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 
 
 public interface ILoadAppInfoListener {
@@ -8,5 +8,5 @@ public interface ILoadAppInfoListener {
 
     public void onSuccess();
 
-    public void onError(DAppInfoResponse message);
+    public void onError(AppInfoResponse message);
 }

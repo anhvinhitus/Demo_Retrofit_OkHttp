@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.helper;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 
 public class CChannelHelper {
     /***
@@ -12,7 +12,7 @@ public class CChannelHelper {
      * @param channel
      * @param pIconName
      */
-    public static void inflatChannelIcon(DPaymentChannelView channel, String pIconName) {
+    public static void inflatChannelIcon(PaymentChannel channel, String pIconName) {
         if (channel != null) {
             if (!TextUtils.isEmpty(pIconName))
                 channel.channel_icon = makeCardIconNameFromBankCode(pIconName);

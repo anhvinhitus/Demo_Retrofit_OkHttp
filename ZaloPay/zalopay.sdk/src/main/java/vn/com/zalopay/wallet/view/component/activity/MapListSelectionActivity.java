@@ -14,7 +14,7 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
@@ -34,7 +34,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
     protected GatewayChannelListViewAdapter mChannelListViewAdapter = null;
-    protected ArrayList<DPaymentChannelView> mChannelList = new ArrayList<>();
+    protected ArrayList<PaymentChannel> mChannelList = new ArrayList<>();
     protected WeakReference<IMoveToChannel> mMoveToChannelListener;
     protected WeakReference<BasePaymentActivity> mGatewayActivity;
     private AdapterView.OnItemClickListener mChannelItemClick = (parent, view, position, id) -> {
@@ -135,7 +135,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         for (int i = 0; i < mChannelList.size(); i++) {
             if (mChannelList.get(i).isBankAccountMap) {
                 return i;
-            } else if (mChannelList.get(i).isCardNumber(pCardNumber)) {
+            } else if (mChannelList.get(i).compareToCardNumber(pCardNumber)) {
                 return i;
             }
         }
@@ -149,11 +149,11 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         this.mChannelListView.setOnItemClickListener(mChannelItemClick);
     }
 
-    protected List<DPaymentChannelView> createChannels() {
+    protected List<PaymentChannel> createChannels() {
         mChannelList.clear();
         if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
-            ArrayList<DPaymentChannelView> channelList = getGatewayActivity().getChannelList();
-            for (DPaymentChannelView channel : channelList) {
+            ArrayList<PaymentChannel> channelList = getGatewayActivity().getChannelList();
+            for (PaymentChannel channel : channelList) {
                 if (channel.isMapCardChannel() && !TextUtils.isEmpty(channel.bankcode) && channel.bankcode.equals(mBankCode)) {
                     mChannelList.add(channel.clone());
                 }

@@ -2,15 +2,12 @@ package vn.com.zalopay.wallet.datasource.request;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
@@ -154,44 +151,16 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
             if (pResponse.approvedinsideappids != null) {
                 SharedPreferencesManager.getInstance().setApproveInsideApps(GsonUtils.toJsonString(pResponse.approvedinsideappids));
             }
-
-            //app info zalopay
-            if (pResponse.info != null) {
-                SharedPreferencesManager.getInstance().setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
-            }
-
-            //zalopay channel transtype
-            if (pResponse.transtypepmcs != null && pResponse.transtypepmcs.size() > 0) {
-                for (DChannelMapApp channelMap : pResponse.transtypepmcs) {
-                    ArrayList<String> mapAppChannelIDList = new ArrayList<>();
-
-                    String keyMap = String.valueOf(pResponse.info != null ? pResponse.info.appid : GlobalData.appID);
-                    keyMap += Constants.UNDERLINE + channelMap.transtype;
-
-                    for (DPaymentChannel channel : channelMap.pmclist) {
-                        String appChannelID = keyMap + Constants.UNDERLINE + channel.pmcid;
-
-                        mapAppChannelIDList.add(String.valueOf(channel.pmcid));
-
-                        SharedPreferencesManager.getInstance().setPmcConfig(appChannelID, GsonUtils.toJsonString(channel));
-                    }
-
-                    SharedPreferencesManager.getInstance().setPmcConfigList(keyMap, mapAppChannelIDList);
-                }
-            }
         }
 
         //need to update card info again on cache
         if (MapCardHelper.isNeedUpdateMapCardInfoOnCache(pResponse.cardinfochecksum)) {
-
             //for testing
-            /*
             DMappedCard mappedCard = new DMappedCard();
             mappedCard.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv);
             mappedCard.first6cardno = "970418";
             mappedCard.last4cardno  = "1017";
             pResponse.cardinfos.add(mappedCard);
-            */
             MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
             try {
                 MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
@@ -214,9 +183,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
 
         if (mNoDownloadResource) {
             onPostResultCallBack();
-
             Log.d(this, "===refresh gateway from app, so no need to download resource file again===");
-
             return;
         }
 

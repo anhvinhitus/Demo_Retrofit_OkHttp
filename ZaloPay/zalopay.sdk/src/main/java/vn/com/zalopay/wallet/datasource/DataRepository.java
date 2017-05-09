@@ -140,30 +140,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         return this;
     }
 
-    protected void sendErrorLogHttpErrorCode(Response pResponse) {
-        if (mCurrentTask != null && mCurrentTask.get() != null && mCurrentTask.get().getTaskEventId() == ZPEvents.API_V001_TPE_SDKERRORREPORT) {
-            return;
-        }
-        if (pResponse != null && pResponse.code() >= 400) {
-            String paymentError = getErrorMessageFormat(pResponse.code(), GsonUtils.toJsonString(pResponse));
-            if (!TextUtils.isEmpty(paymentError)) {
-                SDKReport.makeReportError(SDKReport.API_ERROR, paymentError);
-            }
-        } else if (pResponse == null) {
-            String paymentError = getErrorMessageFormat(-1, "pResponse=NULL");
-            if (!TextUtils.isEmpty(paymentError)) {
-                SDKReport.makeReportError(SDKReport.API_ERROR, paymentError);
-            }
-        }
-    }
-
-    protected void sendErrorLogResponseNULL(Throwable pError) {
-        String paymentError = getErrorMessageFormat(-1, GsonUtils.toJsonString(pError));
-        if (!TextUtils.isEmpty(paymentError)) {
-            SDKReport.makeReportError(paymentError);
-        }
-    }
-
     protected String getErrorMessageFormat(int pCode, String pErrorMessage) {
         try {
             String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
@@ -193,7 +169,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                         if (mCurrentTask != null && mCurrentTask.get() != null && PaymentPermission.allowUseTrackingTiming()) {
                             Long timeRequest = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
                             ZPAnalytics.trackTiming(mCurrentTask.get().getTaskEventId(), timeRequest);
-                            Log.d(this, "===ZPAnalytics.trackTiming===" + mCurrentTask.get().getTaskEventId() + " timing(ms)=" + (timeRequest));
+                            Log.d(this, "ZPAnalytics.trackTiming " + mCurrentTask.get().getTaskEventId() + " timing(ms)=" + (timeRequest));
                         }
                         if (pCallback != null) {
                             pCallback.onFinish(call, response);
@@ -224,7 +200,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 }
             });
         } else {
-            Log.e(this, "==onRequest==pCall=NULL");
+            Log.e(this, "onRequest pCall=NULL");
         }
     }
 

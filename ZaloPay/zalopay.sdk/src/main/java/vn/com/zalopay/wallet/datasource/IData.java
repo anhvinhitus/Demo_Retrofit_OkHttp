@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.entity.zalopay.ZaloPayBalance;
 
@@ -41,7 +41,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_APP_INFO)
-    Call<DAppInfoResponse> getAppInfo(@QueryMap Map<String, String> params);
+    Call<AppInfoResponse> getAppInfo(@QueryMap Map<String, String> params);
 
     /**
      * Api getbanklist

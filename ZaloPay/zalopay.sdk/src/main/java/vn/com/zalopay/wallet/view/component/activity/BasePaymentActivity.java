@@ -57,10 +57,10 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.DataRepository;
@@ -295,7 +295,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         @Override
-        public void onError(DAppInfoResponse pMessage) {
+        public void onError(AppInfoResponse pMessage) {
             Log.d(this, "===onError===");
 
             showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
@@ -1350,7 +1350,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccessSpecial();
     }
 
-    protected void showBalanceContent(DPaymentChannel pConfig) throws Exception {
+    protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {
 
         setText(R.id.zalopay_bill_info, StringUtil.formatVnCurrence(String.valueOf(GlobalData.getBalance())));
 
@@ -1456,7 +1456,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /**
      * show fee
      */
-    public void showConfirmView(boolean pHidden, boolean pShow, DPaymentChannel pChannel) {
+    public void showConfirmView(boolean pHidden, boolean pShow, MiniPmcTransType pChannel) {
         if (GlobalData.isChannelHasInputCard() && pHidden) {
             visibleTranferWalletInfo(false);
             visibleAppInfo(false);

@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
@@ -20,7 +19,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -34,13 +33,13 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 /***
  * show channels
  */
-public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelView> {
+public class GatewayChannelListViewAdapter extends ArrayAdapter<PaymentChannel> {
     protected int mAlphaColor = 100;
     private Activity mActivity;
-    private List<DPaymentChannelView> mChannelList = null;
+    private List<PaymentChannel> mChannelList = null;
     private int mLayoutId;
 
-    public GatewayChannelListViewAdapter(Activity pActivity, int pLayoutId, List<DPaymentChannelView> pChannelList) {
+    public GatewayChannelListViewAdapter(Activity pActivity, int pLayoutId, List<PaymentChannel> pChannelList) {
         super(pActivity, pLayoutId, pChannelList);
 
         this.mActivity = pActivity;
@@ -54,7 +53,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
         return mChannelList.size();
     }
 
-    protected String getMessage(DPaymentChannelView pChannel) {
+    protected String getMessage(PaymentChannel pChannel) {
         String mess = null;
         if (!pChannel.isAllowByAmount()) {
             mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount);
@@ -117,7 +116,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
             currencyUnitTextView = holder.currencyUnitTextView;
         }
 
-        final DPaymentChannelView channel = this.mChannelList.get(position);
+        final PaymentChannel channel = this.mChannelList.get(position);
         if (channel != null) {
             try {
 

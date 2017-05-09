@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
@@ -183,7 +183,7 @@ public class SDKApplication extends Application {
             }
 
             @Override
-            public void onError(DAppInfoResponse message) {
+            public void onError(AppInfoResponse message) {
                 Log.d("loadAppWalletInfo", "onError");
             }
         }).execureForMerchant();
@@ -208,7 +208,7 @@ public class SDKApplication extends Application {
             }
 
             @Override
-            public void onError(DAppInfoResponse message) {
+            public void onError(AppInfoResponse message) {
                 Log.d("loadAppWithDrawInfo", "onError");
             }
         }).execureForMerchant();

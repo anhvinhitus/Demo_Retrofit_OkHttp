@@ -200,12 +200,7 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, pZaloUserId);
         params.put(ConstantParams.APP_ID, pAppId);
         params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
-
-        if (pCheckSum == null) {
-            pCheckSum = "";
-        }
-
-        params.put(ConstantParams.CHECKSUM, pCheckSum);
+        params.put(ConstantParams.CHECKSUM, !TextUtils.isEmpty(pCheckSum) ? pCheckSum : "");
     }
 
     /**
@@ -272,7 +267,7 @@ public class DataParameter {
         putBaseParameter(params);
 
         if (pAdapter != null)
-            params.put(ConstantParams.PMC_ID, pAdapter.getChannelID());
+            params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
 
         if (!TextUtils.isEmpty(pmcID))
             params.put(ConstantParams.PMC_ID, pmcID);

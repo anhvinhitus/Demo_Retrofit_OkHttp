@@ -10,7 +10,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -22,7 +21,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserProfile;
@@ -153,12 +152,9 @@ public class GlobalData {
      */
     public static boolean checkForUpdateAccessTokenToApp(BaseResponse pResponse) {
         if (pResponse == null || TextUtils.isEmpty(pResponse.accesstoken)) {
-            Log.d("checkForUpdateAccessTokenToApp", "===pResponse=NULL || accesstoken=NULL");
             return false;
         }
-
         if (GlobalData.mPaymentInfo == null || GlobalData.mPaymentInfo.userInfo == null) {
-            Log.d("checkForUpdateAccessTokenToApp", "paymentInfo=NULL");
             return false;
         }
 
@@ -166,14 +162,11 @@ public class GlobalData {
         Log.d("checkForUpdateAccessTokenToApp", "new token = " + pResponse.accesstoken);
 
         if (GlobalData.getPaymentListener() != null && !TextUtils.isEmpty(GlobalData.mPaymentInfo.userInfo.accessToken) && !GlobalData.mPaymentInfo.userInfo.accessToken.equals(pResponse.accesstoken)) {
-            //we need to callback to app to update new access token
+            //callback to app to update new access token
             GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);
-
             GlobalData.mPaymentInfo.userInfo.accessToken = pResponse.accesstoken;
-
             return true;
         }
-
         return false;
     }
 
@@ -183,19 +176,11 @@ public class GlobalData {
      * for checking user selected a map card channel.
      */
     public static boolean isMapCardChannel() {
-        if (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber()))
-            return true;
-
-        return false;
+        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard);
     }
 
     public static boolean isMapBankAccountChannel() {
-        if (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber()))
-            return true;
-
-        return false;
+        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount);
     }
 
     public static boolean isBankAccountLink() {
@@ -444,7 +429,7 @@ public class GlobalData {
         return ETransactionType.PAY;
     }
 
-    public static EBankFunction getPayBankFunction(DPaymentChannelView pChannel) {
+    public static EBankFunction getPayBankFunction(PaymentChannel pChannel) {
         if (pChannel.isBankAccountMap()) {
             bankFunction = EBankFunction.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (pChannel.isMapCardChannel()) {
@@ -675,25 +660,6 @@ public class GlobalData {
             return Constants.LEVELMAP_INVALID;
         }
         return userProfile.allow == true ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
-    }
-
-    /***
-     * check whether creditcard channel require otp?
-     */
-    public static int isRequireOtpCreditCard() {
-        BankConfig bankConfig = null;
-        try {
-            bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(Constants.CCCode), BankConfig.class);
-            if (bankConfig == null)
-                return Constants.INPUT_INVALID;
-            if (bankConfig != null && bankConfig.isRequireOtp())
-                return Constants.REQUIRE_OTP;
-            return Constants.REQUIRE_PIN;
-        } catch (Exception e) {
-            Log.e("isRequireOtpCreditCard", e);
-        }
-
-        return Constants.INPUT_INVALID;
     }
 
     public static UserProfile getUserProfileAtChannel(int pPmcID) {

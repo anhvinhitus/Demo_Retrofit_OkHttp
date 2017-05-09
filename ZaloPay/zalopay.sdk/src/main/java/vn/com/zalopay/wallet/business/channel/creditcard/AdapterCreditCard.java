@@ -6,26 +6,16 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterCreditCard extends AdapterBase {
-    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity) throws Exception {
-        super(pOwnerActivity);
-
+    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType);
         mLayoutId = SCREEN_CC;
-
-        if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())
-            mPageCode = PAGE_CONFIRM;
-        else
-            mPageCode = SCREEN_CC;
-
-        if (GlobalData.isWithDrawChannel()) {
-            mConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), DPaymentChannel.class);
-        }
-
+        mPageCode = (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_CC;
         GlobalData.cardChannelType = ECardChannelType.CC;
     }
 
@@ -33,11 +23,6 @@ public class AdapterCreditCard extends AdapterBase {
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getBankCardFinder().reset();
         getGuiProcessor().getCardFinder().detectOnOtherThread(pCardNumber, getGuiProcessor().getOnDetectCardListener());
-    }
-
-    @Override
-    public DPaymentChannel getChannelConfig() throws Exception {
-        return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(), DPaymentChannel.class);
     }
 
     @Override
@@ -62,11 +47,14 @@ public class AdapterCreditCard extends AdapterBase {
 
     }
 
+    protected int getDefaultChannelId() {
+        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+    }
+
     @Override
-    public String getChannelID() {
-        if (mConfig != null)
-            return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card);
+    public int getChannelID() {
+        int channelId = super.getChannelID();
+        return channelId != -1 ? channelId : getDefaultChannelId();
     }
 
     @Override
@@ -87,23 +75,6 @@ public class AdapterCreditCard extends AdapterBase {
         } catch (Exception ex) {
             Log.e(this, ex);
         }
-    }
-
-    @Override
-    protected int onRequirePin() {
-        int requirePin = super.onRequirePin();
-
-        if (requirePin == Constants.REQUIRE_OTP) {
-            requirePin = GlobalData.isRequireOtpCreditCard();
-
-            if (requirePin == Constants.REQUIRE_PIN) {
-                if (mConfig != null && mConfig.isNeedToCheckTransactionAmount()
-                        && GlobalData.orderAmountTotal > mConfig.amountrequireotp)
-                    requirePin = Constants.REQUIRE_OTP;
-            }
-        }
-
-        return requirePin;
     }
 
     @Override

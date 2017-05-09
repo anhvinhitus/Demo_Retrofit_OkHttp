@@ -103,9 +103,7 @@ public class AppInfoLoader extends SingletonBase {
     private boolean existedAppInfoOnCache() {
         try {
             ArrayList<String> mapChannelIDList = getChannelsForApp(String.valueOf(appId), transactionType.toString());
-
             return mapChannelIDList != null && mapChannelIDList.size() > 0 && !isExpiredTime();
-
         } catch (Exception e) {
             Log.e(this, e);
         }

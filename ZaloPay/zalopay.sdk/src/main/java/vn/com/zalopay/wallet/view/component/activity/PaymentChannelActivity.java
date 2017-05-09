@@ -27,16 +27,17 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
-
+    public static final String PMC_CONFIG_EXTRA = "pmc_config";
     protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
@@ -187,7 +188,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     public void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
-        if(GlobalData.getPaymentListener() != null){
+        if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
         }
         if (pForceUpdate) {
@@ -246,13 +247,18 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        initTimer();
-        mIsRestart = false;
-        mAdapter = AdapterFactory.produce(this);
-        if (getAdapter() == null) {
-            onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+        MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        if (miniPmcTransType == null) {
+            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
+        mAdapter = AdapterFactory.produce(this, miniPmcTransType);
+        if (getAdapter() == null) {
+            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            return;
+        }
+        initTimer();
+        mIsRestart = false;
         renderActivity();
         try {
             getAdapter().init();
@@ -489,7 +495,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    public void renderPaymentBalanceContent(DPaymentChannel pConfig) {
+    public void renderPaymentBalanceContent(MiniPmcTransType pConfig) {
         try {
             showBalanceContent(pConfig);
         } catch (Exception e) {
@@ -583,30 +589,28 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 }
             });
         } else {
-            Log.d(this, "===renderByResource===on handler===");
+            Log.d(this, "reader resource after delaying 500ms");
             new Handler().postDelayed(this::renderByResource, 500);
         }
     }
 
     protected boolean createChannelAdapter(String pChannelId) {
         try {
-            Log.d(this, "====createChannelAdapter===pChannelId=" + pChannelId);
+            Log.d(this, "create new adapter pmc id = " + pChannelId);
             //release old adapter
             if (getAdapter() != null) {
                 getAdapter().onFinish();
                 mAdapter = null;
             }
-
-            mAdapter = AdapterFactory.produceChannelByID(this, pChannelId);
-
-            return true;
-
+            MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pChannelId, null), MiniPmcTransType.class);
+            if (miniPmcTransType != null) {
+                mAdapter = AdapterFactory.produceChannelByID(this, miniPmcTransType, pChannelId);
+                return true;
+            }
         } catch (Exception e) {
             Log.e(this, e);
-
-            onExit(e != null ? e.getMessage() : GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+            onExit(e != null ? e.getMessage() : GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
         }
-
         return false;
     }
 

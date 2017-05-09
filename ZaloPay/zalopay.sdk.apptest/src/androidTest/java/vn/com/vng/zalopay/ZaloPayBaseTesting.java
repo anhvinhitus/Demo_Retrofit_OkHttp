@@ -2,7 +2,6 @@ package vn.com.vng.zalopay;
 
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.matcher.BoundedMatcher;
@@ -25,7 +24,7 @@ import org.junit.runner.RunWith;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 
 import static android.support.test.espresso.Espresso.onData;
 import static org.junit.Assert.assertEquals;
@@ -64,10 +63,10 @@ public class ZaloPayBaseTesting
 
     public static Matcher<Object> withContent(final String content)
     {
-        return new BoundedMatcher<Object, DPaymentChannelView>(DPaymentChannelView.class)
+        return new BoundedMatcher<Object, PaymentChannel>(PaymentChannel.class)
         {
             @Override
-            public boolean matchesSafely(DPaymentChannelView myObj)
+            public boolean matchesSafely(PaymentChannel myObj)
             {
                 return myObj.pmcname.equals(content);
             }

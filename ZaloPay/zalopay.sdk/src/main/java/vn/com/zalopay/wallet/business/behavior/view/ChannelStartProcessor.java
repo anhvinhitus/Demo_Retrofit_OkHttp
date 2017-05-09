@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
@@ -28,7 +28,7 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 public class ChannelStartProcessor extends SingletonBase {
     private static ChannelStartProcessor _object;
     private PaymentGatewayActivity mOwnerActivity;
-    private DPaymentChannelView mChannel;
+    private PaymentChannel mChannel;
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -74,13 +74,12 @@ public class ChannelStartProcessor extends SingletonBase {
         return mOwnerActivity;
     }
 
-    public DPaymentChannelView getChannel() {
+    public PaymentChannel getChannel() {
         return mChannel;
     }
 
-    public ChannelStartProcessor setChannel(DPaymentChannelView pChannel) {
+    public ChannelStartProcessor setChannel(PaymentChannel pChannel) {
         mChannel = pChannel;
-
         return this;
     }
 
@@ -249,6 +248,7 @@ public class ChannelStartProcessor extends SingletonBase {
     private void startChannel() {
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
         intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), String.valueOf(mChannel.pmcid));
+        intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, mChannel);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getActivity().startActivity(intent);
     }

@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -865,7 +864,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (isInputBankMaintenance()) {
                 return;
             }
-            if (getCardFinder().isDetected() && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
             }

@@ -53,6 +53,7 @@ public class BankConfig {
     }
 
     public boolean isVersionSupport(String pAppVersion) {
+        Log.d(this, "start check support bank version in bank config");
         if (TextUtils.isEmpty(pAppVersion)) {
             return true;
         }

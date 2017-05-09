@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentReturnCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
@@ -36,45 +36,40 @@ public class AdapterBankCard extends AdapterBase {
 
     private int numberRetryCaptcha = 0;
 
-    public AdapterBankCard(PaymentChannelActivity pOwnerActivity) throws Exception {
-        super(pOwnerActivity);
-
-        if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
-            mPageCode = PAGE_CONFIRM;
-        } else {
-            mPageCode = SCREEN_ATM;
-        }
-
+    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType);
         mLayoutId = SCREEN_ATM;
-
-        if (GlobalData.isWithDrawChannel()) {
-            mConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), DPaymentChannel.class);
-        }
-
+        mPageCode = (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_ATM;
         GlobalData.cardChannelType = ECardChannelType.ATM;
 
     }
 
     @Override
-    public DPaymentChannel getChannelConfig() throws Exception {
-        return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(), DPaymentChannel.class);
+    public MiniPmcTransType getConfig() {
+        try {
+            String bankCode = BankCardCheck.getInstance().getDetectBankCode();
+            if (mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(bankCode)) {
+                mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(bankCode), MiniPmcTransType.class);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return mMiniPmcTransType;
     }
 
     @Override
     public void init() {
         try {
             this.mGuiProcessor = new BankCardGuiProcessor(this);
-            if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
+            if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
                 getGuiProcessor().initPager();
+            }
 
         } catch (Exception e) {
             Log.e(this, e);
-
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-
             return;
         }
-
         showFee();
     }
 
@@ -94,12 +89,14 @@ public class AdapterBankCard extends AdapterBase {
         return mWebViewProcessor;
     }
 
+    protected int getDefaultChannelId() {
+        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+    }
 
     @Override
-    public String getChannelID() {
-        if (mConfig != null)
-            return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm);
+    public int getChannelID() {
+        int channelId = super.getChannelID();
+        return channelId != -1 ? channelId : getDefaultChannelId();
     }
 
     @Override
@@ -349,7 +346,7 @@ public class AdapterBankCard extends AdapterBase {
                 }
 
                 //update top info if this is tranfer money transaction
-                getActivity().showConfirmView(true, true, mConfig);
+                getActivity().showConfirmView(true, true, getConfig());
 
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
@@ -439,34 +436,6 @@ public class AdapterBankCard extends AdapterBase {
             Log.e(this, ex);
         }
 
-    }
-
-    /***
-     * check where need to requre pin
-     *
-     * @return
-     */
-    @Override
-    protected int onRequirePin() {
-        int requirePin = super.onRequirePin();
-
-        if (requirePin == Constants.REQUIRE_OTP && getGuiProcessor().getCardFinder().getDetectBankConfig() != null) {
-            // continue to check banklist
-            if (!getGuiProcessor().getCardFinder().getDetectBankConfig().isRequireOtp()) {
-                requirePin = Constants.REQUIRE_PIN;
-            }
-
-            if (requirePin == Constants.REQUIRE_PIN) {
-                //continue to check amount in channel.
-                if (mConfig != null && mConfig.isNeedToCheckTransactionAmount()
-                        && GlobalData.orderAmountTotal > mConfig.amountrequireotp)
-                    requirePin = Constants.REQUIRE_OTP;
-
-            }
-        }
-
-
-        return requirePin;
     }
 
     @Override
@@ -570,7 +539,6 @@ public class AdapterBankCard extends AdapterBase {
             intentBankList.putExtra(MapListSelectionActivity.CARDNUMBER_EXTRA, getGuiProcessor().getCardNumber());
             intentBankList.putExtra(MapListSelectionActivity.NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
             getActivity().startActivity(intentBankList);
-
             return true;
         }
         //have some card bidv in map card list and but don't have this card
@@ -611,11 +579,9 @@ public class AdapterBankCard extends AdapterBase {
 
     public boolean isBidvBankPayment() {
         BankCardCheck atmCardCheck = getGuiProcessor().getBankCardFinder();
-
         if (atmCardCheck != null && atmCardCheck.isDetected() && atmCardCheck.getDetectBankCode().equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))) {
             return true;
         }
-
         return false;
     }
 
@@ -631,9 +597,7 @@ public class AdapterBankCard extends AdapterBase {
                         || pMessage.equals(GlobalData.getStringResource(RS.string.zpw_error_message_bidv_website_wrong_password)))) {
             isContinue = true;
         }
-
         Log.d(this, "===continueProcessForBidvBank===isContinue=" + isContinue);
-
         return isContinue;
     }
 }

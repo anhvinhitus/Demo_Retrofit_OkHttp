@@ -3,17 +3,16 @@ package vn.com.zalopay.wallet.datasource.request;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.GetAppInfoImpl;
@@ -24,9 +23,8 @@ import vn.com.zalopay.wallet.utils.Log;
 /***
  * get app info class
  */
-public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
+public class GetAppInfo extends BaseRequest<AppInfoResponse> {
     private ILoadAppInfoListener mLoadAppInfoListener;
-
     private String appID;
     private String zaloUserId;
     private String accessToken;
@@ -39,18 +37,11 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
      */
     public GetAppInfo(ILoadAppInfoListener pListener) {
         super();
-
         mLoadAppInfoListener = pListener;
-
         if (GlobalData.getPaymentInfo() != null && GlobalData.getPaymentInfo().userInfo != null && GlobalData.getPaymentInfo().userInfo.isUserInfoValid()) {
-            try {
-                appID = String.valueOf(GlobalData.getPaymentInfo().appID);
-                zaloUserId = GlobalData.getPaymentInfo().userInfo.zaloPayUserId;
-                accessToken = GlobalData.getPaymentInfo().userInfo.accessToken;
-            } catch (Exception e) {
-                Log.e(this, e);
-                onRequestFail(null);
-            }
+            appID = String.valueOf(GlobalData.getPaymentInfo().appID);
+            zaloUserId = GlobalData.getPaymentInfo().userInfo.zaloPayUserId;
+            accessToken = GlobalData.getPaymentInfo().userInfo.accessToken;
         } else {
             onRequestFail(GlobalData.getStringResource(RS.string.zingpaysdk_missing_app_user));
         }
@@ -60,23 +51,21 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
     /***
      * ovreloading constructor
      * this's used by app
-     *
      * @param pListener
      */
     public GetAppInfo(String pAppId, String pZaloUserId, String pAccessToken, ILoadAppInfoListener pListener) {
         super();
-
         mLoadAppInfoListener = pListener;
         appID = pAppId;
         zaloUserId = pZaloUserId;
         accessToken = pAccessToken;
     }
 
-    private boolean isNeedToUpdateAppInfo(DAppInfoResponse pResponse) {
+    private boolean isNeedToUpdateAppInfo(AppInfoResponse pResponse) {
         return pResponse != null && pResponse.returncode == 1 && pResponse.isupdateappinfo;
     }
 
-    private void onPostResult(DAppInfoResponse pResponse) {
+    private void onPostResult(AppInfoResponse pResponse) {
         if (pResponse == null || pResponse.returncode < 0) {
             this.mLoadAppInfoListener.onError(pResponse);
         } else {
@@ -86,94 +75,78 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
 
     @Override
     protected void onRequestSuccess() throws Exception {
-        if (!(getResponse() instanceof DAppInfoResponse)) {
+        if (!(getResponse() instanceof AppInfoResponse)) {
             onRequestFail(null);
             return;
         }
-
         long expiredTime = getResponse().expiredtime + System.currentTimeMillis();
-
         SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(appID, expiredTime);
-
         if (isNeedToUpdateAppInfo(getResponse())) {
-
             SharedPreferencesManager.getInstance().setCheckSumAppChannel(appID, getResponse().checksum);
-
-            if (getResponse().transtypepmcs == null || getResponse().transtypepmcs.size() <= 0) {
+            if (getResponse().pmctranstypes == null || getResponse().pmctranstypes.size() <= 0) {
                 getResponse().returncode = -1;
                 getResponse().returnmessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
             } else {
-                //we have channels for this app
-                //save them to cache
-
                 long minValue, maxValue;
-
-                for (DChannelMapApp channelMap : getResponse().transtypepmcs) {
+                int checkPmc = -1;
+                for (int transtype : getResponse().pmctranstypes.keySet()) {
+                    List<MiniPmcTransType> miniPmcTransTypeList = getResponse().pmctranstypes.get(transtype);
                     minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
                     maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
+                    ArrayList<String> transtypePmcIdList = new ArrayList<>();
 
-                    ArrayList<String> mapAppChannelIDList = new ArrayList<String>();
-
-                    String keyMap = appID + Constants.UNDERLINE + channelMap.transtype;
-
-                    //for testing
-                    /*
-                    DPaymentChannel channelVCB = new DPaymentChannel();
-                    channelVCB.pmcid = 37;
-                    channelVCB.pmcname = "Tài khoản ngân hàng";
-                    channelVCB.status = EPaymentChannelStatus.ENABLE;
-                    channelVCB.minvalue = 1000;
-                    channelVCB.maxvalue = 20000000;
-                    channelMap.pmclist.add(channelVCB);
-                    */
-
-                    for (DPaymentChannel channel : channelMap.pmclist) {
-                        String appChannelID = keyMap + Constants.UNDERLINE + channel.pmcid;
-
-                        mapAppChannelIDList.add(String.valueOf(channel.pmcid));
-
-                        //set 1 channel
-                        SharedPreferencesManager.getInstance().setPmcConfig(appChannelID, GsonUtils.toJsonString(channel));
-
-                        //get min,max of this channel to app use
-                        if (channel.isEnable()) {
-                            if (channel.minvalue < minValue)
-                                minValue = channel.minvalue;
-                            if (channel.maxvalue > maxValue)
-                                maxValue = channel.maxvalue;
+                    StringBuilder transtypePmcKey = new StringBuilder();
+                    transtypePmcKey.append(appID)
+                            .append(Constants.UNDERLINE)
+                            .append(transtype);
+                    for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
+                        String pmcKey = miniPmcTransType.getPmcKey(miniPmcTransType.pmcid);
+                        //save default pmc for new atm/cc
+                        if (checkPmc != miniPmcTransType.pmcid) {
+                            transtypePmcIdList.add(pmcKey);
+                            SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
+                            Log.d(this, "save channel to cache key " + pmcKey + " " + GsonUtils.toJsonString(miniPmcTransType));
                         }
+                        checkPmc = miniPmcTransType.pmcid;
 
-                        Log.d(this, "===set channel to cache===" + GsonUtils.toJsonString(channel));
-
+                        StringBuilder pmcId = new StringBuilder();
+                        pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
+                        SharedPreferencesManager.getInstance().setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
+                        Log.d(this, "save channel to cache key " + pmcId.toString() + " " + GsonUtils.toJsonString(miniPmcTransType));
+                        if (!miniPmcTransType.isEnable()) {
+                            continue;
+                        }
+                        //get min,max of this channel to app use
+                        if (miniPmcTransType.minvalue < minValue) {
+                            minValue = miniPmcTransType.minvalue;
+                        }
+                        if (miniPmcTransType.maxvalue > maxValue) {
+                            maxValue = miniPmcTransType.maxvalue;
+                        }
                     }
-
                     //set ids channel list
-
-                    SharedPreferencesManager.getInstance().setPmcConfigList(keyMap, mapAppChannelIDList);
-
-                    Log.d(this, "===set ids channel list to cache===" + mapAppChannelIDList.toString());
-
+                    SharedPreferencesManager.getInstance().setPmcConfigList(transtypePmcKey.toString(), transtypePmcIdList);
+                    Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used by app
-                    if (String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.WALLET_TRANSFER.toString()) ||
-                            String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.TOPUP.toString()) ||
-                            String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.WITHDRAW.toString())) {
-                        Log.d(this, "===set min/max: transtype to cache===" + channelMap.transtype + " - " + minValue + " => " + maxValue);
-
-                        if (minValue != BaseChannelInjector.MIN_VALUE_CHANNEL)
-                            SharedPreferencesManager.getInstance().setMinValueChannel(String.valueOf(channelMap.transtype), minValue);
-
-                        if (maxValue != BaseChannelInjector.MAX_VALUE_CHANNEL)
-                            SharedPreferencesManager.getInstance().setMaxValueChannel(String.valueOf(channelMap.transtype), maxValue);
+                    if (String.valueOf(transtype).equalsIgnoreCase(ETransactionType.WALLET_TRANSFER.toString())
+                            || String.valueOf(transtype).equalsIgnoreCase(ETransactionType.TOPUP.toString())
+                            || String.valueOf(transtype).equalsIgnoreCase(ETransactionType.WITHDRAW.toString())) {
+                        if (minValue != BaseChannelInjector.MIN_VALUE_CHANNEL) {
+                            SharedPreferencesManager.getInstance().setMinValueChannel(String.valueOf(transtype), minValue);
+                            Log.d(this, "save min value " + minValue + " transtype " + transtype);
+                        }
+                        if (maxValue != BaseChannelInjector.MAX_VALUE_CHANNEL) {
+                            SharedPreferencesManager.getInstance().setMaxValueChannel(String.valueOf(transtype), maxValue);
+                            Log.d(this, "save max value " + maxValue + " transtype " + transtype);
+                        }
                     }
                 }
             }
-
             //save app info to cache(id,name,icon...)
             if (getResponse().info != null) {
                 SharedPreferencesManager.getInstance().setApp(String.valueOf(getResponse().info.appid), GsonUtils.toJsonString(getResponse().info));
             }
         }
-
         onPostResult(getResponse());
     }
 
@@ -186,14 +159,13 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
             }
             getResponse().returncode = -1;
             getResponse().returnmessage = mess;
-
             mLoadAppInfoListener.onError(getResponse());
         }
     }
 
     @Override
     protected void createReponse(int pCode, String pMessage) {
-        mResponse = new DAppInfoResponse();
+        mResponse = new AppInfoResponse();
     }
 
     @Override
@@ -205,14 +177,8 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
 
     @Override
     protected void doRequest() {
-        try {
-            Log.d(this, "===Begin getting info of app ID:===" + appID);
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetAppInfoImpl(), getDataParams());
-        } catch (Exception e) {
-            Log.e(this, e);
-
-            onRequestFail(null);
-        }
+        Log.d(this, "start get info of app ID " + appID);
+        DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetAppInfoImpl(), getDataParams());
     }
 
     @Override
@@ -223,9 +189,7 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         DataParameter.prepareGetAppInfoParams(zaloUserId, appID, accessToken, checkSum, getDataParams());
-
         return true;
     }
 }

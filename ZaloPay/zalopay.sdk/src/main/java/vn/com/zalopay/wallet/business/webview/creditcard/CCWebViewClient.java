@@ -6,7 +6,6 @@ import android.webkit.WebView;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
@@ -21,7 +20,7 @@ import static vn.com.zalopay.wallet.business.entity.base.WebViewError.SSL_ERROR;
 
 public class CCWebViewClient extends PaymentWebViewClient {
     protected boolean isFirstLoad = true;
-    private String mMerchantPrefix = "";
+    private String mMerchantPrefix;
 
     public CCWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
@@ -40,7 +39,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d("====CCWebViewClient.shouldOverrideUrlLoading====", url);
+        Log.d(this, "load url " + url);
         if ((url.contains(mMerchantPrefix) || url.contains(BuildConfig.HOST_COMPLETE)) && getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_PAYMENT_RESULT_BROWSER, new Object());
             return true;
@@ -54,7 +53,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        Log.d("====CCWebViewClient.onLoadResource====", url);
+        Log.d(this, "load resource " + url);
         if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.zpw_string_pay_domain)) && getAdapter() != null) {
             getAdapter().showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
         }
@@ -63,11 +62,10 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Log.d("====CCWebViewClient.onPageFinished====", url);
+        Log.d(this, "load page finish " + url);
         if (getAdapter() != null) {
             getAdapter().showProgressBar(false, null);
         }
-
         isFirstLoad = false;
     }
 
@@ -85,14 +83,10 @@ public class CCWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-
-        Log.d("===CCWebViewClient.onReceivedError===", "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
+        Log.d(this, "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
     }
 
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        //handler.cancel();
-        //Ignore SSL certificate errors
-        //handler.proceed();
         if (getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(SSL_ERROR, null));
             try {
@@ -101,7 +95,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-        Log.d("===CCWebViewClient.onReceivedSslError===", GsonUtils.toJsonString(error));
+        Log.d(this, "there're error ssl on page " + GsonUtils.toJsonString(error));
     }
 
 }
