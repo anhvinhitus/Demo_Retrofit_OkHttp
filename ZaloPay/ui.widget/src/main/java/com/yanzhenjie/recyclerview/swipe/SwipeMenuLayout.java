@@ -28,6 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.OverScroller;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.R;
+
 /**
  * Created by Yan Zhenjie on 2016/7/27.
  */
