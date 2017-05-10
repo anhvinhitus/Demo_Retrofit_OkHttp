@@ -156,11 +156,11 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         //need to update card info again on cache
         if (MapCardHelper.isNeedUpdateMapCardInfoOnCache(pResponse.cardinfochecksum)) {
             //for testing
-            DMappedCard mappedCard = new DMappedCard();
+          /*  DMappedCard mappedCard = new DMappedCard();
             mappedCard.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv);
             mappedCard.first6cardno = "970418";
-            mappedCard.last4cardno  = "1017";
-            pResponse.cardinfos.add(mappedCard);
+            mappedCard.last4cardno = "1017";
+            pResponse.cardinfos.add(mappedCard);*/
             MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
             try {
                 MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);

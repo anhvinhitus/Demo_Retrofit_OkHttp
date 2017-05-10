@@ -107,15 +107,12 @@ public class MapCardHelper {
         String bankName = null;
         //create icon for map card.
         //this is atm
-        if (!TextUtils.isEmpty(saveCardInfo.bankcode) && !saveCardInfo.bankcode.equals(Constants.CCCode)) {
+        if (!Constants.CCCode.equals(saveCardInfo.bankcode)) {
             mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
             //populate channel name
-            bankName = BankCardCheck.getInstance().getDetectedBankName();
-            if (!TextUtils.isEmpty(bankName) && bankName.startsWith("NH")) {
-                bankName = bankName.substring(2);
+            bankName = BankCardCheck.getInstance().getShortBankName();
+            if (!TextUtils.isEmpty(bankName)) {
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card_atm), bankName);
-            } else if (!TextUtils.isEmpty(bankName)) {
-                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), bankName);
             }
         }
         //cc
@@ -137,7 +134,11 @@ public class MapCardHelper {
         Log.d("notifyNewMapCardToApp", "===mapCardResult=" + GsonUtils.toJsonString(mapCardResult));
 =======
 
+<<<<<<< HEAD
         Log.d("notifyNewMapCardToApp", "===mapCardResult=", mapCardResult);
 >>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
+=======
+        Log.d("start send map card to app", mapCardResult);
+>>>>>>> ba1bb8b... [SDK] Clear code
     }
 }

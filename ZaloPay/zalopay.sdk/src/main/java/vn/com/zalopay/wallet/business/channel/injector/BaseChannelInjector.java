@@ -481,11 +481,8 @@ public abstract class BaseChannelInjector {
                             String bankName = BankCardCheck.getInstance().getShortBankName();
                             if (TextUtils.isEmpty(bankName)) {
                                 bankName = GlobalData.getStringResource(RS.string.zpw_save_credit_card_default);
-                            } else if (bankName.startsWith("NH")) {
-                                bankName = bankName.substring(2);
-                                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card_atm), bankName);
                             } else {
-                                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), bankName);
+                                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card_atm), bankName);
                             }
                             channel.pmcname = bankName + mapCard.last4cardno;
                         }
