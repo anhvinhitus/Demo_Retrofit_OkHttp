@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /***
  * log class

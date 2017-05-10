@@ -104,17 +104,8 @@ public class SharedPreferencesManager extends SingletonBase {
 
     }
 
-<<<<<<< HEAD
     public String pickCachedCardNumber() {
         String cardNumber = getString(mContext.get().getResources().getString(R.string.zpw_cache_card_for_show_inlinkcard));
-=======
-    /*******************************************************************
-     * ************* METHOD FOR GETTING CONFIG VALUE *******************
-     *******************************************************************/
-    public String pickCachedCardNumber() {
-        String cardNumber = getString(mContext.get().getResources().getString(R.string.zpw_cache_card_for_show_inlinkcard));
-
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         if (!TextUtils.isEmpty(cardNumber)) {
             setCachedCardNumber(null);
         }
@@ -479,23 +470,13 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + keyChannelID, pConfig);
     }
 
-<<<<<<< HEAD
-    public String getPmcConfigByPmcID(int pID) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix))
-                .append(GlobalData.appID).append(Constants.UNDERLINE)
-                .append(GlobalData.getTransactionType()).append(Constants.UNDERLINE)
-                .append(pID);
-        return getString(stringBuilder.toString());
-=======
-    public String getPmcConfigByPmcID(String pPmcID, String pBankCode) {
+    public String getPmcConfigByPmcID(int pPmcID, String pBankCode) {
         StringBuilder channelIDkey = new StringBuilder();
-        channelIDkey.append(MiniPmcTransType.getPmcKey(GlobalData.appID, GlobalData.getTransactionType().toString(), Integer.parseInt(pPmcID)));
+        channelIDkey.append(MiniPmcTransType.getPmcKey(GlobalData.appID, GlobalData.getTransactionType(), pPmcID));
         if (!TextUtils.isEmpty(pBankCode)) {
             channelIDkey.append(Constants.UNDERLINE).append(pBankCode);
         }
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + channelIDkey.toString());
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
 
@@ -515,12 +496,7 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public ArrayList<String> getPmcConfigList(String pKey) {
-<<<<<<< HEAD
         ArrayList<String> result = new ArrayList<>();
-
-=======
-        ArrayList<String> result = new ArrayList<String>();
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         String raw = getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_list) + pKey);
         if (TextUtils.isEmpty(raw)) {
             return result;
@@ -535,50 +511,22 @@ public class SharedPreferencesManager extends SingletonBase {
         return result;
     }
 
-<<<<<<< HEAD
-    public String getBankAccountChannelConfig() {
-        return getPmcConfigByPmcID(BuildConfig.channel_bankaccount);
-    }
-
-    public String getATMChannelConfig() {
-        return getPmcConfigByPmcID(BuildConfig.channel_atm);
-    }
-
-    public String getCreditCardChannelConfig() {
-        return getPmcConfigByPmcID(BuildConfig.channel_credit_card);
-    }
-
-    public String getZaloPayChannelConfig() {
-        return getPmcConfigByPmcID(BuildConfig.channel_zalopay);
-=======
     public String getBankAccountChannelConfig(String pBankCode) {
         Log.d(this, "get cache bank account channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_bankaccount), pBankCode);
+        return getPmcConfigByPmcID(BuildConfig.channel_bankaccount, pBankCode);
     }
 
     public String getATMChannelConfig(String pBankCode) {
         Log.d(this, "get cache atm channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_atm), pBankCode);
+        return getPmcConfigByPmcID(BuildConfig.channel_atm, pBankCode);
     }
 
     public String getCreditCardChannelConfig(String pBankCode) {
         Log.d(this, "get cache credit card channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_credit_card), pBankCode);
+        return getPmcConfigByPmcID(BuildConfig.channel_credit_card, pBankCode);
     }
 
     public String getZaloPayChannelConfig(String pBankCode) {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_zalopay), pBankCode);
-    }
-
-    /****
-     * SAVE CARD INFO FOR MAPPING AFTER USER UPGRADE LEVEL TO 2.
-     */
-    public boolean setCardInfoTransaction(String pTransactionID, String pCardInfo) {
-        return setString(pTransactionID, pCardInfo);
-    }
-
-    public String getCardInfoTransaction(String pTransactionID) {
-        return getString(pTransactionID);
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+        return getPmcConfigByPmcID(BuildConfig.channel_zalopay, pBankCode);
     }
 }

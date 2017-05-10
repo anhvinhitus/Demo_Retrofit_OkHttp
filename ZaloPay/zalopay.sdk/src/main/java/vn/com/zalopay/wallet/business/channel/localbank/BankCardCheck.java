@@ -116,17 +116,9 @@ public class BankCardCheck extends CardCheck {
                 try {
                     if (!TextUtils.isEmpty(mSelectBank.code)) {
                         mOtpReceiverPatternList = ResourceManager.getInstance(null).getOtpReceiverPattern(bankCode);
-<<<<<<< HEAD
                         mIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectBank.code);
-                        Log.d(this, "rule to get otp" + GsonUtils.toJsonString(mOtpReceiverPatternList));
-                        Log.d(this, "rule to read card number" + GsonUtils.toJsonString(mIdentifier));
-=======
-
-                        mFoundIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectedBank.code);
-
-                        Log.d(this, "otp pattern" + mOtpReceiverPatternList);
-                        Log.d(this, "identifier" + mFoundIdentifier);
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
+                        Log.d(this, "rule to get otp", mOtpReceiverPatternList);
+                        Log.d(this, "rule to read card number", mIdentifier);
                     }
                 } catch (Exception e) {
                     Log.e(this, e);

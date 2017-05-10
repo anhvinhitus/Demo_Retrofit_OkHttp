@@ -7,17 +7,12 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-<<<<<<< HEAD
-=======
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
@@ -131,14 +126,8 @@ public class SDKPayment {
                 }
             }
         }
-<<<<<<< HEAD
-        Log.d("pay", "payment transaction type " + pTransactionType);
-        Log.d("pay", "payment info " + GsonUtils.toJsonString(pPaymentInfo));
-=======
-
-        Log.d("pay", "info payment", info);
-
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
+        Log.d("pay", "payment transaction type", pTransactionType);
+        Log.d("pay", "payment info ", pPaymentInfo);
         //check where context is end?
         try {
             GlobalData.getTransactionType();
@@ -213,11 +202,7 @@ public class SDKPayment {
             if (GlobalData.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-<<<<<<< HEAD
-                        BankLoader.getInstance().getFormattedBankMaintenaceMessage(), pIndex -> {
-=======
                         BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
                             if (GlobalData.getPaymentListener() != null) {
                                 GlobalData.setResultUserClose();
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
@@ -241,12 +226,10 @@ public class SDKPayment {
         //this is link card , go to channel directly
         if (GlobalData.isLinkCardChannel()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-            intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, BuildConfig.channel_atm);
         }
         //this is link acc , go to channel directly
         else if (GlobalData.isBankAccountLink()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-            intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, BuildConfig.channel_link_acc);
         } else {
             intent = new Intent(pOwner, PaymentGatewayActivity.class);
         }

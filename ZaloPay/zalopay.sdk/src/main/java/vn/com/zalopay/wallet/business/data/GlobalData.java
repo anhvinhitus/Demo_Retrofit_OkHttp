@@ -17,6 +17,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -165,23 +166,11 @@ public class GlobalData {
      * for checking user selected a map card channel.
      */
     public static boolean isMapCardChannel() {
-<<<<<<< HEAD
-        return getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber());
-
-    }
-
-    public static boolean isMapBankAccountChannel() {
-        return getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber());
-
-=======
         return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard);
     }
 
     public static boolean isMapBankAccountChannel() {
         return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount);
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     public static boolean isBankAccountLink() {
@@ -403,12 +392,8 @@ public class GlobalData {
         return transactionType;
     }
 
-<<<<<<< HEAD
     @BankFunctionCode
-    public static int getPayBankFunction(DPaymentChannelView pChannel) {
-=======
-    public static EBankFunction getPayBankFunction(PaymentChannel pChannel) {
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+    public static int getPayBankFunction(PaymentChannel pChannel) {
         if (pChannel.isBankAccountMap()) {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (pChannel.isMapCardChannel()) {
@@ -493,6 +478,15 @@ public class GlobalData {
 
         initResultReturn();
 
+    }
+
+    public static void populateOrderFee(MiniPmcTransType pmcTransType) {
+        if (pmcTransType != null) {
+            pmcTransType.calculateFee();
+            GlobalData.orderAmountFee = pmcTransType.totalfee;
+            GlobalData.orderAmountTotal = GlobalData.getOrderAmount() + GlobalData.orderAmountFee;
+            Log.d("populate order fee", "order fee " + GlobalData.orderAmountFee);
+        }
     }
 
     public static void setIFingerPrint(IPaymentFingerPrint pFingerPrintFromMerchant) {
@@ -661,33 +655,6 @@ public class GlobalData {
         return userProfile.allow ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
     }
 
-<<<<<<< HEAD
-    /***
-     * check whether creditcard channel require otp?
-     */
-    public static int isRequireOtpCreditCard() {
-        BankConfig bankConfig;
-        try {
-            bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(Constants.CCCode), BankConfig.class);
-
-
-            if (bankConfig == null)
-                return Constants.INPUT_INVALID;
-
-            if (bankConfig != null && bankConfig.isRequireOtp())
-                return Constants.REQUIRE_OTP;
-
-            return Constants.REQUIRE_PIN;
-
-        } catch (Exception e) {
-            Log.e("isRequireOtpCreditCard", e);
-        }
-
-        return Constants.INPUT_INVALID;
-    }
-
-=======
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     public static UserProfile getUserProfileAtChannel(int pPmcID) {
         if (getUserProfileList() == null) {
             Log.d("UserProfile", "is null");

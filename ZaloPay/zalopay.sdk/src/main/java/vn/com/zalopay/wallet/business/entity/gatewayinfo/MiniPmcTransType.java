@@ -1,12 +1,9 @@
 package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-=======
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
 import com.google.gson.Gson;
 
 import vn.com.zalopay.wallet.BuildConfig;
@@ -16,16 +13,10 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
-=======
-import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
-import vn.com.zalopay.wallet.utils.Log;
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
+import vn.com.zalopay.wallet.utils.StringUtil;
 
 public class MiniPmcTransType implements Parcelable {
     public static final Creator<MiniPmcTransType> CREATOR = new Creator<MiniPmcTransType>() {
@@ -42,25 +33,14 @@ public class MiniPmcTransType implements Parcelable {
     public String bankcode;
     public int pmcid = 0;
     public String pmcname = null;
+    @PaymentChannelStatus
+    public int status = PaymentChannelStatus.DISABLE;
     public long minvalue = -1;
     public long maxvalue = -1;
     public double feerate = -1;
     public double minfee = -1;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-
-    public double totalfee = 0;
-    public int requireotp = 1;
-    public long amountrequireotp = 0;
-    public boolean isBankAccountMap = false;
-
     @FeeType
-    public String feecaltype = null;
-
-    @PaymentChannelStatus
-    public int status = PaymentChannelStatus.DISABLE;
-
-=======
-    public EFeeCalType feecaltype = EFeeCalType.SUM;
+    public String feecaltype = FeeType.SUM;
     public double totalfee = 0;
     public long amountrequireotp = 0;
     @TransAuthenType
@@ -74,7 +54,6 @@ public class MiniPmcTransType implements Parcelable {
      * then need to show dialog into to user know about newer version
      */
     public String minappversion;
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
     /***
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
      * 1. user level - depend on user table map
@@ -107,8 +86,6 @@ public class MiniPmcTransType implements Parcelable {
         this.isAllowByAmount = channel.isAllowByAmount;
         this.isAllowByLevel = channel.isAllowByLevel;
         this.isBankAccountMap = channel.isBankAccountMap;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-=======
         this.minappversion = channel.minappversion;
         this.inamounttype = channel.inamounttype;
         this.overamounttype = channel.overamounttype;
@@ -118,12 +95,12 @@ public class MiniPmcTransType implements Parcelable {
         bankcode = in.readString();
         pmcid = in.readInt();
         pmcname = in.readString();
-        status = EPaymentChannelStatus.fromInt(in.readInt());
+        status = in.readInt();
         minvalue = in.readLong();
         maxvalue = in.readLong();
         feerate = in.readDouble();
         minfee = in.readDouble();
-        feecaltype = EFeeCalType.valueOf(in.readString());
+        feecaltype = in.readString();
         totalfee = in.readDouble();
         amountrequireotp = in.readLong();
         inamounttype = in.readInt();
@@ -143,7 +120,18 @@ public class MiniPmcTransType implements Parcelable {
                 .append(Constants.UNDERLINE)
                 .append(pPmcId);
         return transtypePmcKey.toString();
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
+    }
+
+    public void resetToDefault() {
+        this.status = PaymentChannelStatus.ENABLE;
+        this.minvalue = -1;
+        this.maxvalue = -1;
+        this.feerate = 0;
+        this.minfee = 0;
+    }
+
+    public boolean isMapCardChannel() {
+        return false;
     }
 
     /***
@@ -151,7 +139,7 @@ public class MiniPmcTransType implements Parcelable {
      * @return
      */
     public boolean isNeedToCheckTransactionAmount() {
-        return amountrequireotp > 0;
+        return amountrequireotp > 0 ? true : false;
     }
 
     /***
@@ -165,26 +153,19 @@ public class MiniPmcTransType implements Parcelable {
         return totalfee > 0;
     }
 
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-    public boolean isRequireOtp() {
-        return requireotp == 1;
-    }
-
-    public DPaymentChannel fromJsonString(String pJson) {
-        if (pJson == null) {
-            return new DPaymentChannel();
-        }
-=======
     public MiniPmcTransType fromJsonString(String pJson) {
         if (pJson == null)
             return new MiniPmcTransType();
 
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
         return (new Gson()).fromJson(pJson, this.getClass());
     }
 
     public boolean isEnable() {
         return status == PaymentChannelStatus.ENABLE;
+    }
+
+    public boolean isDisable() {
+        return status == PaymentChannelStatus.DISABLE;
     }
 
     public void setStatus(@PaymentChannelStatus int pStatus) {
@@ -209,56 +190,40 @@ public class MiniPmcTransType implements Parcelable {
         }
         if (maxvalue == -1 && pAmount >= minvalue) {
             return true;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-        return pAmount >= minvalue && pAmount <= maxvalue;
-=======
         }
         if (pAmount >= minvalue && pAmount <= maxvalue) {
             return true;
         }
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
 
-    }
-
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-    public boolean isChannel(int pChannelId) {
-=======
-    public boolean compareToChannel(String pChannelId) {
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
-        try {
-            return this.pmcid == pChannelId;
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
         return false;
     }
 
+    public boolean compareToChannel(int pChannelId) {
+        return this.pmcid == pChannelId;
+    }
+
     public boolean isAtmChannel() {
-        return compareToChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+        return compareToChannel(BuildConfig.channel_atm);
     }
 
     public boolean isZaloPayChannel() {
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-        return isChannel(BuildConfig.channel_zalopay);
+        return compareToChannel(BuildConfig.channel_zalopay);
     }
 
     public boolean isCreditCardChannel() {
-        return isChannel(BuildConfig.channel_credit_card);
+        return compareToChannel(BuildConfig.channel_credit_card);
     }
 
     public boolean isBankAccount() {
-        return isChannel(BuildConfig.channel_bankaccount);
-=======
-        return compareToChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        return compareToChannel(BuildConfig.channel_bankaccount);
     }
 
-    public boolean isCreditCardChannel() {
-        return compareToChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+    public void checkPmcOrderAmount(long pOrderAmount) {
+        setAllowByAmount(isAmountSupport((long) (pOrderAmount + totalfee)));
     }
 
-    public boolean isBankAccount() {
-        return compareToChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
+    public String getDefaultPmcFee() {
+        return (isAtmChannel() && !isMapCardChannel()) ? GlobalData.getStringResource(RS.string.default_message_pmc_fee) : GlobalData.getStringResource(RS.string.zpw_string_fee_free);
     }
 
     /***
@@ -269,7 +234,7 @@ public class MiniPmcTransType implements Parcelable {
         return isAllowByAmount;
     }
 
-    public void setAllowByAmount(boolean allowByAmount) {
+    protected void setAllowByAmount(boolean allowByAmount) {
         isAllowByAmount = allowByAmount;
     }
 
@@ -297,8 +262,6 @@ public class MiniPmcTransType implements Parcelable {
         return isBankAccountMap;
     }
 
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannel.java
-=======
     protected int getMinAppVersionSupport() {
         if (!TextUtils.isEmpty(minappversion)) {
             String clearMinAppVersion = minappversion.replace(".", "");
@@ -330,12 +293,12 @@ public class MiniPmcTransType implements Parcelable {
         parcel.writeString(bankcode);
         parcel.writeInt(pmcid);
         parcel.writeString(pmcname);
-        parcel.writeInt(status.getValue());
+        parcel.writeInt(status);
         parcel.writeLong(minvalue);
         parcel.writeLong(maxvalue);
         parcel.writeDouble(feerate);
         parcel.writeDouble(minfee);
-        parcel.writeString(feecaltype.toString());
+        parcel.writeString(feecaltype);
         parcel.writeDouble(totalfee);
         parcel.writeLong(amountrequireotp);
         parcel.writeInt(inamounttype);
@@ -346,5 +309,4 @@ public class MiniPmcTransType implements Parcelable {
         parcel.writeByte((byte) (isAllowByLevel ? 1 : 0));
         parcel.writeByte((byte) (isAllowByAmountAndFee ? 1 : 0));
     }
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/MiniPmcTransType.java
 }

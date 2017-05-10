@@ -92,11 +92,7 @@ public class AppInfoLoader extends SingletonBase {
      */
     private boolean existedAppInfoOnCache() {
         try {
-<<<<<<< HEAD
             ArrayList<String> mapChannelIDList = getChannelsForAppFromCache(String.valueOf(appId), transactionType);
-=======
-            ArrayList<String> mapChannelIDList = getChannelsForApp(String.valueOf(appId), transactionType.toString());
->>>>>>> 9fd9a35... [SDK] Apply app info v1
             return mapChannelIDList != null && mapChannelIDList.size() > 0 && !isExpiredTime();
         } catch (Exception e) {
             Log.e(this, e);
@@ -115,14 +111,8 @@ public class AppInfoLoader extends SingletonBase {
     /***
      * call api get app info,used for app
      */
-<<<<<<< HEAD
     public void loadAppInfoForAppFromServer() {
         BaseTask appInfoTask = new AppInfoTask(mLoadAppInfoListener, String.valueOf(appId), zaloUserId, accessToken);
         appInfoTask.makeRequest();
-=======
-    public void loadAppInfoForApp() {
-        BaseRequest getAppInfoTask = new GetAppInfo(appId, zaloUserId, accessToken, mLoadAppInfoListener);
-        getAppInfoTask.makeRequest();
->>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
     }
 }

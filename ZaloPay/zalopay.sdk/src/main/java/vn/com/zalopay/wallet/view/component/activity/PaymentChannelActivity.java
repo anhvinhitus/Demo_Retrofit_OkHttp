@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
-<<<<<<< HEAD
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
@@ -41,17 +40,7 @@ import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
-    public static final String PMCID_EXTRA = "pmcid";
-=======
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-
-public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMC_CONFIG_EXTRA = "pmc_config";
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
@@ -169,16 +158,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     @Override
-<<<<<<< HEAD
-    protected void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
-        GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
-
-=======
     public void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
         }
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         if (pForceUpdate) {
             recycleActivity();
         }
@@ -225,10 +208,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onCreate(savedInstanceState);
         Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-<<<<<<< HEAD
-        initTimer();
-        mAdapter = AdapterFactory.produce(this);
-=======
         MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
         Log.d(this,"start payment channel", miniPmcTransType);
         if (miniPmcTransType == null) {
@@ -236,13 +215,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         mAdapter = AdapterFactory.produce(this, miniPmcTransType);
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
         initTimer();
-        mIsRestart = false;
         renderActivity();
         try {
             getAdapter().init();
@@ -288,8 +265,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 Log.e(this, e);
             }
         }
-<<<<<<< HEAD
-=======
     }
 
     @Override
@@ -300,7 +275,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             showKeyBoardForPin();
         }
         //showKeyBoardOnFocusingViewAgain();
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         //this is link account and the first call
         if (GlobalData.isBankAccountLink() && !mIsStart) {
             try {
@@ -345,16 +319,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         mIsStart = true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(this, "==== onResume ====");
-        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
-            showKeyBoardForPin();
-        }
-        showKeyBoardOnFocusingViewAgain();
-    }
-
     protected void showKeyBoardOnFocusingViewAgain() {
         //focus on editting view again after user resume
         if (getAdapter() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
@@ -384,13 +348,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-<<<<<<< HEAD
-
-        Log.d(this, "==== onRestart ====");
-
-=======
-        Log.d(this, "onRestart");
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         showKeyBoardOnFocusingViewAgain();
     }
 

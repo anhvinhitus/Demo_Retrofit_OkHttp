@@ -41,24 +41,21 @@ public class AdapterBankCard extends AdapterBase {
     public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
         super(pOwnerActivity, pMiniPmcTransType);
         mLayoutId = SCREEN_ATM;
-<<<<<<< HEAD
-
-        if (GlobalData.isWithDrawChannel()) {
-            mConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), DPaymentChannel.class);
-        }
-        GlobalData.cardChannelType = CardChannel.ATM;
-=======
         mPageCode = (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_ATM;
-        GlobalData.cardChannelType = ECardChannelType.ATM;
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+        GlobalData.cardChannelType = CardChannel.ATM;
+    }
 
+    @Override
+    public boolean needReloadPmcConfig() {
+        String bankCode = BankCardCheck.getInstance().getDetectBankCode();
+        return mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(bankCode);
     }
 
     @Override
     public MiniPmcTransType getConfig() {
         try {
-            String bankCode = BankCardCheck.getInstance().getDetectBankCode();
-            if (mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(bankCode)) {
+            if (needReloadPmcConfig()) {
+                String bankCode = BankCardCheck.getInstance().getDetectBankCode();
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(bankCode), MiniPmcTransType.class);
             }
         } catch (Exception e) {
@@ -68,25 +65,11 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-<<<<<<< HEAD
     public void init() throws Exception {
         this.mGuiProcessor = new BankCardGuiProcessor(this);
-        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
+        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
             getGuiProcessor().initPager();
-=======
-    public void init() {
-        try {
-            this.mGuiProcessor = new BankCardGuiProcessor(this);
-            if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
-                getGuiProcessor().initPager();
-            }
-
-        } catch (Exception e) {
-            Log.e(this, e);
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-            return;
         }
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         showFee();
     }
 
@@ -107,20 +90,13 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     protected int getDefaultChannelId() {
-        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+        return BuildConfig.channel_atm;
     }
 
     @Override
-<<<<<<< HEAD
-    public String getChannelID() {
-        if (mConfig != null)
-            return String.valueOf(mConfig.pmcid);
-        return String.valueOf(BuildConfig.channel_atm);
-=======
     public int getChannelID() {
         int channelId = super.getChannelID();
         return channelId != -1 ? channelId : getDefaultChannelId();
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     @Override
@@ -597,14 +573,7 @@ public class AdapterBankCard extends AdapterBase {
 
     public boolean isBidvBankPayment() {
         BankCardCheck atmCardCheck = getGuiProcessor().getBankCardFinder();
-<<<<<<< HEAD
         return atmCardCheck != null && atmCardCheck.isDetected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
-=======
-        if (atmCardCheck != null && atmCardCheck.isDetected() && atmCardCheck.getDetectBankCode().equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))) {
-            return true;
-        }
-        return false;
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     protected boolean continueProcessForBidvBank(String pMessage) {

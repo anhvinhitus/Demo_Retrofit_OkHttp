@@ -8,9 +8,5 @@ public interface ILoadAppInfoListener {
 
     void onSuccess();
 
-<<<<<<< HEAD
-    void onError(DAppInfoResponse message);
-=======
-    public void onError(AppInfoResponse message);
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+    void onError(AppInfoResponse message);
 }

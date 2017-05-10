@@ -5,14 +5,9 @@ import android.text.TextUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-<<<<<<< HEAD
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
-=======
-import vn.com.zalopay.wallet.utils.Log;
->>>>>>> a9f3c64... [SDK] Update phần rút tiền theo app v1
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterZaloPay extends AdapterBase {
@@ -27,26 +22,19 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     @Override
-    public void init() throws Exception{
+    public void init() throws Exception {
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zingpaysdk_pmc_name_zalopay));
         showFee();
     }
 
     protected int getDefaultChannelId() {
-        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        return BuildConfig.channel_zalopay;
     }
 
     @Override
-<<<<<<< HEAD
-    public String getChannelID() {
-        if (mConfig != null)
-            return String.valueOf(mConfig.pmcid);
-        return String.valueOf(BuildConfig.channel_zalopay);
-=======
     public int getChannelID() {
         int channelId = super.getChannelID();
         return channelId != -1 ? channelId : getDefaultChannelId();
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     @Override

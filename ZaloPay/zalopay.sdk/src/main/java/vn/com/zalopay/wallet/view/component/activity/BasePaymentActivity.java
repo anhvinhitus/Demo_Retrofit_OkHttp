@@ -56,9 +56,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -73,33 +73,19 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-<<<<<<< HEAD
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
-=======
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
-<<<<<<< HEAD
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
-<<<<<<< HEAD
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
-=======
-=======
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.business.feedback.IFBCallback;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.business.feedback.IFBCallback;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.KeyboardType;
@@ -138,18 +124,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
-    private IFBCallback mFbCallBack = new IFBCallback() {
-        @Override
-        public void onCancel() {
-            Log.d("feedback", "onCancel()");
-        }
-
-        @Override
-        public void onComplete() {
-            Log.d("feedback", "onComplete()");
-
-        }
-    };
     //dialog asking open networking listener
     public ZPWPaymentOpenNetworkingDialogListener paymentOpenNetworkingDialogListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
@@ -276,6 +250,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+    private IFBCallback mFbCallBack = new IFBCallback() {
+        @Override
+        public void onCancel() {
+            Log.d("feedback", "onCancel()");
+        }
+
+        @Override
+        public void onComplete() {
+            Log.d("feedback", "onComplete()");
+
+        }
+    };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
     /***
@@ -303,14 +289,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         @Override
-<<<<<<< HEAD
-        public void onError(DAppInfoResponse pMessage) {
-            Log.d(this, "load appinfo on error");
-=======
         public void onError(AppInfoResponse pMessage) {
-            Log.d(this, "===onError===");
-
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+            Log.d(this, "load appinfo on error");
             showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
             String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
             if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
@@ -356,19 +336,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-
-    private void startSupportScreen() throws Exception {
-        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
-        if (mFeedback != null) {
-            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
-            collector.setScreenShot(mFeedback.imgByteArray);
-            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
-        } else {
-            Log.d("support_button", "IFeedBack == null");
-        }
-
-        feedBackCollector.showDialog(this);
-    }
 
     public static Activity getCurrentActivity() {
         synchronized (mActivityStack) {
@@ -420,6 +387,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception ignored) {
 
         }
+    }
+
+    private void startSupportScreen() throws Exception {
+        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
+        if (mFeedback != null) {
+            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
+            collector.setScreenShot(mFeedback.imgByteArray);
+            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
+        } else {
+            Log.d("support_button", "IFeedBack == null");
+        }
+
+        feedBackCollector.showDialog(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -550,14 +530,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         showWarningDialog(() -> {
             GlobalData.updateResultNetworkingError(pMessage);
-<<<<<<< HEAD
-            GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-
-=======
             if (GlobalData.getPaymentListener() != null) {
                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
             }
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
             finish();
         }, pMessage);
     }
@@ -704,12 +679,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * load app info from cache or api
      */
     protected void checkAppInfo() {
-<<<<<<< HEAD
         AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
         ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
-=======
-        AppInfoLoader.getInstance().setOnLoadAppInfoListener(loadAppInfoListener).execute();
     }
 
     protected void reloadMapCardList() {
@@ -756,7 +728,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (!mLoadingBankAccount && !mLoadingMapCard) {
             readyForPayment();
         }
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
     }
 
     /***
@@ -1328,7 +1299,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         // TrackApptransidEvent
         long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
         int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
 
     }
 
@@ -1363,14 +1334,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         // TrackApptransidEvent
 
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
 
     }
-
-<<<<<<< HEAD
-=======
-    protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {
->>>>>>> 9fd9a35... [SDK] Apply app info v1
 
     private long checkTranID(String pTransID) {
         return (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
@@ -1380,14 +1346,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
     }
 
-    public int getChannelIDLog() {
-        if (getAdapter() == null) {
-            return 0;
-        }
-        return (!TextUtils.isEmpty(getAdapter().getChannelID())) ? Integer.parseInt(getAdapter().getChannelID()) : 0;
-    }
-
-    protected void showBalanceContent(DPaymentChannel pConfig) throws Exception {
+    protected void showBalanceContent(PaymentChannel pConfig) throws Exception {
         setText(R.id.zalopay_bill_info, StringUtil.formatVnCurrence(String.valueOf(GlobalData.getBalance())));
         setVisible(R.id.zpw_channel_layout, true);
         setVisible(R.id.zpw_channel_label_textview, false);
@@ -1752,11 +1711,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-<<<<<<< HEAD
-                showInfoDialog(pListener, BankLoader.getInstance().getFormattedBankMaintenaceMessage());
-=======
                 showInfoDialog(pListener, BankConfig.getFormattedBankMaintenaceMessage());
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
                 return true;
             }
         } catch (Exception e) {

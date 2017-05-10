@@ -34,14 +34,14 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFlow;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
+import vn.com.zalopay.wallet.constants.BankFlow;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
@@ -828,6 +828,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             String bankName = getDetectedBankName();
             String bankCode = getDetectedBankCode();
 
+            setCardNumberHint(bankName);
+
+            if (!TextUtils.isEmpty(bankCode)) {
+                getCardView().switchCardDateHintByBankCode(bankCode);
+            }
+
+            if (!TextUtils.isEmpty(bankCode)) {
+                getCardView().switchCardDateHintByBankCode(bankCode);
+                if (getAdapter().needReloadPmcConfig()) {
+                    GlobalData.populateOrderFee(getAdapter().getConfig());
+                }
+            }
+
             //bidv card must paid by mapcard
             if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).isBidvBankPayment()
@@ -835,27 +848,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
 
-            setCardNumberHint(bankName);
-
-            if (!TextUtils.isEmpty(bankCode)) {
-                getCardView().switchCardDateHintByBankCode(bankCode);
-            }
-
             //user input bank account
-            if (BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
+            if (!TextUtils.isEmpty(bankCode) && BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
-<<<<<<< HEAD
-=======
 
-            if (isInputBankMaintenance()) {
-                return;
-            }
-            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
             }
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -970,10 +971,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
+                if (getAdapter().needReloadPmcConfig()) {
+                    GlobalData.populateOrderFee(getAdapter().getConfig()); //user input new bank, populate again order fee
+                }
             }
 
             //user input bank account
-            if (BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
+            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
         } catch (Exception e) {

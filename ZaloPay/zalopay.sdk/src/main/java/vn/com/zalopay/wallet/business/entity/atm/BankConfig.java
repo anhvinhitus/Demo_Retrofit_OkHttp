@@ -1,23 +1,19 @@
 package vn.com.zalopay.wallet.business.entity.atm;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
-<<<<<<< HEAD
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.FeeType;
-=======
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
-import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
-import vn.com.zalopay.wallet.utils.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class BankConfig {
     public String code;
@@ -37,11 +33,11 @@ public class BankConfig {
     public double totalfee = 0;
     public String loginbankurl;
     public List<BankFunction> functions = null;
-
-<<<<<<< HEAD
     @FeeType
     public String feecaltype = null;
-=======
+    @BankStatus
+    public int status;
+
     /***
      * get detail maintenance message from bankconfig
      * @return
@@ -56,7 +52,7 @@ public class BankConfig {
             if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
                 message = bankConfig.maintenancemsg;
                 if (bankConfig.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(bankConfig.maintenanceto);
+                    maintenanceTo = SdkUtils.convertDateTime(bankConfig.maintenanceto);
                 }
                 if (!TextUtils.isEmpty(message) && message.contains("%s")) {
                     message = String.format(message, maintenanceTo);
@@ -68,7 +64,7 @@ public class BankConfig {
                 //maintenance some function of bank
                 message = bankFunction.maintenancemsg;
                 if (bankFunction.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
+                    maintenanceTo = SdkUtils.convertDateTime(bankFunction.maintenanceto);
                 }
                 if (!TextUtils.isEmpty(message) && message.contains("%s")) {
                     message = String.format(message, maintenanceTo);
@@ -89,12 +85,7 @@ public class BankConfig {
         }
         return name;
     }
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 
-<<<<<<< HEAD
-    @BankStatus
-    public int status;
-=======
     public boolean isVersionSupport(String pAppVersion) {
         Log.d(this, "start check support bank version in bank config");
         if (TextUtils.isEmpty(pAppVersion)) {
@@ -107,7 +98,6 @@ public class BankConfig {
         pAppVersion = pAppVersion.replace(".", "");
         return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
     }
->>>>>>> 9fd9a35... [SDK] Apply app info v1
 
     @Override
     public boolean equals(Object object) {
@@ -126,12 +116,7 @@ public class BankConfig {
         return totalfee;
     }
 
-<<<<<<< HEAD
     public boolean isBankMaintenence(@BankFunctionCode int pBankFunction) {
-=======
-    public boolean isBankMaintenence(EBankFunction pBankFunction) {
-        Log.d(this, "isBankMaintenence " + ((pBankFunction != null) ? pBankFunction.toString() : "NULL"));
->>>>>>> e749e00... [SDK] Message bảo trì theo bank function
         return isBankFunctionAllMaintenance() || isBankFunctionMaintenance(pBankFunction);
     }
 

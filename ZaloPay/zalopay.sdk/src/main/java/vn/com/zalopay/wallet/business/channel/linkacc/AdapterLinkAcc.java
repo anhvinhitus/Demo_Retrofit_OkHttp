@@ -45,6 +45,7 @@ import vn.com.zalopay.wallet.datasource.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
@@ -62,8 +63,6 @@ import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_PASSWORD;
 import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_USERNAME;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_CAPTCHA;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PASSWORD;
-
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /**
  * Created by SinhTT on 14/11/2016.
@@ -102,28 +101,6 @@ public class AdapterLinkAcc extends AdapterBase {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
-    protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
-        // get & check bankaccount list
-        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-            @Override
-            public void onCheckExistBankAccountComplete(boolean pExisted) {
-                hideLoadingDialog();
-                if (!pExisted) {
-                    unlinkAccSuccess();
-                } else {
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
-                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
-                }
-            }
-
-            @Override
-            public void onCheckExistBankAccountFail(String pMessage) {
-                hideLoadingDialog();
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
-                unlinkAccFail(pMessage, mTransactionID);
-            }
-        }, CardType.PVCB);
-    };
     private final ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -176,6 +153,28 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     };
     private List<DBankAccount> mBankAccountList = null;
+    protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
+        // get & check bankaccount list
+        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+            @Override
+            public void onCheckExistBankAccountComplete(boolean pExisted) {
+                hideLoadingDialog();
+                if (!pExisted) {
+                    unlinkAccSuccess();
+                } else {
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
+                }
+            }
+
+            @Override
+            public void onCheckExistBankAccountFail(String pMessage) {
+                hideLoadingDialog();
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
+                unlinkAccFail(pMessage, mTransactionID);
+            }
+        }, CardType.PVCB);
+    };
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
@@ -317,24 +316,14 @@ public class AdapterLinkAcc extends AdapterBase {
 
     }
 
-<<<<<<< HEAD
-
-    @Override
-    public String getChannelID() {
-        if (mConfig != null) {
-            return String.valueOf(mConfig.pmcid);
-        }
-        return String.valueOf(BuildConfig.channel_bankaccount);
-=======
     protected int getDefaultChannelId() {
-        return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+        return BuildConfig.channel_bankaccount;
     }
 
     @Override
     public int getChannelID() {
         int channelId = super.getChannelID();
         return channelId != -1 ? channelId : getDefaultChannelId();
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     }
 
     public boolean isLoginStep() {
@@ -531,7 +520,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (GlobalData.shouldNativeWebFlow()) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
                             Log.d(this, "fill otp into website vcb directly");
-                        }else{
+                        } else {
                             linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
                         }
                         break;
@@ -756,7 +745,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
@@ -850,7 +839,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().enableSubmitBtn(false);
 
                     // TrackApptransidEvent AuthenType
-                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
+                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                     return null;
                 } else {
@@ -919,7 +908,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
@@ -1142,7 +1131,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         mWebViewProcessor.start(pUrl);
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
     }
 
     public LinkAccWebViewClient getLinkWebViewProcessor() {

@@ -20,9 +20,6 @@ import android.widget.RadioGroup;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -35,6 +32,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.BitmapUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -190,7 +188,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
         }
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getAdapter().getChannelID()));
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
 
     }
 

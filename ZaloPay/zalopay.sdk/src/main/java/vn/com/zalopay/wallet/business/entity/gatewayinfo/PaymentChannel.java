@@ -12,21 +12,12 @@ public class PaymentChannel extends MiniPmcTransType {
         super(channel);
     }
 
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannelView.java
-    public DPaymentChannelView clone() {
-        DPaymentChannelView paymentChannel = new DPaymentChannelView(this);
-=======
     public PaymentChannel clone() {
         PaymentChannel paymentChannel = new PaymentChannel(this);
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/PaymentChannel.java
         paymentChannel.channel_icon = this.channel_icon;
         paymentChannel.channel_next_icon = this.channel_next_icon;
         paymentChannel.l4no = this.l4no;
         paymentChannel.f6no = this.f6no;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/DPaymentChannelView.java
-        paymentChannel.bankcode = this.bankcode;
-=======
->>>>>>> 9fd9a35... [SDK] Apply app info v1:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/business/entity/gatewayinfo/PaymentChannel.java
         return paymentChannel;
     }
 
