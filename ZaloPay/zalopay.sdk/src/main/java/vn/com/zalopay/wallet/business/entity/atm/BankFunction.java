@@ -5,6 +5,7 @@ import vn.com.zalopay.wallet.constants.BankFunctionCode;
 public class BankFunction {
     public String bankcode;
     public int status;
+    public String maintenancemsg;
     public Long maintenancefrom;
     public Long maintenanceto;
     @BankFunctionCode

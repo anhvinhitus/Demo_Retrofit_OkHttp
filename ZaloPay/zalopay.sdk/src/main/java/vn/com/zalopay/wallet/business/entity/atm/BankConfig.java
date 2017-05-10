@@ -2,11 +2,22 @@ package vn.com.zalopay.wallet.business.entity.atm;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.FeeType;
+=======
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
+import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
+import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
+import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.ZPWUtils;
+>>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 
 public class BankConfig {
     public String code;
@@ -27,8 +38,58 @@ public class BankConfig {
     public String loginbankurl;
     public List<BankFunction> functions = null;
 
+<<<<<<< HEAD
     @FeeType
     public String feecaltype = null;
+=======
+    /***
+     * get detail maintenance message from bankconfig
+     * @return
+     */
+    public static String getFormattedBankMaintenaceMessage() {
+        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
+        try {
+            String maintenanceTo = null;
+            BankConfig bankConfig = BankLoader.getInstance().maintenanceBank;
+            BankFunction bankFunction = BankLoader.getInstance().maintenanceBankFunction;
+            //maintenance all function in bank
+            if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
+                message = bankConfig.maintenancemsg;
+                if (bankConfig.maintenanceto > 0) {
+                    maintenanceTo = ZPWUtils.convertDateTime(bankConfig.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, bankConfig.name, maintenanceTo);
+                }
+            } else if (bankFunction != null && bankFunction.isFunctionMaintenance()) {
+                //maintenance some function of bank
+                message = bankFunction.maintenancemsg;
+                if (bankFunction.maintenanceto > 0) {
+                    maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, bankConfig.name, maintenanceTo);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("getFormattedBankMaintenaceMessage", ex);
+        }
+        return message;
+    }
+
+    public String getShortBankName() {
+        if (!TextUtils.isEmpty(name) && name.startsWith("NH")) {
+            return name.substring(2);
+        }
+        return name;
+    }
+>>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 
 <<<<<<< HEAD
     @BankStatus
@@ -65,7 +126,12 @@ public class BankConfig {
         return totalfee;
     }
 
+<<<<<<< HEAD
     public boolean isBankMaintenence(@BankFunctionCode int pBankFunction) {
+=======
+    public boolean isBankMaintenence(EBankFunction pBankFunction) {
+        Log.d(this, "isBankMaintenence " + ((pBankFunction != null) ? pBankFunction.toString() : "NULL"));
+>>>>>>> e749e00... [SDK] Message bảo trì theo bank function
         return isBankFunctionAllMaintenance() || isBankFunctionMaintenance(pBankFunction);
     }
 

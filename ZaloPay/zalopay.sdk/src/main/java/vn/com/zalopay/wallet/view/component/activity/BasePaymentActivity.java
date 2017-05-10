@@ -73,8 +73,15 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+<<<<<<< HEAD
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
+=======
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
+import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+>>>>>>> e749e00... [SDK] Message bảo trì theo bank function
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 <<<<<<< HEAD
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
@@ -1745,7 +1752,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
+<<<<<<< HEAD
                 showInfoDialog(pListener, BankLoader.getInstance().getFormattedBankMaintenaceMessage());
+=======
+                showInfoDialog(pListener, BankConfig.getFormattedBankMaintenaceMessage());
+>>>>>>> e749e00... [SDK] Message bảo trì theo bank function
                 return true;
             }
         } catch (Exception e) {
