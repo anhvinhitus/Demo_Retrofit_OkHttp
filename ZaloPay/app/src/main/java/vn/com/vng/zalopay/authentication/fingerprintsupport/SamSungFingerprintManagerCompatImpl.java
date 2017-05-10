@@ -28,8 +28,9 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
     private final Handler mHandler;
 
     private SpassFingerprint mSpassFingerprint;
-    private boolean needRetryIdentify = false;
     private boolean onReadyIdentify = false;
+
+    private static final int Num
 
     private WeakReference<FingerprintManagerCompat.AuthenticationCallback> mCallbackFingerprint;
 
@@ -85,9 +86,7 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
 
     @Override
     public void authenticate(Context context, FingerprintManagerCompat.CryptoObject crypto, int flags, CancellationSignal cancel, FingerprintManagerCompat.AuthenticationCallback callback, Handler handler) {
-
-
-        Timber.d("authenticate: ");
+        Timber.d("authenticate");
         mCallbackFingerprint = new WeakReference<>(callback);
 
         if (!hasEnrolledFingerprints(context)) {
@@ -96,17 +95,15 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
         }
 
         cancelIdentify();
-
-        Timber.d("startIdentify");
         startIdentify();
+
         cancel.setOnCancelListener(this::cancelIdentify);
     }
 
     private SpassFingerprint.IdentifyListener mIdentifyListener = new SpassFingerprint.IdentifyListener() {
         @Override
         public void onFinished(int eventStatus) {
-            Timber.d("onFinished: %s", eventStatus);
-
+            //run on ui thread;
             FingerprintManagerCompat.AuthenticationCallback callback = null;
             if (mCallbackFingerprint != null) {
                 callback = mCallbackFingerprint.get();
@@ -115,6 +112,8 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
             if (callback == null) {
                 return;
             }
+
+            boolean needRetryIdentify = false;
 
             if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_SUCCESS) {
                 callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(null));
@@ -127,11 +126,15 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
             } else if (eventStatus == SpassFingerprint.STATUS_TIMEOUT_FAILED) {
                 callback.onAuthenticationError(FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT, "The time for identify is finished.");
             } else if (eventStatus == SpassFingerprint.STATUS_QUALITY_FAILED) {
-                callback.onAuthenticationFailed();
                 needRetryIdentify = true;
+                callback.onAuthenticationFailed();
             } else {
-                callback.onAuthenticationFailed();
                 needRetryIdentify = true;
+                callback.onAuthenticationFailed();
+            }
+
+            if (needRetryIdentify) {
+                mHandler.sendEmptyMessageDelayed(MSG_AUTH, 100);
             }
         }
 
@@ -147,17 +150,15 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
 
         @Override
         public void onCompleted() {
-            Timber.d("identify is completed : needRetry %s", needRetryIdentify);
+            //run on background thread
+            Timber.d("identify is completed");
             onReadyIdentify = false;
-            if (needRetryIdentify) {
-                needRetryIdentify = false;
-                mHandler.sendEmptyMessageDelayed(MSG_AUTH, 100);
-            }
         }
     };
 
-
     private void startIdentify() {
+        Timber.d("startIdentify : onReadyIdentify %s", onReadyIdentify);
+
         if (onReadyIdentify) {
             return;
         }
@@ -188,7 +189,6 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
         try {
             Timber.d("cancel Identify");
             onReadyIdentify = false;
-            needRetryIdentify = false;
             mSpassFingerprint.cancelIdentify();
         } catch (IllegalStateException ignore) {
         }

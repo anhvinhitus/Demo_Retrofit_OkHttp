@@ -5,8 +5,12 @@ import android.text.TextUtils;
 
 import javax.crypto.Cipher;
 
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
  * Created by hieuvm on 1/3/17.
@@ -39,7 +43,14 @@ public class KeyTools {
     }
 
     private boolean encrypt(String hashPassword) {
-        return IMPL != null && IMPL.encrypt(hashPassword);
+        if (IMPL == null) {
+            return false;
+        }
+        
+        ObservableHelper.makeObservable(() -> IMPL.encrypt(hashPassword))
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        return true;
     }
 
     public String decrypt(Cipher cipher) {
