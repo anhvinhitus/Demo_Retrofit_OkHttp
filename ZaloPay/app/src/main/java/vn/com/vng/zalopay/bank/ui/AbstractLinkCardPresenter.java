@@ -372,9 +372,9 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             return ECardType.PSCB.toString();
         } else if (bankcode.equals(ECardType.PSGCB.toString())) {
             return ECardType.PSGCB.toString();
-        /*} else if (bankcode.equals(ECardType.PEIB.toString())) {
+        } else if (bankcode.equals(ECardType.PEIB.toString())) {
             return ECardType.PEIB.toString();
-        } else if (bankcode.equals(ECardType.PAGB.toString())) {
+        /*} else if (bankcode.equals(ECardType.PAGB.toString())) {
             return ECardType.PAGB.toString();
         } else if (bankcode.equals(ECardType.PTPB.toString())) {
             return ECardType.PTPB.toString();*/

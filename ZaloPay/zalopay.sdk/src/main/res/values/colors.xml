@@ -116,6 +116,12 @@
     <color name="master_color_text_highline">#129d5a</color>
     <color name="master_color_text_selected">#ffffff</color>
 
+    <color name="exim_color_start">#00a2e2</color>
+    <color name="exim_color_end">#006c97</color>
+    <color name="exim_color_text_normal">#5db1e5</color>
+    <color name="exim_color_text_highline">#f6b501</color>
+    <color name="exim_color_text_selected">#ffffff</color>
+
     <color name="viettin_color_start">#d7d8d3</color>
     <color name="viettin_color_end">#777b7b</color>
     <color name="viettin_color_text_normal">#d7d6d6</color>

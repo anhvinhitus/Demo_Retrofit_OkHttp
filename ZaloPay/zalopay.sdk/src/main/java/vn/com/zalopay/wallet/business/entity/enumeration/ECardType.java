@@ -12,6 +12,7 @@ public enum ECardType {
     PSCB("123PSCB"),
     PSGCB("123PSGCB"),
     PVCB("ZPVCB"),
+    PEIB("123PEIB"),
 
     UNDEFINE("UND");
 

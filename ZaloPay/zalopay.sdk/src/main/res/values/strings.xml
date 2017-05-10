@@ -417,6 +417,7 @@
     <string name="zpw_string_bankcode_agribank">123PAGB</string>
     <string name="zpw_string_bankcode_vietcombank">ZPVCB</string>
     <string name="zpw_string_bankcode_bidv">123PBIDV</string>
+    <string name="zpw_string_bankcode_eximbank">123PEIB</string>
 
     <string name="zpw_string_bankcode_visa">VISA</string>
     <string name="zpw_string_bankcode_master">MASTER</string>

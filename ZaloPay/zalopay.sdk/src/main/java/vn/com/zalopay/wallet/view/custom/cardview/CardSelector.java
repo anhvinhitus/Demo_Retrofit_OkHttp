@@ -106,9 +106,12 @@ public class CardSelector {
 
     protected CardSelector createCardSelector(String pBankCode) {
         CardSelector card = null;
-        CardColorText cardColorText = null;
-        //Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s",pBankCode, Constants.BITMAP_EXTENSION));
-
+        CardColorText cardColorText;
+        if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_eximbank))) {
+            //card = new CardSelector(R.drawable.card_color_round_rect_viettin,  android.R.color.transparent, bitmap);
+            cardColorText = new CardColorText(R.color.exim_color_text_normal, R.color.exim_color_text_highline, R.color.exim_color_text_selected);
+            card = new CardSelector(R.drawable.card_color_round_rect_exim, android.R.color.transparent, R.drawable.ic_eximbank, cardColorText);
+        }
         if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_viettinbank))) {
             //card = new CardSelector(R.drawable.card_color_round_rect_viettin,  android.R.color.transparent, bitmap);
             cardColorText = new CardColorText(R.color.viettin_color_text_normal, R.color.viettin_color_text_highline, R.color.viettin_color_text_selected);

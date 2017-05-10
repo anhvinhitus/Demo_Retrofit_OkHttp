@@ -408,6 +408,7 @@ public class RS {
         public static final String zpw_string_bankcode_commercialbank = "zpw_string_bankcode_commercialbank";
         public static final String zpw_string_bankcode_vietcombank = "zpw_string_bankcode_vietcombank";
         public static final String zpw_string_bankcode_bidv = "zpw_string_bankcode_bidv";
+        public static final String zpw_string_bankcode_eximbank = "zpw_string_bankcode_eximbank";
 
         public static final String zpw_string_bankcode_visa = "zpw_string_bankcode_visa";
         public static final String zpw_string_bankcode_master = "zpw_string_bankcode_master";
