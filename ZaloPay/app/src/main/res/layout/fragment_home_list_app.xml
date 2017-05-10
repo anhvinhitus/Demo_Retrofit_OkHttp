@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/home_tv_internet_connection"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="top"
+        android:background="@color/background_snackbar"
+        android:gravity="center"
+        android:text="@string/exception.no.connection.tutorial"
+        android:textColor="@color/txt_title_check_internet" />
+
+    <com.zalopay.ui.widget.MultiSwipeRefreshLayout
+        android:id="@+id/home_swipe_refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_rcv_list_app"
+            style="@style/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
+</LinearLayout>

@@ -13,28 +13,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * *
  */
 public interface IZaloPayView {
-
-    Activity getActivity();
-
-    void setAppItems(List<AppResource> list);
-
     void setTotalNotify(int total);
 
-    void showWsConnectError();
-
-    void showNetworkError();
-
-    void hideNetworkError();
-
     void setBalance(long balance);
-
-    void showError(String error);
-
-    void showErrorDialog(String error);
-
-    void showLoading();
-
-    void hideLoading();
-
-    void setRefreshing(boolean val);
 }

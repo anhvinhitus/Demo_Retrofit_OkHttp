@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
@@ -37,8 +36,7 @@
                     android:id="@+id/toolbar_header_view"
                     layout="@layout/zp_header_top_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
 
             </android.support.v7.widget.Toolbar>
 
@@ -53,41 +51,19 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/pager"
         android:layout_below="@+id/appbar"
-        app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior"/>
+        app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/tvInternetConnection"
+        <FrameLayout
+            android:id="@+id/home_fl_list_app_content"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="top"
-            android:background="@color/background_snackbar"
-            android:gravity="center"
-            android:text="@string/exception.no.connection.tutorial"
-            android:textColor="@color/txt_title_check_internet"/>
-
-        <com.zalopay.ui.widget.MultiSwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/listView"
-                style="@style/RecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-        </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
 
