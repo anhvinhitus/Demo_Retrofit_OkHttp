@@ -166,11 +166,11 @@ public class GlobalData {
      * for checking user selected a map card channel.
      */
     public static boolean isMapCardChannel() {
-        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard);
+        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard) && getPaymentInfo().mapBank.isValid();
     }
 
     public static boolean isMapBankAccountChannel() {
-        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount);
+        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount) && getPaymentInfo().mapBank.isValid();
     }
 
     public static boolean isBankAccountLink() {

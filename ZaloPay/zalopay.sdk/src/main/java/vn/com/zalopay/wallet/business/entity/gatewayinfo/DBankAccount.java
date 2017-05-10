@@ -1,6 +1,8 @@
 package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 
+import android.text.TextUtils;
+
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 
@@ -30,7 +32,7 @@ public class DBankAccount extends DBaseMap {
 
     @Override
     public boolean isValid() {
-        return true;
+        return (!TextUtils.isEmpty(getFirstNumber()) && !TextUtils.isEmpty(getLastNumber()));
     }
 
     @Override
