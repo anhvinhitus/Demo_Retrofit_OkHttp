@@ -1,3 +1,8 @@
+Zalo Pay (Sandbox v2.12.0 - build 251) - Released on 2017-05-10
+- Update icons on empty views
+- Update Home UI
+- Update Profile UI
+
 Zalo Pay (Sandbox v2.11.0 - build 232) - Released on 2017-04-26
 - Upload client log
 - [SDK] Sử dụng Fresco để load hình ảnh
