@@ -303,18 +303,18 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     }
 
     private void showIntro() {
-        if (getActivity() == null) {
-            return;
-        }
-
-        if (mPassCodeView == null || mPassCodeView.getEditText() == null) {
-            return;
-        }
-
         if (mIntroRunnable == null) {
             mIntroRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    if (getActivity() == null) {
+                        return;
+                    }
+
+                    if (mPassCodeView == null) {
+                        return;
+                    }
+
                     mPassCodeView.setError(null);
 
                     getActivity().getWindow().getDecorView().clearFocus();
@@ -367,9 +367,13 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
             mShowKeyboardRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    if (mPassCodeView == null) {
+                        return;
+                    }
                     Timber.d("show Keyboard of PassCode");
                     mPassCodeView.requestFocusView();
                     AndroidUtils.showKeyboard(mPassCodeView.getEditText());
+                    
                 }
             };
         }
