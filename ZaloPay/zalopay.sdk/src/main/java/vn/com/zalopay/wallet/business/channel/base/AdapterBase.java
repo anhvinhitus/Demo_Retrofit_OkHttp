@@ -215,7 +215,7 @@ public abstract class AdapterBase {
         mCard = new DPaymentCard();
     }
 
-    public boolean needReloadPmcConfig(){
+    public boolean needReloadPmcConfig() {
         return false;
     }
 
@@ -922,10 +922,11 @@ public abstract class AdapterBase {
             //confirm transaction pharse
             if (isConfirmTransactionPharse() && needUserPasswordPayment()) {
                 try {
-                    if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
-                        //ask user use finger print
+                    // if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
+                    //ask user use finger print
+                    mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
+                    if (mFingerPrintDialog != null) {
                         mPageCode = PAGE_REQUIRE_PIN;
-                        mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
                         if (getDialogFingerPrint() != null) {
                             getDialogFingerPrint().show(getActivity().getFragmentManager(), null);
                         } else {
