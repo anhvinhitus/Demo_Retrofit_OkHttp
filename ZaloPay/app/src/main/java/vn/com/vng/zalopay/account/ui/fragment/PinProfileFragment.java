@@ -84,7 +84,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     private OnPinProfileFragmentListener mListener;
     private Runnable mIntroRunnable;
-    private Runnable mShowKeyboardRunnable;
 
     @Inject
     PinProfilePresenter mPresenter;
@@ -242,14 +241,16 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     public void onDetach() {
         if (mIntroRunnable != null) {
             AndroidUtils.cancelRunOnUIThread(mIntroRunnable);
+            mIntroRunnable = null;
         }
+
         if (mShowKeyboardRunnable != null) {
             AndroidUtils.cancelRunOnUIThread(mShowKeyboardRunnable);
+            mShowKeyboardRunnable = null;
         }
+
         super.onDetach();
         mListener = null;
-        mIntroRunnable = null;
-        mShowKeyboardRunnable = null;
     }
 
     boolean isPaused = false;
@@ -304,30 +305,25 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     private void showIntro() {
         if (mIntroRunnable == null) {
-            mIntroRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (getActivity() == null) {
-                        return;
-                    }
+            mIntroRunnable = () -> {
 
-                    if (mPassCodeView == null) {
-                        return;
-                    }
-
-                    mPassCodeView.setError(null);
-
-                    getActivity().getWindow().getDecorView().clearFocus();
-
-                    IntroProfileView intro = new IntroProfileView(getActivity(), null);
-
-                    intro.addShape(new RectangleEraser(new ViewTarget(mPassCodeView.getPassCodeView()), AndroidUtils.dp(4f)));
-                    intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
-                    intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(AndroidUtils.dp(4), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
-                    intro.show(getActivity());
+                if (getActivity() == null) {
+                    return;
                 }
+
+                mPassCodeView.setError(null);
+
+                getActivity().getWindow().getDecorView().clearFocus();
+
+                IntroProfileView intro = new IntroProfileView(getActivity(), null);
+
+                intro.addShape(new RectangleEraser(new ViewTarget(mPassCodeView.getPassCodeView()), AndroidUtils.dp(4f)));
+                intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
+                intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(AndroidUtils.dp(4), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
+                intro.show(getActivity());
             };
         }
+
         AndroidUtils.runOnUIThread(mIntroRunnable, 300);
     }
 
@@ -359,25 +355,21 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
     }
 
+
+    private Runnable mShowKeyboardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mPassCodeView == null) {
+                return;
+            }
+
+            mPassCodeView.requestFocusView();
+            AndroidUtils.showKeyboard(mPassCodeView.getEditText());
+        }
+    };
+
     public void showKeyboardPassCode() {
-        if (mPassCodeView == null || mPassCodeView.getEditText() == null) {
-            return;
-        }
-        if (mShowKeyboardRunnable == null) {
-            mShowKeyboardRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mPassCodeView == null) {
-                        return;
-                    }
-                    Timber.d("show Keyboard of PassCode");
-                    mPassCodeView.requestFocusView();
-                    AndroidUtils.showKeyboard(mPassCodeView.getEditText());
-                    
-                }
-            };
-        }
-        mPassCodeView.getEditText().postDelayed(mShowKeyboardRunnable, 300);
+        AndroidUtils.runOnUIThread(mShowKeyboardRunnable, 300);
     }
 
 }
