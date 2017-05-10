@@ -456,3 +456,7 @@ native <methods>;
 -keep class com.zalopay.ui.widget.dialog.Rotate3dAnimation {
   public <init>(...);
 }
+
+#Samsung pass SDK
+-dontwarn com.samsung.**
+-keep class com.samsung.** {*;}
