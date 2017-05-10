@@ -187,7 +187,6 @@ public class MapCardHelper {
 
         mapCardResult.setBankName(bankName);
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
-
         Log.d("start send map card to app", mapCardResult);
     }
 }

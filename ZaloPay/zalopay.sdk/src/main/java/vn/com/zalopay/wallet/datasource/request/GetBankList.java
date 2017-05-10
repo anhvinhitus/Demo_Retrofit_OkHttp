@@ -62,61 +62,17 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
         SharedPreferencesManager.getInstance().setExpiredBankList(time_to_live);
         SharedPreferencesManager.getInstance().setCheckSumBankList(getResponse().checksum);
 
-        //for testing
-        /*
-        BankConfig bankConfigvietcombank = new BankConfig();
-		bankConfigvietcombank.allowwithdraw = 1;
-		bankConfigvietcombank.code = GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv);
-		bankConfigvietcombank.status = 1;
-		bankConfigvietcombank.supporttype = 1;
-		bankConfigvietcombank.name = "NH BIDV";
-		getResponse().banklist.add(bankConfigvietcombank);
-
-        getResponse().bankcardprefixmap.put("970418",GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv));
-        */
-
         for (BankConfig bankConfig : getResponse().banklist) {
             if (bankConfig.code.equals("123PBIDV")) {
                 //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
-				/*
-                bankConfig.status = 2;
-				bankConfig.maintenanceto = Long.parseLong("1480063794000");
-				bankConfig.maintenancemsg = "NH ZPVCB bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
-				*/
+                /*bankConfig.status = 2;
+                bankConfig.maintenanceto = Long.parseLong("1480063794000");
+                bankConfig.maintenancemsg = "NH BIDV bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
 
-                //bankConfig.functions.get(2).status = 2;
-                //bankConfig.functions.get(0).maintenanceto = Long.parseLong("1480063794000");
-                //bankConfig.interfacetype = 1;
-            }
-            if (bankConfig.code.equals("ZPVCB")) {
-                //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
-
-				/*
-				bankConfig.status = 2;
-				bankConfig.maintenanceto = Long.parseLong("1480063794000");
-				bankConfig.maintenancemsg = "NH ZPVCB bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
-				*/
-
-                //bankConfig.functions.get(2).status = 2;
-                //bankConfig.functions.get(0).maintenanceto = Long.parseLong("1480063794000");
-            }
-
-            if (bankConfig.code.equals("123PSGCB")) {
-
-				/*
-				bankConfig.status = 2;
-				bankConfig.maintenanceto = Long.parseLong("1480063794000");
-				bankConfig.maintenancemsg = "NH 123PSGCB bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
-				*/
-
-                //bankConfig.functions.get(0).status = 2;
-                //bankConfig.functions.get(0).maintenanceto = Long.parseLong("1480063794000");
-            }
-
-            if (bankConfig.code.equals("123PVTB")) {
-                //bankConfig.status = 1;
-                //bankConfig.maintenanceto = Long.parseLong("1480063794000");
+                bankConfig.functions.get(2).status = 2;
+                bankConfig.functions.get(2).maintenanceto = Long.parseLong("1480063794000");
+                bankConfig.functions.get(2).maintenancemsg = "NH BIDV bảo trì rút tiền tới 21:00:00 07/02/2017";*/
             }
             SharedPreferencesManager.getInstance().setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
         }
