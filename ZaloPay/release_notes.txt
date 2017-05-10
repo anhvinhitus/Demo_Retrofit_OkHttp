@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.11.0 - build 234) - Released on 2017-05-10
+- Build staging
+
 Zalo Pay (Staging v2.11.0 - build 233) - Released on 2017-05-10
 - [SDK] Support Eximbank
 - [App] Thêm hỗ trợ Samsung Pass cho xác thực vân tay
