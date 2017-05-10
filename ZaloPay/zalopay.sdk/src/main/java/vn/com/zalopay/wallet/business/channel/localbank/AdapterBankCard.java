@@ -164,16 +164,21 @@ public class AdapterBankCard extends AdapterBase {
                         if (!TextUtils.isEmpty(validOtp)) {
                             validOtp = validOtp.trim();
                         }
+                        //clear whitespace and - character
+                        otp = PaymentUtils.clearOTP(validOtp);
+
                         Log.d(this, "otp after split by space " + validOtp);
                         //check it whether length match length of otp in config
-                        if (!TextUtils.isEmpty(validOtp) && validOtp.length() != otpReceiverPattern.length) {
+                        if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
                             continue;
                         }
-                        //clear whitespace and - character
-                        otp = PaymentUtils.clearOTP(otp);
+
 
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
+                        }
+                        if(otpReceiverPattern.bankcode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))){
+                            ((BankCardGuiProcessor) getGuiProcessor()).bidvAutoFillOtp(otp);
                         }
 
                         ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);

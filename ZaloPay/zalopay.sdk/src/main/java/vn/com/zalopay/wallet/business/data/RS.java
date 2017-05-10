@@ -70,10 +70,10 @@ public class RS {
         public static final String zpw_string_vcb_error_password = "zpw_string_vcb_error_password";
         public static final String zpw_warning_bidv_select_linkcard_payment = "zpw_warning_bidv_select_linkcard_payment";
         public static final String zpw_warning_bidv_linkcard_before_payment = "zpw_warning_bidv_linkcard_before_payment";
-
         public static final String zpw_error_message_bidv_website_wrong_password = "zpw_error_message_bidv_website_wrong_password";
         public static final String zpw_error_message_bidv_website_wrong_captcha = "zpw_error_message_bidv_website_wrong_captcha";
-
+        public static final String zpw_string_special_bankscript_bidv_auto_select_rule = "zpw_string_special_bankscript_bidv_auto_select_rule";
+        public static final String zpw_string_special_bankscript_bidv_auto_fill_otp = "zpw_string_special_bankscript_bidv_auto_fill_otp";
         public static final String zpw_channelname_vietcombank_mapaccount = "zpw_channelname_vietcombank_mapaccount";
 
         public static final String dialog_linkaccount_button = "dialog_linkaccount_button";

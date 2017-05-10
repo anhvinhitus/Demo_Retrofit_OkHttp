@@ -1,7 +1,9 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
@@ -2116,4 +2118,6 @@ public abstract class AdapterBase {
             Log.d(this, "===dismissDialogFingerPrint===getDialogFingerPrint()=NULL");
         }
     }
+
+
 }

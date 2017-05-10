@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.utils.Log;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
-
+    protected CCWebViewClient mCCWebViewClient ;
     public PaymentWebView(Context context) {
         super(context);
         init();
@@ -54,9 +54,13 @@ public class PaymentWebView extends WebView {
     }
 
     public void setPaymentWebViewClient(AdapterBase pAdapter) {
-        setWebViewClient(new CCWebViewClient(pAdapter));
+        mCCWebViewClient = new CCWebViewClient(pAdapter);
+        setWebViewClient(mCCWebViewClient);
     }
-
+ public CCWebViewClient getCCWebViewClient()
+ {
+     return mCCWebViewClient;
+ }
     public void reloadPaymentUrl() {
         if (!TextUtils.isEmpty(mRecentLoadingUrl)) {
             loadPaymentUrl(mRecentLoadingUrl);

@@ -20,6 +20,7 @@ public class PaymentUtils {
         if (!TextUtils.isEmpty(pOtp)) {
             pOtp = pOtp.replace(" ", "");
             pOtp = pOtp.replace("-", "");
+            pOtp = pOtp.replace(".", "");
         }
         return pOtp;
     }

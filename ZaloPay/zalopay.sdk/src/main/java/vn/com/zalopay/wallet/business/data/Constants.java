@@ -6,6 +6,7 @@ import java.util.List;
 public class Constants {
     public static final int VCB_MAX_RETRY_GET_NUMBERPHONE = 3;
     public static final String AUTOFILL_OTP_WEBFLOW_JS = "vcb_autofill_otp.js";
+    public static final String AUTOCHECK_RULE_FILLOTP_BIDV_JS = "bidv_autocheck_fillotp.js";
     public static final String AUTO_SELECT_SERVICE_JS  = "vcb_initConfirmBefore.js";
     public static final String COMMA = ",";
     public static final String UNDERLINE = "_";

@@ -1330,6 +1330,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mWebView.loadPaymentUrl(pUrl);
     }
 
+    public void bidvAutoFillOtp(String pOtp) {
+        if (mWebView != null) {
+            mWebView.getCCWebViewClient().BIDVWebFlowFillOtp(pOtp);
+        }
+
+    }
+
     public boolean preventNextIfLinkCardExisted() {
         try {
             return getAdapter().isExistedCardNumberOnCache();

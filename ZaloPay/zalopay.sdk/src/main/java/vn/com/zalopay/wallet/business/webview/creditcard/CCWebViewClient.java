@@ -1,11 +1,20 @@
 package vn.com.zalopay.wallet.business.webview.creditcard;
 
+import android.annotation.TargetApi;
 import android.net.http.SslError;
+import android.os.Build;
+import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import java.util.List;
+
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.data.Constants;
+
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
@@ -20,7 +29,10 @@ import static vn.com.zalopay.wallet.business.entity.base.WebViewError.SSL_ERROR;
 
 public class CCWebViewClient extends PaymentWebViewClient {
     protected boolean isFirstLoad = true;
-    private String mMerchantPrefix;
+
+    private String mMerchantPrefix = "";
+    private WebView mWebView = null;
+
 
     public CCWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
@@ -48,6 +60,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             getAdapter().showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
         }
         view.loadUrl(url);
+        mWebView = view;
         return true;
     }
 
@@ -65,6 +78,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
         Log.d(this, "load page finish " + url);
         if (getAdapter() != null) {
             getAdapter().showProgressBar(false, null);
+            BIDVWebFlow(null, url, view);
         }
         isFirstLoad = false;
     }
@@ -98,4 +112,42 @@ public class CCWebViewClient extends PaymentWebViewClient {
         Log.d(this, "there're error ssl on page", error);
     }
 
+
+    public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {
+        if (pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_bidv_auto_select_rule))) {
+            executeJs(Constants.AUTOCHECK_RULE_FILLOTP_BIDV_JS, pOtp, pView);
+
+        }
+
+    }
+
+    public void BIDVWebFlowFillOtp(String pOtp) {
+        if (mWebView != null) {
+            executeJs(Constants.AUTOCHECK_RULE_FILLOTP_BIDV_JS, pOtp, mWebView);
+        }
+
+    }
+
+    public void executeJs(String pJsFileName, String pJsInput, WebView pView) {
+        if (!TextUtils.isEmpty(pJsFileName)) {
+            String jsContent;
+            Log.d("executeJs", pJsFileName);
+            Log.d("executeJs", pJsInput);
+            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
+                jsContent = ResourceManager.getJavascriptContent(jsFile);
+                jsContent = String.format(jsContent, pJsInput);
+                runScript(jsContent, pView);
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void runScript(String scriptContent, WebView pView) {
+        Log.d(this, "runScript: " + scriptContent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            pView.evaluateJavascript(scriptContent, null);
+        } else {
+            pView.loadUrl("javascript:{" + scriptContent + "}");
+        }
+    }
 }
