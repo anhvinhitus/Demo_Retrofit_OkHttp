@@ -131,6 +131,7 @@ public class MapCardHelper {
         mapCardResult.setBankName(bankName);
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
 <<<<<<< HEAD
+<<<<<<< HEAD
         Log.d("notifyNewMapCardToApp", "===mapCardResult=" + GsonUtils.toJsonString(mapCardResult));
 =======
 
@@ -138,6 +139,8 @@ public class MapCardHelper {
         Log.d("notifyNewMapCardToApp", "===mapCardResult=", mapCardResult);
 >>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
 =======
+=======
+>>>>>>> 190d5ae... [SDK] Clear code
         Log.d("start send map card to app", mapCardResult);
 >>>>>>> ba1bb8b... [SDK] Clear code
     }
