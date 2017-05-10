@@ -162,15 +162,12 @@ public class MapCardHelper {
 
         //create icon for map card.
         //this is atm
-        if (!TextUtils.isEmpty(saveCardInfo.bankcode) && !saveCardInfo.bankcode.equals(Constants.CCCode)) {
+        if (!Constants.CCCode.equals(saveCardInfo.bankcode)) {
             mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
             //populate channel name
-            bankName = BankCardCheck.getInstance().getDetectedBankName();
-            if (!TextUtils.isEmpty(bankName) && bankName.startsWith("NH")) {
-                bankName = bankName.substring(2);
+            bankName = BankCardCheck.getInstance().getShortBankName();
+            if (!TextUtils.isEmpty(bankName)) {
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card_atm), bankName);
-            } else if (!TextUtils.isEmpty(bankName)) {
-                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), bankName);
             }
         }
         //cc
@@ -191,6 +188,6 @@ public class MapCardHelper {
         mapCardResult.setBankName(bankName);
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
 
-        Log.d("notifyNewMapCardToApp", "===mapCardResult=", mapCardResult);
+        Log.d("start send map card to app", mapCardResult);
     }
 }
