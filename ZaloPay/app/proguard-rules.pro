@@ -461,3 +461,7 @@ native <methods>;
 }
 ## For API 17+
 #-keepattributes JavascriptInterface
+
+#Samsung pass SDK
+-dontwarn com.samsung.**
+-keep class com.samsung.** {*;}
