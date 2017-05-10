@@ -52,6 +52,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -1758,7 +1759,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-                showInfoDialog(pListener, StringUtil.getFormattedBankMaintenaceMessage());
+                showInfoDialog(pListener, BankConfig.getFormattedBankMaintenaceMessage());
                 return true;
             }
         } catch (Exception e) {

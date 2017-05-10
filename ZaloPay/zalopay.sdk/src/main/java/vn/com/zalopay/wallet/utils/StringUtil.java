@@ -7,60 +7,7 @@ import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankFunction;
-
 public class StringUtil {
-
-    public static String longToStringNoDecimal(long pLongNumber) {
-        return NumberFormat.getNumberInstance(Locale.US).format(pLongNumber);
-    }
-
-    /***
-     * get detail maintenance message from bankconfig
-     * @return
-     */
-    public static String getFormattedBankMaintenaceMessage() {
-        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
-        try {
-            String maintenanceTo = "";
-            BankConfig bankConfig = BankLoader.getInstance().maintenanceBank;
-            BankFunction bankFunction = BankLoader.getInstance().maintenanceBankFunction;
-
-            if(bankConfig != null)
-            {
-                message = bankConfig.maintenancemsg;
-            }
-            if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
-                if (bankConfig.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(bankConfig.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, bankConfig.name, maintenanceTo);
-                }
-            }
-            if (bankConfig != null && bankFunction != null && bankFunction.isFunctionMaintenance()) {
-                if (bankFunction.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, bankConfig.name, maintenanceTo);
-                }
-            }
-        } catch (Exception ex) {
-            Log.e("getFormattedBankMaintenaceMessage", ex);
-        }
-        return message;
-    }
 
     public static String formatVnCurrence(String price) {
 

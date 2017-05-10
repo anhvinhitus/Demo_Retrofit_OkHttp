@@ -4,12 +4,16 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class BankConfig {
     public String code;
@@ -44,6 +48,47 @@ public class BankConfig {
     public String minappversion;
 
     public List<BankFunction> functions = null;
+
+    /***
+     * get detail maintenance message from bankconfig
+     * @return
+     */
+    public static String getFormattedBankMaintenaceMessage() {
+        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
+        try {
+            String maintenanceTo = null;
+            BankConfig bankConfig = BankLoader.getInstance().maintenanceBank;
+            BankFunction bankFunction = BankLoader.getInstance().maintenanceBankFunction;
+            //maintenance all function in bank
+            if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
+                message = bankConfig.maintenancemsg;
+                if (bankConfig.maintenanceto > 0) {
+                    maintenanceTo = ZPWUtils.convertDateTime(bankConfig.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, bankConfig.name, maintenanceTo);
+                }
+            } else if (bankFunction != null && bankFunction.isFunctionMaintenance()) {
+                //maintenance some function of bank
+                message = bankFunction.maintenancemsg;
+                if (bankFunction.maintenanceto > 0) {
+                    maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, bankConfig.name, maintenanceTo);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("getFormattedBankMaintenaceMessage", ex);
+        }
+        return message;
+    }
 
     public String getShortBankName() {
         if (!TextUtils.isEmpty(name) && name.startsWith("NH")) {
@@ -82,12 +127,11 @@ public class BankConfig {
 
     public double calculateFee() {
         totalfee = CBaseCalculateFee.getInstance().setCalculator(new CWithDrawCalculateFee(this)).countFee();
-
         return totalfee;
     }
 
     public boolean isBankMaintenence(EBankFunction pBankFunction) {
-        Log.d(this, "===isBankMaintenence===pBankFunction=" + ((pBankFunction != null) ? pBankFunction.toString() : "NULL"));
+        Log.d(this, "isBankMaintenence " + ((pBankFunction != null) ? pBankFunction.toString() : "NULL"));
         return isBankFunctionAllMaintenance() || isBankFunctionMaintenance(pBankFunction);
     }
 

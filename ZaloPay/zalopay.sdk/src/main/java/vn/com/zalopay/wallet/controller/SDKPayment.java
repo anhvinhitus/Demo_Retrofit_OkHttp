@@ -8,6 +8,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
@@ -247,7 +248,7 @@ public class SDKPayment {
             if (GlobalData.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        StringUtil.getFormattedBankMaintenaceMessage(), pIndex -> {
+                        BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
                             if (GlobalData.getPaymentListener() != null) {
                                 GlobalData.setResultUserClose();
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());

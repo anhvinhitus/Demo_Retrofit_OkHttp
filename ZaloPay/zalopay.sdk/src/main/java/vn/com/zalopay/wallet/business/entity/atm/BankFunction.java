@@ -4,6 +4,7 @@ public class BankFunction {
     public String bankcode;
     public String bankfunction;
     public int status;
+    public String maintenancemsg;
     public Long maintenancefrom;
     public Long maintenanceto;
 
