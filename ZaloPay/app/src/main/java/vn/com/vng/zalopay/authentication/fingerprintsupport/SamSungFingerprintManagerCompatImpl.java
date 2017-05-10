@@ -30,8 +30,6 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
     private SpassFingerprint mSpassFingerprint;
     private boolean onReadyIdentify = false;
 
-    private static final int Num
-
     private WeakReference<FingerprintManagerCompat.AuthenticationCallback> mCallbackFingerprint;
 
     SamSungFingerprintManagerCompatImpl(Context context) {
