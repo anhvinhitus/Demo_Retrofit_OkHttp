@@ -6,7 +6,7 @@ public enum ETransactionType {
     LINK_CARD("3"),
     WALLET_TRANSFER("4"),
     WITHDRAW("5"),
-    LINK_ACC("6");
+    LINK_ACC("3");
 
     private final String name;
 

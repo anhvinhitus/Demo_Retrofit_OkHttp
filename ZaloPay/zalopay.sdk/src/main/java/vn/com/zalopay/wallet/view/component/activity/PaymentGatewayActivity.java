@@ -24,6 +24,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
@@ -141,7 +142,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         if (!ConnectionUtil.isOnline(this)) {
             onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection));
-
             return;
         }
 
@@ -150,15 +150,41 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         //this is link acc , go to channel directly
         if (GlobalData.isBankAccountLink()) {
-            startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
-            isUniqueChannel = true;
+            MiniPmcTransType miniPmcTransType = null;
+            String pmcId = GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
+            try {
+                miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pmcId, null), MiniPmcTransType.class);
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
+            if (miniPmcTransType == null) {
+                onReturnCancel(GlobalData.getStringResource(RS.string.sdk_config_invalid));
+            } else {
+                startChannelDirect(miniPmcTransType);
+                isUniqueChannel = true;
+            }
             return;
         }
 
         //this is link card , go to channel directly
         if (GlobalData.isLinkCardChannel()) {
-            startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
-            isUniqueChannel = true;
+            MiniPmcTransType miniPmcTransType = null;
+            String pmcId = GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm);
+            try {
+                miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pmcId, null), MiniPmcTransType.class);
+                if (miniPmcTransType == null) {
+                    pmcId = GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card);
+                    miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pmcId, null), MiniPmcTransType.class);
+                }
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
+            if (miniPmcTransType == null) {
+                onReturnCancel(GlobalData.getStringResource(RS.string.sdk_config_invalid));
+            } else {
+                startChannelDirect(miniPmcTransType);
+                isUniqueChannel = true;
+            }
             return;
         }
 
@@ -339,7 +365,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * fill channel to listview
      */
     private void populateListView() {
-        Log.d(this,"populate channel list to view ",baseChannelInjector.getChannelList());
+        Log.d(this, "populate channel list to view ", baseChannelInjector.getChannelList());
         mChannelListViewAdapter = new GatewayChannelListViewAdapter(this, RS.getLayout(RS.layout.listview__item__channel__gateway), baseChannelInjector.getChannelList());
         mChannelListView.setAdapter(mChannelListViewAdapter);
         mChannelListView.setOnItemClickListener(mChannelItemClick);
@@ -576,11 +602,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         Log.d(this, "===show Channel===goToChannel()");
     }
 
-    private void startChannelDirect(String pChannelID) {
+    private void startChannelDirect(MiniPmcTransType pMiniPmcTransType) {
         try {
             Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), pChannelID);
+            intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, pMiniPmcTransType);
             startActivity(intent);
 
         } catch (Exception e) {

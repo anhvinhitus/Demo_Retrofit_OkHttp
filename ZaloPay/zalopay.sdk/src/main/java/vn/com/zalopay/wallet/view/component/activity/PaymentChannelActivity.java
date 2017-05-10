@@ -248,7 +248,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
-        Log.d(this,"start payment channel", miniPmcTransType);
+        Log.d(this, "start payment channel", miniPmcTransType);
         if (miniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -290,7 +290,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         applyFont();
         updateFontCardNumber();
-        if (!mIsStart && ( getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
+        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
                 setConfirmTitle();
                 getAdapter().moveToConfirmScreen();
@@ -606,7 +606,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType != null) {
-                mAdapter = AdapterFactory.produceChannelByID(this, miniPmcTransType, pChannelId);
+                mAdapter = AdapterFactory.produceChannelByID(this, miniPmcTransType);
                 return true;
             }
         } catch (Exception e) {

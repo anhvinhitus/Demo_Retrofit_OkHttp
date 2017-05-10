@@ -246,7 +246,6 @@ public class ChannelStartProcessor extends SingletonBase {
 
     private void startChannel() {
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-        intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), String.valueOf(mChannel.pmcid));
         intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, mChannel);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getActivity().startActivity(intent);

@@ -22,22 +22,21 @@ public class AdapterFactory {
     public static AdapterBase produce(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) {
         AdapterBase adapter = null;
         try {
-            String channel = owner.getIntent().getStringExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel));
-
-            if (channel.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm))) {
-                Log.i("sdk", "AdapterFactory.produce adapter=AdapterBankCard");
+            String channelId = pPmcTransType != null ? String.valueOf(pPmcTransType.pmcid) : null;
+            if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm).equals(channelId)) {
+                Log.i("sdk", "start create AdapterBankCard");
                 adapter = new AdapterBankCard(owner, pPmcTransType);
-            } else if (channel.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay))) {
-                Log.i("sdk", "AdapterFactory.produce adapter=AdapterZaloPay");
+            } else if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay).equals(channelId)) {
+                Log.i("sdk", "start create AdapterZaloPay");
                 adapter = new AdapterZaloPay(owner, pPmcTransType);
-            } else if (channel.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
-                Log.i("sdk", "AdapterFactory.produce adapter=AdapterCreditCard");
+            } else if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card).equals(channelId)) {
+                Log.i("sdk", "start create AdapterCreditCard");
                 adapter = new AdapterCreditCard(owner, pPmcTransType);
-            } else if (channel.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc))) {
-                Log.i("sdk", "AdapterFactory.produce adapter=AdapterLinkAcc");
+            } else if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount).equals(channelId) && GlobalData.isBankAccountLink()) {
+                Log.i("sdk", "start create AdapterLinkAcc");
                 adapter = new AdapterLinkAcc(owner, pPmcTransType);
-            } else if (channel.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount))) {
-                Log.i("sdk", "AdapterFactory.produce adapter=AdapterBankAccount");
+            } else if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount).equals(channelId)) {
+                Log.i("sdk", "start create AdapterBankAccount");
                 adapter = new AdapterBankAccount(owner, pPmcTransType);
             } else {
                 Log.e("sdk", "AdapterFactory.produce adapter=null");
@@ -53,26 +52,24 @@ public class AdapterFactory {
      * new channel adapter with ChannelID
      * @param owner
      * @param pPmcTransType
-     * @param pChannelID
      * @return
      * @throws Exception
      */
-    public static AdapterBase produceChannelByID(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType, String pChannelID) throws Exception {
+    public static AdapterBase produceChannelByID(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) throws Exception {
         AdapterBase adapter = null;
-        if (pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm))) {
-            Log.d("sdk", "AdapterFactory.produce adapter=AdapterBankCard");
-            adapter = new AdapterBankCard(owner, pPmcTransType);
-        } else if (pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay))) {
-            Log.d("sdk", "AdapterFactory.produce adapter=AdapterZaloPay");
-            adapter = new AdapterZaloPay(owner, pPmcTransType);
-        } else if (pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
-            Log.d("sdk", "AdapterFactory.produce adapter=AdapterCreditCard");
-            adapter = new AdapterCreditCard(owner, pPmcTransType);
-        } else if (pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc))) {
-            Log.i("sdk", "AdapterFactory.produce adapter=AdapterLinkAcc");
-            adapter = new AdapterLinkAcc(owner, pPmcTransType);
-        } else {
-            Log.d("sdk", "AdapterFactory.produce adapter=null");
+        try {
+            String channelId = pPmcTransType != null ? String.valueOf(pPmcTransType.pmcid) : null;
+            if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm).equals(channelId)) {
+                Log.i("sdk", "start create AdapterBankCard");
+                adapter = new AdapterBankCard(owner, pPmcTransType);
+            } else if (GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card).equals(channelId)) {
+                Log.i("sdk", "start create AdapterCreditCard");
+                adapter = new AdapterCreditCard(owner, pPmcTransType);
+            }
+            Log.e("sdk", "AdapterFactory.produce adapter=null");
+
+        } catch (Exception ex) {
+            Log.e("produce", ex);
         }
         return adapter;
     }
