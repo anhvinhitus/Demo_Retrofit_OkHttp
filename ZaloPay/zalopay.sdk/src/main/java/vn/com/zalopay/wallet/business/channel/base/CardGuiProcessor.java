@@ -847,6 +847,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(bankCode)) {
                 getCardView().switchCardDateHintByBankCode(bankCode);
+                if(getAdapter().needReloadPmcConfig()){
+                    GlobalData.populateOrderFee(getAdapter().getConfig());
+                }
             }
 
             //bidv card must paid by mapcard
@@ -857,7 +860,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             //user input bank account
-            if (BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
+            if (!TextUtils.isEmpty(bankCode) && BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
 
@@ -1005,10 +1008,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
+                if(getAdapter().needReloadPmcConfig()){
+                    GlobalData.populateOrderFee(getAdapter().getConfig()); //user input new bank, populate again order fee
+                }
             }
 
             //user input bank account
-            if (BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
+            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
 

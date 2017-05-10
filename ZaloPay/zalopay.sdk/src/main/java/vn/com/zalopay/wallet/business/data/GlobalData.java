@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -522,6 +523,15 @@ public class GlobalData {
 
         initResultReturn();
 
+    }
+
+    public static void populateOrderFee(MiniPmcTransType pmcTransType) {
+        if (pmcTransType != null) {
+            pmcTransType.calculateFee();
+            GlobalData.orderAmountFee = pmcTransType.totalfee;
+            GlobalData.orderAmountTotal = GlobalData.getOrderAmount() + GlobalData.orderAmountFee;
+            Log.d("populate order fee", "order fee " + GlobalData.orderAmountFee );
+        }
     }
 
     public static void setIFingerPrint(IPaymentFingerPrint pFingerPrintFromMerchant) {

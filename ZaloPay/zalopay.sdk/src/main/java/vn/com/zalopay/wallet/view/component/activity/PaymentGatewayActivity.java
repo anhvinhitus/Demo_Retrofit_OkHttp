@@ -570,20 +570,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
 
         //calculate fee and total amount order
-        populateAmout(pChannel);
+        GlobalData.populateOrderFee(pChannel);
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
         Log.d(this, "===show Channel===goToChannel()");
-    }
-
-    /***
-     * get fee of selected channel
-     */
-    private void populateAmout(PaymentChannel pChannel) {
-        if (pChannel != null) {
-            GlobalData.orderAmountFee = pChannel.totalfee;
-            GlobalData.orderAmountTotal = GlobalData.getOrderAmount() + GlobalData.orderAmountFee;
-        }
     }
 
     private void startChannelDirect(String pChannelID) {

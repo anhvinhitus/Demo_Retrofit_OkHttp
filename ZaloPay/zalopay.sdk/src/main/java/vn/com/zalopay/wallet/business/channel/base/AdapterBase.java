@@ -215,6 +215,10 @@ public abstract class AdapterBase {
         mCard = new DPaymentCard();
     }
 
+    public boolean needReloadPmcConfig(){
+        return false;
+    }
+
     public MiniPmcTransType getConfig() {
         return mMiniPmcTransType;
     }

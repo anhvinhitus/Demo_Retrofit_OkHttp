@@ -45,10 +45,16 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
+    public boolean needReloadPmcConfig() {
+        String bankCode = BankCardCheck.getInstance().getDetectBankCode();
+        return mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(bankCode);
+    }
+
+    @Override
     public MiniPmcTransType getConfig() {
         try {
-            String bankCode = BankCardCheck.getInstance().getDetectBankCode();
-            if (mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(bankCode)) {
+            if (needReloadPmcConfig()) {
+                String bankCode = BankCardCheck.getInstance().getDetectBankCode();
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(bankCode), MiniPmcTransType.class);
             }
         } catch (Exception e) {
