@@ -6,43 +6,23 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Xml;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.ui.widget.IconFontTextView;
-import com.zalopay.ui.widget.textview.RoundTextView;
-
-import org.xmlpull.v1.XmlPullParser;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.fragment.HomeCollapseHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
+import vn.com.vng.zalopay.ui.fragment.HomeTopHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
-import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
-import vn.com.vng.zalopay.ui.toolbar.HeaderBehavior;
 import vn.com.vng.zalopay.ui.toolbar.HeaderView;
-import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
-import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloPayView,
+public class ZaloPayFragment extends RuntimePermissionFragment implements
         AppBarLayout.OnOffsetChangedListener, FragmentLifecycle {
 
     public static ZaloPayFragment newInstance() {
@@ -51,9 +31,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Inject
-    ZaloPayPresenter mPresenter;
 
     /*
     * Collapse toolbar view
@@ -64,17 +41,13 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     @BindView(R.id.appbar)
     AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.toolbar_header_view)
-    HeaderViewTop mToolbarHeaderView;
-
     @BindView(R.id.float_header_view)
     HeaderView mHeaderView;
 
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    @BindView(R.id.tvNotificationCount)
-    RoundTextView mNotifyView;
+    private HomeTopHeaderFragment homeTopHeaderFragment;
 
     @Override
     protected void setupFragmentComponent() {
@@ -96,20 +69,18 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
-        mPresenter.attachView(this);
+        initListAppFragment();
+        initCollapseHeaderFragment();
+        initTopHeaderFragment();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.initialize();
-        initListAppFragment();
-        initCollapseHeaderFragment();
     }
 
     @Override
     public void onResume() {
-        mPresenter.resume();
         // Set collapsing behavior
         mAppBarLayout.addOnOffsetChangedListener(this);
         super.onResume();
@@ -117,86 +88,35 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void onPause() {
-        mPresenter.pause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
         super.onPause();
     }
 
     @Override
-    public void onDestroyView() {
-        mPresenter.detachView();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        mPresenter.destroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void setTotalNotify(int total) {
-        if (mNotifyView == null) {
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        if(homeTopHeaderFragment == null) {
             return;
         }
 
-        if (mNotifyView.isShown()) {
-            mNotifyView.show(total);
-        } else {
-            mNotifyView.show(total);
-            if (total > 0) {
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
-                mNotifyView.startAnimation(animation);
-            }
-        }
-    }
-
-    @OnClick(R.id.header_top_rl_notification)
-    public void onBtnNotificationClick() {
-        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
-    }
-
-    @OnClick(R.id.header_view_top_qrcode)
-    public void onClickQRCodeOnToolbar() {
-        navigator.startScanToPayActivity(getActivity());
-    }
-
-    @OnClick(R.id.header_view_top_linkbank)
-    public void onClickLinkBankOnToolbar() {
-        navigator.startLinkCardActivity(getActivity());
-    }
-
-    @OnClick(R.id.header_view_top_search)
-    public void onClickSearchOnToolbar() {
-        navigator.startSearchCategoryActivity(getContext());
-    }
-
-    @OnClick(R.id.header_top_rl_search_view)
-    public void onClickSearchViewOnToolbar() {
-        navigator.startSearchCategoryActivity(getContext());
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
-        boolean isCollaped;
+        boolean isCollapsed;
 
         mHeaderView.setAlpha(1 - percentage);
 
         if (percentage == 0f) {
-            isCollaped = true;
+            isCollapsed = true;
             mHeaderView.setVisibility(View.VISIBLE);
         } else {
-            isCollaped = false;
+            isCollapsed = false;
             if (percentage > 0.5f) {
                 mHeaderView.setVisibility(View.GONE);
             } else {
                 mHeaderView.setVisibility(View.VISIBLE);
             }
         }
-        mToolbarHeaderView.setHeaderTopStatus(isCollaped, percentage);
+
+        homeTopHeaderFragment.setHeaderTopStatus(isCollapsed, percentage);
     }
 
     @Override
@@ -229,8 +149,17 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     private void initCollapseHeaderFragment() {
         if (getFragmentManager().findFragmentById(R.id.home_fl_collapse_header_view) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            HomeCollapseHeaderFragment homeCollapseHeaderFragment = HomeCollapseHeaderFragment.newInstance().newInstance();
+            HomeCollapseHeaderFragment homeCollapseHeaderFragment = HomeCollapseHeaderFragment.newInstance();
             ft.replace(R.id.home_fl_collapse_header_view, homeCollapseHeaderFragment);
+            ft.commit();
+        }
+    }
+
+    private void initTopHeaderFragment() {
+        if (getFragmentManager().findFragmentById(R.id.home_fl_top_header_content) == null) {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            homeTopHeaderFragment = HomeTopHeaderFragment.newInstance();
+            ft.replace(R.id.home_fl_top_header_content, homeTopHeaderFragment);
             ft.commit();
         }
     }

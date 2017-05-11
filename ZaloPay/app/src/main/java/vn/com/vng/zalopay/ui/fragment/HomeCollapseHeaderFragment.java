@@ -2,17 +2,9 @@ package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFontTextView;
-import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,16 +12,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
 import vn.com.vng.zalopay.ui.presenter.HomeCollapseHeaderPresenter;
-import vn.com.vng.zalopay.ui.presenter.HomeListAppPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeCollapseHeaderView;
-import vn.com.vng.zalopay.ui.view.IHomeListAppView;
-import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
-import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;

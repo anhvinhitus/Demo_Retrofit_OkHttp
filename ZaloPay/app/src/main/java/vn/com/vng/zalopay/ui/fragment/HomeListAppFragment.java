@@ -20,8 +20,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
-import vn.com.vng.zalopay.ui.presenter.HomeListAppPresenter;
-import vn.com.vng.zalopay.ui.view.IHomeListAppView;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.widget.FragmentLifecycle;
  * Handle ui and events of list payment app
  */
 
-public class HomeListAppFragment extends BaseFragment implements IHomeListAppView
+public class HomeListAppFragment extends BaseFragment implements IZaloPayView
         , FragmentLifecycle
         , HomeAdapter.OnClickItemListener
         , SwipeRefreshLayout.OnRefreshListener {
@@ -42,7 +42,7 @@ public class HomeListAppFragment extends BaseFragment implements IHomeListAppVie
     private HomeAdapter mHomeAdapter;
 
     @Inject
-    HomeListAppPresenter presenter;
+    ZaloPayPresenter presenter;
 
     @BindView(R.id.home_rcv_list_app)
     RecyclerView mAppListView;

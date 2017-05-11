@@ -86,6 +86,18 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
     }
 
     @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void setUserInfo(User user) {
         if (user == null) return;
         setAvatar(user.avatar);

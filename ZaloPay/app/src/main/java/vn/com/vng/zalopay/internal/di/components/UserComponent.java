@@ -73,6 +73,7 @@ import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeCollapseHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
+import vn.com.vng.zalopay.ui.fragment.HomeTopHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.HandleInAppPayment;
@@ -241,4 +242,6 @@ public interface UserComponent {
     void inject(HomeListAppFragment f);
 
     void inject(HomeCollapseHeaderFragment f);
+
+    void inject(HomeTopHeaderFragment f);
 }
