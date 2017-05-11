@@ -10,9 +10,11 @@ import org.greenrobot.greendao.generator.ToMany;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 57;
+    private static final int GLOBAL_DB_VERSION = 1;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
+        Schema globalSchema = new Schema(GLOBAL_DB_VERSION, "vn.com.vng.zalopay.data.cache.global");
 
         //ADD TABLE
         addApplicationInfo(appSchema);
@@ -26,7 +28,14 @@ public class GreenDaoGenerator {
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
 
-        new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./zalopay.data/src/main/java");
+        //ADD TABLE GLOBAL
+        addApptransidLog(globalSchema);
+
+        DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
+        daoGenerator.generateAll(appSchema, "./zalopay.data/src/main/java");
+        daoGenerator.generateAll(globalSchema, "./zalopay.data/src/main/java");
+
+       // new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./zalopay.data/src/main/java");
     }
 
     private static void addRedPacket(Schema appSchema) {
@@ -317,4 +326,22 @@ public class GreenDaoGenerator {
         entity.addLongProperty("gender");
     }
 
+    private static void addApptransidLog(Schema schema) {
+        Entity entity = schema.addEntity("ApptransidLogGD");
+        entity.setConstructors(false);
+        entity.addStringProperty("apptransid").notNull().unique().primaryKey();
+        entity.addLongProperty("appid");
+        entity.addIntProperty("step");
+        entity.addIntProperty("step_result");
+        entity.addIntProperty("pcmid");
+        entity.addIntProperty("transtype");
+        entity.addLongProperty("transid");
+        entity.addIntProperty("sdk_result");
+        entity.addIntProperty("server_result");
+        entity.addStringProperty("source");
+        entity.addLongProperty("start_time");
+        entity.addLongProperty("finish_time");
+        entity.addStringProperty("bank_code");
+        entity.addIntProperty("status");
+    }
 }
