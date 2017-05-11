@@ -52,8 +52,8 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -117,14 +117,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Timber.d("close Module");
         if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
-        }
-    }
-
-    @ReactMethod
-    public void navigateLinkCard() {
-        Timber.d("navigateLinkCard");
-        if (getCurrentActivity() != null) {
-            navigator.startLinkCardActivity(getCurrentActivity());
         }
     }
 
@@ -301,13 +293,17 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void mapBankAccount() {
-        navigator.startLinkAccountActivity(getCurrentActivity());
+    public void navigateBankAccount() {
+        if (getCurrentActivity() != null) {
+            navigator.startLinkAccountActivity(getCurrentActivity());
+        }
     }
 
     @ReactMethod
-    public void removeBankAccount() {
-        navigator.startLinkAccountActivity(getCurrentActivity());
+    public void navigateCardList() {
+        if (getCurrentActivity() != null) {
+            navigator.startLinkCardActivity(getCurrentActivity());
+        }
     }
 
     private void removeNotify(long notifyId) {
