@@ -8,6 +8,8 @@ import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
@@ -19,17 +21,16 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
 public class PaymentFingerPrint implements IPaymentFingerPrint {
 
-    private Context mContext;
-    private KeyTools mKeyTools;
+    private final KeyTools mKeyTools;
+    private final Navigator mNavigator;
 
-    private Navigator mNavigator;
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
 
     public PaymentFingerPrint(AndroidApplication context) {
-        mContext = context;
-        mKeyTools = new KeyTools(context.getAppComponent().userConfig());
+        mKeyTools = new KeyTools();
         mNavigator = context.getAppComponent().navigator();
+        mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
     }
-
 
     /**
      * Null khi fingerprint not available
@@ -44,7 +45,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
             return null;
         }
 
-        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
+        if (!mFingerprintManagerCompat.isFingerprintAvailable()) {
             Timber.d("Fingerprint not Available");
             return null;
         }
@@ -79,7 +80,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
     public void updatePassword(String s, String s1) throws Exception {
         Timber.d("Update password : passwordOld %s passwordNew %s", s, s1);
         if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
-            mKeyTools.updatePassword(s1);
+            mKeyTools.storePassword(s1);
         }
     }
 

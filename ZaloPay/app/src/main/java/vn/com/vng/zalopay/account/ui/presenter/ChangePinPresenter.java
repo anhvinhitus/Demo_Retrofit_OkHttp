@@ -14,7 +14,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
-import vn.com.vng.zalopay.authentication.KeyTools;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -48,12 +48,12 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
 
     private String mNewPassword;
 
-    KeyTools mKeyTools;
+    private final KeyTools mKeyTools;
 
-    public ChangePinPresenter(Context context, AccountStore.Repository accountRepository, KeyTools keytool) {
+    public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
         mApplicationContext = context;
         mAccountRepository = accountRepository;
-        mKeyTools = keytool;
+        mKeyTools = new KeyTools();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
                     @Override
                     public void call(Boolean aBoolean) {
                         if (!TextUtils.isEmpty(mNewPassword) && mKeyTools.isHavePassword()) {
-                            boolean encrypt = mKeyTools.encrypt(mNewPassword);
+                            boolean encrypt = mKeyTools.storePassword(mNewPassword);
                             Timber.d("encrypt result %s", encrypt);
                         }
                     }

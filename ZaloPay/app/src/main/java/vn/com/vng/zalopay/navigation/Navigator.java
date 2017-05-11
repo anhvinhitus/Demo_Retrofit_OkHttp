@@ -40,7 +40,7 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
-import vn.com.vng.zalopay.authentication.FingerprintUtil;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
@@ -908,19 +908,21 @@ public class Navigator implements INavigator {
         }
 
         if (!mPreferences.getBoolean(Constants.PREF_SHOW_FINGERPRINT_SUGGEST, true)) {
-            Timber.d("not show fingerprint suggest");
+            Timber.d("Not show fingerprint suggest");
             return false;
         }
 
-        if (!FingerprintUtil.isFingerprintAuthAvailable(AndroidApplication.instance())) {
-            Timber.d("fingerprint not available");
+        FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(AndroidApplication.instance());
+
+        if (!fingerprintManagerCompat.isFingerprintAvailable()) {
+            Timber.d("Fingerprint not available");
             return false;
         }
 
         String password = mUserConfig.getEncryptedPassword();
 
         if (!TextUtils.isEmpty(password)) {
-            Timber.d("using fingerprint");
+            Timber.d("Using fingerprint");
             return false;
         }
 

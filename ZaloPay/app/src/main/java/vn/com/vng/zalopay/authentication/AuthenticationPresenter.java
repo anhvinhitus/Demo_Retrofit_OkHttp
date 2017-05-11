@@ -1,16 +1,15 @@
 package vn.com.vng.zalopay.authentication;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.fingerprint.FingerprintManager;
-import android.os.Build;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
+import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -34,20 +33,22 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private AuthenticationProvider mAuthenticationProvider;
 
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
+
     @Inject
     AuthenticationPresenter(AccountStore.Repository accountRepository,
-                            Context applicationContext, KeyTools mKeyTools, SharedPreferences mPreferences) {
+                            Context applicationContext, SharedPreferences mPreferences) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
-        this.mKeyTools = mKeyTools;
+        mKeyTools = new KeyTools();
         this.mPreferences = mPreferences;
     }
 
 
     void onViewCreated() {
         updateStage();
-        if (!FingerprintUtil.isKeyguardSecure(mApplicationContext)
-                || !FingerprintUtil.isFingerprintAuthAvailable(mApplicationContext)
+        if (!mFingerprintManagerCompat.isKeyguardSecure()
+                || !mFingerprintManagerCompat.isFingerprintAvailable()
                 || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {
@@ -160,7 +161,6 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private void handleErrorFingerprint(Throwable e) {
         if (mView == null) {
             return;
@@ -172,10 +172,10 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
         FingerprintException fingerException = (FingerprintException) e;
 
-        boolean notRetry = (fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_CANCELED
-                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE);
+        boolean notRetry = (fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_TIMEOUT
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_LOCKOUT
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_CANCELED
+                || fingerException.mErrorCode == FingerprintManagerCompat.FINGERPRINT_ERROR_HW_UNAVAILABLE);
 
         mView.showFingerprintError(e.getMessage(), !notRetry);
     }

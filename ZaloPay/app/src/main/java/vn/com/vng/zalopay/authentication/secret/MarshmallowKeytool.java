@@ -1,11 +1,9 @@
-package vn.com.vng.zalopay.authentication;
+package vn.com.vng.zalopay.authentication.secret;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -17,76 +15,58 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 
 /**
- * Created by hieuvm on 1/3/17.
+ * Created by hieuvm on 5/7/17.
+ * *
  */
 
-public class KeyTools {
+@RequiresApi(api = Build.VERSION_CODES.M)
+final class MarshmallowKeytool implements KeytoolInternal {
 
-    private KeyStore mKeyStore;
+    private final KeyStore mKeyStore;
 
-    private UserConfig mUserConfig;
+    private final UserConfig mUserConfig;
 
-    private Cipher mEncryptCipher;
-
-    private Cipher mDecryptCipher;
-
-    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
-
-    @Inject
-    public KeyTools(UserConfig userConfig) {
+    MarshmallowKeytool() {
         this.mKeyStore = providesKeyStore();
-        this.mUserConfig = userConfig;
+        this.mUserConfig = AndroidApplication.instance().getAppComponent().userConfig();
     }
 
     private KeyStore providesKeyStore() {
         try {
-            return KeyStore.getInstance(ANDROID_KEY_STORE);
+            return KeyStore.getInstance("AndroidKeyStore");
         } catch (KeyStoreException e) {
-            Timber.d(e, "Failed to get an instance of KeyStore");
+            Timber.w(e, "Failed to get an instance of KeyStore");
             return null;
         }
     }
 
-    @Nullable
-    private KeyStore getKeyStore() {
-        return mKeyStore;
-    }
-
-    private SecretKey getKey() {
-        KeyStore mKeyStore = getKeyStore();
-        if (mKeyStore == null) {
-            Timber.d(new NullPointerException(), "KeyStore is NULL");
-            return null;
-        }
-
+    private SecretKey getSecretKey() {
         try {
             mKeyStore.load(null);
-            SecretKey key = (SecretKey) mKeyStore.getKey(Constants.KEY_ALIAS_NAME, null);
-            if (key != null) {
-                return key;
+
+            if (!mKeyStore.containsAlias(Constants.KEY_ALIAS_NAME)) {
+                return createKey();
             }
-            return createKey();
+
+            return (SecretKey) mKeyStore.getKey(Constants.KEY_ALIAS_NAME, null);
 
         } catch (Exception e) {
-            Timber.d(e, "get secret key fail ");
+            Timber.w(e, "get secret key fail ");
         }
         return null;
     }
 
-
-    @TargetApi(Build.VERSION_CODES.M)
     private SecretKey createKey() {
         Timber.d("create secret key");
         try {
-
             KeyGenParameterSpec aesSpec = new KeyGenParameterSpec.Builder(Constants.KEY_ALIAS_NAME, KeyProperties.PURPOSE_ENCRYPT
                     | KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
@@ -94,24 +74,18 @@ public class KeyTools {
                     //.setKeySize(128)
                     .build();
 
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, mKeyStore.getType());
             keyGenerator.init(aesSpec);
-            keyGenerator.generateKey();
+            return keyGenerator.generateKey();
 
         } catch (Exception e) {
-            Timber.d(e, "create secret key fail");
+            Timber.w(e, "create secret key fail");
         }
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private Cipher getCipher(int mode) {
-
-        KeyStore mKeyStore = getKeyStore();
-        if (mKeyStore == null) {
-            Timber.d(new NullPointerException(), "KeyStore is NULL");
-            return null;
-        }
+    @Override
+    public Cipher getCipher(int mode) {
 
         Cipher cipher;
 
@@ -124,7 +98,7 @@ public class KeyTools {
 
             IvParameterSpec ivParams;
             if (mode == Cipher.ENCRYPT_MODE) {
-                cipher.init(mode, getKey());
+                cipher.init(mode, getSecretKey());
             } else {
                 SecretKey secretKey = ((KeyStore.SecretKeyEntry) mKeyStore.getEntry(Constants.KEY_ALIAS_NAME, null)).getSecretKey();
                 String keyPasswordIv = mUserConfig.getEncryptedPasswordIV();
@@ -140,33 +114,17 @@ public class KeyTools {
         return null;
     }
 
-
-    public boolean initEncryptCipher() {
-        if (!FingerprintProvider.checkAndroidMVersion()) {
-            return false;
-        }
-
-        mEncryptCipher = getCipher(Cipher.ENCRYPT_MODE);
-        if (mEncryptCipher == null) {
-            createKey();
-            mEncryptCipher = getCipher(Cipher.ENCRYPT_MODE);
-        }
-        return (mEncryptCipher != null);
-
-    }
-
-    public boolean initDecryptCipher() {
-        if (!FingerprintProvider.checkAndroidMVersion()) {
-            return false;
-        }
-
-        mDecryptCipher = getCipher(Cipher.DECRYPT_MODE);
-        Timber.d("decrypt cipher: [%s]", mDecryptCipher);
-        return (mDecryptCipher != null);
-    }
-
     public String decrypt(Cipher cipher) {
         Timber.d("decrypt : [%s]", cipher);
+
+        if (cipher == null) {
+            cipher = getCipher(Cipher.DECRYPT_MODE);
+        }
+
+        if (cipher == null) {
+            return null;
+        }
+
         try {
             String keyPassword = mUserConfig.getEncryptedPassword();
             Timber.d("secret base64: [%s] ", keyPassword);
@@ -176,8 +134,9 @@ public class KeyTools {
             Timber.d("decrypt: %s", result);
             return result;
         } catch (Exception e) {
-            Timber.d(e, "Failed to decrypt the data with the generated key.");
+            Timber.w(e, "Failed to decrypt the data with the generated key.");
         }
+
         return null;
     }
 
@@ -186,27 +145,26 @@ public class KeyTools {
     }
 
     private boolean encrypt(String secret, boolean isSha256) {
-        if (!FingerprintProvider.checkAndroidMVersion()) {
-            return false;
-        }
-
         try {
             if (!isSha256) {
                 secret = Utils.sha256Base(secret);
             }
 
             Timber.d("Password sha256 : [%s]", secret);
-            if (!initEncryptCipher()) {
+
+            Cipher encryptCipher = getCipher(Cipher.ENCRYPT_MODE);
+
+            if (encryptCipher == null) {
                 return false;
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, mEncryptCipher);
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, encryptCipher);
             cipherOutputStream.write(secret.getBytes());
             cipherOutputStream.flush();
             cipherOutputStream.close();
 
-            IvParameterSpec ivParams = new IvParameterSpec(mEncryptCipher.getIV());
+            IvParameterSpec ivParams = new IvParameterSpec(encryptCipher.getIV());
             String iv = Base64.encodeToString(ivParams.getIV(), Base64.DEFAULT);
 
             byte[] encrypted = outputStream.toByteArray();
@@ -214,35 +172,13 @@ public class KeyTools {
 
             mUserConfig.setEncryptedPassword(secretBase64, iv);
 
-            Timber.d("secret base64 : [%s] iv [%s]", secretBase64, iv);
+            Timber.d("secret base64 : [%s] secret [%s]", secretBase64, secret);
+            Timber.d("iv : [%s]", iv);
             return true;
         } catch (Exception ex) {
-            Timber.d(ex, "Failed to encrypt the data with the generated key.");
+            Timber.w(ex, "Failed to encrypt the data with the generated key.");
         }
         return false;
     }
 
-    Cipher getDecryptCipher() {
-        return mDecryptCipher;
-    }
-
-    void updatePassword(String newPassword) {
-        if (shouldUpdatePassword(mUserConfig.getEncryptedPassword(), newPassword)) {
-            encrypt(newPassword, true);
-        }
-    }
-
-
-    private boolean shouldUpdatePassword(String oldPassword, String newPassword) {
-        if (TextUtils.isEmpty(newPassword)) {
-            return false;
-        }
-
-        return !newPassword.equals(oldPassword);
-    }
-
-    public boolean isHavePassword() {
-        String password = mUserConfig.getEncryptedPassword();
-        return !TextUtils.isEmpty(password);
-    }
 }
