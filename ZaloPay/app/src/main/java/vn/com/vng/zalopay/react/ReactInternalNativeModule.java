@@ -116,13 +116,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void navigateLinkCard() {
-        if (getCurrentActivity() != null) {
-            navigator.startLinkCardActivity(getCurrentActivity());
-        }
-    }
-
-    @ReactMethod
     public void navigateProfile() {
         if (getCurrentActivity() != null) {
             navigator.startProfileInfoActivity(getCurrentActivity());
@@ -294,13 +287,17 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void mapBankAccount() {
-        navigator.startLinkAccountActivity(getCurrentActivity());
+    public void navigateBankAccount() {
+        if (getCurrentActivity() != null) {
+            navigator.startLinkAccountActivity(getCurrentActivity());
+        }
     }
 
     @ReactMethod
-    public void removeBankAccount() {
-        navigator.startLinkAccountActivity(getCurrentActivity());
+    public void navigateCardList() {
+        if (getCurrentActivity() != null) {
+            navigator.startLinkCardActivity(getCurrentActivity());
+        }
     }
 
     private void removeNotify(long notifyId) {
@@ -438,7 +435,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 .subscribe(new RequestSubscriber(promise));
         mCompositeSubscription.add(subscription);
     }
-
 
     private ReadableMap addQueriesUser(ReadableMap content) {
         WritableMap writableMap = Arguments.createMap();
