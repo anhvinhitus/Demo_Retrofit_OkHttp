@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.11.0 - build 235) - Released on 2017-05-11
+- [App] Update Log Apptransid, API error
+
 Zalo Pay (Staging v2.11.0 - build 234) - Released on 2017-05-10
 - Build staging
 
