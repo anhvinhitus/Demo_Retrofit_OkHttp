@@ -6,8 +6,6 @@ package vn.com.vng.zalopay.authentication;
 
 interface AuthenticationProvider {
 
-    void setStage(Stage stage);
-
     void verify(String password);
 
     void startVerify();

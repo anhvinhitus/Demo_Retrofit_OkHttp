@@ -27,7 +27,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
     private final AccountStore.Repository mAccountRepository;
     private final Context mApplicationContext;
     private final SharedPreferences mPreferences;
-    private final  KeyTools mKeyTools;
+    private final KeyTools mKeyTools;
 
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
@@ -40,8 +40,9 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
                             Context applicationContext, SharedPreferences mPreferences) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
-        mKeyTools = new KeyTools();
+        this.mKeyTools = new KeyTools();
         this.mPreferences = mPreferences;
+        this.mFingerprintManagerCompat = FingerprintManagerCompat.from(applicationContext);
     }
 
 
@@ -123,7 +124,6 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
             mAuthenticationProvider.stopVerify();
         }
     }
-
 
     public void setStage(Stage stage) {
         Timber.d("setStage: [%s]", stage);

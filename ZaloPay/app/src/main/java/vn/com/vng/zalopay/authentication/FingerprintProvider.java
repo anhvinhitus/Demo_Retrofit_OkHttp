@@ -25,7 +25,6 @@ final class FingerprintProvider implements AuthenticationProvider {
     private final KeyTools mKeyTools;
     private final Context mContext;
 
-
     private CancellationSignal mCancellationSignal;
     private boolean mSelfCancelled;
     private Callback mCallback;
