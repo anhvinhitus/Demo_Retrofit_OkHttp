@@ -30,7 +30,7 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
 
     @NonNull
     @Override
-    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
+    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse) {
         if (baseResponse.isSessionExpired()) {
             TokenException exception = new TokenException(baseResponse.err, baseResponse.message);
             postThrowToLoginScreenEvent(exception);
@@ -40,13 +40,13 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
             postThrowToLoginScreenEvent(exception);
             return Observable.error(exception);
         } else if (baseResponse.isInvitationCode()) {
-            return Observable.error(new InvitationCodeException(body.err, body));
+            return Observable.error(new InvitationCodeException(baseResponse.err, baseResponse));
         } else if (baseResponse.isAccountSuspended()) {
             AccountSuspendedException exception = new AccountSuspendedException(baseResponse.err, baseResponse.message);
             postThrowToLoginScreenEvent(exception);
             return Observable.error(exception);
         } else {
-            return Observable.error(new BodyException(body.err, body.message));
+            return Observable.error(new BodyException(baseResponse.err, baseResponse.message));
         }
     }
 

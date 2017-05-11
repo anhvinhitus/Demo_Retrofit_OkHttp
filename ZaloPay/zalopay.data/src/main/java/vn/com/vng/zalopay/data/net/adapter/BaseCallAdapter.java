@@ -8,7 +8,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.List;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Response;
@@ -19,13 +21,15 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
-import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
+import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.data.util.Utils;
+import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
  * Created by longlv on 08/08/2016.
  * BaseCallAdapter for retry API request when has request error
  */
-public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
+abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     private final int NUMBER_RETRY_REST;
     protected final Context mContext;
     private final int mApiEventId;
@@ -33,7 +37,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     protected final Scheduler mScheduler;
     private int mRestRetryCount;
 
-    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
+    BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
         this.mContext = context;
         this.mApiEventId = apiEventId;
         this.mResponseType = responseType;
@@ -41,7 +45,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         this.NUMBER_RETRY_REST = Constants.NUMBER_RETRY_REST;
     }
 
-    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
+    BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
         this.mContext = context;
         this.mApiEventId = apiEventId;
         this.mResponseType = responseType;
@@ -83,7 +87,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
                         return Observable.error(error);
                     }
                 }))
-                .flatMap(this::makeObservableFromResponse);
+                .flatMap(response -> makeObservableFromResponse(call.request(), response));
         if (mScheduler == null) {
             return observable;
         }
@@ -92,16 +96,8 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     }
 
     @NonNull
-    protected <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
+    protected <R> Observable<? extends R> makeObservableFromResponse(Request request, Response<R> response) {
         Timber.d("makeObservableFromResponse response [%s]", response);
-        if (response == null) {
-            return Observable.error(new HttpEmptyResponseException());
-        }
-
-        if (!response.isSuccessful()) {
-            return Observable.error(new HttpException(response));
-        }
-
         R body = response.body();
         if (!(body instanceof BaseResponse)) {
             // just return as is without further processing
@@ -116,12 +112,18 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         }
 
         if (!baseResponse.isSuccessfulResponse()) {
-            return handleServerResponseError((BaseResponse) body, baseResponse);
+            ZPAnalytics.trackAPIError(Strings.pathSegmentsToString(request.url().pathSegments()), 0, baseResponse.err, 0);
+            return handleServerResponseError(baseResponse);
         }
 
         // Happy case
         return Observable.just(body);
     }
 
-    protected abstract <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse);
+    /**
+     * handler error Server Response
+     */
+    protected abstract <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse);
+
+
 }

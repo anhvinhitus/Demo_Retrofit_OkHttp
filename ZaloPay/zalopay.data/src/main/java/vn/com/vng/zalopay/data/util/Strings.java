@@ -89,12 +89,12 @@ public final class Strings {
 
     public static String getDomainName(String url) {
         try {
-            final String[] DOMAIN = { "com", "org", "net", "edu", "co", "gov", "asia", };
+            final String[] DOMAIN = {"com", "org", "net", "edu", "co", "gov", "asia",};
 
             URI uri = new URI(url);
             String domain = uri.getHost();
 
-            if(domain != null) {
+            if (domain != null) {
                 String dot = ".";
                 String[] parts = domain.split("\\.");
 
@@ -112,5 +112,14 @@ public final class Strings {
         }
 
         return "";
+    }
+
+    public static String pathSegmentsToString(List<String> pathSegments) {
+        StringBuilder out = new StringBuilder();
+        for (int i = 0, size = pathSegments.size(); i < size; i++) {
+            out.append('/');
+            out.append(pathSegments.get(i));
+        }
+        return out.toString();
     }
 }

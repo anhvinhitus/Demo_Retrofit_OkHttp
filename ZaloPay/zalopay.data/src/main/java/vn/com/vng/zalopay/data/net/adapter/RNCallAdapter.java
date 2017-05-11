@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.lang.reflect.Type;
 
+import okhttp3.Request;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -30,23 +31,12 @@ public class RNCallAdapter extends BaseCallAdapter {
 
     @NonNull
     @Override
-    protected <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
-        if (response == null) {
-            Timber.d("makeObservableFromResponse NULL response");
-            return Observable.error(new HttpEmptyResponseException());
-        }
-
-        if (!response.isSuccessful()) {
-            Timber.d("makeObservableFromResponse UNSUCCESSFUL response");
-
-            return Observable.error(new HttpException(response));
-        }
-
+    protected <R> Observable<? extends R> makeObservableFromResponse(Request request, Response<R> response) {
         return Observable.just(response.body());
     }
 
     @Override
-    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
+    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse) {
         return null;
     }
 }
