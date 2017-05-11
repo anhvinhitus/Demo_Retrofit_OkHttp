@@ -899,11 +899,13 @@ public abstract class AdapterBase {
                 } else if (iCheck == Constants.REQUIRE_PIN) {
                     try {
                         //ask user use finger print
-                        if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
+                        //  if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
+                        long start = System.currentTimeMillis();
+                        Log.d(this, "===starting get dialog fingerprint===" + start);
+                        mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
+
+                        if (mFingerPrintDialog != null) {
                             mPageCode = PAGE_REQUIRE_PIN;
-                            long start = System.currentTimeMillis();
-                            Log.d(this, "===starting get dialog fingerprint===" + start);
-                            mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
                             if (getDialogFingerPrint() != null) {
                                 getDialogFingerPrint().show(getActivity().getFragmentManager(), null);
                             } else {
@@ -1652,7 +1654,7 @@ public abstract class AdapterBase {
         //full of 2 activity: payment gateway and payment channel
         if (pExitSDK && GlobalData.getChannelActivityCallBack() != null) {
             getActivity().recycleActivity();
-        } else if(GlobalData.getChannelActivityCallBack() != null){
+        } else if (GlobalData.getChannelActivityCallBack() != null) {
             GlobalData.getChannelActivityCallBack().onCallBackAction(mIsShowDialog, pMessage);
             getActivity().finish();
         }
