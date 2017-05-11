@@ -1,22 +1,27 @@
-package vn.com.vng.zalopay.data.appresources;
+package vn.com.vng.zalopay.data.util;
+
+import android.content.res.AssetManager;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import vn.com.vng.zalopay.data.util.Strings;
+import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 5/21/16.
- *
  */
-class FileUtil {
-    static void decompress(byte[] compressed, String location) throws Exception {
+public class FileUtil {
+    public static void decompress(byte[] compressed, String location) throws Exception {
         InputStream is = null;
         ZipInputStream zis = null;
         try {
@@ -89,9 +94,69 @@ class FileUtil {
         }
     }
 
-    static File ensureDirectory(String path) {
+    public static File ensureDirectory(String path) {
         File file = new File(path);
         file.mkdirs();
         return file;
+    }
+
+    public static String readAssetToString(AssetManager assetManager, String fileName) throws IOException {
+        StringBuilder returnString = new StringBuilder();
+        InputStream fIn = null;
+        InputStreamReader isr = null;
+        BufferedReader input = null;
+        try {
+            fIn = assetManager.open(fileName);
+            isr = new InputStreamReader(fIn);
+            input = new BufferedReader(isr);
+            String line;
+            while ((line = input.readLine()) != null) {
+                returnString.append(line);
+            }
+        } finally {
+            try {
+                if (isr != null) {
+                    isr.close();
+                }
+                if (fIn != null) {
+                    fIn.close();
+                }
+                if (input != null) {
+                    input.close();
+                }
+            } catch (Exception e) {
+                Log.d("FileUtil", "Close stream throw exception:" + e.getMessage());
+            }
+        }
+        return returnString.toString();
+    }
+
+    public static String readFileToString(String filePath) throws IOException {
+        FileInputStream fin = null;
+        BufferedReader reader = null;
+        try {
+            File fl = new File(filePath);
+            fin = new FileInputStream(fl);
+            reader = new BufferedReader(new InputStreamReader(fin));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+
+            return sb.toString();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+
+                if (fin != null) {
+                    fin.close();
+                }
+            } catch (IOException e) {
+                Timber.d(e, "Close stream throw exception");
+            }
+        }
     }
 }

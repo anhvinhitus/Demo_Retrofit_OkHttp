@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.FileUtil;
 
 /**
  * Created by AnhHieu on 5/21/16.

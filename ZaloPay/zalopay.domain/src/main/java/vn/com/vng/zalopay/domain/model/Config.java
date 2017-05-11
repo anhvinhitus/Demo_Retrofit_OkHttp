@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.domain.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,9 +21,11 @@ public class Config {
     @SerializedName("friend_config")
     public FriendConfig friendConfig;
 
-
     @SerializedName("api_route")
     public String apiRoute = "https"; //"https|connector"
+
+    @SerializedName("api_names")
+    public HashSet<String> apiNames;
 
     public static class FriendConfig {
         @SerializedName("enable_merge_contact_name")

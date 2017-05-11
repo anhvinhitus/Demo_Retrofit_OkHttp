@@ -42,7 +42,7 @@ import vn.com.vng.zalopay.tracker.ZPTrackerAnswers;
 import vn.com.vng.zalopay.tracker.ZPTrackerApptransid;
 import vn.com.vng.zalopay.tracker.ZPTrackerFileAppender;
 import vn.com.vng.zalopay.tracker.ZPTrackerGA;
-import vn.com.vng.zalopay.utils.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -127,7 +127,7 @@ public class AndroidApplication extends Application {
     }
 
     private void initConfig() {
-        ConfigUtil.initConfig(getAssets());
+        ConfigUtil.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
     }
 
     public void initIconFont(boolean postEvent) {

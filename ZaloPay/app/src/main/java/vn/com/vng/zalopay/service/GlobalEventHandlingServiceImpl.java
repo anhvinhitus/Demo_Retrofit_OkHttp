@@ -18,12 +18,13 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
-import vn.com.vng.zalopay.utils.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 
 /**
  * Created by huuhoa on 6/11/16.
@@ -135,7 +136,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
 
         Timber.d("begin load config");
 
-        ConfigUtil.loadConfigFromResource();
+        ConfigUtil.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
         AndroidApplication.instance().initIconFont(true);
     }
 }

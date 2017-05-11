@@ -1,23 +1,17 @@
-package vn.com.vng.zalopay.utils;
+package vn.com.vng.zalopay.data.util;
 
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zalopay.ui.widget.util.FileUtil;
 
 import java.io.IOException;
 import java.util.Locale;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
-import vn.com.vng.zalopay.data.util.InsideAppUtil;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.Config;
 
@@ -40,11 +34,12 @@ public class ConfigUtil {
                 CONFIG_FILE_PATH);
     }
 
-    public static void initConfig(AssetManager assetManager) {
-        if (loadConfigFromResource()) {
+    public static void initConfig(AssetManager assetManager, int zalopayAppId) {
+        if (loadConfigFromResource(zalopayAppId)) {
             Timber.d("Load config from resource app 1 successfully.");
             return;
         }
+
         if (loadConfigFromAssets(assetManager)) {
             Timber.d("Load config from assets successfully.");
         }
@@ -60,9 +55,12 @@ public class ConfigUtil {
         }
     }
 
-    public static boolean loadConfigFromResource() {
+    public static boolean loadConfigFromResource(int zalopayAppId) {
         try {
-            String jsonConfig = FileUtil.readFileToString(getFileConfigPath(BuildConfig.ZALOPAY_APP_ID));
+
+            String filePath = getFileConfigPath(zalopayAppId);
+            
+            String jsonConfig = FileUtil.readFileToString(filePath);
             return loadConfig(jsonConfig);
         } catch (IOException e) {
             Timber.d(e, "Read config from resource app 1 throw exception.");
@@ -107,10 +105,7 @@ public class ConfigUtil {
      */
 
     private static boolean isSyncContact() {
-        if (mConfig != null && mConfig.friendConfig != null) {
-            return mConfig.friendConfig.enableMergeContactName != 0;
-        }
-        return true;
+        return !(mConfig != null && mConfig.friendConfig != null) || mConfig.friendConfig.enableMergeContactName != 0;
     }
 
     /**
@@ -121,6 +116,14 @@ public class ConfigUtil {
         boolean isHttpsRoute = mConfig == null || !"connector".equals(mConfig.apiRoute);
         Timber.d("Network use Https route : [%s]", isHttpsRoute);
         return isHttpsRoute;
+    }
+
+
+    /**
+     * apiName trong danh sách api_names sẽ được gọi thông qua Payment Connector
+     */
+    public static boolean containsApi(String apiName) {
+        return !(mConfig == null || mConfig.apiNames == null) && mConfig.apiNames.contains(apiName);
     }
 }
 

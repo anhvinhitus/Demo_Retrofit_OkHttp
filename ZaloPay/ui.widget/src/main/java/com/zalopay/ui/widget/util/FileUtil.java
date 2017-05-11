@@ -1,7 +1,6 @@
 package com.zalopay.ui.widget.util;
 
 import android.content.res.AssetManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedReader;
