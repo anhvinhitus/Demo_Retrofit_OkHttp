@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
@@ -31,6 +32,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
@@ -278,11 +280,17 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             closeSupportView();
             return;
         }
+
+        // TrackApptransidEvent AuthenType
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, getAdapter().getChannelID() ,1);
+        //user is summiting order
         if (processingOrder) {
             Log.d(this, "can not back,order still request api");
             return;
         }
         mOnClickExitListener.onClick(null);
+
+
     }
 
     @Override

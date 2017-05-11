@@ -42,6 +42,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
+
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -79,6 +82,7 @@ import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -1171,6 +1175,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setView(R.id.zpw_transaction_wrapper, false);
             setView(R.id.zpw_notransid_textview, (GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()) ? false : true);//hide all if unlink account
         }
+        ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
+        animateImageViewFail();
+
+        //ZPAnalyticsTrackerLog
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
+
+    }
+
+/*    private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
+        // Define view to set view position based on suggest action from server response
+        View rlUpdateInfo = findViewById(R.id.zpw_payment_fail_rl_update_info);
+        View rlSupport = findViewById(R.id.zpw_payment_fail_rl_support);
 
         ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction),
                 GlobalData.getStringResource(RS.string.zpw_font_medium));
@@ -1180,7 +1198,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         animateImageViewFail();
 
-    }
+    }*/
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
@@ -1310,6 +1328,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //re-align title header.
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animationImageViewSuccess();
+
+        // TrackApptransidEvent
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
+
     }
 
     public void showPaymentSpecialSuccessContent(String pTransID) {
@@ -1349,6 +1372,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         //animate icon
         animationImageViewSuccessSpecial();
+
+        // TrackApptransidEvent
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
     }
 
     protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {

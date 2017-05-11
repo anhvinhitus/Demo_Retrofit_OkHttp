@@ -24,6 +24,9 @@ import android.widget.RadioGroup;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
@@ -32,11 +35,13 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+
 import vn.com.zalopay.wallet.business.entity.enumeration.EAuthenType;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
 import vn.com.zalopay.wallet.utils.BitmapUtil;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
 import vn.com.zalopay.wallet.view.adapter.VietComBankAccountListViewAdapter;
@@ -198,6 +203,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
             mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
         }
+        // TrackApptransidEvent input card info
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+
     }
 
     @Override
@@ -205,7 +213,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (getCardView() != null)
             getCardView().setHintTextIssue();
     }
-
     @Override
     public void continueDetectCardForLinkCard() {
         Log.d(this, "card number=" + getCardNumber() + "===preparing to detect cc");
@@ -474,6 +481,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
 
+
         if (mAuthenType == EAuthenType.SMS) {
             mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
             mTokenAuthenEditText.setVisibility(View.GONE);
@@ -483,6 +491,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTextLayoutOtp.setVisibility(View.VISIBLE);
 
             showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
+            // TrackApptransidEvent AuthenType
+            ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID(),getDetectedBankCode());
+
 
         } else if (mAuthenType == EAuthenType.TOKEN) {
 
