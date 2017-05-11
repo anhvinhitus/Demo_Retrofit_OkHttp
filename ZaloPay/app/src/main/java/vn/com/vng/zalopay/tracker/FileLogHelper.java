@@ -11,8 +11,10 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.tracker.model.ApptransidLogData;
 
 /**
  * Created by hieuvm on 4/21/17.
@@ -23,11 +25,12 @@ public class FileLogHelper {
 
     private static final String ZIP_SUFFIX = ".zip";
 
-    public static Observable<String[]> listFileLogs() {
-        return listFileLogs(FileLog.Instance.getRootDirectory(), FileLog.Instance.getCurrentFileLog());
+    private static Observable<String[]> listFileLogs() {
+        return listFileLogs(EventFileLog.Instance.getRootDirectory(),
+                APIFailedFileLog.Instance.getCurrentFileLog(), EventFileLog.Instance.getCurrentFileLog());
     }
 
-    private static Observable<String[]> listFileLogs(File directory, File exclude) {
+    private static Observable<String[]> listFileLogs(File directory, File... exclude) {
         return ObservableHelper.makeObservable(() -> {
             if (!directory.exists() || !directory.isDirectory()) {
                 return new String[]{};
@@ -44,7 +47,7 @@ public class FileLogHelper {
                     continue;
                 }
 
-                if (file.equals(exclude)) {
+                if (indexOf(file, exclude) >= 0) {
                     continue;
                 }
 
@@ -63,7 +66,26 @@ public class FileLogHelper {
         });
     }
 
-    public static Observable<String> zipFileLog(String filePath) {
+    private static int indexOf(File file, File... files) {
+        if (files == null) {
+            return -1;
+        }
+
+        int length = files.length;
+
+        for (int i = 0; i < length; i++) {
+
+            if (file != files[i]) {
+                continue;
+            }
+
+            return i;
+        }
+
+        return -1;
+    }
+
+    private static Observable<String> zipFileLog(String filePath) {
         return ObservableHelper.makeObservable(() -> {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -96,6 +118,22 @@ public class FileLogHelper {
                 ;
     }
 
+    public static Observable<Boolean> uploadApptransidFileLog(FileLogStore.Repository fileLogRepository, ApptransidLogStore.Repository apptransidLogRepository) {
+        return apptransidLogRepository.getAll()
+                .filter(logs -> logs != null && logs.length() > 0)
+                .map(logs -> ApptransidFileLog.Instance.append(new ApptransidLogData(logs)))
+                .flatMap(FileLogHelper::zipFileLog) // Zip file
+                .filter(s -> !TextUtils.isEmpty(s))
+                .flatMap(fileLogRepository::uploadFileLog) // Upload file
+                .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
+                .doOnNext(s -> {
+                    String txtFile = s.replace(ZIP_SUFFIX, ".txt");
+                    FileUtils.deleteFileAtPathSilently(txtFile);
+                }) // Remove .txt
+                .flatMap(s -> apptransidLogRepository.removeAll()) // Clear data in db
+                ;
+    }
+
     private static Observable<String> uploadFileLogIgnoreError(String path, FileLogStore.Repository fileLogRepository) {
         return FileLogHelper.uploadFileLog(path, fileLogRepository)
                 .onErrorResumeNext(Observable.empty());
@@ -110,7 +148,7 @@ public class FileLogHelper {
 
     public static Observable<Boolean> cleanupLogs() {
         return ObservableHelper.makeObservable(() -> {
-            FileLog.Instance.cleanupLogs();
+            EventFileLog.Instance.cleanupLogs();
             return true;
         });
     }
