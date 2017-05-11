@@ -2,6 +2,7 @@ package vn.com.zalopay.analytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -41,12 +42,15 @@ public class ZPAnalytics {
         }
     }
 
-    public static void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
-                                            int pcmid, int transtype, long transid, int sdk_result,
-                                            int server_result, String source) {
+    public static void trackApptransidEvent(ZPApptransidLog log) {
         for (ZPTracker tracker : sTrackerList) {
-            tracker.trackApptransidEvent(apptransid, appid, step, step_result,
-                    pcmid, transtype, transid, sdk_result, server_result, source);
+            tracker.trackApptransidEvent(log);
+        }
+    }
+
+    public static void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
+        for (ZPTracker tracker : sTrackerList) {
+            tracker.trackAPIError(apiName, httpCode, serverCode, networkCode);
         }
     }
 
@@ -78,9 +82,9 @@ public class ZPAnalytics {
         public void trackEvent(int eventId, Long eventValue) {
             String message;
             if (eventValue == null) {
-                message = String.format("Event [%d]", eventId);
+                message = String.format(Locale.getDefault(), "Event [%d]", eventId);
             } else {
-                message = String.format("Event [%d] - value [%s]", eventId, eventValue);
+                message = String.format(Locale.getDefault(), "Event [%d] - value [%s]", eventId, eventValue);
             }
 
             Timber.tag("ZPAnalytics").d(message);
@@ -97,12 +101,15 @@ public class ZPAnalytics {
         }
 
         @Override
-        public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
-                                         int pcmid, int transtype, long transid, int sdk_result,
-                                         int server_result, String source) {
-            Timber.tag("ZPAnalytics").d("Apptransid Event [%s-%s-%s-%s-%s-%s-%s-%s-%s-%s]",
-                    apptransid, appid, step, step_result, pcmid, transtype, transid,
-                    sdk_result, server_result, source);
+        public void trackApptransidEvent(ZPApptransidLog log) {
+            Timber.tag("ZPAnalytics").d("Apptransid Log [%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s]",
+                    log.apptransid, log.appid, log.step, log.step_result, log.pcmid, log.transtype, log.transid,
+                    log.sdk_result, log.server_result, log.source, log.start_time, log.finish_time, log.bank_code, log.status);
+        }
+
+        @Override
+        public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
+            Timber.tag("ZPAnalytics").d("API Error [%s-%s-%s-%s]", apiName, httpCode, serverCode, networkCode);
         }
     }
 }
