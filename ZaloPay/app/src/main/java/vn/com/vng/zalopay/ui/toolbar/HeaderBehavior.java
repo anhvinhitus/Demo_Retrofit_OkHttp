@@ -7,8 +7,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import vn.com.vng.zalopay.R;
-
 /**
  * Set custom behavior for collapsing action (collapse toolbar)
  * Define view and child's view actions
@@ -17,7 +15,6 @@ import vn.com.vng.zalopay.R;
 public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
 
     private Context mContext;
-    private boolean isHide;
 
     public HeaderBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -6,6 +6,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,6 +16,8 @@ import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -21,9 +25,11 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.ui.fragment.HomeCollapseHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.toolbar.HeaderBehavior;
 import vn.com.vng.zalopay.ui.toolbar.HeaderView;
 import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -67,12 +73,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    @BindView(R.id.home_tv_balance)
-    IconFontTextView mBalanceView;
-
-//    @BindView(R.id.tv_balance)
-//    TextView mBalanceView;
-
     @BindView(R.id.tvNotificationCount)
     RoundTextView mNotifyView;
 
@@ -97,15 +97,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
         mPresenter.attachView(this);
-
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.initialize();
         initListAppFragment();
+        initCollapseHeaderFragment();
     }
 
     @Override
@@ -135,18 +134,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
         super.onDestroy();
     }
 
-
-    @Override
-    public void showNetworkError() {
-
-    }
-
-    @Override
-    public void setBalance(long balance) {
-//        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
-        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
-    }
-
     @Override
     public void setTotalNotify(int total) {
         if (mNotifyView == null) {
@@ -162,28 +149,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
                 mNotifyView.startAnimation(animation);
             }
         }
-    }
-
-    /*
-    * Click event for main buttons on collapse toolbar
-    */
-    @OnClick(R.id.btn_link_card)
-    public void onBtnLinkCardClick() {
-        navigator.startLinkCardActivity(getActivity());
-        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
-    }
-
-    @OnClick(R.id.btn_scan_to_pay)
-    public void onScanToPayClick() {
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
-        navigator.startScanToPayActivity(getActivity());
-    }
-
-    @OnClick(R.id.btn_balance)
-    public void onClickBalance() {
-        navigator.startBalanceManagementActivity(getContext());
     }
 
     @OnClick(R.id.header_top_rl_notification)
@@ -244,6 +209,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     }
 
+    @Override
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+
+    }
+
+    /*
+    * Child fragments initialization
+    * */
     private void initListAppFragment() {
         if (getFragmentManager().findFragmentById(R.id.home_fl_list_app_content) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
@@ -253,8 +226,12 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
         }
     }
 
-    @Override
-    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
-
+    private void initCollapseHeaderFragment() {
+        if (getFragmentManager().findFragmentById(R.id.home_fl_collapse_header_view) == null) {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            HomeCollapseHeaderFragment homeCollapseHeaderFragment = HomeCollapseHeaderFragment.newInstance().newInstance();
+            ft.replace(R.id.home_fl_collapse_header_view, homeCollapseHeaderFragment);
+            ft.commit();
+        }
     }
 }

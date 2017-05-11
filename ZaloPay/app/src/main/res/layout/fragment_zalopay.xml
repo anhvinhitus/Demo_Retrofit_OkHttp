@@ -44,14 +44,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
+    <vn.com.vng.zalopay.ui.toolbar.HeaderView
         android:id="@+id/float_header_view"
-        layout="@layout/zp_control_top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/pager"
         android:layout_below="@+id/appbar"
-        app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior" />
+        app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior">
+
+        <FrameLayout
+            android:id="@+id/home_fl_collapse_header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <!--<include-->
+            <!--android:id="@+id/float_header_view"-->
+            <!--layout="@layout/zp_control_top_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+    </vn.com.vng.zalopay.ui.toolbar.HeaderView>
 
     <LinearLayout
         android:layout_width="match_parent"

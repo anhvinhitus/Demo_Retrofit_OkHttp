@@ -14,6 +14,4 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  */
 public interface IZaloPayView {
     void setTotalNotify(int total);
-
-    void setBalance(long balance);
 }
