@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.exception.FingerprintException;
@@ -27,9 +28,6 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
     private AccountStore.Repository mAccountRepository;
     private Context mApplicationContext;
 
-    @Inject
-    SharedPreferences mPreferences;
-
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
     KeyTools mKeyTools;
@@ -38,13 +36,16 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private final FingerprintManagerCompat mFingerprintManagerCompat;
 
+    UserConfig mUserConfig;
+
     @Inject
     AuthenticationPresenter(AccountStore.Repository accountRepository,
-                            Context applicationContext) {
+                            Context applicationContext, UserConfig userConfig) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
         mKeyTools = new KeyTools();
         mFingerprintManagerCompat = FingerprintManagerCompat.from(applicationContext);
+        this.mUserConfig = userConfig;
     }
 
 
@@ -55,7 +56,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
                 || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {
-            String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+            String password = mUserConfig.getEncryptedPassword();
             Timber.d("show password [%s]", password);
             if (!TextUtils.isEmpty(password)) {
                 setStage(Stage.FINGERPRINT_DECRYPT);

@@ -41,16 +41,17 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
     public DialogFragment getDialogFingerprintAuthentication(Activity activity, final IFPCallback callback) throws Exception {
 
         if (callback == null) {
-            Timber.e(new NullPointerException(), "PaymentCallback is null");
+            Timber.e("PaymentCallback is null");
             return null;
         }
 
         if (!mFingerprintManagerCompat.isFingerprintAvailable()) {
-            Timber.d("Fingerprint not Available");
+            Timber.d("Fingerprint not available");
             return null;
         }
 
         if (!mKeyTools.isHavePassword()) {
+            Timber.d("Do not use password");
             return null;
         }
 

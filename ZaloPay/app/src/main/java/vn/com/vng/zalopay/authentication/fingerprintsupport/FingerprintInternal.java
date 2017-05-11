@@ -26,7 +26,7 @@ class FingerprintInternal {
             return;
         }
 
-        if (Build.VERSION.SDK_INT < 18) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             IMPL = new LegacyFingerprintManagerCompatImpl();
             return;
         }
