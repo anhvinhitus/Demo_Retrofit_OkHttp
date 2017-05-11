@@ -654,6 +654,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     protected void checkAppInfo() {
         AppInfoLoader.getInstance().setOnLoadAppInfoListener(loadAppInfoListener).execute();
+        //ZPAnalyticsTrackerLog
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
     }
 
     protected void reloadMapCardList() {
