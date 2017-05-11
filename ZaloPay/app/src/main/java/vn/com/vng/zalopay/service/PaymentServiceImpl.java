@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -54,7 +55,7 @@ public class PaymentServiceImpl implements IPaymentService {
                 .setResponseListener(new PaymentResponseListener(promise))
                 .build();
 
-        this.mPaymentWrapper.payWithOrder(activity, order);
+        this.mPaymentWrapper.payWithOrder(activity, order, ZPPaymentSteps.OrderSource_MerchantApp);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

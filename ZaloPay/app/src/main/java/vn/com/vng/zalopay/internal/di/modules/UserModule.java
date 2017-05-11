@@ -7,6 +7,8 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -43,9 +45,9 @@ public class UserModule {
     @UserScope
     UserSession providesUserSession(Context context, UserConfig userConfig, EventBus eventBus,
                                     ZPNotificationService service,
-                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository) {
-        
-        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository);
+                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository,
+                                    ApptransidLogStore.Repository apptransidLogRepository) {
+        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository, apptransidLogRepository);
     }
 
     @Provides

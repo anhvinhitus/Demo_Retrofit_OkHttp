@@ -56,23 +56,23 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
                 .build();
     }
 
-    protected boolean zpTransaction(JSONObject jsonObject) {
+    protected boolean zpTransaction(JSONObject jsonObject, String source) {
 
         ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
         boolean isValidZPTransaction = zpTransaction.isValid();
 
         Timber.d("Trying with zptranstoken [%s] activity [%s]", isValidZPTransaction, getActivity());
         if (isValidZPTransaction) {
-            paymentWrapper.payWithToken(getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
+            paymentWrapper.payWithToken(getActivity(), zpTransaction.appId, zpTransaction.transactionToken, source);
         }
         return isValidZPTransaction;
     }
 
-    protected boolean orderTransaction(JSONObject jsonOrder) {
+    protected boolean orderTransaction(JSONObject jsonOrder, String source) {
         Order order = new Order(jsonOrder);
         boolean isValidOrder = order.isValid();
         if (isValidOrder) {
-            paymentWrapper.payWithOrder(getActivity(), order);
+            paymentWrapper.payWithOrder(getActivity(), order, source);
         }
         return isValidOrder;
     }

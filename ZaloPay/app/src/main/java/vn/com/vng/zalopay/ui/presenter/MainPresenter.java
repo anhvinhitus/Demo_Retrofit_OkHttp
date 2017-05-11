@@ -65,6 +65,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -451,7 +452,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
-        paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken);
+        paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_FeatureInApp);
     }
 
     private void showLoadingView() {

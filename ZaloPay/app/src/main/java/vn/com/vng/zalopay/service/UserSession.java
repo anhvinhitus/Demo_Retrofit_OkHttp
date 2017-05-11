@@ -17,6 +17,7 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
@@ -48,6 +49,7 @@ public class UserSession {
     private ZPNotificationService mNotifyService;
     private BalanceStore.Repository mBalanceRepository;
     private FileLogStore.Repository mFileLogRepository;
+    private final ApptransidLogStore.Repository mApptransidLogRepository;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -56,7 +58,8 @@ public class UserSession {
                        EventBus eventBus,
                        ZPNotificationService notifyService,
                        BalanceStore.Repository balanceRepository,
-                       FileLogStore.Repository fileLogRepository
+                       FileLogStore.Repository fileLogRepository,
+                       ApptransidLogStore.Repository apptransidLogRepository
 
     ) {
 
@@ -67,6 +70,7 @@ public class UserSession {
         this.mNotifyService = notifyService;
         this.mBalanceRepository = balanceRepository;
         this.mFileLogRepository = fileLogRepository;
+        this.mApptransidLogRepository = apptransidLogRepository;
     }
 
     public void beginSession() {
@@ -155,6 +159,18 @@ public class UserSession {
     public void onUploadFileLogEvent(UploadFileLogEvent event) {
         Timber.d("onUploadFileLogEvent : filePath [%s]", event.filePath);
         uploadFileLog(event.filePath);
+        uploadApptransidFileLog();
+    }
+
+    private void uploadApptransidFileLog() {
+        Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> FileLogHelper.uploadApptransidFileLog(mFileLogRepository, mApptransidLogRepository))
+                .retryWhen(new RetryFileLogUpload())
+                .doOnError(Timber::w)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 
     private void uploadFileLog(String filePath) {

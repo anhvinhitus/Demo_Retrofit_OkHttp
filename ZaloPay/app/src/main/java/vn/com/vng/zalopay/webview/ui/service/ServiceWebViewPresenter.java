@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.IWebView;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -147,7 +148,7 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
             return;
         }
         Timber.d("pay order [%s] view [%s]", order.toString(), mView);
-        mPaymentWrapper.payWithOrder(mView.getActivity(), order);
+        mPaymentWrapper.payWithOrder(mView.getActivity(), order, ZPPaymentSteps.OrderSource_WebToApp);
     }
 
     private void showInputErrorDialog() {

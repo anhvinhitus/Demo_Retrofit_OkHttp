@@ -27,12 +27,16 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
@@ -82,13 +86,13 @@ public class PaymentWrapper {
                 balanceRepository, mCompositeSubscription);
     }
 
-    public void payWithToken(Activity activity, long appId, String transactionToken) {
+    public void payWithToken(Activity activity, long appId, String transactionToken, String source) {
         Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetOrderSubscriber());
+                .subscribe(new GetOrderSubscriber(source));
         mCompositeSubscription.add(subscription);
     }
 
@@ -96,10 +100,17 @@ public class PaymentWrapper {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+
+        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        log.appid = order.appid;
+        log.start_time = System.currentTimeMillis();
+        log.transtype = Integer.valueOf(ETransactionType.WITHDRAW.toString());
+        ZPAnalytics.trackApptransidEvent(log);
+
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
-    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
+    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, String source) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
         User mUser = getUserComponent().currentUser();
@@ -110,10 +121,18 @@ public class PaymentWrapper {
         }
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
+
+        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        log.appid = order.appid;
+        log.source = source;
+        log.start_time = System.currentTimeMillis();
+        log.transtype = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
+        ZPAnalytics.trackApptransidEvent(log);
+
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
-    public void payWithOrder(Activity activity, Order order) {
+    public void payWithOrder(Activity activity, Order order, String paymentStep) {
         Timber.d("payWithOrder: Start");
         if (order == null) {
             Timber.i("payWithOrder: order is invalid");
@@ -141,6 +160,13 @@ public class PaymentWrapper {
             ZPWPaymentInfo paymentInfo = transform(order);
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+
+            ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = order.appid;
+            log.source = paymentStep;
+            log.start_time = System.currentTimeMillis();
+            log.transtype = Integer.valueOf(ETransactionType.PAY.toString());
+            ZPAnalytics.trackApptransidEvent(log);
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             callPayAPI(activity, paymentInfo, null);
@@ -187,6 +213,12 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
 
+            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = paymentInfo.appID;
+            log.start_time = System.currentTimeMillis();
+            log.transtype = Integer.valueOf(ETransactionType.LINK_CARD.toString());
+            ZPAnalytics.trackApptransidEvent(log);
+
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -223,6 +255,12 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
+
+            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = paymentInfo.appID;
+            log.start_time = System.currentTimeMillis();
+            log.transtype = Integer.valueOf(ETransactionType.LINK_ACC.toString());
+            ZPAnalytics.trackApptransidEvent(log);
 
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_ACC);
         } catch (NumberFormatException e) {
@@ -400,6 +438,10 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
+
+        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_Success);
+        ZPAnalytics.trackApptransidEvent(log);
+
         SDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
     }
 
@@ -536,11 +578,16 @@ public class PaymentWrapper {
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
+        private String source;
+
+        GetOrderSubscriber(String source) {
+            this.source = source;
+        }
 
         @Override
         public void onNext(Order order) {
             Timber.d("getOrder response: %s", order.item);
-            payWithOrder(mActivity, order);
+            payWithOrder(mActivity, order, source);
         }
 
         @Override

@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.TrackApptransidHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -362,7 +363,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mView == null) {
             return;
         }
-        paymentWrapper.transfer(mView.getActivity(), order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
+        paymentWrapper.transfer(mView.getActivity(), order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName, TrackApptransidHelper.transfrom(mMoneyActivateSource));
         hideLoading();
     }
 
