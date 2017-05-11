@@ -1,16 +1,15 @@
 package vn.com.vng.zalopay.authentication;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.exception.FingerprintException;
@@ -26,8 +25,9 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private final AccountStore.Repository mAccountRepository;
     private final Context mApplicationContext;
-    private final SharedPreferences mPreferences;
     private final KeyTools mKeyTools;
+    private final UserConfig mUserConfig;
+
 
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
@@ -37,11 +37,11 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     @Inject
     AuthenticationPresenter(AccountStore.Repository accountRepository,
-                            Context applicationContext, SharedPreferences mPreferences) {
+                            Context applicationContext, UserConfig userConfig) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
         this.mKeyTools = new KeyTools();
-        this.mPreferences = mPreferences;
+        this.mUserConfig = userConfig;
         this.mFingerprintManagerCompat = FingerprintManagerCompat.from(applicationContext);
     }
 
@@ -53,7 +53,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
                 || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {
-            String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+            String password = mUserConfig.getEncryptedPassword();
             Timber.d("show password [%s]", password);
             if (!TextUtils.isEmpty(password)) {
                 setStage(Stage.FINGERPRINT_DECRYPT);
