@@ -54,15 +54,13 @@ public class LocationProvider extends Service {
                 }
 
                 if (checkGPS) {
-//                    if (location == null) {
-                        try {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            updateCoordinates();
-                            Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
-                        } catch (SecurityException e) {
-                            Timber.e("Get location by gps failed with: %s", e.getMessage());
-                        }
-//                    }
+                    try {
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        updateCoordinates();
+                        Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
+                    } catch (SecurityException e) {
+                        Timber.e("Get location by gps failed with: %s", e.getMessage());
+                    }
                 }
 
                 saveLocation();
