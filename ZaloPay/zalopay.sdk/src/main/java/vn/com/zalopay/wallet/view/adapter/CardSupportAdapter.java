@@ -22,10 +22,11 @@ public class CardSupportAdapter extends BaseAdapter {
     protected ArrayList<String> mBankCode = new ArrayList<>();
 
     public static CardSupportAdapter createAdapterProxy(boolean pIsBank) {
-        if (GlobalData.isLinkCardChannel())
+        if (GlobalData.isLinkCardChannel()) {
             return new LinkCardBankGridViewAdapter();
-        else
+        } else {
             return pIsBank ? new BankSupportGridViewAdapter() : new CreditCardSupportGridViewAdapter();
+        }
     }
 
     @Override
@@ -73,23 +74,20 @@ public class CardSupportAdapter extends BaseAdapter {
             holder = new ZPWItemBankHolder();
             imImageIcon = (ImageView) convertView.findViewById(R.id.imBankIcon);
             holder.imBankIcon = imImageIcon;
-
             convertView.setTag(holder);
         } else {
             holder = (ZPWItemBankHolder) convertView.getTag();
             imImageIcon = holder.imBankIcon;
         }
-
         String bankCode = mBankCode.get(position);
-
         if (!TextUtils.isEmpty(bankCode)) {
             Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s", bankCode, Constants.BITMAP_EXTENSION));
-
             if (bitmap != null) {
                 imImageIcon.setImageBitmap(bitmap);
                 imImageIcon.setBackgroundResource(R.drawable.bg_card);
             } else {
-                imImageIcon.setBackground(null);
+                mBankCode.remove(position);
+                notifyDataSetChanged();
             }
         }
         return convertView;

@@ -12,7 +12,6 @@ public class LinkCardBankGridViewAdapter extends BankSupportGridViewAdapter {
 
     public LinkCardBankGridViewAdapter() {
         super();
-
         String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
         String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
         if (!TextUtils.isEmpty(bankCodeMaster))
