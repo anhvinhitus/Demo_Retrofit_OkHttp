@@ -21,7 +21,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -32,16 +32,16 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder> {
     protected static final int mAlphaColor = 100;
     protected Context mContext;
-    protected List<DPaymentChannelView> mChannelList;
+    protected List<PaymentChannel> mChannelList;
     protected int mLayoutId;
 
-    public ChannelAdapter(Context pContext, List<DPaymentChannelView> pChannelList, int pLayoutId) {
+    public ChannelAdapter(Context pContext, List<PaymentChannel> pChannelList, int pLayoutId) {
         mContext = pContext;
         mChannelList = pChannelList;
         mLayoutId = pLayoutId;
     }
 
-    protected String getChannelSubTitle(DPaymentChannelView pChannel) {
+    protected String getChannelSubTitle(PaymentChannel pChannel) {
         String mess = null;
         if (!pChannel.isAllowByAmount()) {
             mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount);
@@ -73,7 +73,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
     @Override
     public void onBindViewHolder(ChannelViewHolder holder, int position) {
         try {
-            DPaymentChannelView channel = mChannelList.get(position);
+            PaymentChannel channel = mChannelList.get(position);
             //icon channel
             ResourceManager.loadImageIntoView(holder.channelIconImageView, channel.channel_icon);
 
