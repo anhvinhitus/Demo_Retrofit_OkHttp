@@ -1,17 +1,13 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -458,7 +454,7 @@ public abstract class AdapterBase {
         }
 
         // TrackApptransidEvent Submit Trans
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None,getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
 
         return mIsOrderSubmit;
@@ -2126,6 +2122,5 @@ public abstract class AdapterBase {
             Log.d(this, "===dismissDialogFingerPrint===getDialogFingerPrint()=NULL");
         }
     }
-
 
 }

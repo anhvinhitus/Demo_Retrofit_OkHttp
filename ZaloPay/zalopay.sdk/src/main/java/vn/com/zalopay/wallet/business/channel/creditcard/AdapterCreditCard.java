@@ -1,24 +1,11 @@
 package vn.com.zalopay.wallet.business.channel.creditcard;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
-
-import java.util.List;
-
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.linkacc.LinkAccGuiProcessor;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
-
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
-import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterCreditCard extends AdapterBase {

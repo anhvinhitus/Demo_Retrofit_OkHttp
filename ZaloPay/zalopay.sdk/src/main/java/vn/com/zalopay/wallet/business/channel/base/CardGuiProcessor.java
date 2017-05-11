@@ -847,7 +847,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(bankCode)) {
                 getCardView().switchCardDateHintByBankCode(bankCode);
-                if(getAdapter().needReloadPmcConfig()){
+                if (getAdapter().needReloadPmcConfig()) {
                     GlobalData.populateOrderFee(getAdapter().getConfig());
                 }
             }
@@ -1008,7 +1008,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
-                if(getAdapter().needReloadPmcConfig()){
+                if (getAdapter().needReloadPmcConfig()) {
                     GlobalData.populateOrderFee(getAdapter().getConfig()); //user input new bank, populate again order fee
                 }
             }

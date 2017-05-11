@@ -7,14 +7,10 @@ import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
-import java.util.List;
-
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
-
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
@@ -111,7 +107,6 @@ public class CCWebViewClient extends PaymentWebViewClient {
         }
         Log.d(this, "there're error ssl on page", error);
     }
-
 
     public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {
         if (pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_bidv_auto_select_rule))) {
