@@ -12,6 +12,12 @@ public class AppLocation {
 
     public long timestamp;
 
+    public AppLocation() {
+        this.latitude = 0;
+        this.longitude = 0;
+        this.timestamp = 0;
+    }
+
     public AppLocation(double latitude, double longitude, long timestamp) {
         this.latitude = latitude;
         this.longitude = longitude;
