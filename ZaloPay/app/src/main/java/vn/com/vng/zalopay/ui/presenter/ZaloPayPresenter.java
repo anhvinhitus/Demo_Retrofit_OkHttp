@@ -18,6 +18,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
@@ -32,6 +33,7 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -194,12 +196,17 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
         mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
 
-        AppResource showhow = getAppResource(PaymentAppConfig.Constants.SHOW_SHOW);
-
-        boolean isEnableShowShow = resources.contains(showhow);
-
+        AppResource showshow = PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW);
+        boolean isEnableShowShow = resources.contains(showshow);
         if (isEnableShowShow) {
-            resources.remove(showhow);
+            resources.remove(showshow);
+            resources.add(new AppResource(showshow.appid, showshow.appType, showshow.appname,
+                    mContext.getResources().getString(R.string.nav_showshow),
+                    AndroidUtils.getColorFromResource(R.color.menu_font_ic_red)));
+
+//            AppResource show_show = resources.get(resources.indexOf(showshow));
+//            show_show.iconName = mContext.getResources().getString(R.string.nav_showshow);
+//            show_show.iconColor = AndroidUtils.getColorFromResource(R.color.menu_font_ic_red);
         }
 
         mView.setAppItems(resources);
