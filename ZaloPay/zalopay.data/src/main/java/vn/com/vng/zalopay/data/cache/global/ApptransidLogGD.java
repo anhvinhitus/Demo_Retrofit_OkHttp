@@ -14,7 +14,7 @@ public class ApptransidLogGD {
     @NotNull
     @Unique
     public String apptransid;
-    public Integer appid;
+    public Long appid;
     public Integer step;
     public Integer step_result;
     public Integer pcmid;
@@ -23,6 +23,10 @@ public class ApptransidLogGD {
     public Integer sdk_result;
     public Integer server_result;
     public String source;
+    public Long start_time;
+    public Long finish_time;
+    public String bank_code;
+    public Integer status;
 
 
 }
