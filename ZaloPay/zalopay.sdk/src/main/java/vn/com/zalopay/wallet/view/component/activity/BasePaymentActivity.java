@@ -659,7 +659,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void checkAppInfo() {
         AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
-		 ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
     }
 
     /***
@@ -1068,7 +1068,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animateImageViewFail();
 
         //ZPAnalyticsTrackerLog
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, Integer.parseInt(getAdapter().getChannelID()), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
 
     }
 
@@ -1227,7 +1229,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccess();
 
         // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
 
     }
 
@@ -1261,7 +1265,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccessSpecial();
 
         // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
 
     }
 

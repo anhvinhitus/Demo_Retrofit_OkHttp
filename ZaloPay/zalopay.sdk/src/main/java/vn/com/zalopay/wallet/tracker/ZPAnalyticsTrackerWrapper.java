@@ -68,6 +68,19 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
         Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
     }
+    public void ZPApptransIDLog(int step, int step_result) {
+        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
+        if (step == mStep) {
+            Log.d(this,"LogTransID two times");
+            return;
+        }
+
+        mZpApptransidLog.step = step;
+        this.mStep = step;
+        mZpApptransidLog.step_result = step_result;
+        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
+        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
+    }
     public void ZPApptransIDLog(int step, int step_result, int pcmid,int status) {
         ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
         if (step == mStep || isFinish) {
