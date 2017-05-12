@@ -12,7 +12,8 @@ import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**
- * Created by khattn on 1/24/17.
+ * Created by hieuvm on 5/10/17.
+ * *
  */
 
 @Module

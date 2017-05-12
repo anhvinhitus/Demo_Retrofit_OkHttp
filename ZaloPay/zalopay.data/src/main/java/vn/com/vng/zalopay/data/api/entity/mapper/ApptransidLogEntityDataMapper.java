@@ -1,102 +1,130 @@
 package vn.com.vng.zalopay.data.api.entity.mapper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
+import vn.com.zalopay.analytics.ZPApptransidLog;
 
 /**
  * Created by khattn on 1/25/17.
+ * Apptransid mapper
  */
 
 @Singleton
 public class ApptransidLogEntityDataMapper {
+    final private String VALUE_APPTRANSID = "apptransid";
+    final private String VALUE_APPID = "appid";
+    final private String VALUE_STEP = "step";
+    final private String VALUE_STEP_RESULT = "step_result";
+    final private String VALUE_PCMID = "pcmid";
+    final private String VALUE_TRANSTYPE = "transtype";
+    final private String VALUE_TRANSID = "transid";
+    final private String VALUE_SDK_RESULT = "sdk_result";
+    final private String VALUE_SERVER_RESULT = "server_result";
+    final private String VALUE_SOURCE = "source";
+    final private String VALUE_START_TIME = "start_time";
+    final private String VALUE_FINISH_TIME = "finish_time";
+    final private String VALUE_BANK_CODE = "bank_code";
+    final private String VALUE_STATUS = "status";
 
     @Inject
     public ApptransidLogEntityDataMapper() {
 
     }
 
-    public ApptransidLogGD transform(ApptransidLogEntity data) {
+    public JSONObject transform(ApptransidLogGD data) {
         if (data == null) {
             return null;
         }
 
-        ApptransidLogGD log = new ApptransidLogGD();
-        log.apptransid = data.apptransid;
-        log.appid = data.appid;
-        log.step = data.step;
-        log.step_result = data.step_result;
-        log.pcmid = data.pcmid;
-        log.transtype = data.transtype;
-        log.transid = data.transid;
-        log.sdk_result = data.sdk_result;
-        log.server_result = data.server_result;
-        log.source = data.source;
-        return log;
-    }
+        JSONObject value = new JSONObject();
 
-    public ApptransidLogEntity transform(ApptransidLogGD data) {
-        if (data == null) {
+        try {
+            value.put(VALUE_APPTRANSID, data.apptransid);
+            value.put(VALUE_APPID, data.appid);
+            value.put(VALUE_STEP, data.step);
+            value.put(VALUE_STEP_RESULT, data.step_result);
+            value.put(VALUE_PCMID, data.pcmid);
+            value.put(VALUE_TRANSTYPE, data.transtype);
+            value.put(VALUE_TRANSID, data.transid);
+            value.put(VALUE_SDK_RESULT, data.sdk_result);
+            value.put(VALUE_SERVER_RESULT, data.server_result);
+            value.put(VALUE_SOURCE, data.source);
+            value.put(VALUE_START_TIME, data.start_time);
+            value.put(VALUE_FINISH_TIME, data.finish_time);
+            value.put(VALUE_BANK_CODE, data.bank_code);
+        } catch (JSONException e) {
+            Timber.d("Fail to transform object");
             return null;
         }
 
-        ApptransidLogEntity log = new ApptransidLogEntity();
-        log.apptransid = data.apptransid;
-        log.appid = data.appid;
-        log.step = data.step;
-        log.step_result = data.step_result;
-        log.pcmid = data.pcmid;
-        log.transtype = data.transtype;
-        log.transid = data.transid;
-        log.sdk_result = data.sdk_result;
-        log.server_result = data.server_result;
-        log.source = data.source;
-        return log;
+        return value;
     }
 
-    public ApptransidLogGD transform(Map<String, String> data) {
+    public ApptransidLogGD transform(ZPApptransidLog data) {
         ApptransidLogGD log = new ApptransidLogGD();
 
-        for (Map.Entry<String, String> entry: data.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
+        log.apptransid = data.apptransid;
 
-            switch (key) {
-                case "apptransid":
-                    log.apptransid = value;
-                    break;
-                case "appid":
-                    log.appid = Integer.valueOf(value);
-                    break;
-                case "step":
-                    log.step = Integer.valueOf(value);
-                    break;
-                case "step_result":
-                    log.step_result = Integer.valueOf(value);
-                    break;
-                case "pcmid":
-                    log.pcmid = Integer.valueOf(value);
-                    break;
-                case "transtype":
-                    log.transtype = Integer.valueOf(value);
-                    break;
-                case "transid":
-                    log.transid = Long.valueOf(value);
-                    break;
-                case "sdk_result":
-                    log.sdk_result = Integer.valueOf(value);
-                    break;
-                case "server_result":
-                    log.server_result = Integer.valueOf(value);
-                    break;
-                case "source":
-                    log.source = value;
-                    break;
-            }
+        if (data.appid != 0) {
+            log.appid = data.appid;
+        }
+
+        if (data.step != 0) {
+            log.step = data.step;
+        }
+
+        if (data.step_result != 0) {
+            log.step_result = data.step_result;
+        }
+
+        if (data.pcmid != 0) {
+            log.pcmid = data.pcmid;
+        }
+
+        if (data.transtype != 0) {
+            log.transtype = data.transtype;
+        }
+
+        if (data.transid != 0) {
+            log.transid = data.transid;
+        }
+
+        if (data.sdk_result != 0) {
+            log.sdk_result = data.sdk_result;
+        }
+
+        if (data.server_result != 0) {
+            log.server_result = data.server_result;
+        }
+
+        if (data.source != null) {
+            log.source = data.source;
+        }
+
+        if (data.start_time != 0) {
+            log.start_time = data.start_time;
+        }
+
+        if (data.finish_time != 0) {
+            log.finish_time = data.finish_time;
+        }
+
+        if (data.bank_code != null) {
+            log.bank_code = data.bank_code;
+        }
+
+        if (data.status != 0) {
+            log.status = data.status;
+        } else {
+            log.status = 0;
         }
 
         return log;
