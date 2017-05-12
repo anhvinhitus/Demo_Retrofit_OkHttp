@@ -14,6 +14,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -36,6 +37,7 @@ import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMCID_EXTRA = "pmcid";
@@ -229,12 +231,17 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             closeSupportView();
             return;
         }
+
+        // TrackApptransidEvent AuthenType
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, getAdapter().getChannelID() ,1);
         //user is summiting order
         if (processingOrder) {
             Log.d(this, "can not back,order still request api");
             return;
         }
         mOnClickExitListener.onClick(null);
+
+
     }
 
     @Override

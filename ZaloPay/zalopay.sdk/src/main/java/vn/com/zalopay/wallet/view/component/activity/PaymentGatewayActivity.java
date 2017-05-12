@@ -18,6 +18,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
@@ -39,6 +42,7 @@ import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
@@ -217,6 +221,8 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, 0,1);
+        //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
             return;
@@ -376,10 +382,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
+        // TrackApptransidEvent AuthenType
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel,0,1);
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
         }
+
+
     }
 
     /***
@@ -503,6 +513,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
         Log.d(this, "===show Channel===goToChannel()");
+
+        // TrackApptransidEvent choose pay method
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.hashCode());
     }
 
     /***

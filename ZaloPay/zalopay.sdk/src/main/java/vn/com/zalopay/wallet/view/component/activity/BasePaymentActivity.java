@@ -50,6 +50,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Stack;
 
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -1062,6 +1066,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
 
+        //ZPAnalyticsTrackerLog
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
+
     }
 
     private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
@@ -1217,6 +1225,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animationImageViewSuccess();
+
+        // TrackApptransidEvent
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
+
     }
 
     public void showPaymentSpecialSuccessContent(String pTransID) {
@@ -1247,6 +1260,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setMarginLeft(R.id.payment_method_name, (int) getResources().getDimension(R.dimen.zpw_header_label_margin));
         //animate icon
         animationImageViewSuccessSpecial();
+
+        // TrackApptransidEvent
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+
     }
 
     protected void showBalanceContent(DPaymentChannel pConfig) throws Exception {

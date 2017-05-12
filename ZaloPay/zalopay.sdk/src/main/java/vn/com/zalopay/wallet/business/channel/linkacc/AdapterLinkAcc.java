@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -62,6 +63,7 @@ import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_USERNAME;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_CAPTCHA;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PASSWORD;
 
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 /**
  * Created by SinhTT on 14/11/2016.
  */
@@ -751,6 +753,10 @@ public class AdapterLinkAcc extends AdapterBase {
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
                 Log.d(this, "event register page");
+
+                // TrackApptransidEvent AuthenType
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
@@ -841,6 +847,10 @@ public class AdapterLinkAcc extends AdapterBase {
 
                     getActivity().renderByResource();
                     getActivity().enableSubmitBtn(false);
+
+                    // TrackApptransidEvent AuthenType
+                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+
                     return null;
                 } else {
                     // set Message
@@ -906,6 +916,10 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 // get bankaccount from cache callback to app
                 Log.d(this, "event on unregister page complete");
+
+                // TrackApptransidEvent AuthenType
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
@@ -1125,6 +1139,8 @@ public class AdapterLinkAcc extends AdapterBase {
             return;
         }
         mWebViewProcessor.start(pUrl);
+        // TrackApptransidEvent input card info
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
     }
 
     public LinkAccWebViewClient getLinkWebViewProcessor() {

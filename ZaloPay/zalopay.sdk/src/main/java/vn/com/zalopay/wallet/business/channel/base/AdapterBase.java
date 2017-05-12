@@ -12,8 +12,10 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
-
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -447,6 +449,9 @@ public abstract class AdapterBase {
             Log.e(this, e);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
+
+        // TrackApptransidEvent Submit Trans
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None,getChannelID());
     }
 
     public boolean needToSwitchChannel() {
