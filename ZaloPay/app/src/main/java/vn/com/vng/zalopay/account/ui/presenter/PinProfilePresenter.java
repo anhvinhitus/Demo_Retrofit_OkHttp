@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLHandshakeException;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -12,8 +14,10 @@ import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
 /**
@@ -22,10 +26,12 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
  */
 public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     private AccountStore.Repository mAccountRepository;
+    private Context applicationContext;
 
     @Inject
-    PinProfilePresenter(AccountStore.Repository accountRepository) {
+    PinProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.mAccountRepository = accountRepository;
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -70,13 +76,23 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-
             Timber.d(e, "Update profile error");
             if (e instanceof BodyException) {
                 PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
+            } else if (e instanceof NetworkConnectionException || e instanceof SSLHandshakeException) {
+                showNetworkError();
             } else {
-                PinProfilePresenter.this.onUpdateProfileError("Cập nhật thông tin người dùng thất bại.");
+                String message = ErrorMessageFactory.create(applicationContext, e);
+                PinProfilePresenter.this.onUpdateProfileError(message);
             }
+        }
+    }
+
+
+    private void showNetworkError() {
+        hideLoading();
+        if (mView != null) {
+            mView.showNetworkErrorDialog();
         }
     }
 
