@@ -447,7 +447,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         }
 
         queries.putString("accesstoken", mUser.accesstoken);
-        queries.putString("userid", mUser.zaloPayId);
+        queries.putString("zalopayid", mUser.zaloPayId);
 
         writableMap.putMap("query", queries);
 
