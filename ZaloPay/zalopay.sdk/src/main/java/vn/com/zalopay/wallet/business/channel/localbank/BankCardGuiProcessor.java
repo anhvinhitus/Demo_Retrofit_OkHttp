@@ -475,7 +475,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID(), getDetectedBankCode());
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getAdapter().getChannelID()), getDetectedBankCode());
 
                 break;
             case AuthenType.TOKEN:
