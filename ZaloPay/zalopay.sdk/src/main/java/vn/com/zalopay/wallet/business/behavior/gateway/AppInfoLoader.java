@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.behavior.gateway;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -110,37 +112,47 @@ public class AppInfoLoader extends SingletonBase {
         return false;
     }
 
+    protected boolean shouldLoadAllAppTranstype() {
+        String appInfoCheckSum = null;
+        try {
+            appInfoCheckSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(String.valueOf(appId));
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return TextUtils.isEmpty(appInfoCheckSum);
+    }
+
     public void execute() {
         if (existedAppInfoOnCache() && mLoadAppInfoListener != null) {
             mLoadAppInfoListener.onSuccess();
         } else {
-            loadAppInfoForSDK();
+            int[] transtypes = shouldLoadAllAppTranstype() ? new int[0] : new int[]{Integer.parseInt(GlobalData.getTransactionType().toString())};
+            loadAppInfoForSDK(transtypes);
         }
     }
 
     public void execureForMerchant() {
         if (existedAppInfoOnCache() && mLoadAppInfoListener != null) {
             Log.d(getClass().getName(), "app info from cache and not expired");
-
             mLoadAppInfoListener.onSuccess();
         } else {
-            loadAppInfoForApp();
+            loadAppInfoForApp(new int[0]);
         }
     }
 
     /***
      * call this api,used in sdk
      */
-    public void loadAppInfoForSDK() {
-        BaseRequest getAppInfoTask = new GetAppInfo(mLoadAppInfoListener);
+    public void loadAppInfoForSDK(int[] pTransype) {
+        BaseRequest getAppInfoTask = new GetAppInfo(pTransype, mLoadAppInfoListener);
         getAppInfoTask.makeRequest();
     }
 
     /***
      * call api get app info,used for app
      */
-    public void loadAppInfoForApp() {
-        BaseRequest getAppInfoTask = new GetAppInfo(appId, zaloUserId, accessToken, mLoadAppInfoListener);
+    public void loadAppInfoForApp(int[] pTransype) {
+        BaseRequest getAppInfoTask = new GetAppInfo(pTransype, appId, zaloUserId, accessToken, mLoadAppInfoListener);
         getAppInfoTask.makeRequest();
     }
 

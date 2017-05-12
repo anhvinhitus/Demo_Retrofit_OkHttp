@@ -186,21 +186,33 @@ public class DataParameter {
         params.put(ConstantParams.BANKACCOUNT_CHECKSUM, checkSum);
     }
 
-    /***
-     * Add params get appinfo
-     *
-     * @param pZaloUserId
-     * @param pAppId
-     * @param pAccessToken
-     * @param pCheckSum
-     * @param params
-     */
-    public static void prepareGetAppInfoParams(String pZaloUserId, String pAppId, String pAccessToken, String pCheckSum, HashMap<String, String> params) {
+    public static void prepareGetAppInfoParams(String pZaloUserId, String pAppId, String pAccessToken, String pAppInfoCheckSum, int[] pTranstype, String[] pTranstypeCheckSum, HashMap<String, String> params) {
         putBase(params);
         params.put(ConstantParams.USER_ID, pZaloUserId);
         params.put(ConstantParams.APP_ID, pAppId);
         params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
-        params.put(ConstantParams.CHECKSUM, !TextUtils.isEmpty(pCheckSum) ? pCheckSum : "");
+        params.put(ConstantParams.CHECKSUM, !TextUtils.isEmpty(pAppInfoCheckSum) ? pAppInfoCheckSum : "");
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder1 = new StringBuilder();
+        stringBuilder.append("[");
+        for (int i = 0; i < pTranstype.length; i++) {
+            stringBuilder.append(pTranstype[i]);
+            if (i + 1 < pTranstype.length) {
+                stringBuilder.append(",");
+            }
+        }
+        stringBuilder.append("]");
+        params.put(ConstantParams.TRANSTYPE, stringBuilder.toString());
+
+        stringBuilder1.append("[");
+        for (int i = 0; i < pTranstypeCheckSum.length; i++) {
+            stringBuilder1.append(pTranstypeCheckSum[i]);
+            if (i + 1 < pTranstypeCheckSum.length) {
+                stringBuilder1.append(",");
+            }
+        }
+        stringBuilder1.append("]");
+        params.put(ConstantParams.TRANSTYPECHECKSUMS, stringBuilder1.toString());
     }
 
     /**
