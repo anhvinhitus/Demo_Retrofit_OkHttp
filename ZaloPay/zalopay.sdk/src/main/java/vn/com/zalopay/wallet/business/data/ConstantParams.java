@@ -49,7 +49,12 @@ public class ConstantParams {
     public static final String PLATFORM_IN_FOCHECKSUM = "platforminfochecksum";
     public static final String RESOURCE_VERSION = "resourceversion";
     public static final String BANK_ACCOUNT_INFO = "bankaccountinfo";
+<<<<<<< HEAD
     public static final String LONGITUDE = "longitude";
     public static final String LATTITUDE = "latitude";
     public static final String URL_RESOURCE = "url_resource";
+=======
+    public static final String TRANSTYPECHECKSUMS = "transtypechecksums";
+    public static final String TRANSTYPE = "trantypes";
+>>>>>>> c78224b... [SDK] Update app info v1
 }

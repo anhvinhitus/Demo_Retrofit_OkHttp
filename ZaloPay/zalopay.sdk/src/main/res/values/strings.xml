@@ -137,6 +137,22 @@
     <string name="zpw_conf_gwinfo_maintenance_withdraw">zpw_conf_gwinfo_maintenance_withdraw</string>
     <string name="zpw_conf_gwinfo_expired_time_duration">gwinfo_expired_time_duration</string>
 
+<<<<<<< HEAD
+=======
+    <string name="zingpaysdk_conf_gwinfo_channel_link_acc">2000</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_link_card">1000</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_wallet_transfer">1001</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_withdraw">1002</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_atm">39</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_bankaccount">37</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
+
+    <string name="zpw_conf_wallet_linkcard_desc">Zalo Pay sẽ chuyển %s VND từ TK thẻ vào TK Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
+    <string name="zpw_conf_wallet_amount">20000</string>
+    <string name="zpw_conf_wallet_id">1</string>
+    <string name="sdk_conf_gwinfo_channel_list_checksum">channel_list_checksum_</string>
+>>>>>>> c78224b... [SDK] Update app info v1
     <string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
     <string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
 

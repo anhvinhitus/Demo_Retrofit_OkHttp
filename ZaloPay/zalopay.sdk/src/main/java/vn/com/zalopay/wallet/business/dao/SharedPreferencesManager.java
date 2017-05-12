@@ -511,6 +511,14 @@ public class SharedPreferencesManager extends SingletonBase {
         return result;
     }
 
+    public boolean setTranstypePmcCheckSum(String pKey, String pCheckSum) {
+        return setString(mContext.get().getResources().getString(R.string.sdk_conf_gwinfo_channel_list_checksum) + pKey, pCheckSum);
+    }
+
+    public String getTransypePmcCheckSum(String pKey) {
+        return getString(mContext.get().getResources().getString(R.string.sdk_conf_gwinfo_channel_list_checksum) + pKey);
+    }
+
     public String getBankAccountChannelConfig(String pBankCode) {
         Log.d(this, "get cache bank account channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(BuildConfig.channel_bankaccount, pBankCode);
