@@ -224,7 +224,7 @@ public class GreenDaoGenerator {
         Entity entity = schema.addEntity("ApptransidLogGD");
         entity.setConstructors(false);
         entity.addStringProperty("apptransid").notNull().unique().primaryKey();
-        entity.addIntProperty("appid");
+        entity.addLongProperty("appid");
         entity.addIntProperty("step");
         entity.addIntProperty("step_result");
         entity.addIntProperty("pcmid");
@@ -233,6 +233,10 @@ public class GreenDaoGenerator {
         entity.addIntProperty("sdk_result");
         entity.addIntProperty("server_result");
         entity.addStringProperty("source");
+        entity.addLongProperty("start_time");
+        entity.addLongProperty("finish_time");
+        entity.addStringProperty("bank_code");
+        entity.addIntProperty("status");
     }
 
     private static void addGlobalKeyValue(Schema schema) {
