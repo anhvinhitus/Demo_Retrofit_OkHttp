@@ -81,7 +81,7 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
                         return Observable.error(error);
                     }
                 }))
-                .flatMap(this::makeObservableFromResponse);
+                .flatMap(response -> makeObservableFromResponse(call.request(), response));
         if (mScheduler == null) {
             return observable;
         }
@@ -114,12 +114,13 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         }
 
         if (!baseResponse.isSuccessfulResponse()) {
-            return handleServerResponseError((BaseResponse) body, baseResponse);
+            ZPAnalytics.trackAPIError(Strings.pathSegmentsToString(request.url().pathSegments()), 0, baseResponse.err, 0);
+            return handleServerResponseError(baseResponse);
         }
 
         // Happy case
         return Observable.just(body);
     }
 
-    protected abstract <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse);
+    protected abstract <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse);
 }
