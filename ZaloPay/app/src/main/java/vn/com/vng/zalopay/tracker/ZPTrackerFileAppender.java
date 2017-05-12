@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 
+import vn.com.vng.zalopay.tracker.model.APIFailedLogData;
+import vn.com.vng.zalopay.tracker.model.EventLogData;
+import vn.com.vng.zalopay.tracker.model.TrackerType;
+import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPTracker;
 
 /**
@@ -12,9 +16,6 @@ import vn.com.zalopay.analytics.ZPTracker;
  */
 
 public class ZPTrackerFileAppender implements ZPTracker {
-
-    private static final int USER_EVENT_TYPE = 1;
-    private static final int TIMING_TYPE = 2;
 
     private static volatile Executor executor;
 
@@ -31,7 +32,7 @@ public class ZPTrackerFileAppender implements ZPTracker {
 
     @Override
     public void trackEvent(int eventId, Long eventValue) {
-        getExecutor().execute(new WriteLogRunnable(new FileLog.LogData(USER_EVENT_TYPE, eventId, eventValue, System.currentTimeMillis())));
+        getExecutor().execute(new WriteLogRunnable(new EventLogData(TrackerType.USER_EVENT_TYPE, eventId, eventValue)));
     }
 
     @Override
@@ -41,24 +42,43 @@ public class ZPTrackerFileAppender implements ZPTracker {
 
     @Override
     public void trackTiming(int eventId, long value) {
-        getExecutor().execute(new WriteLogRunnable(new FileLog.LogData(TIMING_TYPE, eventId, value, System.currentTimeMillis())));
+        getExecutor().execute(new WriteLogRunnable(new EventLogData(TrackerType.TIMING_TYPE, eventId, value)));
     }
 
     @Override
-    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result, int pcmid, int transtype, long transid, int sdk_result, int server_result, String source) {
+    public void trackApptransidEvent(ZPApptransidLog log) {
 
     }
 
-    private static class WriteLogRunnable implements Runnable {
-        final FileLog.LogData mLogData;
+    @Override
+    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
+        getExecutor().execute(new WriteAPIFailedRunnable(new APIFailedLogData(apiName, httpCode, serverCode, networkCode)));
+    }
 
-        WriteLogRunnable(@NonNull FileLog.LogData logData) {
+    private static class WriteLogRunnable implements Runnable {
+        final EventLogData mLogData;
+
+        WriteLogRunnable(@NonNull EventLogData logData) {
             mLogData = logData;
         }
 
         @Override
         public void run() {
-            FileLog.Instance.append(mLogData);
+            EventFileLog.Instance.append(mLogData);
+        }
+    }
+
+    private static class WriteAPIFailedRunnable implements Runnable {
+
+        final APIFailedLogData mLogData;
+
+        WriteAPIFailedRunnable(APIFailedLogData logData) {
+            mLogData = logData;
+        }
+
+        @Override
+        public void run() {
+            APIFailedFileLog.Instance.append(mLogData);
         }
     }
 }

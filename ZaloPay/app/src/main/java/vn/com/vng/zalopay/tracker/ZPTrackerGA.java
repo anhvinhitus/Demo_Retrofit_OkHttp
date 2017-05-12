@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.tracker;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPTracker;
 
@@ -60,9 +61,12 @@ public class ZPTrackerGA implements ZPTracker {
     }
 
     @Override
-    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
-                                     int pcmid, int transtype, long transid, int sdk_result,
-                                     int server_result, String source) {
+    public void trackApptransidEvent(ZPApptransidLog log) {
+
+    }
+
+    @Override
+    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
 
     }
 }

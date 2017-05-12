@@ -4,6 +4,7 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
 
+import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPTracker;
 
@@ -42,9 +43,12 @@ public class ZPTrackerAnswers implements ZPTracker {
     }
 
     @Override
-    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
-                                     int pcmid, int transtype, long transid, int sdk_result,
-                                     int server_result, String source) {
+    public void trackApptransidEvent(ZPApptransidLog log) {
+
+    }
+
+    @Override
+    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
 
     }
 }
