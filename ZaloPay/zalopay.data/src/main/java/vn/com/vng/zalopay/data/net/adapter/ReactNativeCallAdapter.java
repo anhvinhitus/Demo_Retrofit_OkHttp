@@ -7,12 +7,9 @@ import java.lang.reflect.Type;
 
 import okhttp3.Request;
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Scheduler;
-import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
 
 /**
  * Created by AnhHieu on 9/20/16.
@@ -30,7 +27,6 @@ final class ReactNativeCallAdapter extends BaseCallAdapter {
     }
 
     @NonNull
-    @Override
     protected <R> Observable<? extends R> makeObservableFromResponse(Request request, Response<R> response) {
         return Observable.just(response.body());
     }

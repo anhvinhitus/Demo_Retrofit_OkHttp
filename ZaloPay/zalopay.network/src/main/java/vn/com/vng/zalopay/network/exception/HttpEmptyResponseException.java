@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.exception;
+package vn.com.vng.zalopay.network.exception;
 
 /**
  * Created by huuhoa on 7/4/16.

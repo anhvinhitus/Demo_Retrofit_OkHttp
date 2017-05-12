@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Response;
@@ -19,8 +20,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
-import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.network.CallOnSubscribe;
+import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
+import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
  * Created by longlv on 08/08/2016.
@@ -90,7 +93,7 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     }
 
     @NonNull
-    protected <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
+    protected <R> Observable<? extends R> makeObservableFromResponse(Request request, Response<R> response) {
         Timber.d("makeObservableFromResponse response [%s]", response);
         if (response == null) {
             return Observable.error(new HttpEmptyResponseException());

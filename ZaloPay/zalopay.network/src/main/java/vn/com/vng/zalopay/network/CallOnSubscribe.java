@@ -1,9 +1,8 @@
-package vn.com.vng.zalopay.data.net.adapter;
+package vn.com.vng.zalopay.network;
 
 import android.content.Context;
 import android.text.TextUtils;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Request;
@@ -15,10 +14,7 @@ import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -26,12 +22,12 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by huuhoa on 7/4/16.
  * Trigger call on subscribing
  */
-final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
+public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     private final Context mContext;
     private final Call<T> mOriginalCall;
     private final int mApiClientId;
 
-    CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
+    public CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
         mApiClientId = apiClientId;
@@ -61,7 +57,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             }
 
         } catch (Throwable throwable) {
-            Exceptions.throwIfFatal(t);
+            Exceptions.throwIfFatal(throwable);
             Throwable t = throwable.getCause() != null ? throwable.getCause() : throwable;
 
             errorHandler(call.request(), t, subscriber);
@@ -131,7 +127,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             Timber.w("Error with http_code [%s] on request: %s", response == null ? -1009 : response.code(), string);
         }
 
-        ZPAnalytics.trackAPIError(Strings.pathSegmentsToString(request.url().pathSegments()), httpCode, 0, networkCode);
+        ZPAnalytics.trackAPIError(Utils.pathSegmentsToString(request.url().pathSegments()), httpCode, 0, networkCode);
     }
 
     private void logTiming(long duration, Request request) {
