@@ -97,13 +97,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void enableFingerprint() {
-        if (!mFingerprintManagerCompat.isKeyguardSecure()) {
-            // user hasn't set up a fingerprint or lock screen.
-            mView.showError(mContext.getString(R.string.tutorial_keyguard_secure_disable));
-            mView.setCheckedFingerprint(false);
-            return;
-        }
-
         if (!mFingerprintManagerCompat.isFingerprintAvailable()) {
             mView.setCheckedFingerprint(false);
             mView.showError(mContext.getString(R.string.tutorial_fingerprint_unavailable));

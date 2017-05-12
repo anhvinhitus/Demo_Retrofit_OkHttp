@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

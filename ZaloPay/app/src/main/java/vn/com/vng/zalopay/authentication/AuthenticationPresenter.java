@@ -51,8 +51,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     void onViewCreated() {
         updateStage();
-        if (!mFingerprintManagerCompat.isKeyguardSecure()
-                || !mFingerprintManagerCompat.isFingerprintAvailable()
+        if (!mFingerprintManagerCompat.isFingerprintAvailable()
                 || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {
