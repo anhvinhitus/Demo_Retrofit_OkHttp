@@ -103,7 +103,8 @@ public class PaymentWrapper {
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
 
-        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        ZPApptransidLog log = new ZPApptransidLog();
+        log.apptransid = order.apptransid;
         log.appid = order.appid;
         log.start_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
@@ -124,7 +125,8 @@ public class PaymentWrapper {
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
 
-        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        ZPApptransidLog log = new ZPApptransidLog();
+        log.apptransid = order.apptransid;
         log.appid = order.appid;
         log.source = source;
         log.start_time = System.currentTimeMillis();
@@ -162,7 +164,8 @@ public class PaymentWrapper {
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
-            ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            ZPApptransidLog log = new ZPApptransidLog();
+            log.apptransid = order.apptransid;
             log.appid = order.appid;
             log.source = source;
             log.start_time = System.currentTimeMillis();
@@ -213,7 +216,8 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
 
-            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            ZPApptransidLog log = new ZPApptransidLog();
+            log.apptransid = paymentInfo.appTransID;
             log.appid = paymentInfo.appID;
             log.start_time = System.currentTimeMillis();
             ZPAnalytics.trackApptransidEvent(log);
@@ -255,7 +259,8 @@ public class PaymentWrapper {
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
 
-            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            ZPApptransidLog log = new ZPApptransidLog();
+            log.apptransid = paymentInfo.appTransID;
             log.appid = paymentInfo.appID;
             log.start_time = System.currentTimeMillis();
             ZPAnalytics.trackApptransidEvent(log);
