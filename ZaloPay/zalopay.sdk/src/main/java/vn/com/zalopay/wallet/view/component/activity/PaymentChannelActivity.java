@@ -14,6 +14,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
@@ -37,7 +38,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
-
+    public static final String PMCID_EXTRA = "pmcid";
     protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
@@ -82,7 +83,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             } else {
                 recycleActivity();
             }
-        } else{
+        } else {
             confirmQuitPayment();
         }
     };
@@ -116,20 +117,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
      * transaction expired in 7minutes
      */
     protected void initTimer() {
-        String sTimeToLiveTrans = GlobalData.getStringResource(RS.string.time_to_live_transaction);
-        Long lTimeToLiveTrans = 7L;
-        if (!TextUtils.isEmpty(sTimeToLiveTrans)) {
-            try {
-                lTimeToLiveTrans = Long.parseLong(sTimeToLiveTrans);
-            } catch (Exception ex) {
-                Log.e(this, ex);
-                lTimeToLiveTrans = 7L;
-            }
-        }
-
+        int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
         //convert it to milisecond
-        lTimeToLiveTrans *= 60 * 1000;
-        mTimer = new CountDownTimer(lTimeToLiveTrans, 1000) {
+        iTimeToLiveTrans *= 60 * 1000;
+        mTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
             public void onTick(long millisUntilFinished) {
                 mTimerRunning = true;
                 //Log.d(this,"Timer is onTick "+millisUntilFinished);
@@ -274,8 +265,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (GlobalData.isLinkCardChannel() && !mIsStart) {
             //check profile level permission in table map
             try {
-                int allowATM = GlobalData.checkPermissionByChannelMap(Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm)));
-                int allowCC = GlobalData.checkPermissionByChannelMap(Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card)));
+                int allowATM = GlobalData.checkPermissionByChannelMap(BuildConfig.channel_atm);
+                int allowCC = GlobalData.checkPermissionByChannelMap(BuildConfig.channel_credit_card);
 
                 if (allowATM == Constants.LEVELMAP_INVALID && allowCC == Constants.LEVELMAP_INVALID) {
                     onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
@@ -289,7 +280,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 isAllowLinkCardCC = (allowCC == Constants.LEVELMAP_ALLOW);
 
                 //switch to cc adapter if link card just allow cc without atm
-                if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
+                if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(BuildConfig.channel_credit_card)) {
                     initChannel();
                 }
                 checkAppInfo();
@@ -554,7 +545,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    protected boolean createChannelAdapter(String pChannelId) {
+    protected boolean createChannelAdapter(int pChannelId) {
         try {
             Log.d(this, "====createChannelAdapter===pChannelId=" + pChannelId);
             //release old adapter
@@ -602,11 +593,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
      * @param pChannelID
      * @param pCardNumber
      */
-    public synchronized void switchChannel(String pChannelID, final String pCardNumber) {
+    public synchronized void switchChannel(int pChannelID, final String pCardNumber) {
 
-        if (getAdapter() != null && getAdapter().isATMFlow() && pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm)))
+        if (getAdapter() != null && getAdapter().isATMFlow() && pChannelID == BuildConfig.channel_atm)
             return;
-        if (getAdapter() != null && getAdapter().isCCFlow() && pChannelID.equals(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card)))
+        if (getAdapter() != null && getAdapter().isCCFlow() && pChannelID == BuildConfig.channel_credit_card)
             return;
 
         //prevent user move to next if input existed card in link card

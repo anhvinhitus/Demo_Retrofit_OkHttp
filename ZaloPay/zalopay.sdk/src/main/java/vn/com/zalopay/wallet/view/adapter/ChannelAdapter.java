@@ -14,6 +14,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -110,8 +111,8 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
             //show warning if user need to upgrade
             //zalopay channel
-            if ((channel.isZaloPayChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_use_zalopay))) ||
-                    ((channel.isBankAccount() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_bankaccount))))) {
+            if ((channel.isZaloPayChannel() && GlobalData.getLevel() < BuildConfig.level_allow_use_zalopay) ||
+                    ((channel.isBankAccount() && GlobalData.getLevel() < BuildConfig.level_allow_bankaccount))) {
                 //check map table for allow
                 int iCheck = GlobalData.checkPermissionByChannelMap(channel.pmcid);
 
@@ -132,7 +133,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
                 }
             }
             //map card channel
-            if (channel.isMapCardChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_mapcard))) {
+            if (channel.isMapCardChannel() && GlobalData.getLevel() < BuildConfig.level_allow_cardmap) {
                 feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level);
                 holder.nextIconImageView.setVisibility(View.GONE);
             }

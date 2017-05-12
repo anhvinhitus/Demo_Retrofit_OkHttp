@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.creditcard;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -59,7 +60,7 @@ public class AdapterCreditCard extends AdapterBase {
     public String getChannelID() {
         if (mConfig != null)
             return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card);
+        return String.valueOf(BuildConfig.channel_credit_card);
     }
 
     @Override

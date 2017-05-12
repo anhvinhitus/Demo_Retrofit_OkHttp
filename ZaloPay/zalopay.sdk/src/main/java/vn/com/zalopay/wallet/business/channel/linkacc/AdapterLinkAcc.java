@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -322,7 +323,7 @@ public class AdapterLinkAcc extends AdapterBase {
         if (mConfig != null) {
             return String.valueOf(mConfig.pmcid);
         }
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
+        return String.valueOf(BuildConfig.channel_bankaccount);
     }
 
     public boolean isLoginStep() {

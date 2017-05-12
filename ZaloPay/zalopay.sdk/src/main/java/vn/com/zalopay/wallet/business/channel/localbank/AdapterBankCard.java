@@ -8,6 +8,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -89,7 +90,7 @@ public class AdapterBankCard extends AdapterBase {
     public String getChannelID() {
         if (mConfig != null)
             return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm);
+        return String.valueOf(BuildConfig.channel_atm);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -221,12 +222,12 @@ public class SDKPayment {
         //this is link card , go to channel directly
         if (GlobalData.isLinkCardChannel()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+            intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, BuildConfig.channel_atm);
         }
         //this is link acc , go to channel directly
         else if (GlobalData.isBankAccountLink()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
+            intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, BuildConfig.channel_link_acc);
         } else {
             intent = new Intent(pOwner, PaymentGatewayActivity.class);
         }

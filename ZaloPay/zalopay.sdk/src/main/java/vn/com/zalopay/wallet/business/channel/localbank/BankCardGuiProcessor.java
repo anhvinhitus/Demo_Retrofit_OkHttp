@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
@@ -27,8 +28,8 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.BitmapUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -693,6 +694,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
         Log.d(this, "===switchChannel===");
 
-        getAdapter().getActivity().switchChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card), getCardNumber());
+        getAdapter().getActivity().switchChannel(BuildConfig.channel_credit_card, getCardNumber());
     }
 }

@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -17,7 +18,7 @@ public class AdapterBankAccount extends AdapterBankCard {
         if (mConfig != null) {
             return String.valueOf(mConfig.pmcid);
         }
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
+        return String.valueOf(BuildConfig.channel_bankaccount);
     }
 
     @Override

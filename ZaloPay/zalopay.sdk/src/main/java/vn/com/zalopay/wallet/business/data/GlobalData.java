@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -360,7 +361,7 @@ public class GlobalData {
     }
 
     public static boolean isZalopayChannel() {
-        return Long.parseLong(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay)) == GlobalData.appID;
+        return BuildConfig.channel_zalopay == GlobalData.appID;
     }
 
     public static void selectBankFunctionByTransactionType() {

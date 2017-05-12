@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -222,7 +223,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     protected void switchChannel() {
         Log.d(this, "===switchChannel===");
 
-        getAdapter().getActivity().switchChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm), getCardNumber());
+        getAdapter().getActivity().switchChannel(BuildConfig.channel_atm, getCardNumber());
     }
 
     /***

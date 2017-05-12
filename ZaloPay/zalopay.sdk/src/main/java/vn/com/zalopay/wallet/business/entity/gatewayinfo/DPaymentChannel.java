@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import com.google.gson.Gson;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CPaymentCalculateFee;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -133,9 +134,9 @@ public class DPaymentChannel {
 
     }
 
-    public boolean isChannel(String pChannelId) {
+    public boolean isChannel(int pChannelId) {
         try {
-            return this.pmcid == Integer.parseInt(pChannelId);
+            return this.pmcid == pChannelId;
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -143,15 +144,15 @@ public class DPaymentChannel {
     }
 
     public boolean isZaloPayChannel() {
-        return isChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        return isChannel(BuildConfig.channel_zalopay);
     }
 
     public boolean isCreditCardChannel() {
-        return isChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+        return isChannel(BuildConfig.channel_credit_card);
     }
 
     public boolean isBankAccount() {
-        return isChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+        return isChannel(BuildConfig.channel_bankaccount);
     }
 
     /***

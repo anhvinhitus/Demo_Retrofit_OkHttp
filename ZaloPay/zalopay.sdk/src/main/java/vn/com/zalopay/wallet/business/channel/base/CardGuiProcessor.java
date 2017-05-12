@@ -25,6 +25,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -873,7 +874,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean validateUserLevelBankAccount() {
         boolean userLevelValid = true;
         try {
-            if (GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_bankaccount))) {
+            if (GlobalData.getLevel() < BuildConfig.level_allow_bankaccount) {
                 userLevelValid = false;
             }
         } catch (Exception e) {

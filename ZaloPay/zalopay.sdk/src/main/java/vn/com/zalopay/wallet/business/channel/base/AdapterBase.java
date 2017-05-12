@@ -13,6 +13,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -1298,7 +1299,7 @@ public abstract class AdapterBase {
 
         //reset pmc to zalopay if this is withdraw channel
         if (mConfig != null && GlobalData.getTransactionType() == TransactionType.WITHDRAW) {
-            mConfig.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+            mConfig.pmcid = BuildConfig.channel_zalopay;
         }
 
         if (mConfig == null) {

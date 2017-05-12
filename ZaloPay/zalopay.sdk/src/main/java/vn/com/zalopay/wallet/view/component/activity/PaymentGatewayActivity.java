@@ -515,13 +515,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
     }
 
-    private void startChannelDirect(String pChannelID) {
+    private void startChannelDirect(int pChannelID) {
         try {
             Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), pChannelID);
+            intent.putExtra(PaymentChannelActivity.PMCID_EXTRA, pChannelID);
             startActivity(intent);
-
         } catch (Exception e) {
             Log.e(this, e);
             onExit(getResources().getString(R.string.zingpaysdk_alert_context_error), true);

@@ -7,8 +7,6 @@
 
     <string name="payment_success_label">Giao dịch thành công</string>
 
-    <string name="time_to_live_transaction">7</string>
-
     <string name="zpw_string_merchant_creditcard_3ds_url_prefix">pay/success?orderNo</string>
     <string name="zpw_string_pay_domain">123pay.vn</string>
 
@@ -138,15 +136,6 @@
     <string name="zpw_conf_gwinfo_maintenance_withdraw">zpw_conf_gwinfo_maintenance_withdraw</string>
     <string name="zpw_conf_gwinfo_expired_time_duration">gwinfo_expired_time_duration</string>
 
-    <string name="zingpaysdk_conf_gwinfo_channel_link_acc">2000</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_link_card">1000</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_wallet_transfer">1001</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_withdraw">1002</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_atm">39</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_bankaccount">37</string>
-    <string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
-
     <string name="zpw_conf_wallet_linkcard_desc">Zalo Pay sẽ chuyển %s VND từ TK thẻ vào TK Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
     <string name="zpw_conf_wallet_amount">20000</string>
     <string name="zpw_conf_wallet_id">1</string>
@@ -168,8 +157,6 @@
     <string name="zpw_string_tranfer_title">Chuyển tiền</string>
 
     <string name="zpw_string_withdraw_title">Rút tiền</string>
-
-    <string name="zingpaysdk_intent_key_channel">zpsdk_channel</string>
 
     <string name="zingpaysdk_pmc_name_zalopay">Tài khoản Zalo Pay</string>
 
@@ -414,11 +401,6 @@
     <!--li xi -->
     <string name="zpw_string_lixi_notice_title">Sau 24 giờ số tiền chuyển được hoàn lại vào ví của bạn nếu người nhận chưa cài đặt %s</string>
     <string name="zpw_string_lixi_notice_title_02">Zalo Pay</string>
-
-    <string name="zpw_string_level_allow_use_zalopay">2</string>
-    <string name="zpw_string_level_allow_mapcard">2</string>
-    <string name="zpw_string_level_allow_withdraw">2</string>
-    <string name="zpw_string_level_allow_bankaccount">2</string>
 
     <string name="zpw_string_withdraw_description">Số tiền</string>
 

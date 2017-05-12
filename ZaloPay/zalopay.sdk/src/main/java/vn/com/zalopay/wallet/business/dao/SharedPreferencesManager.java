@@ -8,14 +8,15 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class SharedPreferencesManager extends SingletonBase {
     private static final String SHARE_PREFERENCES_NAME = "ZALO_PAY_CACHED";
@@ -468,10 +469,13 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + keyChannelID, pConfig);
     }
 
-    public String getPmcConfigByPmcID(String pID) {
-        String channelIDkey = GlobalData.appID + Constants.UNDERLINE + GlobalData.getTransactionType()
-                + Constants.UNDERLINE + pID;
-        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + channelIDkey);
+    public String getPmcConfigByPmcID(int pID) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix))
+                .append(GlobalData.appID).append(Constants.UNDERLINE)
+                .append(GlobalData.getTransactionType()).append(Constants.UNDERLINE)
+                .append(pID);
+        return getString(stringBuilder.toString());
     }
 
     public boolean setPmcConfigList(String pKey, ArrayList<String> pList) {
@@ -510,18 +514,18 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public String getBankAccountChannelConfig() {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+        return getPmcConfigByPmcID(BuildConfig.channel_bankaccount);
     }
 
     public String getATMChannelConfig() {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_atm));
+        return getPmcConfigByPmcID(BuildConfig.channel_atm);
     }
 
     public String getCreditCardChannelConfig() {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+        return getPmcConfigByPmcID(BuildConfig.channel_credit_card);
     }
 
     public String getZaloPayChannelConfig() {
-        return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        return getPmcConfigByPmcID(BuildConfig.channel_zalopay);
     }
 }

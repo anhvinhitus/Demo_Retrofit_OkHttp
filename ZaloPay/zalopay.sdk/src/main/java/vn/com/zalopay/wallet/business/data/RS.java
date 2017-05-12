@@ -113,7 +113,6 @@ public class RS {
         public static final String zpw_string_error_friendlymessage_timeout = "zpw_string_error_friendlymessage_timeout";
         public static final String zpw_string_error_friendlymessage_end_transaction = "zpw_string_error_friendlymessage_end_transaction";
 
-        public static final String time_to_live_transaction = "time_to_live_transaction";
         public static final String zpw_string_transaction_expired = "zpw_string_transaction_expired";
         public static final String zpw_alert_cardname_has_whitespace = "zpw_alert_cardname_has_whitespace";
         public static final String zpw_string_pin_wrong = "zpw_string_pin_wrong";
@@ -136,11 +135,6 @@ public class RS {
         public static final String zpw_string_visible_pin_off = "zpw_string_visible_pin_off";
 
         public static final String zpw_string_withdraw_description = "zpw_string_withdraw_description";
-
-        public static final String zpw_string_level_allow_mapcard = "zpw_string_level_allow_mapcard";
-        public static final String zpw_string_level_allow_withdraw = "zpw_string_level_allow_withdraw";
-        public static final String zpw_string_level_allow_use_zalopay = "zpw_string_level_allow_use_zalopay";
-        public static final String zpw_string_level_allow_bankaccount = "zpw_string_level_allow_bankaccount";
 
         public static final String zpw_redpackage_app_id = "zpw_redpackage_app_id";
         public static final String zpw_string_pay_domain = "zpw_string_pay_domain";
@@ -273,21 +267,9 @@ public class RS {
 
         public static final String zingpaysdk_alert_network_error_download_resource = "zingpaysdk_alert_network_error_download_resource";
 
-
-        public static final String zingpaysdk_conf_gwinfo_channel_link_card = "zingpaysdk_conf_gwinfo_channel_link_card";
-        public static final String zingpaysdk_conf_gwinfo_channel_zalopay = "zingpaysdk_conf_gwinfo_channel_zalopay";
-        public static final String zingpaysdk_conf_gwinfo_channel_atm = "zingpaysdk_conf_gwinfo_channel_atm";
-        public static final String zingpaysdk_conf_gwinfo_channel_credit_card = "zingpaysdk_conf_gwinfo_channel_credit_card";
-        public static final String zingpaysdk_conf_gwinfo_channel_wallet_transfer = "zingpaysdk_conf_gwinfo_channel_wallet_transfer";
-        public static final String zingpaysdk_conf_gwinfo_channel_withdraw = "zingpaysdk_conf_gwinfo_channel_withdraw";
-        public static final String zingpaysdk_conf_gwinfo_channel_link_acc = "zingpaysdk_conf_gwinfo_channel_link_acc";
-        public static final String zingpaysdk_conf_gwinfo_channel_bankaccount = "zingpaysdk_conf_gwinfo_channel_bankaccount";
-
         public static final String zpw_conf_wallet_linkcard_desc = "zpw_conf_wallet_linkcard_desc";
         public static final String zpw_conf_wallet_id = "zpw_conf_wallet_id";
         public static final String zpw_conf_wallet_amount = "zpw_conf_wallet_amount";
-
-        public static final String zingpaysdk_intent_key_channel = "zingpaysdk_intent_key_channel";
         public static final String zingpaysdk_invalid_app_amount = "zingpaysdk_invalid_app_amount";
         public static final String zingpaysdk_missing_mac_info = "zingpaysdk_missing_mac_info";
         public static final String zalopay_invalid_app_id = "zalopay_invalid_app_id";

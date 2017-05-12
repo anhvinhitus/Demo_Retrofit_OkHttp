@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -60,7 +61,8 @@ public abstract class BaseChannelInjector {
     protected void getChannelFromConfig() {
         for (String pmcID : pmcConfigList) {
             try {
-                DPaymentChannel activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pmcID), DPaymentChannel.class);
+
+                DPaymentChannel activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(Integer.parseInt(pmcID)), DPaymentChannel.class);
 
                 DPaymentChannelView channel = new DPaymentChannelView(activeChannel);
 
@@ -384,7 +386,7 @@ public abstract class BaseChannelInjector {
 
                 //atm
                 if (!mappCard.bankcode.equals(Constants.CCCode)) {
-                    channel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
+                    channel.pmcid = BuildConfig.channel_atm;
 
                     CChannelHelper.inflatChannelIcon(channel, mappCard.bankcode);
 
@@ -409,7 +411,7 @@ public abstract class BaseChannelInjector {
                 }
                 //cc
                 else {
-                    channel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
+                    channel.pmcid = BuildConfig.channel_credit_card;
 
                     CreditCardCheck.getInstance().detectOnSync(channel.f6no);
 
@@ -485,7 +487,7 @@ public abstract class BaseChannelInjector {
                 channel.l4no = bankAccount.getLastNumber();
                 channel.bankcode = bankAccount.bankcode;
                 channel.pmcname = GlobalData.getStringResource(RS.string.zpw_channelname_vietcombank_mapaccount);
-                channel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
+                channel.pmcid = BuildConfig.channel_bankaccount;
                 channel.isBankAccountMap = true;
 
                 CChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
@@ -553,7 +555,7 @@ public abstract class BaseChannelInjector {
         boolean isSupportAtm = false;
 
         if (pmcConfigList != null && pmcConfigList.size() > 0 &&
-                pmcConfigList.contains(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm))) {
+                pmcConfigList.contains(String.valueOf(BuildConfig.channel_atm))) {
             isSupportAtm = true;
         }
 
@@ -567,7 +569,7 @@ public abstract class BaseChannelInjector {
         boolean isSupportBankAccount = false;
 
         if (pmcConfigList != null && pmcConfigList.size() > 0 &&
-                pmcConfigList.contains(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount))) {
+                pmcConfigList.contains(String.valueOf(BuildConfig.channel_bankaccount))) {
             isSupportBankAccount = true;
         }
 
@@ -587,7 +589,7 @@ public abstract class BaseChannelInjector {
         boolean isSupportCC = false;
 
         if (pmcConfigList != null && pmcConfigList.size() > 0
-                && pmcConfigList.contains(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
+                && pmcConfigList.contains(String.valueOf(BuildConfig.channel_credit_card))) {
             isSupportCC = true;
         }
 

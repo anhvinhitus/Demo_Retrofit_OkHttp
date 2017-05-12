@@ -56,6 +56,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -1515,11 +1516,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean checkUserLevelValid() {
         boolean userLevelValid = true;
         try {
-            if (GlobalData.isTranferMoneyChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_use_zalopay))) {
+            if (GlobalData.isTranferMoneyChannel() && GlobalData.getLevel() < BuildConfig.level_allow_use_zalopay) {
                 userLevelValid = false;
-            } else if (GlobalData.isWithDrawChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_withdraw))) {
+            } else if (GlobalData.isWithDrawChannel() && GlobalData.getLevel() < BuildConfig.level_allow_withdraw) {
                 userLevelValid = false;
-            } else if ((GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_mapcard))) {
+            } else if ((GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) && GlobalData.getLevel() < BuildConfig.level_allow_cardmap) {
                 userLevelValid = false;
             }
         } catch (Exception e) {

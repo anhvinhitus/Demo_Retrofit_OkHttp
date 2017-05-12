@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.channel.zalopay;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -43,7 +44,7 @@ public class AdapterZaloPay extends AdapterBase {
     public String getChannelID() {
         if (mConfig != null)
             return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay);
+        return String.valueOf(BuildConfig.channel_zalopay);
     }
 
     @Override
