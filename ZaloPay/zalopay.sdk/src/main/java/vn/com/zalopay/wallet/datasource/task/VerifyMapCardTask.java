@@ -2,12 +2,12 @@ package vn.com.zalopay.wallet.datasource.task;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.VerifyMapCardImpl;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class VerifyMapCardTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;

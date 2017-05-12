@@ -15,8 +15,6 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.CardChannel;
-import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -25,6 +23,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
@@ -175,6 +175,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         try {
+            super.onEvent(pEventType, pAdditionParams);
             if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
                 //check result authen, otp code is 17: wrong otp, other code terminate
                 if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {

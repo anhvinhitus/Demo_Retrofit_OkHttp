@@ -1055,7 +1055,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()));//hide all if unlink account
+            setVisible(R.id.zpw_notransid_textview, !((GlobalData.isBankAccountLink() && GlobalData.shouldNativeWebFlow()) || GlobalData.isUnLinkAccFlow()));//hide all if unlink account
         }
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);

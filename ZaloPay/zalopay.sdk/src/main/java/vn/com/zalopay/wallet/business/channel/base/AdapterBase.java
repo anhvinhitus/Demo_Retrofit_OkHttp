@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.channel.base;
 
 import android.app.DialogFragment;
 import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
@@ -494,6 +495,7 @@ public abstract class AdapterBase {
         return pStatus != null && pStatus.isprocessing;
     }
 
+    @CallSuper
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().processingOrder = false;
