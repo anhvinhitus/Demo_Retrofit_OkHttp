@@ -30,6 +30,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -87,14 +89,14 @@ public class PaymentWrapper {
         mWalletListener = new WalletListener(this, transactionRepository,
                 balanceRepository, mCompositeSubscription);
     }
-
-    public void payWithToken(Activity activity, long appId, String transactionToken) {
+    
+    public void payWithToken(Activity activity, long appId, String transactionToken, String source) {
         Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetOrderSubscriber());
+                .subscribe(new GetOrderSubscriber(source));
         mCompositeSubscription.add(subscription);
     }
 
@@ -135,7 +137,7 @@ public class PaymentWrapper {
         callPayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void payWithOrder(Activity activity, Order order) {
+    public void payWithOrder(Activity activity, Order order, String source) {
         Timber.d("payWithOrder: Start");
         if (order == null) {
             Timber.i("payWithOrder: order is invalid");
@@ -198,7 +200,7 @@ public class PaymentWrapper {
 
     public void linkCard(Activity activity) {
         User user = getUserComponent().currentUser();
-        
+
         if (user == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
@@ -591,11 +593,16 @@ public class PaymentWrapper {
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
+        String mSource;
+
+        GetOrderSubscriber(String source) {
+            this.mSource = source;
+        }
 
         @Override
         public void onNext(Order order) {
             Timber.d("getOrder response : item [%s]", order.item);
-            payWithOrder(mActivity, order);
+            payWithOrder(mActivity, order, mSource);
         }
 
         @Override
