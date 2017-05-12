@@ -41,6 +41,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
@@ -881,7 +882,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         if (!userLevelValid && getAdapter() != null && getAdapter().getActivity() != null) {
             String pMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_linkaccount_before_payment);
-            if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
+            if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
                 pMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount);
             }
             getAdapter().getActivity().confirmUpgradeLevelIfUserInputBankAccount(pMessage, new ZPWOnEventConfirmDialogListener() {
@@ -892,7 +893,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
                 @Override
                 public void onOKevent() {
-                    if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
+                    if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
                         GlobalData.setResultUpgrade();
                     } else {
                         GlobalData.setResultUpLevelLinkAccountAndPayment();
@@ -925,7 +926,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
                     GlobalData.getStringResource(RS.string.dialog_linkaccount_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
-        } else if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
+        } else if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
             getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                                              @Override
                                                              public void onCancelEvent() {

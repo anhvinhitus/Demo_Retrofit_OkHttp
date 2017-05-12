@@ -9,10 +9,11 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
@@ -122,10 +123,10 @@ public class ChannelStartProcessor extends SingletonBase {
              */
             if (mChannel != null && mChannel.isBankAccount() && !mChannel.isBankAccountMap) {
                 //use don't have vietcombank link
-                if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank)) && getActivity() != null) {
+                if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB) && getActivity() != null) {
                     //callback bankcode to app , app will direct user to link bank account to right that bank
                     DBankAccount dBankAccount = new DBankAccount();
-                    dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
+                    dBankAccount.bankcode = CardType.PVCB;
                     GlobalData.getPaymentInfo().mapBank = dBankAccount;
 
                     GlobalData.setResultNeedToLinkAccountBeforePayment();
@@ -196,7 +197,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
             @Override
             public void onOKevent() {
-                if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
+                if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
                     GlobalData.setResultUpLevelLinkAccountAndPayment();
                 } else {
                     GlobalData.setResultUpgrade();

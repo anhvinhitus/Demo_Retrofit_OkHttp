@@ -24,6 +24,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -531,7 +532,7 @@ public class AdapterBankCard extends AdapterBase {
 
             if (mappedCardList != null && mappedCardList.size() > 0) {
                 for (DMappedCard mappedCard : mappedCardList) {
-                    if (mappedCard.bankcode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))) {
+                    if (mappedCard.bankcode.equalsIgnoreCase(CardType.PBIDV)) {
                         return true;
                     }
                 }
@@ -549,7 +550,7 @@ public class AdapterBankCard extends AdapterBase {
 
             MapListSelectionActivity.setCloseDialogListener(getGuiProcessor().getCloseDialogListener());
             Intent intentBankList = new Intent(getActivity(), MapListSelectionActivity.class);
-            intentBankList.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv));
+            intentBankList.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PBIDV);
             intentBankList.putExtra(MapListSelectionActivity.CARDNUMBER_EXTRA, getGuiProcessor().getCardNumber());
             getActivity().startActivity(intentBankList);
 
@@ -593,9 +594,7 @@ public class AdapterBankCard extends AdapterBase {
 
     public boolean isBidvBankPayment() {
         BankCardCheck atmCardCheck = getGuiProcessor().getBankCardFinder();
-
-        return atmCardCheck != null && atmCardCheck.isDetected() && atmCardCheck.getDetectBankCode().equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv));
-
+        return atmCardCheck != null && atmCardCheck.isDetected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
     }
 
     protected boolean continueProcessForBidvBank(String pMessage) {

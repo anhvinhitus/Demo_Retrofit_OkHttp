@@ -415,17 +415,6 @@
     <string name="zpw_string_lixi_notice_title">Sau 24 giờ số tiền chuyển được hoàn lại vào ví của bạn nếu người nhận chưa cài đặt %s</string>
     <string name="zpw_string_lixi_notice_title_02">Zalo Pay</string>
 
-    <string name="zpw_string_bankcode_viettinbank">123PVTB</string>
-    <string name="zpw_string_bankcode_sacombank">123PSCB</string>
-    <string name="zpw_string_bankcode_commercialbank">123PSGCB</string>
-    <string name="zpw_string_bankcode_agribank">123PAGB</string>
-    <string name="zpw_string_bankcode_vietcombank">ZPVCB</string>
-    <string name="zpw_string_bankcode_bidv">123PBIDV</string>
-
-    <string name="zpw_string_bankcode_visa">VISA</string>
-    <string name="zpw_string_bankcode_master">MASTER</string>
-    <string name="zpw_string_bankcode_jcb">JCB</string>
-
     <string name="zpw_string_level_allow_use_zalopay">2</string>
     <string name="zpw_string_level_allow_mapcard">2</string>
     <string name="zpw_string_level_allow_withdraw">2</string>

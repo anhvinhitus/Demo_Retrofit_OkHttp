@@ -39,7 +39,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -79,6 +78,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -1830,7 +1830,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showSelectionBankAccountDialog() {
         MapListSelectionActivity.setCloseDialogListener(mCloseDialog);
         Intent intent = new Intent(getApplicationContext(), MapListSelectionActivity.class);
-        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PVCB);
         intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());
         startActivity(intent);
     }

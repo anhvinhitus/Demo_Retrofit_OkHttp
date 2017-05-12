@@ -11,22 +11,22 @@ import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapBankAccountListTask;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class BankAccountHelper {
     private static final String TAG = BankAccountHelper.class.getCanonicalName();
 
     public static boolean isBankAccount(String pBankCode) {
-        return !TextUtils.isEmpty(pBankCode) && pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        return CardType.PVCB.equals(pBankCode);
     }
 
     public static boolean hasBankAccountOnCache(String pUserId, String pBankCode) {

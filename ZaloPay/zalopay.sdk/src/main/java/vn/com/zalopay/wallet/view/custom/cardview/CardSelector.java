@@ -13,9 +13,9 @@ import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 
 public class CardSelector {
@@ -109,38 +109,36 @@ public class CardSelector {
     protected CardSelector createCardSelector(String pBankCode) {
         CardSelector card = null;
         CardColorText cardColorText;
-        //Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s",pBankCode, Constants.BITMAP_EXTENSION));
-
-        if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_viettinbank))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_viettin,  android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.viettin_color_text_normal, R.color.viettin_color_text_highline, R.color.viettin_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_viettin, android.R.color.transparent, R.drawable.ic_viettinbank, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_sacombank))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_sacom,  android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.sacom_color_text_normal, R.color.sacom_color_text_highline, R.color.sacom_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_sacom, android.R.color.transparent, R.drawable.ic_sacombank, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_sacom,  android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.sacom_color_text_normal, R.color.master_color_text_highline, R.color.sacom_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_sacom, android.R.color.transparent, R.drawable.ic_zp_vcb, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_commercialbank))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_sacom,  android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.commercial_color_text_normal, R.color.commercial_color_text_highline, R.color.commercial_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_commercial, android.R.color.transparent, R.drawable.ic_sgcb, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_sacom,  android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.bidv_color_text_normal, R.color.bidv_color_text_highline, R.color.bidv_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_bidv, android.R.color.transparent, R.drawable.ic_bidv, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_visa, android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.visa_color_text_normal, R.color.visa_color_text_highline, R.color.visa_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_visa, android.R.color.transparent, R.drawable.ic_visa, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_master))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_master, android.R.color.transparent, bitmap);
-            cardColorText = new CardColorText(R.color.master_color_text_normal, R.color.master_color_text_highline, R.color.master_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_master, android.R.color.transparent, R.drawable.ic_mastercard, cardColorText);
+        switch (pBankCode) {
+            case CardType.PVTB:
+                cardColorText = new CardColorText(R.color.viettin_color_text_normal, R.color.viettin_color_text_highline, R.color.viettin_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_viettin, android.R.color.transparent, R.drawable.ic_viettinbank, cardColorText);
+                break;
+            case CardType.PSCB:
+                cardColorText = new CardColorText(R.color.sacom_color_text_normal, R.color.sacom_color_text_highline, R.color.sacom_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_sacom, android.R.color.transparent, R.drawable.ic_sacombank, cardColorText);
+                break;
+            case CardType.PVCB:
+                cardColorText = new CardColorText(R.color.sacom_color_text_normal, R.color.master_color_text_highline, R.color.sacom_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_sacom, android.R.color.transparent, R.drawable.ic_zp_vcb, cardColorText);
+                break;
+            case CardType.PSGCB:
+                cardColorText = new CardColorText(R.color.commercial_color_text_normal, R.color.commercial_color_text_highline, R.color.commercial_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_commercial, android.R.color.transparent, R.drawable.ic_sgcb, cardColorText);
+                break;
+            case CardType.PBIDV:
+                cardColorText = new CardColorText(R.color.bidv_color_text_normal, R.color.bidv_color_text_highline, R.color.bidv_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_bidv, android.R.color.transparent, R.drawable.ic_bidv, cardColorText);
+                break;
+            case CardType.VISA:
+                cardColorText = new CardColorText(R.color.visa_color_text_normal, R.color.visa_color_text_highline, R.color.visa_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_visa, android.R.color.transparent, R.drawable.ic_visa, cardColorText);
+                break;
+            case CardType.MASTER:
+                cardColorText = new CardColorText(R.color.master_color_text_normal, R.color.master_color_text_highline, R.color.master_color_text_selected);
+                card = new CardSelector(R.drawable.card_color_round_rect_master, android.R.color.transparent, R.drawable.ic_mastercard, cardColorText);
+                break;
         }
-
         return card;
     }
 
@@ -165,8 +163,8 @@ public class CardSelector {
         }
 
         //credit card
-        String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
-        String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
+        String bankCodeVisa = CardType.VISA;
+        String bankCodeMaster = CardType.MASTER;
         if (!TextUtils.isEmpty(bankCodeVisa)) {
             addCardSelectorToHashMap(bankCodeVisa);
         }

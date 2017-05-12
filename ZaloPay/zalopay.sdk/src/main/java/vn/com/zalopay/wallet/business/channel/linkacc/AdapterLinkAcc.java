@@ -37,6 +37,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
@@ -83,7 +84,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static final String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
     public static final String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
     public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
-
+    private final Handler mHandler = new Handler();
     public String mUrlReload;
     public boolean mIsLoadingCaptcha = false;
     protected ZPWNotification mNotification;
@@ -97,30 +98,6 @@ public class AdapterLinkAcc extends AdapterBase {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
-
-    private List<DBankAccount> mBankAccountList = null;
-    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
-        // get & check bankaccount list
-        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-            @Override
-            public void onCheckExistBankAccountComplete(boolean pExisted) {
-                hideLoadingDialog();
-                if (!pExisted) {
-                    unlinkAccSuccess();
-                } else {
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
-                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
-                }
-            }
-
-            @Override
-            public void onCheckExistBankAccountFail(String pMessage) {
-                hideLoadingDialog();
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
-                unlinkAccFail(pMessage, mTransactionID);
-            }
-        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-    };
     protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
@@ -139,10 +116,8 @@ public class AdapterLinkAcc extends AdapterBase {
                 hideLoadingDialog();
                 linkAccFail(pMessage, mTransactionID);
             }
-        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }, CardType.PVCB);
     };
-    private int mNumAllowLoginWrong;
-    private final Handler mHandler = new Handler();
     private final ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -176,23 +151,6 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().onExit(pMessage, true);
         }
     };
-    private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isLoadingCaptcha()) {
-                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                    SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
-                    return;
-                }
-                Log.d(this, "refreshCaptcha()");
-                mIsLoadingCaptcha = true;
-                mWebViewProcessor.refreshCaptcha();
-                COUNT_REFRESH_CAPTCHA_REGISTER++;
-                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
-            }
-        }
-    };
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -207,6 +165,47 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsLoadingCaptcha = true;
                 mWebViewProcessor.reload();
                 COUNT_REFRESH_CAPTCHA_LOGIN++;
+                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
+            }
+        }
+    };
+    private List<DBankAccount> mBankAccountList = null;
+    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
+        // get & check bankaccount list
+        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+            @Override
+            public void onCheckExistBankAccountComplete(boolean pExisted) {
+                hideLoadingDialog();
+                if (!pExisted) {
+                    unlinkAccSuccess();
+                } else {
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
+                }
+            }
+
+            @Override
+            public void onCheckExistBankAccountFail(String pMessage) {
+                hideLoadingDialog();
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
+                unlinkAccFail(pMessage, mTransactionID);
+            }
+        }, CardType.PVCB);
+    };
+    private int mNumAllowLoginWrong;
+    private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!isLoadingCaptcha()) {
+                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    return;
+                }
+                Log.d(this, "refreshCaptcha()");
+                mIsLoadingCaptcha = true;
+                mWebViewProcessor.refreshCaptcha();
+                COUNT_REFRESH_CAPTCHA_REGISTER++;
                 new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
             }
         }

@@ -71,7 +71,7 @@ public abstract class BaseChannelInjector {
                     channel.bankcode = Constants.CCCode;
                 }
                 if (channel.isBankAccount()) {
-                    channel.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
+                    channel.bankcode = CardType.PVCB;
                 }
 
                 //check amount is support or not
@@ -92,8 +92,7 @@ public abstract class BaseChannelInjector {
                 findValue(channel);
 
                 //user has linked vietcombank account , no need show bank account channel
-                if (channel.isBankAccount() && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
-                        GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
+                if (channel.isBankAccount() && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
                     continue;
                 }
 

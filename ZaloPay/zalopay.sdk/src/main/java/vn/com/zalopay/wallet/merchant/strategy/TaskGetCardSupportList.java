@@ -9,6 +9,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -58,8 +59,8 @@ public class TaskGetCardSupportList extends TaskBase {
 
         //cc must be hardcode
 
-        String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
-        String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
+        String bankCodeVisa = CardType.VISA;
+        String bankCodeMaster = CardType.MASTER;
         if (!TextUtils.isEmpty(bankCodeVisa)) {
             ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa));
             cardArrayList.add(zpCard);

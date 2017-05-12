@@ -276,7 +276,7 @@ public class CShareData extends SingletonBase {
      */
     public boolean hasVietcomBank(String pUserId) {
         try {
-            return BankAccountHelper.hasBankAccountOnCache(pUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+            return BankAccountHelper.hasBankAccountOnCache(pUserId, CardType.PVCB);
         } catch (Exception ex) {
             Log.e(this, ex);
         }
