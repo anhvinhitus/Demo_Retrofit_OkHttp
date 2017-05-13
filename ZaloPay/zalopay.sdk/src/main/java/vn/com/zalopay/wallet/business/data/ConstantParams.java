@@ -55,6 +55,11 @@ public class ConstantParams {
     public static final String URL_RESOURCE = "url_resource";
 =======
     public static final String TRANSTYPECHECKSUMS = "transtypechecksums";
+<<<<<<< HEAD
     public static final String TRANSTYPE = "trantypes";
 >>>>>>> c78224b... [SDK] Update app info v1
+=======
+    public static final String TRANSTYPE = "transtypes";
+    public static final String APPINFO_CHECKSUM = "appinfochecksum";
+>>>>>>> 190afe9... [SDK] Update param name api
 }

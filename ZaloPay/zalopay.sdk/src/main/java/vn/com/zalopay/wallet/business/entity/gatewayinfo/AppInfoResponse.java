@@ -15,4 +15,8 @@ public class AppInfoResponse extends BaseResponse {
 >>>>>>> c78224b... [SDK] Update app info v1
     public DAppInfo info;
     public long expiredtime;
+
+    public boolean hasTranstypes(){
+        return pmctranstypes != null && !pmctranstypes.isEmpty();
+    }
 }

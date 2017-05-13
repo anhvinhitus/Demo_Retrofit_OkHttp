@@ -86,10 +86,7 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
         long expiredTime = getResponse().expiredtime + System.currentTimeMillis();
         SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(appID), expiredTime);
         SharedPreferencesManager.getInstance().setCheckSumAppChannel(String.valueOf(appID), getResponse().appinfochecksum);
-        if (getResponse().pmctranstypes == null || getResponse().pmctranstypes.size() <= 0) {
-            getResponse().returncode = -1;
-            getResponse().returnmessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
-        } else {
+        if (getResponse().hasTranstypes()) {
             long minValue, maxValue;
             for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : getResponse().pmctranstypes) {
                 int transtype = miniPmcTransTypeResponse.transtype;
@@ -147,6 +144,7 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
         if (isNeedToUpdateAppInfo(getResponse()) && getResponse().info != null) {
             //save app info to cache(id,name,icon...)
             SharedPreferencesManager.getInstance().setApp(String.valueOf(getResponse().info.appid), GsonUtils.toJsonString(getResponse().info));
+            Log.d(this, "save app info to cache", getResponse().info);
         }
         onPostResult(getResponse());
     }
