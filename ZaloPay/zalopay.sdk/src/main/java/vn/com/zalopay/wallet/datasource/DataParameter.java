@@ -191,7 +191,7 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, pZaloUserId);
         params.put(ConstantParams.APP_ID, pAppId);
         params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
-        params.put(ConstantParams.CHECKSUM, !TextUtils.isEmpty(pAppInfoCheckSum) ? pAppInfoCheckSum : "");
+        params.put(ConstantParams.APPINFO_CHECKSUM, !TextUtils.isEmpty(pAppInfoCheckSum) ? pAppInfoCheckSum : "");
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder stringBuilder1 = new StringBuilder();
         stringBuilder.append("[");

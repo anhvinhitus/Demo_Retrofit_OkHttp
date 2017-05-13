@@ -10,4 +10,8 @@ public class AppInfoResponse extends BaseResponse {
     public List<MiniPmcTransTypeResponse> pmctranstypes;
     public DAppInfo info;
     public long expiredtime;
+
+    public boolean hasTranstypes(){
+        return pmctranstypes != null && !pmctranstypes.isEmpty();
+    }
 }

@@ -50,5 +50,6 @@ public class ConstantParams {
     public static final String RESOURCE_VERSION = "resourceversion";
     public static final String BANK_ACCOUNT_INFO = "bankaccountinfo";
     public static final String TRANSTYPECHECKSUMS = "transtypechecksums";
-    public static final String TRANSTYPE = "trantypes";
+    public static final String TRANSTYPE = "transtypes";
+    public static final String APPINFO_CHECKSUM = "appinfochecksum";
 }
