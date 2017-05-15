@@ -1,3 +1,7 @@
+Zalo Pay (Staging v2.11.0 - build 238) - Released on 2017-05-15
+- Update apptransid thêm finish time cho từng step
+- [SDK] Fix bug
+
 Zalo Pay (Sandbox v2.11.0 - build 237) - Released on 2017-05-12
 - [SDK] Update app info v1
 - [App] Fingerpint - Bỏ qua phần check lock screen
