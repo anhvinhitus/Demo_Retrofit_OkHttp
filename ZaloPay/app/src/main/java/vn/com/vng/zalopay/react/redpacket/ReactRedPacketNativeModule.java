@@ -32,7 +32,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
@@ -42,8 +41,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
-import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
@@ -183,7 +180,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("Get bundle status finish : bundleId [%s] result [%s] status [%s]", bundleId, result, status);
         promiseResolveGetBundleStatus(promise, result);
         stopTaskGetStatus();
-        mRedPacketRepository.setBundleStatus(bundleId, status).subscribe(new DefaultSubscriber<Void>());
+//        mRedPacketRepository.setBundleStatus(bundleId, status).subscribe(new DefaultSubscriber<Void>());
     }
 
     @ReactMethod
@@ -412,38 +409,38 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-    @ReactMethod
-    public void getPacketsFromBundle(String strBundleID, final Promise promise) {
-        Timber.d("getPackageInBundle : bundleId [%s]", strBundleID);
-        if (TextUtils.isEmpty(strBundleID)) {
-            promise.reject("EMPTY BUNDLEID", "Invalid argument");
-            return;
-        }
-        try {
-            long bundleId = Long.parseLong(strBundleID);
-            Subscription subscription = mRedPacketRepository.getPacketsInBundle(bundleId)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new RedPacketSubscriber<List<PackageInBundle>>(promise) {
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.w(e, "Exception while fetching packets");
-                            super.onError(e);
-                        }
-
-                        @Override
-                        public void onNext(List<PackageInBundle> packageInBundles) {
-                            WritableArray array = DataMapper.transform(packageInBundles);
-                            Helpers.promiseResolveSuccess(promise, array);
-                        }
-
-                    });
-            compositeSubscription.add(subscription);
-        } catch (Exception e) {
-            Timber.w(e, "Exception while fetching packets");
-            promise.reject("EXCEPTION", e.getMessage());
-        }
-    }
+//    @ReactMethod
+//    public void getPacketsFromBundle(String strBundleID, final Promise promise) {
+//        Timber.d("getPackageInBundle : bundleId [%s]", strBundleID);
+//        if (TextUtils.isEmpty(strBundleID)) {
+//            promise.reject("EMPTY BUNDLEID", "Invalid argument");
+//            return;
+//        }
+//        try {
+//            long bundleId = Long.parseLong(strBundleID);
+//            Subscription subscription = mRedPacketRepository.getPacketsInBundle(bundleId)
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe(new RedPacketSubscriber<List<PackageInBundle>>(promise) {
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            Timber.w(e, "Exception while fetching packets");
+//                            super.onError(e);
+//                        }
+//
+//                        @Override
+//                        public void onNext(List<PackageInBundle> packageInBundles) {
+//                            WritableArray array = DataMapper.transform(packageInBundles);
+//                            Helpers.promiseResolveSuccess(promise, array);
+//                        }
+//
+//                    });
+//            compositeSubscription.add(subscription);
+//        } catch (Exception e) {
+//            Timber.w(e, "Exception while fetching packets");
+//            promise.reject("EXCEPTION", e.getMessage());
+//        }
+//    }
 
     @ReactMethod
     public void getPacketStatus(final String packetId, final Promise promise) {
@@ -470,33 +467,33 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-    @ReactMethod
-    public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-        Timber.d("getSendBundleHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
-        Subscription subscription = mRedPacketRepository.getSentBundleList((long) createTime, (int) count)
-                .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
-                    @Override
-                    public void onNext(GetSentBundle getSentBundle) {
-                        Timber.d("getSendBundleHistoryWithTimeStamp : SendBundle [%s]", getSentBundle);
-                        WritableMap writableMap = DataMapper.transform(getSentBundle);
-                        Helpers.promiseResolveSuccess(promise, writableMap);
-                    }
-                });
-        compositeSubscription.add(subscription);
-    }
-
-    @ReactMethod
-    public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-        Timber.d("getReceivePacketHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
-        Subscription subscription = mRedPacketRepository.getReceivePacketList((long) createTime, (int) count)
-                .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
-                    @Override
-                    public void onNext(GetReceivePacket getReceivePacket) {
-                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(getReceivePacket));
-                    }
-                });
-        compositeSubscription.add(subscription);
-    }
+//    @ReactMethod
+//    public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
+//        Timber.d("getSendBundleHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
+//        Subscription subscription = mRedPacketRepository.getSentBundleList((long) createTime, (int) count)
+//                .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
+//                    @Override
+//                    public void onNext(GetSentBundle getSentBundle) {
+//                        Timber.d("getSendBundleHistoryWithTimeStamp : SendBundle [%s]", getSentBundle);
+//                        WritableMap writableMap = DataMapper.transform(getSentBundle);
+//                        Helpers.promiseResolveSuccess(promise, writableMap);
+//                    }
+//                });
+//        compositeSubscription.add(subscription);
+//    }
+//
+//    @ReactMethod
+//    public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
+//        Timber.d("getReceivePacketHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
+//        Subscription subscription = mRedPacketRepository.getReceivePacketList((long) createTime, (int) count)
+//                .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
+//                    @Override
+//                    public void onNext(GetReceivePacket getReceivePacket) {
+//                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(getReceivePacket));
+//                    }
+//                });
+//        compositeSubscription.add(subscription);
+//    }
 
     @ReactMethod
     public void getCurrentUserInfo(Promise promise) {

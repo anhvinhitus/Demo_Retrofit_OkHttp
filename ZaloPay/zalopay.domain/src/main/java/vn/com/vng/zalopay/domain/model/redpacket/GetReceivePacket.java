@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache.model;
+package vn.com.vng.zalopay.domain.model.redpacket;
 
 import java.util.List;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;

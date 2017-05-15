@@ -5,7 +5,6 @@ import org.greenrobot.greendao.generator.Entity;
 import org.greenrobot.greendao.generator.Index;
 import org.greenrobot.greendao.generator.Property;
 import org.greenrobot.greendao.generator.Schema;
-import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
@@ -40,57 +39,57 @@ public class GreenDaoGenerator {
     }
 
     private static void addRedPacket(Schema appSchema) {
-        Entity sentBundleSummary = appSchema.addEntity("SentBundleSummaryDB");
-        sentBundleSummary.setConstructors(false);
-        sentBundleSummary.addIdProperty();
-        sentBundleSummary.addLongProperty("totalOfSentAmount");
-        sentBundleSummary.addLongProperty("totalOfSentBundle");
-        sentBundleSummary.addLongProperty("timeCreate");
-
-        Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
-        receivePacketSummary.setConstructors(false);
-        receivePacketSummary.addIdProperty();
-        receivePacketSummary.addLongProperty("totalOfRevamount");
-        receivePacketSummary.addLongProperty("totalOfRevPackage");
-        receivePacketSummary.addLongProperty("totalOfLuckiestDraw");
-        receivePacketSummary.addLongProperty("timeCreate");
-
-        //Cache all bundle (contain sent & received)
-        Entity bundleEntity = appSchema.addEntity("BundleGD");
-        bundleEntity.setConstructors(false);
-        bundleEntity.addIdProperty().unique().notNull();//bundleId
-        bundleEntity.addLongProperty("createTime"); //Time when bundle has been created
-        bundleEntity.addLongProperty("lastTimeGetPackage"); //Last time that get package in bundle from server.
-
-        Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
-        packageEntity.setConstructors(false);
-        packageEntity.addIdProperty(); //packageId
-        Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
-        packageEntity.addStringProperty("revZaloPayID");
-        packageEntity.addLongProperty("revZaloID");
-        packageEntity.addStringProperty("revFullName");
-        packageEntity.addStringProperty("revAvatarURL");
-        Property openTime = packageEntity.addLongProperty("openTime").getProperty();
-        packageEntity.addLongProperty("amount");
-        packageEntity.addStringProperty("sendMessage");
-        packageEntity.addLongProperty("isLuckiest");
-
-        Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
-        sentBundleEntity.setConstructors(false);
-        sentBundleEntity.addIdProperty().unique().notNull();//bundleId
-        sentBundleEntity.addStringProperty("senderZaloPayID").notNull();//sendZaloPayID
-        sentBundleEntity.addLongProperty("type");
-        sentBundleEntity.addLongProperty("createTime");
-        sentBundleEntity.addLongProperty("lastOpenTime");
-        sentBundleEntity.addLongProperty("totalLuck");
-        sentBundleEntity.addLongProperty("numOfOpenedPakages");
-        sentBundleEntity.addLongProperty("numOfPackages");
-        sentBundleEntity.addStringProperty("sendMessage");
-        sentBundleEntity.addLongProperty("status");
-        ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
-        sentBundleToPackage.setName("sentPackages");
-        sentBundleToPackage.orderDesc(openTime);
-
+//        Entity sentBundleSummary = appSchema.addEntity("SentBundleSummaryDB");
+//        sentBundleSummary.setConstructors(false);
+//        sentBundleSummary.addIdProperty();
+//        sentBundleSummary.addLongProperty("totalOfSentAmount");
+//        sentBundleSummary.addLongProperty("totalOfSentBundle");
+//        sentBundleSummary.addLongProperty("timeCreate");
+//
+//        Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
+//        receivePacketSummary.setConstructors(false);
+//        receivePacketSummary.addIdProperty();
+//        receivePacketSummary.addLongProperty("totalOfRevamount");
+//        receivePacketSummary.addLongProperty("totalOfRevPackage");
+//        receivePacketSummary.addLongProperty("totalOfLuckiestDraw");
+//        receivePacketSummary.addLongProperty("timeCreate");
+//
+//        //Cache all bundle (contain sent & received)
+//        Entity bundleEntity = appSchema.addEntity("BundleGD");
+//        bundleEntity.setConstructors(false);
+//        bundleEntity.addIdProperty().unique().notNull();//bundleId
+//        bundleEntity.addLongProperty("createTime"); //Time when bundle has been created
+//        bundleEntity.addLongProperty("lastTimeGetPackage"); //Last time that get package in bundle from server.
+//
+//        Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
+//        packageEntity.setConstructors(false);
+//        packageEntity.addIdProperty(); //packageId
+//        Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
+//        packageEntity.addStringProperty("revZaloPayID");
+//        packageEntity.addLongProperty("revZaloID");
+//        packageEntity.addStringProperty("revFullName");
+//        packageEntity.addStringProperty("revAvatarURL");
+//        Property openTime = packageEntity.addLongProperty("openTime").getProperty();
+//        packageEntity.addLongProperty("amount");
+//        packageEntity.addStringProperty("sendMessage");
+//        packageEntity.addLongProperty("isLuckiest");
+//
+//        Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
+//        sentBundleEntity.setConstructors(false);
+//        sentBundleEntity.addIdProperty().unique().notNull();//bundleId
+//        sentBundleEntity.addStringProperty("senderZaloPayID").notNull();//sendZaloPayID
+//        sentBundleEntity.addLongProperty("type");
+//        sentBundleEntity.addLongProperty("createTime");
+//        sentBundleEntity.addLongProperty("lastOpenTime");
+//        sentBundleEntity.addLongProperty("totalLuck");
+//        sentBundleEntity.addLongProperty("numOfOpenedPakages");
+//        sentBundleEntity.addLongProperty("numOfPackages");
+//        sentBundleEntity.addStringProperty("sendMessage");
+//        sentBundleEntity.addLongProperty("status");
+//        ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
+//        sentBundleToPackage.setName("sentPackages");
+//        sentBundleToPackage.orderDesc(openTime);
+//
         Entity receivePackageGD = appSchema.addEntity("ReceivePackageGD");
         receivePackageGD.setConstructors(false);
         receivePackageGD.addIdProperty().unique().notNull();//packageID
@@ -104,11 +103,11 @@ public class GreenDaoGenerator {
         receivePackageGD.addLongProperty("status");
         receivePackageGD.addStringProperty("messageStatus");
         receivePackageGD.addStringProperty("message");
-        receivePackageGD.addLongProperty("isLuckiest");
-        receivePackageGD.addLongProperty("createTime");
-        ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
-        revBundleToPackage.setName("receivePackages");
-        revBundleToPackage.orderDesc(openTime);
+//        receivePackageGD.addLongProperty("isLuckiest");
+//        receivePackageGD.addLongProperty("createTime");
+//        ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
+//        revBundleToPackage.setName("receivePackages");
+//        revBundleToPackage.orderDesc(openTime);
     }
 
 

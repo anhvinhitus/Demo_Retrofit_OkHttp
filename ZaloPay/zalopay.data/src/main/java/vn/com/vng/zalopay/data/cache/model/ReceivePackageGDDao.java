@@ -37,8 +37,6 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property CreateTime = new Property(12, Long.class, "createTime", false, "CREATE_TIME");
     }
 
-    private DaoSession daoSession;
-
 
     public ReceivePackageGDDao(DaoConfig config) {
         super(config);
@@ -46,7 +44,6 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     
     public ReceivePackageGDDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -204,12 +201,6 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         if (createTime != null) {
             stmt.bindLong(13, createTime);
         }
-    }
-
-    @Override
-    protected final void attachEntity(ReceivePackageGD entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     @Override

@@ -267,7 +267,7 @@ public class NotificationHelper {
 
             Subscription subscription = mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Void>());
+                    .subscribe(new DefaultSubscriber<>());
             mCompositeSubscription.add(subscription);
 
             if (addToRecovery) {

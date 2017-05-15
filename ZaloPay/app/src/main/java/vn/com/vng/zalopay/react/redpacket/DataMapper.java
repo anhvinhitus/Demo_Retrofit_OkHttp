@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
+import vn.com.vng.zalopay.domain.model.redpacket.GetReceivePacket;
 import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
@@ -51,9 +51,7 @@ class DataMapper {
         writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
         writableMap.putDouble("amount", packet.amount);
-        writableMap.putDouble("isluckiest", packet.isLuckiest);
-        writableMap.putDouble("createtime", packet.createTime);
-        writableMap.putDouble("opentime", packet.openedTime);
+        writableMap.putDouble("opentime", packet.openedTime != null ? packet.openedTime.doubleValue() : 0);
         return writableMap;
     }
 

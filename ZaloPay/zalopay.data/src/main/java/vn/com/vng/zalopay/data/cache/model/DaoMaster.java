@@ -30,11 +30,6 @@ public class DaoMaster extends AbstractDaoMaster {
         ContactGDDao.createTable(db, ifNotExists);
         TransferRecentDao.createTable(db, ifNotExists);
         NotificationGDDao.createTable(db, ifNotExists);
-        SentBundleSummaryDBDao.createTable(db, ifNotExists);
-        ReceivePacketSummaryDBDao.createTable(db, ifNotExists);
-        BundleGDDao.createTable(db, ifNotExists);
-        PackageInBundleGDDao.createTable(db, ifNotExists);
-        SentBundleGDDao.createTable(db, ifNotExists);
         ReceivePackageGDDao.createTable(db, ifNotExists);
         MerchantUserDao.createTable(db, ifNotExists);
     }
@@ -50,11 +45,6 @@ public class DaoMaster extends AbstractDaoMaster {
         ContactGDDao.dropTable(db, ifExists);
         TransferRecentDao.dropTable(db, ifExists);
         NotificationGDDao.dropTable(db, ifExists);
-        SentBundleSummaryDBDao.dropTable(db, ifExists);
-        ReceivePacketSummaryDBDao.dropTable(db, ifExists);
-        BundleGDDao.dropTable(db, ifExists);
-        PackageInBundleGDDao.dropTable(db, ifExists);
-        SentBundleGDDao.dropTable(db, ifExists);
         ReceivePackageGDDao.dropTable(db, ifExists);
         MerchantUserDao.dropTable(db, ifExists);
     }
@@ -84,11 +74,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(ContactGDDao.class);
         registerDaoClass(TransferRecentDao.class);
         registerDaoClass(NotificationGDDao.class);
-        registerDaoClass(SentBundleSummaryDBDao.class);
-        registerDaoClass(ReceivePacketSummaryDBDao.class);
-        registerDaoClass(BundleGDDao.class);
-        registerDaoClass(PackageInBundleGDDao.class);
-        registerDaoClass(SentBundleGDDao.class);
         registerDaoClass(ReceivePackageGDDao.class);
         registerDaoClass(MerchantUserDao.class);
     }
