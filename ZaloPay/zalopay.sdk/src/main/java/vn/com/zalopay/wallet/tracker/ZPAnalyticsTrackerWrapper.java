@@ -44,7 +44,6 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.pcmid = pcmid;
         mZpApptransidLog.transid = transid;
         mZpApptransidLog.server_result = server_result;
-        mZpApptransidLog.finish_time = new Date().getTime();
         mZpApptransidLog.status = status;
         if (status == 1) {
             isFinish = true;
@@ -93,7 +92,6 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.step_result = step_result;
         mZpApptransidLog.pcmid = pcmid;
         mZpApptransidLog.status = status;
-        mZpApptransidLog.finish_time = new Date().getTime();
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
         Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
     }
@@ -121,6 +119,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
             mZpApptransidLog.apptransid = GlobalData.getPaymentInfo().appTransID;
             mZpApptransidLog.appid = GlobalData.getPaymentInfo().appID;
         }
+        mZpApptransidLog.finish_time = new Date().getTime();
         mZpApptransidLog.transtype = GlobalData.getTransactionType().ordinal();
         return mZpApptransidLog;
     }
