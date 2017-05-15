@@ -8,8 +8,6 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
-import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
@@ -18,9 +16,10 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
+import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.RedPacketPayServiceImpl;
+import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -30,8 +29,8 @@ public class UserRedPacketModule {
 
     @UserScope
     @Provides
-    RedPacketStore.LocalStorage provideRedPacketStorage(@Named("daosession") DaoSession session, RedPacketDataMapper dataMapper) {
-        return new RedPacketLocalStorage(session, dataMapper);
+    RedPacketStore.LocalStorage provideRedPacketStorage(@Named("daosession") DaoSession session) {
+        return new RedPacketLocalStorage(session);
     }
 
     @Provides
@@ -51,9 +50,8 @@ public class UserRedPacketModule {
     RedPacketStore.Repository provideRedPacketRepository(RedPacketStore.RequestService requestService,
                                                          RedPacketStore.RequestTPEService requestTPEService,
                                                          RedPacketStore.LocalStorage localStorage,
-                                                         RedPacketDataMapper dataMapper,
                                                          User user, Gson gson) {
-        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.ZALOPAY_APP_ID, gson);
+        return new RedPacketRepository(requestService, requestTPEService, localStorage, user, BuildConfig.ZALOPAY_APP_ID, gson);
     }
 
     @UserScope

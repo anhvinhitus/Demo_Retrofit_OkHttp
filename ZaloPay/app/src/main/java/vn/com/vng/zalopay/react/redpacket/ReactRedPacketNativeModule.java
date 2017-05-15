@@ -15,7 +15,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.internal.ModuleName;
@@ -39,10 +38,8 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
-import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -142,7 +139,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
 
                 Subscription subscription = updateBalance()
-                        .subscribe(new DefaultSubscriber<Boolean>());
+                        .subscribe(new DefaultSubscriber<>());
                 compositeSubscription.add(subscription);
 
                 Helpers.promiseResolveSuccess(promise, data);
@@ -225,18 +222,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     private Observable<Boolean> updateBalance() {
         return mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<Long, Boolean>() {
-                    @Override
-                    public Boolean call(Long aLong) {
-                        return Boolean.TRUE;
-                    }
-                })
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
-                    @Override
-                    public Observable<? extends Boolean> call(Throwable throwable) {
-                        return Observable.empty();
-                    }
-                });
+                .map(aLong -> Boolean.TRUE)
+                .onErrorResumeNext(throwable -> Observable.empty());
     }
 
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
@@ -246,7 +233,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onTick(long millisUntilFinished) {
                 Timber.d("GetTranStatus onTick");
-                getpackagestatus(packageId, zpTransId, promise);
+                getPackageStatus(packageId, zpTransId, promise);
             }
 
             @Override
@@ -263,20 +250,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             return;
         }
 
-        DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
-                dialog.dismiss();
-            }
+        DialogInterface.OnCancelListener onCancelListener = dialog -> {
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+            dialog.dismiss();
         };
 
-        DialogInterface.OnClickListener onConfirmListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startTaskGetTransactionStatus(packageId, zpTransId, promise);
-                dialog.dismiss();
-            }
+        DialogInterface.OnClickListener onConfirmListener = (dialog, which) -> {
+            startTaskGetTransactionStatus(packageId, zpTransId, promise);
+            dialog.dismiss();
         };
 
         mDialogProvider.showWarningAlertDialog(getCurrentActivity(),
@@ -286,13 +267,13 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("showDialogRetryGetTranStatus end");
     }
 
-    private void getpackagestatus(final long packageId, final long zpTransId, final Promise promise) {
+    private void getPackageStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("Get package status : isRunningGetStatus [%s]", isRunningGetStatus);
         if (isRunningGetStatus) {
             return;
         }
         isRunningGetStatus = true;
-        Subscription subscription = mRedPacketRepository.getpackagestatus(packageId, zpTransId, "")
+        Subscription subscription = mRedPacketRepository.getPackageStatus(packageId, zpTransId, "")
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<PackageStatus>() {
                     @Override
@@ -316,11 +297,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     private void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
         Subscription subscription = mRedPacketRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue(), null)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Void>());
+                .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
 
         Subscription balanceSub = updateBalance()
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(balanceSub);
     }
 
@@ -355,7 +336,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             int errorCode = ((BodyException) e).errorCode;
                             String errorMsg = ((BodyException) e).message;
                             mRedPacketRepository.setPacketStatus(packageID, 0, errorCode, errorMsg)
-                                    .subscribe(new DefaultSubscriber<Void>());
+                                    .subscribe(new DefaultSubscriber<>());
                         }
                     }
 
@@ -372,12 +353,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     public void getAllFriend(Promise promise) {
         Timber.d("getAllFriend promise [%s]", promise);
         Subscription subscription = mFriendRepository.getZaloFriendList()
-                .map(new Func1<List<ZaloProfile>, WritableArray>() {
-                    @Override
-                    public WritableArray call(List<ZaloProfile> friends) {
-                        return DataMapper.transform(friends);
-                    }
-                })
+                .map(DataMapper::transform)
 
                 .subscribe(new GetAllFriendSubscriber(promise, getReactApplicationContext()));
         compositeSubscription.add(subscription);
@@ -394,12 +370,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
             long packetIdValue = Long.parseLong(packetId);
             Timber.d("packetId: %d", packetIdValue);
-            Subscription subscription = mRedPacketRepository.getReceivedPacket(packetIdValue)
+            Subscription subscription = mRedPacketRepository.getPacketStatus(packetId)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new RedPacketSubscriber<ReceivePackage>(promise) {
+                    .subscribe(new RedPacketSubscriber<ReceivePackageGD>(promise) {
                         @Override
-                        public void onNext(ReceivePackage receivePackage) {
-                            Timber.d("received packet: %s", receivePackage.packageID);
+                        public void onNext(ReceivePackageGD receivePackage) {
+                            Timber.d("received packet: %s", receivePackage.id);
                             promise.resolve(DataMapper.transform(receivePackage));
                         }
                     });
@@ -408,39 +384,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             promise.reject("EXCEPTION", ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
         }
     }
-
-//    @ReactMethod
-//    public void getPacketsFromBundle(String strBundleID, final Promise promise) {
-//        Timber.d("getPackageInBundle : bundleId [%s]", strBundleID);
-//        if (TextUtils.isEmpty(strBundleID)) {
-//            promise.reject("EMPTY BUNDLEID", "Invalid argument");
-//            return;
-//        }
-//        try {
-//            long bundleId = Long.parseLong(strBundleID);
-//            Subscription subscription = mRedPacketRepository.getPacketsInBundle(bundleId)
-//                    .subscribeOn(Schedulers.io())
-//                    .subscribe(new RedPacketSubscriber<List<PackageInBundle>>(promise) {
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            Timber.w(e, "Exception while fetching packets");
-//                            super.onError(e);
-//                        }
-//
-//                        @Override
-//                        public void onNext(List<PackageInBundle> packageInBundles) {
-//                            WritableArray array = DataMapper.transform(packageInBundles);
-//                            Helpers.promiseResolveSuccess(promise, array);
-//                        }
-//
-//                    });
-//            compositeSubscription.add(subscription);
-//        } catch (Exception e) {
-//            Timber.w(e, "Exception while fetching packets");
-//            promise.reject("EXCEPTION", e.getMessage());
-//        }
-//    }
 
     @ReactMethod
     public void getPacketStatus(final String packetId, final Promise promise) {
@@ -467,34 +410,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-//    @ReactMethod
-//    public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-//        Timber.d("getSendBundleHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
-//        Subscription subscription = mRedPacketRepository.getSentBundleList((long) createTime, (int) count)
-//                .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
-//                    @Override
-//                    public void onNext(GetSentBundle getSentBundle) {
-//                        Timber.d("getSendBundleHistoryWithTimeStamp : SendBundle [%s]", getSentBundle);
-//                        WritableMap writableMap = DataMapper.transform(getSentBundle);
-//                        Helpers.promiseResolveSuccess(promise, writableMap);
-//                    }
-//                });
-//        compositeSubscription.add(subscription);
-//    }
-//
-//    @ReactMethod
-//    public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-//        Timber.d("getReceivePacketHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
-//        Subscription subscription = mRedPacketRepository.getReceivePacketList((long) createTime, (int) count)
-//                .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
-//                    @Override
-//                    public void onNext(GetReceivePacket getReceivePacket) {
-//                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(getReceivePacket));
-//                    }
-//                });
-//        compositeSubscription.add(subscription);
-//    }
-
     @ReactMethod
     public void getCurrentUserInfo(Promise promise) {
         WritableMap writableMap = Arguments.createMap();
@@ -512,7 +427,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     /**
      * Called when a new intent is passed to the activity
      *
-     * @param intent
+     * @param intent income intent
      */
     @Override
     public void onNewIntent(Intent intent) {
@@ -527,7 +442,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             Timber.d("check list zaloid for client");
             Subscription subscription = mFriendRepository.checkListZaloIdForClient()
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>());
+                    .subscribe(new DefaultSubscriber<>());
             compositeSubscription.add(subscription);
         }
     }
@@ -540,14 +455,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onHostDestroy() {
 
-        unsubscribeIfNotNull(compositeSubscription);
+        unSubscribeIfNotNull(compositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);
         Timber.d("onDestroy");
     }
 
-    public void unsubscribeIfNotNull(CompositeSubscription subscription) {
+    private void unSubscribeIfNotNull(CompositeSubscription subscription) {
         if (subscription != null) {
             subscription.clear();
         }
@@ -561,10 +476,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
 
         String moduleName = ((MiniApplicationBaseActivity) activity).getMainComponentName();
-        if (TextUtils.isEmpty(moduleName)) {
-            return false;
-        }
+        return !TextUtils.isEmpty(moduleName) && moduleName.equals(ModuleName.RED_PACKET);
 
-        return moduleName.equals(ModuleName.RED_PACKET);
     }
 }
