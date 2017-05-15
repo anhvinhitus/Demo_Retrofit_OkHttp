@@ -444,7 +444,8 @@ public class PaymentWrapper {
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
 
-        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_Success);
+        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None);
+        log.finish_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
 
         SDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
