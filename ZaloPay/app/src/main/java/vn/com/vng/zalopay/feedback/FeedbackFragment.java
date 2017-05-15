@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,11 +33,11 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 
 public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbackView,
-        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, FeedbackAdapter.OnClickImageListener {
+        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener,
+        FeedbackAdapter.OnClickImageListener {
 
     public static FeedbackFragment newInstance() {
         return new FeedbackFragment();
@@ -89,9 +88,6 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     @Inject
     FeedbackPresenter mPresenter;
 
-    @Inject
-    User mUser;
-
     @BindView(R.id.swSendUserInfor)
     SwitchCompat swSendUserInfor;
 
@@ -101,37 +97,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     @BindView(R.id.swSendAppInfor)
     SwitchCompat swSendAppInfor;
 
-    private String mCategory;
-    private String mTransactionId;
-    private String mDescription;
-
-    //compress format png
-    @Nullable
-    private byte[] mScreenshot;
-
     private String mScreenshotName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
+
         mAdapter = new FeedbackAdapter(getContext(), this, this, this);
-        initArgs(getActivity().getIntent().getExtras());
+
         if (savedInstanceState != null) {
             mScreenshotName = savedInstanceState.getString("screenshotName");
         }
-    }
-
-    private void initArgs(Bundle bundle) {
-        if (bundle == null) {
-            return;
-        }
-
-        mCategory = bundle.getString("category");
-        mTransactionId = bundle.getString("transactionid");
-        mScreenshot = bundle.getByteArray("screenshot");
-        mDescription = bundle.getString("description");
     }
 
     @Override
@@ -143,25 +119,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         mRecyclerView.setBackgroundColor(Color.WHITE);
 
         mRecyclerView.setAdapter(mAdapter);
-
+        mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mEdtEmail.addValidator(new EmailValidate(getString(R.string.email_invalid)));
+        mPresenter.onViewCreated();
+    }
 
-        setEmail(mUser.email);
-        setCategory(mCategory);
-        setTransactionId(mTransactionId);
-        setDescription(mDescription);
-
-        if (mScreenshot != null) {
-            mPresenter.insertScreenshot(mScreenshot);
+    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            notifyImageCountChange();
         }
-
-        setImageCount();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -183,7 +151,6 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     @Override
     public void insertScreenshot(Uri data) {
         mAdapter.insert(data, 0);
-        setImageCount();
     }
 
     private void removeScreenshot(int position) {
@@ -193,12 +160,12 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         }
 
         mAdapter.remove(position);
-        setImageCount();
         clearCacheFresco(screenshot);
     }
 
     @Override
     public void onDestroyView() {
+        mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
         clearCacheFresco(mAdapter.getItems());
         mRecyclerView.setAdapter(null);
         mPresenter.detachView();
@@ -229,18 +196,19 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
 
     @OnClick(R.id.btnSend)
     public void onClickSend() {
+
+
+        Timber.d("onClickSend: %s %s", mEdtEmail.validate(), mEdtDescribe.validate());
+
         if (!mEdtEmail.validate() || !mEdtDescribe.validate()) {
             return;
         }
 
-        mPresenter.sendEmail(mEdtTransactionId.getText().toString(),
-                mCategoryView.getText().toString(),
-                mEdtEmail.getText().toString(),
+        mPresenter.sendEmail(mEdtEmail.getText().toString(),
                 mEdtDescribe.getText().toString(),
                 swSendUserInfor.isChecked(),
                 swSendAppInfor.isChecked(),
                 swSendDeviceInfor.isChecked(), mAdapter.getItems());
-
 
     }
 
@@ -295,13 +263,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         return mScreenshotName;
     }
 
-    private void setImageCount() {
+    private void notifyImageCountChange() {
+        if (mTvTitleImage == null) {
+            return;
+        }
+        
         String description = String.format(getString(R.string.txt_attach_screen),
                 String.valueOf(mAdapter.getItems().size()));
         mTvTitleImage.setText(description);
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         if (mEdtEmail == null || TextUtils.isEmpty(email)) {
             return;
         }
@@ -333,6 +305,12 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         mEdtDescribe.setFocusable(false);
         mEdtDescribe.setFocusableInTouchMode(false);
         mEdtDescribe.setText(message);
+    }
+
+    public void setTransaction(String category, String transId, String errorMessage) {
+        setCategory(category);
+        setTransactionId(transId);
+        setDescription(errorMessage);
     }
 
     @Override
