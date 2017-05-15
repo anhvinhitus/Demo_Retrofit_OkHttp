@@ -1,14 +1,10 @@
 package vn.zalopay.feedback.collectors;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 import android.util.Base64;
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 
 import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
@@ -18,9 +14,9 @@ import vn.zalopay.feedback.IFeedbackCollector;
  */
 
 public class ScreenshotCollector implements IFeedbackCollector {
-    private Activity mActivity;
-    private View mView;
+
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -28,10 +24,8 @@ public class ScreenshotCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "screenshot";
     }
 
-    public ScreenshotCollector(Activity activity) {
-        mActivity = activity;
-        mView = mActivity.getWindow().getDecorView().getRootView();
-    }
+    @Nullable
+    public byte[] mScreenshot;
 
     /**
      * Get pre-config settings for data collector
@@ -47,37 +41,22 @@ public class ScreenshotCollector implements IFeedbackCollector {
      * @return JSONObject value, null if data is not collected
      */
     @Override
-    public JSONObject doInBackground() {
-        try {
-            String image = convertBitmapToString(
-                    takeScreenshot()
-            );
+    public JSONObject doInBackground() throws JSONException {
 
-            JSONObject retVal = new JSONObject();
-            retVal.put("image", image);
-
-            return retVal;
-        } catch (JSONException e) {
+        if (mScreenshot == null) {
             return null;
         }
+
+        JSONObject retVal = new JSONObject();
+        retVal.put("image", Base64.encode(mScreenshot, Base64.DEFAULT));
+        return retVal;
     }
 
-    private Bitmap takeScreenshot() {
-        mView.setDrawingCacheEnabled(true);
-
-        return Bitmap.createBitmap(mView.getDrawingCache());
+    public ScreenshotCollector() {
     }
 
-    private String convertBitmapToString(Bitmap bitmap) {
-
-        int quality = 100;
-        String strImage;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        bitmap.compress(Bitmap.CompressFormat.PNG, quality, byteArrayOutputStream);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        strImage = Base64.encodeToString(bytes, Base64.DEFAULT);
-
-        return strImage;
+    @Override
+    public void dispose() {
+        mScreenshot = null;
     }
 }

@@ -73,4 +73,9 @@ public class NetworkCollector implements IFeedbackCollector {
             return null;
         }
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }

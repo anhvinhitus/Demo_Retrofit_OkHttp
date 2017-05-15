@@ -1,22 +1,23 @@
 package vn.zalopay.feedback.collectors;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.util.DisplayMetrics;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import timber.log.Timber;
 import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
+
+import static android.content.Context.ACTIVITY_SERVICE;
+import static android.text.format.Formatter.formatFileSize;
 
 /**
  * Created by khattn on 12/27/16.
@@ -54,24 +55,35 @@ public class DeviceCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
+
         StatFs internalPath = new StatFs(Environment.getDataDirectory().getAbsolutePath());
         StatFs externalPath = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
 
+        JSONObject retVal = new JSONObject();
+
         try {
-            JSONObject retVal = new JSONObject();
+
             retVal.put("model", Build.MODEL);
             retVal.put("os_version", System.getProperty("os.version"));
             retVal.put("cpu", getCpu());
-            retVal.put("ram", getRam());
-            retVal.put("internal_memory", getTotalMemorySize(internalPath));
-            retVal.put("external_memory", getTotalMemorySize(externalPath));
             retVal.put("api_level", Build.VERSION.SDK_INT);
             retVal.put("density", mContext.getResources().getDisplayMetrics().density);
 
-            return retVal;
+            retVal.put("internal_memory", formatFileSize(mContext, getTotalMemorySize(internalPath)));
+            retVal.put("external_memory", formatFileSize(mContext, getTotalMemorySize(externalPath)));
+            retVal.put("internal_memory_available", formatFileSize(mContext, getAvailableMemorySize(internalPath)));
+            retVal.put("external_memory_available", formatFileSize(mContext, getAvailableMemorySize(externalPath)));
+
+            ActivityManager.MemoryInfo memoryInfo = getMemoryInfo(mContext);
+            retVal.put("ram", formatFileSize(mContext, memoryInfo.totalMem));
+            retVal.put("availMem", formatFileSize(mContext, memoryInfo.availMem));
+            retVal.put("threshold", formatFileSize(mContext, memoryInfo.threshold));
+
         } catch (Exception e) {
-            return null;
+            Timber.d(e);
         }
+
+        return retVal;
     }
 
     private String getCpu() {
@@ -96,33 +108,32 @@ public class DeviceCollector implements IFeedbackCollector {
         return null;
     }
 
-    private static long getRam() {
-        try {
-            RandomAccessFile randomAccessFile = new RandomAccessFile("/proc/meminfo", "r");
-            String load = randomAccessFile.readLine();
-            Pattern pattern = Pattern.compile("(\\d+)");
-            Matcher matcher = pattern.matcher(load);
-            String value = "";
-            while (matcher.find()) {
-                value = matcher.group(1);
-            }
-            randomAccessFile.close();
-
-            return Long.parseLong(value);
-        } catch (IOException ex) {
-            return 0;
-        }
+    private static ActivityManager.MemoryInfo getMemoryInfo(Context context) throws Exception {
+        ActivityManager actManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        actManager.getMemoryInfo(memInfo);
+        return memInfo;
     }
 
     private static long getTotalMemorySize(StatFs statFs) {
-        long blockSize, totalBlocks;
         if (Build.VERSION.SDK_INT >= 18) {
-            blockSize = statFs.getBlockSizeLong();
-            totalBlocks = statFs.getBlockCountLong();
+            return statFs.getTotalBytes();
         } else {
-            blockSize = statFs.getBlockSize();
-            totalBlocks = statFs.getBlockCount();
+            return statFs.getBlockSize() * statFs.getBlockCount();
         }
-        return totalBlocks * blockSize;
+
+    }
+
+    private static long getAvailableMemorySize(StatFs statFs) {
+        if (Build.VERSION.SDK_INT >= 18) {
+            return statFs.getAvailableBytes();
+        } else {
+            return statFs.getBlockSize() * statFs.getAvailableBlocks();
+        }
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

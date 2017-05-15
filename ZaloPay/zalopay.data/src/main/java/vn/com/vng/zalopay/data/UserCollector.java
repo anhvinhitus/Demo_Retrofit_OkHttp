@@ -63,4 +63,9 @@ public class UserCollector implements IFeedbackCollector {
             return null;
         }
     }
+
+    @Override
+    public void dispose() {
+
+    }
 }

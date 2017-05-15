@@ -1,5 +1,6 @@
 package vn.zalopay.feedback;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -15,7 +16,11 @@ public interface IFeedbackCollector {
 
     /**
      * Start collecting data. If data is collected, then return JSONObject of the encoded data
+     *
      * @return JSONObject value, null if data is not collected
      */
-    JSONObject doInBackground();
+    JSONObject doInBackground() throws JSONException;
+
+
+    void dispose();
 }

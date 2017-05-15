@@ -1,5 +1,6 @@
 package vn.zalopay.feedback;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -10,6 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.zalopay.feedback.collectors.AppCollector;
+import vn.zalopay.feedback.collectors.DeviceCollector;
+import vn.zalopay.feedback.collectors.DynamicCollector;
+import vn.zalopay.feedback.collectors.NetworkCollector;
+import vn.zalopay.feedback.collectors.ScreenshotCollector;
+import vn.zalopay.feedback.collectors.TransactionCollector;
 
 /**
  * Created by huuhoa on 12/15/16.
@@ -17,9 +24,32 @@ import timber.log.Timber;
  */
 
 public class FeedbackCollector {
+
+    private static FeedbackCollector _instance;
+
+    public static FeedbackCollector instance() {
+        if (_instance == null) {
+            _instance = new FeedbackCollector();
+        }
+        return _instance;
+    }
+
     private final List<IFeedbackCollector> mCollectors = new ArrayList<>();
 
-    public FeedbackCollector() {
+    private DynamicCollector mDynamicCollector;
+    private ScreenshotCollector mScreenshotCollector;
+    private TransactionCollector mTransactionCollector;
+
+    private FeedbackCollector() {
+        mDynamicCollector = new DynamicCollector();
+        mScreenshotCollector = new ScreenshotCollector();
+        mTransactionCollector = new TransactionCollector();
+    }
+
+    private void installInternal() {
+        installCollector(mDynamicCollector);
+        installCollector(mScreenshotCollector);
+        installCollector(mTransactionCollector);
     }
 
     /**
@@ -60,6 +90,9 @@ public class FeedbackCollector {
      * Start data collectors in the background thread
      */
     public void startCollectors(CollectorListener listener) {
+
+        installInternal();
+
         DataCollectorAsyncTask task = new DataCollectorAsyncTask(mCollectors, listener);
         task.execute();
     }
@@ -126,23 +159,6 @@ public class FeedbackCollector {
         }
 
         /**
-         * <p>Applications should preferably override {@link #onCancelled(Object)}.
-         * This method is invoked by the default implementation of
-         * {@link #onCancelled(Object)}.</p>
-         * <p>
-         * <p>Runs on the UI thread after {@link #cancel(boolean)} is invoked and
-         * {@link #doInBackground(Object[])} has finished.</p>
-         *
-         * @see #onCancelled(Object)
-         * @see #cancel(boolean)
-         * @see #isCancelled()
-         */
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        /**
          * <p>Runs on the UI thread after {@link #doInBackground}. The
          * specified result is the value returned by {@link #doInBackground}.</p>
          * <p>
@@ -160,20 +176,58 @@ public class FeedbackCollector {
                 mListener.onCollectorEnd(data);
             }
         }
-
-        /**
-         * Runs on the UI thread before {@link #doInBackground}.
-         *
-         * @see #onPostExecute
-         * @see #doInBackground
-         */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
     }
 
     public interface CollectorListener {
         void onCollectorEnd(JSONObject data);
+    }
+
+    public void setScreenShot(byte[] screenShot) {
+        mScreenshotCollector.mScreenshot = screenShot;
+    }
+
+    public void setTransaction(String category, String transid, int errorcode, String errorMess) {
+        mTransactionCollector.category = category;
+        mTransactionCollector.transid = transid;
+        mTransactionCollector.error_code = errorcode;
+        mTransactionCollector.error_message = errorMess;
+    }
+
+    public void putDynamicInformation(String key, String value) {
+        mDynamicCollector.put(key, value);
+    }
+
+    public void dispose() {
+        for (IFeedbackCollector collector : mCollectors) {
+            collector.dispose();
+        }
+
+        synchronized (mCollectors) {
+            mCollectors.clear();
+        }
+
+    }
+
+    public TransactionCollector getTransactionCollector() {
+        return mTransactionCollector;
+    }
+
+    public byte[] getScreenshot() {
+        return mScreenshotCollector.mScreenshot;
+    }
+
+    public void collectDeviceInformation(Context context, boolean app, boolean device, boolean network) {
+
+        if (app) {
+            installCollector(new AppCollector(context));
+        }
+
+        if (device) {
+            installCollector(new DeviceCollector(context));
+        }
+
+        if (network) {
+            installCollector(new NetworkCollector(context));
+        }
     }
 }
