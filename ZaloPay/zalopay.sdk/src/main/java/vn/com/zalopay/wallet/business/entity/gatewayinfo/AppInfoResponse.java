@@ -19,4 +19,8 @@ public class AppInfoResponse extends BaseResponse {
     public boolean hasTranstypes(){
         return pmctranstypes != null && !pmctranstypes.isEmpty();
     }
+
+    public boolean needUpdateAppInfo(){
+        return returncode == 1 && isupdateappinfo && info != null;
+    }
 }
