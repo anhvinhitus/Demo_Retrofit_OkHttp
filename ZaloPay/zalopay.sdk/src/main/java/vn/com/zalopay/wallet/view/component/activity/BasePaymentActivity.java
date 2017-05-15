@@ -42,9 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
-import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -1182,7 +1180,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animateImageViewFail();
 
         //ZPAnalyticsTrackerLog
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), TransID, ReturnCode, 1);
 
 
     }
@@ -1332,7 +1332,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccess();
 
         // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), TransID, ReturnCode, 1);
 
 
     }
@@ -1376,7 +1378,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccessSpecial();
 
         // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
+        long TransID = (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
+        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), TransID, ReturnCode, 1);
 
     }
 
