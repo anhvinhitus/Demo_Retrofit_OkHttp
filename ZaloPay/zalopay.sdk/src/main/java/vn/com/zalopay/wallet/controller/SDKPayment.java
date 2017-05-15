@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;
@@ -158,6 +159,9 @@ public class SDKPayment {
             for (int i = 0; i < pExtraParams.length; i++) {
                 if (pExtraParams[i] instanceof IPaymentFingerPrint) {
                     GlobalData.setIFingerPrint((IPaymentFingerPrint) pExtraParams[i]);
+                }
+                if (pExtraParams[i] instanceof IFeedBack) {
+                    GlobalData.setFeedBack((IFeedBack) pExtraParams[i]);
                 }
             }
         }
