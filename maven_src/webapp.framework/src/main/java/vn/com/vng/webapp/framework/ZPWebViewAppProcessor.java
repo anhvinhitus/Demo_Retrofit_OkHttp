@@ -37,7 +37,9 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebView = pWebView;
         mWebViewListener = webViewListener;
         mWebView.setWebViewClient(this);
-        mWebView.addJavascriptInterface(new ZPJavaScriptInterface(), "ZaloPayJSBridge");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            mWebView.addJavascriptInterface(new ZPJavaScriptInterface(), "ZaloPayJSBridge");
+        }
 
         mDefaultNativeModule = new DefaultNativeModule(webViewListener);
         mCommunicationHandler = new WebAppCommunicationHandler(pWebView);
@@ -74,7 +76,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
-//        showLoading();
     }
 
     @Override
@@ -85,7 +86,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             return;
         }
         mLoadPageFinished = true;
-//        hideLoading();
         injectScriptFile("jsbridge.js");
         mWebView.runScript("initializeWebBridge();", null);
 
@@ -94,21 +94,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
 
         super.onPageFinished(view, url);
     }
-//
-//    private void executeScriptFile(String scriptFile) {
-//        InputStream input;
-//        try {
-//            input = mWebView.getContext().getAssets().open(scriptFile);
-//            byte[] buffer = new byte[input.available()];
-//            input.read(buffer);
-//            input.close();
-//            // byte buffer into a string
-//            String text = new String(buffer);
-//            mWebView.runScript(text, null);
-//        } catch (IOException e) {
-//            Timber.w(e, "Exception");
-//        }
-//    }
 
     private void injectScriptFile(String scriptFile) {
         InputStream input;
@@ -209,24 +194,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         if (TextUtils.isEmpty(url)) {
             return true;
         }
-//        if (url.equalsIgnoreCase(WebViewConfig.URL_TO_APP)) {
-//            if (mWebViewListener != null) {
-//                mWebViewListener.finishActivity();
-//            }
-//        } else if (url.equalsIgnoreCase(WebViewConfig.URL_TO_LOGIN)) {
-//            if (mWebViewListener != null) {
-//                mWebViewListener.logout();
-//            }
-//        } else if (url.startsWith(WebViewConfig.URL_PAY)) {
-//            if (mWebViewListener != null) {
-//                mWebViewListener.payOrder(url);
-//            }
-//        } else {
-//            if (url.contains(WebViewConfig.URL_LOGIN_ZALO)) {
-//                clearCookieZalo();
-//            }
-//            view.loadUrl(url);
-//        }
 
         view.loadUrl(url);
         return true;
@@ -241,18 +208,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
 
     public void onDestroy() {
 
-    }
-
-    private void showLoading() {
-        if (mWebViewListener != null) {
-            mWebViewListener.showLoading();
-        }
-    }
-
-    private void hideLoading() {
-        if (mWebViewListener != null) {
-            mWebViewListener.hideLoading();
-        }
     }
 
     public void refreshWeb(Activity activity) {
@@ -316,7 +271,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         }
     }
 
-    public class ZPJavaScriptInterface implements AbstractJavaScriptInterface {
+    class ZPJavaScriptInterface implements AbstractJavaScriptInterface {
 
         @android.webkit.JavascriptInterface
         public void callNativeFunction(String a1, String messageData) {
@@ -326,8 +281,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             }
 
             // message = {"func":"vibrate","param":{"duration":3000},"msgType":"call","clientId":"14865289272660.004411039873957634"}
-
-            // preHandleWebMessage(messageData);
             mCommunicationHandler.preHandleWebMessage(messageData);
         }
     }

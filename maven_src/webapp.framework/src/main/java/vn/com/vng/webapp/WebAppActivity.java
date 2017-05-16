@@ -84,25 +84,5 @@ public class WebAppActivity extends AppCompatActivity {
         public void showError(int errorCode) {
 
         }
-
-        @Override
-        public void showLoading() {
-
-        }
-
-        @Override
-        public void hideLoading() {
-
-        }
-
-        @Override
-        public Context getContext() {
-            return WebAppActivity.this;
-        }
-
-        @Override
-        public void onReceivedTitle(String title) {
-            setTitle(title);
-        }
     }
 }

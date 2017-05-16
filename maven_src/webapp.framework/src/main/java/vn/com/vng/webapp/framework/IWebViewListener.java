@@ -12,12 +12,4 @@ public interface IWebViewListener {
     void finishActivity();
 
     void showError(int errorCode);
-
-    void showLoading();
-
-    void hideLoading();
-
-    Context getContext();
-
-    void onReceivedTitle(String title);
 }
