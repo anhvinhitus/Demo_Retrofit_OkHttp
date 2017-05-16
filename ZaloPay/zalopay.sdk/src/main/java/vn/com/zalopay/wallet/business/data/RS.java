@@ -268,8 +268,6 @@ public class RS {
         public static final String zingpaysdk_alert_network_error_download_resource = "zingpaysdk_alert_network_error_download_resource";
 
         public static final String zpw_conf_wallet_linkcard_desc = "zpw_conf_wallet_linkcard_desc";
-        public static final String zpw_conf_wallet_id = "zpw_conf_wallet_id";
-        public static final String zpw_conf_wallet_amount = "zpw_conf_wallet_amount";
         public static final String zingpaysdk_invalid_app_amount = "zingpaysdk_invalid_app_amount";
         public static final String zingpaysdk_missing_mac_info = "zingpaysdk_missing_mac_info";
         public static final String zalopay_invalid_app_id = "zalopay_invalid_app_id";

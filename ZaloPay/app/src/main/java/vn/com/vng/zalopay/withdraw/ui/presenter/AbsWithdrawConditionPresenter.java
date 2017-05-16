@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -31,7 +32,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
 
     protected boolean isValidProfile() {
         User user = mUser;
-        return !(user == null || user.profilelevel < 2);
+        return !(user == null || user.profilelevel < BuildConfig.level_allow_withdraw);
     }
 
     protected void validLinkCard(final IListenerValid listenerValid) {

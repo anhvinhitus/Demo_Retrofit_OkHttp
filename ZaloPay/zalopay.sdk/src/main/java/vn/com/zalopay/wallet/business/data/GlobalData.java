@@ -391,7 +391,7 @@ public class GlobalData {
      */
     @TransactionType
     public static int getTransactionType() {
-        if (transactionType == TransactionType.PAY && (GlobalData.appID == Long.parseLong(getStringResource(RS.string.zpw_conf_wallet_id)))) {
+        if (transactionType == TransactionType.PAY && (GlobalData.appID == BuildConfig.ZALOAPP_ID)) {
             transactionType = TransactionType.TOPUP;
         }
         return transactionType;

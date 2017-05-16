@@ -4,18 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/linkcard_channel_desc_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:paddingLeft="@dimen/zpw_padding_app_info_left_right"
-        android:paddingRight="@dimen/zpw_padding_app_info_left_right"
-        android:paddingTop="@dimen/zpw_padding_10"
-        android:textColor="@color/text_color_grey"
-        android:textSize="@dimen/zpw_text_size_medium"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/app_info_linerlayout"
         android:layout_width="match_parent"

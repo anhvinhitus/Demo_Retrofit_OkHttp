@@ -1397,24 +1397,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void showDisplayInfo() {
         //linkcard channel
         if (GlobalData.isLinkCardChannel()) {
-
             setVisible(R.id.app_info_linerlayout, false);
-            setVisible(R.id.linkcard_channel_desc_textview, true);
-
-            String linkcardChannelDesc = GlobalData.getStringResource(RS.string.zpw_conf_wallet_linkcard_desc);
-
-            linkcardChannelDesc = String.format(linkcardChannelDesc, StringUtil.formatVnCurrence(GlobalData.getStringResource(RS.string.zpw_conf_wallet_amount)));
-
-            setText(R.id.linkcard_channel_desc_textview, linkcardChannelDesc);
         }
         //tranfer money channel
         else if (GlobalData.isTranferMoneyChannel()) {
             visibleTranferWalletInfo(true);
             visibleAppInfo(false);
-
             showUserInfoWalletTransfer();
         } else {
-
             if (GlobalData.isWithDrawChannel()) {
                 setText(R.id.item_name, GlobalData.getStringResource(RS.string.zpw_string_withdraw_description));
             } else if (GlobalData.getPaymentInfo() != null) {

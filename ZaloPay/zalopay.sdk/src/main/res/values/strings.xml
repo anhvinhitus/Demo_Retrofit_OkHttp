@@ -136,10 +136,6 @@
     <string name="zpw_conf_gwinfo_maintenance_withdraw">zpw_conf_gwinfo_maintenance_withdraw</string>
     <string name="zpw_conf_gwinfo_expired_time_duration">gwinfo_expired_time_duration</string>
 
-    <string name="zpw_conf_wallet_linkcard_desc">Zalo Pay sẽ chuyển %s VND từ TK thẻ vào TK Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
-    <string name="zpw_conf_wallet_amount">20000</string>
-    <string name="zpw_conf_wallet_id">1</string>
-
     <string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
     <string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
 

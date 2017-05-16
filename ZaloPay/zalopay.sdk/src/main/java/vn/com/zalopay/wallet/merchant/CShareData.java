@@ -24,7 +24,6 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
@@ -99,16 +98,12 @@ public class CShareData extends SingletonBase {
         @Override
         public void onComplete() {
             List<BankConfig> bankConfigList = new ArrayList<>();
-
             if (BankLoader.mapBank != null) {
-
                 for (Object o : BankLoader.mapBank.entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
-
                     try {
                         BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
-
-                        if (bankConfig != null && !bankConfigList.contains(bankConfig) && bankConfig.isAllowWithDraw()) {
+                        if (bankConfig != null && bankConfig.isAllowWithDraw() && !bankConfigList.contains(bankConfig)) {
                             bankConfigList.add(bankConfig);
                         }
                     } catch (Exception e) {
@@ -116,7 +111,6 @@ public class CShareData extends SingletonBase {
                     }
                 }
             }
-
             if (mGetWithDrawBankList != null) {
                 mGetWithDrawBankList.onComplete(bankConfigList);
             }
@@ -364,15 +358,12 @@ public class CShareData extends SingletonBase {
     public WDMaintenance getWithdrawMaintenance() {
         try {
             String maintenanceOb = SharedPreferencesManager.getInstance().getMaintenanceWithDraw();
-
             if (!TextUtils.isEmpty(maintenanceOb)) {
                 return GsonUtils.fromJsonString(maintenanceOb, WDMaintenance.class);
             }
-
         } catch (Exception ex) {
             Log.e(this, ex);
         }
-
         return new WDMaintenance();
     }
 
