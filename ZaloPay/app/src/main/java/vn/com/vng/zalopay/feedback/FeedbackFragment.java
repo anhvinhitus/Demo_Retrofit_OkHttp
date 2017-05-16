@@ -129,6 +129,13 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         public void onChanged() {
             notifyImageCountChange();
         }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            notifyImageCountChange();
+        }
+
+
     };
 
     @Override
