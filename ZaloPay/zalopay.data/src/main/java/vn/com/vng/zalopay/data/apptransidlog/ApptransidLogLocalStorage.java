@@ -42,10 +42,12 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
     @Override
     public List<ApptransidLogGD> getAll() {
         try {
-            return daoSession.getApptransidLogGDDao()
+            List<ApptransidLogGD> ret = daoSession.getApptransidLogGDDao()
                     .queryBuilder()
                     .where(ApptransidLogGDDao.Properties.Status.eq(STATUS_DONE))
                     .list();
+            Timber.d("get app transid log size %s", ret.size());
+            return ret;
         } catch (Exception e) {
             Timber.d(e, "Get all log error");
             return Collections.emptyList();
@@ -54,6 +56,7 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
 
     @Override
     public void updateLog(ApptransidLogGD newLog) {
+        Timber.d("Update apptransid log :  apptransid %s status %s step %s source %s ", newLog.apptransid, newLog.status, newLog.step, newLog.source);
         ApptransidLogGD apptransidLogGD = get(newLog.apptransid);
         if (apptransidLogGD == null) {
             apptransidLogGD = new ApptransidLogGD();
