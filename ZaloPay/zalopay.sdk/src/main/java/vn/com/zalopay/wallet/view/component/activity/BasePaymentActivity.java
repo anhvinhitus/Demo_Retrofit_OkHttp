@@ -50,10 +50,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Stack;
 
-import vn.com.zalopay.analytics.ZPApptransidLog;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -61,6 +57,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -100,6 +97,7 @@ import vn.com.zalopay.wallet.message.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
@@ -1070,7 +1068,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //ZPAnalyticsTrackerLog
         long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
         int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
 
     }
 
@@ -1231,7 +1229,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         // TrackApptransidEvent
         long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
         int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
 
     }
 
@@ -1265,10 +1263,23 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccessSpecial();
 
         // TrackApptransidEvent
-        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
-        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), TransID, ReturnCode, 1);
 
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
+
+    }
+
+
+    private long checkTranID(String pTransID) {
+        return (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
+    }
+
+    private int getReturnCode() {
+        return (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
+    }
+
+    private int getChannelIDLog() {
+
+        return (!TextUtils.isEmpty(getAdapter().getChannelID())) ? Integer.parseInt(getAdapter().getChannelID()) : 0;
     }
 
     protected void showBalanceContent(DPaymentChannel pConfig) throws Exception {
