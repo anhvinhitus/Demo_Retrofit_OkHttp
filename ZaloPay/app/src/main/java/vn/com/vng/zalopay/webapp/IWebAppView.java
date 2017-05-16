@@ -22,9 +22,4 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
      * Hide error view
      */
     void hideError();
-
-    /**
-     * Request to logout current user
-     */
-    void logout();
 }

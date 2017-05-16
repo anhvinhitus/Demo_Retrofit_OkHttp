@@ -90,13 +90,4 @@ class ProcessMessageListener implements IProcessMessageListener {
 
         mWebAppPresenterWeakReference.get().transferMoney(jsonObject, listener);
     }
-
-    @Override
-    public void logout() {
-        if (mWebAppPresenterWeakReference.get() == null) {
-            return;
-        }
-
-        mWebAppPresenterWeakReference.get().logout();
-    }
 }

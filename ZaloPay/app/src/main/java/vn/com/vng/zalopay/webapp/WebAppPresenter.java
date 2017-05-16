@@ -322,10 +322,6 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         return mWebViewProcessor != null && mWebViewProcessor.isLoadPageFinished();
     }
 
-    void logout() {
-        mView.logout();
-    }
-
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
 
         String zaloPayName;

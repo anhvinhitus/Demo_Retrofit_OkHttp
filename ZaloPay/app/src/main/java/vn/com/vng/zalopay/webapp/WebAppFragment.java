@@ -25,7 +25,6 @@ import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -265,10 +264,6 @@ public class WebAppFragment extends BaseFragment
     private void showBottomSheetDialog() {
         mBottomSheetDialog = mPresenter.createBottomSheetFragment();
         mBottomSheetDialog.show(getChildFragmentManager(), "bottomsheet");
-    }
-
-    public void logout() {
-        getAppComponent().eventBus().postSticky(new TokenPaymentExpiredEvent());
     }
 
     public void showLoading() {
