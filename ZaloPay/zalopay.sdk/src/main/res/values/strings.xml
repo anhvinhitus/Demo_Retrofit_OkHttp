@@ -403,7 +403,7 @@
     <string name="zpw_string_visible_pin_on">Hiện</string>
     <string name="zpw_string_visible_pin_off">Ẩn</string>
 
-    <string name="zpw_string_card_not_support">Thẻ không được hỗ trợ</string>
+    <string name="zpw_string_card_not_support">Thẻ này chưa được hỗ trợ</string>
 
     <string name="zpw_string_alert_networking_not_stable">Mạng dữ liệu không ổn định.</string>
     <string name="zpw_string_alert_networking_offline">Không có kết nối mạng.</string>

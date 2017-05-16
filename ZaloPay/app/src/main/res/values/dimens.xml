@@ -170,4 +170,6 @@
     <dimen name="personal_dashline_height">1dp</dimen>
 
     <dimen name="link.bank.between.layout">14dp</dimen>
+    <dimen name="link.bank.empty.text.size">17sp</dimen>
+    <dimen name="link.bank.empty.iconfont.padding">30dp</dimen>
 </resources>

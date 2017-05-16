@@ -57,8 +57,8 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     @BindView(R.id.listView)
     SwipeMenuRecyclerView mRecyclerView;
 
-    @BindView(R.id.txt_note_support_only_vcb)
-    TextView mTxtNoteSupportOnlyVcb;
+//    @BindView(R.id.txt_note_support_only_vcb)
+//    TextView mTxtNoteSupportOnlyVcb;
 
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
@@ -119,11 +119,8 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
             }
         }
         mRecyclerView.setAdapter(mAdapter);
-        initBankSupportFragment();
-
         mRecyclerView.setSwipeMenuCreator(mSwipeMenuCreator);
         mRecyclerView.setSwipeMenuItemClickListener(mMenuItemClickListener);
-
         getLinkedBankAccount();
     }
 
@@ -133,22 +130,22 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         }
     }
 
-    private void initBankSupportFragment() {
-        try {
-            if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
-                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
-                ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
-                ft.commit();
-            }
-        } catch (IllegalStateException e) {
-            Timber.w(e, "initBankSupportFragment exception [%s]", e.getMessage());
-        }
-    }
-
-    private Fragment getBankSupportFragment() {
-        return getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount);
-    }
+//    private void initBankSupportFragment() {
+//        try {
+//            if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
+//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
+//                ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
+//                ft.commit();
+//            }
+//        } catch (IllegalStateException e) {
+//            Timber.w(e, "initBankSupportFragment exception [%s]", e.getMessage());
+//        }
+//    }
+//
+//    private Fragment getBankSupportFragment() {
+//        return getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount);
+//    }
 
     @Override
     public void showLoading() {
@@ -175,7 +172,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 
     private void showLayoutEmpty() {
         Timber.d("Show layout link account empty.");
-        initBankSupportFragment();
+//        initBankSupportFragment();
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }
@@ -183,6 +180,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     private void hideLayoutEmpty() {
         mLayoutLinkCardEmpty.setVisibility(View.GONE);
         mLayoutContent.setVisibility(View.VISIBLE);
+        mBtnAddMore.setVisibility(View.GONE);
     }
 
     @Override
@@ -232,22 +230,22 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 
     @Override
     public void showSupportVcbOnly() {
-        mTxtNoteSupportOnlyVcb.setVisibility(View.VISIBLE);
+//        mTxtNoteSupportOnlyVcb.setVisibility(View.VISIBLE);
         mBtnAddMore.setEnabled(false);
     }
 
     @Override
     public void hideSupportVcbOnly() {
-        mTxtNoteSupportOnlyVcb.setVisibility(View.GONE);
+//        mTxtNoteSupportOnlyVcb.setVisibility(View.GONE);
         mBtnAddMore.setEnabled(true);
     }
 
     @Override
     public void refreshBanksSupport() {
-        Fragment fragment = getBankSupportFragment();
-        if (fragment != null && fragment instanceof BankSupportFragment) {
-            ((BankSupportFragment) fragment).notifyDataChanged();
-        }
+//        Fragment fragment = getBankSupportFragment();
+//        if (fragment != null && fragment instanceof BankSupportFragment) {
+//            ((BankSupportFragment) fragment).notifyDataChanged();
+//        }
     }
 
     @Override
