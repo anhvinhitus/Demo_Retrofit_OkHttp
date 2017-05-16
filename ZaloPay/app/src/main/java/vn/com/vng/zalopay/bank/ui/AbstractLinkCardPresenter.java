@@ -85,8 +85,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onGetCardSupportSuccess(List<ZPCard> cardSupportList);
 
-    abstract void onGetUserPhoneNumber(String phoneNumber);
-
     AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                               Navigator navigator,
                               BalanceStore.Repository balanceRepository,
@@ -134,12 +132,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         if(mUser == null) {
             return;
         }
-
-        if(mUser.phonenumber < 0) {
-            onGetUserPhoneNumber("Giống nhau");
-        }
-
-        onGetUserPhoneNumber("là " + String.valueOf(mUser.phonenumber));
     }
 
     List<BankAccount> getLinkedBankAccount() {

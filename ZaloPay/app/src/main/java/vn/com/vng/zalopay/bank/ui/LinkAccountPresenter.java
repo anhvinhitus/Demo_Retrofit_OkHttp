@@ -40,6 +40,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Logic of LinkAccountFragment.
  */
 class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
+    private User mUser;
 
     @Inject
     LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
@@ -48,6 +49,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                          TransactionStore.Repository transactionRepository,
                          User user, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
+        mUser = user;
     }
 
     void linkAccountIfNotExist(ZPCard zpCard) {
@@ -67,6 +69,11 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     public void resume() {
+        if(mUser == null) {
+            return;
+        }
+
+        mView.setPhoneRequireToMapHint(String.valueOf(mUser.phonenumber));
     }
 
     private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {
@@ -285,11 +292,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 mView.showListBankDialog(cards);
             }
         }
-    }
-
-    @Override
-    void onGetUserPhoneNumber(String phoneNumber) {
-        mView.setPhoneRequireToMapHint(phoneNumber);
     }
 
     private void showAccountHasLinked(ZPCard zpCard) {
