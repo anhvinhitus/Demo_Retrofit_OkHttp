@@ -9,6 +9,8 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogRepository;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogTimingLocalStorage;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogTimingStore;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**
@@ -27,9 +29,16 @@ public class AppTransIdLogModule {
 
     @Singleton
     @Provides
+    ApptransidLogTimingStore.LocalStorage provideApptransidLogTimingLocalStorage(@Named("globaldaosession") DaoSession session) {
+        return new ApptransidLogTimingLocalStorage(session);
+    }
+
+    @Singleton
+    @Provides
     ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.LocalStorage localStorage,
+                                                                 ApptransidLogTimingStore.LocalStorage timingLocalStorage,
                                                                  ApptransidLogEntityDataMapper mapper) {
-        return new ApptransidLogRepository(localStorage, mapper);
+        return new ApptransidLogRepository(localStorage, timingLocalStorage, mapper);
     }
 
 }
