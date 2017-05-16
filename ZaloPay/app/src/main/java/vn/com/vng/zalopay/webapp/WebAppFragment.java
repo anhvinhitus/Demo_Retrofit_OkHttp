@@ -58,10 +58,9 @@ public class WebAppFragment extends BaseFragment
     }
 
     private WebBottomSheetDialogFragment mBottomSheetDialog;
-
-    private View layoutRetry;
-    private ImageView imgError;
-    private TextView tvError;
+    private View mLayoutRetry;
+    private ImageView mErrorImageView;
+    private TextView mErrorTextView;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -103,9 +102,9 @@ public class WebAppFragment extends BaseFragment
     }
 
     private void initRetryView(View rootView) {
-        layoutRetry = rootView.findViewById(R.id.layoutRetry);
-        imgError = (ImageView) rootView.findViewById(R.id.imgError);
-        tvError = (TextView) rootView.findViewById(R.id.tvError);
+        mLayoutRetry = rootView.findViewById(R.id.layoutRetry);
+        mErrorImageView = (ImageView) rootView.findViewById(R.id.imgError);
+        mErrorTextView = (TextView) rootView.findViewById(R.id.tvError);
         View btnRetry = rootView.findViewById(R.id.btnRetry);
         btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,21 +116,21 @@ public class WebAppFragment extends BaseFragment
     }
 
     private void showErrorNoConnection() {
-        if (layoutRetry == null || imgError == null || tvError == null) {
+        if (mLayoutRetry == null || mErrorImageView == null || mErrorTextView == null) {
             return;
         }
-        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-        tvError.setText(R.string.exception_no_connection_try_again);
-        layoutRetry.setVisibility(View.VISIBLE);
+        mErrorImageView.setImageResource(R.drawable.webapp_ic_noconnect);
+        mErrorTextView.setText(R.string.exception_no_connection_try_again);
+        mLayoutRetry.setVisibility(View.VISIBLE);
     }
 
     private void showErrorNoLoad() {
-        if (layoutRetry == null || imgError == null || tvError == null) {
+        if (mLayoutRetry == null || mErrorImageView == null || mErrorTextView == null) {
             return;
         }
-        imgError.setImageResource(R.drawable.webapp_ic_noload);
-        tvError.setText(R.string.load_data_error);
-        layoutRetry.setVisibility(View.VISIBLE);
+        mErrorImageView.setImageResource(R.drawable.webapp_ic_noload);
+        mErrorTextView.setText(R.string.load_data_error);
+        mLayoutRetry.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -189,11 +188,11 @@ public class WebAppFragment extends BaseFragment
     }
 
     public void hideError() {
-        Timber.d("hideError layoutRetry [%s]", layoutRetry);
-        if (layoutRetry == null) {
+        Timber.d("hideError layoutRetry [%s]", mLayoutRetry);
+        if (mLayoutRetry == null) {
             return;
         }
-        layoutRetry.setVisibility(View.GONE);
+        mLayoutRetry.setVisibility(View.GONE);
     }
 
     @Override
@@ -296,6 +295,7 @@ public class WebAppFragment extends BaseFragment
         }
 
         mBottomSheetDialog.dismiss();
+        mBottomSheetDialog = null;
     }
 }
 
