@@ -13,6 +13,8 @@ import android.content.Context;
 import android.widget.Spinner;
 
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.views.picker.ReactPicker;
+import com.facebook.react.views.picker.ReactPickerManager;
 import com.zalopay.apploader.ReactNativeHostable;
 
 import timber.log.Timber;
@@ -20,7 +22,7 @@ import timber.log.Timber;
 /**
  * {@link ReactPickerManager} for {@link ReactPicker} with {@link Spinner#MODE_DROPDOWN}.
  */
-public class ReactDropdownPickerManager extends com.facebook.react.views.picker.ReactPickerManager {
+public class ReactDropdownPickerManager extends ReactPickerManager {
     private final ReactNativeHostable mNativeHost;
 
     private static final String REACT_CLASS = "ZPAndroidDropdownPicker";
@@ -35,10 +37,10 @@ public class ReactDropdownPickerManager extends com.facebook.react.views.picker.
     }
 
     @Override
-    protected com.facebook.react.views.picker.ReactPicker createViewInstance(ThemedReactContext reactContext) {
+    protected ReactPicker createViewInstance(ThemedReactContext reactContext) {
         try {
             Context context = mNativeHost.getActivityContext() != null ? mNativeHost.getActivityContext() : reactContext;
-            return new com.facebook.react.views.picker.ReactPicker(context, Spinner.MODE_DROPDOWN);
+            return new ReactPicker(context, Spinner.MODE_DROPDOWN);
         } catch (Exception e) {
             Timber.e(e, "create ReactDialog error");
             return null;
