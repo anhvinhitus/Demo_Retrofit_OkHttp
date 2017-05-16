@@ -151,7 +151,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
     void initWebView(ZPWebViewApp webView) {
         mWebViewProcessor = new ZPWebViewAppProcessor(webView, mView);
-        mWebViewProcessor.registerNativeModule(new ProcessNativeModule(mProcessMessageListener));
+        mWebViewProcessor.registerNativeModule(new WebAppNativeModule(mProcessMessageListener));
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
