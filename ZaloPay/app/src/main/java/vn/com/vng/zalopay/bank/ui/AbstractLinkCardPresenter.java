@@ -86,7 +86,12 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onGetCardSupportSuccess(List<ZPCard> cardSupportList);
 
-    AbstractLinkCardPresenter(Navigator navigator,
+    abstract void onGetUserPhoneNumber(String phoneNumber);
+
+    AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
+                              Navigator navigator,
+                              BalanceStore.Repository balanceRepository,
+                              TransactionStore.Repository transactionRepository,
                               User user, EventBus eventBus) {
         mNavigator = navigator;
         this.mUser = user;
@@ -124,6 +129,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             return;
         }
         mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank);
+
+        if(mUser == null) {
+            return;
+        }
+
+        if(mUser.phonenumber < 0) {
+            onGetUserPhoneNumber("Giống nhau");
+        }
+
+        onGetUserPhoneNumber("là " + String.valueOf(mUser.phonenumber));
     }
 
     List<BankAccount> getLinkedBankAccount() {

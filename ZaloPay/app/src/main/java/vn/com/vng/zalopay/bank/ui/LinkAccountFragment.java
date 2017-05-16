@@ -60,6 +60,9 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 //    @BindView(R.id.txt_note_support_only_vcb)
 //    TextView mTxtNoteSupportOnlyVcb;
 
+    @BindView(R.id.link_account_tv_phone_require)
+    TextView tvPhoneRequireToMapHint;
+
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
         mPresenter.addLinkAccount();
@@ -246,6 +249,17 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 //        if (fragment != null && fragment instanceof BankSupportFragment) {
 //            ((BankSupportFragment) fragment).notifyDataChanged();
 //        }
+    }
+
+    @Override
+    public void setPhoneRequireToMapHint(String strPhoneNumber) {
+        if(tvPhoneRequireToMapHint == null) {
+            return;
+        }
+
+        tvPhoneRequireToMapHint.setText(
+                String.format(getResources().getString(R.string.link_account_empty_bank_support_phone_require_hint),
+                        strPhoneNumber));
     }
 
     @Override
