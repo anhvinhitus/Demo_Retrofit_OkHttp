@@ -87,14 +87,17 @@
     <string name="txt_confirm_sigout">Bạn có muốn đăng xuất tài khoản này không?</string>
 
     <string name="free_fee">Miễn phí giao dịch</string>
-    <string name="not_link_card">Bạn chưa liên kết thẻ.</string>
+    <string name="not_link_card">Bạn chưa liên kết thẻ</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
-    <string name="not_link_account">Bạn chưa liên kết tài khoản ngân hàng.</string>
+    <string name="not_link_account">Bạn chưa liên kết tài khoản</string>
+    <!--<string name="not_link_account">Bạn chưa liên kết tài khoản ngân hàng.</string>-->
     <string name="link_account_to_use_easily">Liên kết tài khoản ngân hàng để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="secure_info">Bảo mật thông tin</string>
     <string name="secure_info_detail">Thực hiện theo tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
-    <string name="link_card_title">Ngân hàng hỗ trợ liên kết thẻ</string>
-    <string name="link_account_title">Ngân hàng hỗ trợ liên kết tài khoản</string>
+    <string name="link_card_title">Ngân hàng hỗ trợ</string>
+    <string name="link_account_title">Ngân hàng hỗ trợ</string>
+    <!--<string name="link_card_title">Ngân hàng hỗ trợ liên kết thẻ</string>-->
+    <!--<string name="link_account_title">Ngân hàng hỗ trợ liên kết tài khoản</string>-->
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_remove_link">Hủy Liên Kết</string>
@@ -105,7 +108,10 @@
     <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập số thẻ.</string>
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
-
+    <string name="link_account_bank_support_hint">Để liên kết thành công TK Vietcombank và TK Zalo Pay phải sử dụng cùng 1 số điện thoại và tối thiểu 50.000 VND trong VCB</string>
+    <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải là %s</string>
+    <string name="link_account_empty_bank_support_balance_require_hint">Để thanh toán thành công, số dư tối thiểu trong TK Vietcombank là 50.000 VND</string>
+    
     <string name="txt_home_bank">Ngân Hàng</string>
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_link_account">Liên Kết Tài Khoản</string>

@@ -12,44 +12,91 @@
         android:background="@color/background"
         android:orientation="vertical">
 
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/background.note"-->
+        <!--android:orientation="vertical"-->
+        <!--android:paddingTop="@dimen/spacing.medium">-->
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/spacing.medium"-->
+        <!--android:layout_marginRight="@dimen/spacing.medium"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<com.zalopay.ui.widget.IconFontTextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/not_link_account"-->
+        <!--android:textColor="@color/txt_item_main"-->
+        <!--android:textSize="@dimen/textsize.text.main"-->
+        <!--android:textStyle="bold"-->
+        <!--app:iconLeftColor="@color/colorPrimary"-->
+        <!--app:iconLeftName="@string/linkaccount_info"-->
+        <!--app:iconLeftPadding="@dimen/spacing.small"-->
+        <!--app:iconLeftSize="@dimen/font_size_icon_in_text_large" />-->
+        <!--</LinearLayout>-->
+
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginBottom="@dimen/spacing.medium"-->
+        <!--android:layout_marginLeft="@dimen/spacing.medium"-->
+        <!--android:layout_marginRight="@dimen/spacing.medium"-->
+        <!--android:layout_marginTop="@dimen/spacing.small"-->
+        <!--android:text="@string/link_account_to_use_easily"-->
+        <!--android:textColor="@color/txt_item_main"-->
+        <!--android:textSize="13sp" />-->
+
+        <!--<LinearLayout-->
+        <!--android:id="@+id/btn_add_account"-->
+        <!--style="@style/Button.Default.New"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/button.height"-->
+        <!--android:layout_gravity="bottom|center_horizontal"-->
+        <!--android:layout_marginBottom="@dimen/button.margin.bottom"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<com.zalopay.ui.widget.IconFontTextView-->
+        <!--style="@style/IconFontText.IconLeft"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:text="@string/link.account"-->
+        <!--app:iconLeftName="@string/linkaccount_add" />-->
+        <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background.note"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing.medium">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginRight="@dimen/spacing.medium"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/card" />
 
                 <com.zalopay.ui.widget.IconFontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="@string/not_link_account"
-                    android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/textsize.text.main"
-                    android:textStyle="bold"
-                    app:iconLeftColor="@color/colorPrimary"
-                    app:iconLeftName="@string/linkaccount_info"
-                    app:iconLeftPadding="@dimen/spacing.small"
-                    app:iconLeftSize="@dimen/font_size_icon_in_text_large" />
+                    android:textColor="@color/hint"
+                    android:textSize="@dimen/link.bank.empty.text.size" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing.medium"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginRight="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.small"
-                android:text="@string/link_account_to_use_easily"
-                android:textColor="@color/txt_item_main"
-                android:textSize="13sp" />
 
             <LinearLayout
                 android:id="@+id/btn_add_account"
@@ -90,11 +137,81 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <FrameLayout
-                android:id="@+id/fragmentInLinkAccount"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp" />
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextView.Group.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/spacing.medium"
+                    android:paddingTop="@dimen/spacing.medium"
+                    android:text="@string/link_card_title"
+                    android:textAllCaps="true"
+                    android:textColor="@color/txt_item_main"
+                    android:visibility="visible" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium">
+
+                    <ImageView
+                        android:id="@+id/link_account_iv_bank_support"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/spacing.tiny"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/bg_image_gray_border"
+                        android:contentDescription="@string/loremipsum"
+                        android:paddingBottom="3dp"
+                        android:paddingTop="3dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/vietcombank" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_toRightOf="@+id/link_account_iv_bank_support"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="@string/link_account_empty_bank_support_phone_require_hint"
+                            android:textColor="@color/hint"
+                            android:textSize="11sp"
+                            android:textStyle="italic" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/link_account_empty_bank_support_balance_require_hint"
+                            android:textColor="@color/hint"
+                            android:textSize="11sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!--<FrameLayout-->
+            <!--android:id="@+id/fragmentInLinkAccount"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="14dp" />-->
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

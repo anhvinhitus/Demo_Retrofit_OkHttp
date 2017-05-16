@@ -15,6 +15,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;

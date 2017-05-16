@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
@@ -171,13 +172,11 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         //update bank account info on cache
         if (BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(pResponse.bankaccountchecksum)) {
             //for testing
-            /*
-            DBankAccount dBankAccount = new DBankAccount();
-			dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
-			dBankAccount.firstaccountno = "093490";
-			dBankAccount.lastaccountno = "9460";
-			pResponse.bankaccounts.add(dBankAccount);
-			*/
+//            DBankAccount dBankAccount = new DBankAccount();
+//			dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
+//			dBankAccount.firstaccountno = "093490";
+//			dBankAccount.lastaccountno = "9460";
+//			pResponse.bankaccounts.add(dBankAccount);
             BankAccountHelper.updateBankAccountListOnCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
         }
 
