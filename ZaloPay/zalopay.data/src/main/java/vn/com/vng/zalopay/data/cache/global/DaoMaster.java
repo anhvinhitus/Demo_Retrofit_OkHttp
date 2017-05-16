@@ -22,11 +22,13 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
         ApptransidLogGDDao.createTable(db, ifNotExists);
+        ApptransidLogTimingGDDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         ApptransidLogGDDao.dropTable(db, ifExists);
+        ApptransidLogTimingGDDao.dropTable(db, ifExists);
     }
 
     /**
@@ -46,6 +48,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(ApptransidLogGDDao.class);
+        registerDaoClass(ApptransidLogTimingGDDao.class);
     }
 
     public DaoSession newSession() {

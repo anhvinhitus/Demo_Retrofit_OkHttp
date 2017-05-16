@@ -22,8 +22,10 @@ import vn.com.vng.zalopay.data.cache.global.ApptransidLogGDDao;
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig apptransidLogGDDaoConfig;
+    private final DaoConfig apptransidLogTimingGDDaoConfig;
 
     private final ApptransidLogGDDao apptransidLogGDDao;
+    private final ApptransidLogTimingGDDao apptransidLogTimingGDDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -32,17 +34,27 @@ public class DaoSession extends AbstractDaoSession {
         apptransidLogGDDaoConfig = daoConfigMap.get(ApptransidLogGDDao.class).clone();
         apptransidLogGDDaoConfig.initIdentityScope(type);
 
+        apptransidLogTimingGDDaoConfig = daoConfigMap.get(ApptransidLogTimingGDDao.class).clone();
+        apptransidLogTimingGDDaoConfig.initIdentityScope(type);
+
         apptransidLogGDDao = new ApptransidLogGDDao(apptransidLogGDDaoConfig, this);
+        apptransidLogTimingGDDao = new ApptransidLogTimingGDDao(apptransidLogTimingGDDaoConfig, this);
 
         registerDao(ApptransidLogGD.class, apptransidLogGDDao);
+        registerDao(ApptransidLogTimingGD.class, apptransidLogTimingGDDao);
     }
     
     public void clear() {
         apptransidLogGDDaoConfig.clearIdentityScope();
+        apptransidLogTimingGDDaoConfig.clearIdentityScope();
     }
 
     public ApptransidLogGDDao getApptransidLogGDDao() {
         return apptransidLogGDDao;
+    }
+
+    public ApptransidLogTimingGDDao getApptransidLogTimingGDDao() {
+        return apptransidLogTimingGDDao;
     }
 
 }
