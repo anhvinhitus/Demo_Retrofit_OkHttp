@@ -247,7 +247,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         mOnClickExitListener.onClick(null);
 
         // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, Integer.parseInt(getAdapter().getChannelID()));
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel,getAdapter().getChannelID());
 
     }
 

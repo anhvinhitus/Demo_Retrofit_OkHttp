@@ -684,52 +684,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
     }
 
-    protected void reloadMapCardList() {
-        Log.d(this, "===starting reload map card list====");
-        mLoadingMapCard = true;
-        MapCardHelper.loadMapCardList(false, new IReloadMapInfoListener<DMappedCard>() {
-            @Override
-            public void onComplete(List<DMappedCard> pMapCardList) {
-                Log.d("loadMapCardList", "===onComplete===", pMapCardList);
-                mLoadingMapCard = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Log.d("loadMapCardList", "===onError=" + pErrorMess);
-                mLoadingMapCard = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-        });
-    }
-
-    protected void reloadBankAccountList() {
-        Log.d(this, "===starting reload bank account list====");
-        mLoadingBankAccount = true;
-        BankAccountHelper.loadBankAccountList(false, new IReloadMapInfoListener<DBankAccount>() {
-            @Override
-            public void onComplete(List<DBankAccount> pMapList) {
-                Log.d("reloadBankAccountList", "===onComplete===", pMapList);
-                mLoadingBankAccount = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Log.d("reloadBankAccountList", "===onError=" + pErrorMess);
-                mLoadingBankAccount = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-        });
-    }
-
-    protected synchronized void checkLoadMapCardAndBankAccountToFinish() {
-        if (!mLoadingBankAccount && !mLoadingMapCard) {
-            readyForPayment();
-        }
-    }
-
     /***
      * set keyboard type for edittext from config.json
      * @param pStrID
@@ -1138,7 +1092,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //ZPAnalyticsTrackerLog
         long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
         int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getChannelIDLog(), checkTranID(pTransID), getReturnCode(), 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
 
     }
 

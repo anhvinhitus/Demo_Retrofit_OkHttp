@@ -19,12 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
-<<<<<<< HEAD
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
-=======
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
->>>>>>> 9fd9a35... [SDK] Apply app info v1
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
@@ -44,12 +39,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected String mContent = null;
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
-<<<<<<< HEAD
-    protected ArrayList<DPaymentChannelView> mChannelList = new ArrayList<>();
-=======
-    protected GatewayChannelListViewAdapter mChannelListViewAdapter = null;
     protected ArrayList<PaymentChannel> mChannelList = new ArrayList<>();
->>>>>>> 9fd9a35... [SDK] Apply app info v1
     protected WeakReference<IMoveToChannel> mMoveToChannelListener;
     protected WeakReference<BasePaymentActivity> mGatewayActivity;
     private RecyclerView mChannelRecyclerView;
@@ -66,7 +56,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         }
     }
 
-    protected void initializeChannelRecycleView(List<DPaymentChannelView> pChannelList) {
+    protected void initializeChannelRecycleView(List<PaymentChannel> pChannelList) {
         mChannelAdapter = new ChannelAdapter(getApplicationContext(), pChannelList, R.layout.channel_item_recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mChannelRecyclerView.setHasFixedSize(true);
@@ -176,13 +166,8 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected List<PaymentChannel> createChannels() {
         mChannelList.clear();
         if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
-<<<<<<< HEAD
-            List<DPaymentChannelView> channelList = getGatewayActivity().getChannelList();
-            for (DPaymentChannelView channel : channelList) {
-=======
-            ArrayList<PaymentChannel> channelList = getGatewayActivity().getChannelList();
+            List<PaymentChannel> channelList = getGatewayActivity().getChannelList();
             for (PaymentChannel channel : channelList) {
->>>>>>> 9fd9a35... [SDK] Apply app info v1
                 if (channel.isMapCardChannel() && !TextUtils.isEmpty(channel.bankcode) && channel.bankcode.equals(mBankCode)) {
                     mChannelList.add(channel.clone());
                 }

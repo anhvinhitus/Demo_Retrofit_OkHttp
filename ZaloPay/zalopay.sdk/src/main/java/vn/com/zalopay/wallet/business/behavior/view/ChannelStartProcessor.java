@@ -152,8 +152,24 @@ public class ChannelStartProcessor extends SingletonBase {
 
         } catch (Exception ex) {
             Log.e(this, ex);
-
             getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
+            return;
+        }
+    }
+
+    private void showSupportBankVersionDialog(String pMessage, String pMinVersion) {
+        getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+                                            @Override
+                                            public void onCancelEvent() {
+                                            }
+
+                                            @Override
+                                            public void onOKevent() {
+                                                getActivity().notifyUpVersionToApp(false, pMinVersion, pMessage);
+                                                getActivity().recycleActivity();
+                                            }
+                                        }, pMessage,
+                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_choose_again_button));
         }
     }
 
