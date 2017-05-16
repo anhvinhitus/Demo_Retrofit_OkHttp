@@ -109,7 +109,7 @@
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập số thẻ.</string>
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
     <string name="link_account_bank_support_hint">Để liên kết thành công TK Vietcombank và TK Zalo Pay phải sử dụng cùng 1 số điện thoại và tối thiểu 50.000 VND trong VCB</string>
-    <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải là %s</string>
+    <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải %s</string>
     <string name="link_account_empty_bank_support_balance_require_hint">Để thanh toán thành công, số dư tối thiểu trong TK Vietcombank là 50.000 VND</string>
     
     <string name="txt_home_bank">Ngân Hàng</string>

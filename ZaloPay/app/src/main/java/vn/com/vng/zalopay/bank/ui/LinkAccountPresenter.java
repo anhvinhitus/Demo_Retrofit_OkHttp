@@ -287,6 +287,11 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
+    @Override
+    void onGetUserPhoneNumber(String phoneNumber) {
+        mView.setPhoneRequireToMapHint(phoneNumber);
+    }
+
     private void showAccountHasLinked(ZPCard zpCard) {
         hideLoadingView();
         if (mView == null || mView.getContext() == null) {
