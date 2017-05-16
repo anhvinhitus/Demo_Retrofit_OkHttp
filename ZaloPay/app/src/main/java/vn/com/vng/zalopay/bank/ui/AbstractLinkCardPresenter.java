@@ -129,7 +129,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         if (bundle == null) {
             return;
         }
-        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank);
+        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
 
         if(mUser == null) {
             return;

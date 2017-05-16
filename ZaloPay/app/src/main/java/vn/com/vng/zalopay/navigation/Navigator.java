@@ -551,14 +551,14 @@ public class Navigator implements INavigator {
     private Intent intentLinkCard(Context context, boolean continuePayment) {
         Intent intent = intentLinkCard(context);
         intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_CARD.getValue());
-        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank, continuePayment);
+        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK, continuePayment);
         return intent;
     }
 
     private Intent intentLinkAccount(Context context, boolean continuePayment) {
         Intent intent = intentLinkCard(context);
         intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_ACCOUNT.getValue());
-        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank, continuePayment);
+        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK, continuePayment);
         return intent;
     }
 
