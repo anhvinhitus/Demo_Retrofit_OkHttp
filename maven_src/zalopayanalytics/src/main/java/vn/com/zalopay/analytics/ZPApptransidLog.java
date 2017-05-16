@@ -15,7 +15,7 @@ public class ZPApptransidLog {
     public long transid;
     public int sdk_result;
     public int server_result;
-    public String source;
+    public int source;
     public long start_time;
     public long finish_time;
     public String bank_code;
@@ -25,15 +25,15 @@ public class ZPApptransidLog {
 
     }
 
-    public ZPApptransidLog(String apptransid, int step, int step_result) {
+    public ZPApptransidLog(String apptransid, int step, int step_result, long finish_time) {
         this.apptransid = apptransid;
         this.step = step;
         this.step_result = step_result;
+        this.finish_time = finish_time;
     }
 
     public ZPApptransidLog(String apptransid, long appid, int step, int step_result, int pcmid, int transtype, long transid,
-                           int sdk_result, int server_result, String source, long start_time, long finish_time, String bank_code,
-                           int status) {
+                           int sdk_result, int server_result, int source, long start_time, long finish_time, String bank_code, int status) {
         this.apptransid = apptransid;
         this.appid = appid;
         this.step = step;
