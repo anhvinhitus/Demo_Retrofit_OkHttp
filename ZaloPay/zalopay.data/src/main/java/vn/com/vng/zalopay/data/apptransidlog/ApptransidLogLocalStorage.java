@@ -60,7 +60,7 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
             apptransidLogGD = new ApptransidLogGD();
         }
 
-        if (apptransidLogGD.status == STATUS_DONE) {
+        if (apptransidLogGD.status != null && apptransidLogGD.status == STATUS_DONE) {
             return;
         }
 
