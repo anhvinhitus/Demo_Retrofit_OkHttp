@@ -68,7 +68,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         mResponseListener = listener;
         Timber.d("start to process paying order: %s", data.toString());
         if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            listener.onPayError(3, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+            listener.onPayError(WebAppConstants.RETURN_CODE_NETWORK_ERRORS, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
             return;
         }
 
@@ -85,7 +85,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
             }
 
             hideLoading();
-            listener.onPayError(2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            listener.onPayError(WebAppConstants.RETURN_CODE_INVALID_PARAMETERS, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
         } catch (IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
         }
@@ -99,7 +99,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         mResponseListener = listener;
         Timber.d("start to process transfer money: %s", data.toString());
         if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            listener.onPayError(3, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+            listener.onPayError(WebAppConstants.RETURN_CODE_NETWORK_ERRORS, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
             return;
         }
 
@@ -111,7 +111,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
             }
 
             hideLoading();
-            listener.onPayError(2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            listener.onPayError(WebAppConstants.RETURN_CODE_INVALID_PARAMETERS, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
         } catch (IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
         }
@@ -170,22 +170,22 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == TRANSFER_MONEY_WEB_APP_REQUEST_CODE) {
-                if (mResponseListener == null) {
-                    return;
-                }
+        if (resultCode != Activity.RESULT_OK || requestCode != TRANSFER_MONEY_WEB_APP_REQUEST_CODE) {
+            return;
+        }
 
-                Bundle result = data.getExtras();
-                int code = result.getInt("code");
-                String param = result.getString("param");
-                if (code == 1) {
-                    mResponseListener.onPaySuccess();
-                } else {
-                    code = Arrays.asList(mZPTransfer.errorCodeList).contains(code) ? code : 5;
-                    mResponseListener.onPayError(code, param);
-                }
-            }
+        if (mResponseListener == null) {
+            return;
+        }
+
+        Bundle result = data.getExtras();
+        int code = result.getInt("code");
+        String param = result.getString("param");
+        if (code == 1) {
+            mResponseListener.onPaySuccess();
+        } else {
+            code = Arrays.asList(mZPTransfer.errorCodeList).contains(code) ? code : WebAppConstants.RETURN_CODE_OTHER_ERRORS;
+            mResponseListener.onPayError(code, param);
         }
     }
 
@@ -198,12 +198,14 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
     @Override
     public void onPayResponseError(PaymentError paymentError) {
-        if (mResponseListener != null) {
-            if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
-                mResponseListener.onPayError(4, PaymentError.getErrorMessage(paymentError));
-            } else {
-                mResponseListener.onPayError(PaymentError.getErrorMessage(paymentError));
-            }
+        if (mResponseListener == null) {
+            return;
+        }
+
+        if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
+            mResponseListener.onPayError(WebAppConstants.RETURN_CODE_USER_CANCEL, PaymentError.getErrorMessage(paymentError));
+        } else {
+            mResponseListener.onPayError(PaymentError.getErrorMessage(paymentError));
         }
     }
 
@@ -336,7 +338,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         public void onError(Throwable e) {
             hideLoading();
             String message = ErrorMessageFactory.create(getFragment().getContext(), e);
-            mResponseListener.onPayError(2, message);
+            mResponseListener.onPayError(WebAppConstants.RETURN_CODE_INVALID_PARAMETERS, message);
         }
 
         @Override
