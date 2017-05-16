@@ -55,8 +55,13 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
     @Override
     public void updateLog(ApptransidLogGD newLog) {
         ApptransidLogGD apptransidLogGD = get(newLog.apptransid);
+
         if (apptransidLogGD == null) {
             apptransidLogGD = new ApptransidLogGD();
+        }
+
+        if (apptransidLogGD.status == STATUS_DONE) {
+            return;
         }
 
         apptransidLogGD.apptransid = (newLog.apptransid == null) ? apptransidLogGD.apptransid : newLog.apptransid;
