@@ -75,7 +75,7 @@ public class NetworkCollector implements IFeedbackCollector {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
 
     }
 }

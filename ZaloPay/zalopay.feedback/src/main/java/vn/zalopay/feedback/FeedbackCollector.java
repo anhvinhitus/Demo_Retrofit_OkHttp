@@ -197,9 +197,9 @@ public class FeedbackCollector {
         mDynamicCollector.put(key, value);
     }
 
-    public void dispose() {
+    public void cleanUp() {
         for (IFeedbackCollector collector : mCollectors) {
-            collector.dispose();
+            collector.cleanUp();
         }
 
         synchronized (mCollectors) {

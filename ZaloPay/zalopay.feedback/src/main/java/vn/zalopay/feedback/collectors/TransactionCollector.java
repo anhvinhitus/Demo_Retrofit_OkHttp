@@ -62,7 +62,7 @@ public class TransactionCollector implements IFeedbackCollector {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
         transid = "";
         error_code = -1;
         error_message = "";

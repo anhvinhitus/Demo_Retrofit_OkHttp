@@ -68,21 +68,23 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
     @Override
     public void detachView() {
-        FeedbackCollector.instance().dispose();
+        FeedbackCollector.instance().cleanUp();
         super.detachView();
     }
 
     void sendEmail(String email, String emailText, boolean user, boolean app, boolean device, final List<Uri> screenshot) {
-        FeedbackCollector feedbackCollector = collectInformation(user, app, device);
-        FeedbackCollector.instance().putDynamicInformation("email", email);
 
-        feedbackCollector.startCollectors(data -> {
-            Timber.d("onCollectorEnd: %s", data);
-            onCollectorFinish(data, screenshot, emailText);
-        });
+        FeedbackCollector feedbackCollector = FeedbackCollector.instance();
+
+        collectInformation(feedbackCollector, user, app, device);
+
+        feedbackCollector.putDynamicInformation("email", email);
+
+        feedbackCollector.startCollectors(data -> onCollectorFinish(data, screenshot, emailText));
     }
 
     private void onCollectorFinish(JSONObject data, final List<Uri> screenshot, String emailText) {
+        Timber.d("on Collector Finish : data [%s]", data);
         Subscription subscription = saveCollectFile(data)
                 .map(filePath -> shareFile(screenshot, filePath))
                 .subscribeOn(Schedulers.io())
@@ -123,7 +125,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
     private Observable<String> saveCollectFile(final JSONObject data) {
         return makeObservable(() -> {
             String filePath = FileUtils.writeStringToFile(mContext, JsonUtil.toPrettyFormat(data.toString()), "data.txt");
-            Timber.d("write to file _ filePath [%s] ", filePath);
+            Timber.d("write to file : filePath [%s] ", filePath);
             return filePath;
         });
     }
@@ -147,16 +149,13 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         mSubscription.add(subscription);
     }
 
-    private FeedbackCollector collectInformation(boolean user, boolean app, boolean device) {
-
-        FeedbackCollector mCollector = FeedbackCollector.instance();
+    private void collectInformation(FeedbackCollector mCollector, boolean user, boolean app, boolean device) {
 
         if (user) {
             mCollector.installCollector(new UserCollector(mUserConfig));
         }
 
         mCollector.collectDeviceInformation(mContext, app, device, true);
-        return mCollector;
     }
 
 

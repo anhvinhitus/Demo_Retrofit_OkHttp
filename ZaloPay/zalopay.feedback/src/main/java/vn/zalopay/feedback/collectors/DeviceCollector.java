@@ -133,7 +133,7 @@ public class DeviceCollector implements IFeedbackCollector {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
 
     }
 }

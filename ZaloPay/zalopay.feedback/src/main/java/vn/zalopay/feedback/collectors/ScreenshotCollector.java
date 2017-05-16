@@ -43,20 +43,22 @@ public class ScreenshotCollector implements IFeedbackCollector {
     @Override
     public JSONObject doInBackground() throws JSONException {
 
-        if (mScreenshot == null) {
+        /*if (mScreenshot == null) {
             return null;
         }
 
         JSONObject retVal = new JSONObject();
         retVal.put("image", Base64.encode(mScreenshot, Base64.DEFAULT));
-        return retVal;
+        return retVal;*/
+        
+        return null;
     }
 
     public ScreenshotCollector() {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
         mScreenshot = null;
     }
 }

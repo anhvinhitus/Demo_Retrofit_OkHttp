@@ -61,7 +61,7 @@ public class AppCollector implements IFeedbackCollector {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
 
     }
 }

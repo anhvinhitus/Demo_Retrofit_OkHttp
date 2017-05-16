@@ -70,7 +70,7 @@ public class DynamicCollector implements IFeedbackCollector {
     }
 
     @Override
-    public void dispose() {
+    public void cleanUp() {
         mRetVal.clear();
     }
 }

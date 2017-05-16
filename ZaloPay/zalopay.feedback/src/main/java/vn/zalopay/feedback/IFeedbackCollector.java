@@ -22,5 +22,5 @@ public interface IFeedbackCollector {
     JSONObject doInBackground() throws JSONException;
 
 
-    void dispose();
+    void cleanUp();
 }
