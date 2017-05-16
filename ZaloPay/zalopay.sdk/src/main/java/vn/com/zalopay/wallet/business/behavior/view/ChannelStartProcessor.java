@@ -168,11 +168,11 @@ public class ChannelStartProcessor extends SingletonBase {
 
                                             @Override
                                             public void onOKevent() {
-                                                getActivity().notifyUpVersionToApp(false, pMinVersion, null);
+                                                getActivity().notifyUpVersionToApp(false, pMinVersion, pMessage);
                                                 getActivity().recycleActivity();
                                             }
                                         }, pMessage,
-                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_close_button));
+                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_choose_again_button));
 
     }
 
