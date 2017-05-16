@@ -268,36 +268,42 @@ public class RedPackageRepositoryTest {
 
     @Test
     public void addReceivedRedPacketWhenAlreadyHave() {
-        ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-
         mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess").subscribe();
         mRepository.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1").subscribe();
-        mRepository.getPacketStatus("1").subscribe(new DefaultObjectObserver<>(receivePackageGD));
+        mRepository.getPacketStatus("1").subscribe(new DefaultObjectObserver<ReceivePackageGD>() {
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                Assert.assertEquals("packageID", 1, receivePackageGD.id);
+                Assert.assertEquals("bundleID", 3L, (long) receivePackageGD.bundleID);
+                Assert.assertEquals("senderFullName", "name1", receivePackageGD.senderFullName);
+                Assert.assertEquals("senderAvatar", "ava1", receivePackageGD.senderAvatar);
+                Assert.assertEquals("message", "mess1", receivePackageGD.message);
+            }
+        });
 
-        Assert.assertEquals("packageID", 1, receivePackageGD.id);
-        Assert.assertEquals("bundleID", 3L, (long) receivePackageGD.bundleID);
-        Assert.assertEquals("senderFullName", "name1", receivePackageGD.senderFullName);
-        Assert.assertEquals("senderAvatar", "ava1", receivePackageGD.senderAvatar);
-        Assert.assertEquals("message", "mess1", receivePackageGD.message);
     }
 
     @Test
     public void getReceivedPacketWhenNotHavingData() {
         final ReceivePackageGD receivePackageGD = null;
 
-        mRepository.getPacketStatus("1000").subscribe(new DefaultObjectObserver<>(receivePackageGD));
-
-        Assert.assertEquals("getReceivedPacket when not having data", null, receivePackageGD);
+        mRepository.getPacketStatus("1000").subscribe(new DefaultObjectObserver<ReceivePackageGD>() {
+            @Override
+            public void onNext(ReceivePackageGD item) {
+                Assert.assertEquals("getReceivedPacket when not having data", null, receivePackageGD);
+            }
+        });
     }
 
     @Test
     public void setPacketStatusWhenNotHavingPacket() {
-        ReceivePackageGD receivePackageGD = null;
-
         mRepository.setPacketStatus(1, 3, 1, "message").subscribe();
-        mRepository.getPacketStatus("1").subscribe(new DefaultObjectObserver<>(receivePackageGD));
-
-        Assert.assertEquals("setPacketStatus when not having packet", null, receivePackageGD);
+        mRepository.getPacketStatus("1").subscribe(new DefaultObjectObserver<ReceivePackageGD>() {
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                Assert.assertEquals("setPacketStatus when not having packet", null, receivePackageGD);
+            }
+        });
     }
 
     @Test

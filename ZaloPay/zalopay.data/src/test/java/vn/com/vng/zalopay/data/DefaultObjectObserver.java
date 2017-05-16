@@ -9,12 +9,7 @@ import rx.Observer;
  * Default observer for getting object of result
  */
 
-public class DefaultObjectObserver<T> implements Observer<T> {
-    private T mResultHolder = null;
-
-    public DefaultObjectObserver(T resultHolder) {
-        mResultHolder = resultHolder;
-    }
+public abstract class DefaultObjectObserver<T> implements Observer<T> {
 
     @Override
     public void onCompleted() {
@@ -29,7 +24,6 @@ public class DefaultObjectObserver<T> implements Observer<T> {
     }
 
     @Override
-    public void onNext(T items) {
-        mResultHolder = items;
+    public void onNext(T item) {
     }
 }

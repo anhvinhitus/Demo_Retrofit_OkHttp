@@ -34,17 +34,6 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void setPacketStatus() {
-        mLocalStorage.setPacketStatus(1, 3, 1, "message");
-        ReceivePackageGD result = mLocalStorage.getPacketStatus(1);
-
-        assertEquals("id", 1, result.id);
-        assertEquals("amount", (Long) 3L, result.amount);
-        assertEquals("status", (Long) 1L, result.status);
-        assertEquals("message", "message", result.messageStatus);
-    }
-
-    @Test
     public void updatePacketStatus() {
         mLocalStorage.addReceivedRedPacket(1, 1, "name", "ava", "mess");
         mLocalStorage.setPacketStatus(1, 3, 1, "message");
