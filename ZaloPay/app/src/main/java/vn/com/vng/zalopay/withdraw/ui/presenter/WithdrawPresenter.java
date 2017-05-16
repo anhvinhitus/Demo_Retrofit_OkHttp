@@ -90,7 +90,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                         if (amount > balance) {
                             return Observable.error(new UserInputException(R.string.withdraw_exceed_balance));
                         } else {
-                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, String.valueOf(TransactionType.WITHDRAW), mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
+                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, TransactionType.WITHDRAW, mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
                         }
                     }
                 })

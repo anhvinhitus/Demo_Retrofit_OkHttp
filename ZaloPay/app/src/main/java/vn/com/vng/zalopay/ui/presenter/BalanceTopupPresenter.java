@@ -105,7 +105,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         Subscription subscription = mZaloPayRepository.createwalletorder(
                 BuildConfig.ZALOPAY_APP_ID,
                 amount,
-                String.valueOf(TransactionType.TOPUP),
+                TransactionType.TOPUP,
                 mUser.zaloPayId,
                 description)
                 .subscribeOn(Schedulers.io())

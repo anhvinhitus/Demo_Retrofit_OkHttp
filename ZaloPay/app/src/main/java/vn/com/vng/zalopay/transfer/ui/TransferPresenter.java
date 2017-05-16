@@ -337,7 +337,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mPreviousTransferId = null;
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                 amount,
-                String.valueOf(TransactionType.MONEY_TRANSFER),
+                TransactionType.MONEY_TRANSFER,
                 "1;" + mTransferObject.zalopayId,
                 mView.getMessage(),
                 mTransferObject.displayName)
