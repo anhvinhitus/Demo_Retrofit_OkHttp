@@ -31,7 +31,6 @@ import vn.com.vng.zalopay.utils.FrescoHelper;
  * *
  */
 class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
-
     private boolean mCurrentMenuState = false; //false: menu is hide.
 
     LinkCardAdapter(Context context) {
