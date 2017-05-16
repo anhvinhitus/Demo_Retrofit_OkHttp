@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -76,6 +78,12 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
         presenter.initialize();
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(() -> {
+//            displayPromotionCashBack();
+        }, 3000);
 
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

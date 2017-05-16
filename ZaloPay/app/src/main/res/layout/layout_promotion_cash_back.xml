@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000"
+    android:gravity="bottom">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/promotion_cash_back_ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="420dp"
+            android:layout_below="@+id/promotion_cash_back_iv_top"
+            android:layout_marginTop="-30dp"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/promotion_cash_back_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:text="BẠN ĐƯỢC HOÀN TIỀN"
+                android:textColor="#ff5237"
+                android:textSize="17sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/fire_popup" />
+
+                <TextView
+                    android:id="@+id/prmotion_cash_back_tv_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="30dp"
+                    android:text="15.000 VND"
+                    android:textColor="#fc393d"
+                    android:textSize="60sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/promotion_cash_back_tv_campaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Từ chương trình\nKhuyến mãi thanh toán từ 30.000 VND\ntại Cateen từ 05/06 - 15/06"
+                android:textColor="@color/c_text_black" />
+
+            <LinearLayout
+                android:id="@+id/promotion_cash_back_ll_submit"
+                android:layout_width="180dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_btn_submit_promotion_cash_back_selector"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đồng ý"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/promotion_cash_back_tv_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Chi Tiết Giao Dịch"
+                android:textColor="@color/text_green"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/promotion_cash_back_iv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/top_cashback" />
+    </RelativeLayout>
+
+</LinearLayout>
