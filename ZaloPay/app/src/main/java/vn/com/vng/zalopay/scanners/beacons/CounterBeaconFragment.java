@@ -258,9 +258,9 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
             beaconScanner.stopScan();
             if (item.order != null) {
-                mPaymentWrapper.payWithOrder(getActivity(), item.order, ZPPaymentSteps.OrderSource_QR);
+                mPaymentWrapper.payWithOrder(getActivity(), item.order, ZPPaymentSteps.OrderSource_Bluetooth);
             } else {
-                mPaymentWrapper.payWithToken(getActivity(), item.paymentRecord.appId, item.paymentRecord.transactionToken, ZPPaymentSteps.OrderSource_QR);
+                mPaymentWrapper.payWithToken(getActivity(), item.paymentRecord.appId, item.paymentRecord.transactionToken, ZPPaymentSteps.OrderSource_Bluetooth);
             }
         }
     }

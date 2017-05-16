@@ -56,7 +56,7 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
                 .build();
     }
 
-    protected boolean zpTransaction(JSONObject jsonObject, String source) {
+    protected boolean zpTransaction(JSONObject jsonObject, int source) {
 
         ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
         boolean isValidZPTransaction = zpTransaction.isValid();
@@ -68,7 +68,7 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
         return isValidZPTransaction;
     }
 
-    protected boolean orderTransaction(JSONObject jsonOrder, String source) {
+    protected boolean orderTransaction(JSONObject jsonOrder, int source) {
         Order order = new Order(jsonOrder);
         boolean isValidOrder = order.isValid();
         if (isValidOrder) {

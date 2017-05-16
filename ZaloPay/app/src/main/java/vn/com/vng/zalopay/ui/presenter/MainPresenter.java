@@ -452,7 +452,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
-        paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_FeatureInApp);
+        paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_NotifyInApp);
     }
 
     private void showLoadingView() {
