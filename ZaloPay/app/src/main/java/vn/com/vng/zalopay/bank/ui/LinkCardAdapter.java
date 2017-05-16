@@ -13,13 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
@@ -31,48 +28,25 @@ import vn.com.vng.zalopay.domain.model.BankCard;
  * Created by AnhHieu on 5/10/16.
  * *
  */
-class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
+class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
 
-    private OnClickBankCardListener listener;
-
-    LinkCardAdapter(Context context, OnClickBankCardListener listener) {
+    LinkCardAdapter(Context context) {
         super(context);
-        this.listener = listener;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
+    public View onCreateContentView(ViewGroup parent, int viewType) {
+        return mInflater.inflate(R.layout.row_bank_card_layout, parent, false);
     }
 
-    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
-        @Override
-        public void onListItemClick(View anchor, int position) {
-            if (listener == null) {
-                return;
-            }
-
-            int id = anchor.getId();
-
-            if (id == R.id.root) {
-                BankCard bankCard = getItem(position);
-                if (bankCard != null) {
-                    listener.onClickMenu(bankCard);
-                }
-            }
-        }
-
-        @Override
-        public boolean onListItemLongClick(View anchor, int position) {
-            return false;
-        }
-    };
+    @Override
+    public RecyclerView.ViewHolder onCompatCreateViewHolder(View realContentView, int viewType) {
+        return new ViewHolder(realContentView);
+    }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        onItemClickListener = null;
-        listener = null;
     }
 
     @Override
@@ -84,6 +58,21 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
                 ((ViewHolder) holder).bindView(bankCard, isLastItem);
             }
         }
+    }
+
+    @Override
+    public void onBindSwipeMenuViewHolder(SwipeMenuView swipeLeftMenuView, SwipeMenuView swipeRightMenuView, int position) {
+        boolean isLastItem = (position == getItemCount() - 1);
+        FrameLayout.LayoutParams params = new FrameLayout
+                .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int margin = getContext().getResources().getDimensionPixelSize(R.dimen.spacing_medium_s);
+        int marginBottom = 0;
+        if (isLastItem) {
+            marginBottom = getContext().getResources()
+                    .getDimensionPixelSize(R.dimen.linkcard_margin_bottom_lastitem);
+        }
+        params.setMargins(0, margin, 0, marginBottom);
+        swipeRightMenuView.setLayoutParams(params);
     }
 
     @Override
@@ -101,19 +90,9 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         @BindView(R.id.tv_num_acc)
         TextView mCardNumber;
 
-        OnItemClickListener listener;
-
-        public ViewHolder(View itemView, OnItemClickListener listener) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            this.listener = listener;
             ButterKnife.bind(this, itemView);
-        }
-
-        @OnClick(R.id.root)
-        public void onClickMore(View v) {
-            if (listener != null) {
-                listener.onListItemClick(v, getAdapterPosition());
-            }
         }
 
         public void bindView(final BankCard bankCard, boolean isLastItem) {
@@ -132,7 +111,7 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
                 marginBottom = getContext().getResources()
                         .getDimensionPixelSize(R.dimen.linkcard_margin_bottom_lastitem);
             }
-            params.setMargins(margin, margin, margin, marginBottom);
+            params.setMargins(0, margin, 0, marginBottom);
             mRoot.setLayoutParams(params);
         }
     }
@@ -178,9 +157,5 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         BankCardStyle bankCardStyle = BankUtils.getBankCardStyle(bankCard);
         setBankIcon(imgLogo, bankCardStyle.bankIcon);
         setBankBackground(mRoot, bankCardStyle, borderTopOnly);
-    }
-
-    interface OnClickBankCardListener {
-        void onClickMenu(BankCard bankCard);
     }
 }
