@@ -58,8 +58,13 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
     public void updateLog(ApptransidLogGD newLog) {
         Timber.d("Update apptransid log :  apptransid %s status %s step %s source %s ", newLog.apptransid, newLog.status, newLog.step, newLog.source);
         ApptransidLogGD apptransidLogGD = get(newLog.apptransid);
+
         if (apptransidLogGD == null) {
             apptransidLogGD = new ApptransidLogGD();
+        }
+
+        if (apptransidLogGD.status != null && apptransidLogGD.status == STATUS_DONE) {
+            return;
         }
 
         apptransidLogGD.apptransid = (newLog.apptransid == null) ? apptransidLogGD.apptransid : newLog.apptransid;

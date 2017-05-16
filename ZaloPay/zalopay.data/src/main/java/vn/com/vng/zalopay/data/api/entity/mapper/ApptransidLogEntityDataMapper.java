@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.data.api.entity.mapper;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.inject.Singleton;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
+import vn.com.vng.zalopay.data.cache.global.ApptransidLogTimingGD;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 
 /**
@@ -31,6 +34,8 @@ public class ApptransidLogEntityDataMapper {
     final private String VALUE_SOURCE = "source";
     final private String VALUE_START_TIME = "start_time";
     final private String VALUE_FINISH_TIME = "finish_time";
+    final private String VALUE_TIMING = "timing";
+    final private String VALUE_TIMESTAMP = "timestamp";
     final private String VALUE_BANK_CODE = "bank_code";
     final private String VALUE_STATUS = "status";
 
@@ -39,7 +44,7 @@ public class ApptransidLogEntityDataMapper {
 
     }
 
-    public JSONObject transform(ApptransidLogGD data) {
+    public JSONObject transform(ApptransidLogGD data, List<ApptransidLogTimingGD> timingData) {
         if (data == null) {
             return null;
         }
@@ -58,6 +63,14 @@ public class ApptransidLogEntityDataMapper {
             value.put(VALUE_SERVER_RESULT, data.server_result);
             value.put(VALUE_SOURCE, data.source);
             value.put(VALUE_START_TIME, data.start_time);
+            JSONArray array = new JSONArray();
+            for(int i = 0; i < timingData.size(); i++) {
+                JSONObject object = new JSONObject();
+                object.put(VALUE_STEP, timingData.get(i).step);
+                object.put(VALUE_TIMESTAMP, timingData.get(i).timestamp);
+                array.put(object);
+            }
+            value.put(VALUE_TIMING, array);
             value.put(VALUE_FINISH_TIME, data.finish_time);
             value.put(VALUE_BANK_CODE, data.bank_code);
         } catch (JSONException e) {
@@ -105,7 +118,7 @@ public class ApptransidLogEntityDataMapper {
             log.server_result = data.server_result;
         }
 
-        if (data.source != null) {
+        if (data.source != 0) {
             log.source = data.source;
         }
 
@@ -127,6 +140,18 @@ public class ApptransidLogEntityDataMapper {
             log.status = 0;
         }
 
+        return log;
+    }
+
+    public ApptransidLogTimingGD transformTiming(ZPApptransidLog data) {
+        if(data.step == 0 || data.finish_time == 0) {
+            return null;
+        }
+
+        ApptransidLogTimingGD log = new ApptransidLogTimingGD();
+        log.apptransid = data.apptransid;
+        log.step = data.step;
+        log.timestamp = data.finish_time;
         return log;
     }
 
