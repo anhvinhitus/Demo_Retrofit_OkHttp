@@ -1277,8 +1277,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
     }
 
-    private int getChannelIDLog() {
-
+    public int getChannelIDLog() {
+        if (getAdapter() == null) {
+            return 0;
+        }
         return (!TextUtils.isEmpty(getAdapter().getChannelID())) ? Integer.parseInt(getAdapter().getChannelID()) : 0;
     }
 
