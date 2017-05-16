@@ -90,7 +90,7 @@ public class PaymentWrapper {
                 balanceRepository, mCompositeSubscription);
     }
     
-    public void payWithToken(Activity activity, long appId, String transactionToken, String source) {
+    public void payWithToken(Activity activity, long appId, String transactionToken, int source) {
         Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
@@ -114,7 +114,7 @@ public class PaymentWrapper {
         callPayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, String source) {
+    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, int source) {
         int transactionType = TransactionType.MONEY_TRANSFER;
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
@@ -137,7 +137,7 @@ public class PaymentWrapper {
         callPayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void payWithOrder(Activity activity, Order order, String source) {
+    public void payWithOrder(Activity activity, Order order, int source) {
         Timber.d("payWithOrder: Start");
         if (order == null) {
             Timber.i("payWithOrder: order is invalid");
@@ -441,8 +441,8 @@ public class PaymentWrapper {
         mPendingOrder = paymentInfo;
         mPendingTransaction = transactionType;
 
-        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
-        log.transtype = transactionType;
+        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
+        Timber.d("add log");
         ZPAnalytics.trackApptransidEvent(log);
 
         SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
@@ -593,9 +593,9 @@ public class PaymentWrapper {
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
-        String mSource;
+        int mSource;
 
-        GetOrderSubscriber(String source) {
+        GetOrderSubscriber(int source) {
             this.mSource = source;
         }
 

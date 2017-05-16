@@ -156,7 +156,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        paymentWrapper.payWithOrder(mView.getActivity(), order, null);
+        paymentWrapper.payWithOrder(mView.getActivity(), order, 0);
         hideLoading();
     }
 

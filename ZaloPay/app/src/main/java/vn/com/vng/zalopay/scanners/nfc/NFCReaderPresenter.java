@@ -172,7 +172,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
 
         Timber.i("appId: %d, token: [%s]", record.appId, record.transactionToken);
-        paymentWrapper.payWithToken(mView.getActivity(), record.appId, record.transactionToken, ZPPaymentSteps.OrderSource_QR);
+        paymentWrapper.payWithToken(mView.getActivity(), record.appId, record.transactionToken, ZPPaymentSteps.OrderSource_NFC);
     }
 
     private void initPaymentWrapper() {
