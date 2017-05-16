@@ -454,7 +454,7 @@ dependencies {
     compile('vn.com.vng.zalopay:rnmodules:1.24') {
         exclude module: 'bolts-android'
     }
-    compile('vn.com.vng:webapp:0.5')
+    compile('vn.com.vng:webapp:0.6')
     compile libs.zalopay_feedback
 
     compile project(':zalopay.data')
@@ -462,7 +462,6 @@ dependencies {
     compile(project(':zalopay.app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
-//    compile project(':zalopay.feedback')
     compile project(':zalopay.sdk')
 }
 

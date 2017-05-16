@@ -22,4 +22,6 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
      * Hide error view
      */
     void hideError();
+
+    void onReceivedTitle(String title);
 }
