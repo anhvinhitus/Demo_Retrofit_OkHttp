@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
 import vn.com.vng.zalopay.qrcode.CustomViewfinderView;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 9/28/16.
@@ -182,10 +183,11 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
             return;
         }
 
-        if (!isPermissionGranted(Manifest.permission.CAMERA)) {
+        if (!isPermissionGranted(Manifest.permission.CAMERA) || AndroidUtils.isXiaomiDevice()) {
             showCameraError(R.string.exception_open_camera_not_allow);
             return;
         }
         showCameraError(R.string.exception_open_camera_fail);
+
     }
 }
