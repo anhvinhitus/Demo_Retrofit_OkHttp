@@ -32,6 +32,7 @@ public class GreenDaoGenerator {
         //ADD TABLE GLOBAL
         addGlobalKeyValue(globalSchema);
         addApptransidLog(globalSchema);
+        addApptransidLogTiming(globalSchema);
 
         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
         daoGenerator.generateAll(appSchema, "../zalopay.data/src/main/java");
@@ -237,6 +238,14 @@ public class GreenDaoGenerator {
         entity.addLongProperty("finish_time");
         entity.addStringProperty("bank_code");
         entity.addIntProperty("status");
+    }
+
+    private static void addApptransidLogTiming(Schema schema) {
+        Entity entity = schema.addEntity("ApptransidLogTimingGD");
+        entity.setConstructors(false);
+        entity.addStringProperty("apptransid");
+        entity.addIntProperty("step");
+        entity.addLongProperty("timestamp");
     }
 
     private static void addGlobalKeyValue(Schema schema) {

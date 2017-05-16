@@ -31,7 +31,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         public final static Property Transid = new Property(6, Long.class, "transid", false, "TRANSID");
         public final static Property Sdk_result = new Property(7, Integer.class, "sdk_result", false, "SDK_RESULT");
         public final static Property Server_result = new Property(8, Integer.class, "server_result", false, "SERVER_RESULT");
-        public final static Property Source = new Property(9, String.class, "source", false, "SOURCE");
+        public final static Property Source = new Property(9, Integer.class, "source", false, "SOURCE");
         public final static Property Start_time = new Property(10, Long.class, "start_time", false, "START_TIME");
         public final static Property Finish_time = new Property(11, Long.class, "finish_time", false, "FINISH_TIME");
         public final static Property Bank_code = new Property(12, String.class, "bank_code", false, "BANK_CODE");
@@ -60,7 +60,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
                 "\"TRANSID\" INTEGER," + // 6: transid
                 "\"SDK_RESULT\" INTEGER," + // 7: sdk_result
                 "\"SERVER_RESULT\" INTEGER," + // 8: server_result
-                "\"SOURCE\" TEXT," + // 9: source
+                "\"SOURCE\" INTEGER," +  // 9: source
                 "\"START_TIME\" INTEGER," + // 10: start_time
                 "\"FINISH_TIME\" INTEGER," + // 11: finish_time
                 "\"BANK_CODE\" TEXT," + // 12: bank_code
@@ -117,10 +117,10 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         if (server_result != null) {
             stmt.bindLong(9, server_result);
         }
- 
-        String source = entity.source;
+
+        Integer source = entity.source;
         if (source != null) {
-            stmt.bindString(10, source);
+            stmt.bindLong(10, source);
         }
  
         Long start_time = entity.start_time;
@@ -188,10 +188,10 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         if (server_result != null) {
             stmt.bindLong(9, server_result);
         }
- 
-        String source = entity.source;
+
+        Integer source = entity.source;
         if (source != null) {
-            stmt.bindString(10, source);
+            stmt.bindLong(10, source);
         }
  
         Long start_time = entity.start_time;
@@ -238,7 +238,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         entity.transid = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
         entity.sdk_result = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
         entity.server_result = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
-        entity.source = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
+        entity.source = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
         entity.start_time = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
         entity.finish_time = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
         entity.bank_code = cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12);

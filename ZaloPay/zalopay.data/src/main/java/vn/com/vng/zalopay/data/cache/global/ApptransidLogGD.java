@@ -22,7 +22,7 @@ public class ApptransidLogGD {
     public Long transid;
     public Integer sdk_result;
     public Integer server_result;
-    public String source;
+    public Integer source;
     public Long start_time;
     public Long finish_time;
     public String bank_code;

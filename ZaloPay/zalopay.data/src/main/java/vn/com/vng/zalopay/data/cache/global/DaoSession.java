@@ -25,9 +25,11 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig keyValueGDDaoConfig;
     private final DaoConfig apptransidLogGDDaoConfig;
+    private final DaoConfig apptransidLogTimingGDDaoConfig;
 
     private final KeyValueGDDao keyValueGDDao;
     private final ApptransidLogGDDao apptransidLogGDDao;
+    private final ApptransidLogTimingGDDao apptransidLogTimingGDDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -39,16 +41,22 @@ public class DaoSession extends AbstractDaoSession {
         apptransidLogGDDaoConfig = daoConfigMap.get(ApptransidLogGDDao.class).clone();
         apptransidLogGDDaoConfig.initIdentityScope(type);
 
+        apptransidLogTimingGDDaoConfig = daoConfigMap.get(ApptransidLogTimingGDDao.class).clone();
+        apptransidLogTimingGDDaoConfig.initIdentityScope(type);
+
         keyValueGDDao = new KeyValueGDDao(keyValueGDDaoConfig, this);
         apptransidLogGDDao = new ApptransidLogGDDao(apptransidLogGDDaoConfig, this);
+        apptransidLogTimingGDDao = new ApptransidLogTimingGDDao(apptransidLogTimingGDDaoConfig, this);
 
         registerDao(KeyValueGD.class, keyValueGDDao);
         registerDao(ApptransidLogGD.class, apptransidLogGDDao);
+        registerDao(ApptransidLogTimingGD.class, apptransidLogTimingGDDao);
     }
     
     public void clear() {
         keyValueGDDaoConfig.clearIdentityScope();
         apptransidLogGDDaoConfig.clearIdentityScope();
+        apptransidLogTimingGDDaoConfig.clearIdentityScope();
     }
 
     public KeyValueGDDao getKeyValueGDDao() {
@@ -57,6 +65,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ApptransidLogGDDao getApptransidLogGDDao() {
         return apptransidLogGDDao;
+    }
+
+    public ApptransidLogTimingGDDao getApptransidLogTimingGDDao() {
+        return apptransidLogTimingGDDao;
     }
 
 }
