@@ -188,6 +188,5 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
             return;
         }
         showCameraError(R.string.exception_open_camera_fail);
-
     }
 }
