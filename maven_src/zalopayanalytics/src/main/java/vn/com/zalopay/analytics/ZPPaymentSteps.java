@@ -17,11 +17,13 @@ public interface ZPPaymentSteps {
     static int OrderStep_WebOtp = 9; // user nhập otp để hoàn thành giao dịch
     static int OrderStep_OrderResult = 10; // kêt quả thanh toán sau khi gettranstatus
 
-    static String OrderSource_QR = "QRcode"; // Thanh toán khi quét QR
-    static String OrderSource_WebToApp = "WebToApp"; // Thanh toán khi web gọi qua app
-    static String OrderSource_FeatureInApp = "FeatureInApp"; // Thanh toán khi nhận dc notification chứa bill
-    static String OrderSource_MerchantApp = "MerchantApp"; // Thanh toán merchant app
-    static String OrderSource_AppToApp = "AppToApp"; // Thanh toán app to app
+    static int OrderSource_QR = 1; // Thanh toán khi quét QR
+    static int OrderSource_AppToApp = 2; // Thanh toán app to app
+    static int OrderSource_WebToApp = 3; // Thanh toán khi web gọi qua app
+    static int OrderSource_MerchantApp = 4; // Thanh toán merchant app inside Zalo Pay
+    static int OrderSource_NotifyInApp = 5; // Thanh toán khi nhận dc notification chứa bill
+    static int OrderSource_Bluetooth = 6; // Thanh toán khi có hóa đơn từ Bluetooth
+    static int OrderSource_NFC = 7; // Thanh toán khi có hóa đơn từ NFC
 
     static int OrderStepResult_None = 0;
     static int OrderStepResult_Success = 1; // Step thành công
