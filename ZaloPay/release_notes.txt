@@ -1,3 +1,9 @@
+Zalo Pay (Staging v2.11.0 - build 239) - Released on 2017-05-17
+- Fix recovery data notify.
+- Update new UI for link card/account
+- Update apptransid log
+- [SDK] Request permission read Otp
+
 Zalo Pay (Staging v2.11.0 - build 238) - Released on 2017-05-15
 - Update apptransid thêm finish time cho từng step
 - [SDK] Fix bug
