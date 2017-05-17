@@ -1,68 +1,73 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context="vn.com.vng.zalopay.bank.ui.LinkAccountFragment">
-
-    <include
-        layout="@layout/layout_link_account_empty"
-        android:visibility="gone" />
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/layoutContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:orientation="vertical">
 
-        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
-            android:id="@+id/listView"
-            style="@style/RecyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:scrollbars="none"
-            android:scrollbarStyle="outsideOverlay" />
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            tools:context="vn.com.vng.zalopay.bank.ui.LinkAccountFragment">
 
-        <LinearLayout
-            android:id="@+id/btn_add_more"
-            style="@style/Button.Default.New"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button.height"
-            android:layout_marginBottom="@dimen/button.margin.bottom"
-            android:layout_marginTop="@dimen/button.margin.top.min"
-            android:layout_weight="0.0"
-            android:orientation="horizontal">
+            <include
+                layout="@layout/layout_link_account_empty"
+                android:visibility="gone" />
 
-            <com.zalopay.ui.widget.IconFontTextView
-                style="@style/IconFontText.IconLeft"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/layoutContent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/link_acc_more"
-                app:iconLeftName="@string/linkaccount_add" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:visibility="visible">
 
-        <!--<TextView-->
-        <!--android:id="@+id/txt_note_support_only_vcb"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="@dimen/button.margin.bottom"-->
-        <!--android:layout_marginLeft="@dimen/button.margin.left"-->
-        <!--android:layout_marginRight="@dimen/button.margin.right"-->
-        <!--android:layout_marginTop="@dimen/spacing.small.t"-->
-        <!--android:text="@string/link.account.support.only.vietcombank"-->
-        <!--android:textColor="@color/txt_item_sub"-->
-        <!--android:textSize="13sp"-->
-        <!--android:visibility="visible" />-->
+                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                    android:id="@+id/listView"
+                    style="@style/RecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:scrollbarStyle="outsideOverlay" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/separate" />
+                <LinearLayout
+                    android:id="@+id/btn_add_more"
+                    style="@style/Button.Default.New"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button.height"
+                    android:layout_marginBottom="@dimen/button.margin.bottom"
+                    android:layout_marginTop="@dimen/button.margin.top.min"
+                    android:layout_weight="0.0"
+                    android:orientation="horizontal">
+
+                    <com.zalopay.ui.widget.IconFontTextView
+                        style="@style/IconFontText.IconLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/link_acc_more"
+                        app:iconLeftName="@string/linkaccount_add" />
+                </LinearLayout>
+
+                <!--<TextView-->
+                <!--android:id="@+id/txt_note_support_only_vcb"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/button.margin.bottom"-->
+                <!--android:layout_marginLeft="@dimen/button.margin.left"-->
+                <!--android:layout_marginRight="@dimen/button.margin.right"-->
+                <!--android:layout_marginTop="@dimen/spacing.small.t"-->
+                <!--android:text="@string/link.account.support.only.vietcombank"-->
+                <!--android:textColor="@color/txt_item_sub"-->
+                <!--android:textSize="13sp"-->
+                <!--android:visibility="visible" />-->
+            </LinearLayout>
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,9 +81,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <include
-                android:id="@+id/link_account_layout_bank_support"
-                layout="@layout/layout_account_bank_support" />
+            <include layout="@layout/layout_account_bank_support" />
+
+            <!--<FrameLayout-->
+            <!--android:id="@+id/fragmentInLinkAccount"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="14dp" />-->
         </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+</ScrollView>
