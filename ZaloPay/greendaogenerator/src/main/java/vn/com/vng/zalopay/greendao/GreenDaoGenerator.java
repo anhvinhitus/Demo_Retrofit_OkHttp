@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 59;
-    private static final int GLOBAL_DB_VERSION = 1;
+    private static final int GLOBAL_DB_VERSION = 2;
 
     /**
      * ./gradlew :greendaogenerator:run
@@ -233,7 +233,7 @@ public class GreenDaoGenerator {
         entity.addLongProperty("transid");
         entity.addIntProperty("sdk_result");
         entity.addIntProperty("server_result");
-        entity.addStringProperty("source");
+        entity.addIntProperty("source");
         entity.addLongProperty("start_time");
         entity.addLongProperty("finish_time");
         entity.addStringProperty("bank_code");
@@ -245,7 +245,7 @@ public class GreenDaoGenerator {
         entity.setConstructors(false);
         entity.addStringProperty("apptransid");
         entity.addIntProperty("step");
-        entity.addLongProperty("timestamp");
+        entity.addLongProperty("timestamp").notNull().unique().primaryKey();
     }
 
     private static void addGlobalKeyValue(Schema schema) {
