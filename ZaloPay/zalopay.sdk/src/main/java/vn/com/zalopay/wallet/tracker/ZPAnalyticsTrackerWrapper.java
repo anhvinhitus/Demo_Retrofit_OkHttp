@@ -5,9 +5,9 @@ import java.util.Date;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
 
 
 /**
@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.utils.Log;
 
 public class ZPAnalyticsTrackerWrapper extends SingletonBase {
 
-    private static ZPAnalyticsTrackerWrapper mZPTrackerWrapper;
+    private static ZPAnalyticsTrackerWrapper mZPTrackerWrapper ;
     private int mStep = -1;
     private boolean isFinish = false;
     public ZPAnalyticsTrackerWrapper() {
@@ -34,7 +34,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     public void ZPApptransIDLog(int step, int step_result, int pcmid, long transid, int server_result, int status) {
         ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
         if (step == mStep) {
-            Log.d(this, "LogTransID two times");
+            Log.d(this,"LogTransID two times");
             return;
         }
 
@@ -46,17 +46,18 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.server_result = server_result;
         mZpApptransidLog.finish_time = new Date().getTime();
         mZpApptransidLog.status = status;
-        if (status == 1) {
+        if(status == 1)
+        {
             isFinish = true;
         }
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
+        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
     }
 
     public void ZPApptransIDLog(int step, int step_result, int pcmid) {
         ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
         if (step == mStep) {
-            Log.d(this, "LogTransID two times");
+            Log.d(this,"LogTransID two times");
             return;
         }
 
@@ -65,25 +66,9 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.step_result = step_result;
         mZpApptransidLog.pcmid = pcmid;
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
+        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
     }
-
-
-    public void ZPApptransIDLog(int step, int step_result) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep) {
-            Log.d(this, "LogTransID two times");
-            return;
-        }
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
-    }
-
-
-    public void ZPApptransIDLog(int step, int step_result, int pcmid, int status) {
+    public void ZPApptransIDLog(int step, int step_result, int pcmid,int status) {
         ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
         if (step == mStep || isFinish) {
             return;
@@ -95,13 +80,13 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.status = status;
         mZpApptransidLog.finish_time = new Date().getTime();
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
+        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
     }
 
-    public void ZPApptransIDLog(int step, int step_result, int pcmid, String bank_code) {
+    public void ZPApptransIDLog(int step, int step_result, int pcmid,String bank_code ) {
         ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
         if (step == mStep) {
-            Log.d(this, "LogTransID two times");
+            Log.d(this,"LogTransID two times");
             return;
         }
 
@@ -111,7 +96,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZpApptransidLog.pcmid = pcmid;
         mZpApptransidLog.bank_code = bank_code;
         ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this, "LogTransID==" + GsonUtils.toJsonString(mZpApptransidLog));
+        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
     }
 
 
@@ -121,7 +106,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
             mZpApptransidLog.apptransid = GlobalData.getPaymentInfo().appTransID;
             mZpApptransidLog.appid = GlobalData.getPaymentInfo().appID;
         }
-        mZpApptransidLog.transtype = GlobalData.getTransactionType().ordinal();
+        mZpApptransidLog.transtype = GlobalData.getTransactionType();
         return mZpApptransidLog;
     }
 

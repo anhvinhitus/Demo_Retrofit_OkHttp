@@ -451,7 +451,7 @@ public abstract class AdapterBase {
         }
 
         // TrackApptransidEvent Submit Trans
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None,getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, mConfig.pmcid);
     }
 
     public boolean needToSwitchChannel() {

@@ -380,8 +380,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
+
         // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, 0, 1);
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, Integer.parseInt(getAdapter().getChannelID()));
+
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());

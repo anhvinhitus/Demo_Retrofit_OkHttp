@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
@@ -189,7 +190,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
         }
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getAdapter().getChannelID()));
 
     }
 
@@ -198,6 +199,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (getCardView() != null)
             getCardView().setHintTextIssue();
     }
+
     @Override
     protected void setWebViewUserAgent() {
         if (mWebView != null) {
@@ -472,8 +474,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 mTextLayoutOtp.setVisibility(View.VISIBLE);
                 showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
 
-    // TrackApptransidEvent AuthenType
-            ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID(),getDetectedBankCode());
+                // TrackApptransidEvent AuthenType
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID(), getDetectedBankCode());
 
                 break;
             case AuthenType.TOKEN:

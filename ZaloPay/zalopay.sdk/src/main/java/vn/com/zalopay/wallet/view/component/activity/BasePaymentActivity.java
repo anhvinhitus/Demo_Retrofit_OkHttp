@@ -1068,8 +1068,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animateImageViewFail();
 
         //ZPAnalyticsTrackerLog
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
-
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, Integer.parseInt(getAdapter().getChannelID()), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
 
     }
 
@@ -1228,8 +1227,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccess();
 
         // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
-
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, Integer.parseInt(getAdapter().getChannelID()), Long.parseLong(pTransID), getAdapter().getResponseStatus().returncode,1);
 
     }
 

@@ -64,6 +64,7 @@ import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_CAPTCHA;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PASSWORD;
 
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+
 /**
  * Created by SinhTT on 14/11/2016.
  */
@@ -755,7 +756,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
@@ -849,7 +850,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().enableSubmitBtn(false);
 
                     // TrackApptransidEvent AuthenType
-                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
 
                     return null;
                 } else {
@@ -918,7 +919,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
@@ -1138,9 +1139,10 @@ public class AdapterLinkAcc extends AdapterBase {
             showFailScreenOnType(GlobalData.getOfflineMessage());
             return;
         }
+
         mWebViewProcessor.start(pUrl);
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, Integer.parseInt(getChannelID()));
     }
 
     public LinkAccWebViewClient getLinkWebViewProcessor() {

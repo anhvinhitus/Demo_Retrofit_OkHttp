@@ -232,8 +232,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
 
-        // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, getAdapter().getChannelID() ,1);
         //user is summiting order
         if (processingOrder) {
             Log.d(this, "can not back,order still request api");
@@ -241,6 +239,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         mOnClickExitListener.onClick(null);
 
+        // TrackApptransidEvent AuthenType
+        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, Integer.parseInt(getAdapter().getChannelID()));
 
     }
 
