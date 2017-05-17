@@ -128,10 +128,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             return;
         }
         mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
-
-        if(mUser == null) {
-            return;
-        }
     }
 
     List<BankAccount> getLinkedBankAccount() {

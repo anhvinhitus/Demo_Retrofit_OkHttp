@@ -35,8 +35,7 @@
                 android:adjustViewBounds="true"
                 android:background="@drawable/bg_image_gray_border"
                 android:contentDescription="@string/loremipsum"
-                android:paddingBottom="3dp"
-                android:paddingTop="3dp"
+                android:padding="3dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/vietcombank" />
 
@@ -44,9 +43,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="3dp"
+                android:layout_marginBottom="2dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="2dp"
                 android:layout_toRightOf="@+id/link_account_iv_bank_support"
                 android:orientation="vertical">
 
@@ -59,7 +58,7 @@
                     android:layout_alignParentTop="true"
                     android:gravity="center_vertical"
                     android:textColor="@color/txt_item_sub"
-                    android:textSize="12sp"
+                    android:textSize="11.5sp"
                     android:textStyle="italic" />
 
                 <TextView
@@ -69,10 +68,16 @@
                     android:gravity="center_vertical"
                     android:text="@string/link_account_empty_bank_support_balance_require_hint"
                     android:textColor="@color/txt_item_sub"
-                    android:textSize="12sp"
+                    android:textSize="11.5sp"
                     android:textStyle="italic" />
             </RelativeLayout>
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/link.bank.between.layout"
+            android:background="@color/separate" />
     </LinearLayout>
 </LinearLayout>

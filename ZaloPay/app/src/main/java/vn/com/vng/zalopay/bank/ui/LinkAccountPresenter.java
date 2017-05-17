@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -40,7 +41,6 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Logic of LinkAccountFragment.
  */
 class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
-    private User mUser;
 
     @Inject
     LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
@@ -49,7 +49,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                          TransactionStore.Repository transactionRepository,
                          User user, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
-        mUser = user;
     }
 
     void linkAccountIfNotExist(ZPCard zpCard) {
@@ -78,7 +77,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
 
         mView.initViewBankSupportSuggestNotice();
-        mView.setPhoneRequireToMapHint(String.valueOf(mUser.phonenumber));
+        mView.setPhoneRequireToMapHint(PhoneUtil.formatPhoneNumber(mUser.phonenumber));
     }
 
     private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {

@@ -59,13 +59,13 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
     @BindView(R.id.listView)
     SwipeMenuRecyclerView mRecyclerView;
 
-    @BindView(R.id.cardSupportLayout)
-    View mCardSupportLayout;
-
-    @OnClick(R.id.cardSupportLayout)
-    public void onClickBankSupport() {
-        mPresenter.getListBankSupport();
-    }
+//    @BindView(R.id.cardSupportLayout)
+//    View mCardSupportLayout;
+//
+//    @OnClick(R.id.cardSupportLayout)
+//    public void onClickBankSupport() {
+//        mPresenter.getListBankSupport();
+//    }
 
     @Override
     public void showListBankSupportDialog(ArrayList<ZPCard> cardSupportList) {
@@ -166,6 +166,7 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
         mRecyclerView.setSwipeMenuItemClickListener(menuItemClickListener);
 
         mPresenter.getListCard();
+        initBankSupportFragment();
     }
 
     private void initBankSupportFragment() {
@@ -191,7 +192,7 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
 
     private void showLinkCardEmpty() {
         Timber.d("Show layout link card empty.");
-        initBankSupportFragment();
+//        initBankSupportFragment();
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }
@@ -204,7 +205,7 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
             } else {
                 paddingBottom = getResources().getDimension(R.dimen.text_support_margin_normal);
             }
-            mCardSupportLayout.setPadding(0, 0, 0, (int) paddingBottom);
+//            mCardSupportLayout.setPadding(0, 0, 0, (int) paddingBottom);
         }
         mLayoutLinkCardEmpty.setVisibility(View.GONE);
         mLayoutContent.setVisibility(View.VISIBLE);
