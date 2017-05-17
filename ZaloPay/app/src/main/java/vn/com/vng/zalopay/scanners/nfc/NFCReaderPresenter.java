@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -171,7 +172,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
 
         Timber.i("appId: %d, token: [%s]", record.appId, record.transactionToken);
-        paymentWrapper.payWithToken(mView.getActivity(), record.appId, record.transactionToken);
+        paymentWrapper.payWithToken(mView.getActivity(), record.appId, record.transactionToken, ZPPaymentSteps.OrderSource_QR);
     }
 
     private void initPaymentWrapper() {

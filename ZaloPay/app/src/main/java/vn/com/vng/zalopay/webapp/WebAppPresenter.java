@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -74,12 +75,12 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
         try {
             showLoading();
-            if (zpTransaction(data)) {
+            if (zpTransaction(data, ZPPaymentSteps.OrderSource_WebToApp)) {
                 hideLoading();
                 return;
             }
 
-            if (orderTransaction(data)) {
+            if (orderTransaction(data, ZPPaymentSteps.OrderSource_WebToApp)) {
                 hideLoading();
                 return;
             }

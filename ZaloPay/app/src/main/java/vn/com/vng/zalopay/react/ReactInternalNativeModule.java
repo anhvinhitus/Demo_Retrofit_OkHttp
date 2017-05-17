@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
@@ -332,7 +333,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
         showLoading();
         Timber.d("Pay with token call");
-        paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken);
+        paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken, ZPPaymentSteps.OrderSource_MerchantApp);
     }
 
     private void showErrorDialog(final String message) {

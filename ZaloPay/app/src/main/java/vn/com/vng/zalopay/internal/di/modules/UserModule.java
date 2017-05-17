@@ -49,8 +49,9 @@ public class UserModule {
     @UserScope
     UserSession providesUserSession(Context context, UserConfig userConfig, EventBus eventBus,
                                     NotificationService service,
-                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository) {
-        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository);
+                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository,
+                                    ApptransidLogStore.Repository apptransidLogRepository) {
+        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository, apptransidLogRepository);
     }
 
     @Provides

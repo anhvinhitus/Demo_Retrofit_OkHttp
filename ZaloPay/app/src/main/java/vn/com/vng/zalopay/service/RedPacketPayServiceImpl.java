@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -49,7 +50,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 .setShowNotificationLinkCard(false)
                 .build();
 
-        this.paymentWrapper.payWithOrder(activity, bundleOrder);
+        this.paymentWrapper.payWithOrder(activity, bundleOrder, ZPPaymentSteps.OrderSource_MerchantApp);
     }
 
 //    @Override

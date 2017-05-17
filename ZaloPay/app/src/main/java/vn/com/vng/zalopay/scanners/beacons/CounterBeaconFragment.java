@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
@@ -252,9 +253,9 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
             beaconScanner.stopScan();
             if (item.order != null) {
-                mPaymentWrapper.payWithOrder(getActivity(), item.order);
+                mPaymentWrapper.payWithOrder(getActivity(), item.order, ZPPaymentSteps.OrderSource_QR);
             } else {
-                mPaymentWrapper.payWithToken(getActivity(), item.paymentRecord.appId, item.paymentRecord.transactionToken);
+                mPaymentWrapper.payWithToken(getActivity(), item.paymentRecord.appId, item.paymentRecord.transactionToken, ZPPaymentSteps.OrderSource_QR);
             }
         }
     }

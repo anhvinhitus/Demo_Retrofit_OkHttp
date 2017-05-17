@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -70,7 +71,7 @@ public class HandleInAppPayment {
                     @Override
                     public void onNext(Long aLong) {
                         if (paymentWrapper != null) {
-                            paymentWrapper.payWithToken(mActivity.get(), appId, zptranstoken);
+                            paymentWrapper.payWithToken(mActivity.get(), appId, zptranstoken, ZPPaymentSteps.OrderSource_AppToApp);
                         }
                     }
                 });

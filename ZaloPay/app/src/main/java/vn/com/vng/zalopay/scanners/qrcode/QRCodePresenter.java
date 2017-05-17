@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -181,10 +182,10 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 executeResult = handleQRCodeOfZaloPay(data, qrCodeResource);
                 break;
             case OrderWithTranstoken:
-                executeResult = zpTransaction(data);
+                executeResult = zpTransaction(data, ZPPaymentSteps.OrderSource_QR);
                 break;
             case OrderWithFullInfo:
-                executeResult = orderTransaction(data);
+                executeResult = orderTransaction(data, ZPPaymentSteps.OrderSource_QR);
                 hideLoadingView();
                 break;
             case ZaloPayUnknown:

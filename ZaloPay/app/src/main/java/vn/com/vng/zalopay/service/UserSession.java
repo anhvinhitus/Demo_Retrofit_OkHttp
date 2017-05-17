@@ -44,6 +44,7 @@ public class UserSession {
     private final BalanceStore.Repository mBalanceRepository;
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private final FileLogStore.Repository mFileLogRepository;
+	private final ApptransidLogStore.Repository mApptransidLogRepository;
 
     public static long mLastTimeCheckPassword = 0;
     public static String mHashPassword;
@@ -54,7 +55,8 @@ public class UserSession {
                        EventBus eventBus,
                        NotificationService notifyService,
                        BalanceStore.Repository balanceRepository,
-                       FileLogStore.Repository fileLogRepository
+                       FileLogStore.Repository fileLogRepository,
+                       ApptransidLogStore.Repository apptransidLogRepository
 
     ) {
 
@@ -65,6 +67,7 @@ public class UserSession {
         this.mNotifyService = notifyService;
         this.mBalanceRepository = balanceRepository;
         this.mFileLogRepository = fileLogRepository;
+        this.mApptransidLogRepository = apptransidLogRepository;
     }
 
     public void beginSession() {
@@ -153,6 +156,18 @@ public class UserSession {
     public void onUploadFileLogEvent(UploadFileLogEvent event) {
         Timber.d("onUploadFileLogEvent : filePath [%s]", event.filePath);
         uploadFileLog(event.filePath);
+        uploadApptransidFileLog();
+    }
+
+    private void uploadApptransidFileLog() {
+        Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> FileLogHelper.uploadApptransidFileLog(mFileLogRepository, mApptransidLogRepository))
+                .retryWhen(new RetryFileLogUpload())
+                .doOnError(Timber::w)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 
     private void uploadFileLog(String filePath) {
