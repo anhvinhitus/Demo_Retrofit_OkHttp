@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -25,6 +26,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
@@ -477,6 +479,8 @@ public class AdapterBankCard extends AdapterBase {
                 //the first time load captcha
                 if (mCaptchaEndTime == 0) {
                     mCaptchaBeginTime = System.currentTimeMillis();
+                    // TrackApptransidEvent confirm stage
+                    ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                 }
 
                 //the first time load otp

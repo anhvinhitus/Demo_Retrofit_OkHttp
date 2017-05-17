@@ -280,17 +280,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             closeSupportView();
             return;
         }
-
-        // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, getAdapter().getChannelID() ,1);
         //user is summiting order
         if (processingOrder) {
             Log.d(this, "can not back,order still request api");
             return;
         }
         mOnClickExitListener.onClick(null);
-
-
+        // TrackApptransidEvent back
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
     }
 
     @Override

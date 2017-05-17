@@ -653,7 +653,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void checkAppInfo() {
         AppInfoLoader.getInstance().setOnLoadAppInfoListener(loadAppInfoListener).execute();
         //ZPAnalyticsTrackerLog
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
     }
 
     protected void reloadMapCardList() {
@@ -1179,10 +1179,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
 
-        //ZPAnalyticsTrackerLog
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
-
     }
 
 /*    private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
@@ -1328,11 +1324,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //re-align title header.
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animationImageViewSuccess();
-
-        // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
-
     }
 
     public void showPaymentSpecialSuccessContent(String pTransID) {
@@ -1372,18 +1363,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         //animate icon
         animationImageViewSuccessSpecial();
-
-        // TrackApptransidEvent
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
-    }
-
-    private long checkTranID(String pTransID) {
-        return (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
-    }
-
-    private int getReturnCode() {
-        return (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
     }
 
     protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {

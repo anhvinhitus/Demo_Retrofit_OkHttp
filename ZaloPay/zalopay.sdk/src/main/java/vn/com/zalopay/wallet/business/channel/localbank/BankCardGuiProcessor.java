@@ -204,7 +204,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
         }
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
 
     }
 
@@ -491,9 +491,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTextLayoutOtp.setVisibility(View.VISIBLE);
 
             showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
-            // TrackApptransidEvent AuthenType
-            ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID(),getDetectedBankCode());
-
 
         } else if (mAuthenType == EAuthenType.TOKEN) {
 
@@ -506,8 +503,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
             showKeyBoardOnEditTextAndScroll(mTokenAuthenEditText);
         }
-
         checkEnableSubmitButton();
+        // TrackApptransidEvent AuthenType
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
     }
 
     public boolean isBankOtpPhase() {

@@ -277,7 +277,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, 0, 1);
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
         //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
@@ -470,15 +470,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "===recycleActivity===");
         setEnableView(R.id.zpsdk_exit_ctl, false);
-        // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, 0, 1);
+        // TrackApptransidEvent exit event
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
         finish();
-
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
         }
-
-
     }
 
     /***
@@ -606,9 +603,8 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
         Log.d(this, "===show Channel===goToChannel()");
-
         // TrackApptransidEvent choose pay method
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.hashCode());
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
     }
 
     private void startChannelDirect(MiniPmcTransType pMiniPmcTransType) {
