@@ -21,7 +21,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
 
     public ZPAnalyticsTrackerWrapper() {
         super();
-        initialize(GlobalData.appID, GlobalData.getPaymentInfo().appTransID, GlobalData.getTransactionType().ordinal());
+        initialize(GlobalData.appID, GlobalData.getPaymentInfo().appTransID, Integer.parseInt(GlobalData.getTransactionType().toString()));
     }
 
     public static ZPAnalyticsTrackerWrapper getInstance() {

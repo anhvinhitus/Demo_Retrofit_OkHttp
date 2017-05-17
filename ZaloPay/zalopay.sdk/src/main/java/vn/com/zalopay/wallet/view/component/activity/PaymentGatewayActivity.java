@@ -598,13 +598,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             AdapterBase.existedMapCard = false;
         }
 
+        // TrackApptransidEvent choose pay method
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+
         //calculate fee and total amount order
         GlobalData.populateOrderFee(pChannel);
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
         Log.d(this, "===show Channel===goToChannel()");
-        // TrackApptransidEvent choose pay method
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
     }
 
     private void startChannelDirect(MiniPmcTransType pMiniPmcTransType) {
