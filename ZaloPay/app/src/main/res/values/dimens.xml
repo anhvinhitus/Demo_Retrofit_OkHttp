@@ -17,6 +17,7 @@
     <dimen name="font_size_icon_in_text_large">18dp</dimen>
     <dimen name="font_size_icon_in_text">12dp</dimen>
     <dimen name="font_size_arrow_right">12dp</dimen>
+    <dimen name="font_size_delete">18dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
@@ -112,11 +113,11 @@
     <dimen name="linkcard.margin.bottom.lastitem">35dp</dimen>
     <dimen name="payment.actionbar.height">76dp</dimen>
 
-    <dimen name="link.card.height">172dp</dimen>
+    <dimen name="link.card.height">134dp</dimen>
     <dimen name="link.card.margin.top">12dp</dimen>
     <dimen name="link.card.remove.width">82dp</dimen>
 
-    <dimen name="link.account.height">104dp</dimen>
+    <dimen name="link.account.height">134dp</dimen>
     <dimen name="link.account.line.width">4dp</dimen>
     <dimen name="link.account.border">8dp</dimen>
 

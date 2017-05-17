@@ -18,6 +18,7 @@ import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+import com.zalopay.ui.widget.IconFontDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,8 +163,8 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         mRecyclerView.setAdapter(mAdapter);
 
-        mRecyclerView.setSwipeMenuCreator(swipeMenuCreator);
-        mRecyclerView.setSwipeMenuItemClickListener(menuItemClickListener);
+        mRecyclerView.setSwipeMenuCreator(mSwipeMenuCreator);
+        mRecyclerView.setSwipeMenuItemClickListener(mMenuItemClickListener);
 
         mPresenter.getListCard();
         initBankSupportFragment();
@@ -324,20 +325,7 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private SwipeMenuCreator swipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
-        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
-                .setBackgroundDrawable(R.color.red)
-                .setText(getString(R.string.delete))
-                .setTextColor(Color.WHITE)
-                .setWidth(width)
-                .setHeight(height);
-        swipeRightMenu.addMenuItem(deleteItem);
-    };
-
-    private OnSwipeMenuItemClickListener menuItemClickListener = this::showConfirmRemoveSaveCard;
+    private OnSwipeMenuItemClickListener mMenuItemClickListener = this::showConfirmRemoveSaveCard;
 
     private void showConfirmRemoveSaveCard(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
         super.showConfirmDialog(getString(R.string.txt_confirm_remove_card),

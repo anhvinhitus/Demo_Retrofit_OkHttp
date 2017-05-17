@@ -46,6 +46,7 @@
 
     <string name="general_backandroid">general_backandroid</string>
     <string name="general_arrowright">general_arrowright</string>
+    <string name="general_delete_card">general_delete_card</string>
 
     <!--WebApp START-->
     <string name="webapp_ico_copyurl">webapp_copyurl</string>

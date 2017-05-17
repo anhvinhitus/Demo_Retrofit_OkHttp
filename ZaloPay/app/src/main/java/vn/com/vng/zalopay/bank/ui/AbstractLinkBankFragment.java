@@ -1,6 +1,12 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.view.ViewGroup;
+
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.zalopay.ui.widget.IconFontDrawable;
 
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -39,4 +45,23 @@ public abstract class AbstractLinkBankFragment extends BaseFragment {
                     }
                 });
     }
+
+    protected SwipeMenuCreator mSwipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
+        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        IconFontDrawable iconFontDrawable = new IconFontDrawable(getContext());
+        iconFontDrawable.setIcon(R.string.general_delete_card);
+        iconFontDrawable.setColor(Color.WHITE);
+        iconFontDrawable.setResourcesSize(R.dimen.font_size_delete);
+
+        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
+                .setBackgroundDrawable(R.color.red)
+                .setText(getString(R.string.delete))
+                .setImage(iconFontDrawable)
+                .setTextColor(Color.WHITE)
+                .setWidth(width)
+                .setHeight(height);
+        swipeRightMenu.addMenuItem(deleteItem);
+    };
 }
