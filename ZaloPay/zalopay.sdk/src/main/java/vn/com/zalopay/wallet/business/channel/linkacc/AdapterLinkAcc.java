@@ -897,8 +897,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
 
-                //request permission read/view sms on android 6.0+
-                getActivity().requestPermission(getActivity().getApplicationContext());
+                requestReadOtpPermission();
                 return null;
             }
 

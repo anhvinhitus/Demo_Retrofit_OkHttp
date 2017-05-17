@@ -33,6 +33,7 @@ import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
+import static vn.com.zalopay.wallet.business.channel.base.AdapterBase.PAGE_VCB_CONFIRM_LINK;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_COMPLETE_PAGE;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_PAGE;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_UNREGISTER_COMPLETE_PAGE;
@@ -119,6 +120,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     protected boolean shouldExecuteJs() {
         return !TextUtils.isEmpty(mPageCode) && (mPageCode.equals(VCB_REGISTER_COMPLETE_PAGE) || mPageCode.equals(VCB_UNREGISTER_COMPLETE_PAGE));
+    }
+
+    protected boolean shouldRequestReadOtpPermission() {
+        return !TextUtils.isEmpty(mPageCode) && (mPageCode.equals(PAGE_VCB_CONFIRM_LINK));
     }
 
     @Override
@@ -290,6 +295,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 }
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
+
+                if (GlobalData.shouldNativeWebFlow() && shouldRequestReadOtpPermission()) {
+                    getAdapter().requestReadOtpPermission();
+                }
 
                 if (GlobalData.shouldNativeWebFlow() && !shouldExecuteJs()) { //prevent load js on web flow
                     return;

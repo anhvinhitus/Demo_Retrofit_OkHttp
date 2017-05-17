@@ -350,7 +350,7 @@ public class AdapterBankCard extends AdapterBase {
                 if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
                     mCaptchaEndTime = System.currentTimeMillis();
                     //request permission read/view sms on android 6.0+
-                    getActivity().requestPermission(getActivity().getApplicationContext());
+                    requestReadOtpPermission();
 
                     getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
                 }
