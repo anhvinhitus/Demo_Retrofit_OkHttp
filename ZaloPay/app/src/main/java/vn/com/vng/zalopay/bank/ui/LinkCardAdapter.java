@@ -103,8 +103,7 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
         }
 
         private void setMargin(boolean isLastItem) {
-            FrameLayout.LayoutParams params = new FrameLayout
-                    .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mRoot.getLayoutParams();
             int margin = getContext().getResources().getDimensionPixelSize(R.dimen.spacing_medium_s);
             int marginBottom = 0;
             if (isLastItem) {
