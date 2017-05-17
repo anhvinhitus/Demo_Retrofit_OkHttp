@@ -130,4 +130,8 @@
     <dimen name="progress_circle_radius">34dp</dimen>
 
     <dimen name="searchbox_height">33dp</dimen>
+
+    <dimen name="swipe.menu.item.margin.top">8dp</dimen>
+    <dimen name="swipe.menu.margin.right">24dp</dimen>
+    <dimen name="swipe.menu.margin.offset">48dp</dimen>
 </resources>

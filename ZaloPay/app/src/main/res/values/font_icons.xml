@@ -36,7 +36,8 @@
     <string name="general_backandroid">general_backandroid</string>
     <string name="general_arrowright">general_arrowright</string>
     <string name="general_search">general_search</string>
-
+    <string name="general_delete_card">general_delete_card</string>
+    
     <string name="profile_lock">profile_lock</string>
     <string name="profile_camera">profile_camera</string>
     <string name="profile_library">profile_library</string>
