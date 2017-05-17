@@ -129,7 +129,8 @@
     <string name="valid_money">Số tiền phải là bội số của 10.000 VND</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
-    <string name="link_card_more">Thêm Liên Kết Thẻ</string>
+    <string name="link_card_more">Thêm Thẻ</string>
+    <!--<string name="link_card_more">Thêm Liên Kết Thẻ</string>-->
     <string name="add">Thêm</string>
     <string name="link.card">Liên Kết Thẻ</string>
     <string name="link.account">Liên Kết Tài Khoản</string>

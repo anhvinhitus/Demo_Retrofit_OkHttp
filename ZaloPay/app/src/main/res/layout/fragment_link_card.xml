@@ -1,80 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/layout_link_card_empty"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:id="@+id/layoutContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0">
+            android:layout_height="wrap_content">
+
+            <include
+                layout="@layout/layout_link_card_empty"
+                android:visibility="gone" />
 
             <LinearLayout
+                android:id="@+id/layoutContent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
-                    android:id="@+id/listView"
-                    style="@style/RecyclerView"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:scrollbars="none"
-                    android:scrollbarStyle="outsideOverlay" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0">
 
-                <LinearLayout
-                    android:id="@+id/btn_add_more"
-                    style="@style/Button.Default.New"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button.height"
-                    android:layout_marginBottom="@dimen/button.margin.bottom"
-                    android:layout_marginTop="@dimen/button.margin.top.min"
-                    android:layout_weight="0.0"
-                    android:orientation="horizontal">
-
-                    <com.zalopay.ui.widget.IconFontTextView
-                        style="@style/IconFontText.IconLeft"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/link_card_more"
-                        app:iconLeftName="@string/linkaccount_add" />
-                </LinearLayout>
+                        android:orientation="vertical">
+
+                        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                            android:id="@+id/listView"
+                            style="@style/RecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.0"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp"
+                            android:scrollbarStyle="outsideOverlay" />
+
+                        <LinearLayout
+                            android:id="@+id/btn_add_more"
+                            style="@style/Button.Default.New"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/button.height"
+                            android:layout_marginBottom="@dimen/button.margin.bottom"
+                            android:layout_marginTop="@dimen/button.margin.top.min"
+                            android:layout_weight="0.0"
+                            android:orientation="horizontal">
+
+                            <com.zalopay.ui.widget.IconFontTextView
+                                style="@style/IconFontText.IconLeft"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/link_card_more"
+                                app:iconLeftName="@string/linkaccount_add" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!--<LinearLayout-->
+                <!--android:id="@+id/cardSupportLayout"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="bottom|center_horizontal"-->
+                <!--android:layout_weight="0.0"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:paddingBottom="@dimen/text.support.margin.normal">-->
+
+                <!--<com.zalopay.ui.widget.IconFontTextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/bank.support.link.card"-->
+                <!--android:textColor="@color/text_green"-->
+                <!--app:iconLeftColor="@color/text_green"-->
+                <!--app:iconLeftName="@string/linkaccount_info"-->
+                <!--app:iconLeftPadding="@dimen/spacing.small"-->
+                <!--app:iconLeftSize="@dimen/font_size_balance_manager_question" />-->
+                <!--</LinearLayout>-->
             </LinearLayout>
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/cardSupportLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_weight="0.0"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/text.support.margin.normal">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separate" />
 
-            <com.zalopay.ui.widget.IconFontTextView
-                android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing.medium"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/layout_pci_dss"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/fragmentInLinkCard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/bank.support.link.card"
-                android:textColor="@color/text_green"
-                app:iconLeftColor="@color/text_green"
-                app:iconLeftName="@string/linkaccount_info"
-                app:iconLeftPadding="@dimen/spacing.small"
-                app:iconLeftSize="@dimen/font_size_balance_manager_question" />
+                android:layout_marginTop="14dp" />
+
         </LinearLayout>
+
+
     </LinearLayout>
-</FrameLayout>
+
+</ScrollView>

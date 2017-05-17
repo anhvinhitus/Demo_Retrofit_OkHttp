@@ -60,9 +60,6 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
     @BindView(R.id.listView)
     SwipeMenuRecyclerView mRecyclerView;
 
-    @BindView(R.id.cardSupportLayout)
-    View mCardSupportLayout;
-
 //    @BindView(R.id.cardSupportLayout)
 //    View mCardSupportLayout;
 //
