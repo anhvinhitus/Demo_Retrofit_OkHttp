@@ -31,6 +31,9 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.PhotoUtil;
 import vn.zalopay.feedback.FeedbackCollector;
+import vn.zalopay.feedback.collectors.AppCollector;
+import vn.zalopay.feedback.collectors.DeviceCollector;
+import vn.zalopay.feedback.collectors.NetworkCollector;
 import vn.zalopay.feedback.collectors.TransactionCollector;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -76,7 +79,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
         FeedbackCollector feedbackCollector = FeedbackCollector.instance();
 
-        collectInformation(feedbackCollector, user, app, device);
+        collectInformation(feedbackCollector, user, app, device, true);
 
         feedbackCollector.putDynamicInformation("email", email);
 
@@ -149,14 +152,21 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         mSubscription.add(subscription);
     }
 
-    private void collectInformation(FeedbackCollector mCollector, boolean user, boolean app, boolean device) {
+    private void collectInformation(FeedbackCollector mCollector, boolean user, boolean app, boolean device, boolean network) {
 
         if (user) {
             mCollector.installCollector(new UserCollector(mUserConfig));
         }
+        if (app) {
+            mCollector.installCollector(new AppCollector(mContext));
+        }
 
-        mCollector.collectDeviceInformation(mContext, app, device, true);
+        if (device) {
+            mCollector.installCollector(new DeviceCollector(mContext));
+        }
+
+        if (network) {
+            mCollector.installCollector(new NetworkCollector(mContext));
+        }
     }
-
-
 }

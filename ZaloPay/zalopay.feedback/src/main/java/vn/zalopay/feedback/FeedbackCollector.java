@@ -1,6 +1,5 @@
 package vn.zalopay.feedback;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -11,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.zalopay.feedback.collectors.AppCollector;
-import vn.zalopay.feedback.collectors.DeviceCollector;
 import vn.zalopay.feedback.collectors.DynamicCollector;
-import vn.zalopay.feedback.collectors.NetworkCollector;
 import vn.zalopay.feedback.collectors.ScreenshotCollector;
 import vn.zalopay.feedback.collectors.TransactionCollector;
 
@@ -216,18 +212,4 @@ public class FeedbackCollector {
         return mScreenshotCollector.mScreenshot;
     }
 
-    public void collectDeviceInformation(Context context, boolean app, boolean device, boolean network) {
-
-        if (app) {
-            installCollector(new AppCollector(context));
-        }
-
-        if (device) {
-            installCollector(new DeviceCollector(context));
-        }
-
-        if (network) {
-            installCollector(new NetworkCollector(context));
-        }
-    }
 }
