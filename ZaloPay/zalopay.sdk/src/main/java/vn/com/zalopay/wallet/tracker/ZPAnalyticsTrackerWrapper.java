@@ -4,10 +4,10 @@ import java.util.Date;
 
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 
 
 /**
@@ -15,12 +15,12 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
  */
 
 public class ZPAnalyticsTrackerWrapper extends SingletonBase {
+    private static ZPAnalyticsTrackerWrapper mZPTrackerWrapper;
+    ZPApptransidLog mZPApptransidLog;
 
-    private static ZPAnalyticsTrackerWrapper mZPTrackerWrapper ;
-    private int mStep = -1;
-    private boolean isFinish = false;
     public ZPAnalyticsTrackerWrapper() {
         super();
+        initialize(GlobalData.appID, GlobalData.getPaymentInfo().appTransID, GlobalData.getTransactionType());
     }
 
     public static ZPAnalyticsTrackerWrapper getInstance() {
@@ -30,105 +30,75 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         return mZPTrackerWrapper;
     }
 
+    protected void initialize(long pAppId, String pAppTransId, int pTransType) {
+        mZPApptransidLog = new ZPApptransidLog();
+        mZPApptransidLog.appid = pAppId;
+        mZPApptransidLog.apptransid = pAppTransId;
+        mZPApptransidLog.transtype = pTransType;
+    }
 
-    public void ZPApptransIDLog(int step, int step_result, int pcmid, long transid, int server_result, int status) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep) {
-            Log.d(this,"LogTransID two times");
+    public void trackUserCancel() {
+        if (mZPApptransidLog.status == 1) {
+            Log.d(this, "skip tracking because status is finish");
             return;
         }
-
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        mZpApptransidLog.pcmid = pcmid;
-        mZpApptransidLog.transid = transid;
-        mZpApptransidLog.server_result = server_result;
-        mZpApptransidLog.finish_time = new Date().getTime();
-        mZpApptransidLog.status = status;
-        if(status == 1)
-        {
-            isFinish = true;
-        }
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
-    }
-
-    public void ZPApptransIDLog(int step, int step_result, int pcmid) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep) {
-            Log.d(this,"LogTransID two times");
-            return;
-        }
-
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        mZpApptransidLog.pcmid = pcmid;
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
-    }
-    public void ZPApptransIDLog(int step, int step_result) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep) {
-            Log.d(this,"LogTransID two times");
-            return;
-        }
-
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
-    }
-    public void ZPApptransIDLog(int step, int step_result, int pcmid,int status) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep || isFinish) {
-            return;
-        }
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        mZpApptransidLog.pcmid = pcmid;
-        mZpApptransidLog.status = status;
-        mZpApptransidLog.finish_time = new Date().getTime();
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
-    }
-
-    public void ZPApptransIDLog(int step, int step_result, int pcmid,String bank_code ) {
-        ZPApptransidLog mZpApptransidLog = startZPApptransidLog();
-        if (step == mStep) {
-            Log.d(this,"LogTransID two times");
-            return;
-        }
-
-        mZpApptransidLog.step = step;
-        this.mStep = step;
-        mZpApptransidLog.step_result = step_result;
-        mZpApptransidLog.pcmid = pcmid;
-        mZpApptransidLog.bank_code = bank_code;
-        ZPAnalytics.trackApptransidEvent(mZpApptransidLog);
-        Log.d(this,"LogTransID==" +GsonUtils.toJsonString(mZpApptransidLog));
-    }
-
-
-    public ZPApptransidLog startZPApptransidLog() {
-        ZPApptransidLog mZpApptransidLog = new ZPApptransidLog();
-        if (GlobalData.getPaymentInfo() != null) {
-            mZpApptransidLog.apptransid = GlobalData.getPaymentInfo().appTransID;
-            mZpApptransidLog.appid = GlobalData.getPaymentInfo().appID;
-        }
-        mZpApptransidLog.transtype = GlobalData.getTransactionType();
-        return mZpApptransidLog;
-    }
-
-    public static ZPApptransidLog newZPApptransidLog() {
-
-        return new ZPApptransidLog();
-    }
-
-    public static void setTrakerLog(ZPApptransidLog mZPApptransidLog) {
+        mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
         ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
+        Log.d(this, "tracking translogid ", mZPApptransidLog);
+    }
+
+    /***
+     * The params order mush be
+     * @param step
+     * @param step_result
+     * @param pcmid
+     * @param transid
+     * @param server_result
+     * @param status
+     * @param bank_code
+     */
+    public void track(Object... params) {
+        if (params == null || params.length <= 0) {
+            Log.d(this, "skip tracking because params is empty");
+            return;
+        }
+        if (mZPApptransidLog.status == 1) {
+            Log.d(this, "skip tracking because status is finish");
+            return;
+        }
+        for (int i = 0; i < params.length; i++) {
+            Object object = params[i];
+            switch (i) {
+                case 0:
+                    mZPApptransidLog.step = (int) object;
+                    mZPApptransidLog.finish_time = new Date().getTime();
+                case 1:
+                    mZPApptransidLog.step_result = (int) object;
+                    break;
+                case 2:
+                    mZPApptransidLog.pcmid = (int) object;
+                    break;
+                case 3:
+                    try {
+                        mZPApptransidLog.transid = Long.parseLong(String.valueOf(object));
+                    } catch (Exception e) {
+
+                    }
+                    break;
+                case 4:
+                    mZPApptransidLog.server_result = (int) object;
+                    break;
+                case 5:
+                    mZPApptransidLog.status = (int) object;
+                    break;
+                case 6:
+                    mZPApptransidLog.bank_code = (String) object;
+                    break;
+                default:
+                    Log.d(this, "invalid params", object);
+            }
+        }
+        ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
+        Log.d(this, "tracking translogid ", mZPApptransidLog);
     }
 }

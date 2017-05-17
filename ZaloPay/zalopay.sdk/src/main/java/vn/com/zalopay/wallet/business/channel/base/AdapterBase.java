@@ -449,8 +449,7 @@ public abstract class AdapterBase {
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
 
-        // TrackApptransidEvent Submit Trans
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
     }
 
     public boolean needToSwitchChannel() {
@@ -1513,9 +1512,22 @@ public abstract class AdapterBase {
         } else if (isPaymentSpecialSuccess()) {
             getActivity().showPaymentSpecialSuccessContent(mTransactionID);
         }
-
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         processSaveCardOnResult();
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
+    }
+
+    protected void trackingTransactionEvent(int pResult) {
+        int returnCode = mResponseStatus != null ? mResponseStatus.returncode : -1;
+        String bankCode = null;
+        if (getGuiProcessor() != null) {
+            bankCode = getGuiProcessor().getDetectedBankCode();
+        }
+        if (GlobalData.isBankAccountLink()) {
+            bankCode = GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
+        }
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
+                getChannelID(), mTransactionID, returnCode, 1, bankCode);
     }
 
     public boolean isTransactionErrorNetworking(String pMessage) {
@@ -1614,6 +1626,8 @@ public abstract class AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
+        //tracking translogid on fail event
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     /**

@@ -681,7 +681,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void checkAppInfo() {
         AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
     }
 
     /***
@@ -1088,12 +1088,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
-
-        //ZPAnalyticsTrackerLog
-        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
-        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Fail, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
     }
 
     private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
@@ -1249,12 +1243,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animationImageViewSuccess();
-
-        // TrackApptransidEvent
-        long TransID = (!TextUtils.isEmpty(pTransID)) ? Long.parseLong(pTransID) : 0;
-        int ReturnCode = (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success,getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
     }
 
     public void showPaymentSpecialSuccessContent(String pTransID) {
@@ -1285,19 +1273,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setMarginLeft(R.id.payment_method_name, (int) getResources().getDimension(R.dimen.zpw_header_label_margin));
         //animate icon
         animationImageViewSuccessSpecial();
-
-        // TrackApptransidEvent
-
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_OrderResult, ZPPaymentSteps.OrderStepResult_Success, getAdapter().getChannelID(), checkTranID(pTransID), getReturnCode(), 1);
-
-    }
-
-    private long checkTranID(String pTransID) {
-        return (!TextUtils.isEmpty(pTransID) ? Long.parseLong(pTransID) : 0);
-    }
-
-    private int getReturnCode() {
-        return (getAdapter().getResponseStatus() != null) ? getAdapter().getResponseStatus().returncode : 0;
     }
 
     protected void showBalanceContent(PaymentChannel pConfig) throws Exception {

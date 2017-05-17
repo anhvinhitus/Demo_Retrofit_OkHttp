@@ -8,6 +8,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -28,6 +29,7 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
@@ -457,12 +459,12 @@ public class AdapterBankCard extends AdapterBase {
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
             }
-
-            //the first time load otp
-            if (mOtpEndTime == 0) {
-                mOtpBeginTime = System.currentTimeMillis();
+            //the first time load captcha
+            if (mCaptchaEndTime == 0) {
+                mCaptchaBeginTime = System.currentTimeMillis();
+                // TrackApptransidEvent confirm stage
+                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
             }
-
             mWebViewProcessor.hit();
 
             return;

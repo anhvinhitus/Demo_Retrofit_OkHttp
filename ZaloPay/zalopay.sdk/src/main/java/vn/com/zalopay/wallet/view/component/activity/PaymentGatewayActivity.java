@@ -210,7 +210,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (android.os.Build.VERSION.SDK_INT > 5 && keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             onBackPressed();
             return true;
         }
@@ -219,7 +219,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, 0, 1);
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
         //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
@@ -378,15 +378,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
-        // TrackApptransidEvent AuthenType
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStepResult_None, ZPPaymentSteps.OrderStepResult_UserCancel, getAdapter().getChannelID());
-
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
         }
-
-
     }
 
     /***
@@ -510,7 +506,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         GlobalData.populateOrderFee(pChannel);
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
     }
 
     //item on listview is clicked

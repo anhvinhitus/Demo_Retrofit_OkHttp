@@ -421,6 +421,8 @@ public class AdapterLinkAcc extends AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
+        //tracking translog id link success
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
     /***
@@ -441,6 +443,8 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
         PaymentSnackBar.getInstance().dismiss();
+        //tracking translogid link fail
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     /***
@@ -465,7 +469,8 @@ public class AdapterLinkAcc extends AdapterBase {
         if (mBankAccountList != null && mBankAccountList.size() > 0) {
             GlobalData.getPaymentInfo().mapBank = mBankAccountList.get(0);
         }
-
+        //tracking translog id unlink success
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
     /***
@@ -485,6 +490,8 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
+        //tracking translog id unlink fail
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     @Override
@@ -744,8 +751,8 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_REGISTER_PAGE)) {
                 Log.d(this, "event register page");
 
-                // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                // TrackApptransidEvent confirm stage
+                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
@@ -839,7 +846,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().enableSubmitBtn(false);
 
                     // TrackApptransidEvent AuthenType
-                    ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                    ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                     return null;
                 } else {
@@ -907,7 +914,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
@@ -1130,7 +1137,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         mWebViewProcessor.start(pUrl);
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().ZPApptransIDLog(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
     }
 
     public LinkAccWebViewClient getLinkWebViewProcessor() {
