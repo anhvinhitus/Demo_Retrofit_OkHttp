@@ -13,7 +13,8 @@ public class ApptransidLogTimingGD {
     public Integer step;
 
     @Id
-    public Long timestamp;
+    @Unique
+    public long timestamp;
 
 
 }

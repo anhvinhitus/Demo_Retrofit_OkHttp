@@ -10,7 +10,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 57;
-    private static final int GLOBAL_DB_VERSION = 1;
+    private static final int GLOBAL_DB_VERSION = 2;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -339,7 +339,7 @@ public class GreenDaoGenerator {
         entity.addLongProperty("transid");
         entity.addIntProperty("sdk_result");
         entity.addIntProperty("server_result");
-        entity.addStringProperty("source");
+        entity.addIntProperty("source");
         entity.addLongProperty("start_time");
         entity.addLongProperty("finish_time");
         entity.addStringProperty("bank_code");
@@ -351,6 +351,6 @@ public class GreenDaoGenerator {
         entity.setConstructors(false);
         entity.addStringProperty("apptransid");
         entity.addIntProperty("step");
-        entity.addLongProperty("timestamp");
+        entity.addLongProperty("timestamp").notNull().unique().primaryKey();
     }
 }

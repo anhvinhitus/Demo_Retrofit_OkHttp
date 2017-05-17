@@ -60,7 +60,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
                 "\"TRANSID\" INTEGER," + // 6: transid
                 "\"SDK_RESULT\" INTEGER," + // 7: sdk_result
                 "\"SERVER_RESULT\" INTEGER," + // 8: server_result
-                "\"SOURCE\" INTEGER," +  // 9: source
+                "\"SOURCE\" INTEGER," + // 9: source
                 "\"START_TIME\" INTEGER," + // 10: start_time
                 "\"FINISH_TIME\" INTEGER," + // 11: finish_time
                 "\"BANK_CODE\" TEXT," + // 12: bank_code
@@ -117,7 +117,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         if (server_result != null) {
             stmt.bindLong(9, server_result);
         }
-
+ 
         Integer source = entity.source;
         if (source != null) {
             stmt.bindLong(10, source);
@@ -188,7 +188,7 @@ public class ApptransidLogGDDao extends AbstractDao<ApptransidLogGD, String> {
         if (server_result != null) {
             stmt.bindLong(9, server_result);
         }
-
+ 
         Integer source = entity.source;
         if (source != null) {
             stmt.bindLong(10, source);
