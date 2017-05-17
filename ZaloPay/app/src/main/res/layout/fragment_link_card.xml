@@ -111,8 +111,5 @@
                 android:layout_marginTop="14dp" />
 
         </LinearLayout>
-
-
     </LinearLayout>
-
 </ScrollView>

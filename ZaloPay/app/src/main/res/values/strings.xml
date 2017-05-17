@@ -90,14 +90,11 @@
     <string name="not_link_card">Bạn chưa liên kết thẻ</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="not_link_account">Bạn chưa liên kết tài khoản</string>
-    <!--<string name="not_link_account">Bạn chưa liên kết tài khoản ngân hàng.</string>-->
     <string name="link_account_to_use_easily">Liên kết tài khoản ngân hàng để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="secure_info">Bảo mật thông tin</string>
     <string name="secure_info_detail">Thực hiện theo tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
     <string name="link_card_title">Ngân hàng hỗ trợ</string>
     <string name="link_account_title">Ngân hàng hỗ trợ</string>
-    <!--<string name="link_card_title">Ngân hàng hỗ trợ liên kết thẻ</string>-->
-    <!--<string name="link_account_title">Ngân hàng hỗ trợ liên kết tài khoản</string>-->
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_remove_link">Hủy Liên Kết</string>
@@ -129,7 +126,6 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_more">Thêm Thẻ</string>
-    <!--<string name="link_card_more">Thêm Liên Kết Thẻ</string>-->
     <string name="add">Thêm</string>
     <string name="link.card">Liên Kết Thẻ</string>
     <string name="link.account">Liên Kết Tài Khoản</string>
