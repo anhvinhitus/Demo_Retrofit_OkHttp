@@ -137,6 +137,15 @@
         ], 
         "rawcode": 59801
     }, 
+    "tab_promotion": {
+        "colors": [
+            {
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue9ac", 
+        "rawcode": 59820
+    }, 
     "app_21_paytv": {
         "colors": [
             {
@@ -146,6 +155,24 @@
         "code": "\ue970", 
         "rawcode": 59760
     }, 
+    "general_local-card": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9c2", 
+        "rawcode": 59842
+    }, 
     "webapp_copyurl": {
         "colors": [
             {
@@ -154,6 +181,31 @@
         ], 
         "code": "\ue913", 
         "rawcode": 59667
+    }, 
+    "notify_linkbank": {
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue915", 
+        "rawcode": 59669
+    }, 
+    "showshow_beer": {
+        "colors": [
+            {
+                "fill": "rgb(0, 204, 0)"
+            }, 
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue92a", 
+        "codes": [
+            59690, 
+            59691
+        ], 
+        "rawcode": 59690
     }, 
     "webapp_3point_android": {
         "colors": [
@@ -182,6 +234,15 @@
         "code": "\ue950", 
         "rawcode": 59728
     }, 
+    "red_checknormal": {
+        "colors": [
+            {
+                "fill": "rgb(204, 204, 208)"
+            }
+        ], 
+        "code": "\ue907", 
+        "rawcode": 59655
+    }, 
     "webapp_3point_ios": {
         "colors": [
             {
@@ -190,6 +251,24 @@
         ], 
         "code": "\ue911", 
         "rawcode": 59665
+    }, 
+    "header_search": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9a1", 
+        "rawcode": 59809
+    }, 
+    "general_failed_v10": {
+        "colors": [
+            {
+                "fill": "rgb(223, 47, 47)"
+            }
+        ], 
+        "code": "\ue91b", 
+        "rawcode": 59675
     }, 
     "profile_lock": {
         "colors": [
@@ -208,6 +287,15 @@
         ], 
         "code": "\ue93c", 
         "rawcode": 59708
+    }, 
+    "app_1_receivemoney": {
+        "colors": [
+            {
+                "fill": "rgb(18, 157, 90)"
+            }
+        ], 
+        "code": "\ue967", 
+        "rawcode": 59751
     }, 
     "general_error": {
         "colors": [
@@ -324,14 +412,14 @@
         "code": "\ue9d5", 
         "rawcode": 59861
     }, 
-    "red_checknormal": {
+    "tab_showshow_active": {
         "colors": [
             {
-                "fill": "rgb(204, 204, 208)"
+                "fill": "rgb(0, 143, 229)"
             }
         ], 
-        "code": "\ue907", 
-        "rawcode": 59655
+        "code": "\ue93b", 
+        "rawcode": 59707
     }, 
     "notify_15_service": {
         "colors": [
@@ -341,6 +429,36 @@
         ], 
         "code": "\ue947", 
         "rawcode": 59719
+    }, 
+    "general_filter_active": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }, 
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9b9", 
+        "rawcode": 59833
+    }, 
+    "general_filter_inactive": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9bc", 
+        "rawcode": 59836
+    }, 
+    "general_filtersuccess": {
+        "colors": [
+            {
+                "fill": "rgb(6, 190, 4)"
+            }
+        ], 
+        "code": "\ue9b3", 
+        "rawcode": 59827
     }, 
     "nav_showshow": {
         "colors": [
@@ -441,6 +559,24 @@
         ], 
         "rawcode": 59834
     }, 
+    "menu_linkbank": {
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue956", 
+        "rawcode": 59734
+    }, 
+    "general_pending": {
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue9af", 
+        "rawcode": 59823
+    }, 
     "sendmoney_friend": {
         "colors": [
             {
@@ -459,6 +595,24 @@
         "code": "\ue93d", 
         "rawcode": 59709
     }, 
+    "general_pendingpay": {
+        "colors": [
+            {
+                "fill": "rgb(67, 135, 246)"
+            }
+        ], 
+        "code": "\ue9b0", 
+        "rawcode": 59824
+    }, 
+    "personal_settingaccount": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9ae", 
+        "rawcode": 59822
+    }, 
     "app_18_paywater": {
         "colors": [
             {
@@ -470,6 +624,21 @@
         ], 
         "code": "\ue96e", 
         "rawcode": 59758
+    }, 
+    "general_delivery": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9be", 
+        "rawcode": 59838
     }, 
     "showshow_dinner": {
         "colors": [
@@ -505,6 +674,33 @@
         "code": "\ue988", 
         "rawcode": 59784
     }, 
+    "app_22_around": {
+        "colors": [
+            {
+                "fill": "rgb(247, 186, 16)"
+            }
+        ], 
+        "code": "\ue9c4", 
+        "rawcode": 59844
+    }, 
+    "notify_information": {
+        "colors": [
+            {
+                "fill": "rgb(66, 134, 245)"
+            }
+        ], 
+        "code": "\ue916", 
+        "rawcode": 59670
+    }, 
+    "tab_promotion1_active": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9a9", 
+        "rawcode": 59817
+    }, 
     "app_20_payinternet": {
         "colors": [
             {
@@ -523,14 +719,14 @@
         "code": "\ue926", 
         "rawcode": 59686
     }, 
-    "notify_gift": {
+    "tab_history": {
         "colors": [
             {
-                "fill": "rgb(222, 68, 56)"
+                "fill": "rgb(114, 127, 140)"
             }
         ], 
-        "code": "\ue94c", 
-        "rawcode": 59724
+        "code": "\ue920", 
+        "rawcode": 59680
     }, 
     "profile_library": {
         "colors": [
@@ -540,6 +736,33 @@
         ], 
         "code": "\ue980", 
         "rawcode": 59776
+    }, 
+    "general_calendar": {
+        "colors": [
+            {
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue9b1", 
+        "rawcode": 59825
+    }, 
+    "general_filterall": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9b8", 
+        "rawcode": 59832
+    }, 
+    "tab_home_active": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue921", 
+        "rawcode": 59681
     }, 
     "app_17_payelectric": {
         "colors": [
@@ -562,6 +785,15 @@
         "code": "\ue96d", 
         "rawcode": 59757
     }, 
+    "personal_history": {
+        "colors": [
+            {
+                "fill": "rgb(222, 68, 56)"
+            }
+        ], 
+        "code": "\ue9a5", 
+        "rawcode": 59813
+    }, 
     "header_payqrcode": {
         "colors": [
             {
@@ -571,14 +803,14 @@
         "code": "\ue974", 
         "rawcode": 59764
     }, 
-    "dialoge_connect": {
+    "dialoge_notify": {
         "colors": [
             {
-                "fill": "rgb(255, 124, 0)"
+                "fill": "rgb(0, 143, 229)"
             }
         ], 
-        "code": "\ue982", 
-        "rawcode": 59778
+        "code": "\ue984", 
+        "rawcode": 59780
     }, 
     "menu_logout": {
         "colors": [
@@ -614,6 +846,24 @@
         ], 
         "rawcode": 59859
     }, 
+    "personal_logout": {
+        "colors": [
+            {
+                "fill": "rgb(83, 113, 139)"
+            }
+        ], 
+        "code": "\ue9bd", 
+        "rawcode": 59837
+    }, 
+    "notify_18_paywater": {
+        "colors": [
+            {
+                "fill": "rgb(66, 134, 245)"
+            }
+        ], 
+        "code": "\ue949", 
+        "rawcode": 59721
+    }, 
     "general_processing": {
         "colors": [
             {
@@ -630,14 +880,59 @@
         ], 
         "rawcode": 59796
     }, 
-    "header_linkcard": {
+    "general_refund": {
         "colors": [
             {
-                "fill": "rgb(255, 255, 255)"
+                "fill": "rgb(246, 181, 1)"
+            }, 
+            {
+                "fill": "rgb(246, 181, 1)"
+            }, 
+            {
+                "fill": "rgb(246, 181, 1)"
+            }, 
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue9bf", 
+        "rawcode": 59839
+    }, 
+    "general_cart_success": {
+        "colors": [
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
             }
         ], 
         "code": "\ue972", 
         "rawcode": 59762
+    }, 
+    "tab_promotion1": {
+        "colors": [
+            {
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue9aa", 
+        "rawcode": 59818
     }, 
     "showshow_restaurant": {
         "colors": [
@@ -654,6 +949,39 @@
             59705
         ], 
         "rawcode": 59704
+    }, 
+    "tab_personal": {
+        "colors": [
+            {
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue93a", 
+        "rawcode": 59706
+    }, 
+    "showshow_maplocation": {
+        "colors": [
+            {
+                "fill": "rgb(51, 51, 51)"
+            }, 
+            {
+                "fill": "rgb(153, 153, 153)"
+            }, 
+            {
+                "fill": "rgb(232, 45, 45)"
+            }, 
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue933", 
+        "codes": [
+            59699, 
+            59700, 
+            59701, 
+            59702
+        ], 
+        "rawcode": 59699
     }, 
     "notify_6_redopen": {
         "colors": [
@@ -700,6 +1028,15 @@
         "code": "\ue98f", 
         "rawcode": 59791
     }, 
+    "linkcard_nextios": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue901", 
+        "rawcode": 59649
+    }, 
     "merchant_success": {
         "colors": [
             {
@@ -708,6 +1045,24 @@
         ], 
         "code": "\ue989", 
         "rawcode": 59785
+    }, 
+    "personal_balance": {
+        "colors": [
+            {
+                "fill": "rgb(18, 157, 90)"
+            }, 
+            {
+                "fill": "rgb(18, 157, 90)"
+            }, 
+            {
+                "fill": "rgb(18, 157, 90)"
+            }, 
+            {
+                "fill": "rgb(18, 157, 90)"
+            }
+        ], 
+        "code": "\ue9a2", 
+        "rawcode": 59810
     }, 
     "merchant_fail": {
         "colors": [
@@ -754,14 +1109,23 @@
         "code": "\ue959", 
         "rawcode": 59737
     }, 
-    "linkcard_nextios": {
+    "profile_camera": {
         "colors": [
             {
-                "fill": "rgb(0, 143, 229)"
+                "fill": "rgb(132, 141, 153)"
             }
         ], 
-        "code": "\ue901", 
-        "rawcode": 59649
+        "code": "\ue97f", 
+        "rawcode": 59775
+    }, 
+    "tab_notifynew": {
+        "colors": [
+            {
+                "fill": "rgb(255, 56, 36)"
+            }
+        ], 
+        "code": "\ue9ad", 
+        "rawcode": 59821
     }, 
     "general_history": {
         "colors": [
@@ -807,6 +1171,24 @@
         ], 
         "code": "\ue924", 
         "rawcode": 59684
+    }, 
+    "personal_infomation": {
+        "colors": [
+            {
+                "fill": "rgb(83, 113, 139)"
+            }
+        ], 
+        "code": "\ue9a6", 
+        "rawcode": 59814
+    }, 
+    "general_check": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9b6", 
+        "rawcode": 59830
     }, 
     "general_notifynull": {
         "colors": [
@@ -858,6 +1240,15 @@
         "code": "\ue95f", 
         "rawcode": 59743
     }, 
+    "nav_menu": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue975", 
+        "rawcode": 59765
+    }, 
     "app_1_transfers": {
         "colors": [
             {
@@ -866,6 +1257,15 @@
         ], 
         "code": "\ue968", 
         "rawcode": 59752
+    }, 
+    "tab_promotion_active": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9ab", 
+        "rawcode": 59819
     }, 
     "linkcard_preios": {
         "colors": [
@@ -876,14 +1276,14 @@
         "code": "\ue903", 
         "rawcode": 59651
     }, 
-    "dialoge_notify": {
+    "dialoge_connect": {
         "colors": [
             {
-                "fill": "rgb(0, 143, 229)"
+                "fill": "rgb(255, 124, 0)"
             }
         ], 
-        "code": "\ue984", 
-        "rawcode": 59780
+        "code": "\ue982", 
+        "rawcode": 59778
     }, 
     "notify_11_rechargephone": {
         "colors": [
@@ -903,29 +1303,21 @@
         "code": "\ue945", 
         "rawcode": 59717
     }, 
-    "showshow_maplocation": {
+    "showshow_default": {
         "colors": [
             {
-                "fill": "rgb(51, 51, 51)"
-            }, 
-            {
-                "fill": "rgb(153, 153, 153)"
-            }, 
-            {
-                "fill": "rgb(232, 45, 45)"
+                "fill": "rgb(6, 190, 4)"
             }, 
             {
                 "fill": "rgb(255, 255, 255)"
             }
         ], 
-        "code": "\ue933", 
+        "code": "\ue919", 
         "codes": [
-            59699, 
-            59700, 
-            59701, 
-            59702
+            59673, 
+            59674
         ], 
-        "rawcode": 59699
+        "rawcode": 59673
     }, 
     "merchant_pending": {
         "colors": [
@@ -935,6 +1327,24 @@
         ], 
         "code": "\ue987", 
         "rawcode": 59783
+    }, 
+    "personal_bill": {
+        "colors": [
+            {
+                "fill": "rgb(66, 134, 245)"
+            }
+        ], 
+        "code": "\ue9a3", 
+        "rawcode": 59811
+    }, 
+    "tab_showshow": {
+        "colors": [
+            {
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue998", 
+        "rawcode": 59800
     }, 
     "general_logozalopay": {
         "colors": [
@@ -952,21 +1362,32 @@
         ], 
         "rawcode": 59746
     }, 
-    "showshow_beer": {
+    "tab_home": {
         "colors": [
             {
-                "fill": "rgb(0, 204, 0)"
-            }, 
+                "fill": "rgb(114, 127, 140)"
+            }
+        ], 
+        "code": "\ue922", 
+        "rawcode": 59682
+    }, 
+    "personal_linkbank": {
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue9a7", 
+        "rawcode": 59815
+    }, 
+    "share_android": {
+        "colors": [
             {
                 "fill": "rgb(255, 255, 255)"
             }
         ], 
-        "code": "\ue92a", 
-        "codes": [
-            59690, 
-            59691
-        ], 
-        "rawcode": 59690
+        "code": "\ue9c5", 
+        "rawcode": 59845
     }, 
     "showshow_cake": {
         "colors": [
@@ -984,12 +1405,21 @@
         ], 
         "rawcode": 59692
     }, 
-    "showshow_type": {
+    "general_notconnect": {
         "colors": [
-            {}
+            {
+                "fill": "rgb(176, 218, 244)"
+            }, 
+            {
+                "fill": "rgb(44, 76, 128)"
+            }
         ], 
-        "code": "\ue93e", 
-        "rawcode": 59710
+        "code": "\ue99d", 
+        "codes": [
+            59805, 
+            59806
+        ], 
+        "rawcode": 59805
     }, 
     "menu_infomation": {
         "colors": [
@@ -1042,6 +1472,22 @@
         "code": "\ue90d", 
         "rawcode": 59661
     }, 
+    "showshow_beautysalon": {
+        "colors": [
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue917", 
+        "codes": [
+            59671, 
+            59672
+        ], 
+        "rawcode": 59671
+    }, 
     "header_linkbank": {
         "colors": [
             {
@@ -1050,6 +1496,15 @@
         ], 
         "code": "\ue971", 
         "rawcode": 59761
+    }, 
+    "general_International-cards": {
+        "colors": [
+            {
+                "fill": "rgb(216, 78, 67)"
+            }
+        ], 
+        "code": "\ue9c1", 
+        "rawcode": 59841
     }, 
     "notify_20_payinternet": {
         "colors": [
@@ -1060,23 +1515,41 @@
         "code": "\ue94a", 
         "rawcode": 59722
     }, 
-    "notify_18_paywater": {
+    "personal_feedback": {
         "colors": [
             {
-                "fill": "rgb(66, 134, 245)"
+                "fill": "rgb(83, 113, 139)"
             }
         ], 
-        "code": "\ue949", 
-        "rawcode": 59721
+        "code": "\ue9a4", 
+        "rawcode": 59812
     }, 
-    "profile_camera": {
+    "general_delete_card": {
         "colors": [
             {
-                "fill": "rgb(132, 141, 153)"
+                "fill": "rgb(255, 255, 255)"
             }
         ], 
-        "code": "\ue97f", 
-        "rawcode": 59775
+        "code": "\ue9c8", 
+        "rawcode": 59848
+    }, 
+    "notify_gift": {
+        "colors": [
+            {
+                "fill": "rgb(222, 68, 56)"
+            }
+        ], 
+        "code": "\ue94c", 
+        "rawcode": 59724
+    }, 
+    "tab_personal_active": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue923", 
+        "rawcode": 59683
     }, 
     "linkcard_preandroid": {
         "colors": [
@@ -1123,14 +1596,14 @@
         "code": "\ue969", 
         "rawcode": 59753
     }, 
-    "nav_menu": {
+    "general_success_v10": {
         "colors": [
             {
-                "fill": "rgb(255, 255, 255)"
+                "fill": "rgb(4, 190, 4)"
             }
         ], 
-        "code": "\ue975", 
-        "rawcode": 59765
+        "code": "\ue91c", 
+        "rawcode": 59676
     }, 
     "showshow_direction": {
         "colors": [
@@ -1149,6 +1622,15 @@
         ], 
         "code": "\ue95d", 
         "rawcode": 59741
+    }, 
+    "general_updateinfo": {
+        "colors": [
+            {
+                "fill": "rgb(83, 113, 139)"
+            }
+        ], 
+        "code": "\ue91e", 
+        "rawcode": 59678
     }, 
     "showshow_coffee": {
         "colors": [
@@ -1182,6 +1664,15 @@
         ], 
         "rawcode": 59794
     }, 
+    "general_filterall_status": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9b7", 
+        "rawcode": 59831
+    }, 
     "menu_supportcenter": {
         "colors": [
             {
@@ -1191,14 +1682,23 @@
         "code": "\ue95a", 
         "rawcode": 59738
     }, 
-    "menu_linkbank": {
+    "general_support": {
         "colors": [
             {
-                "fill": "rgb(246, 181, 1)"
+                "fill": "rgb(83, 113, 139)"
             }
         ], 
-        "code": "\ue956", 
-        "rawcode": 59734
+        "code": "\ue91d", 
+        "rawcode": 59677
+    }, 
+    "linkcard_nextandroid": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue900", 
+        "rawcode": 59648
     }, 
     "linkaccount_add": {
         "colors": [
@@ -1270,21 +1770,12 @@
         "code": "\ue98b", 
         "rawcode": 59787
     }, 
-    "general_notconnect": {
+    "showshow_type": {
         "colors": [
-            {
-                "fill": "rgb(176, 218, 244)"
-            }, 
-            {
-                "fill": "rgb(44, 76, 128)"
-            }
+            {}
         ], 
-        "code": "\ue99d", 
-        "codes": [
-            59805, 
-            59806
-        ], 
-        "rawcode": 59805
+        "code": "\ue93e", 
+        "rawcode": 59710
     }, 
     "notify_linkcard": {
         "colors": [
@@ -1294,6 +1785,24 @@
         ], 
         "code": "\ue94d", 
         "rawcode": 59725
+    }, 
+    "personal_supportcenter": {
+        "colors": [
+            {
+                "fill": "rgb(83, 113, 139)"
+            }
+        ], 
+        "code": "\ue9a8", 
+        "rawcode": 59816
+    }, 
+    "tab_history_active": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue91f", 
+        "rawcode": 59679
     }, 
     "linkaccount_arrowdow": {
         "colors": [
@@ -1313,6 +1822,18 @@
         "code": "\ue954", 
         "rawcode": 59732
     }, 
+    "general_verify_transaction": {
+        "colors": [
+            {
+                "fill": "rgb(6, 190, 4)"
+            }, 
+            {
+                "fill": "rgb(6, 190, 4)"
+            }
+        ], 
+        "code": "\ue9c0", 
+        "rawcode": 59840
+    }, 
     "showshow_refresh": {
         "colors": [
             {
@@ -1330,6 +1851,18 @@
         ], 
         "code": "\ue952", 
         "rawcode": 59730
+    }, 
+    "share_ios": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }, 
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9c6", 
+        "rawcode": 59846
     }, 
     "merchant_sms": {
         "colors": [
@@ -1349,23 +1882,32 @@
         "code": "\ue944", 
         "rawcode": 59716
     }, 
-    "app_1_receivemoney": {
+    "app_bill": {
         "colors": [
             {
-                "fill": "rgb(18, 157, 90)"
+                "fill": "rgb(66, 134, 245)"
             }
         ], 
-        "code": "\ue967", 
-        "rawcode": 59751
+        "code": "\ue9c3", 
+        "rawcode": 59843
     }, 
-    "linkcard_nextandroid": {
+    "app_withdraw": {
         "colors": [
             {
-                "fill": "rgb(0, 143, 229)"
+                "fill": "rgb(246, 181, 1)"
             }
         ], 
-        "code": "\ue900", 
-        "rawcode": 59648
+        "code": "\ue9b5", 
+        "rawcode": 59829
+    }, 
+    "app_recharge": {
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ], 
+        "code": "\ue9b4", 
+        "rawcode": 59828
     }, 
     "showshow_arrowdown": {
         "colors": [
@@ -1376,6 +1918,15 @@
         "code": "\ue929", 
         "rawcode": 59689
     }, 
+    "general_filterfailed": {
+        "colors": [
+            {
+                "fill": "rgb(223, 48, 46)"
+            }
+        ], 
+        "code": "\ue9b2", 
+        "rawcode": 59826
+    }, 
     "app_15_service": {
         "colors": [
             {
@@ -1384,6 +1935,21 @@
         ], 
         "code": "\ue96c", 
         "rawcode": 59756
+    }, 
+    "time": {
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }, 
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ], 
+        "code": "\ue9c7", 
+        "rawcode": 59847
     }, 
     "paymoney_scan": {
         "colors": [
