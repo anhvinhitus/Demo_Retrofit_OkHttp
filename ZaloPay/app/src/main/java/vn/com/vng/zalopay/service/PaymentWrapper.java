@@ -101,10 +101,16 @@ public class PaymentWrapper {
         int transactionType = TransactionType.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+
+        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        log.appid = order.appid;
+        log.start_time = System.currentTimeMillis();
+        ZPAnalytics.trackApptransidEvent(log);
+
         callPayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
+    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, String source) {
         int transactionType = TransactionType.MONEY_TRANSFER;
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
@@ -116,6 +122,13 @@ public class PaymentWrapper {
         }
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
+
+        ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        log.appid = order.appid;
+        log.source = source;
+        log.start_time = System.currentTimeMillis();
+        ZPAnalytics.trackApptransidEvent(log);
+
         callPayAPI(activity, paymentInfo, transactionType);
     }
 
@@ -147,6 +160,12 @@ public class PaymentWrapper {
             ZPWPaymentInfo paymentInfo = transform(order);
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+
+            ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = order.appid;
+            log.source = source;
+            log.start_time = System.currentTimeMillis();
+            ZPAnalytics.trackApptransidEvent(log);
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             callPayAPI(activity, paymentInfo, TransactionType.PAY);
@@ -193,6 +212,11 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
 
+            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = paymentInfo.appID;
+            log.start_time = System.currentTimeMillis();
+            ZPAnalytics.trackApptransidEvent(log);
+
             callPayAPI(activity, paymentInfo, TransactionType.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -229,6 +253,11 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
+
+            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+            log.appid = paymentInfo.appID;
+            log.start_time = System.currentTimeMillis();
+            ZPAnalytics.trackApptransidEvent(log);
 
             callPayAPI(activity, paymentInfo, TransactionType.LINK_ACCOUNT);
         } catch (NumberFormatException e) {
@@ -403,6 +432,11 @@ public class PaymentWrapper {
                 owner, transactionType, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingTransaction = transactionType;
+
+        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_Success);
+        log.transtype = transactionType;
+        ZPAnalytics.trackApptransidEvent(log);
+
         SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
     }
 
