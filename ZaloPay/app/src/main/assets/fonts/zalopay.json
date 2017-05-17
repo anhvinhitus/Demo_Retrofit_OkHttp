@@ -1110,6 +1110,7 @@
         "rawcode": 59737
     }, 
     "profile_camera": {
+<<<<<<< HEAD
         "colors": [
             {
                 "fill": "rgb(132, 141, 153)"
@@ -1124,6 +1125,22 @@
                 "fill": "rgb(255, 56, 36)"
             }
         ], 
+=======
+        "colors": [
+            {
+                "fill": "rgb(132, 141, 153)"
+            }
+        ], 
+        "code": "\ue97f", 
+        "rawcode": 59775
+    }, 
+    "tab_notifynew": {
+        "colors": [
+            {
+                "fill": "rgb(255, 56, 36)"
+            }
+        ], 
+>>>>>>> 4a419c94a... [Icon Font] Update icon font in asset & internal resouce
         "code": "\ue9ad", 
         "rawcode": 59821
     }, 
@@ -1524,12 +1541,30 @@
         "code": "\ue9a4", 
         "rawcode": 59812
     }, 
+<<<<<<< HEAD
     "notify_gift": {
         "colors": [
             {
                 "fill": "rgb(222, 68, 56)"
             }
         ], 
+=======
+    "general_delete_card": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue9c8", 
+        "rawcode": 59848
+    }, 
+    "notify_gift": {
+        "colors": [
+            {
+                "fill": "rgb(222, 68, 56)"
+            }
+        ], 
+>>>>>>> 4a419c94a... [Icon Font] Update icon font in asset & internal resouce
         "code": "\ue94c", 
         "rawcode": 59724
     }, 
