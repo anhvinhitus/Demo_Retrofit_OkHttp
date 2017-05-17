@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yanzhenjie.recyclerview.swipe.Closeable;
@@ -64,8 +65,16 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 //    @BindView(R.id.txt_note_support_only_vcb)
 //    TextView mTxtNoteSupportOnlyVcb;
 
-    @BindView(R.id.link_account_tv_phone_require)
-    TextView tvPhoneRequireToMapHint;
+    @BindView(R.id.link_account_layout_bank_support)
+    LinearLayout viewBankSupport;
+
+    @BindView(R.id.link_account_empty_layout_bank_support)
+    LinearLayout viewEmptyBankSupport;
+
+    private TextView tvPhoneRequireToMapHint, tvPhoneRequireToMapHintEmpty;
+
+//    @BindView(R.id.link_account_tv_phone_require)
+//    TextView tvPhoneRequireToMapHint;
 
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
@@ -259,12 +268,22 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     }
 
     @Override
+    public void initViewBankSupportSuggestNotice() {
+        tvPhoneRequireToMapHint = (TextView) viewBankSupport.findViewById(R.id.link_account_tv_phone_require);
+        tvPhoneRequireToMapHintEmpty = (TextView) viewEmptyBankSupport.findViewById(R.id.link_account_tv_phone_require);
+    }
+
+    @Override
     public void setPhoneRequireToMapHint(String strPhoneNumber) {
-        if(tvPhoneRequireToMapHint == null) {
+        if(tvPhoneRequireToMapHint == null && tvPhoneRequireToMapHintEmpty == null) {
             return;
         }
 
         tvPhoneRequireToMapHint.setText(
+                String.format(getResources().getString(R.string.link_account_empty_bank_support_phone_require_hint),
+                        strPhoneNumber));
+
+        tvPhoneRequireToMapHintEmpty.setText(
                 String.format(getResources().getString(R.string.link_account_empty_bank_support_phone_require_hint),
                         strPhoneNumber));
     }

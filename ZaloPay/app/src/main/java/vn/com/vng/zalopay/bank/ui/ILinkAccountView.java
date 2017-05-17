@@ -45,5 +45,7 @@ interface ILinkAccountView extends ILoadDataView {
 
     void refreshBanksSupport();
 
+    void initViewBankSupportSuggestNotice();
+
     void setPhoneRequireToMapHint(String strPhoneNumber);
 }

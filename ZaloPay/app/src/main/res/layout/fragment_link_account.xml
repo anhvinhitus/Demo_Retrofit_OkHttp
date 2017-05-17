@@ -71,56 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextView.Group.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingTop="@dimen/spacing.medium"
-                    android:text="@string/link_card_title"
-                    android:textAllCaps="true"
-                    android:textColor="@color/txt_item_main"
-                    android:visibility="visible" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="@dimen/spacing.medium">
-
-                    <ImageView
-                        android:id="@+id/link_account_iv_bank_support"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/spacing.tiny"
-                        android:adjustViewBounds="true"
-                        android:background="@drawable/bg_image_gray_border"
-                        android:contentDescription="@string/loremipsum"
-                        android:paddingBottom="3dp"
-                        android:paddingTop="3dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/vietcombank" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_toRightOf="@+id/link_account_iv_bank_support"
-                        android:gravity="center_vertical"
-                        android:text="@string/link_account_bank_support_hint"
-                        android:textColor="@color/hint"
-                        android:textSize="11sp"
-                        android:textStyle="italic" />
-
-                </RelativeLayout>
-            </LinearLayout>
+            <include
+                android:id="@+id/link_account_layout_bank_support"
+                layout="@layout/layout_account_bank_support" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
