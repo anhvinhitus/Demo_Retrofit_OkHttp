@@ -24,15 +24,11 @@ import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
-import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.RecoveryPushMessage;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -40,6 +36,9 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
+import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
+import vn.com.vng.zalopay.network.PushMessage;
 
 public class ZPNotificationService implements OnReceivedPushMessageListener, NotificationService {
 
@@ -53,10 +52,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
     private Context mContext;
 
     private EventBus mEventBus;
-
-    private User mUser;
-
-    private Gson mGson;
 
     private NotificationHelper mNotificationHelper;
 
@@ -72,10 +67,8 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
                                  ThreadExecutor executor, Gson gson, EventBus eventbus,
                                  Connection wsConnection) {
         this.mContext = context;
-        this.mUser = user;
         this.mNotificationHelper = notificationHelper;
         this.mExecutor = executor;
-        this.mGson = gson;
         this.mEventBus = eventbus;
         this.mWsConnection = wsConnection;
         Timber.d("ZPNotificationService: %s", this);
@@ -157,14 +150,14 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Override
     public void onReceivedPushMessage(PushMessage pushMessage) {
-        Timber.d("Notification message : [mtuid: %s]", pushMessage.mtuid);
+        Timber.d("onReceived PushMessage : [mtuid: %s] [msgType: %s]", pushMessage.mtuid, pushMessage.msgType);
         if (pushMessage instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) pushMessage;
             if (authenticationData.result != ServerErrorMessage.SUCCESSFUL) {
                 handlerAuthenticationError(authenticationData);
             } else {
                 Timber.d("Socket authentication succeeded");
-                this.recoveryNotification(true);
+                recoveryAfterAuthenticate();
             }
         } else if (pushMessage instanceof NotificationData) {
             if (mNotificationHelper == null) {
@@ -173,38 +166,53 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
             mNotificationHelper.processImmediateNotification((NotificationData) pushMessage);
         } else if (pushMessage instanceof RecoveryPushMessage) {
+            final List<NotificationData> listMessage = ((RecoveryPushMessage) pushMessage).listNotify;
+
+            Timber.d("Receive notification : listMessage size %s", listMessage.size());
+            if (mNotificationHelper == null) {
+                return;
+            }
+
             if (mTimeoutRecoverySubscription != null) {
                 mTimeoutRecoverySubscription.unsubscribe();
             }
 
-            final List<NotificationData> listMessage = ((RecoveryPushMessage) pushMessage).listNotify;
-            Timber.d("Receive notification %s", listMessage);
+            //Cần recoveryNotification xong để set lasttime recovery xong,
+            // mới tiếp tục sendmessage recovery.
+            Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
+                    .filter(aVoid -> listMessage.size() >= NUMBER_NOTIFICATION)
+                    .flatMap(aVoid -> mNotificationHelper.getOldestTimeRecoveryNotification(false))
+                    .doOnError(Timber::d)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new RecoverySubscriber(listMessage.size() < NUMBER_NOTIFICATION));
+            mCompositeSubscription.add(sub);
+        }
+    }
 
-            if (mNotificationHelper != null && !Lists.isEmptyOrNull(listMessage)) {
-                //Cần recoveryNotification xong để set lasttime recovery xong,
-                // mới tiếp tục sendmessage recovery.
-                Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
-                        .filter(aVoid -> listMessage.size() >= NUMBER_NOTIFICATION)
-                        .flatMap(aVoid -> mNotificationHelper.getOldestTimeRecoveryNotification(false))
-                        .doOnError(Timber::d)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(new DefaultSubscriber<Long>() {
-                            @Override
-                            public void onNext(Long time) {
-                                sendMessageRecovery(time);
-                            }
+    private class RecoverySubscriber extends DefaultSubscriber<Long> {
 
-                            @Override
-                            public void onCompleted() {
-                                if (listMessage.size() < NUMBER_NOTIFICATION) {
-                                    recoveryData();
-                                }
-                            }
-                        });
-                mCompositeSubscription.add(sub);
+        boolean recoveryData;
+        boolean isSendMessRecovery;
+
+        RecoverySubscriber(boolean recoveryData) {
+            this.recoveryData = recoveryData;
+        }
+
+
+        @Override
+        public void onNext(Long time) {
+            isSendMessRecovery = sendMessageRecovery(time);
+        }
+
+
+        @Override
+        public void onCompleted() {
+            if (recoveryData || !isSendMessRecovery) {
+                recoveryData();
             }
         }
     }
+
 
     @Override
     public void onError(Throwable t) {
@@ -213,14 +221,12 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     private Subscription mTimeoutRecoverySubscription;
 
-    private void recoveryNotification(final boolean isFirst) {
+    private void recoveryAfterAuthenticate() {
         if (mNotificationHelper == null) {
             return;
         }
 
-        Timber.d("Recovery notification : isFirstConnect [%s]", isFirst);
-
-        Subscription subscription = mNotificationHelper.getOldestTimeRecoveryNotification(isFirst)
+        Subscription subscription = mNotificationHelper.getOldestTimeRecoveryNotification(true)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
@@ -245,29 +251,44 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     private void recoveryData() {
         Timber.d("Begin recovery data");
+
+        if (mNotificationHelper == null) {
+            return;
+        }
+
         mNotificationHelper.recoveryTransaction();
         mNotificationHelper.recoveryRedPacketStatus();
     }
 
-    private void sendMessageRecovery(Long time) {
+    private static final long TIMESTAMP_DEFAULT_RECOVERY = 1;
 
+    private boolean sendMessageRecovery(Long time) {
         long timeStamp;
         if (time == null || time == 0) {
-            timeStamp = 1;
+            timeStamp = TIMESTAMP_DEFAULT_RECOVERY;
         } else {
             timeStamp = time;
         }
 
         Timber.d("Send message recovery timeStamp [%s]", timeStamp);
-        if (mLastTimeRecovery > 0 && mLastTimeRecovery <= timeStamp) {
-            Timber.d("ignore recovery [%s]", timeStamp);
-            return;
+        if (mLastTimeRecovery > TIMESTAMP_DEFAULT_RECOVERY && mLastTimeRecovery <= timeStamp) {
+            Timber.d("ignore recovery with mLastTimeRecovery [%s]", mLastTimeRecovery);
+            return false;
         }
 
         mLastTimeRecovery = timeStamp;
+
+        if (!mWsConnection.isConnected()) {
+            Timber.d("ignore recovery because socket not connected");
+            return false;
+        }
+
         mTimeoutRecoverySubscription = startTimeoutRecoveryNotification();
+
         NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
         mWsConnection.send(message.messageCode, message.messageContent);
+
+        return true;
     }
 
     private void subscribeTopics(String token) throws IOException {
@@ -290,21 +311,20 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadNotify(ReadNotifyEvent event) {
-        if (mNotificationHelper == null) {
-            return;
+        if (mNotificationHelper != null) {
+            mNotificationHelper.closeNotificationSystem();
         }
-
-        mNotificationHelper.closeNotificationSystem();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("notification updated : isRead %s", event.isRead());
-        if (mNotificationHelper == null) {
+
+        if (event.isRead()) {
             return;
         }
 
-        if (!event.isRead()) {
+        if (mNotificationHelper != null) {
             mNotificationHelper.showNotificationSystem();
         }
     }
@@ -318,7 +338,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
             // "Consume" the sticky event
             mEventBus.removeStickyEvent(stickyEvent);
             mIsSubscribeGcm = false;
-            mWsConnection.disconnect();
+            disconnectServer();
             start();
         }
     }
