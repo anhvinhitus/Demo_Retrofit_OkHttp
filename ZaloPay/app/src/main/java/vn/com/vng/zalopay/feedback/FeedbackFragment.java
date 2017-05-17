@@ -211,7 +211,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
             return;
         }
 
-        mPresenter.sendEmail(mEdtEmail.getText().toString(),
+        mPresenter.collectAndSend(mEdtEmail.getText().toString(),
                 mEdtDescribe.getText().toString(),
                 swSendUserInfor.isChecked(),
                 swSendAppInfor.isChecked(),

@@ -75,7 +75,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         super.detachView();
     }
 
-    void sendEmail(String email, String emailText, boolean user, boolean app, boolean device, final List<Uri> screenshot) {
+    void collectAndSend(String email, String emailText, boolean user, boolean app, boolean device, final List<Uri> screenshot) {
 
         FeedbackCollector feedbackCollector = FeedbackCollector.instance();
 
