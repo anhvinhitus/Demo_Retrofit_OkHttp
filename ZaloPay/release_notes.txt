@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.11.0 - build 240) - Released on 2017-05-17
+- [App][Bank] Update ui link card item
+
 Zalo Pay (Staging v2.11.0 - build 239) - Released on 2017-05-17
 - Fix recovery data notify.
 - Update new UI for link card/account
