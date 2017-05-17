@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.zalopay.ui.widget.IconFontDrawable;
-
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import vn.com.vng.zalopay.Constants;

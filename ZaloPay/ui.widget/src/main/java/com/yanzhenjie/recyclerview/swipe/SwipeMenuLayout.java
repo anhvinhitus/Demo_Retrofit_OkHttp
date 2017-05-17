@@ -223,6 +223,12 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
                                 mSwipeCurrentHorizontal = mSwipeLeftHorizontal;
                         }
                     }
+                    if (mSwipeCurrentHorizontal != null
+                            && mSwipeCurrentHorizontal instanceof SwipeRightHorizontal
+                            && mSwipeCurrentHorizontal.menuView.getVisibility() != VISIBLE
+                            && disX > disY) {
+                        mSwipeCurrentHorizontal.menuView.setVisibility(VISIBLE);
+                    }
                     scrollBy(disX, 0);
                     mLastX = (int) ev.getX();
                     mLastY = (int) ev.getY();
@@ -446,6 +452,12 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
     private void smoothOpenMenu(int duration) {
         if (mSwipeCurrentHorizontal != null) {
             mSwipeCurrentHorizontal.autoOpenMenu(mScroller, getScrollX(), duration);
+            mSwipeCurrentHorizontal.menuView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeCurrentHorizontal.menuView.setVisibility(VISIBLE);
+                }
+            }, duration);
             invalidate();
         }
     }
@@ -471,10 +483,25 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
         }
     }
 
+    /*private void hideWithFadeAnimation(View view, int duration) {
+        AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+        anim.setDuration(duration);
+        view.startAnimation(anim);
+    }*/
+
     @Override
-    public void smoothCloseMenu(int duration) {
+    public void smoothCloseMenu(final int duration) {
         if (mSwipeCurrentHorizontal != null) {
             mSwipeCurrentHorizontal.autoCloseMenu(mScroller, getScrollX(), duration);
+            /*if (mSwipeCurrentHorizontal.menuView.getVisibility() == VISIBLE) {
+                hideWithFadeAnimation(mSwipeCurrentHorizontal.menuView, duration);
+            }*/
+            mSwipeCurrentHorizontal.menuView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeCurrentHorizontal.menuView.setVisibility(GONE);
+                }
+            }, duration);
             invalidate();
         }
     }
@@ -508,7 +535,8 @@ public class SwipeMenuLayout extends FrameLayout implements SwipeSwitch {
             int top = getPaddingTop() + lp.topMargin;
 
             int parentViewWidth = getMeasuredWidthAndState();
-            rightMenu.layout(parentViewWidth, top, parentViewWidth + menuViewWidth, top + menuViewHeight);
+            int menuMarginRight = mSwipeRightHorizontal.getMarginRight();
+            rightMenu.layout(parentViewWidth - menuMarginRight, top, parentViewWidth + menuViewWidth, top + menuViewHeight);
         }
     }
 
