@@ -217,6 +217,10 @@ public abstract class AdapterBase {
         mCard = new DPaymentCard();
     }
 
+    public void requestReadOtpPermission() {
+        getActivity().requestPermission(getActivity().getApplicationContext());//request permission read/view sms on android 6.0+
+    }
+
     public boolean needReloadPmcConfig() {
         return false;
     }
@@ -768,7 +772,7 @@ public abstract class AdapterBase {
 
                         //request permission read/view sms on android 6.0+
                         if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
-                            getActivity().requestPermission(getActivity().getApplicationContext());
+                            requestReadOtpPermission();
                         }
 
                         if (getActivity().getActivityRender() != null) {

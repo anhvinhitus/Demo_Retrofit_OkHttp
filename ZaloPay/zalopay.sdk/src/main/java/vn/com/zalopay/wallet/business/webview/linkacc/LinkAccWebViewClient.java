@@ -35,6 +35,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
+import static vn.com.zalopay.wallet.business.channel.base.AdapterBase.PAGE_VCB_CONFIRM_LINK;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_COMPLETE_PAGE;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_PAGE;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_UNREGISTER_COMPLETE_PAGE;
@@ -122,6 +123,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         return !TextUtils.isEmpty(mPageCode) && (mPageCode.equals(VCB_REGISTER_COMPLETE_PAGE) || mPageCode.equals(VCB_UNREGISTER_COMPLETE_PAGE));
     }
 
+    protected boolean shouldRequestReadOtpPermission() {
+        return !TextUtils.isEmpty(mPageCode) && (mPageCode.equals(PAGE_VCB_CONFIRM_LINK));
+    }
+
     @Override
     public void onLoadResource(WebView view, String url) {
         Log.d("onLoadResource", url);
@@ -147,7 +152,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
-            }else{
+            } else {
                 onPageFinishedAuto(url);
             }
         }
@@ -290,6 +295,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 }
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
+
+                if (GlobalData.shouldNativeWebFlow() && shouldRequestReadOtpPermission()) {
+                    getAdapter().requestReadOtpPermission();
+                }
 
                 if (GlobalData.shouldNativeWebFlow() && !shouldExecuteJs()) { //prevent load js on web flow
                     return;
