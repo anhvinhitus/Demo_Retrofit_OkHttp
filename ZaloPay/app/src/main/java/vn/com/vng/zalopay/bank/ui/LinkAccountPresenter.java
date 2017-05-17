@@ -75,7 +75,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             return;
         }
 
-        mView.initView();
+        mView.initViewBankSupportSuggestNotice();
         mView.setPhoneRequireToMapHint(String.valueOf(mUser.phonenumber));
     }
 
