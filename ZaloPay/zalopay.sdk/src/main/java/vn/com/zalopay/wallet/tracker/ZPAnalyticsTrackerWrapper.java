@@ -21,7 +21,8 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
 
     public ZPAnalyticsTrackerWrapper() {
         super();
-        initialize(GlobalData.appID, GlobalData.getPaymentInfo().appTransID, Integer.parseInt(GlobalData.getTransactionType().toString()));
+        String appTransID = (GlobalData.getPaymentInfo() != null) ? GlobalData.getPaymentInfo().appTransID : "";
+        initialize(GlobalData.appID, appTransID, Integer.parseInt(GlobalData.getTransactionType().toString()));
     }
 
     public static ZPAnalyticsTrackerWrapper getInstance() {
@@ -38,10 +39,14 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZPApptransidLog.transtype = pTransType;
     }
 
-    public void trackUserCancel(){
+    public void trackUserCancel(boolean isFinish) {
         if (mZPApptransidLog.status == 1) {
             Log.d(this, "skip tracking because status is finish");
             return;
+        }
+        if (isFinish) {
+            Log.d(this, "finish tracking when back to app");
+            mZPApptransidLog.status = 1;
         }
         mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
         ZPAnalytics.trackApptransidEvent(mZPApptransidLog);

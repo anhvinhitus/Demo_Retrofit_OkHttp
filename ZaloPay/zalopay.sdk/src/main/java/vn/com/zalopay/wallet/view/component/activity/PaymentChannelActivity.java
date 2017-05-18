@@ -287,7 +287,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         mOnClickExitListener.onClick(null);
         // TrackApptransidEvent back
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel(false);
     }
 
     @Override

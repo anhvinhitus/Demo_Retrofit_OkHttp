@@ -252,7 +252,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         super.onDestroy();
 
         DialogManager.dismiss();
-
         //release callback from payment channel activity
         GlobalData.setChannelActivityCallBack(null);
 
@@ -262,7 +261,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
 
         System.gc();
-
         Log.d(this, "====== onDestroy ======");
     }
 
@@ -277,7 +275,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel(false);
         //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
@@ -471,7 +469,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         Log.d(this, "===recycleActivity===");
         setEnableView(R.id.zpsdk_exit_ctl, false);
         // TrackApptransidEvent exit event
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
+        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel(false);
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());

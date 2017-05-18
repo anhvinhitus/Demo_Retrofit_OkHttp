@@ -633,6 +633,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
             if (getCurrentActivityCount() == 0) {
                 //dispose all instance and static resource.
+                ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel(true);
                 SingletonLifeCircleManager.disposeAll();
             }
         }
