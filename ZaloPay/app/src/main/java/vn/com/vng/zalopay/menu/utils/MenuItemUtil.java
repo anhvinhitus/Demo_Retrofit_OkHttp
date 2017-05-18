@@ -34,7 +34,7 @@ public class MenuItemUtil {
     static {
         mMenuItems = new ArrayList<>();
 
-        mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, "Liên Kết Thẻ", R.string.menu_linkcard, R.color.menu_font_ic_yellow));
+        mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, "Ngân Hàng", R.string.menu_linkcard, R.color.menu_font_ic_yellow));
         mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, "Lịch Sử Thanh Toán", R.string.menu_history, R.color.menu_font_ic_red, false));
 
         mMenuItems.add(new MenuItem(TRANSACTION_ID, MenuItemType.HEADER, "GIAO DỊCH"));
