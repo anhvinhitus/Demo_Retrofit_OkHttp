@@ -2001,10 +2001,10 @@ public abstract class AdapterBase {
     }
 
     protected void dismissDialogFingerPrint() {
-        if (getDialogFingerPrint() != null) {
+        if (getDialogFingerPrint() != null && !getDialogFingerPrint().isDetached()) {
             getDialogFingerPrint().dismiss();
             mFingerPrintDialog = null;
-            Log.d(this, "===dismissDialogFingerPrint===");
+            Log.d(this, "dissmis dialog fingerprint");
         } else {
             Log.d(this, "===dismissDialogFingerPrint===getDialogFingerPrint()=NULL");
         }
