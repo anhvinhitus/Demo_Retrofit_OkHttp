@@ -16,15 +16,18 @@
 package com.yanzhenjie.recyclerview.swipe;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.OverScroller;
 
 import com.zalopay.ui.widget.R;
+
+import timber.log.Timber;
 
 /**
  * Created by Yan Zhenjie on 2016/7/22.
  */
 class SwipeRightHorizontal extends SwipeHorizontal {
+
+    private ISwipeRightMenuListener mSwipeRightMenuListener;
 
     public SwipeRightHorizontal(View menuView) {
         super(SwipeMenuRecyclerView.RIGHT_DIRECTION, menuView);
@@ -59,6 +62,12 @@ class SwipeRightHorizontal extends SwipeHorizontal {
 
     @Override
     public Checker checkXY(int x, int y) {
+        Timber.d("checkXY [x,y]:[%s,%s]", x, y);
+        float alpha = (float) x / getWidth();
+        if (alpha < 0.2) {
+            alpha = 0.2f;
+        }
+        menuView.setAlpha(alpha);
         mChecker.x = x;
         mChecker.y = y;
         mChecker.shouldResetSwipe = mChecker.x == 0;
@@ -68,6 +77,13 @@ class SwipeRightHorizontal extends SwipeHorizontal {
         if (mChecker.x > getWidth()) {
             mChecker.x = getWidth();
         }
+        if (mSwipeRightMenuListener != null) {
+            if (x == 0) {
+                mSwipeRightMenuListener.onHideRightMenu();
+            } else {
+                mSwipeRightMenuListener.onShowRightMenu();
+            }
+        }
         return mChecker;
     }
 
@@ -76,12 +92,18 @@ class SwipeRightHorizontal extends SwipeHorizontal {
         return x < (contentViewWidth - getWidth());
     }
 
-    int getMarginRight() {
-        return (int) menuView.getContext().getResources().getDimension(R.dimen.swipe_menu_margin_right);
-    }
-
     private int getWidth() {
         int offset = (int) menuView.getContext().getResources().getDimension(R.dimen.swipe_menu_margin_offset);
         return getMenuView().getWidth() - offset;
+    }
+
+    public void setSwipeRightMenuListener(ISwipeRightMenuListener listener) {
+        mSwipeRightMenuListener = listener;
+    }
+
+    interface ISwipeRightMenuListener {
+        void onShowRightMenu();
+
+        void onHideRightMenu();
     }
 }
