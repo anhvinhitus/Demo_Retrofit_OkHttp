@@ -1,3 +1,6 @@
+Zalo Pay (Sandbox v2.12.0 - build 253) - Released on 2017-05-18
+- Update analytics, client log
+
 Zalo Pay (Sandbox v2.12.0 - build 252) - Released on 2017-05-12
 - Dynamic configuration for calling API via Payment Connector
 - Thêm hỗ trợ Samsung Pass cho xác thực vân tay
