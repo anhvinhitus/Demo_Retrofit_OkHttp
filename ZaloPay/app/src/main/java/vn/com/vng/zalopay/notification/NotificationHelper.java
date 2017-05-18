@@ -14,7 +14,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,7 +48,6 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.promotion.PromotionAction;
 import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -283,23 +281,9 @@ public class NotificationHelper {
             if (embeddata == null) {
                 return;
             }
-
-            int type = embeddata.get("type").getAsInt();
-            String title = embeddata.get("title").getAsString();
-            long amount = embeddata.get("amount").getAsLong();
-            String campaign = embeddata.get("campaign").getAsString();
-            List<PromotionAction> actions = new ArrayList<>();
-
-            JsonArray jsonArrayActions = embeddata.get("actions").getAsJsonArray();
-            for (int i = 0; i < jsonArrayActions.size(); i++) {
-                JsonObject jsonObjectAction = jsonArrayActions.get(i).getAsJsonObject();
-                PromotionAction promotionAction = GsonUtils.fromJsonString(jsonObjectAction.toString(), PromotionAction.class);
-                actions.add(promotionAction);
-            }
-
-            PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions);
+            PromotionEvent promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), PromotionEvent.class);
             mEventBus.postSticky(promotionEvent);
-            Log.d(this,"post promotion event from notification", promotionEvent);
+            Log.d(this, "post promotion event from notification", promotionEvent);
         } catch (Exception ex) {
             Timber.e(ex, "Extract PromotionEvent data error");
         }
