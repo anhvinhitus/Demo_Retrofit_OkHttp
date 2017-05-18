@@ -12,10 +12,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuLayout;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
@@ -76,6 +78,24 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
     }
 
     @Override
+    public void onShowRightMenu(RecyclerView.ViewHolder holder, int position) {
+        super.onShowRightMenu(holder, position);
+        if (!(holder instanceof ViewHolder)) {
+            return;
+        }
+        ((ViewHolder) holder).changeBackgroundCorner(true);
+    }
+
+    @Override
+    public void onHideRightMenu(RecyclerView.ViewHolder holder, int position) {
+        super.onHideRightMenu(holder, position);
+        if (!(holder instanceof ViewHolder)) {
+            return;
+        }
+        ((ViewHolder) holder).changeBackgroundCorner(false);
+    }
+
+    @Override
     public int getItemCount() {
         return mItems.size();
     }
@@ -89,6 +109,11 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
 
         @BindView(R.id.tv_num_acc)
         TextView mCardNumber;
+
+        @OnClick(R.id.root)
+        public void onItemClickListener() {
+            smoothOpenRightMenu();
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -112,6 +137,26 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
             }
             params.setMargins(0, margin, 0, marginBottom);
             mRoot.setLayoutParams(params);
+        }
+
+        private void smoothOpenRightMenu() {
+            if (!(itemView instanceof SwipeMenuLayout)) {
+                return;
+            }
+            SwipeMenuLayout swipeMenuLayout = ((SwipeMenuLayout) itemView);
+            if (!swipeMenuLayout.isRightMenuOpen()) {
+                swipeMenuLayout.smoothOpenRightMenu();
+            }
+        }
+
+        void changeBackgroundCorner(boolean isShowMenu) {
+            float border = getContext().getResources().getDimension(R.dimen.border_link_card);
+            GradientDrawable drawable = (GradientDrawable) mRoot.getBackground();
+            if (isShowMenu) {
+                drawable.setCornerRadii(new float[]{border, border, 0, 0, 0, 0, 0, 0});
+            } else {
+                drawable.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
+            }
         }
     }
 
