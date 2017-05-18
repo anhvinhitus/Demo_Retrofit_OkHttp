@@ -173,6 +173,20 @@ public class NetworkModule {
                 .build();
     }
 
+
+    @Provides
+    @Singleton
+    @Named("retrofitClientLog")
+    Retrofit provideRetrofitClientLog(Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(callAdapter)
+                .baseUrl(BuildConfig.CLIENTLOGS_URL)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithRetry")
