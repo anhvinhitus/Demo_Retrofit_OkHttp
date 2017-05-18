@@ -353,9 +353,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onCashBackEvent(PromotionEvent event) {
         mView.showCashBackView(event);
+
+        mEventBus.removeStickyEvent(PromotionEvent.class);
     }
 
     private void ensureAppResourceAvailable() {

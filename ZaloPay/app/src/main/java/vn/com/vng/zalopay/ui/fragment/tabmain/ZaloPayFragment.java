@@ -422,9 +422,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Override
     public void showCashBackView(PromotionEvent event) {
         if(event == null) return;
+        String _temp = CurrencyUtil.formatCurrency(event.amount, true);
+
+        SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(0.5f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvCashBackTitle.setText(event.title);
-        tvCashBackAmount.setText(String.valueOf(event.amount));
+        tvCashBackAmount.setText(span);
         tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
         tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
 
