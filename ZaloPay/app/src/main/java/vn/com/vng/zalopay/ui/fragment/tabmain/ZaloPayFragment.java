@@ -1,11 +1,13 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -35,6 +37,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -45,6 +48,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
@@ -97,6 +101,25 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     * View của menu
     * */
     RoundTextView mNotifyView;
+
+    // Promotion cash back
+    @BindView(R.id.zp_promotion_cash_back_view)
+    View mParentPromotionCashBackView;
+
+    @BindView(R.id.promotion_cash_back_view)
+    View mPromotionCashBackView;
+
+    @BindView(R.id.promotion_cash_back_tv_title)
+    TextView tvCashBackTitle;
+
+    @BindView(R.id.promotion_cash_back_tv_amount)
+    TextView tvCashBackAmount;
+
+    @BindView(R.id.promotion_cash_back_tv_campaign)
+    TextView tvCashBackCampaign;
+
+    @BindView(R.id.promotion_cash_back_tv_action)
+    TextView tvCashBackAction;
 
     @BindView(R.id.swipeRefresh)
     MultiSwipeRefreshLayout mSwipeRefreshLayout;
@@ -260,6 +283,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         navigator.startBalanceManagementActivity(getContext());
     }
 
+    @OnClick(R.id.promotion_cash_back_ll_submit)
+    public void onClickSubmitPromotionCashBack() {
+        hideCashBackView();
+    }
+
     public void refreshIconFont() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
@@ -278,10 +306,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapter == null || mAdapterBottomApp == null) {
             return;
         }
-        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
-        if(list.size() > presenter.mNumberTopApp) {
-            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
-            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
+        mAdapter.setData(presenter.getTopAndBottomApp(list, true));
+        if (list.size() > presenter.mNumberTopApp) {
+            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list, false));
+            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list, false).size(), SPAN_COUNT_APPLICATION));
         }
     }
 
@@ -391,6 +419,32 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mSwipeRefreshLayout.setRefreshing(val);
     }
 
+    @Override
+    public void showCashBackView(PromotionEvent event) {
+        if(event == null) return;
+
+        tvCashBackTitle.setText(event.title);
+        tvCashBackAmount.setText(String.valueOf(event.amount));
+        tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
+        tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
+
+        mParentPromotionCashBackView.setVisibility(View.VISIBLE);
+        if (mPromotionCashBackView != null) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_in_bottom);
+            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
+        }
+    }
+
+    @Override
+    public void hideCashBackView() {
+        if (mPromotionCashBackView != null) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_out_bottom);
+            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
+        }
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> mParentPromotionCashBackView.setVisibility(View.GONE), 300);
+    }
+
     static SparseIntArray sActionMap;
 
     static {
@@ -411,4 +465,5 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         sActionMap.put(13, ZPEvents.TAPAPPICON_5_2);
         sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
     }
+
 }

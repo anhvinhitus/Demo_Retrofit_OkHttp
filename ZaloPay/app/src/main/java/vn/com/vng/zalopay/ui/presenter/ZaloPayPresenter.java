@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
+import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -350,6 +351,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
         mSubscription.add(subscription);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCashBackEvent(PromotionEvent event) {
+        mView.showCashBackView(event);
     }
 
     private void ensureAppResourceAvailable() {
