@@ -168,6 +168,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         sandbox {
@@ -184,6 +185,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         staging {
@@ -200,6 +202,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
         }
 
         internalProduction {
@@ -216,6 +219,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         internalSandbox {
@@ -232,6 +236,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         internalStaging {
@@ -248,6 +253,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
         }
 
         iapProduction {
@@ -264,6 +270,8 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
+            applicationIdSuffix ""
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         iapSandbox {
@@ -281,6 +289,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
         }
 
         iapStaging {
@@ -298,6 +307,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
         }
     }
 

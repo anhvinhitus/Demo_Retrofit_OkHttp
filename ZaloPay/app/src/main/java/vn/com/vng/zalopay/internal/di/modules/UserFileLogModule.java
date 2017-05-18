@@ -20,7 +20,7 @@ public class UserFileLogModule {
 
     @UserScope
     @Provides
-    FileLogStore.Repository providesFileLogRepository(User user, @Named("retrofitPhoto") Retrofit retrofit) {
+    FileLogStore.Repository providesFileLogRepository(User user, @Named("retrofitClientLog") Retrofit retrofit) {
         return new FileLogRepository(user, retrofit.create(FileLogStore.RequestService.class));
     }
 
