@@ -108,6 +108,5 @@
     <dimen name="bottom_ellipsis_height">4dp</dimen>
 
     <dimen name="swipe.menu.item.margin.top">8dp</dimen>
-    <dimen name="swipe.menu.margin.right">24dp</dimen>
-    <dimen name="swipe.menu.margin.offset">48dp</dimen>
+    <dimen name="swipe.menu.margin.offset">12dp</dimen>
 </resources>
