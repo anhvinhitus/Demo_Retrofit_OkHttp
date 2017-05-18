@@ -1,3 +1,7 @@
+Zalo Pay (Staging v2.11.0 - build 241) - Released on 2017-05-18
+- Promotion Cash Back
+- Update UI màn hình ngân hàng
+
 Zalo Pay (Staging v2.11.0 - build 240) - Released on 2017-05-17
 - [App][Bank] Update ui link card item
 
