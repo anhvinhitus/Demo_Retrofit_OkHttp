@@ -35,6 +35,8 @@ public class NotificationType {
     public static final int UNLINK_ACCOUNT = 115;
     public static final int LINK_ACCOUNT = 116;
 
+    public static final int PROMOTION = 117;
+
     static boolean isTransactionNotification(long notificationType) {
         return notificationType == ORDER_PAYMENT ||
                 notificationType == TOPUP_WALLET ||

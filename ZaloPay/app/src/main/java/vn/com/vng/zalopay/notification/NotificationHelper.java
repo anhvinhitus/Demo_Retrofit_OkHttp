@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,7 +27,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -49,10 +49,12 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.promotion.PromotionAction;
+import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.wallet.utils.Log;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -140,7 +142,7 @@ public class NotificationHelper {
         if (notify == null) {
             return;
         }
-        Timber.d("processNotification: %s %s", notify.message, isNotificationRecovery);
+        Timber.d("processNotification: %s %s %s", notify.message, isNotificationRecovery, GsonUtils.toJsonString(notify));
 
         if (!isNotificationRecovery) {
             this.shouldUpdateTransAndBalance(notify);
@@ -218,6 +220,12 @@ public class NotificationHelper {
                     CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 }
                 break;
+            case NotificationType.PROMOTION:
+                skipStorage = true;
+                prepareRenderPromotion(notify);
+                break;
+            default:
+                Timber.d("undefine notification type %d", notificationType);
         }
 
         if (!skipStorage && !isNotificationRecovery) {
@@ -267,6 +275,34 @@ public class NotificationHelper {
         AlertNotificationEvent event = new AlertNotificationEvent(notify);
         event.mTitle = title;
         mEventBus.post(event);
+    }
+
+    private void prepareRenderPromotion(NotificationData data) {
+        try {
+            JsonObject embeddata = data.getEmbeddata();
+            if (embeddata == null) {
+                return;
+            }
+
+            int type = embeddata.get("type").getAsInt();
+            String title = embeddata.get("title").getAsString();
+            long amount = embeddata.get("amount").getAsLong();
+            String campaign = embeddata.get("campaign").getAsString();
+            List<PromotionAction> actions = new ArrayList<>();
+
+            JsonArray jsonArrayActions = embeddata.get("actions").getAsJsonArray();
+            for (int i = 0; i < jsonArrayActions.size(); i++) {
+                JsonObject jsonObjectAction = jsonArrayActions.get(i).getAsJsonObject();
+                PromotionAction promotionAction = GsonUtils.fromJsonString(jsonObjectAction.toString(), PromotionAction.class);
+                actions.add(promotionAction);
+            }
+
+            PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions);
+            mEventBus.postSticky(promotionEvent);
+            Log.d(this,"post promotion event from notification", promotionEvent);
+        } catch (Exception ex) {
+            Timber.e(ex, "Extract PromotionEvent data error");
+        }
     }
 
     private void extractRedPacketFromNotification(NotificationData data, boolean addToRecovery) {
@@ -416,19 +452,6 @@ public class NotificationHelper {
         }
     }
 
-    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
-
-        @Override
-        public void onNext(Integer integer) {
-            showNotificationSystem(integer);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.w(e, "Show notify error");
-        }
-    }
-
     void closeNotificationSystem() {
         NotificationManagerCompat nm = NotificationManagerCompat.from(mContext);
         nm.cancelAll();
@@ -509,6 +532,19 @@ public class NotificationHelper {
     private void resetPaymentPassword() {
         refreshGatewayInfo();
         mUserConfig.removeFingerprint();
+    }
+
+    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override
+        public void onNext(Integer integer) {
+            showNotificationSystem(integer);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.w(e, "Show notify error");
+        }
     }
 
 }
