@@ -17,17 +17,15 @@ public class FileLogRepository implements FileLogStore.Repository {
 
     private final FileLogStore.RequestService mRequestService;
     private final User mUser;
-    private final String mClientLogUrl;
 
-    public FileLogRepository(User user, String url, FileLogStore.RequestService requestService) {
+    public FileLogRepository(User user, FileLogStore.RequestService requestService) {
         mRequestService = requestService;
         mUser = user;
-        mClientLogUrl = url;
     }
 
     @Override
     public Observable<String> uploadFileLog(String zipFile) {
-        return mRequestService.uploadFileLog(mClientLogUrl, requestBodyParam(mUser.zaloPayId), createMultipartBody(zipFile))
+        return mRequestService.uploadFileLog(requestBodyParam(mUser.zaloPayId), createMultipartBody(zipFile))
                 .map(baseResponse -> zipFile)
                 ;
     }
