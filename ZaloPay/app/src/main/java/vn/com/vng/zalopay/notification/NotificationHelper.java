@@ -140,7 +140,7 @@ public class NotificationHelper {
         if (notify == null) {
             return;
         }
-        Timber.d("processNotification: %s %s %s", notify.message, isNotificationRecovery, GsonUtils.toJsonString(notify));
+        Timber.d("processNotification: %s %s", notify.message, isNotificationRecovery);
 
         if (!isNotificationRecovery) {
             this.shouldUpdateTransAndBalance(notify);
@@ -219,7 +219,6 @@ public class NotificationHelper {
                 }
                 break;
             case NotificationType.PROMOTION:
-                skipStorage = true;
                 prepareRenderPromotion(notify);
                 break;
             default:
