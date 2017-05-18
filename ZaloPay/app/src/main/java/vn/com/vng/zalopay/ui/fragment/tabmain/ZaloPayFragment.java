@@ -124,6 +124,12 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @BindView(R.id.swipeRefresh)
     MultiSwipeRefreshLayout mSwipeRefreshLayout;
 
+    @OnClick(R.id.promotion_cash_back_tv_action)
+    public void onClickCashBackDetail() {
+        //navigator.startTransactionDetail(getActivity(), String.valueOf(transactionId));
+        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+    }
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
