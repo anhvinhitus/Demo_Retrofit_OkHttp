@@ -281,6 +281,7 @@ public class NotificationHelper {
                 return;
             }
             PromotionEvent promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), PromotionEvent.class);
+            promotionEvent.transid = data.transid;
             mEventBus.postSticky(promotionEvent);
             Log.d(this, "post promotion event from notification", promotionEvent);
         } catch (Exception ex) {
