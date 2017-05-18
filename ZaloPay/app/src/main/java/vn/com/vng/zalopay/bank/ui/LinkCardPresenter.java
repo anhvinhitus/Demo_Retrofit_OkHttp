@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -57,30 +58,30 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
     void getListCard() {
         List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-        /*List<DMappedCard> mapCardLis = new ArrayList<>();
-        DMappedCard vtbCard = new DMappedCard();
-        vtbCard.bankcode = CardType.PVTB;
-        vtbCard.first6cardno = "970415";
-        vtbCard.last4cardno = "3538";
-        mapCardLis.add(vtbCard);
-
-        DMappedCard vcbCard = new DMappedCard();
-        vcbCard.bankcode = CardType.PVCB;
-        vcbCard.first6cardno = "686868";
-        vcbCard.last4cardno = "1231";
-        mapCardLis.add(vcbCard);
-
-        DMappedCard sCard = new DMappedCard();
-        sCard.bankcode = CardType.PSCB;
-        sCard.first6cardno = "970403";
-        sCard.last4cardno = "1234";
-        mapCardLis.add(sCard);
-
-        DMappedCard sgCard = new DMappedCard();
-        sgCard.bankcode = CardType.PSGCB;
-        sgCard.first6cardno = "157979";
-        sgCard.last4cardno = "9999";
-        mapCardLis.add(sgCard);*/
+//        List<DMappedCard> mapCardLis = new ArrayList<>();
+//        DMappedCard vtbCard = new DMappedCard();
+//        vtbCard.bankcode = ECardType.PVTB.toString();
+//        vtbCard.first6cardno = "970415";
+//        vtbCard.last4cardno = "3538";
+//        mapCardLis.add(vtbCard);
+//
+//        DMappedCard vcbCard = new DMappedCard();
+//        vcbCard.bankcode = ECardType.PVCB.toString();
+//        vcbCard.first6cardno = "686868";
+//        vcbCard.last4cardno = "1231";
+//        mapCardLis.add(vcbCard);
+//
+//        DMappedCard sCard = new DMappedCard();
+//        sCard.bankcode = ECardType.PSCB.toString();
+//        sCard.first6cardno = "970403";
+//        sCard.last4cardno = "1234";
+//        mapCardLis.add(sCard);
+//
+//        DMappedCard sgCard = new DMappedCard();
+//        sgCard.bankcode = ECardType.PSGCB.toString();
+//        sgCard.first6cardno = "157979";
+//        sgCard.last4cardno = "9999";
+//        mapCardLis.add(sgCard);
         mView.setData(transformBankCard(mapCardLis));
     }
 

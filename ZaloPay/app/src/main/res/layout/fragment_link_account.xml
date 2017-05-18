@@ -80,7 +80,6 @@
                 android:layout_height="wrap_content" />
 
             <include layout="@layout/layout_account_bank_support" />
-
             <!--<FrameLayout-->
             <!--android:id="@+id/fragmentInLinkAccount"-->
             <!--android:layout_width="match_parent"-->

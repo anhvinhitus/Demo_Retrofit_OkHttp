@@ -8,9 +8,11 @@
         style="@style/TextView.Group.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingLeft="@dimen/spacing.medium.t"
         android:paddingTop="@dimen/spacing.medium"
         android:text="@string/secure_info"
+        android:textSize="14sp"
+        android:textStyle="bold"
         android:textAllCaps="true"
         android:textColor="@color/txt_item_main"/>
 
@@ -23,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/loremipsum"
-            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingLeft="@dimen/spacing.medium.t"
             android:paddingRight="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.medium.t"
             android:scaleType="center"
