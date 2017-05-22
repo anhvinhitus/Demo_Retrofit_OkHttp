@@ -184,7 +184,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
-            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sblog.zalopay.com.vn/"'
         }
 
         staging {
