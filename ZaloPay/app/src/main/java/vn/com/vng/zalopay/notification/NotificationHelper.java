@@ -219,7 +219,9 @@ public class NotificationHelper {
                 }
                 break;
             case NotificationType.PROMOTION:
-                prepareRenderPromotion(notify);
+                if (!isNotificationRecovery) {
+                    prepareRenderPromotion(notify);
+                }
                 break;
             default:
                 Timber.d("undefine notification type %d", notificationType);
