@@ -62,11 +62,7 @@ class SwipeRightHorizontal extends SwipeHorizontal {
 
     @Override
     public Checker checkXY(int x, int y) {
-        Timber.d("checkXY [x,y]:[%s,%s]", x, y);
         float alpha = (float) x / getWidth();
-        if (alpha < 0.2) {
-            alpha = 0.2f;
-        }
         menuView.setAlpha(alpha);
         mChecker.x = x;
         mChecker.y = y;
@@ -78,7 +74,7 @@ class SwipeRightHorizontal extends SwipeHorizontal {
             mChecker.x = getWidth();
         }
         if (mSwipeRightMenuListener != null) {
-            if (x == 0) {
+            if (alpha <= 0.1) {
                 mSwipeRightMenuListener.onHideRightMenu();
             } else {
                 mSwipeRightMenuListener.onShowRightMenu();
