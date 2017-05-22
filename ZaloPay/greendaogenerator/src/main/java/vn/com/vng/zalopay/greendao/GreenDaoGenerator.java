@@ -28,6 +28,8 @@ public class GreenDaoGenerator {
         addNotification(appSchema);
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
+    
+        addTransactionFragment(appSchema);
 
         //ADD TABLE GLOBAL
         addGlobalKeyValue(globalSchema);
@@ -253,5 +255,14 @@ public class GreenDaoGenerator {
         entity.setConstructors(false);
         entity.addStringProperty("key").notNull().unique().primaryKey();
         entity.addStringProperty("value");
+    }
+
+    private static void addTransactionFragment(Schema schema) {
+        Entity entity = schema.addEntity("TransactionFragmentGD");
+        entity.setConstructors(false);
+        entity.addLongProperty("statustype").notNull();
+        entity.addLongProperty("maxreqdate").notNull();
+        entity.addLongProperty("minreqdate").notNull().primaryKey();
+        entity.addBooleanProperty("outofdata").notNull();
     }
 }

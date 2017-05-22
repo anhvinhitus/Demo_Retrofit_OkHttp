@@ -32,6 +32,7 @@ public class DaoMaster extends AbstractDaoMaster {
         NotificationGDDao.createTable(db, ifNotExists);
         ReceivePackageGDDao.createTable(db, ifNotExists);
         MerchantUserDao.createTable(db, ifNotExists);
+        TransactionFragmentGDDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -47,6 +48,7 @@ public class DaoMaster extends AbstractDaoMaster {
         NotificationGDDao.dropTable(db, ifExists);
         ReceivePackageGDDao.dropTable(db, ifExists);
         MerchantUserDao.dropTable(db, ifExists);
+        TransactionFragmentGDDao.dropTable(db, ifExists);
     }
 
     /**
@@ -76,6 +78,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(NotificationGDDao.class);
         registerDaoClass(ReceivePackageGDDao.class);
         registerDaoClass(MerchantUserDao.class);
+        registerDaoClass(TransactionFragmentGDDao.class);
     }
 
     public DaoSession newSession() {
