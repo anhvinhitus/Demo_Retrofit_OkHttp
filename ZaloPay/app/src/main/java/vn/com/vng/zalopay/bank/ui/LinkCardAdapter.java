@@ -33,6 +33,8 @@ import vn.com.vng.zalopay.utils.FrescoHelper;
 class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
     private boolean mCurrentMenuState = false; //false: menu is hide.
 
+    private boolean mCurrentMenuState = false; //false: menu is hide.
+
     LinkCardAdapter(Context context) {
         super(context);
     }
@@ -151,6 +153,9 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
         }
 
         void changeBackgroundCorner(boolean isShowMenu) {
+            if (mCurrentMenuState == isShowMenu) {
+                return;
+            }
             float border = getContext().getResources().getDimension(R.dimen.border_link_card);
             GradientDrawable drawable = (GradientDrawable) mRoot.getBackground();
             if (isShowMenu) {
@@ -158,6 +163,7 @@ class LinkCardAdapter extends AbstractSwipeMenuRecyclerAdapter<BankCard, Recycle
             } else {
                 drawable.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
             }
+            mCurrentMenuState = isShowMenu;
         }
     }
 
