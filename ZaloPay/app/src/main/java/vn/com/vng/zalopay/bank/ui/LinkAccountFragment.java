@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +31,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -47,6 +50,9 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 
     @BindView(R.id.layoutLinkAccountEmpty)
     View mLayoutLinkCardEmpty;
+
+    @BindView(R.id.link_account_empty_view)
+    View mEmptyViewImage;
 
     @BindView(R.id.layoutContent)
     View mLayoutContent;
@@ -128,6 +134,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
         mRecyclerView.setSwipeMenuItemClickListener(mMenuItemClickListener);
 
         getLinkedBankAccount();
+        setEmptyViewHeight();
     }
 
     public void getLinkedBankAccount() {
@@ -340,5 +347,20 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
                         closeable.smoothCloseMenu();
                     }
                 });
+    }
+
+    private void setEmptyViewHeight() {
+        Window window = getActivity().getWindow();
+        if (window == null) {
+            return;
+        }
+
+        int screenHeight = AndroidUtils.displaySize.y;
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = (int) (screenHeight * 0.45);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
+        params.gravity = Gravity.CENTER;
+
+        mEmptyViewImage.setLayoutParams(params);
     }
 }

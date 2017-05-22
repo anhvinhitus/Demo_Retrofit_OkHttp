@@ -79,8 +79,9 @@
             android:paddingTop="@dimen/spacing.medium">
 
             <LinearLayout
+                android:id="@+id/link_card_empty_view"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -118,12 +119,6 @@
                     app:iconLeftName="@string/linkaccount_add" />
             </LinearLayout>
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginTop="@dimen/link.bank.between.layout"
-            android:background="@color/separate" />
 
         <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->

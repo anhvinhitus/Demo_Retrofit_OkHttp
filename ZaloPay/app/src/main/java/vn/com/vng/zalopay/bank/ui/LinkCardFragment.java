@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,16 +9,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import android.view.ViewGroup;
-
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +31,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -50,6 +49,9 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
+
+    @BindView(R.id.link_card_empty_view)
+    View mEmptyViewImage;
 
     @BindView(R.id.layoutContent)
     View mLayoutContent;
@@ -168,6 +170,7 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
 
         mPresenter.getListCard();
         initBankSupportFragment();
+        setEmptyViewHeight();
     }
 
     private void initBankSupportFragment() {
@@ -354,5 +357,20 @@ public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkC
         void gotoTabLinkAccAndReloadLinkedAcc();
 
         void gotoTabLinkAccAndShowDialog(String message);
+    }
+
+    private void setEmptyViewHeight() {
+        Window window = getActivity().getWindow();
+        if (window == null) {
+            return;
+        }
+
+        int screenHeight = AndroidUtils.displaySize.y;
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = (int) (screenHeight * 0.45);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
+        params.gravity = Gravity.CENTER;
+
+        mEmptyViewImage.setLayoutParams(params);
     }
 }
