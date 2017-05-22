@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
@@ -34,7 +35,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
                 if (msgs != null) {
                     for (int i = 0; i < msgs.length; i++) {
-                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                        msgs[i] = createFromPdu((byte[]) pdus[i], bundle);
                         if (msgs[i] == null) {
                             continue;
                         }
@@ -54,6 +55,15 @@ public class SmsReceiver extends BroadcastReceiver {
             }
         } catch (Throwable t) {
             Timber.w(t, "Got exception while processing received sms");
+        }
+    }
+
+    private SmsMessage createFromPdu(byte[] pdu, Bundle bundle) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String format = bundle.getString("format");
+            return SmsMessage.createFromPdu(pdu, format);
+        } else {
+            return SmsMessage.createFromPdu(pdu);
         }
     }
 }
