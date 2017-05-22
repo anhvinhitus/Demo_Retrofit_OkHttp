@@ -380,4 +380,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public void onClickSubmitPromotionCashBack() {
         hideCashBackView();
     }
+
+    @OnClick(R.id.promotion_cash_back_tv_action)
+    public void onClickCashBackDetail() {
+        //navigator.startTransactionDetail(getActivity(), String.valueOf(transactionId));
+        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+    }
 }
