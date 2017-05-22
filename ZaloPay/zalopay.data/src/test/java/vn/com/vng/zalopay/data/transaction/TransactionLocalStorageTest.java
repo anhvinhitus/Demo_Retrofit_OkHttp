@@ -48,15 +48,16 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
     private TransactionStore.LocalStorage mLocalStorage;
 
-    private Gson mGson;
-
     private final int TRANSACTION_STATUS_SUCCESS = 1;
     private final int TRANSACTION_STATUS_FAIL = 2;
 
     private final int TRANSACTION_SIZE = 20;
 
     private List<TransHistoryEntity> entities = new ArrayList<>();
-    private TransHistoryEntity entity;
+
+    private long maxreqdate = 1478834599800L;
+    private long minreqdate = 1478834599710L;
+    private List<Integer> types = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
@@ -67,15 +68,17 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     }
 
     private void initData() {
-        mGson = new Gson();
+        Gson mGson = new Gson();
+
+        types.add(4);
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
-            entity = mGson.fromJson(JSON_TRANSACTION, TransHistoryEntity.class);
+            TransHistoryEntity entity = mGson.fromJson(JSON_TRANSACTION, TransHistoryEntity.class);
             int j = i + 1;
             entity.transid = j;
             entity.appid = j;
             entity.userid = "user" + j;
-            entity.reqdate += j;
+            entity.reqdate -= 10 * i;
             entity.statustype = TRANSACTION_STATUS_SUCCESS;
             entities.add(entity);
         }
@@ -86,57 +89,19 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void putNullParam() {
-        mLocalStorage.put(null);
-        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("putNullParam", 0, result.size());
-    }
-
-    @Test
-    public void putEmptyList() {
-        insertTransaction();
-        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("putEmptyList", 0, result.size());
-    }
-
-    @Test
-    public void put() {
-        initData();
-        insertTransaction();
-        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertTrue("put", result.containsAll(entities));
-    }
-
-    @Test
-    public void getTransactionsWithEmptyDB() {
+    public void filterTransactionsWithEmptyDB() {
         initData();
         List<TransHistoryEntity> result;
         int pageIndex, limit;
 
         pageIndex = 0;
         limit = TRANSACTION_SIZE;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get transactions with empty DB", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter transactions with empty DB", 0, result.size());
     }
 
     @Test
-    public void getAllTransactions() {
-        initData();
-        insertTransaction();
-
-        List<TransHistoryEntity> result;
-        int pageIndex, limit;
-
-        pageIndex = 0;
-        limit = TRANSACTION_SIZE;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_FAIL);
-        for(int i = 0; i < result.size(); i++) {
-            compare2Elements(result.get(i), entities.get(i));
-        }
-    }
-
-    @Test
-    public void get0Transaction() {
+    public void filter0Transaction() {
         initData();
         insertTransaction();
 
@@ -145,12 +110,12 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = 0;
         limit = 0;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get 0 transaction", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter 0 transaction", 0, result.size());
     }
 
     @Test
-    public void get() {
+    public void filter() {
         initData();
         insertTransaction();
 
@@ -160,14 +125,13 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = 0;
         limit = 5;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get", true, result.containsAll(entities.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * limit, TRANSACTION_SIZE - (pageIndex + 1) * limit + limit)
-        ));
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter", true, result.containsAll(entities.subList(
+                (int)((1478834599840L - maxreqdate) / 10), (int)((1478834599840L - maxreqdate) / 10) + 5)));
     }
 
     @Test
-    public void getOversizedList() {
+    public void filterOversizedList() {
         initData();
         insertTransaction();
 
@@ -176,12 +140,12 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = 5;
         limit = 5;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get oversized list", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter oversized list", 0, result.size());
     }
 
     @Test
-    public void getWithWrongFormatOfStatusType() {
+    public void filterWithWrongFormatOfStatusType() {
         initData();
         insertTransaction();
 
@@ -190,12 +154,12 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = 0;
         limit = TRANSACTION_SIZE;
-        result = mLocalStorage.get(pageIndex, limit, -3);
-        assertEquals("get with wrong format of status type", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, -3, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter with wrong format of status type", 0, result.size());
     }
 
     @Test
-    public void getTransactionWhenLimitIsANegativeNumber() {
+    public void filterTransactionWhenLimitIsANegativeNumber() {
         initData();
         insertTransaction();
 
@@ -204,13 +168,12 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = 0;
         limit = -1;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        System.out.print(result.size() + " - " + result);
-        assertEquals("get transaction with limit is a negative number", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter transaction with limit is a negative number", 0, result.size());
     }
 
     @Test
-    public void getTransactionWhenPageIndexIsANegativeNumber() {
+    public void filterTransactionWhenPageIndexIsANegativeNumber() {
         initData();
         insertTransaction();
 
@@ -219,9 +182,8 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         pageIndex = -1;
         limit = 4;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        System.out.print(result.size() + " - " + result);
-        assertEquals("get transaction with pageIndex is a negative number", 0, result.size());
+        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter transaction with pageIndex is a negative number", 0, result.size());
     }
 
     @Test
@@ -513,7 +475,7 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         long latestTime;
 
         latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
-        assertEquals("getLatestTimeSuccessTransaction", true, latestTime == entities.get(entities.size() - 1).reqdate);
+        assertEquals("getLatestTimeSuccessTransaction", true, latestTime == entities.get(0).reqdate);
     }
 
     @Test
@@ -549,7 +511,7 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         long oldestTime;
 
         oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
-        assertEquals("getOldestTimeSuccessTransaction", entities.get(0).reqdate, oldestTime);
+        assertEquals("getOldestTimeSuccessTransaction", entities.get(entities.size() - 1).reqdate, oldestTime);
     }
 
     @Test

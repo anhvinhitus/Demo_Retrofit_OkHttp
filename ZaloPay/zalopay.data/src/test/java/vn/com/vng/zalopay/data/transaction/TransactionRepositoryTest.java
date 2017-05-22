@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.transaction;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 
@@ -20,10 +21,12 @@ import vn.com.vng.zalopay.data.ApplicationTestCase;
 import vn.com.vng.zalopay.data.CustomObserver;
 import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.entity.TransactionFragmentEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -51,19 +54,27 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     private TransactionStore.Repository mRepository;
 
-    private Gson mGson;
-
     private static final int TRANSACTION_STATUS_FAIL = 2;
 
     private final int TRANSACTION_SIZE = 20;
 
     private List<TransHistoryEntity> entities = new ArrayList<>();
+    private List<TransHistoryEntity> serverEntities = new ArrayList<>();
+    private List<TransactionFragmentEntity> fragmentEntities = new ArrayList<>();
 
-    TransactionHistoryResponse transactionHistoryResponse;
-    TransactionStore.LocalStorage mLocalStorage;
-    TransactionStore.RequestService mRequestService = null;
-    ZaloPayEntityDataMapper mMapper;
-    User mUser;
+    private long maxreqdate = 1478834599840L;
+    private long maxreqdate2 = 1478834598840L;
+    private long timestamp = 1478834599800L;
+    private long timestamp2 = 1478834598800L;
+    private int sign = 0;
+    private List<Integer> types = new ArrayList<>();
+
+    private TransactionHistoryResponse transactionHistoryResponse;
+    private TransactionStore.LocalStorage mLocalStorage;
+    private TransactionFragmentStore.LocalStorage mFragmentLocalStorage;
+    private TransactionStore.RequestService mRequestService = null;
+    private ZaloPayEntityDataMapper mMapper;
+    private User mUser;
 
     public class RequestServiceImpl implements TransactionStore.RequestService {
         @Override
@@ -84,10 +95,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new TransactionLocalStorage(daoSession);
+        mFragmentLocalStorage = new TransactionFragmentLocalStorage(daoSession);
     }
 
     private void initData() {
-        mGson = new Gson();
+        Gson mGson = new Gson();
+
+        types.add(4);
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
             TransHistoryEntity entity = mGson.fromJson(JSON_TRANSACTION, TransHistoryEntity.class);
@@ -95,338 +109,381 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
             entity.transid = j;
             entity.appid = j;
             entity.userid = "user" + j;
-            entity.reqdate += j;
+            entity.reqdate -= 10 * i;
             entity.statustype = TRANSACTION_STATUS_FAIL;
             entities.add(entity);
         }
+
+        for (int i = 0; i < TRANSACTION_SIZE; i++) {
+            TransHistoryEntity entity = mGson.fromJson(JSON_TRANSACTION, TransHistoryEntity.class);
+            int j = i + 1;
+            entity.transid = j;
+            entity.appid = j;
+            entity.userid = "user" + (20 + j);
+            entity.reqdate -= 1000 * j;
+            entity.statustype = TRANSACTION_STATUS_FAIL;
+            serverEntities.add(entity);
+        }
+
+        TransactionFragmentEntity entity = new TransactionFragmentEntity();
+        entity.statustype = TRANSACTION_STATUS_FAIL;
+        entity.maxreqdate = entities.get(0).reqdate;
+        entity.minreqdate = entities.get(entities.size() - 1).reqdate;
+        fragmentEntities.add(entity);
 
         transactionHistoryResponse = new TransactionHistoryResponse();
         transactionHistoryResponse.data = new ArrayList<>();
     }
 
+    private void putFragmentDB() {
+        for (int i = 0; i < fragmentEntities.size(); i++) {
+            mFragmentLocalStorage.put(fragmentEntities.get(i));
+        }
+    }
+
     @Test
     public void getTransactionsWithEmptyData() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, null, null, null, EventBus.getDefault());
 
         pageIndex = 2;
         count = 5;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
+        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactions when not having data (both from local and cloud)", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithCountIsANegativeNumber() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
+        putFragmentDB();
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = -1;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions with data from clound and count = -1", 0, result.size());
+        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions with data from clound and count = -1", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsWithPageIndexIsANegativeNumber() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = -1;
         count = 10;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions with datas from cloud and pageIndex = -1", 0, result.size());
+        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions with datas from cloud and pageIndex = -1", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsWithDataFromCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        pageIndex = 2;
+        offset = 10;
         count = 5;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        assertEquals(result, transactionHistoryResponse.data.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
+        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
+        assertEquals(transactionHistoryResponse.data.subList(startIdx, startIdx + count), result.get(0).second);
     }
 
     @Test
     public void getNoneOfTransactionsWithDataFromCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        pageIndex = 0;
+        offset = 0;
         count = 0;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions: get 0 data from clound", 0, result.size());
+        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions: get 0 data from clound", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsWithDataFromLocal() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
-        pageIndex = 2;
+        offset = 10;
         count = 5;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions from local when not having any datas with success type", 0, result.size());
+        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions from local when not having any datas with success type", 0, result.get(0).second.size());
     }
 
     @Test
     public void getNoneOfTransactionsWithDataFromLocal() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
-        pageIndex = 0;
+        offset = 0;
         count = 0;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions get 0 datas from local", 0, result.size());
+        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions get 0 datas from local", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsWithDataFromCloudAndStorage() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        pageIndex = 2;
+        offset = 10;
         count = 5;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
+        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
 
-        List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
-        List<TransHistoryEntity> getDataFromLocalList = entities.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
+        int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
+        List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(startIdx, startIdx + count);
+        List<TransHistoryEntity> getDataFromLocalList = entities.subList(startIdx, startIdx + count);
         getDataFromLocalList.addAll(getDataFromCloudList);
-        assertEquals(result, getDataFromLocalList);
+        assertEquals(getDataFromLocalList, result.get(0).second);
+    }
+
+    @Test
+    public void getTransactionsWithNonDataInDB() {
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int pageIndex, count;
+
+        transactionHistoryResponse.data = serverEntities;
+        mLocalStorage.put(entities);
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
+
+        pageIndex = 0;
+        count = TRANSACTION_SIZE;
+        mRepository.getTransactions(maxreqdate2, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+
+        assertEquals(transactionHistoryResponse.data, result.get(0).second);
     }
 
     @Test
     public void getNoneOfTransactionsWithDataFromCloudAndStorage() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = 0;
-        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactions: get 0 data from clound and local", 0, result.size());
+        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactions: get 0 data from clound and local", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsFailWithEmptyData() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         pageIndex = 2;
         count = 5;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail when not having data (both from local and cloud)", 0, result.size());
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail when not having data (both from local and cloud)", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsFailWithCountIsANegativeNumber() {
-        final List<TransHistory> result = new ArrayList<>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = -1;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail with data from clound and count = -1", 0, result.size());
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail with data from clound and count = -1", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsFailWithPageIndexIsANegativeNumber() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = -1;
         count = 10;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail with datas from clound and pageIndex = -1", 0, result.size());
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail with datas from clound and pageIndex = -1", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsFailWithDataFromCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        pageIndex = 2;
+        offset = 2;
         count = 5;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        assertEquals(result, transactionHistoryResponse.data.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
+        mRepository.getTransactionsFail(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
+        assertEquals(transactionHistoryResponse.data.subList(startIdx, startIdx + count), result.get(0).second);
     }
 
     @Test
     public void getNoneOfTransactionsFailWithDataFromCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = 0;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail: get 0 data from clound", 0, result.size());
-    }
-
-    @Test
-    public void getTransactionsFailWithDataFromLocal() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
-
-        mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
-
-        pageIndex = 2;
-        count = 5;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        assertEquals(result, entities.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail: get 0 data from clound", 0, result.get(0).second.size());
     }
 
     @Test
     public void getNoneOfTransactionsFailWithDataFromLocal() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = 0;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail get 0 datas from local", 0, result.size());
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail get 0 datas from local", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionsFailWithDataFromCloudAndStorage() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        int pageIndex, count;
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int offset, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        pageIndex = 2;
+        offset = 10;
         count = 5;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
+        mRepository.getTransactionsFail(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
 
-        List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
-        List<TransHistoryEntity> getDataFromLocalList = entities.subList(
-                TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
+        int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
+        List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(startIdx, startIdx + count);
+        List<TransHistoryEntity> getDataFromLocalList = entities.subList(startIdx, startIdx + count);
         getDataFromLocalList.addAll(getDataFromCloudList);
-        assertEquals(result, getDataFromLocalList);
+        assertEquals(getDataFromLocalList, result.get(0).second);
+    }
+
+    @Test
+    public void getTransactionsFailWithNonDataInDB() {
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
+        int pageIndex, count;
+
+        transactionHistoryResponse.data = serverEntities;
+        mLocalStorage.put(entities);
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
+
+        pageIndex = 0;
+        count = TRANSACTION_SIZE;
+        mRepository.getTransactionsFail(maxreqdate2, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+
+        Assert.assertEquals("getTransactionsFail with non data in db",
+                maxreqdate2, mFragmentLocalStorage.get(timestamp2, TRANSACTION_STATUS_FAIL).get(0).maxreqdate);
+        assertEquals(transactionHistoryResponse.data, result.get(0).second);
     }
 
     @Test
     public void getNoneOfTransactionsFailWithDataFromCloudAndStorage() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = 0;
-        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
-        Assert.assertEquals("getTransactionsFail: get 0 data from clound and local", 0, result.size());
+        mRepository.getTransactionsFail(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsFail: get 0 data from clound and local", 0, result.get(0).second.size());
     }
 
     @Test
     public void getTransactionWithEmptyDB() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = 1;
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactionByID: when not having data", 0, result.size());
+        Assert.assertEquals("getTransactionByID: when not having data", null, result.get(0));
     }
 
     @Test
     public void getTransactionFromLocal() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = 1;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         assertElementEquals(result.get(0), entities.get((int) id - 1));
@@ -434,12 +491,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void getTransactionFromLocalWithWrongFormatTransId() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = -1;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID from local with id = -1", null, result.get(0));
@@ -447,12 +504,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void getTransactionFromLocalWithOversizedTransId() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = 21;
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID from local id = 21", null, result.get(0));
@@ -460,27 +517,27 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void getTransactionFromCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = 1;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, null,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactionByID from cloud", 0, result.size());
+        Assert.assertEquals("getTransactionByID from cloud", null, result.get(0));
     }
 
     @Test
     public void getTransactionFromLocalCloud() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
+        final List<TransHistory> result = new ArrayList<>();
         long id = 1;
 
         mLocalStorage.put(entities);
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
@@ -490,8 +547,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void isLoadedTransactionSuccess() {
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionSuccess();
         Assert.assertEquals("isLoadedTransactionSuccess", false, result);
@@ -501,8 +558,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionSuccessWithSetLoadedSuccessIsTrue() {
         mLocalStorage.setLoadedTransactionSuccess(true);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionSuccess();
         Assert.assertEquals("isLoadedTransactionSuccess when set loaded success local is true", true, result);
@@ -512,8 +569,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionSuccessWithSetLoadedSuccessIsFalse() {
         mLocalStorage.setLoadedTransactionSuccess(false);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionSuccess();
         Assert.assertEquals("isLoadedTransactionSuccess when set loaded success local is false", false, result);
@@ -523,8 +580,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionSuccessWithSetLoadedFalseIsTrue() {
         mLocalStorage.setLoadedTransactionFail(true);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionSuccess();
         Assert.assertEquals("isLoadedTransactionSuccess when set loaded fail local is true", false, result);
@@ -534,8 +591,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionSuccessWithSetLoadedFalseIsFalse() {
         mLocalStorage.setLoadedTransactionFail(false);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionSuccess();
         Assert.assertEquals("isLoadedTransactionSuccess when set loaded fail local is false", false, result);
@@ -544,8 +601,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void isLoadedTransactionFail() {
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionFail();
         Assert.assertEquals("isLoadedTransactionFail", false, result);
@@ -555,8 +612,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionFailWithSetLoadedSuccessIsTrue() {
         mLocalStorage.setLoadedTransactionSuccess(true);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionFail();
         Assert.assertEquals("isLoadedTransactionFail when set loaded success local is true", false, result);
@@ -566,8 +623,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionFailWithSetLoadedSuccessIsFalse() {
         mLocalStorage.setLoadedTransactionSuccess(false);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionFail();
         Assert.assertEquals("isLoadedTransactionFail when set loaded success local is false", false, result);
@@ -577,8 +634,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionFailWithSetLoadedFalseIsTrue() {
         mLocalStorage.setLoadedTransactionFail(true);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionFail();
         Assert.assertEquals("isLoadedTransactionFail when set loaded fail local is true", true, result);
@@ -588,8 +645,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void isLoadedTransactionFailWithSetLoadedFalseIsFalse() {
         mLocalStorage.setLoadedTransactionFail(false);
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         boolean result = mRepository.isLoadedTransactionFail();
         Assert.assertEquals("isLoadedTransactionFail when set loaded fail local is false", false, result);
@@ -597,10 +654,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistorySuccessLatestWithEmptyDB() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest with empty DB", 0, result.size());
@@ -608,11 +665,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistorySuccessLatestWithNullCloud() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from local", 0, result.size());
@@ -620,11 +677,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistorySuccessLatestWithNullLocal() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
@@ -635,12 +692,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistorySuccessLatest() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
@@ -649,10 +706,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryFailLatestWithEmptyDB() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest with empty DB", 0, result.size());
@@ -660,11 +717,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryFailLatestWithNullCloud() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from local", 0, result.size());
@@ -672,11 +729,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryFailLatestWithNullLocal() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
@@ -687,12 +744,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryFailLatest() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
@@ -701,10 +758,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryLatestWithEmptyDB() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
-        mRepository = new TransactionRepository(mMapper, mUser, null,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest with empty DB", 0, result.size());
@@ -712,11 +769,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryLatestWithNullCloud() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         mLocalStorage.put(entities);
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
-                null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest with only data from local", 0, result.size());
@@ -724,11 +781,11 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryLatestWithNullLocal() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
@@ -739,12 +796,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
     @Test
     public void fetchTransactionHistoryLatest() {
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
 
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
@@ -756,10 +813,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
         long time = transactionHistoryResponse.data.get(3).reqdate;
 
         mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
@@ -771,10 +828,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
         long time = 0;
 
         mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
@@ -786,10 +843,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
         long time = transactionHistoryResponse.data.get(3).reqdate;
 
         mRepository.fetchTransactionHistoryLatest(time).subscribe(new CustomObserver<>(result));
@@ -801,10 +858,10 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        final List<Boolean> result = new ArrayList<Boolean>();
+        final List<Boolean> result = new ArrayList<>();
         long time = 0;
 
         mRepository.fetchTransactionHistoryLatest(time).subscribe(new CustomObserver<>(result));
@@ -816,7 +873,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         transactionHistoryResponse.data = entities;
         mLocalStorage.put(entities);
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage,
                 mRequestService, EventBus.getDefault());
 
 
@@ -856,14 +913,15 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         Assert.assertEquals("appusername", b1.appusername, b2.appusername);
     }
 
-    private void assertEquals(List<TransHistory> list1, List<TransHistoryEntity> list2) {
+    private void assertEquals(List<TransHistoryEntity> list2, List<TransHistory> list1) {
         if (list1.size() == 0) {
             Assert.fail("object is null");
             return;
         }
 
         for (int i = 0; i < list1.size(); i++) {
-            assertElementEquals(list1.get(i), list2.get(list2.size() - i - 1));
+            System.out.print(i);
+            assertElementEquals(list1.get(i), list2.get(i));
         }
     }
 }
