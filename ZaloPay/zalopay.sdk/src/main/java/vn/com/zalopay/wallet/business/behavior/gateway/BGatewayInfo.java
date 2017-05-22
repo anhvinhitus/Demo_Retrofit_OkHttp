@@ -1,6 +1,8 @@
 package vn.com.zalopay.wallet.business.behavior.gateway;
 
+import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -25,8 +27,8 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
  */
 public class BGatewayInfo extends SingletonBase {
     public static final int MAX_RETRY_REFRESH = 5;
-    private int count = 1;
     private static BGatewayInfo mGatewayInfo = null;
+    private int count = 1;
     //prevent duplicate thread
     private boolean mProcessing;
     private ZPWGatewayInfoCallback mClientCallback;
@@ -71,7 +73,7 @@ public class BGatewayInfo extends SingletonBase {
 
         @Override
         public void onDownloadResourceComplete() {
-            if(mClientCallback != null){
+            if (mClientCallback != null) {
                 mClientCallback.onDownloadResourceComplete();
             }
         }
@@ -176,16 +178,25 @@ public class BGatewayInfo extends SingletonBase {
         this.mClientCallback = pListener;
         try {
             if (isProcessing() && count <= MAX_RETRY_REFRESH) {
-                Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count="+count);
+                Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count=" + count);
                 count++;
-                new Handler().postDelayed(new Runnable() {
+                boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                        Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+                Handler handler;
+                if (!isUiThread) {
+                    Log.d(this, "call coming from background, switching thread to main thread...");
+                    handler = new Handler(Looper.getMainLooper());
+                } else {
+                    handler = new Handler();
+                }
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(this, "running task refresh platforminfo again after 5s");
                         refreshPlatformInfo(mClientCallback);
                     }
                 }, 5000);
-            } else if(!isProcessing()){
+            } else if (!isProcessing()) {
                 getPlatformInfo(new GetPlatformInfo(mListener, true, true));
             }
         } catch (Exception e) {
