@@ -168,7 +168,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
-            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
         }
 
         sandbox {
@@ -219,7 +219,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
-            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
         }
 
         internalSandbox {
@@ -271,7 +271,7 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
-            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
         }
 
         iapSandbox {
