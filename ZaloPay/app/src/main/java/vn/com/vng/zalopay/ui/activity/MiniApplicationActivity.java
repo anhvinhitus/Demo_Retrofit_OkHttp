@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.pgsqlite.SQLitePluginPackage;
+import com.beefe.picker.PickerViewPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +55,7 @@ import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+
 
 /**
  * Created by huuhoa on 4/26/16.
@@ -232,7 +234,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 reactInternalPackage(),
                 new SQLitePluginPackage(),
                 // new ReactReceiveMoneyPackage(mUser, eventBus),
-                new RNDeviceInfo());
+                new RNDeviceInfo(),
+                new PickerViewPackage());
     }
 
     protected ReactPackage reactInternalPackage() {

@@ -2,6 +2,9 @@ package vn.com.vng.zalopay.data.transaction;
 
 import android.support.annotation.Nullable;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,13 +21,13 @@ import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Created by huuhoa on 6/15/16.
  * Implementation of TransactionStore.LocalStorage
  */
 public class TransactionLocalStorage extends SqlBaseScopeImpl implements TransactionStore.LocalStorage {
+
+    private final static int TRANSFER_TYPE = 4;
 
     public TransactionLocalStorage(DaoSession daoSession) {
         super(daoSession);
@@ -42,11 +45,11 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public List<TransHistoryEntity> get(int pageIndex, int limit, int status) {
-        if (pageIndex < 0 || limit <= 0) {
+    public List<TransHistoryEntity> get(int offset, int limit, int status, long maxreqdate, long minreqdate, List<Integer> types, int sign) {
+        if (offset < 0 || limit <= 0) {
             return Collections.emptyList();
         }
-        List<TransHistoryEntity> ret = queryList(pageIndex, limit, status);
+        List<TransHistoryEntity> ret = queryList(maxreqdate, minreqdate, types, offset, limit, status, sign);
         Timber.d("get list transaction size %s", ret.size());
         return ret;
     }
@@ -56,25 +59,32 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
     }
 
-    private List<TransHistoryEntity> queryList(int pageIndex, int limit) {
-        return transform2Entity(
-                getDaoSession()
-                        .getTransactionLogDao()
-                        .queryBuilder()
-                        .limit(limit)
-                        .offset(pageIndex * limit)
-                        .orderDesc(TransactionLogDao.Properties.Reqdate)
-                        .list());
-    }
+    private List<TransHistoryEntity> queryList(long maxreqdate, long minreqdate, List<Integer> transTypes, int offset, int limit, int statusType, int sign) {
+        Timber.d("queryList: offset [%s], maxreqdate [%s], minreqdate [%s], sign [%s], statustype [%s]",
+                offset, maxreqdate, minreqdate, sign, statusType);
 
-    private List<TransHistoryEntity> queryList(int pageIndex, int limit, int statusType) {
-        int offset = pageIndex * limit;
-        Timber.d("queryList: offset %s", offset);
+        QueryBuilder<TransactionLog> queryBuilder = getDaoSession().getTransactionLogDao().queryBuilder();
+        WhereCondition where = queryBuilder.and(TransactionLogDao.Properties.Reqdate.le(maxreqdate),
+                TransactionLogDao.Properties.Reqdate.ge(minreqdate),
+                TransactionLogDao.Properties.Statustype.eq(statusType));
+
+        if (!Lists.isEmptyOrNull(transTypes)) {
+            if (transTypes.contains(TRANSFER_TYPE) && sign != 0) {
+                WhereCondition whereType = queryBuilder.and(TransactionLogDao.Properties.Type.eq(TRANSFER_TYPE), TransactionLogDao.Properties.Sign.eq(sign));
+                for (int i = 0; i < transTypes.size(); i++) {
+                    if (transTypes.get(i) != TRANSFER_TYPE) {
+                        whereType = queryBuilder.or(whereType, TransactionLogDao.Properties.Type.eq(transTypes.get(i)));
+                    }
+                }
+                where = queryBuilder.and(where, whereType);
+            } else {
+                where = queryBuilder.and(where, TransactionLogDao.Properties.Type.in(transTypes));
+            }
+        }
+
         return transform2Entity(
-                getDaoSession()
-                        .getTransactionLogDao()
-                        .queryBuilder()
-                        .where(TransactionLogDao.Properties.Statustype.eq(statusType))
+                queryBuilder
+                        .where(where)
                         .limit(limit)
                         .offset(offset)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
@@ -85,7 +95,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
     private List<TransactionLog> transform(Collection<TransHistoryEntity> transHistoryEntities) {
         if (Lists.isEmptyOrNull(transHistoryEntities)) {
-            return emptyList();
+            return Collections.emptyList();
         }
 
         List<TransactionLog> transactionLogs = new ArrayList<>(transHistoryEntities.size());
@@ -153,7 +163,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
     private List<TransHistoryEntity> transform2Entity(Collection<TransactionLog> transactionLogs) {
         if (Lists.isEmptyOrNull(transactionLogs)) {
-            return emptyList();
+            return Collections.emptyList();
         }
 
         List<TransHistoryEntity> transHistoryEntities = new ArrayList<>(transactionLogs.size());

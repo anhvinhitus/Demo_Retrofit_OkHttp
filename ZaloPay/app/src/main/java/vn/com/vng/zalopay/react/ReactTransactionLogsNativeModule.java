@@ -11,6 +11,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -20,6 +21,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +55,8 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     private final NotificationStore.Repository mNotificationRepository;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
+    private static final int ERR_CODE_OUT_OF_DATA = 2;
+
     ReactTransactionLogsNativeModule(ReactApplicationContext reactContext,
                                      TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                      EventBus eventBus) {
@@ -71,57 +75,81 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
-    public void getTransactionsSuccess(final int pageIndex, final int count, final Promise promise) {
+    public void successfulTransactionWithTransTypes(final ReadableArray transTypes,
+                                                    final String timeStamp,
+                                                    final int offset,
+                                                    final int count,
+                                                    final int sign,
+                                                    final Promise promise) {
+        try {
+            List<Integer> types = transform(transTypes);
+            long timestamp = Long.valueOf(timeStamp);
+            Subscription subscription = mTransactionRepository.getTransactions(
+                    timestamp, types, offset, count, sign)
+                    .map(datas -> {
+                        int code = datas.first;
+                        List<TransHistory> transactions = datas.second;
 
-        Timber.d("get transaction success index %s count %s", pageIndex, count);
-
-        Subscription subscription = mTransactionRepository.getTransactions(pageIndex, count)
-                .map(transactions -> {
-                    int code = ERR_CODE_SUCCESS.value();
-                    if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
-                        boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
-                        if (!isLoad) {
-                            code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                        if (code != ERR_CODE_OUT_OF_DATA && Lists.isEmptyOrNull(transactions) && offset == 0) {
+                            boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
+                            if (!isLoad) {
+                                code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                            }
                         }
-                    }
 
-                    return new TransactionResult(code, "", transactions);
-                })
-                .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
-                    @Override
-                    public Observable<TransactionResult> call(Throwable throwable) {
-                        return resolveTransactionSuccess(pageIndex, count, throwable);
-                    }
-                })
-                .subscribe(new TransactionLogSubscriber(promise));
-        mCompositeSubscription.add(subscription);
+                        return new TransactionResult(code, "", transactions);
+                    })
+                    .doOnError(Timber::d)
+                    .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
+                        @Override
+                        public Observable<TransactionResult> call(Throwable throwable) {
+                            return resolveTransactionSuccess(timestamp, types, offset, count, sign, throwable);
+                        }
+                    })
+                    .subscribe(new TransactionLogSubscriber(promise));
+            mCompositeSubscription.add(subscription);
+        } catch (Exception e) {
+            Timber.d("Fail to trying get successful transaction with trans types: " + e.getMessage());
+        }
     }
 
     @ReactMethod
-    public void getTransactionsFail(final int pageIndex, final int count, Promise promise) {
+    public void failedTransactionWithTransTypes(final ReadableArray transTypes,
+                                                final String timeStamp,
+                                                final int offset,
+                                                final int count,
+                                                final int sign,
+                                                final Promise promise) {
+        try {
+            List<Integer> types = transform(transTypes);
+            long timestamp = Long.valueOf(timeStamp);
+            Subscription subscription = mTransactionRepository.getTransactionsFail(
+                    timestamp, types, offset, count, sign)
+                    .map(datas -> {
+                        int code = datas.first;
+                        List<TransHistory> transactions = datas.second;
 
-        Timber.d("get transaction fail index %s count %s", pageIndex, count);
-
-        Subscription subscription = mTransactionRepository.getTransactionsFail(pageIndex, count)
-                .map(transactions -> {
-                    int code = ERR_CODE_SUCCESS.value();
-                    if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
-                        boolean isLoad = mTransactionRepository.isLoadedTransactionFail();
-                        if (!isLoad) {
-                            code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                        if (code != ERR_CODE_OUT_OF_DATA && Lists.isEmptyOrNull(transactions) && offset == 0) {
+                            boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
+                            if (!isLoad) {
+                                code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                            }
                         }
-                    }
-                    return new TransactionResult(code, "", transactions);
-                })
-                .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
-                    @Override
-                    public Observable<TransactionResult> call(Throwable throwable) {
-                        return resolveTransactionFail(pageIndex, count, throwable);
-                    }
-                })
-                .subscribe(new TransactionLogSubscriber(promise));
 
-        mCompositeSubscription.add(subscription);
+                        return new TransactionResult(code, "", transactions);
+                    })
+                    .doOnError(Timber::d)
+                    .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
+                        @Override
+                        public Observable<TransactionResult> call(Throwable throwable) {
+                            return resolveTransactionFail(timestamp, types, offset, count, sign, throwable);
+                        }
+                    })
+                    .subscribe(new TransactionLogSubscriber(promise));
+            mCompositeSubscription.add(subscription);
+        } catch (Exception e) {
+            Timber.d("Fail to trying get failed transaction with trans types: " + e.getMessage());
+        }
     }
 
     @ReactMethod
@@ -161,7 +189,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         @Override
         public void onNext(TransactionResult result) {
-            Timber.d(" transactions code [%s] message [%s] data [%s]", result.code, result.message, result.data);
+            Timber.d(" transactions code [%s] message [%s] data size [%s]", result.code, result.message, result.data.size());
             if (result.code == ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
                 Helpers.promiseResolveError(mPromise.get(), result.code, "Transaction has not been loaded");
             } else {
@@ -296,20 +324,33 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private Observable<TransactionResult> resolveTransactionFail(int pageIndex, int count, final Throwable error) {
-        return mTransactionRepository.getTransactionsFailLocal(pageIndex, count)
+    private Observable<TransactionResult> resolveTransactionFail(
+            long timestamp, List<Integer> transTypes, int offset, int count, int sign, final Throwable error) {
+        return mTransactionRepository.getTransactionsFailLocal(timestamp, transTypes, offset, count, sign)
                 .map(histories -> {
                     Pair<Integer, String> pairError = Helpers.createReactError(getReactApplicationContext(), error);
                     return new TransactionResult(pairError.first, pairError.second, histories);
                 });
     }
 
-    private Observable<TransactionResult> resolveTransactionSuccess(int pageIndex, int count, final Throwable error) {
-        return mTransactionRepository.getTransactionsLocal(pageIndex, count)
+    private Observable<TransactionResult> resolveTransactionSuccess(
+            long timestamp, List<Integer> transTypes, int offset, int count, int sign, final Throwable error) {
+        return mTransactionRepository.getTransactionsLocal(timestamp, transTypes, offset, count, sign)
                 .map(histories -> {
                     Pair<Integer, String> pairError = Helpers.createReactError(getReactApplicationContext(), error);
                     return new TransactionResult(pairError.first, pairError.second, histories);
                 });
+    }
+
+    private List<Integer> transform(ReadableArray types) {
+        List<Integer> typeList = new ArrayList<>();
+        if (types == null || types.size() <= 0) {
+            return typeList;
+        }
+        for (int i = 0; i < types.size(); i++) {
+            typeList.add(types.getInt(i));
+        }
+        return typeList;
     }
 
 }

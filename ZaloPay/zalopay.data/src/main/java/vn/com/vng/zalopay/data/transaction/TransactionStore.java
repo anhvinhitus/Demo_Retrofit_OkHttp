@@ -1,11 +1,11 @@
 package vn.com.vng.zalopay.data.transaction;
 
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import java.util.List;
 
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
 import rx.Observable;
@@ -24,7 +24,7 @@ public interface TransactionStore {
     interface LocalStorage {
         void put(List<TransHistoryEntity> val);
 
-        List<TransHistoryEntity> get(int pageIndex, int limit, int statusType);
+        List<TransHistoryEntity> get(int offset, int count, int statusType, long maxreqdate, long minreqdate, List<Integer> transTypes, int sign);
 
         boolean isHaveTransactionInDb();
 
@@ -59,13 +59,13 @@ public interface TransactionStore {
 
     interface Repository {
 
-        Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
+        Observable<Pair<Integer, List<TransHistory>>> getTransactions(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
-        Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count);
+        Observable<Pair<Integer, List<TransHistory>>> getTransactionsFail(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
-        Observable<List<TransHistory>> getTransactionsLocal(int pageIndex, int count);
+        Observable<List<TransHistory>> getTransactionsLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
-        Observable<List<TransHistory>> getTransactionsFailLocal(int pageIndex, int count);
+        Observable<List<TransHistory>> getTransactionsFailLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
         Observable<TransHistory> getTransaction(long id);
 

@@ -9,6 +9,8 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.transaction.TransactionFragmentLocalStorage;
+import vn.com.vng.zalopay.data.transaction.TransactionFragmentStore;
 import vn.com.vng.zalopay.data.transaction.TransactionLocalStorage;
 import vn.com.vng.zalopay.data.transaction.TransactionRepository;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -26,11 +28,13 @@ public class UserTransactionModule {
     TransactionStore.Repository provideTransactionRepository(ZaloPayEntityDataMapper zaloPayEntityDataMapper,
                                                              User user,
                                                              TransactionStore.LocalStorage transactionLocalStorage,
+                                                             TransactionFragmentStore.LocalStorage fragmentTransactionLocalStorage,
                                                              TransactionStore.RequestService transactionRequestService,
                                                              EventBus eventBus) {
         return new TransactionRepository(zaloPayEntityDataMapper,
                 user,
                 transactionLocalStorage,
+                fragmentTransactionLocalStorage,
                 transactionRequestService, eventBus);
     }
 
@@ -45,5 +49,11 @@ public class UserTransactionModule {
     @UserScope
     TransactionStore.RequestService provideTransactionRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(TransactionStore.RequestService.class);
+    }
+
+    @UserScope
+    @Provides
+    TransactionFragmentStore.LocalStorage provideFragmentTransactionLocalStorage(@Named("daosession") DaoSession session) {
+        return new TransactionFragmentLocalStorage(session);
     }
 }
