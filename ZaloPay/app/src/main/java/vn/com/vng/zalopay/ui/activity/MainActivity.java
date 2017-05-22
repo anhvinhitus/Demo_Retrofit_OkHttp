@@ -10,8 +10,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -20,9 +26,11 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
+import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -30,6 +38,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -63,6 +72,25 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
+    // Promotion cash back
+    @BindView(R.id.zp_promotion_cash_back_view)
+    View mParentPromotionCashBackView;
+
+    @BindView(R.id.promotion_cash_back_view)
+    View mPromotionCashBackView;
+
+    @BindView(R.id.promotion_cash_back_tv_title)
+    TextView tvCashBackTitle;
+
+    @BindView(R.id.promotion_cash_back_tv_amount)
+    TextView tvCashBackAmount;
+
+    @BindView(R.id.promotion_cash_back_tv_campaign)
+    TextView tvCashBackCampaign;
+
+    @BindView(R.id.promotion_cash_back_tv_action)
+    TextView tvCashBackAction;
+
     @Inject
     MainPresenter presenter;
 
@@ -78,12 +106,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
         presenter.initialize();
-
-        Handler handler = new Handler();
-
-        handler.postDelayed(() -> {
-//            displayPromotionCashBack();
-        }, 3000);
 
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -245,6 +267,37 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
+    @Override
+    public void showCashBackView(PromotionEvent event) {
+        if (event == null) return;
+        String _temp = CurrencyUtil.formatCurrency(event.amount, true);
+
+        SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(0.5f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvCashBackTitle.setText(event.title);
+        tvCashBackAmount.setText(span);
+        tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
+        tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
+
+        mParentPromotionCashBackView.setVisibility(View.VISIBLE);
+        if (mPromotionCashBackView != null) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_in_bottom);
+            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
+        }
+    }
+
+    @Override
+    public void hideCashBackView() {
+        if (mPromotionCashBackView != null) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_out_bottom);
+            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
+        }
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> mParentPromotionCashBackView.setVisibility(View.GONE), 300);
+    }
+
     private final class OpenMenuRunnable implements Runnable {
         final int id;
         final WeakReference<MainActivity> act;
@@ -321,5 +374,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
+    }
+
+    @OnClick(R.id.promotion_cash_back_ll_submit)
+    public void onClickSubmitPromotionCashBack() {
+        hideCashBackView();
     }
 }

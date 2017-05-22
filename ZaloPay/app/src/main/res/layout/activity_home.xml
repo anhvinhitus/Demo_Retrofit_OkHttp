@@ -27,7 +27,7 @@
         </LinearLayout>
 
         <include
-            android:id="@+id/zpw_pay_support_buttom_view"
+            android:id="@+id/zp_promotion_cash_back_view"
             layout="@layout/layout_promotion_cash_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

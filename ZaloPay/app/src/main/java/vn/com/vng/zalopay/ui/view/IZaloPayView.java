@@ -44,7 +44,7 @@ public interface IZaloPayView {
 
     void setRefreshing(boolean val);
 
-    void showCashBackView(PromotionEvent event);
-
-    void hideCashBackView();
+//    void showCashBackView(PromotionEvent event);
+//
+//    void hideCashBackView();
 }
