@@ -1,6 +1,8 @@
 package vn.com.zalopay.wallet.business.behavior.gateway;
 
+import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -158,7 +160,16 @@ public class BGatewayInfo extends SingletonBase {
             if (isProcessing() && count <= MAX_RETRY_REFRESH) {
                 Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count=" + count);
                 count++;
-                new Handler().postDelayed(new Runnable() {
+                boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                        Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+                Handler handler;
+                if (!isUiThread) {
+                    Log.d(this, "call coming from background, switching thread to main thread...");
+                    handler = new Handler(Looper.getMainLooper());
+                } else {
+                    handler = new Handler();
+                }
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(this, "running task refresh platforminfo again after 5s");
