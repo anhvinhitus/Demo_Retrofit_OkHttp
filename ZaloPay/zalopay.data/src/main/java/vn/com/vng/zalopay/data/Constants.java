@@ -62,7 +62,7 @@ public class Constants {
 
     public interface UMUPLOAD_API {
         String PREUPDATEPROFILELEVEL3 = "umupload/preupdateprofilelevel3";
-        String FILE_LOG = "v001/zp-upload/clientlogs";
+        String FILE_LOG = "zp-upload/clientlogs";
     }
 
     public interface REDPACKET_API {
