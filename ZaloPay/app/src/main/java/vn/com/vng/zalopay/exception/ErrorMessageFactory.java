@@ -52,7 +52,13 @@ public class ErrorMessageFactory {
                 || exception instanceof TimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
-            message = context.getString(R.string.exception_server_error);
+
+            if (((HttpException) exception).code() == 404) {
+                message = context.getString(R.string.exception_http_404);
+            } else {
+                message = context.getString(R.string.exception_server_error);
+            }
+
         } else if (exception instanceof UnknownHostException) {
             message = context.getString(R.string.exception_unknown_host);
         } else if (exception instanceof SSLHandshakeException) {

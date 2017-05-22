@@ -24,6 +24,7 @@
     <string name="exception.transfer.for.self">Bạn không thể chuyển khoản cho chính mình</string>
     <string name="exception.account.name.special.char">Zalo Pay ID không có ký tự đặc biệt</string>
     <string name="exception.server.error">Hệ thống đang có lỗi. Vui lòng thử lại sau</string>
+    <string name="exception.http.404">Phiên bản đang chạy chưa được hỗ trợ, Vui lòng liên hệ bộ phận CSKH.</string>
 
     <string name="exception.no.connection.tutorial">Không có kết nối mạng %s</string>
     <string name="exception.no.ws.connection">Kết nối mạng không ổn định %s</string>
