@@ -1,3 +1,7 @@
+Zalo Pay (Sandbox v2.11.0 - build 243) - Released on 2017-05-22
+- Update UI màn hình ngân hàng
+- Update api clientlogs
+
 Zalo Pay (Staging v2.11.0 - build 242) - Released on 2017-05-22
 - Fix bug Crashlytic
 - Update UI màn hình ngân hàng
