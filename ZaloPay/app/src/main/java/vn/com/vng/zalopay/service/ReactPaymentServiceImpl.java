@@ -16,6 +16,9 @@ import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
+import vn.com.vng.zalopay.pw.PaymentWrapper;
+import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
@@ -27,7 +30,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Created by longlv on 02/06/2016.
  * Implement IPaymentService
  */
-public class PaymentServiceImpl implements IPaymentService {
+public class ReactPaymentServiceImpl implements IPaymentService {
 
     private final MerchantStore.Repository mMerchantRepository;
     private final BalanceStore.Repository mBalanceRepository;
@@ -37,9 +40,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
-                              BalanceStore.Repository balanceRepository,
-                              TransactionStore.Repository transactionRepository) {
+    public ReactPaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
+                                   BalanceStore.Repository balanceRepository,
+                                   TransactionStore.Repository transactionRepository) {
         this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.mTransactionRepository = transactionRepository;

@@ -1,13 +1,11 @@
-package vn.com.vng.zalopay.service;
+package vn.com.vng.zalopay.pw;
 
 import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 

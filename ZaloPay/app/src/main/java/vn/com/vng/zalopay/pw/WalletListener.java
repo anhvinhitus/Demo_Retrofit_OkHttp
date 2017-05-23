@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.service;
+package vn.com.vng.zalopay.pw;
 
 import android.text.TextUtils;
 

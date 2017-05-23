@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.service;
+package vn.com.vng.zalopay.pw;
 
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;

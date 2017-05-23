@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
-import vn.com.vng.zalopay.service.PaymentServiceImpl;
+import vn.com.vng.zalopay.service.ReactPaymentServiceImpl;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -31,6 +31,6 @@ public class UserControllerModule {
     IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository,
                                             BalanceStore.Repository balanceRepository,
                                             TransactionStore.Repository transactionRepository) {
-        return new PaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository);
+        return new ReactPaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository);
     }
 }
