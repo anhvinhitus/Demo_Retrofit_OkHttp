@@ -1218,15 +1218,15 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             } else {
                 setVisible(R.id.layout_success_description, false);
             }
-            if (GlobalData.getPaymentInfo().userTransfer != null) {
-                if (TextUtils.isEmpty(GlobalData.getPaymentInfo().userTransfer.zaloPayName)) {// check zalo pay ID
+            if (GlobalData.getPaymentInfo().receiverInfo != null) {
+                if (TextUtils.isEmpty(GlobalData.getPaymentInfo().receiverInfo.zaloPayName)) {// check zalo pay ID
                     setText(R.id.text_zalopay_id, GlobalData.getStringResource(RS.string.zpw_string_transfer_zalopay_id_null));
                 } else {
-                    setText(R.id.text_zalopay_id, GlobalData.getPaymentInfo().userTransfer.zaloPayName);
+                    setText(R.id.text_zalopay_id, GlobalData.getPaymentInfo().receiverInfo.zaloPayName);
                 }
 
-                setText(R.id.text_userTo, GlobalData.getPaymentInfo().userTransfer.userName);
-                findViewAndLoadUri(R.id.img_avatarTo, GlobalData.getPaymentInfo().userTransfer.avatar);
+                setText(R.id.text_userTo, GlobalData.getPaymentInfo().receiverInfo.userName);
+                findViewAndLoadUri(R.id.img_avatarTo, GlobalData.getPaymentInfo().receiverInfo.avatar);
             }
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.avatar)) {
                 findViewAndLoadUri(R.id.img_avatarFrom, GlobalData.getPaymentInfo().userInfo.avatar);

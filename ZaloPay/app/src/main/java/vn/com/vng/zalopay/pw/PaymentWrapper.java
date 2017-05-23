@@ -135,7 +135,7 @@ public class PaymentWrapper {
         log.start_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
 
-        callPayAPI(activity, paymentInfo, transactionType);
+        invokePayAPI(activity, paymentInfo, transactionType);
     }
 
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, int source) {
@@ -149,7 +149,7 @@ public class PaymentWrapper {
             return;
         }
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
-        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
+        paymentInfo.receiverInfo = createUserTransferInfo(displayName, avatar, zaloPayName);
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -158,7 +158,7 @@ public class PaymentWrapper {
         log.start_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
 
-        callPayAPI(activity, paymentInfo, transactionType);
+        invokePayAPI(activity, paymentInfo, transactionType);
     }
 
     public void payWithOrder(Activity activity, Order order, int source) {
@@ -198,7 +198,7 @@ public class PaymentWrapper {
             ZPAnalytics.trackApptransidEvent(log);
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            callPayAPI(activity, paymentInfo, TransactionType.PAY);
+            invokePayAPI(activity, paymentInfo, TransactionType.PAY);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -249,7 +249,7 @@ public class PaymentWrapper {
             log.start_time = System.currentTimeMillis();
             ZPAnalytics.trackApptransidEvent(log);
 
-            callPayAPI(activity, paymentInfo, TransactionType.LINK_CARD);
+            invokePayAPI(activity, paymentInfo, TransactionType.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -257,14 +257,14 @@ public class PaymentWrapper {
     }
 
     public void linkAccount(Activity activity, String bankType) {
-        callManagerAccountAPI(activity, bankType, ELinkAccType.LINK);
+        invokeManageBankAccountAPI(activity, bankType, ELinkAccType.LINK);
     }
 
     public void unlinkAccount(Activity activity, String bankType) {
-        callManagerAccountAPI(activity, bankType, ELinkAccType.UNLINK);
+        invokeManageBankAccountAPI(activity, bankType, ELinkAccType.UNLINK);
     }
 
-    private void callManagerAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
+    private void invokeManageBankAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
         User user = getUserComponent().currentUser();
 
         if (user == null) {
@@ -292,7 +292,7 @@ public class PaymentWrapper {
             log.start_time = System.currentTimeMillis();
             ZPAnalytics.trackApptransidEvent(log);
 
-            callPayAPI(activity, paymentInfo, TransactionType.LINK_ACCOUNT);
+            invokePayAPI(activity, paymentInfo, TransactionType.LINK_ACCOUNT);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -315,7 +315,7 @@ public class PaymentWrapper {
 
         Timber.d("Continue pay pending order : userInfo [%s] zalopayId [%s] accessToken [%s]", mPendingOrder.userInfo, mPendingOrder.userInfo.zaloPayUserId, mPendingOrder.userInfo.accessToken);
 
-        callPayAPI(mActivity, mPendingOrder, mPendingTransaction);
+        invokePayAPI(mActivity, mPendingOrder, mPendingTransaction);
     }
 
     private void onUpdateProfileAndLinkAcc(int resultCode) {
@@ -386,7 +386,7 @@ public class PaymentWrapper {
         return mUserInfo;
     }
 
-    private UserInfo createUserTransFerInfo(String displayName, String avatar, String zaloPayName) {
+    private UserInfo createUserTransferInfo(String displayName, String avatar, String zaloPayName) {
         UserInfo mUserInfo = new UserInfo();
         mUserInfo.userName = displayName;
         mUserInfo.zaloPayName = zaloPayName;
@@ -414,20 +414,7 @@ public class PaymentWrapper {
         return userInfo;
     }
 
-    private String getPhoneNumber() {
-        if (getUserComponent() == null) {
-            return "";
-        }
-
-        User user = getUserComponent().currentUser();
-        if (user == null) {
-            return "";
-        }
-
-        return PhoneUtil.formatPhoneNumber(user.phonenumber);
-    }
-
-    private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
+    private void invokePayAPI(Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
         mActivity = owner;
         if (paymentInfo == null || owner == null) {
             mActivity = null;
@@ -472,18 +459,24 @@ public class PaymentWrapper {
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
-        if (paymentInfo.amount <= 0) {
-            return false;
-        } else if (paymentInfo.appID <= 0) {
-            return false;
-        } else if (TextUtils.isEmpty(paymentInfo.appTransID)) {
-            return false;
-        } else if (paymentInfo.appTime <= 0) {
-            return false;
-        } else if (TextUtils.isEmpty(paymentInfo.mac)) {
-            return false;
+        return ((paymentInfo.amount > 0) &&
+                (paymentInfo.appID > 0) &&
+                !TextUtils.isEmpty(paymentInfo.appTransID) &&
+                (paymentInfo.appTime > 0) &&
+                !TextUtils.isEmpty(paymentInfo.mac));
+    }
+
+    private String getPhoneNumber() {
+        if (getUserComponent() == null) {
+            return "";
         }
-        return true;
+
+        User user = getUserComponent().currentUser();
+        if (user == null) {
+            return "";
+        }
+
+        return PhoneUtil.formatPhoneNumber(user.phonenumber);
     }
 
     private int getUserProfileLevel() {
@@ -646,18 +639,21 @@ public class PaymentWrapper {
     }
 
     boolean shouldClearPendingOrder(@PaymentStatus int resultStatus) {
-        if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
-            return false;
-        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
-            return false;
-        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
-            return false;
-        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT) {
-            return false;
-        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT) {
-            return false;
+
+        switch (resultStatus) {
+            case PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
+                return false;
+            case PaymentStatus.ZPC_TRANXSTATUS_UPGRADE:
+                return false;
+            case PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
+                return false;
+            case PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT:
+                return false;
+            case PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT:
+                return false;
+            default:
+                return true;
         }
-        return true;
     }
 
     void clearPendingOrder() {

@@ -20,7 +20,11 @@ public class ZPWPaymentInfo {
     public String chargeInfo;
     public DBaseMap mapBank;
     public UserInfo userInfo;
-    public UserInfo userTransfer;
+
+    /**
+     * Receiver who receives money in Money-Transfer transaction
+     */
+    public UserInfo receiverInfo;
     public LinkAccInfo linkAccInfo;
     public int[] forceChannelIds;
     public PaymentLocation mLocation = new PaymentLocation();
