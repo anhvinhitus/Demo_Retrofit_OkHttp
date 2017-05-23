@@ -73,6 +73,9 @@ public class PaymentWrapper {
     @Inject
     Navigator mNavigator;
 
+    @Inject
+    User mCurrentUser;
+
     final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
     final IResponseListener responseListener;
@@ -124,10 +127,10 @@ public class PaymentWrapper {
         mCompositeSubscription.add(subscription);
     }
 
-    public void withdraw(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
+    public void withdraw(@NonNull Activity activity, Order order) {
         int transactionType = TransactionType.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        paymentInfo.userInfo = createUserInfo(mCurrentUser.displayName, mCurrentUser.avatar, String.valueOf(mCurrentUser.phonenumber), mCurrentUser.zalopayname);
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -138,17 +141,11 @@ public class PaymentWrapper {
         invokePayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, int source) {
+    public void transfer(@NonNull Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, int source) {
         int transactionType = TransactionType.MONEY_TRANSFER;
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
-        User mUser = getUserComponent().currentUser();
-        if (mUser == null) {
-            Timber.i("payWithOrder: current user is null");
-            responseListener.onParameterError("Thông tin người dùng không hợp lệ");
-            return;
-        }
-        paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
+        paymentInfo.userInfo = createUserInfo(displayName, mCurrentUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
 
         ZPApptransidLog log = new ZPApptransidLog();
@@ -161,7 +158,7 @@ public class PaymentWrapper {
         invokePayAPI(activity, paymentInfo, transactionType);
     }
 
-    public void payWithOrder(Activity activity, Order order, int source) {
+    public void payWithOrder(@NonNull Activity activity, Order order, int source) {
         Timber.d("payWithOrder: Start");
         if (order == null) {
             Timber.i("payWithOrder: order is invalid");
@@ -223,16 +220,14 @@ public class PaymentWrapper {
         mCompositeSubscription.add(subscription);
     }
 
-    public void linkCard(Activity activity) {
-        User user = getUserComponent().currentUser();
-
-        if (user == null) {
+    public void linkCard(@NonNull Activity activity) {
+        if (mCurrentUser == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
             return;
         }
 
-        if (!user.hasZaloPayId()) {
+        if (!mCurrentUser.hasZaloPayId()) {
             Timber.i("payWithOrder: zaloPayId is invalid");
             responseListener.onParameterError("uid");
 //            showErrorView(mView.getContext().getString(R.string.user_invalid));
@@ -256,24 +251,22 @@ public class PaymentWrapper {
         }
     }
 
-    public void linkAccount(Activity activity, String bankType) {
+    public void linkAccount(@NonNull Activity activity, String bankType) {
         invokeManageBankAccountAPI(activity, bankType, ELinkAccType.LINK);
     }
 
-    public void unlinkAccount(Activity activity, String bankType) {
+    public void unlinkAccount(@NonNull Activity activity, String bankType) {
         invokeManageBankAccountAPI(activity, bankType, ELinkAccType.UNLINK);
     }
 
-    private void invokeManageBankAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
-        User user = getUserComponent().currentUser();
-
-        if (user == null) {
+    private void invokeManageBankAccountAPI(@NonNull Activity activity, String bankType, ELinkAccType linkAccType) {
+        if (mCurrentUser == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
             return;
         }
 
-        if (!user.hasZaloPayId()) {
+        if (!mCurrentUser.hasZaloPayId()) {
             Timber.i("Manager link account, zaloPayId is invalid");
             responseListener.onParameterError("uid");
             return;
@@ -386,27 +379,21 @@ public class PaymentWrapper {
         return mUserInfo;
     }
 
-    private UserInfo assignBaseUserInfo(UserInfo userInfo) {
-        User user = null;
-        if (getUserComponent() != null) {
-            user = getUserComponent().currentUser();
+    private UserInfo assignBaseUserInfo(@NonNull UserInfo userInfo) {
+        if (mCurrentUser == null) {
+            return userInfo;
         }
 
-        if (userInfo == null) {
-            userInfo = new UserInfo();
-        }
-        if (user != null) {
-            userInfo.zaloUserId = String.valueOf(user.zaloId);
-            userInfo.zaloPayUserId = user.zaloPayId;
-            userInfo.accessToken = user.accesstoken;
-            userInfo.level = getUserProfileLevel();
-            userInfo.userProfile = getUserPermission();
-            userInfo.phoneNumber = getPhoneNumber();
-        }
+        userInfo.zaloUserId = String.valueOf(mCurrentUser.zaloId);
+        userInfo.zaloPayUserId = mCurrentUser.zaloPayId;
+        userInfo.accessToken = mCurrentUser.accesstoken;
+        userInfo.level = getUserProfileLevel();
+        userInfo.userProfile = getUserPermission();
+        userInfo.phoneNumber = getPhoneNumber();
         return userInfo;
     }
 
-    private void invokePayAPI(Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
+    private void invokePayAPI(@NonNull Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
         mActivity = owner;
         if (paymentInfo == null || owner == null) {
             mActivity = null;
@@ -459,22 +446,16 @@ public class PaymentWrapper {
     }
 
     private String getPhoneNumber() {
-        if (getUserComponent() == null) {
+        if (mCurrentUser == null) {
             return "";
         }
 
-        User user = getUserComponent().currentUser();
-        if (user == null) {
-            return "";
-        }
-
-        return PhoneUtil.formatPhoneNumber(user.phonenumber);
+        return PhoneUtil.formatPhoneNumber(mCurrentUser.phonenumber);
     }
 
     private int getUserProfileLevel() {
-        UserComponent userComponent = getUserComponent();
-        if (userComponent != null) {
-            return userComponent.currentUser().profilelevel;
+        if (mCurrentUser != null) {
+            return mCurrentUser.profilelevel;
         }
         return -1;
     }
@@ -484,17 +465,12 @@ public class PaymentWrapper {
     }
 
     private String getUserPermission() {
-        if (getUserComponent() == null) {
-            return null;
-        }
-
-        User user = getUserComponent().currentUser();
-        if (user == null) {
+        if (mCurrentUser == null) {
             return null;
         }
 
         String permissionsStr = "{\"profilelevelpermisssion\":";
-        permissionsStr += user.profilePermissions;
+        permissionsStr += mCurrentUser.profilePermissions;
         permissionsStr += "}";
         Timber.d("permissionsStr: %s", permissionsStr);
         return permissionsStr;
