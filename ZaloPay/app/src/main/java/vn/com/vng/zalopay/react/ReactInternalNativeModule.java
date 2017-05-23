@@ -280,16 +280,22 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigateBankAccount() {
-        if (getCurrentActivity() != null) {
-            navigator.startLinkAccountActivity(getCurrentActivity());
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            return;
         }
+
+        navigator.startLinkAccountActivity(currentActivity);
     }
 
     @ReactMethod
     public void navigateCardList() {
-        if (getCurrentActivity() != null) {
-            navigator.startLinkCardActivity(getCurrentActivity());
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            return;
         }
+
+        navigator.startLinkCardActivity(currentActivity);
     }
 
     private void removeNotify(long notifyId) {
@@ -318,13 +324,18 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     private PaymentWrapper paymentWrapper;
 
     private void pay(final long appId, final String zptranstoken) {
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            return;
+        }
+
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper();
         }
 
         showLoading();
         Timber.d("Pay with token call");
-        paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken, ZPPaymentSteps.OrderSource_MerchantApp);
+        paymentWrapper.payWithToken(currentActivity, appId, zptranstoken, ZPPaymentSteps.OrderSource_MerchantApp);
     }
 
     private void showErrorDialog(final String message) {
