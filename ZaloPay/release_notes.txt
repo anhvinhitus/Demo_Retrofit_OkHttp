@@ -1,3 +1,7 @@
+Zalo Pay (Staging v2.11.0 - build 244) - Released on 2017-05-23
+- Update feedback theo flow
+- [WebApp] Ẩn icon lịch sử giao dịch trong app dịch vụ khi đang ở trong trang lịch sử giao dịch
+
 Zalo Pay (Sandbox v2.11.0 - build 243) - Released on 2017-05-22
 - Update UI màn hình ngân hàng
 - Update api clientlogs
