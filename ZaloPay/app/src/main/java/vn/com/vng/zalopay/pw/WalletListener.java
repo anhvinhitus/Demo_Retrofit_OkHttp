@@ -62,11 +62,12 @@ class WalletListener implements ZPPaymentListener {
     public void onComplete(ZPPaymentResult pPaymentResult) {
         Timber.d("pay complete, result [%s]", pPaymentResult);
         boolean paymentIsCompleted = true;
+        PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
         if (pPaymentResult == null) {
             if (NetworkHelper.isNetworkAvailable(mPaymentWrapper.mActivity)) {
-                mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
+                responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
             } else {
-                mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
             }
             mPaymentWrapper.clearPendingOrder();
         } else {
@@ -78,13 +79,13 @@ class WalletListener implements ZPPaymentListener {
                         mPaymentWrapper.mNavigator.startNotificationLinkCardActivity(mPaymentWrapper.mActivity,
                                 pPaymentResult.mapCardResult);
                     }
-                    mPaymentWrapper.responseListener.onResponseSuccess(pPaymentResult);
+                    responseListener.onResponseSuccess(pPaymentResult);
                     break;
                 case ZPC_TRANXSTATUS_TOKEN_INVALID:
-                    mPaymentWrapper.responseListener.onResponseTokenInvalid();
+                    responseListener.onResponseTokenInvalid();
                     break;
                 case ZPC_TRANXSTATUS_LOCK_USER:
-                    mPaymentWrapper.responseListener.onResponseAccountSuspended();
+                    responseListener.onResponseAccountSuspended();
                     break;
                 case ZPC_TRANXSTATUS_UPGRADE:
                     //Hien update profile level 2
@@ -106,25 +107,25 @@ class WalletListener implements ZPPaymentListener {
                     paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_CLOSE:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
                     break;
                 case ZPC_TRANXSTATUS_INPUT_INVALID:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
                     break;
                 case ZPC_TRANXSTATUS_FAIL:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
                     break;
                 case ZPC_TRANXSTATUS_PROCESSING:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
                     break;
                 case ZPC_TRANXSTATUS_SERVICE_MAINTENANCE:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
                     break;
                 case ZPC_TRANXSTATUS_NO_INTERNET:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
+                    responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINKCARD:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
+                    responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT:
                     if (mPaymentWrapper.mLinkCardListener != null) {
@@ -133,7 +134,7 @@ class WalletListener implements ZPPaymentListener {
                                 .onErrorLinkCardButInputBankAccount(pPaymentResult.paymentInfo.mapBank);
                     } else {
                         Timber.w("pay complete, response error: ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT");
-                        mPaymentWrapper.responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
+                        responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
                     }
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
@@ -162,7 +163,7 @@ class WalletListener implements ZPPaymentListener {
                     paymentIsCompleted = false; // will continue after update profile
                     break;
                 default:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     break;
             }
 
@@ -180,18 +181,21 @@ class WalletListener implements ZPPaymentListener {
     @Override
     public void onError(CError cError) {
         Timber.d("pay onError code [%s] msg [%s]", cError.payError, cError.messError);
+
+        PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
+
         switch (cError.payError) {
             case DATA_INVALID:
-                mPaymentWrapper.responseListener.onParameterError(cError.messError);
+                responseListener.onParameterError(cError.messError);
                 break;
             case COMPONENT_NULL:
-                mPaymentWrapper.responseListener.onAppError(cError.messError);
+                responseListener.onAppError(cError.messError);
                 break;
             case NETWORKING_ERROR:
-                mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
                 break;
             default:
-                mPaymentWrapper.responseListener.onAppError(cError.messError);
+                responseListener.onAppError(cError.messError);
                 break;
         }
 
@@ -217,7 +221,8 @@ class WalletListener implements ZPPaymentListener {
     @Override
     public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
-        mPaymentWrapper.responseListener.onPreComplete(isSuccessful, pTransId, pAppTransId);
+        PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
+        responseListener.onPreComplete(isSuccessful, pTransId, pAppTransId);
 
         if (isSuccessful) {
             updateBalance();

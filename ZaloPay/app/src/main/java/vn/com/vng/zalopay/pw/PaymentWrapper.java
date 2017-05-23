@@ -78,7 +78,7 @@ public class PaymentWrapper {
 
     final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
-    final IResponseListener responseListener;
+    private final IResponseListener responseListener;
 
     Activity mActivity;
     boolean mShowNotificationLinkCard;
@@ -88,6 +88,10 @@ public class PaymentWrapper {
     @TransactionType
     private int mPendingTransaction;
     private ZPPaymentListener mWalletListener;
+
+    IResponseListener getResponseListener() {
+        return responseListener;
+    }
 
     PaymentWrapper(IResponseListener responseListener, IRedirectListener redirectListener,
                    ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
