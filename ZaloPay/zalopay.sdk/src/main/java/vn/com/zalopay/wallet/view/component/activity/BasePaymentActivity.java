@@ -56,6 +56,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
@@ -79,6 +80,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.business.feedback.IFBCallback;
+import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.KeyboardType;
@@ -117,6 +120,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
+    private IFBCallback mFbCallBack = new IFBCallback() {
+        @Override
+        public void onCancel() {
+            Log.d("feedback", "onCancel()");
+        }
+
+        @Override
+        public void onComplete() {
+            Log.d("feedback", "onComplete()");
+
+        }
+    };
     //dialog asking open networking listener
     public ZPWPaymentOpenNetworkingDialogListener paymentOpenNetworkingDialogListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
@@ -301,19 +316,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     startActivity(intent);
 
                 } else if (i == R.id.support_button) {
-                    Intent intent = new Intent();
-                    intent.setAction(Constants.SUPPORT_INTRO_ACTION_FEEDBACK);
-                    if (mFeedback != null) {
-                        intent.putExtra(Constants.CATEGORY, mFeedback.category);
-                        intent.putExtra(Constants.TRANSACTIONID, mFeedback.transID);
-                        intent.putExtra(Constants.SCREENSHOT, mFeedback.imgByteArray);
-                        intent.putExtra(Constants.DESCRIPTION, mFeedback.description);
-                        intent.putExtra(Constants.ERRORCODE, mFeedback.errorCode);
+                    Log.d("OnClickListener", "support_button");
 
-                    } else {
-                        Log.d("support_button", "FeedBack == null");
-                    }
-                    startActivity(intent);
+                    startSupportScreen();
+
                 } else if (i == R.id.zpw_pay_support_buttom_view) {
                     Log.d("OnClickListener", "zpw_pay_support_buttom_view");
 
@@ -326,6 +332,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+
+    private void startSupportScreen() throws Exception {
+        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
+        if (mFeedback != null) {
+            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
+            collector.setScreenShot(mFeedback.imgByteArray);
+            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
+        } else {
+            Log.d("support_button", "IFeedBack == null");
+        }
+
+        feedBackCollector.showDialog(this);
+    }
 
     public static Activity getCurrentActivity() {
         synchronized (mActivityStack) {

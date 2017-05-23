@@ -22,6 +22,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserProfile;
+import vn.com.zalopay.wallet.business.feedback.IFeedBack;
+import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -487,6 +489,10 @@ public class GlobalData {
 
     public static void setIFingerPrint(IPaymentFingerPrint pFingerPrintFromMerchant) {
         PaymentFingerPrint.shared().setPaymentFingerPrint(pFingerPrintFromMerchant);
+    }
+
+    public static void setFeedBack(IFeedBack pFeedBack) {
+        FeedBackCollector.shared().setFeedBack(pFeedBack);
     }
 
     public static void terminateSDK() {
