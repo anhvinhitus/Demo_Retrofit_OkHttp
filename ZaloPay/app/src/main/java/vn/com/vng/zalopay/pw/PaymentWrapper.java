@@ -149,7 +149,7 @@ public class PaymentWrapper {
             return;
         }
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
-        paymentInfo.receiverInfo = createUserTransferInfo(displayName, avatar, zaloPayName);
+        paymentInfo.receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -380,14 +380,6 @@ public class PaymentWrapper {
     private UserInfo createUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
         UserInfo mUserInfo = new UserInfo();
         mUserInfo.phoneNumber = phoneNumber;
-        mUserInfo.userName = displayName;
-        mUserInfo.zaloPayName = zaloPayName;
-        mUserInfo.avatar = avatar;
-        return mUserInfo;
-    }
-
-    private UserInfo createUserTransferInfo(String displayName, String avatar, String zaloPayName) {
-        UserInfo mUserInfo = new UserInfo();
         mUserInfo.userName = displayName;
         mUserInfo.zaloPayName = zaloPayName;
         mUserInfo.avatar = avatar;
