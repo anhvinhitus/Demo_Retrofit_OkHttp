@@ -117,7 +117,7 @@ public class PaymentWrapper {
                 balanceRepository, mCompositeSubscription);
     }
 
-    public void payWithToken(Activity activity, long appId, String transactionToken, int source) {
+    public void payWithToken(@NonNull Activity activity, long appId, String transactionToken, int source) {
         Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
