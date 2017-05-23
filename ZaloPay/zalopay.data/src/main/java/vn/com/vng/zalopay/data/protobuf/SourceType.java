@@ -15,7 +15,11 @@ public enum SourceType implements WireEnum {
 
   SEND(1),
 
-  RESEND(2);
+  RESEND(2),
+
+  PULL(3),
+
+  RECOVER(4);
 
   public static final ProtoAdapter<SourceType> ADAPTER = ProtoAdapter.newEnumAdapter(SourceType.class);
 
@@ -33,6 +37,8 @@ public enum SourceType implements WireEnum {
       case 0: return UNKNOWN_SOURCETYPE;
       case 1: return SEND;
       case 2: return RESEND;
+      case 3: return PULL;
+      case 4: return RECOVER;
       default: return null;
     }
   }

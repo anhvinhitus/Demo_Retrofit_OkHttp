@@ -29,6 +29,8 @@ enum SourceType {
 	UNKNOWN_SOURCETYPE = 0;
 	SEND = 1;
 	RESEND = 2;
+	PULL = 3;
+	RECOVER = 4;
 }
 
 // Define type of message that client sends to server
@@ -79,7 +81,7 @@ enum PaymentCode {
 // Zalo Pay: 2.0
 message MessageSendUser {
 	bytes	data = 1;
-	string	signature = 2;
+	string	signature = 2; 
 	int64	expiretime = 3;
 	uint64 usrid = 4;
 	string pushtitle = 5;
@@ -191,7 +193,7 @@ message UpdateStatus {
 // Zalo Pay: 2.0
 message MessageToGroup {
 	bytes	data = 1;
-	string	signature = 2;
+	string	signature = 2; 
 	int64	expiretime = 3;
 	repeated uint64 uids = 4;
 	string	pushtitle = 5;
@@ -225,4 +227,5 @@ message PaymentResponseMessage {
 	int32	resultcode = 2;
 	string	resultdata = 3;
 	uint64 usrid = 4; // Zalo Pay 2.12
+	uint32 sourceid = 5; // Zalo Pay 2.12
 }
