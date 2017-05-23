@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -59,38 +61,59 @@ public class PaymentWrapper {
         void onResponseError(int status);
     }
 
+    @Inject
+    ZaloPayRepository zaloPayRepository;
+
+    @Inject
+    BalanceStore.Repository balanceRepository;
+
+    @Inject
+    TransactionStore.Repository transactionRepository;
+
+    @Inject
+    Navigator mNavigator;
+
     final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
     final IResponseListener responseListener;
-    private final ZaloPayRepository zaloPayRepository;
-    private final BalanceStore.Repository balanceRepository;
-    final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
+
+    Activity mActivity;
     boolean mShowNotificationLinkCard;
+
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private ZPWPaymentInfo mPendingOrder;
     @TransactionType
     private int mPendingTransaction;
+    private ZPPaymentListener mWalletListener;
 
-    private final ZPPaymentListener mWalletListener;
-
-    Activity mActivity;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
-    PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-                   TransactionStore.Repository transactionRepository,
-                   IResponseListener responseListener, IRedirectListener redirectListener,
+    PaymentWrapper(IResponseListener responseListener, IRedirectListener redirectListener,
                    ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
         Timber.d("Create new instance of PaymentWrapper[%s]", this);
-        this.balanceRepository = balanceRepository;
-        this.zaloPayRepository = zaloPayRepository;
         this.responseListener = responseListener;
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
+    }
+
+    /**
+     * Initialize internal components.
+     * Should call this method right after calling build() from PaymentWrapperBuilder.
+     *
+     * Throws IllegalStateException when UserComponent is NULL
+     */
+    public void initializeComponents() {
+        UserComponent component = getUserComponent();
+
+        if (component == null) {
+            throw new IllegalStateException("Illegal app's state to initialize PaymentWrapper");
+        }
+
+        component.inject(this);
+
         mWalletListener = new WalletListener(this, transactionRepository,
                 balanceRepository, mCompositeSubscription);
     }
-    
+
     public void payWithToken(Activity activity, long appId, String transactionToken, int source) {
         Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
@@ -344,9 +367,7 @@ public class PaymentWrapper {
         Timber.i("PaymentWrapper is cleaning up");
         mActivity = null;
         clearPendingOrder();
-        if (mCompositeSubscription != null) {
-            mCompositeSubscription.clear();
-        }
+        mCompositeSubscription.clear();
     }
 
     @Override

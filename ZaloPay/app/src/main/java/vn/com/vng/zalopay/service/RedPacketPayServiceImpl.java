@@ -42,8 +42,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
         this.paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener(listener))
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
@@ -53,6 +51,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 })
                 .setShowNotificationLinkCard(false)
                 .build();
+        this.paymentWrapper.initializeComponents();
 
         this.paymentWrapper.payWithOrder(activity, bundleOrder, ZPPaymentSteps.OrderSource_MerchantApp);
     }

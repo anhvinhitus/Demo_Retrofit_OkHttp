@@ -413,10 +413,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     }
 
     private PaymentWrapper getPaymentWrapper(final long appId, final boolean isAppToApp) {
-        return new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
+        PaymentWrapper wrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new AbsPWResponseListener(mView.getActivity()) {
                     @Override
                     protected ILoadDataView getView() {
@@ -453,6 +450,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                         }
                     }
                 }).build();
+        wrapper.initializeComponents();
+        return wrapper;
     }
 
     private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {

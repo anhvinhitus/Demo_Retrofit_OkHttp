@@ -49,18 +49,13 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
     private EventBus mEventBus;
 
     @Inject
-    BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
-                          ZaloPayRepository zaloPayRepository,
-                          TransactionStore.Repository transactionRepository,
+    BalanceTopupPresenter(ZaloPayRepository zaloPayRepository,
                           User user,
                           Navigator navigator, EventBus eventBus) {
         mZaloPayRepository = zaloPayRepository;
         mUser = user;
         mNavigator = navigator;
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
@@ -72,6 +67,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                     }
                 })
                 .build();
+        paymentWrapper.initializeComponents();
         mEventBus = eventBus;
     }
 

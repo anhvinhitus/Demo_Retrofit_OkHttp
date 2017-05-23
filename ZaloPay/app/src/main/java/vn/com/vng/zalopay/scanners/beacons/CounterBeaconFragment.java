@@ -18,28 +18,23 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.scanners.models.PaymentRecord;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
@@ -51,14 +46,6 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     private PaymentWrapper mPaymentWrapper;
     private final HashMap<String, OrderCache> mTransactionCache = new HashMap<>();
 
-    @Inject
-    ZaloPayRepository zaloPayRepository;
-
-    @Inject
-    TransactionStore.Repository mTransactionRepository;
-
-    @Inject
-    BalanceStore.Repository mBalanceRepository;
 
     @BindView(R.id.beaconList)
     RecyclerView mRecyclerView;
@@ -97,9 +84,6 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         }
 
         mPaymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
@@ -108,6 +92,8 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
                     }
                 })
                 .build();
+        mPaymentWrapper.initializeComponents();
+
         Timber.d("Finish setupFragmentComponent");
     }
 

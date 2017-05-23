@@ -254,10 +254,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     private PaymentWrapper getPaymentWrapper() {
-        return new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
+        PaymentWrapper wrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new DefaultPaymentResponseListener() {
                     @Override
                     protected ILoadDataView getView() {
@@ -274,6 +271,9 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
                 })
                 .setLinkCardListener(new LinkCardListener())
                 .build();
+        wrapper.initializeComponents();
+
+        return wrapper;
     }
 
     private class LinkCardListener implements PaymentWrapper.ILinkCardListener {

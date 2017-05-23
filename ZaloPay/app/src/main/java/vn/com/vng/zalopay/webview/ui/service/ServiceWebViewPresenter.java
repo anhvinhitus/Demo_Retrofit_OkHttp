@@ -40,15 +40,9 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
     private PaymentWrapper mPaymentWrapper;
 
     @Inject
-    ServiceWebViewPresenter(BalanceStore.Repository balanceRepository,
-                            ZaloPayRepository zaloPayRepository,
-                            TransactionStore.Repository transactionRepository,
-                            Navigator navigator) {
+    ServiceWebViewPresenter(Navigator navigator) {
         this.mNavigator = navigator;
         this.mPaymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
@@ -60,6 +54,7 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
                     }
                 })
                 .build();
+        this.mPaymentWrapper.initializeComponents();
     }
 
     void initData(Bundle arguments) {

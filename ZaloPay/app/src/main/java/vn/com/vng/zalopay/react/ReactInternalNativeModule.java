@@ -64,9 +64,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private INavigator navigator;
     private AppResourceStore.Repository mResourceRepository;
-    private BalanceStore.Repository mBalanceRepository;
-    private ZaloPayRepository mZaloPayRepository;
-    private TransactionStore.Repository mTransactionRepository;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private NotificationStore.Repository mNotificationRepository;
@@ -77,18 +74,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
                               INavigator navigator, AppResourceStore.Repository resourceRepository,
                               NotificationStore.Repository mNotificationRepository,
-                              ZaloPayRepository zaloPayRepository,
-                              TransactionStore.Repository transactionRepository,
-                              BalanceStore.Repository balanceRepository,
                               NetworkService networkServiceWithRetry
     ) {
         super(reactContext);
         this.navigator = navigator;
         this.mResourceRepository = resourceRepository;
         this.mNotificationRepository = mNotificationRepository;
-        this.mZaloPayRepository = zaloPayRepository;
-        this.mTransactionRepository = transactionRepository;
-        this.mBalanceRepository = balanceRepository;
 
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
         this.mUser = user;
@@ -359,10 +350,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     private PaymentWrapper getPaymentWrapper() {
-        return new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
+        PaymentWrapper wrapper = new PaymentWrapperBuilder()
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
                     public Object getContext() {
@@ -392,6 +380,8 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                         hideLoading();
                     }
                 }).build();
+        wrapper.initializeComponents();
+        return wrapper;
     }
 
 

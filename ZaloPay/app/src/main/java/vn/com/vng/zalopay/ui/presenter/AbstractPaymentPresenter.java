@@ -37,15 +37,9 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
 
     public abstract void onPayAppError(String msg);
 
-    public AbstractPaymentPresenter(BalanceStore.Repository balanceRepository,
-                                    ZaloPayRepository zaloPayRepository,
-                                    TransactionStore.Repository transactionRepository,
-                                    Navigator navigator) {
+    public AbstractPaymentPresenter(Navigator navigator) {
         mNavigator = navigator;
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
@@ -54,6 +48,7 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
                     }
                 })
                 .build();
+        paymentWrapper.initializeComponents();
     }
 
     protected boolean zpTransaction(JSONObject jsonObject, int source) {

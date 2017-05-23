@@ -33,30 +33,22 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 public class ReactPaymentServiceImpl implements IPaymentService {
 
     private final MerchantStore.Repository mMerchantRepository;
-    private final BalanceStore.Repository mBalanceRepository;
-    private final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper mPaymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactPaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
-                                   BalanceStore.Repository balanceRepository,
-                                   TransactionStore.Repository transactionRepository) {
+    public ReactPaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository) {
         this.mMerchantRepository = zaloPayIAPRepository;
-        this.mBalanceRepository = balanceRepository;
-        this.mTransactionRepository = transactionRepository;
     }
 
     @Override
     public void pay(Activity activity, final Promise promise, Order order) {
 
         this.mPaymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(null)
-                .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener(promise))
                 .build();
+        this.mPaymentWrapper.initializeComponents();
 
         this.mPaymentWrapper.payWithOrder(activity, order, ZPPaymentSteps.OrderSource_MerchantApp);
     }

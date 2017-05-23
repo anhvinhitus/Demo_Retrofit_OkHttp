@@ -44,23 +44,12 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
 
     private NfcAdapter mNfcAdapter;
 
-    private ZaloPayRepository zaloPayRepository;
-
-    private BalanceStore.Repository mBalanceRepository;
-
-    private TransactionStore.Repository mTransactionRepository;
-
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
     private Context mApplicationContext;
 
     @Inject
-    NFCReaderPresenter(Context context, Navigator navigator, ZaloPayRepository zaloPayRepository,
-                       BalanceStore.Repository mBalanceRepository,
-                       TransactionStore.Repository mTransactionRepository) {
-        this.zaloPayRepository = zaloPayRepository;
-        this.mBalanceRepository = mBalanceRepository;
-        this.mTransactionRepository = mTransactionRepository;
+    NFCReaderPresenter(Context context, Navigator navigator) {
         this.mNavigator = navigator;
         this.mApplicationContext = context;
         initPaymentWrapper();
@@ -177,9 +166,6 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
 
     private void initPaymentWrapper() {
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
@@ -191,6 +177,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
                     }
                 })
                 .build();
+        paymentWrapper.initializeComponents();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -55,6 +55,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountFragment;
+import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.react.base.ExternalReactFragment;
 import vn.com.vng.zalopay.react.base.InternalReactFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
@@ -244,4 +245,6 @@ public interface UserComponent {
     void inject(HomeCollapseHeaderFragment f);
 
     void inject(HomeTopHeaderFragment f);
+
+    void inject(PaymentWrapper paymentWrapper);
 }

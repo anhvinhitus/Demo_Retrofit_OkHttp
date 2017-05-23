@@ -86,21 +86,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onGetCardSupportSuccess(List<ZPCard> cardSupportList);
 
-    AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
-                              Navigator navigator,
-                              BalanceStore.Repository balanceRepository,
-                              TransactionStore.Repository transactionRepository,
+    AbstractLinkCardPresenter(Navigator navigator,
                               User user, EventBus eventBus) {
         mNavigator = navigator;
         this.mUser = user;
         this.mEventBus = eventBus;
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
+        paymentWrapper.initializeComponents();
     }
 
     @Override

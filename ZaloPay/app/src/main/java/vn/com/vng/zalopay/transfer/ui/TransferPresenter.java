@@ -88,9 +88,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
     @Inject
     TransferPresenter(User user, NotificationStore.Repository notificationRepository,
-                      BalanceStore.Repository balanceRepository,
                       ZaloPayRepository zaloPayRepository,
-                      TransactionStore.Repository transactionRepository,
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
                       Context applicationContext, ZaloSdkApi zaloSdkApi,
@@ -107,9 +105,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mTransferNotificationHelper = new TransferNotificationHelper(notificationRepository, user);
 
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
@@ -122,6 +117,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                     }
                 })
                 .build();
+        paymentWrapper.initializeComponents();
+
         this.mZaloSdkApi = zaloSdkApi;
         this.mFriendRepository = friendRepository;
     }

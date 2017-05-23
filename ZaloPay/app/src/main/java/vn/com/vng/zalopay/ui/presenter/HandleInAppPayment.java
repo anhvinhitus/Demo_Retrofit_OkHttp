@@ -80,10 +80,7 @@ public class HandleInAppPayment {
     }
 
     private PaymentWrapper getPaymentWrapper() {
-        return new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
+        PaymentWrapper wrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new AbsPWResponseListener(mActivity) {
 
                     private String mTransactionId;
@@ -127,6 +124,8 @@ public class HandleInAppPayment {
                         mTransactionId = pTransId;
                     }
                 }).build();
+        wrapper.initializeComponents();
+        return wrapper;
     }
 
 

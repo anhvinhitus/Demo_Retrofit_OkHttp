@@ -52,7 +52,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     @Inject
     WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
                       ZaloPayRepository zaloPayRepository,
-                      TransactionStore.Repository transactionRepository,
                       Navigator navigator, User user
     ) {
         this.mBalanceRepository = balanceRepository;
@@ -62,9 +61,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         this.mUser = user;
 
         paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
@@ -76,6 +72,8 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                     }
                 })
                 .build();
+        paymentWrapper.initializeComponents();
+
     }
 
     public void withdraw(final long amount) {
