@@ -22,6 +22,6 @@ public class EventLogData extends AbstractLogData {
 
     @Override
     public String getMessage() {
-        return String.format(Locale.getDefault(), MSG_FORMAT, eventType, eventId, value == null ? "" : value, timestamp);
+        return String.format(Locale.getDefault(), MSG_FORMAT, eventType, eventId, value == null ? 0 : value, timestamp);
     }
 }
