@@ -166,6 +166,14 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
         mPaymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
+    void onPageFinished(String url) {
+        if (getHistoryWebViewUrl().equals(url)) {
+            mView.hideHistoryMenuItem();
+        } else {
+            mView.showHistoryMenuItem();
+        }
+    }
+
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
         @Override
         protected ILoadDataView getView() {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,8 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
  * Service web
  */
 public class ServiceWebViewFragment extends WebViewFragment implements IWebView {
+
+    private boolean mShowHistoryMenuItem = true;
 
     @Inject
     ServiceWebViewPresenter mPresenter;
@@ -109,7 +112,9 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.servicewebapp_menu, menu);
+        if (mShowHistoryMenuItem) {
+            inflater.inflate(R.menu.servicewebapp_menu, menu);
+        }
         //super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -125,6 +130,25 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPageFinished(String url) {
+        if (mPresenter != null) {
+            mPresenter.onPageFinished(url);
+        }
+    }
+
+    @Override
+    public void showHistoryMenuItem() {
+        mShowHistoryMenuItem = true;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+    }
+
+    @Override
+    public void hideHistoryMenuItem() {
+        mShowHistoryMenuItem = false;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 
     @Override
