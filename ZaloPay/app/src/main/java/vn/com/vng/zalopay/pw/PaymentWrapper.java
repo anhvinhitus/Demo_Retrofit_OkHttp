@@ -205,6 +205,7 @@ public class PaymentWrapper {
         }
     }
 
+    // only used in CounterBeaconFragment
     public void getOrder(long appId, String transactionToken, final IGetOrderCallback callback) {
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
@@ -259,7 +260,7 @@ public class PaymentWrapper {
         callManagerAccountAPI(activity, bankType, ELinkAccType.LINK);
     }
 
-    public void unLinkAccount(Activity activity, String bankType) {
+    public void unlinkAccount(Activity activity, String bankType) {
         callManagerAccountAPI(activity, bankType, ELinkAccType.UNLINK);
     }
 

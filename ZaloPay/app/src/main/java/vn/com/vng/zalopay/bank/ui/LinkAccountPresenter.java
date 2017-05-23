@@ -142,7 +142,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (paymentWrapper == null || mView == null || bankAccount == null) {
             return;
         }
-        paymentWrapper.unLinkAccount(mView.getActivity(), bankAccount.mBankCode);
+        paymentWrapper.unlinkAccount(mView.getActivity(), bankAccount.mBankCode);
     }
 
     @Override
