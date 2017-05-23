@@ -1,19 +1,27 @@
 package vn.com.zalopay.feedback.collectors;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import vn.com.zalopay.feedback.CollectorSetting;
 import vn.com.zalopay.feedback.IFeedbackCollector;
+
 
 /**
  * Created by khattn on 26/12/2016.
  */
 
 public class DynamicCollector implements IFeedbackCollector {
-    private JSONObject mRetVal = new JSONObject();
+
+    private Map<String, String> mRetVal = new HashMap<>();
 
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -21,8 +29,15 @@ public class DynamicCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "dynamicinfo";
     }
 
-    public void put(String name, Object value) throws JSONException {
+    public DynamicCollector() {
+    }
+
+    public void put( String name, String value) {
         mRetVal.put(name, value);
+    }
+
+    public String getValue(String key) {
+        return mRetVal.get(key);
     }
 
     /**
@@ -40,6 +55,20 @@ public class DynamicCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
-        return mRetVal;
+        Set<Map.Entry<String, String>> entrySet = mRetVal.entrySet();
+        JSONObject ret = new JSONObject();
+        for (Map.Entry<String, String> entry : entrySet) {
+            try {
+                ret.put(entry.getKey(), entry.getValue());
+            } catch (JSONException ignore) {
+            }
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void cleanUp() {
+        mRetVal.clear();
     }
 }

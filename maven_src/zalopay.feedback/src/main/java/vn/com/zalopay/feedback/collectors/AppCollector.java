@@ -59,4 +59,9 @@ public class AppCollector implements IFeedbackCollector {
             return null;
         }
     }
+
+    @Override
+    public void cleanUp() {
+
+    }
 }
