@@ -32,6 +32,8 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
     @Inject
     ServiceWebViewPresenter mPresenter;
 
+    MenuItem mMenuItemHistory;
+
     public static ServiceWebViewFragment newInstance(Bundle bundle) {
         ServiceWebViewFragment fragment = new ServiceWebViewFragment();
         fragment.setArguments(bundle);
@@ -117,6 +119,8 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
         Timber.d("onOptionsItemSelected: %s", id);
         if (id == R.id.webapp_action_history) {
             loadUrl(mPresenter.getHistoryWebViewUrl());
+            mMenuItemHistory = item;
+            mMenuItemHistory.setVisible(false);
             return true;
         }
 
@@ -125,6 +129,9 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
 
     @Override
     public boolean onBackPressed() {
+        if (mMenuItemHistory != null && !mMenuItemHistory.isVisible()) {
+            mMenuItemHistory.setVisible(true);
+        }
         if (mPresenter != null && !mPresenter.isServiceWeb(getCurrentUrl())) {
             loadDefaultWebView();
             return true;
