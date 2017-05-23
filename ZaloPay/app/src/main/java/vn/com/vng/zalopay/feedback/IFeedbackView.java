@@ -12,4 +12,9 @@ interface IFeedbackView extends ILoadDataView {
     void insertScreenshot(Uri uri);
 
     void finish();
+
+    void setEmail(String email);
+
+    void setTransaction(String category, String transId, String errorMessage);
+
 }

@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 
-final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.ViewHolder> {
+final class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.ViewHolder> {
 
     private static final int FOOTER_VIEW = 1;
     private static final int ITEM_VIEW = 0;
@@ -25,9 +25,9 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
 
     private int maxScreenshot = 4;
 
-    public FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
-                           FeedbackAdapter.OnClickDeleteListener deleteListener,
-                           FeedbackAdapter.OnClickImageListener imageListener) {
+    FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
+                    FeedbackAdapter.OnClickDeleteListener deleteListener,
+                    FeedbackAdapter.OnClickImageListener imageListener) {
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;

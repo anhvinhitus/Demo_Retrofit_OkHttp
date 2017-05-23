@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.zpsdk.PaymentFeedBackCollector;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -445,7 +446,7 @@ public class PaymentWrapper {
         Timber.d("add log");
         ZPAnalytics.trackApptransidEvent(log);
 
-        SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
+        SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()), new PaymentFeedBackCollector());
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
