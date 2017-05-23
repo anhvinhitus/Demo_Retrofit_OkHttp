@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.promotion.PromotionEvent;
 
 /**
  * Created by AnhHieu on 5/9/16.

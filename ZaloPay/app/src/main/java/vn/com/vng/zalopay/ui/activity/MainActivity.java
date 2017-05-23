@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,8 +30,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.event.PromotionEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.promotion.PromotionEvent;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -269,7 +271,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void showCashBackView(PromotionEvent event) {
-        if (event == null) return;
+        if (event == null) {
+            return;
+        }
         String _temp = CurrencyUtil.formatCurrency(event.amount, true);
 
         SpannableString span = new SpannableString(_temp);
@@ -278,8 +282,12 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         tvCashBackTitle.setText(event.title);
         tvCashBackAmount.setText(span);
-        tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
-        tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
+        if(!TextUtils.isEmpty(event.campaign)){
+            tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
+        }
+        if(event.actions != null && !event.actions.isEmpty() && !TextUtils.isEmpty(event.actions.get(0).title)){
+            tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
+        }
 
         mParentPromotionCashBackView.setVisibility(View.VISIBLE);
         if (mPromotionCashBackView != null) {
@@ -383,7 +391,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @OnClick(R.id.promotion_cash_back_tv_action)
     public void onClickCashBackDetail() {
-        //navigator.startTransactionDetail(getActivity(), String.valueOf(transactionId));
-        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+        presenter.actionOnPromotion();
     }
 }
