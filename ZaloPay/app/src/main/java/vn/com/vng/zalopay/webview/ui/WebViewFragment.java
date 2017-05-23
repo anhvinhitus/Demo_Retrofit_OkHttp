@@ -227,6 +227,10 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         super.hideProgressDialog();
     }
 
+    @Override
+    public void onPageFinished(String url) {
+    }
+
     public void showLoading() {
         super.showProgressDialogWithTimeout();
     }

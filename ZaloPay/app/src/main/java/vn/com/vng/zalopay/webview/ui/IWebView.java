@@ -18,4 +18,8 @@ public interface IWebView extends ILoadDataView {
     void showInputErrorDialog();
 
     void loadUrl(String urlPage);
+
+    void showHistoryMenuItem();
+
+    void hideHistoryMenuItem();
 }

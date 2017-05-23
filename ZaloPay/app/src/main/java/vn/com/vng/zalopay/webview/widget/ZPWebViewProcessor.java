@@ -69,6 +69,9 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         if (mHasError || mWebView == null) {
             return;
         }
+        if (mWebViewListener != null) {
+            mWebViewListener.onPageFinished(url);
+        }
         mLoadPageFinished = true;
 //        hideLoading();
         injectScriptFile("webapp.js");
@@ -279,6 +282,8 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         void showLoading();
 
         void hideLoading();
+
+        void onPageFinished(String url);
     }
 
     public void onPause() {
