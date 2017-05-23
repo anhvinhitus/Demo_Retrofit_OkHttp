@@ -8,7 +8,7 @@ import java.lang.Override;
 
 /**
  * Define the response code from Payment Connector
- * Zalo Pay: 2.10
+ * Zalo Pay: 2.12
  */
 public enum PaymentCode implements WireEnum {
   PAY_UNKNOWN(0),

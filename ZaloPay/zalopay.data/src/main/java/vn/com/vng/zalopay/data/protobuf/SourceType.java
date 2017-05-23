@@ -8,7 +8,7 @@ import java.lang.Override;
 
 /**
  * Source Type Notification message
- * Zalo Pay: 2.10
+ * Zalo Pay: 2.12
  */
 public enum SourceType implements WireEnum {
   UNKNOWN_SOURCETYPE(0),

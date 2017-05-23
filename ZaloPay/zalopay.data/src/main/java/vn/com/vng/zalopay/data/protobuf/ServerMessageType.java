@@ -26,7 +26,7 @@ public enum ServerMessageType implements WireEnum {
   RECOVERY_RESPONSE(5),
 
   /**
-   * available from Zalo Pay 2.10
+   * available from Zalo Pay 2.12
    */
   PAYMENT_RESPONSE(6);
 

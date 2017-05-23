@@ -29,6 +29,8 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
 
   public static final Long DEFAULT_STARTTIME = 0L;
 
+  public static final Long DEFAULT_USRID = 0L;
+
   @WireField(
       tag = 1,
       adapter = "vn.com.vng.zalopay.data.protobuf.RecoveryMessage#ADAPTER",
@@ -42,14 +44,24 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
   )
   public final Long starttime;
 
-  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime) {
-    this(messages, starttime, ByteString.EMPTY);
+  /**
+   * Zalo Pay 2.11
+   */
+  @WireField(
+      tag = 3,
+      adapter = "com.squareup.wire.ProtoAdapter#UINT64"
+  )
+  public final Long usrid;
+
+  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime, Long usrid) {
+    this(messages, starttime, usrid, ByteString.EMPTY);
   }
 
-  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime, ByteString unknownFields) {
+  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime, Long usrid, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.messages = Internal.immutableCopyOf("messages", messages);
     this.starttime = starttime;
+    this.usrid = usrid;
   }
 
   @Override
@@ -57,6 +69,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     Builder builder = new Builder();
     builder.messages = Internal.copyOf("messages", messages);
     builder.starttime = starttime;
+    builder.usrid = usrid;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -68,7 +81,8 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     DataRecoveryResponse o = (DataRecoveryResponse) other;
     return unknownFields().equals(o.unknownFields())
         && messages.equals(o.messages)
-        && Internal.equals(starttime, o.starttime);
+        && Internal.equals(starttime, o.starttime)
+        && Internal.equals(usrid, o.usrid);
   }
 
   @Override
@@ -78,6 +92,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
       result = unknownFields().hashCode();
       result = result * 37 + messages.hashCode();
       result = result * 37 + (starttime != null ? starttime.hashCode() : 0);
+      result = result * 37 + (usrid != null ? usrid.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -88,6 +103,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     StringBuilder builder = new StringBuilder();
     if (!messages.isEmpty()) builder.append(", messages=").append(messages);
     if (starttime != null) builder.append(", starttime=").append(starttime);
+    if (usrid != null) builder.append(", usrid=").append(usrid);
     return builder.replace(0, 2, "DataRecoveryResponse{").append('}').toString();
   }
 
@@ -95,6 +111,8 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     public List<RecoveryMessage> messages;
 
     public Long starttime;
+
+    public Long usrid;
 
     public Builder() {
       messages = Internal.newMutableList();
@@ -111,9 +129,17 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
       return this;
     }
 
+    /**
+     * Zalo Pay 2.11
+     */
+    public Builder usrid(Long usrid) {
+      this.usrid = usrid;
+      return this;
+    }
+
     @Override
     public DataRecoveryResponse build() {
-      return new DataRecoveryResponse(messages, starttime, super.buildUnknownFields());
+      return new DataRecoveryResponse(messages, starttime, usrid, super.buildUnknownFields());
     }
   }
 
@@ -126,6 +152,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     public int encodedSize(DataRecoveryResponse value) {
       return RecoveryMessage.ADAPTER.asRepeated().encodedSizeWithTag(1, value.messages)
           + (value.starttime != null ? ProtoAdapter.UINT64.encodedSizeWithTag(2, value.starttime) : 0)
+          + (value.usrid != null ? ProtoAdapter.UINT64.encodedSizeWithTag(3, value.usrid) : 0)
           + value.unknownFields().size();
     }
 
@@ -133,6 +160,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     public void encode(ProtoWriter writer, DataRecoveryResponse value) throws IOException {
       RecoveryMessage.ADAPTER.asRepeated().encodeWithTag(writer, 1, value.messages);
       if (value.starttime != null) ProtoAdapter.UINT64.encodeWithTag(writer, 2, value.starttime);
+      if (value.usrid != null) ProtoAdapter.UINT64.encodeWithTag(writer, 3, value.usrid);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -144,6 +172,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
         switch (tag) {
           case 1: builder.messages.add(RecoveryMessage.ADAPTER.decode(reader)); break;
           case 2: builder.starttime(ProtoAdapter.UINT64.decode(reader)); break;
+          case 3: builder.usrid(ProtoAdapter.UINT64.decode(reader)); break;
           default: {
             FieldEncoding fieldEncoding = reader.peekFieldEncoding();
             Object value = fieldEncoding.rawProtoAdapter().decode(reader);

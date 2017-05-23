@@ -24,7 +24,7 @@ enum OSType {
 }
 
 // Source Type Notification message
-// Zalo Pay: 2.10
+// Zalo Pay: 2.12
 enum SourceType {
 	UNKNOWN_SOURCETYPE = 0;
 	SEND = 1;
@@ -40,7 +40,7 @@ enum MessageType {
 	PING_SERVER = 3;
 	MSG_TO_USER_REQUEST = 4;
 	RECOVERY_REQUEST = 5;
-	PAYMENT_REQUEST = 6; // available from Zalo Pay 2.10
+	PAYMENT_REQUEST = 6; // available from Zalo Pay 2.12
 }
 
 // Define type of message that server sends to client
@@ -53,7 +53,7 @@ enum ServerMessageType {
 	PUSH_NOTIFICATION = 101;
 	MSG_TO_USER_RESPONSE = 4;
 	RECOVERY_RESPONSE = 5;
-	PAYMENT_RESPONSE = 6; // available from Zalo Pay 2.10
+	PAYMENT_RESPONSE = 6; // available from Zalo Pay 2.12
 }
 
 // Define the order to get recover notification message
@@ -64,7 +64,7 @@ enum RecoveryOrder {
 }
 
 // Define the response code from Payment Connector
-// Zalo Pay: 2.10
+// Zalo Pay: 2.12
 enum PaymentCode {
 	PAY_UNKNOWN = 0;
 	PAY_SUCCESS = 1;
@@ -103,6 +103,7 @@ message RecoveryMessage {
 message DataRecoveryResponse {
 	repeated RecoveryMessage messages = 1;
 	uint64	starttime = 2;
+	uint64 usrid = 3; // Zalo Pay 2.11
 }
 
 // Authentication message that client sends to server
@@ -134,6 +135,7 @@ message DataResponseUser {
 	uint64	mtaid = 4;
 	uint64	mtuid = 5;
 	uint32	sourceid = 6;
+	uint64 usrid = 7; // Zalo Pay 2.11
 }
 
 // Message pushed to User by notification service: APNS, GCM
@@ -205,7 +207,7 @@ message NameValuePair {
 }
 
 // Request message that client sends to Payment Connector
-// Zalo Pay: 2.10
+// Zalo Pay: 2.12
 message PaymentRequestMessage {
 	uint64	requestid = 1;
 	string	domain = 2;
@@ -217,9 +219,10 @@ message PaymentRequestMessage {
 }
 
 // Response message that Payment Connector sends to client as result of previous request
-// Zalo Pay: 2.10
+// Zalo Pay: 2.12
 message PaymentResponseMessage {
 	uint64	requestid = 1;
 	int32	resultcode = 2;
 	string	resultdata = 3;
+	uint64 usrid = 4; // Zalo Pay 2.12
 }
