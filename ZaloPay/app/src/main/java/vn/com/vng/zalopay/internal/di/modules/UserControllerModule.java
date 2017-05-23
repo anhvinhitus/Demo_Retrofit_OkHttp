@@ -28,9 +28,7 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository,
-                                            BalanceStore.Repository balanceRepository,
-                                            TransactionStore.Repository transactionRepository) {
-        return new ReactPaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository);
+    IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository) {
+        return new ReactPaymentServiceImpl(merchantRepository);
     }
 }

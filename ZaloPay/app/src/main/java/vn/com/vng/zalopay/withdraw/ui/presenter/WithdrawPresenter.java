@@ -155,7 +155,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             return;
         }
 
-        paymentWrapper.withdraw(mView.getActivity(), order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber), mUser.zalopayname);
+        paymentWrapper.withdraw(mView.getActivity(), order);
 
         mView.hideLoading();
     }

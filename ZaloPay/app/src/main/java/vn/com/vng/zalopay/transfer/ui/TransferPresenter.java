@@ -402,7 +402,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mTransferObject.amount = order.amount;
         mTransferObject.message = order.description;
 
-        paymentWrapper.transfer(mView.getActivity(), order, mTransferObject.displayName, mTransferObject.avatar, mTransferObject.phoneNumber, mTransferObject.zalopayName, TrackApptransidHelper.transfrom(mTransferObject.activateSource));
+        paymentWrapper.transfer(mView.getActivity(), order,
+                mTransferObject.displayName, mTransferObject.avatar,
+                mTransferObject.phoneNumber, mTransferObject.zalopayName,
+                TrackApptransidHelper.transfrom(mTransferObject.activateSource));
         hideLoading();
     }
 

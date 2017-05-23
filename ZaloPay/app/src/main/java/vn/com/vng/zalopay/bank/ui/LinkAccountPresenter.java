@@ -43,12 +43,9 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Inject
-    LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
-                         Navigator navigator,
-                         BalanceStore.Repository balanceRepository,
-                         TransactionStore.Repository transactionRepository,
+    LinkAccountPresenter(Navigator navigator,
                          User user, EventBus eventBus) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
+        super(navigator, user, eventBus);
     }
 
     void linkAccountIfNotExist(ZPCard zpCard) {

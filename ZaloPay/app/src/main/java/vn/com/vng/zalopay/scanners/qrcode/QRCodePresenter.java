@@ -87,14 +87,11 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     @Inject
-    QRCodePresenter(BalanceStore.Repository balanceRepository,
-                    ZaloPayRepository zaloPayRepository,
-                    TransactionStore.Repository transactionRepository,
-                    QRCodeStore.Repository qrCodeRepository,
+    QRCodePresenter(QRCodeStore.Repository qrCodeRepository,
                     Context applicationContext,
                     Navigator navigator,
                     User user) {
-        super(balanceRepository, zaloPayRepository, transactionRepository, navigator);
+        super(navigator);
         Timber.d("New instance of QRCodePresenter");
         mApplicationContext = applicationContext;
         mNavigator = navigator;

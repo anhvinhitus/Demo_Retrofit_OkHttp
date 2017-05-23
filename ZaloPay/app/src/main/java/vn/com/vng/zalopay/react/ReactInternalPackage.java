@@ -41,7 +41,6 @@ public class ReactInternalPackage implements ReactPackage {
     private IRedPacketPayService paymentService;
     private AlertDialogProvider sweetAlertDialog;
     private AppResourceStore.Repository resourceRepository;
-    private ZaloPayRepository mZaloPayRepository;
 
     private NotificationStore.Repository mNotificationRepository;
 
@@ -81,7 +80,6 @@ public class ReactInternalPackage implements ReactPackage {
         this.mReactNativeHostable = reactNativeHostable;
         this.resourceRepository = resourceRepository;
         this.mUser = user;
-        this.mZaloPayRepository = zaloPayRepository;
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
 
     }
@@ -91,7 +89,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, resourceRepository, mNotificationRepository, mZaloPayRepository, mTransactionRepository, mBalanceRepository, mNetworkServiceWithRetry));
+        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, resourceRepository, mNotificationRepository, mNetworkServiceWithRetry));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mUser, mNotificationRepository, mEventBus));

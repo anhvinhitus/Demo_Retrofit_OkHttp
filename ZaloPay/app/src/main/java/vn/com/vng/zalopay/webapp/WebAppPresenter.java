@@ -52,12 +52,9 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
 
     @Inject
-    WebAppPresenter(BalanceStore.Repository balanceRepository,
-                    ZaloPayRepository zaloPayRepository,
-                    TransactionStore.Repository transactionRepository,
-                    AccountStore.Repository accountRepository,
+    WebAppPresenter(AccountStore.Repository accountRepository,
                     Navigator navigator) {
-        super(balanceRepository, zaloPayRepository, transactionRepository, navigator);
+        super(navigator);
         this.mAccountRepository = accountRepository;
     }
 
