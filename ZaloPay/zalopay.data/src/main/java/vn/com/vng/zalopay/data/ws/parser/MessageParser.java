@@ -24,7 +24,6 @@ import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.domain.Enums;
 
-import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.RECOVERY_RESPONSE;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -77,7 +76,7 @@ public class MessageParser implements Parser {
                 event = processAuthenticationLoginSuccess(data);
             } else if (messageType == ServerMessageType.PONG_CLIENT) {
                 event = parsePongMessage(data);
-            } else if (messageType == RECOVERY_RESPONSE) {
+            } else if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
                 event = parseRecoveryResponse(data);
             }
         }

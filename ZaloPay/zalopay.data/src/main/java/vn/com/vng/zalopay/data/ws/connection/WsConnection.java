@@ -20,6 +20,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.data.protobuf.SourceType;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -343,7 +344,7 @@ public class WsConnection extends Connection {
                 return;
             }
 
-            if (!checkUserAndWriteErrorLog(message)) {
+            if (!checkUserAndWriteErrorLog(message, messageType)) {
                 return;
             }
 
@@ -422,20 +423,26 @@ public class WsConnection extends Connection {
             EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
 
-        private boolean checkUserAndWriteErrorLog(Event message) {
+        private boolean checkUserAndWriteErrorLog(Event message, ServerMessageType messageType) {
 
             if (message.usrid == 0) {
                 return true;
             }
 
-
             String usrid = String.valueOf(message.usrid);
-            if (!mUser.zaloPayId.equals(usrid)) {
-                ZPAnalytics.trackConnectorError(mUser.zaloPayId, usrid, message.mtuid, message.sourceid, System.currentTimeMillis());
-                return false;
+            if (mUser.zaloPayId.equals(usrid)) {
+                return true;
             }
 
-            return true;
+            int sourceid = message.sourceid;
+
+            if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
+                sourceid = SourceType.RECOVER.getValue();
+            }
+
+            ZPAnalytics.trackConnectorError(mUser.zaloPayId, usrid, message.mtuid, sourceid, System.currentTimeMillis());
+            return false;
+
         }
     }
 
