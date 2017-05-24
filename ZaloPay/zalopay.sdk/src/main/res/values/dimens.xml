@@ -107,7 +107,7 @@
     <dimen name="indicator_button_border">3dp</dimen>
     <dimen name="indicator_padding">20dp</dimen>
 
-    <dimen name="zpw_pin_margin">22dp</dimen>
+    <dimen name="zpw_pin_margin">24dp</dimen>
 
     <dimen name="zpw_edittext_padding_bottom">14dp</dimen>
     <dimen name="zpw_edittext_padding_top">10dp</dimen>

@@ -61,7 +61,7 @@
                 android:layout_toRightOf="@+id/zpw_gridview_pin"
                 android:gravity="center"
                 android:paddingBottom="@dimen/zpw_padding_10"
-                android:paddingLeft="@dimen/zpw_padding_8"
+                android:paddingLeft="4dp"
                 android:paddingTop="@dimen/zpw_padding_10"
                 android:singleLine="true"
                 android:text="@string/zpw_string_visible_pin_on"
