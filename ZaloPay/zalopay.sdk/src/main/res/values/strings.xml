@@ -541,4 +541,8 @@
     <string name="suffix_numberphone_vcb">3</string>
     <string name="sdk_error_numberphone_sdk_vcb"><![CDATA[Số điện thoại đăng ký Vietcombank <b>%1$s</b> và số điện thoại đăng ký mật khẩu thanh toán Zalo Pay <b>%2$s</b> không giống nhau. Vui lòng kiểm tra lại.]]></string>
     <string name="sdk_vcb_flow_type">1</string>
+    <string name="sdk_warning_version_support_linkchannel"><![CDATA[Vui lòng nâng cấp phiên bản mới nhất để thực hiện liên kết với <b>%1$s</b>]]></string>
+    <string name="sdk_warning_version_support_payment"><![CDATA[Vui lòng nâng cấp phiên bản mới nhất để thực hiện giao dịch với <b>%1$s</b>]]></string>
+    <string name="default_message_pmc_fee">Phí tính theo ngân hàng</string>
+    <string name="invalid_order_amount_bank">%1$s không hỗ trợ mệnh giá %2$s VND</string>
 </resources>

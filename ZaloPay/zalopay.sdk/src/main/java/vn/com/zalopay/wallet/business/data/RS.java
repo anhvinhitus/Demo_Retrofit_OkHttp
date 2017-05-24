@@ -47,6 +47,10 @@ public class RS {
     }
 
     public static final class string {
+        public static final String invalid_order_amount_bank = "invalid_order_amount_bank";
+        public static final String dialog_update_versionapp_button = "dialog_update_versionapp_button";
+        public static final String sdk_warning_version_support_linkchannel = "sdk_warning_version_support_linkchannel";
+        public static final String sdk_warning_version_support_payment = "sdk_warning_version_support_payment";
         public static final String sdk_vcb_flow_type = "sdk_vcb_flow_type";
         public static final String zpw_string_special_bankscript_vcb_auto_select_service = "zpw_string_special_bankscript_vcb_auto_select_service";
         public static final String sdk_error_numberphone_sdk_vcb = "sdk_error_numberphone_sdk_vcb";
@@ -77,11 +81,7 @@ public class RS {
         public static final String zpw_string_vcb_phonenumber_notfound_register = "zpw_string_vcb_phonenumber_notfound_register";
         public static final String zpw_string_vcb_phonenumber_notfound_unregister = "zpw_string_vcb_phonenumber_notfound_unregister";
         public static final String zpw_alert_networking_error_parse_website = "zpw_alert_networking_error_parse_website";
-<<<<<<< HEAD
-
-=======
         public static final String zpw_string_vcb_error_password = "zpw_string_vcb_error_password";
->>>>>>> 9fd9a35... [SDK] Apply app info v1
         public static final String zpw_warning_bidv_select_linkcard_payment = "zpw_warning_bidv_select_linkcard_payment";
         public static final String zpw_warning_bidv_linkcard_before_payment = "zpw_warning_bidv_linkcard_before_payment";
 
@@ -283,6 +283,7 @@ public class RS {
         public static final String sdk_invalid_missing_linkaccInfo = "sdk_invalid_missing_linkaccInfo";
 
         public static final String zpw_string_fee_free = "zpw_string_fee_free";
+        public static final String default_message_pmc_fee = "default_message_pmc_fee";
 
         public static final String zpw_string_channel_not_allow = "zpw_string_channel_not_allow";
         public static final String zpw_string_channel_not_allow_by_amount = "zpw_string_channel_not_allow_by_amount";

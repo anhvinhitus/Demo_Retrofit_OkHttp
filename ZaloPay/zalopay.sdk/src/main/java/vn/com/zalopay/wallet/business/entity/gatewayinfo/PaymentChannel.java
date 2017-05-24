@@ -21,6 +21,7 @@ public class PaymentChannel extends MiniPmcTransType {
         return paymentChannel;
     }
 
+    @Override
     public boolean isMapCardChannel() {
         return !TextUtils.isEmpty(this.f6no);
     }

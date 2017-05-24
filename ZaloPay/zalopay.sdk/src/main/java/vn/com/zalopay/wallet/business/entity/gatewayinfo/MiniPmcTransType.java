@@ -16,7 +16,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
-import vn.com.zalopay.wallet.utils.StringUtil;
 
 public class MiniPmcTransType implements Parcelable {
     public static final Creator<MiniPmcTransType> CREATOR = new Creator<MiniPmcTransType>() {
