@@ -33,4 +33,6 @@ public interface ZPTracker {
 
 
     void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode);
+
+    void trackConnectorError(String currentUid, String receivedUid, long mtuid, int sourceid, long timestamp);
 }

@@ -54,6 +54,12 @@ public class ZPAnalytics {
         }
     }
 
+    public static void trackConnectorError(String currentUid, String receivedUid, long mtuid, int sourceid, long timestamp) {
+        for (ZPTracker tracker : sTrackerList) {
+            tracker.trackConnectorError(currentUid, receivedUid, mtuid, sourceid, timestamp);
+        }
+    }
+
     public static void addTracker(ZPTracker tracker) {
         if (sTrackerList.contains(tracker)) {
             return;
@@ -110,6 +116,11 @@ public class ZPAnalytics {
         @Override
         public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
             Timber.tag("ZPAnalytics").d("API Error [%s-%s-%s-%s]", apiName, httpCode, serverCode, networkCode);
+        }
+
+        @Override
+        public void trackConnectorError(String currentUid, String receivedUid, long mtuid, int sourceid, long timestamp) {
+            Timber.tag("ZPAnalytics").e("Connector Error [%s-%s-%s-%s-%s]", currentUid, receivedUid, mtuid, sourceid, timestamp);
         }
     }
 }
