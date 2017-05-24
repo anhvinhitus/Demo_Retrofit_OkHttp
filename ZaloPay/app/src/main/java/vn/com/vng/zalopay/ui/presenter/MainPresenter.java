@@ -474,8 +474,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (mPromotionEvent != null && mPromotionEvent.actions != null && !mPromotionEvent.actions.isEmpty()) {
             switch (mPromotionEvent.actions.get(0).action) {
                 case ActionType.TRANSACTION_DETAIL:
-                    //navigator.startTransactionDetail(getActivity(), String.valueOf(transactionId));
-                    mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
+                    mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid));
+                    //mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
                     break;
                 default:
                     Timber.d("undefine action on promotion");
