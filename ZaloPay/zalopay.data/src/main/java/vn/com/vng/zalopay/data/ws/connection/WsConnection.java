@@ -423,6 +423,12 @@ public class WsConnection extends Connection {
         }
 
         private boolean checkUserAndWriteErrorLog(Event message) {
+
+            if (message.usrid == 0) {
+                return true;
+            }
+
+
             String usrid = String.valueOf(message.usrid);
             if (!mUser.zaloPayId.equals(usrid)) {
                 ZPAnalytics.trackConnectorError(mUser.zaloPayId, usrid, message.mtuid, message.sourceid, System.currentTimeMillis());
