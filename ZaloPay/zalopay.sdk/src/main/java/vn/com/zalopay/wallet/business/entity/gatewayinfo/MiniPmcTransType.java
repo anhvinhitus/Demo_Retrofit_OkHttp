@@ -240,7 +240,7 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public String getDefaultPmcFee(){
-        return isAtmChannel() ? GlobalData.getStringResource(RS.string.default_message_pmc_fee): GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+        return (isAtmChannel() && !isMapCardChannel()) ? GlobalData.getStringResource(RS.string.default_message_pmc_fee): GlobalData.getStringResource(RS.string.zpw_string_fee_free);
     }
 
     /***

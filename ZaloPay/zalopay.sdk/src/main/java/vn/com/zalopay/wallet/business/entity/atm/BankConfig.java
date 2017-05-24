@@ -40,13 +40,6 @@ public class BankConfig {
 
     public String loginbankurl;
 
-    /***
-     * Bank version support feature
-     * user input card number or select bank channel which not support on older version
-     * then need to show dialog into to user know about newer version
-     */
-    public String minappversion;
-
     public List<BankFunction> functions = null;
 
     /***
@@ -95,19 +88,6 @@ public class BankConfig {
             return name.substring(2);
         }
         return name;
-    }
-
-    public boolean isVersionSupport(String pAppVersion) {
-        Log.d(this, "start check support bank version in bank config");
-        if (TextUtils.isEmpty(pAppVersion)) {
-            return true;
-        }
-        int minAppVersionSupport = getMinAppVersionSupport();
-        if (minAppVersionSupport == 0) {
-            return true;
-        }
-        pAppVersion = pAppVersion.replace(".", "");
-        return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
     }
 
     @Override
@@ -209,13 +189,5 @@ public class BankConfig {
 
     public boolean isBankAccount() {
         return supporttype == 2;
-    }
-
-    public int getMinAppVersionSupport() {
-        if (!TextUtils.isEmpty(minappversion)) {
-            String clearMinAppVersion = minappversion.replace(".", "");
-            return Integer.parseInt(clearMinAppVersion);
-        }
-        return 0;
     }
 }

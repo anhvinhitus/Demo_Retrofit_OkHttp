@@ -232,6 +232,10 @@ public abstract class AdapterBase {
         return mMiniPmcTransType;
     }
 
+    public MiniPmcTransType getConfig(String pBankCode) {
+        return mMiniPmcTransType;
+    }
+
     /**
      * getter and setter
      */
