@@ -194,7 +194,7 @@ public class DataParameter {
 
         stringBuilder1.append("[");
         for (int i = 0; i < pTranstypeCheckSum.length; i++) {
-            stringBuilder1.append(pTranstypeCheckSum[i]);
+            stringBuilder1.append(pTranstypeCheckSum[i] != null ? pTranstypeCheckSum[i] : "");
             if (i + 1 < pTranstypeCheckSum.length) {
                 stringBuilder1.append(",");
             }

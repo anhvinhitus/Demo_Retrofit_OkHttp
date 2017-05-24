@@ -17,6 +17,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -143,7 +144,7 @@ public class ChannelStartProcessor extends SingletonBase {
             //reload bank account
             if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
                 BankLoader.loadBankList(mLoadBankListListener);
-            } else if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            } else if (!mChannel.isAtmChannel() && !mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
                 showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
             } else {
@@ -165,12 +166,11 @@ public class ChannelStartProcessor extends SingletonBase {
 
                                             @Override
                                             public void onOKevent() {
-                                                getActivity().notifyUpVersionToApp(false, pMinVersion, pMessage);
+                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), "force-app-update", "bank-future");
                                                 getActivity().recycleActivity();
                                             }
                                         }, pMessage,
                 GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_choose_again_button));
-        }
     }
 
     /**

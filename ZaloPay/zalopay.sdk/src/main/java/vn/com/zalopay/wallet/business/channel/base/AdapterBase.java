@@ -203,18 +203,21 @@ public abstract class AdapterBase {
             }
         }
     };
-
     public AdapterBase(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) {
         mOwnerActivity = new WeakReference<>(pOwnerActivity);
         mMiniPmcTransType = pMiniPmcTransType;
         mCard = new DPaymentCard();
     }
 
+    public void setMiniPmcTransType(MiniPmcTransType mMiniPmcTransType) {
+        this.mMiniPmcTransType = mMiniPmcTransType;
+    }
+
     public void requestReadOtpPermission() {
         getActivity().requestPermission(getActivity().getApplicationContext());//request permission read/view sms on android 6.0+
     }
 
-    public boolean needReloadPmcConfig() {
+    public boolean needReloadPmcConfig(String pBankCode) {
         return false;
     }
 
