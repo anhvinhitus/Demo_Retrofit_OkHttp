@@ -1,3 +1,8 @@
+Zalo Pay (Staging v2.11.0 - build 246) - Released on 2017-05-24
+- Update PC error log
+- Fix bug #ZPF-48
+- [APP] fix bug list card support show thiếu trên thiết bị nhỏ
+
 Zalo Pay (Staging v2.11.0 - build 245) - Released on 2017-05-24
 - [SDK] Fix bug #ZPF-38, #ZPF-39, #ZPF-43
 - Fix UI.
