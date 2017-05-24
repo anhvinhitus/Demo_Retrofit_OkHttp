@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>vn.com.zalopay</groupId>
   <artifactId>analytics</artifactId>
-  <version>1.3</version>
+  <version>1.19</version>
   <packaging>aar</packaging>
   <name>ZaloPayAnalytics</name>
   <description>Analytics lib for Zalo Pay</description>
