@@ -93,6 +93,12 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         }
     }
 
+    public void ensureConnected() {
+        if (mExecutor != null) {
+            mExecutor.execute(this::connectToServer);
+        }
+    }
+
     public void destroy() {
         Timber.d("Destroy notification service");
         mIsSubscribeGcm = false;

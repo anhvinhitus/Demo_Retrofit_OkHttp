@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.event.AppStateChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -23,8 +26,11 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     private static HashMap<String, Integer> activities;
     private static String mLastActivity;
 
+    private final EventBus mEventBus;
+
     public AppLifeCycle() {
         activities = new HashMap<>();
+        mEventBus = EventBus.getDefault();
     }
 
     @Override
@@ -71,7 +77,6 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
         return true;
     }
 
-
     private short mLastState;
 
     private void applicationStatus() {
@@ -81,11 +86,12 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
                 return;
             }
             mLastState = 0;
-
+            mEventBus.post(new AppStateChangeEvent(false));
         } else {
             if (mLastState == 1) {
                 return;
             }
+            mEventBus.post(new AppStateChangeEvent(true));
             mLastState = 1;
         }
     }
