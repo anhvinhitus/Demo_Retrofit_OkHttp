@@ -29,7 +29,7 @@ enum SourceType {
 	UNKNOWN_SOURCETYPE = 0;
 	SEND = 1;
 	RESEND = 2;
-	PULL = 3;
+	PUSH = 3;
 	RECOVER = 4;
 }
 
@@ -61,8 +61,9 @@ enum ServerMessageType {
 // Define the order to get recover notification message
 // Zalo Pay: 2.0
 enum RecoveryOrder {
-	ORDER_DESCEND = 2;
+	ORDER_UNKNOWN = 0;
 	ORDER_ASCEND = 1;
+	ORDER_DESCEND = 2;
 }
 
 // Define the response code from Payment Connector

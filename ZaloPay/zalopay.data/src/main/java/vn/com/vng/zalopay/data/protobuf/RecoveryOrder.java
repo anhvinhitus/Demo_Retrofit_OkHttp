@@ -11,9 +11,11 @@ import java.lang.Override;
  * Zalo Pay: 2.0
  */
 public enum RecoveryOrder implements WireEnum {
-  ORDER_DESCEND(2),
+  ORDER_UNKNOWN(0),
 
-  ORDER_ASCEND(1);
+  ORDER_ASCEND(1),
+
+  ORDER_DESCEND(2);
 
   public static final ProtoAdapter<RecoveryOrder> ADAPTER = ProtoAdapter.newEnumAdapter(RecoveryOrder.class);
 
@@ -28,8 +30,9 @@ public enum RecoveryOrder implements WireEnum {
    */
   public static RecoveryOrder fromValue(int value) {
     switch (value) {
-      case 2: return ORDER_DESCEND;
+      case 0: return ORDER_UNKNOWN;
       case 1: return ORDER_ASCEND;
+      case 2: return ORDER_DESCEND;
       default: return null;
     }
   }

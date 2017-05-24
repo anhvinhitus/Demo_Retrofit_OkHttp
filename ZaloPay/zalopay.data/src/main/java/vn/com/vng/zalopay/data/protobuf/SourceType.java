@@ -17,7 +17,7 @@ public enum SourceType implements WireEnum {
 
   RESEND(2),
 
-  PULL(3),
+  PUSH(3),
 
   RECOVER(4);
 
@@ -37,7 +37,7 @@ public enum SourceType implements WireEnum {
       case 0: return UNKNOWN_SOURCETYPE;
       case 1: return SEND;
       case 2: return RESEND;
-      case 3: return PULL;
+      case 3: return PUSH;
       case 4: return RECOVER;
       default: return null;
     }
