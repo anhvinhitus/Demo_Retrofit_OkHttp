@@ -598,10 +598,11 @@ public class Navigator implements INavigator {
         activity.finish();
     }
 
-    public void startTransactionDetail(Context context, String transid) {
+    public void startTransactionDetail(Context context, String transid, String notificationid) {
         Map<String, String> launchOptions = new HashMap<>();
         launchOptions.put("view", "history");
         launchOptions.put("transid", transid);
+        launchOptions.put("notificationid", notificationid);
         Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, launchOptions);
         context.startActivity(intent);
     }

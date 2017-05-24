@@ -14,13 +14,15 @@ public class PromotionEvent {
     public String campaign;
     public List<PromotionAction> actions;
     public long transid;
+    public long notificationId;
 
-    public PromotionEvent(int pType, String pTitle, long pAmount, String pCampain, List<PromotionAction> pAction, long pTransId) {
+    public PromotionEvent(int pType, String pTitle, long pAmount, String pCampain, List<PromotionAction> pAction, long pTransId, long pNotificationId) {
         type = pType;
         title = pTitle;
         amount = pAmount;
         campaign = pCampain;
         actions = pAction;
         transid = pTransId;
+        notificationId = pNotificationId;
     }
 }

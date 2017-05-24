@@ -297,7 +297,7 @@ public class NotificationHelper {
                 actions.add(promotionAction);
             }
 
-            PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid);
+            PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
             mEventBus.postSticky(promotionEvent);
             Log.d(this, "post promotion event from notification", promotionEvent);
         } catch (Exception ex) {

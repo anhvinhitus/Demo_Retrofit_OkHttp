@@ -392,7 +392,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 @Override
                 public void onClick(SweetAlertDialog dialog) {
                     if (mView != null) {
-                        mNavigator.startTransactionDetail(mView.getContext(), String.valueOf(notify.transid));
+                        mNavigator.startTransactionDetail(mView.getContext(), String.valueOf(notify.transid), String.valueOf(notify.notificationId));
                     }
                     dialog.dismiss();
                 }
@@ -474,7 +474,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (mPromotionEvent != null && mPromotionEvent.actions != null && !mPromotionEvent.actions.isEmpty()) {
             switch (mPromotionEvent.actions.get(0).action) {
                 case ActionType.TRANSACTION_DETAIL:
-                    mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid));
+                    mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid), String.valueOf(mPromotionEvent.notificationId));
                     //mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
                     break;
                 default:
