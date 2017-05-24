@@ -11,11 +11,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.event.UploadFileLogEvent;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.tracker.model.AbstractLogData;
 
 /**
@@ -39,6 +44,8 @@ abstract class AbstractFileLog {
     private BufferedWriter mBufferedWriter;
     private Long mFileCreateTime;
 
+    private Set<String> mFilePathSet = new HashSet<>();
+
     AbstractFileLog() {
         mDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
         mDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
@@ -56,17 +63,11 @@ abstract class AbstractFileLog {
         long lastFileCreateTime = getFileCreateTime();
         if (Math.abs(timestamp - lastFileCreateTime) >= INTERVAL_CREATE_FILE) { // tạo file mới
             Timber.d("Create new file log");
-            File oldFile = mCurrentFile;
             mCurrentFile = createFileLog(timestamp);
-
             setFileCreateTime(timestamp);
             closeWriter();
-            createWriter(mCurrentFile);
 
-            if (oldFile != null) {
-                onWriteLogFinish(oldFile.getAbsolutePath());
-            }
-
+            createWriterAndUploadTimer();
         } else {
 
             if (mBufferedWriter != null) {
@@ -77,7 +78,37 @@ abstract class AbstractFileLog {
                 mCurrentFile = createFileLog(lastFileCreateTime);
             }
 
-            createWriter(mCurrentFile);
+            createWriterAndUploadTimer();
+        }
+    }
+
+    private void createWriterAndUploadTimer() {
+
+        createWriter(mCurrentFile);
+
+        String filePath = mCurrentFile.getAbsolutePath();
+
+        if (mFilePathSet.contains(filePath)) {
+            return;
+        }
+
+        Observable.timer(INTERVAL_CREATE_FILE, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new UploadDelaySubscriber(filePath));
+
+        mFilePathSet.add(filePath);
+    }
+
+    private class UploadDelaySubscriber extends DefaultSubscriber<Long> {
+        private String mFilePath;
+
+        UploadDelaySubscriber(String filePath) {
+            mFilePath = filePath;
+        }
+
+        @Override
+        public void onNext(Long aLong) {
+            onWriteLogFinish(mFilePath);
         }
     }
 
@@ -159,5 +190,4 @@ abstract class AbstractFileLog {
     File getCurrentFileLog() {
         return mCurrentFile;
     }
-
 }
