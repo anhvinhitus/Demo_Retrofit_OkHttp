@@ -76,6 +76,13 @@ public class BankCardCheck extends CardCheck {
         return mSelectBank != null ? mSelectBank.name : null;
     }
 
+    public String getShortBankName() {
+        if (mSelectBank != null) {
+            return mSelectBank.getShortBankName();
+        }
+        return null;
+    }
+
     /***
      * detect bank type
      * @param pCardNumber

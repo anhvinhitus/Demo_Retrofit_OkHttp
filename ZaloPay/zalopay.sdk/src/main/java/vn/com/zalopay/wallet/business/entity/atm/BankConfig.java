@@ -86,19 +86,6 @@ public class BankConfig {
         return name;
     }
 
-    public boolean isVersionSupport(String pAppVersion) {
-        Log.d(this, "start check support bank version in bank config");
-        if (TextUtils.isEmpty(pAppVersion)) {
-            return true;
-        }
-        int minAppVersionSupport = getMinAppVersionSupport();
-        if (minAppVersionSupport == 0) {
-            return true;
-        }
-        pAppVersion = pAppVersion.replace(".", "");
-        return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
-    }
-
     @Override
     public boolean equals(Object object) {
         boolean sameSame = false;

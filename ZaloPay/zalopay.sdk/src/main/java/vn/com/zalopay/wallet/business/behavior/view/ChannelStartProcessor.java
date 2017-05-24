@@ -9,6 +9,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -141,12 +142,20 @@ public class ChannelStartProcessor extends SingletonBase {
                 }
                 return;
             }
-            //reload bank account
-            if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
-                BankLoader.loadBankList(mLoadBankListListener);
-            } else if (!mChannel.isAtmChannel() && !mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext())) && !mChannel.isAtmChannel()) {
                 String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
                 showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
+            } else if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext())) && (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
+                BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
+                if (bankConfig != null) {
+                    String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                    pMessage = String.format(pMessage, bankConfig.getShortBankName());
+                    showSupportBankVersionDialog(pMessage, mChannel.minappversion);
+                } else {
+                    startChannel();
+                }
+            } else if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+                BankLoader.loadBankList(mLoadBankListListener);//reload bank list
             } else {
                 startChannel();
             }

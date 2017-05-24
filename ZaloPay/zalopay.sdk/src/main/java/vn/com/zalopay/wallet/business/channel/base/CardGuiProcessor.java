@@ -47,6 +47,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.utils.ViewUtils;
@@ -837,12 +838,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 getCardView().switchCardDateHintByBankCode(bankCode);
             }
             //populate fee by bank
-            if(TextUtils.isEmpty(bankCode)){
+            if (TextUtils.isEmpty(bankCode)) {
                 getAdapter().setMiniPmcTransType(null);
-            }
-            else if (getAdapter().needReloadPmcConfig(bankCode) && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)) {
-                MiniPmcTransType miniPmcTransType = getAdapter().getConfig();
-                if (miniPmcTransType != null) {
+            } else if (getAdapter().needReloadPmcConfig(bankCode)) {
+                MiniPmcTransType miniPmcTransType = getAdapter().getConfig(bankCode);//reload config by bank
+                if(miniPmcTransType != null  && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)){
                     GlobalData.populateOrderFee(miniPmcTransType);
                     miniPmcTransType.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
                     if (!miniPmcTransType.isAllowByAmount()) {
@@ -855,7 +855,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
 
-            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            MiniPmcTransType miniPmcTransType = getAdapter().getConfig();//reload config by bank
+            if (getCardFinder().isDetected() && miniPmcTransType != null && ! miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
             }
@@ -999,7 +1000,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     /***
      * link card channel use this to update found card
-     *
      * @param pBankName
      */
     public void setDetectedCard(String pBankName, String pBankCode) {
@@ -1008,12 +1008,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
-                if (getAdapter().needReloadPmcConfig(pBankCode)) {
-                    GlobalData.populateOrderFee(getAdapter().getConfig()); //user input new bank, populate again order fee
-                }
             }
-
-            if (getCardFinder().isDetected() && !getCardFinder().getDetectBankConfig().isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (!TextUtils.isEmpty(pBankCode) && getAdapter().needReloadPmcConfig(pBankCode)) {
+                GlobalData.populateOrderFee(getAdapter().getConfig(pBankCode)); //user input new bank, populate again order fee
+            }
+            MiniPmcTransType miniPmcTransType = getAdapter().getConfig();//reload config by bank
+            if (getCardFinder().isDetected() && miniPmcTransType != null && ! miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
             }
