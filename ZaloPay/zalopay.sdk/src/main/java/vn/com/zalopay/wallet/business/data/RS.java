@@ -48,6 +48,7 @@ public class RS {
     }
 
     public static final class string {
+        public static final String invalid_order_amount_bank = "invalid_order_amount_bank";
         public static final String dialog_update_versionapp_button = "dialog_update_versionapp_button";
         public static final String sdk_warning_version_support_linkchannel = "sdk_warning_version_support_linkchannel";
         public static final String sdk_warning_version_support_payment = "sdk_warning_version_support_payment";
@@ -300,6 +301,7 @@ public class RS {
         public static final String sdk_invalid_missing_linkaccInfo = "sdk_invalid_missing_linkaccInfo";
 
         public static final String zpw_string_fee_free = "zpw_string_fee_free";
+        public static final String default_message_pmc_fee = "default_message_pmc_fee";
 
         public static final String zpw_string_channel_not_allow = "zpw_string_channel_not_allow";
         public static final String zpw_string_channel_not_allow_by_amount = "zpw_string_channel_not_allow_by_amount";

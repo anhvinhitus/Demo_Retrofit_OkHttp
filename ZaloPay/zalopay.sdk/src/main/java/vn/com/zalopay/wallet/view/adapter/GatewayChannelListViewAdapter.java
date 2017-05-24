@@ -53,33 +53,6 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<PaymentChannel> 
         return mChannelList.size();
     }
 
-    protected String getMessage(PaymentChannel pChannel) {
-        String mess = null;
-        if (!pChannel.isAllowByAmount()) {
-            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount);
-
-            if ((GlobalData.getOrderAmount() + pChannel.totalfee) < pChannel.minvalue) {
-                mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount_small);
-            }
-        } else if (pChannel.isMaintenance() && pChannel.isMapCardChannel()) {
-            mess = GlobalData.getStringResource(RS.string.zpw_string_bank_maintenance);
-        } else if (pChannel.isMaintenance()) {
-            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_maintenance);
-        } else if (!pChannel.isAllowByAmountAndFee()) {
-            if (pChannel.hasFee()) {
-                mess = GlobalData.getStringResource(RS.string.zpw_string_fee_label)
-                        + " " + StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))
-                        + " " + GlobalData.getStringResource(RS.string.zpw_string_vnd);
-            }
-
-            mess += ". " + GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_fee);
-        } else {
-            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow);
-        }
-
-        return mess;
-    }
-
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView channelIconImageView, nextIconImageView;
         TextView channelNameTextView, channelFeeTextview, currencyUnitTextView;
@@ -149,12 +122,12 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<PaymentChannel> 
                 //vnd label
                 currencyUnitTextView.setVisibility(View.GONE);
 
-                String feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+                String feeDescription = channel.getDefaultPmcFee();
 
                 try {
                     //show not support channel
                     if (!channel.isEnable() || !channel.isAllowByAmount() || channel.isMaintenance() || !channel.isAllowByAmountAndFee()) {
-                        feeDescription = getMessage(channel);
+                        feeDescription = channel.getErrorMessage();
 
                         channelFeeTextview.setText(Html.fromHtml(feeDescription));
 
@@ -230,10 +203,10 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<PaymentChannel> 
 
                 } catch (Exception e) {
                     Log.e(this, e);
-                    feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+                    feeDescription = channel.getDefaultPmcFee();
                 }
 
-                if (!TextUtils.isEmpty(feeDescription) && !feeDescription.equals(GlobalData.getStringResource(RS.string.zpw_string_fee_free))
+                if (!TextUtils.isEmpty(feeDescription) && !feeDescription.equals(channel.getDefaultPmcFee())
                         && !feeDescription.equals(GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level))) {
                     currencyUnitTextView.setVisibility(View.VISIBLE);
                     feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_label) + " " + feeDescription;
@@ -243,8 +216,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<PaymentChannel> 
 
             } catch (Exception ex) {
                 Log.e(this, ex);
-
-                channelFeeTextview.setText(GlobalData.getStringResource(RS.string.zpw_string_fee_free));
+                channelFeeTextview.setText(channel.getDefaultPmcFee());
                 currencyUnitTextView.setVisibility(View.GONE);
             }
         }

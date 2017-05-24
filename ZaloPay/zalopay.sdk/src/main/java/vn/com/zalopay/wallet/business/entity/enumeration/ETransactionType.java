@@ -14,6 +14,15 @@ public enum ETransactionType {
         name = s;
     }
 
+    public static boolean isMember(int pTransType) {
+        ETransactionType[] transactionTypes = ETransactionType.values();
+        for (ETransactionType transactionType : transactionTypes)
+            if (transactionType.name.equals(String.valueOf(pTransType))) {
+                return true;
+            }
+        return false;
+    }
+
     public boolean equalsName(String otherName) {
         return (otherName == null) ? false : name.equals(otherName);
     }

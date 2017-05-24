@@ -2,8 +2,6 @@ package vn.com.zalopay.wallet.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -27,7 +25,6 @@ import java.util.TimeZone;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.CFontManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -99,6 +96,7 @@ public class ZPWUtils {
 
         return versionName;
     }
+
     private static byte[] getHash(String password) {
         MessageDigest digest = null;
         try {

@@ -85,15 +85,10 @@ public class ViewUtils {
      */
     public static int getCardViewHeight(int pNewWidth) {
         float rate = 1.4f;
-
         try {
             rate = Float.parseFloat(GlobalData.getStringResource(RS.string.cardview_rate));
-
-            Log.d("===getCardViewHeight===", String.valueOf((int) (pNewWidth / 1.4f)));
-
         } catch (Exception e) {
             Log.e("===getCardViewHeight===", e);
-
             rate = 1.4f;
         }
 

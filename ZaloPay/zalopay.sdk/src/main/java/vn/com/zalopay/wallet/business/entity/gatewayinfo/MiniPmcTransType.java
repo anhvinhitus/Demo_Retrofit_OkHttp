@@ -13,9 +13,9 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.StringUtil;
 
 public class MiniPmcTransType implements Parcelable {
     public static final Creator<MiniPmcTransType> CREATOR = new Creator<MiniPmcTransType>() {
@@ -119,6 +119,10 @@ public class MiniPmcTransType implements Parcelable {
         return transtypePmcKey.toString();
     }
 
+    public boolean isMapCardChannel() {
+        return false;
+    }
+
     /***
      * require otp depend on transaction amount
      * @return
@@ -204,6 +208,41 @@ public class MiniPmcTransType implements Parcelable {
         return compareToChannel(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount));
     }
 
+    public void checkPmcOrderAmount(long pOrderAmount) {
+        setAllowByAmount(isAmountSupport((long) (pOrderAmount + totalfee)));
+    }
+
+    public String getErrorMessage() {
+        String mess = null;
+        if (!isAllowByAmount()) {
+            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount);
+
+            if ((GlobalData.getOrderAmount() + totalfee) < minvalue) {
+                mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount_small);
+            }
+        } else if (isMaintenance() && isMapCardChannel()) {
+            mess = GlobalData.getStringResource(RS.string.zpw_string_bank_maintenance);
+        } else if (isMaintenance()) {
+            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_maintenance);
+        } else if (!isAllowByAmountAndFee()) {
+            if (hasFee()) {
+                mess = GlobalData.getStringResource(RS.string.zpw_string_fee_label)
+                        + " " + StringUtil.formatVnCurrence(String.valueOf(totalfee))
+                        + " " + GlobalData.getStringResource(RS.string.zpw_string_vnd);
+            }
+
+            mess += ". " + GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_fee);
+        } else {
+            mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow);
+        }
+
+        return mess;
+    }
+
+    public String getDefaultPmcFee(){
+        return isAtmChannel() ? GlobalData.getStringResource(RS.string.default_message_pmc_fee): GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+    }
+
     /***
      * status must be 0
      * @return
@@ -212,7 +251,7 @@ public class MiniPmcTransType implements Parcelable {
         return isAllowByAmount;
     }
 
-    public void setAllowByAmount(boolean allowByAmount) {
+    protected void setAllowByAmount(boolean allowByAmount) {
         isAllowByAmount = allowByAmount;
     }
 

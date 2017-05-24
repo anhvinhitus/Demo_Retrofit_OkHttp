@@ -65,23 +65,19 @@ public abstract class BaseChannelInjector {
                     continue;
                 }
                 PaymentChannel channel = new PaymentChannel(activeChannel);
-                //user has linked vietcombank account , no need show bank account channel
                 if (channel.isBankAccount()
                         && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
-                    continue;
+                    continue;//user has linked vietcombank account , no need show bank account channel
                 }
-
-                //calculate fee of this channel
-                channel.calculateFee();
-
-                //check amount is support or not
-                if (channel.isEnable()) {
-                    populateSupportAmount(channel);
-                    //check maintenance for cc
-                    if ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_CARD))
-                            || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_BANK_ACCOUNT))) {
-                        channel.setStatus(EPaymentChannelStatus.MAINTENANCE);
-                    }
+                if (channel.isEnable() && !channel.isAtmChannel()) {
+                    channel.calculateFee();//calculate fee of this channel
+                    channel.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
+                }
+                //check maintenance for cc
+                if (channel.isEnable()
+                        && (channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_CARD))
+                        || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_BANK_ACCOUNT))) {
+                    channel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                 }
                 //get icon
                 CChannelHelper.inflatChannelIcon(channel, null);
@@ -169,7 +165,7 @@ public abstract class BaseChannelInjector {
 
                     //check amount is support or not
                     if (channel.isEnable()) {
-                        populateSupportAmount(channel);
+                        channel.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
                     }
                     //add channel to list
                     if (!mChannelList.contains(channel)) {
@@ -251,7 +247,7 @@ public abstract class BaseChannelInjector {
 
                     //check amount is support or not
                     if (channel.isEnable()) {
-                        populateSupportAmount(channel);
+                        channel.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
                     }
 
                     if (Constants.CCCode.equals(channel.bankcode)) {
@@ -318,17 +314,6 @@ public abstract class BaseChannelInjector {
             return false;
         }
         return BankLoader.getInstance().isBankMaintenance(pBankCode, pBankFunction);
-    }
-
-    /***
-     * check amount support and set flag is AlllowByAmount
-     * @param pChannel
-     * @return
-     */
-    protected void populateSupportAmount(MiniPmcTransType pChannel) {
-        if (pChannel != null) {
-            pChannel.setAllowByAmount(pChannel.isAmountSupport((long) (GlobalData.getOrderAmount() + pChannel.totalfee)));
-        }
     }
 
     /***

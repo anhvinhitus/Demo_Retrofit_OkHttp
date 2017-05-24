@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardFlowType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
@@ -42,6 +43,8 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
+import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -847,9 +850,30 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(bankCode)) {
                 getCardView().switchCardDateHintByBankCode(bankCode);
-                if (getAdapter().needReloadPmcConfig()) {
-                    GlobalData.populateOrderFee(getAdapter().getConfig());
+            }
+
+            //populate fee by bank
+            if(TextUtils.isEmpty(bankCode)){
+                getAdapter().setMiniPmcTransType(null);
+            }
+            else if (getAdapter().needReloadPmcConfig(bankCode) && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)) {
+                MiniPmcTransType miniPmcTransType = getAdapter().getConfig();
+                if (miniPmcTransType != null) {
+                    GlobalData.populateOrderFee(miniPmcTransType);
+                    miniPmcTransType.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
+                    if (!miniPmcTransType.isAllowByAmount()) {
+                        CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
+                        String invalidAmountMessage = GlobalData.getStringResource(RS.string.invalid_order_amount_bank);
+                        cardNumberView.setError(String.format(invalidAmountMessage, getBankCardFinder().getShortBankName(), StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal))));
+                        disableNext();
+                        return;
+                    }
                 }
+            }
+
+            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                showWarningBankVersionSupport();
+                return;
             }
 
             //bidv card must paid by mapcard
@@ -867,17 +891,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (isInputBankMaintenance()) {
                 return;
             }
-            if (getCardFinder().getDetectBankConfig() != null && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
-                showWarningBankVersionSupport();
-                return;
+
+            //move to next page if detect a card
+            if (getCardFinder().isDetected()) {
+                autoMoveToNextFragment();
             }
         } catch (Exception e) {
             Log.e(this, e);
-        }
-
-        //move to next page if detect a card
-        if (getCardFinder().isDetected()) {
-            autoMoveToNextFragment();
         }
     }
 
@@ -945,7 +965,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
                                                          @Override
                                                          public void onOKevent() {
-                                                             getAdapter().getActivity().notifyUpVersionToApp(false, bankConfig.minappversion, null);
+                                                             PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), "force-app-update", "bank-future");
                                                              getAdapter().getActivity().recycleActivity();
                                                          }
                                                      }, pMessage,
@@ -1008,19 +1028,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
-                if (getAdapter().needReloadPmcConfig()) {
+                if (getAdapter().needReloadPmcConfig(pBankCode)) {
                     GlobalData.populateOrderFee(getAdapter().getConfig()); //user input new bank, populate again order fee
                 }
-            }
-
-            //user input bank account
-            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
-                showWarningBankAccount();
             }
 
             if (getCardFinder().isDetected() && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
+            }
+
+            //user input bank account
+            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
+                showWarningBankAccount();
             }
 
         } catch (Exception e) {
@@ -1608,9 +1628,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
 
         CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
-
         if (cardNumberView == null) {
-            Log.d(this, "===setCardNumberHint===cardNumberView=NULL");
+            Log.d(this, "setCardNumberHint::cardNumberView is NULL");
             return;
         }
 
@@ -1619,41 +1638,26 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (!isCardInputSupport()) {
                 return;
             }
-
             cardNumberView.setError(GlobalData.getStringResource(RS.string.zpw_string_card_not_support));
-
             cardNumberView.showQuestionIcon();
-
             disableNext();
-
-            Log.d("setCardNumberHint", "===setError===pMessageHint===" + pMessageHint + "===needToWarningNotSupportCard===" + needToWarningNotSupportCard());
         }
         //clear error hint
         else if (TextUtils.isEmpty(pMessageHint)) {
             cardNumberView.clearError();
-
             enableNext();
-
-            Log.d("setCardNumberHint", "===clearError===");
         }
         //has an error
         else {
             cardNumberView.setHint(pMessageHint);
-
             enableNext();
-
-            Log.d("setCardNumberHint", "===setHint===pMessageHint===" + pMessageHint);
         }
     }
 
     public void showHintError(EditText pEdittext, String pError) {
-        Log.d(this, "===showHintError===" + pEdittext + "===" + pError);
-
         ViewUtils.setTextInputLayoutHintError(pEdittext, pError, GlobalData.getAppContext());
-
         disablePrevious();
         disableNext();
-
         if (pEdittext.getId() == R.id.edittext_localcard_number) {
             try {
                 CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
@@ -1670,9 +1674,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void clearHintError(EditText pEdittext) {
-        Log.d(this, "===clearHintError===" + pEdittext + "===");
         ViewUtils.setTextInputLayoutHint(pEdittext, null, GlobalData.getAppContext());
-
         enableNext();
         enablePrevious();
     }
