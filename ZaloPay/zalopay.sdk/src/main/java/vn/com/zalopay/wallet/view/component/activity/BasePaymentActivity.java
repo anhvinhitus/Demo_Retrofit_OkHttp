@@ -64,8 +64,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.business.feedback.IFBCallback;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.business.feedback.IFBCallback;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
@@ -106,18 +106,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     //this is flag prevent user back when user is submitting trans,authen payer,getstatus.
     public boolean processingOrder = false;
     protected String mTitleHeaderText;
-    private IFBCallback mFbCallBack = new IFBCallback() {
-        @Override
-        public void onCancel() {
-            Log.d("feedback", "onCancel()");
-        }
-
-        @Override
-        public void onComplete() {
-            Log.d("feedback", "onComplete()");
-
-        }
-    };
     //dialog asking open networking listener
     public ZPWPaymentOpenNetworkingDialogListener paymentOpenNetworkingDialogListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
@@ -251,6 +239,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+    private IFBCallback mFbCallBack = new IFBCallback() {
+        @Override
+        public void onCancel() {
+            Log.d("feedback", "onCancel()");
+        }
+
+        @Override
+        public void onComplete() {
+            Log.d("feedback", "onComplete()");
+
+        }
+    };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
     /***
@@ -376,19 +376,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     };
 
-    private void startSupportScreen() throws Exception {
-        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
-        if (mFeedback != null) {
-            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
-            collector.setScreenShot(mFeedback.imgByteArray);
-            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
-        } else {
-            Log.d("support_button", "IFeedBack == null");
-        }
-
-        feedBackCollector.showDialog(this);
-    }
-
     public static Activity getCurrentActivity() {
         synchronized (mZaloaPayActivitiesStack) {
             if (mZaloaPayActivitiesStack == null || mZaloaPayActivitiesStack.size() == 0) {
@@ -444,6 +431,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception e) {
 
         }
+    }
+
+    private void startSupportScreen() throws Exception {
+        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
+        if (mFeedback != null) {
+            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
+            collector.setScreenShot(mFeedback.imgByteArray);
+            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
+        } else {
+            Log.d("support_button", "IFeedBack == null");
+        }
+
+        feedBackCollector.showDialog(this);
     }
 
     protected void loadStaticReload() {
@@ -1576,35 +1576,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     protected void resizeGridPasswordView() {
+        Log.d(this,"start resize password view");
         final View passwordView = findViewById(R.id.zpw_gridview_pin);
-
         if (passwordView != null) {
-            ViewTreeObserver vto = passwordView.getViewTreeObserver();
-
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver obs = passwordView.getViewTreeObserver();
-                    obs.removeGlobalOnLayoutListener(this);
-
-                    int width = ZPWUtils.widthScreen(getCurrentActivity());
-
-                    int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
-
-                    int margin = (int) ZPWUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
-
-                    width = width - margin * 2;
-
-                    int height = width / pinLength;
-
-                    if (width == 0 || height == 0)
-                        return;
-
-                    passwordView.getLayoutParams().height = height;
-                    passwordView.getLayoutParams().width = width;
-                }
-            });
+            int width = ZPWUtils.widthScreen(getCurrentActivity());
+            int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
+            int margin = (int) ZPWUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
+            width = width - margin * 2;
+            int height = width / pinLength;
+            if (width == 0 || height == 0) {
+                return;
+            }
+            passwordView.getLayoutParams().height = height;
+            passwordView.getLayoutParams().width = width;
+            passwordView.requestLayout();
         }
     }
 
