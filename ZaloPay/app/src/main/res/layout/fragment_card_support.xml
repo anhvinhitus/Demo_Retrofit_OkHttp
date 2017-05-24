@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -12,10 +12,10 @@
         android:paddingLeft="@dimen/spacing.medium.t"
         android:paddingTop="@dimen/spacing.medium"
         android:text="@string/link_card_title"
-        android:textSize="14sp"
-        android:textStyle="bold"
         android:textAllCaps="true"
         android:textColor="@color/txt_item_main"
+        android:textSize="14sp"
+        android:textStyle="bold"
         android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
@@ -23,6 +23,7 @@
         style="@style/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title_list_bank"
         android:fadingEdge="none"
         android:overScrollMode="never"
         android:paddingLeft="@dimen/spacing.medium.t"
@@ -31,8 +32,10 @@
         android:visibility="visible" />
 
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="@dimen/spacing.medium.t"
-        android:background="@color/separate" />
-</LinearLayout>
+        android:background="@color/separate"
+        android:layout_below="@+id/list_bank"/>
+</RelativeLayout>
