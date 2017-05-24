@@ -65,10 +65,6 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
         transtypes = pTranstypes;
     }
 
-    private boolean isNeedToUpdateAppInfo(AppInfoResponse pResponse) {
-        return pResponse != null && pResponse.returncode == 1 && pResponse.isupdateappinfo;
-    }
-
     private void onPostResult(AppInfoResponse pResponse) {
         if (pResponse == null || pResponse.returncode < 0) {
             this.mLoadAppInfoListener.onError(pResponse);
@@ -89,6 +85,10 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
             long minValue, maxValue;
             for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : getResponse().pmctranstypes) {
                 int transtype = miniPmcTransTypeResponse.transtype;
+                if (!ETransactionType.isMember(transtype)) {
+                    Log.d(this, "skip transype " + transtype);
+                    continue;
+                }
                 List<MiniPmcTransType> miniPmcTransTypeList = miniPmcTransTypeResponse.transtypes;
                 minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
                 maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
@@ -183,11 +183,14 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
     @Override
     protected boolean doParams() {
         String appInfoCheckSum = null;
-        String[] transtypeCheckSum = new String[transtypes.length];
+        String[] transtypeCheckSum = new String[0];
         try {
             appInfoCheckSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(String.valueOf(appID));
-            for (int i = 0; i < transtypes.length; i++) {
-                transtypeCheckSum[i] = SharedPreferencesManager.getInstance().getTransypePmcCheckSum(getAppTranstypeKey(transtypes[i]));
+            if (!TextUtils.isEmpty(appInfoCheckSum)) {
+                transtypeCheckSum = new String[transtypes.length];
+                for (int i = 0; i < transtypes.length; i++) {
+                    transtypeCheckSum[i] = SharedPreferencesManager.getInstance().getTransypePmcCheckSum(getAppTranstypeKey(transtypes[i]));
+                }
             }
         } catch (Exception e) {
             Log.e(this, e);

@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -146,7 +147,7 @@ public class ChannelStartProcessor extends SingletonBase {
             //reload bank list
             if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
                 BankLoader.loadBankList(mLoadBankListListener);
-            } else if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+            } else if (!mChannel.isAtmChannel() && !mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
                 showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
             } else {
@@ -168,7 +169,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
                                             @Override
                                             public void onOKevent() {
-                                                getActivity().notifyUpVersionToApp(false, pMinVersion, pMessage);
+                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), "force-app-update", "bank-future");
                                                 getActivity().recycleActivity();
                                             }
                                         }, pMessage,
