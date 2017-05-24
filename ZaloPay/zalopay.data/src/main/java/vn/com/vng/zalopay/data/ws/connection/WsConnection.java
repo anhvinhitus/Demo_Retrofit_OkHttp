@@ -19,12 +19,12 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
+import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -343,6 +343,10 @@ public class WsConnection extends Connection {
                 return;
             }
 
+            if (!checkUserAndWriteErrorLog(message)) {
+                return;
+            }
+
             //            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
@@ -416,6 +420,16 @@ public class WsConnection extends Connection {
                 scheduleReconnect();
             }
             EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
+        }
+
+        private boolean checkUserAndWriteErrorLog(Event message) {
+            String usrid = String.valueOf(message.usrid);
+            if (!mUser.zaloPayId.equals(usrid)) {
+                ZPAnalytics.trackConnectorError(mUser.zaloPayId, usrid, message.mtuid, message.sourceid, System.currentTimeMillis());
+                return false;
+            }
+
+            return true;
         }
     }
 

@@ -10,4 +10,5 @@ public class TrackerType {
     public static final int TIMING_TYPE = 2;
     public static final int APPTRANSID_TYPE = 3;
     public static final int API_FAILED_TYPE = 4;
+    static final int PAYMENT_CONNECTOR_ERROR_TYPE = 5;
 }

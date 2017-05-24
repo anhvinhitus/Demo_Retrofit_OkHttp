@@ -12,7 +12,7 @@ import vn.com.zalopay.analytics.ZPTracker;
  * Created by huuhoa on 7/17/16.
  * Default implementation for translate ZPTracker to Fabric Answers
  */
-public class ZPTrackerAnswers implements ZPTracker {
+public class ZPTrackerAnswers extends DefaultTracker {
     @Override
     public void trackEvent(int eventId, Long eventValue) {
         CustomEvent event = new CustomEvent(ZPEvents.categoryFromEventId(eventId))
@@ -40,15 +40,5 @@ public class ZPTrackerAnswers implements ZPTracker {
         CustomEvent event = new CustomEvent(ZPEvents.categoryFromEventId(eventId))
                 .putCustomAttribute("value", value);
         Answers.getInstance().logCustom(event);
-    }
-
-    @Override
-    public void trackApptransidEvent(ZPApptransidLog log) {
-
-    }
-
-    @Override
-    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
-
     }
 }

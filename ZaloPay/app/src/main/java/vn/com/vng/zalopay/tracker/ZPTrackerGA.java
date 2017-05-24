@@ -11,7 +11,7 @@ import vn.com.zalopay.analytics.ZPTracker;
  * Created by huuhoa on 6/27/16.
  * Default implementation for translate ZPTracker to Google Analytics
  */
-public class ZPTrackerGA implements ZPTracker {
+public class ZPTrackerGA extends DefaultTracker {
 
     private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s]";
 
@@ -53,20 +53,10 @@ public class ZPTrackerGA implements ZPTracker {
     @Override
     public void trackTiming(int eventId, long value) {
         mTracker.send(new HitBuilders.TimingBuilder()
-            .setCategory(ZPEvents.categoryFromEventId(eventId))
-            .setValue(value)
-            .setLabel(ZPEvents.actionFromEventId(eventId))
-            .setVariable(ZPEvents.actionFromEventId(eventId))
-            .build());
-    }
-
-    @Override
-    public void trackApptransidEvent(ZPApptransidLog log) {
-
-    }
-
-    @Override
-    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
-
+                .setCategory(ZPEvents.categoryFromEventId(eventId))
+                .setValue(value)
+                .setLabel(ZPEvents.actionFromEventId(eventId))
+                .setVariable(ZPEvents.actionFromEventId(eventId))
+                .build());
     }
 }

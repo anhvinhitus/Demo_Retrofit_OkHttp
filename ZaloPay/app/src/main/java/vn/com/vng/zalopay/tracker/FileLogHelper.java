@@ -27,7 +27,9 @@ public class FileLogHelper {
 
     private static Observable<String[]> listFileLogs() {
         return listFileLogs(EventFileLog.Instance.getRootDirectory(),
-                APIFailedFileLog.Instance.getCurrentFileLog(), EventFileLog.Instance.getCurrentFileLog());
+                APIFailedFileLog.Instance.getCurrentFileLog(),
+                EventFileLog.Instance.getCurrentFileLog(),
+                PaymentConnectorErrorFileLog.Instance.getCurrentFileLog());
     }
 
     private static Observable<String[]> listFileLogs(File directory, File... exclude) {

@@ -12,8 +12,10 @@ public class Event {
     public long mtuid;
 
     public int sourceid;
-    
+
     public boolean hasData;
+
+    public long usrid;
 
     public Event(int msgType) {
         this.msgType = msgType;

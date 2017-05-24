@@ -9,12 +9,6 @@ import java.io.IOException;
 
 import okio.ByteString;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.util.ConvertHelper;
-import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
-import vn.com.vng.zalopay.data.ws.model.Event;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
-import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.protobuf.DataRecoveryResponse;
 import vn.com.vng.zalopay.data.protobuf.DataResponseUser;
 import vn.com.vng.zalopay.data.protobuf.MessageConnectionInfo;
@@ -22,6 +16,12 @@ import vn.com.vng.zalopay.data.protobuf.MessageStatus;
 import vn.com.vng.zalopay.data.protobuf.RecoveryMessage;
 import vn.com.vng.zalopay.data.protobuf.ResultAuth;
 import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
+import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
+import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
+import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.domain.Enums;
 
 import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.RECOVERY_RESPONSE;
@@ -90,6 +90,7 @@ public class MessageParser implements Parser {
         event.mtaid = ConvertHelper.unboxValue(respMsg.mtaid, 0);
         event.mtuid = ConvertHelper.unboxValue(respMsg.mtuid, 0);
         event.sourceid = ConvertHelper.unboxValue(respMsg.sourceid, 0);
+        event.usrid = ConvertHelper.unboxValue(respMsg.usrid, 0);
 
         return event;
     }
@@ -127,9 +128,12 @@ public class MessageParser implements Parser {
                 Timber.w("Read an encoded message from bytes : DataRecoveryResponse is NULL");
                 return null;
             }
+
             Timber.d("parse recovery : recover size [%s] starttime [%s]", recoverMessage.messages.size(), recoverMessage.starttime);
 
             RecoveryMessageEvent recoveryMsg = new RecoveryMessageEvent();
+            recoveryMsg.usrid = ConvertHelper.unboxValue(recoverMessage.usrid, 0);
+
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
