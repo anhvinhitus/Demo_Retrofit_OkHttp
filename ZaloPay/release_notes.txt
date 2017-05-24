@@ -1,3 +1,7 @@
+Zalo Pay (Staging v2.11.0 - build 245) - Released on 2017-05-24
+- [SDK] Fix bug #ZPF-38, #ZPF-39, #ZPF-43
+- Fix UI.
+
 Zalo Pay (Staging v2.11.0 - build 244) - Released on 2017-05-23
 - Update feedback theo flow
 - [WebApp] Ẩn icon lịch sử giao dịch trong app dịch vụ khi đang ở trong trang lịch sử giao dịch
