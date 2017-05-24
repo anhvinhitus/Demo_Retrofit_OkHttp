@@ -389,19 +389,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    private void startSupportScreen() throws Exception {
-        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
-        if (mFeedback != null) {
-            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
-            collector.setScreenShot(mFeedback.imgByteArray);
-            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
-        } else {
-            Log.d("support_button", "IFeedBack == null");
-        }
-
-        feedBackCollector.showDialog(this);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTaskInProcessEvent(SdkLoadingTaskMessage pMessage) {
         Log.d(this, "OnTaskInProcessEvent" + GsonUtils.toJsonString(pMessage));
@@ -484,6 +471,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     Log.d("init resource fail", throwable);
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private void startSupportScreen() throws Exception {
+        FeedBackCollector feedBackCollector = FeedBackCollector.shared();
+        if (mFeedback != null) {
+            FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
+            collector.setScreenShot(mFeedback.imgByteArray);
+            collector.setTransaction(mFeedback.category, mFeedback.transID, mFeedback.errorCode, mFeedback.description);
+        } else {
+            Log.d("support_button", "IFeedBack == null");
+        }
+
+        feedBackCollector.showDialog(this);
     }
 
     protected void loadStaticReload() {
@@ -1454,26 +1454,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     protected void resizeGridPasswordView() {
+        Log.d(this,"start resize password view");
         final View passwordView = findViewById(R.id.zpw_gridview_pin);
         if (passwordView != null) {
-            ViewTreeObserver vto = passwordView.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver obs = passwordView.getViewTreeObserver();
-                    obs.removeGlobalOnLayoutListener(this);
-                    int width = SdkUtils.widthScreen(getCurrentActivity());
-                    int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
-                    int margin = (int) SdkUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
-                    width = width - margin * 2;
-                    int height = width / pinLength;
-
-                    if (width == 0 || height == 0)
-                        return;
-                    passwordView.getLayoutParams().height = height;
-                    passwordView.getLayoutParams().width = width;
-                }
-            });
+            int width = SdkUtils.widthScreen(getCurrentActivity());
+            int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
+            int margin = (int) SdkUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
+            width = width - margin * 2;
+            int height = width / pinLength;
+            if (width == 0 || height == 0) {
+                return;
+            }
+            passwordView.getLayoutParams().height = height;
+            passwordView.getLayoutParams().width = width;
+            passwordView.requestLayout();
         }
     }
 
