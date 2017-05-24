@@ -76,7 +76,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             return;
         }
 
-        mView.setPhoneRequireToMapHint(PhoneUtil.formatPhoneNumber(mUser.phonenumber));
+        mView.setPhoneRequireToMapHint(PhoneUtil.formatPhoneNumberWithSpace(mUser.phonenumber));
     }
 
     private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {

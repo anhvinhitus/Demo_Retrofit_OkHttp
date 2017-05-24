@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -263,7 +264,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 
     @Override
     public void setPhoneRequireToMapHint(String strPhoneNumber) {
-        if(tvPhoneRequireToMapHint == null ) {
+        if (tvPhoneRequireToMapHint == null) {
             return;
         }
 

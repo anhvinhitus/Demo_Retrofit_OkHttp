@@ -274,14 +274,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (event == null) {
             return;
         }
-        String _temp = CurrencyUtil.formatCurrency(event.amount, true);
+        String strAmount = CurrencyUtil.formatCurrency(event.amount, false);
 
-        SpannableString span = new SpannableString(_temp);
-        span.setSpan(new RelativeSizeSpan(0.5f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        SpannableString span = new SpannableString(_temp);
+//        span.setSpan(new RelativeSizeSpan(0.5f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         tvCashBackTitle.setText(event.title);
-        tvCashBackAmount.setText(span);
+        tvCashBackAmount.setText(strAmount);
         if(!TextUtils.isEmpty(event.campaign)){
             tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
         }

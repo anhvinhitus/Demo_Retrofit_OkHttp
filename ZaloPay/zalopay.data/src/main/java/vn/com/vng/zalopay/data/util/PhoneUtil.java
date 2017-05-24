@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.util;
 
 import android.support.annotation.NonNull;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class PhoneUtil {
         if (phoneNumber <= 0) {
             return "";
         }
+
         return formatPhoneNumber(String.valueOf(phoneNumber));
     }
 
@@ -156,5 +158,12 @@ public class PhoneUtil {
             }
 
         }
+    }
+
+    public static String formatPhoneNumberWithSpace(long number) {
+        String formattedNumber = formatPhoneNumber(number);
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 3) + " " + formattedNumber.substring(formattedNumber.length() - 3, formattedNumber.length());
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + " " + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
+        return formattedNumber;
     }
 }
