@@ -117,9 +117,19 @@ public class AppInfoLoader extends SingletonBase {
             mLoadAppInfoListener.onSuccess();
         } else {
 <<<<<<< HEAD
+<<<<<<< HEAD
             loadAppInfoForAppFromServer();
 =======
             int[] transtypes = shouldLoadAllAppTranstype() ? new int[0] : new int[]{Integer.parseInt(GlobalData.getTransactionType().toString())};
+=======
+            int[] transtypes = shouldLoadAllAppTranstype() ? new int[]{
+                    Integer.parseInt(ETransactionType.PAY.toString()),
+                    Integer.parseInt(ETransactionType.TOPUP.toString()),
+                    Integer.parseInt(ETransactionType.LINK_CARD.toString()),
+                    Integer.parseInt(ETransactionType.WALLET_TRANSFER.toString()),
+                    Integer.parseInt(ETransactionType.WITHDRAW.toString())}
+                    : new int[]{Integer.parseInt(GlobalData.getTransactionType().toString())};
+>>>>>>> d390ca8... [SDK] filter 5 transtypes appinfo
             loadAppInfoForSDK(transtypes);
         }
     }
@@ -129,8 +139,18 @@ public class AppInfoLoader extends SingletonBase {
             Log.d(getClass().getName(), "app info from cache and not expired");
             mLoadAppInfoListener.onSuccess();
         } else {
+<<<<<<< HEAD
             loadAppInfoForApp(new int[0]);
 >>>>>>> c78224b... [SDK] Update app info v1
+=======
+            int[] transtypes = new int[]{
+                    Integer.parseInt(ETransactionType.PAY.toString()),
+                    Integer.parseInt(ETransactionType.TOPUP.toString()),
+                    Integer.parseInt(ETransactionType.LINK_CARD.toString()),
+                    Integer.parseInt(ETransactionType.WALLET_TRANSFER.toString()),
+                    Integer.parseInt(ETransactionType.WITHDRAW.toString())};
+            loadAppInfoForApp(transtypes);
+>>>>>>> d390ca8... [SDK] filter 5 transtypes appinfo
         }
     }
 
