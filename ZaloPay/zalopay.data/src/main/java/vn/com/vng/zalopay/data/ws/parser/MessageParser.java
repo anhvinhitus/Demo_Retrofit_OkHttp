@@ -94,6 +94,7 @@ public class MessageParser implements Parser {
         pushMessage.mtaid = ConvertHelper.unboxValue(respMsg.mtaid, 0);
         pushMessage.mtuid = ConvertHelper.unboxValue(respMsg.mtuid, 0);
         pushMessage.sourceid = ConvertHelper.unboxValue(respMsg.sourceid, 0);
+        pushMessage.usrid = ConvertHelper.unboxValue(respMsg.usrid, 0);
 
         return pushMessage;
     }
@@ -135,6 +136,8 @@ public class MessageParser implements Parser {
             Timber.d("parse recovery : recover size [%s] starttime [%s]", recoverMessage.messages.size(), recoverMessage.starttime);
 
             RecoveryPushMessage recoverMsg = new RecoveryPushMessage();
+            recoveryMsg.usrid = ConvertHelper.unboxValue(recoverMessage.usrid, 0);
+
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {

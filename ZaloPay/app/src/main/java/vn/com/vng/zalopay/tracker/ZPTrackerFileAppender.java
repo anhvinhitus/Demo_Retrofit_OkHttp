@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
 
 import vn.com.vng.zalopay.tracker.model.APIFailedLogData;
 import vn.com.vng.zalopay.tracker.model.EventLogData;
+import vn.com.vng.zalopay.tracker.model.PaymentConnectorErrorLogData;
 import vn.com.vng.zalopay.tracker.model.TrackerType;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPTracker;
@@ -15,7 +16,7 @@ import vn.com.zalopay.analytics.ZPTracker;
  * ZPTrackerFileLog for translate ZPTracker to ZaloPay Server
  */
 
-public class ZPTrackerFileAppender implements ZPTracker {
+public class ZPTrackerFileAppender extends DefaultTracker {
 
     private static volatile Executor executor;
 
@@ -36,23 +37,18 @@ public class ZPTrackerFileAppender implements ZPTracker {
     }
 
     @Override
-    public void trackScreen(String screenName) {
-
-    }
-
-    @Override
     public void trackTiming(int eventId, long value) {
         getExecutor().execute(new WriteLogRunnable(new EventLogData(TrackerType.TIMING_TYPE, eventId, value)));
     }
 
     @Override
-    public void trackApptransidEvent(ZPApptransidLog log) {
-
+    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
+        getExecutor().execute(new WriteAPIFailedRunnable(new APIFailedLogData(apiName, httpCode, serverCode, networkCode)));
     }
 
     @Override
-    public void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
-        getExecutor().execute(new WriteAPIFailedRunnable(new APIFailedLogData(apiName, httpCode, serverCode, networkCode)));
+    public void trackConnectorError(String currentUid, String receivedUid, long mtuid, int sourceid, long timestamp) {
+        getExecutor().execute(new PaymentConnectorErrorRunnable(currentUid, receivedUid, mtuid, sourceid, timestamp));
     }
 
     private static class WriteLogRunnable implements Runnable {
@@ -79,6 +75,20 @@ public class ZPTrackerFileAppender implements ZPTracker {
         @Override
         public void run() {
             APIFailedFileLog.Instance.append(mLogData);
+        }
+    }
+
+    private static class PaymentConnectorErrorRunnable implements Runnable {
+
+        final PaymentConnectorErrorLogData mLogData;
+
+        PaymentConnectorErrorRunnable(String currentUid, String receivedUid, long mtuid, int sourceid, long timestamp) {
+            mLogData = new PaymentConnectorErrorLogData(currentUid, receivedUid, mtuid, sourceid, timestamp);
+        }
+
+        @Override
+        public void run() {
+            PaymentConnectorErrorFileLog.Instance.append(mLogData);
         }
     }
 }

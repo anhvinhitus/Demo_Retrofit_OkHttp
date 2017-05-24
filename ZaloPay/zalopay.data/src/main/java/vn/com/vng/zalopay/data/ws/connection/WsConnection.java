@@ -16,6 +16,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
+import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.network.ConnectionErrorCode;
 import vn.com.vng.zalopay.network.ConnectorListener;
@@ -337,7 +338,11 @@ public class WsConnection extends Connection {
                 return;
             }
 
-//            Timber.v("message.msgType %s", messageType);
+            if (!checkUserAndWriteErrorLog(message)) {
+                return;
+            }
+
+            //            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
@@ -406,6 +411,16 @@ public class WsConnection extends Connection {
                 scheduleReconnect();
             }
             EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
+        }
+
+        private boolean checkUserAndWriteErrorLog(Event message) {
+            String usrid = String.valueOf(message.usrid);
+            if (!mUser.zaloPayId.equals(usrid)) {
+                ZPAnalytics.trackConnectorError(mUser.zaloPayId, usrid, message.mtuid, message.sourceid, System.currentTimeMillis());
+                return false;
+            }
+
+            return true;
         }
     }
 
