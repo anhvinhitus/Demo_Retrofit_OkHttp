@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.tracker;
 
+import android.text.TextUtils;
+
 import java.util.Date;
 
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -40,7 +42,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     }
 
     public void trackUserCancel(boolean isFinish) {
-        if (mZPApptransidLog.status == 1) {
+        if (mZPApptransidLog.status == 1 || TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
             Log.d(this, "skip tracking because status is finish");
             return;
         }
@@ -52,6 +54,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
         Log.d(this, "tracking translogid ", mZPApptransidLog);
     }
+
     /***
      * The params order mush be
      * @param step
@@ -63,7 +66,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
      * @param bank_code
      */
     public void track(Object... params) {
-        if (params == null || params.length <= 0) {
+        if (params == null || params.length <= 0 || TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
             Log.d(this, "skip tracking because params is empty");
             return;
         }

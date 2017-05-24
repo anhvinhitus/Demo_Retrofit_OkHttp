@@ -24,14 +24,13 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.feedback.FeedbackActivity;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.zpsdk.PaymentFeedBackCollector;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.vng.zalopay.zpsdk.PaymentFeedBackCollector;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -43,13 +42,8 @@ import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.feedback.IFBCallback;
-import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.zalopay.feedback.collectors.DynamicCollector;
-import vn.zalopay.feedback.collectors.ScreenshotCollector;
-import vn.zalopay.feedback.collectors.TransactionCollector;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -205,7 +199,6 @@ public class PaymentWrapper {
 
     public void linkCard(Activity activity) {
         User user = getUserComponent().currentUser();
-        
         if (user == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
@@ -228,8 +221,9 @@ public class PaymentWrapper {
             log.appid = paymentInfo.appID;
             log.start_time = System.currentTimeMillis();
             log.transtype = Integer.valueOf(ETransactionType.LINK_CARD.toString());
-            ZPAnalytics.trackApptransidEvent(log);
-
+            if (!TextUtils.isEmpty(paymentInfo.appTransID)) {
+                ZPAnalytics.trackApptransidEvent(log);
+            }
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -272,8 +266,9 @@ public class PaymentWrapper {
             log.appid = paymentInfo.appID;
             log.start_time = System.currentTimeMillis();
             log.transtype = Integer.valueOf(ETransactionType.LINK_ACC.toString());
-            ZPAnalytics.trackApptransidEvent(log);
-
+            if (!TextUtils.isEmpty(paymentInfo.appTransID)) {
+                ZPAnalytics.trackApptransidEvent(log);
+            }
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_ACC);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -450,9 +445,10 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-
-        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
-        ZPAnalytics.trackApptransidEvent(log);
+        if (!TextUtils.isEmpty(paymentInfo.appTransID)) {
+            ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
+            ZPAnalytics.trackApptransidEvent(log);
+        }
 
         SDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()), new PaymentFeedBackCollector());
     }
