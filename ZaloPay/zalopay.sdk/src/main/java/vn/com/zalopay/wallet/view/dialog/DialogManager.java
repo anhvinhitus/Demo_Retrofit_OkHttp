@@ -253,11 +253,8 @@ public class DialogManager {
             mAlertDialog.setConfirmClickListener(new OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (pActivity != null) {
-
-                        if (sweetAlertDialog != null && !pActivity.isFinishing()) {
-                            sweetAlertDialog.dismiss();
-                        }
+                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
+                        sweetAlertDialog.dismiss();
                     }
 
                     if (mAlertDialog != null) {
@@ -329,11 +326,8 @@ public class DialogManager {
             mAlertDialog.setConfirmClickListener(new OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (pActivity != null) {
-
-                        if (sweetAlertDialog != null && !pActivity.isFinishing()) {
-                            sweetAlertDialog.dismiss();
-                        }
+                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
+                        sweetAlertDialog.dismiss();
                     }
                     if (mAlertDialog != null) {
                         mAlertDialog = null;
@@ -385,11 +379,8 @@ public class DialogManager {
             mConfirmSweetDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mConfirmSweetDialog != null) {
@@ -404,11 +395,8 @@ public class DialogManager {
             }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mConfirmSweetDialog != null) {
                         mConfirmSweetDialog = null;
@@ -459,11 +447,8 @@ public class DialogManager {
             mConfirmSweetDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mConfirmSweetDialog != null) {
@@ -478,11 +463,8 @@ public class DialogManager {
             }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mConfirmSweetDialog != null) {
@@ -538,11 +520,8 @@ public class DialogManager {
             mUpdateweetDialog.setUpdateClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mUpdateweetDialog != null) {
@@ -557,11 +536,8 @@ public class DialogManager {
             }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mUpdateweetDialog != null) {
                         mUpdateweetDialog = null;
@@ -609,11 +585,8 @@ public class DialogManager {
             mUpdateweetDialog.setUpdateClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mUpdateweetDialog != null) {
@@ -665,11 +638,8 @@ public class DialogManager {
             mCustomViewSweetDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mCustomViewSweetDialog != null) {
                         mCustomViewSweetDialog = null;
@@ -683,11 +653,8 @@ public class DialogManager {
             }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mCustomViewSweetDialog != null) {
                         mCustomViewSweetDialog = null;
@@ -757,11 +724,8 @@ public class DialogManager {
             mSweetDialogNoInternet.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mSweetDialogNoInternet != null) {
@@ -776,11 +740,8 @@ public class DialogManager {
             }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mSweetDialogNoInternet != null) {
                         mSweetDialogNoInternet = null;
@@ -832,11 +793,8 @@ public class DialogManager {
                         callback.onCancelEvent();
                     }
 
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mRetrySweetDialog != null) {
@@ -851,11 +809,8 @@ public class DialogManager {
                         callback.onOKevent();
 
                     }
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mRetrySweetDialog != null) {
                         mRetrySweetDialog = null;
@@ -907,11 +862,8 @@ public class DialogManager {
                         pListener.onClickDiaLog(pIndexClick);
                     }
 
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
 
                     if (mDialog != null) {
@@ -959,11 +911,8 @@ public class DialogManager {
                     if (pListener != null) {
                         pListener.onClickDiaLog(pIndexClick);
                     }
-                    if (pActivity != null) {
-
-                        if (sDialog != null && !pActivity.isFinishing()) {
-                            sDialog.dismiss();
-                        }
+                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
+                        sDialog.dismiss();
                     }
                     if (mDialog != null) {
                         mDialog = null;
@@ -1030,11 +979,8 @@ public class DialogManager {
                     if (pListener != null) {
                         pListener.onClickDiaLog(pIndexClick);
                     }
-                    if (pActivity != null) {
-
-                        if (sweetAlertDialog != null && !pActivity.isFinishing()) {
-                            sweetAlertDialog.dismiss();
-                        }
+                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
+                        sweetAlertDialog.dismiss();
                     }
                     if (mNewDiaLog != null) {
                         mNewDiaLog = null;
@@ -1086,11 +1032,8 @@ public class DialogManager {
                     if (pListener != null) {
                         pListener.onClickDiaLog(pIndexClick);
                     }
-                    if (pActivity != null) {
-
-                        if (sweetAlertDialog != null && !pActivity.isFinishing()) {
-                            sweetAlertDialog.dismiss();
-                        }
+                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
+                        sweetAlertDialog.dismiss();
                     }
                     if (mNewDiaLog != null) {
                         mNewDiaLog = null;
@@ -1130,11 +1073,8 @@ public class DialogManager {
                     if (pListener != null) {
                         pListener.onClickDiaLog(pIndexClick);
                     }
-                    if (pActivity != null) {
-
-                        if (sweetAlertDialog != null && !pActivity.isFinishing()) {
-                            sweetAlertDialog.dismiss();
-                        }
+                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
+                        sweetAlertDialog.dismiss();
                     }
                     if (mNewDiaLog != null) {
                         mNewDiaLog = null;
