@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row_bank_support_selection"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/default_white_selector">
+
+    <ImageView
+        android:id="@+id/row_bank_support_selection_iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/spacing.medium.s"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/row_bank_support_selection_tv_bank_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="14dp"
+        android:layout_toRightOf="@+id/row_bank_support_selection_iv_logo"
+        android:textColor="@color/c_text_black"
+        android:textSize="@dimen/link.bank.empty.text.size" />
+
+    <ImageView
+        android:id="@+id/row_bank_support_selection_iv_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/spacing.medium.s" />
+
+    <View
+        android:id="@+id/row_bank_support_selection_dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@+id/row_bank_support_selection_tv_bank_name"
+        android:layout_alignParentBottom="true"
+        android:background="@color/separate" />
+</RelativeLayout>
+

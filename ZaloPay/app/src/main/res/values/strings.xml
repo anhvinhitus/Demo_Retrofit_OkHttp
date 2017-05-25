@@ -76,6 +76,7 @@
     <string name="title.activity.choose.category">Phân loại</string>
     <string name="title_activity_link_bank">Ngân hàng</string>
     <string name="title.activity.search.category">Tìm kiếm</string>
+    <string name="title.activity.bank.support.selection">Chọn liên kết</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>

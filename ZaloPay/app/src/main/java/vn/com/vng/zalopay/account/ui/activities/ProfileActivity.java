@@ -112,6 +112,29 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         presenter.pause();
     }
 
+    boolean isVisible = true;
+    int scrollRange = -1;
+
+//    @Override
+//    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//        if (isFinishing()) {
+//            return;
+//        }
+//
+//        float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
+//        layoutUser.setAlpha(alpha);
+//        if (scrollRange == -1) {
+//            scrollRange = appBarLayout.getTotalScrollRange();
+//        }
+//        if (scrollRange + verticalOffset == 0) {
+//            getToolbar().setTitleTextColor(Color.WHITE);
+//            isVisible = true;
+//        } else if (isVisible) {
+//            getToolbar().setTitleTextColor(Color.TRANSPARENT);
+//            isVisible = false;
+//        }
+//    }
+
     @Override
     public void onDestroy() {
         presenter.destroy();

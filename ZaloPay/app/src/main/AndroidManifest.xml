@@ -398,6 +398,9 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:exported="false"/>
 
+        <activity android:name=".bank.ui.BankSupportSelectionActivity"
+            android:label="@string/title.activity.bank.support.selection" />
+
         <receiver
             android:name=".receivers.BootCompletedReceiver"
             android:enabled="true">
