@@ -8,6 +8,8 @@ import retrofit2.http.Part;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by hieuvm on 4/21/17.
@@ -19,6 +21,7 @@ public interface FileLogStore {
     interface RequestService {
         @Multipart
         @POST(Constants.UMUPLOAD_API.FILE_LOG)
+        @API_NAME(ZPEvents.API_V001_ZP_UPLOAD_CLIENTLOGS)
         Observable<BaseResponse> uploadFileLog(@Part("userid") RequestBody userid, @Part MultipartBody.Part file);
     }
 
