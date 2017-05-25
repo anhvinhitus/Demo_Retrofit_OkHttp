@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCo
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
+import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
@@ -254,6 +255,11 @@ public class Navigator implements INavigator {
         }
         Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<String, String>());
         activity.startActivity(intent);
+    }
+
+    public void startBankSupportSelectionActivity(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), BankSupportSelectionActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANk);
     }
 
     @Override
@@ -555,8 +561,7 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentLinkCard(Context context) {
-        return new Intent(context, BankSupportSelectionActivity.class);
-//        return new Intent(context, LinkBankActivity.class);
+        return new Intent(context, BankActivity.class);
     }
 
     private Intent intentLinkCard(Context context, boolean continuePayment) {

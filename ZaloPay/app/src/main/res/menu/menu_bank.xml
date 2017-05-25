@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_more_bank"
+        android:orderInCategory="100"
+        android:title="@string/add"
+        app:actionLayout="@layout/layout_menu_bank"
+        app:showAsAction="always" />
+</menu>

@@ -398,6 +398,10 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".bank.ui.BankActivity"
+            android:label="@string/title_activity_link_bank" />
+
         <activity android:name=".bank.ui.BankSupportSelectionActivity"
             android:label="@string/title.activity.bank.support.selection" />
 

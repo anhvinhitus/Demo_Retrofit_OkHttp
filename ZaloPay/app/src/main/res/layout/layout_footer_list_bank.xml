@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing.medium.t"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/btn_add_more"
+        style="@style/Button.Default.New"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button.height"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="@dimen/button.margin.top.min"
+        android:orientation="horizontal">
+
+        <com.zalopay.ui.widget.IconFontTextView
+            style="@style/IconFontText.IconLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/link.card.more"
+            app:iconLeftName="@string/linkaccount_add" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/loremipsum"
+            android:paddingRight="@dimen/spacing.medium.s"
+            android:paddingTop="@dimen/spacing.medium.t"
+            android:scaleType="center"
+            android:src="@drawable/ic_chungchi" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/secure_info_detail"
+            android:textColor="@color/txt_item_main"
+            android:textSize="13sp" />
+    </LinearLayout>
+</LinearLayout>

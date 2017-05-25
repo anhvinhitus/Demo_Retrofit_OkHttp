@@ -2,6 +2,7 @@
     <dimen name="font_size_home_function">46dp</dimen>
     <dimen name="font_size_home_inside_app">30dp</dimen>
     <dimen name="font_size_menu">26dp</dimen>
+    <dimen name="font_size_menu_item">18dp</dimen>
     <dimen name="font_size_balance_manager_header">60dp</dimen>
     <dimen name="font_size_balance_manager_deposit">36dp</dimen>
     <dimen name="font_size_balance_manager_withdraw">36dp</dimen>
@@ -114,7 +115,7 @@
     <dimen name="button.text.padding.left">24sp</dimen>
     <dimen name="button.text.padding.right">24sp</dimen>
 
-    <dimen name="linkcard.margin.bottom.lastitem">35dp</dimen>
+    <dimen name="linkcard.margin.bottom.lastitem">36dp</dimen>
     <dimen name="payment.actionbar.height">76dp</dimen>
 
     <dimen name="link.card.height">134dp</dimen>

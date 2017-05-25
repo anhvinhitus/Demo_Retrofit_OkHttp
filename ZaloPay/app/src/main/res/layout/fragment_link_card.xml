@@ -58,7 +58,7 @@
                                 style="@style/IconFontText.IconLeft"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/link_card_more"
+                                android:text="@string/link.card.more"
                                 app:iconLeftName="@string/linkaccount_add" />
                         </LinearLayout>
                     </LinearLayout>
