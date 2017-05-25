@@ -93,6 +93,22 @@ public class ChannelStartProcessor extends SingletonBase {
                 confirmUpgradeLevel(GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update));
                 return;
             }
+            //check bank future
+            if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+                    BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
+                    if (bankConfig != null) {
+                        String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                        pMessage = String.format(pMessage, bankConfig.getShortBankName());
+                        showSupportBankVersionDialog(pMessage, mChannel.minappversion);
+                        return;
+                    }
+                } else if (!mChannel.isAtmChannel()) {
+                    String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                    showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
+                    return;
+                }
+            }
             //withdraw
             if (GlobalData.isWithDrawChannel()) {
                 BankLoader.loadBankList(mLoadBankListListener);
@@ -137,19 +153,8 @@ public class ChannelStartProcessor extends SingletonBase {
                 }
                 return;
             }
-            if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext())) && !mChannel.isAtmChannel()) {
-                String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
-            } else if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext())) && (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
-                BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
-                if (bankConfig != null) {
-                    String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                    pMessage = String.format(pMessage, bankConfig.getShortBankName());
-                    showSupportBankVersionDialog(pMessage, mChannel.minappversion);
-                } else {
-                    startChannel();
-                }
-            } else if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+
+            if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
                 BankLoader.loadBankList(mLoadBankListListener);//reload bank list
             } else {
                 startChannel();

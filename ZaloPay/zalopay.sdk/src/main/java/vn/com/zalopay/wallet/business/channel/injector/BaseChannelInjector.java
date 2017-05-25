@@ -69,14 +69,13 @@ public abstract class BaseChannelInjector {
                         && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank))) {
                     continue;//user has linked vietcombank account , no need show bank account channel
                 }
-                if (channel.isEnable() && !channel.isAtmChannel()) {
+                if (channel.isEnable()) {
                     channel.calculateFee();//calculate fee of this channel
                     channel.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
                 }
                 //check maintenance for cc
-                if (channel.isEnable()
-                        && (channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_CARD))
-                        || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_BANK_ACCOUNT))) {
+                if (channel.isEnable() && ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_CARD))
+                        || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_BANK_ACCOUNT)))) {
                     channel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                 }
                 //get icon
