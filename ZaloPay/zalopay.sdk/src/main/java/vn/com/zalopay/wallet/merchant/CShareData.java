@@ -98,28 +98,17 @@ public class CShareData extends SingletonBase {
 
         @Override
         public void onComplete() {
-            List<BankConfig> bankConfigList = new ArrayList<>();
 
-            if (BankCardCheck.mBankMap != null) {
-                Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
-
-                    try {
-                        BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
-
-                        if (bankConfig != null && !bankConfigList.contains(bankConfig) && bankConfig.isAllowWithDraw()) {
-                            bankConfigList.add(bankConfig);
-                        }
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
-                }
-            }
-
-            if (mGetWithDrawBankList != null) {
-                mGetWithDrawBankList.onComplete(bankConfigList);
+            boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                    Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+            if (!isUiThread) {
+                Log.d(this, "loadBankListComplete() coming from background, switching thread to main thread...");
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    //this runs on the UI thread
+                    loadBankListComplete();
+                });
+            } else {
+                loadBankListComplete();
             }
 
         }
@@ -132,6 +121,32 @@ public class CShareData extends SingletonBase {
             }
         }
     };
+
+    public void loadBankListComplete() {
+        List<BankConfig> bankConfigList = new ArrayList<>();
+        if (BankCardCheck.mBankMap != null) {
+            Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                try {
+                    BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
+
+                    if (bankConfig != null && !bankConfigList.contains(bankConfig) && bankConfig.isAllowWithDraw()) {
+                        bankConfigList.add(bankConfig);
+                    }
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
+            }
+        }
+
+        if (mGetWithDrawBankList != null) {
+            mGetWithDrawBankList.onComplete(bankConfigList);
+        }
+    }
+
 
     public CShareData() {
         super();
@@ -218,7 +233,7 @@ public class CShareData extends SingletonBase {
     }
 
     protected void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
-        Log.d(this,"send notify finish link/unlink bank account ", pObject);
+        Log.d(this, "send notify finish link/unlink bank account ", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
