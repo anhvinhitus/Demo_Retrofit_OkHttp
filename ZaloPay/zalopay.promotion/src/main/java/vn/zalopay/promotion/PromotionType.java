@@ -1,12 +1,12 @@
-package vn.com.vng.zalopay.promotion;
+package vn.zalopay.promotion;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@IntDef({ActionType.TRANSACTION_DETAIL})
+@IntDef({PromotionType.CASHBACK})
 @Retention(RetentionPolicy.SOURCE)
-public @interface ActionType {
-    int TRANSACTION_DETAIL = 1;
+public @interface PromotionType {
+    int CASHBACK = 1;
 }

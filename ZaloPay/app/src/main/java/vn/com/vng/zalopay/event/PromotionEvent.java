@@ -2,8 +2,8 @@ package vn.com.vng.zalopay.event;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.promotion.PromotionAction;
-import vn.com.vng.zalopay.promotion.PromotionType;
+import vn.zalopay.promotion.PromotionAction;
+import vn.zalopay.promotion.PromotionType;
 
 public class PromotionEvent {
     @PromotionType

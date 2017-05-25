@@ -50,7 +50,7 @@ import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.PromotionEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.promotion.PromotionAction;
+import vn.zalopay.promotion.PromotionAction;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.utils.Log;

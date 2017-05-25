@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.promotion;
+package vn.zalopay.promotion;
 
 public class PromotionAction {
     public String title;

@@ -69,4 +69,6 @@ dependencies {
     compile libs.fresco
 
     compile project(':zalopay.feedback')
+
+    compile project(':zalopay.promotion')
 }
