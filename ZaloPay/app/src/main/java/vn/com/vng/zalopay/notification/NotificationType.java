@@ -66,7 +66,7 @@ public class NotificationType {
     }
 
     static boolean shouldMarkRead(long notificationType) {
-        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION;
+        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION || notificationType == PROMOTION;
     }
 
 
