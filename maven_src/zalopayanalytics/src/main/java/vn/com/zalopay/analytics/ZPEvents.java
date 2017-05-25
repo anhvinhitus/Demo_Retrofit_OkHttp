@@ -165,6 +165,7 @@ public class ZPEvents {
     public static final int API_NOTIFICATION_PING_PONG = 2048;
     public static final int API_V001_TPE_SUBMITMAPACCOUNT = 2049;
     public static final int API_V001_ZP_UPLOAD_CLIENTLOGS = 2050;
+    public static final int API_UM_LISTBANKACCOUNTFORCLIENT = 2051;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -271,6 +272,7 @@ public class ZPEvents {
     public static final int CONNECTOR_V001_TPE_SDKERRORREPORT = 2746;
     public static final int CONNECTOR_UM_LISTCARDINFOFORCLIENT = 2747;
     public static final int CONNECTOR_V001_TPE_SUBMITMAPACCOUNT = 2749;
+    public static final int CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT = 2750;
     public static final int TOUCH_ME_PROFILE = 2800;
     public static final int TOUCH_ME_BALANCE = 2801;
     public static final int TOUCH_ME_BANK = 2802;
@@ -289,6 +291,7 @@ public class ZPEvents {
     public static final int TRANSACTIONLOG_SLIDEOPENMENU = 2904;
     public static final int TRANSACTIONLOG_FILTER_TOUCHOUTSIDE = 2905;
     public static final int TRANSACTIONLOG_FILTER_DONE = 2906;
+    public static final int TRANSACTIONLOG_FILTER_RESET = 2907;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -614,6 +617,8 @@ public class ZPEvents {
                 return "api_v001_tpe_submitmapaccount";
             case API_V001_ZP_UPLOAD_CLIENTLOGS:
                 return "api_v001_zp_upload_clientlogs";
+            case API_UM_LISTBANKACCOUNTFORCLIENT:
+                return "api_um_listbankaccountforclient";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -826,6 +831,8 @@ public class ZPEvents {
                 return "connector_um_listcardinfoforclient";
             case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
                 return "connector_v001_tpe_submitmapaccount";
+            case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
+                return "connector_um_listbankaccountforclient";
             case TOUCH_ME_PROFILE:
                 return "Touch_Me_Profile";
             case TOUCH_ME_BALANCE:
@@ -862,6 +869,8 @@ public class ZPEvents {
                 return "TransactionLog_Filter_TouchOutside";
             case TRANSACTIONLOG_FILTER_DONE:
                 return "TransactionLog_Filter_Done";
+            case TRANSACTIONLOG_FILTER_RESET:
+                return "TransactionLog_Filter_Reset";
             default:
                 return "DefaultAction";
         }
@@ -1191,6 +1200,8 @@ public class ZPEvents {
                 return "Timing TPE";
             case API_V001_ZP_UPLOAD_CLIENTLOGS:
                 return "Timing TPE";
+            case API_UM_LISTBANKACCOUNTFORCLIENT:
+                return "Timing UM";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -1403,6 +1414,8 @@ public class ZPEvents {
                 return "Timing UM";
             case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
                 return "Timing TPE";
+            case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
+                return "Timing UM";
             case TOUCH_ME_PROFILE:
                 return "Tab Me";
             case TOUCH_ME_BALANCE:
@@ -1438,6 +1451,8 @@ public class ZPEvents {
             case TRANSACTIONLOG_FILTER_TOUCHOUTSIDE:
                 return "Transaction Logs";
             case TRANSACTIONLOG_FILTER_DONE:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_FILTER_RESET:
                 return "Transaction Logs";
             default:
                 return "DefaultCategory";
