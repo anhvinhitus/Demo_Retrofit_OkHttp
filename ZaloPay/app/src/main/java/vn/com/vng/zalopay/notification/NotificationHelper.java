@@ -235,9 +235,36 @@ public class NotificationHelper {
 
     private void putNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.putNotify(notify)
+                .filter(rowId -> rowId > 0)
+                .doOnNext(rowId -> notify.notificationId = rowId)
+                .flatMap(new Func1<Long, Observable<NotificationData>>() {
+                    @Override
+                    public Observable<NotificationData> call(Long rowId) {
+                        return Observable.just(notify);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<NotificationData>() {
+                    @Override
+                    public void onNext(NotificationData notify) {
+                        postNotification(notify);
+                    }
+                });
         mCompositeSubscription.add(subscription);
+    }
+
+    private void postNotification(NotificationData notify) {
+        if (notify == null) {
+            Timber.d("post notification is null");
+            return;
+        }
+        switch ((int) notify.notificationtype) {
+            case NotificationType.PROMOTION:
+                prepareRenderPromotion(notify); //post update again promotion notification with new notification id inserted in local db
+                break;
+            default:
+                Timber.d("undefine notification type");
+        }
     }
 
     private void updateLevelProfile(NotificationData notify, boolean isSuccess) {

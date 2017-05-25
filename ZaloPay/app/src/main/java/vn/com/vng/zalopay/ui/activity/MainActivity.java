@@ -297,6 +297,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     @Override
+    public boolean showingCashBackView() {
+        return mParentPromotionCashBackView != null && (mParentPromotionCashBackView.getVisibility() == View.VISIBLE);
+    }
+
+    @Override
     public void hideCashBackView() {
         if (mPromotionCashBackView != null) {
             Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_out_bottom);

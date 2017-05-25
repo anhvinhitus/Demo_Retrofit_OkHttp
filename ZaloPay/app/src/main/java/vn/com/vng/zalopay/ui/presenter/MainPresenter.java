@@ -46,12 +46,12 @@ import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.event.PromotionEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.promotion.ActionType;
-import vn.com.vng.zalopay.event.PromotionEvent;
 import vn.com.vng.zalopay.promotion.PromotionType;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
@@ -68,7 +68,6 @@ import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -77,7 +76,6 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -425,7 +423,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             mPromotionEvent = event;
             switch (event.type) {
                 case PromotionType.CASHBACK:
-                    mView.showCashBackView(event);
+                    if (!mView.showingCashBackView()) {
+                        mView.showCashBackView(event);
+                    }
                     break;
                 default:
                     Timber.d("undefine promotion type");
@@ -474,8 +474,11 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (mPromotionEvent != null && mPromotionEvent.actions != null && !mPromotionEvent.actions.isEmpty()) {
             switch (mPromotionEvent.actions.get(0).action) {
                 case ActionType.TRANSACTION_DETAIL:
-                    mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid), String.valueOf(mPromotionEvent.notificationId));
-                    //mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
+                    if (mPromotionEvent.notificationId > 0) {
+                        mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid), String.valueOf(mPromotionEvent.notificationId));
+                    } else {
+                        mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
+                    }
                     break;
                 default:
                     Timber.d("undefine action on promotion");

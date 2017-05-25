@@ -16,4 +16,6 @@ public interface IHomeView extends ILoadDataView {
     void showCashBackView(PromotionEvent event);
 
     void hideCashBackView();
+
+    boolean showingCashBackView();
 }
