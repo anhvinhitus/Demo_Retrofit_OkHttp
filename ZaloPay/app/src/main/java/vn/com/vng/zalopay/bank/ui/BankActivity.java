@@ -13,12 +13,7 @@ public class BankActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return null;
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.activity_bank;
+        return new BankFragment();
     }
 
     @Override

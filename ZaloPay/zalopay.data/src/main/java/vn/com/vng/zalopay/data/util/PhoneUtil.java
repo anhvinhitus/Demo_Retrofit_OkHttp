@@ -166,4 +166,26 @@ public class PhoneUtil {
         formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + " " + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
         return formattedNumber;
     }
+
+    public static String getPhoneNumberScreened(String phoneNumber) {
+        final int FIRST_NUMBER_SHOW = 3;
+        final int LAST_NUMBER_SHOW = 3;
+        try {
+            if (TextUtils.isEmpty(phoneNumber)) {
+                return "";
+            } else if (phoneNumber.length() <= (FIRST_NUMBER_SHOW + LAST_NUMBER_SHOW)) {
+                return phoneNumber;
+            } else {
+                String first3Number = phoneNumber.substring(0, FIRST_NUMBER_SHOW);
+                String last3Number = phoneNumber.substring(phoneNumber.length() - LAST_NUMBER_SHOW,
+                        phoneNumber.length());
+                String betweenNumber = phoneNumber.substring(FIRST_NUMBER_SHOW,
+                        phoneNumber.length() - LAST_NUMBER_SHOW);
+                return String.format("%s %s %s", first3Number, betweenNumber.replaceAll("\\d", "*"), last3Number);
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Function getPhoneNumber throw exception [%s]", e.getMessage());
+        }
+        return phoneNumber;
+    }
 }

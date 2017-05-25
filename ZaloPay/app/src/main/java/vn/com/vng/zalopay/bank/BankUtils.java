@@ -13,6 +13,9 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
@@ -83,6 +86,30 @@ public class BankUtils {
 
         if (mBankAccountStyles.containsKey(bankAccount.mBankCode)) {
             return mBankAccountStyles.get(bankAccount.mBankCode);
+        } else {
+            return BANK_ACCOUNT_DEFAULT;
+        }
+    }
+
+    public static BankCardStyle getBankCardStyle(DBaseMap bankCard) {
+        if (bankCard == null || TextUtils.isEmpty(bankCard.bankcode)) {
+            return BANK_DEFAULT;
+        }
+
+        if (mBankSettings.containsKey(bankCard.bankcode)) {
+            return mBankSettings.get(bankCard.bankcode);
+        } else {
+            return BANK_DEFAULT;
+        }
+    }
+
+    public static BankAccountStyle getBankAccountStyle(DBankAccount bankAccount) {
+        if (bankAccount == null || TextUtils.isEmpty(bankAccount.bankcode)) {
+            return BANK_ACCOUNT_DEFAULT;
+        }
+
+        if (mBankAccountStyles.containsKey(bankAccount.bankcode)) {
+            return mBankAccountStyles.get(bankAccount.bankcode);
         } else {
             return BANK_ACCOUNT_DEFAULT;
         }
