@@ -1275,7 +1275,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccessSpecial();
     }
 
-    protected void showBalanceContent(PaymentChannel pConfig) throws Exception {
+    protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {
         setText(R.id.zalopay_bill_info, StringUtil.formatVnCurrence(String.valueOf(GlobalData.getBalance())));
         setVisible(R.id.zpw_channel_layout, true);
         setVisible(R.id.zpw_channel_label_textview, false);

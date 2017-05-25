@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class MiniPmcTransType implements Parcelable {
     public static final Creator<MiniPmcTransType> CREATOR = new Creator<MiniPmcTransType>() {
@@ -111,7 +112,7 @@ public class MiniPmcTransType implements Parcelable {
         isAllowByAmountAndFee = in.readByte() != 0;
     }
 
-    public static String getPmcKey(long pAppId, String pTranstype, int pPmcId) {
+    public static String getPmcKey(long pAppId, @TransactionType int pTranstype, int pPmcId) {
         StringBuilder transtypePmcKey = new StringBuilder();
         transtypePmcKey.append(pAppId)
                 .append(Constants.UNDERLINE)
