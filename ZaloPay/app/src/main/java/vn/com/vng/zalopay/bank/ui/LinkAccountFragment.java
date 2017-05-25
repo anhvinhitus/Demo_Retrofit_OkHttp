@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -224,9 +223,9 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
 
     @Override
     public void showListBankDialog(ArrayList<ZPCard> cardSupportList) {
-        ListBankDialog listBankDialog = ListBankDialog.newInstance(cardSupportList);
+        BankSupportDialog listBankDialog = BankSupportDialog.newInstance(cardSupportList);
         listBankDialog.setTargetFragment(this, Constants.REQUEST_CODE_BANK_DIALOG);
-        listBankDialog.show(getChildFragmentManager(), ListBankDialog.TAG);
+        listBankDialog.show(getChildFragmentManager(), BankSupportDialog.TAG);
     }
 
     @Override

@@ -14,22 +14,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.listener.OnClickBankListener;
-import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by longlv on 10/13/16.
- * *
+ * Adapter of BankSupportDialog.
  */
-class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
+class BankSupportDialogAdapter extends AbsRecyclerAdapter<ZPCard, BankSupportDialogAdapter.ViewHolder> {
 
     private OnClickBankListener mListener;
 
-    BankAdapter(Context context, List<ZPCard> cards, OnClickBankListener listener) {
+    BankSupportDialogAdapter(Context context, List<ZPCard> cards, OnClickBankListener listener) {
         super(context);
         mListener = listener;
         insertItems(cards);
@@ -37,7 +35,7 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_layout, parent, false), onItemClickListener);
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_support_layout, parent, false), onItemClickListener);
     }
 
     @Override
