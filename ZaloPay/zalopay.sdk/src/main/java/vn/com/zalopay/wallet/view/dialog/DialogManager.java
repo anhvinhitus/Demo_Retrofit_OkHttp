@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.view.dialog;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -38,7 +37,6 @@ public class DialogManager {
     private static SweetAlertDialog mProgressDialog = null;
     private static SweetAlertDialog mRetrySweetDialog = null;
     private static SweetAlertDialog mConfirmSweetDialog = null;
-    private static SweetAlertDialog mCustomViewSweetDialog = null;
     private static SweetAlertDialog mSweetDialogNoInternet = null;
     private static SweetAlertDialog mAlertDialog = null;
     private static SweetAlertDialog mUpdateweetDialog = null;
@@ -553,122 +551,6 @@ public class DialogManager {
         }
     }
 
-    /***
-     * show update version from app
-     *
-     * @param pActivity
-     * @param pMessage
-     * @param pVersion
-     * @param pOKButton
-     * @param callback
-     */
-    public synchronized static void showSweetDialogUpdate(final Activity pActivity, final String pMessage, final String pVersion, final String pOKButton, final ZPWOnEventUpdateListener callback) {
-
-        try {
-            if (pActivity == null || pActivity.isFinishing()) {
-                Log.d("showSweetDialogUpdate", "pActivity == null || pActivity.isFinishing()");
-                return;
-            }
-
-            if (mUpdateweetDialog == null) {
-                mUpdateweetDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE_TYPE, R.style.alert_dialog);
-                mUpdateweetDialog.showCancelButton(false);
-                mUpdateweetDialog.setUpdatetext(pOKButton);
-            }
-            if (mUpdateweetDialog.isShowing()) {
-                Log.d("showSweetDialogUpdate", "===there're a mUpdateweetDialog is showing====");
-                return;
-            }
-            mUpdateweetDialog.setContentHtmlText(pMessage);
-            mUpdateweetDialog.setVersionText(pVersion);
-            mUpdateweetDialog.setTitleText(pActivity.getString(R.string.dialog_title_update));
-            mUpdateweetDialog.setUpdateClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
-                        sDialog.dismiss();
-                    }
-
-                    if (mUpdateweetDialog != null) {
-                        mUpdateweetDialog = null;
-                    }
-
-                    if (callback != null) {
-                        callback.onUpdateListenner();
-
-                    }
-                }
-            }).show();
-        } catch (Exception e) {
-            Log.e("showProcessDialog", e);
-        }
-    }
-
-    /**
-     * Dialog custom content view
-     *
-     * @param pActivity    Activity
-     * @param pTitle       String title
-     * @param pMessage     String mesage
-     * @param pRightButton Text Right button or null
-     * @param pLeftButton  Text Left button or null
-     * @param callback     call back
-     */
-    public synchronized static void showSweetDialogNormal(final Activity pActivity, final String pTitle, final String pMessage, final String pRightButton, final String pLeftButton, final OnCustomContentDialogEventListener callback) {
-
-        try {
-            if (pActivity == null || pActivity.isFinishing()) {
-                Log.d("showSweetDialogNormal", "pActivity == null || pActivity.isFinishing()");
-                return;
-            }
-
-            if (mCustomViewSweetDialog == null)
-                mCustomViewSweetDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.CUSTOM_CONTENT_VIEW, R.style.alert_dialog);
-
-            if (mCustomViewSweetDialog.isShowing()) {
-                Log.d("showSweetDialogNormal", "===there're a mCustomViewSweetDialog is showing===");
-                return;
-            }
-
-            mCustomViewSweetDialog.setCancelText(pLeftButton);
-            mCustomViewSweetDialog.setConfirmText(pRightButton);
-            mCustomViewSweetDialog.setTitleText(pTitle);
-            mCustomViewSweetDialog.setContentHtmlText(pMessage);
-            mCustomViewSweetDialog.showCancelButton(true);
-            mCustomViewSweetDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
-                        sDialog.dismiss();
-                    }
-                    if (mCustomViewSweetDialog != null) {
-                        mCustomViewSweetDialog = null;
-                    }
-
-                    if (callback != null) {
-                        callback.onLeftButtonClick();
-
-                    }
-                }
-            }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null && sDialog != null && !pActivity.isFinishing()) {
-                        sDialog.dismiss();
-                    }
-                    if (mCustomViewSweetDialog != null) {
-                        mCustomViewSweetDialog = null;
-                    }
-                    if (callback != null) {
-                        callback.onRightButtonClick();
-
-                    }
-                }
-            }).show();
-        } catch (Exception e) {
-            Log.e("showProcessDialog", e);
-        }
-    }
 
     public synchronized static void closeNetworkingDialog() {
         if (mSweetDialogNoInternet.isShowing()) {
@@ -992,97 +874,5 @@ public class DialogManager {
         }
     }
 
-    /**
-     * Dialog custom Image
-     *
-     * @param pActivity
-     * @param pTitle
-     * @param pContent
-     * @param pDrawable
-     * @param pListener
-     * @param pArrButton
-     */
-    public synchronized static void showSweetDialog(final Activity pActivity, String pTitle, String pContent, Drawable pDrawable, final ZPWOnSweetDialogListener pListener, String... pArrButton) {
 
-        try {
-            if (pActivity == null || pActivity.isFinishing())
-                return;
-
-            if (mNewDiaLog == null) {
-                mNewDiaLog = new SweetAlertDialog(pActivity, SweetAlertDialog.INFO_NO_ICON, R.style.alert_dialog);
-            }
-
-            if (mNewDiaLog.isShowing()) {
-                Log.d("showDialogCustomView", "===there a custom view dialog showing===");
-                return;
-            }
-            if (pArrButton != null)
-                mNewDiaLog.setArrButton(pArrButton);
-
-            mNewDiaLog.setTitleText(pTitle);
-
-            mNewDiaLog.setContentText(pContent);
-
-            mNewDiaLog.setCustomImage(pDrawable);
-
-            mNewDiaLog.setCustomClickListener(new ZPWOnDialogListener() {
-                @Override
-                public void onCloseDialog(SweetAlertDialog sweetAlertDialog, int pIndexClick) {
-                    Log.d("Click Dialog", String.valueOf(pIndexClick));
-                    if (pListener != null) {
-                        pListener.onClickDiaLog(pIndexClick);
-                    }
-                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
-                        sweetAlertDialog.dismiss();
-                    }
-                    if (mNewDiaLog != null) {
-                        mNewDiaLog = null;
-                    }
-                }
-            }).show();
-        } catch (Exception e) {
-            Log.e("showDialogCustomView", e);
-        }
-    }
-
-    public synchronized static void showSweetDialog(final Activity pActivity, String pTitle, String pContent, String pVersion, final ZPWOnSweetDialogListener pListener, String... pArrButton) {
-
-        try {
-            if (pActivity == null || pActivity.isFinishing())
-                return;
-
-            if (mNewDiaLog == null && pArrButton != null) {
-                if (pArrButton.length == 1) {
-                    mNewDiaLog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE_TYPE, R.style.alert_dialog);
-                    mNewDiaLog.setUpdatetext(pArrButton[0]);
-                } else {
-                    mNewDiaLog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE, R.style.alert_dialog);
-                    mNewDiaLog.setArrButton(pArrButton);
-                }
-            }
-            if (mNewDiaLog.isShowing())
-                return;
-
-            mNewDiaLog.setContentText(pContent);
-            mNewDiaLog.setVersionText(pVersion);
-            mNewDiaLog.setTitleText(pTitle);
-            mNewDiaLog.setCustomClickListener(new ZPWOnDialogListener() {
-                @Override
-                public void onCloseDialog(SweetAlertDialog sweetAlertDialog, int pIndexClick) {
-                    Log.d("Click Dialog", String.valueOf(pIndexClick));
-                    if (pListener != null) {
-                        pListener.onClickDiaLog(pIndexClick);
-                    }
-                    if (pActivity != null && sweetAlertDialog != null && !pActivity.isFinishing()) {
-                        sweetAlertDialog.dismiss();
-                    }
-                    if (mNewDiaLog != null) {
-                        mNewDiaLog = null;
-                    }
-                }
-            }).show();
-        } catch (Exception e) {
-            Log.e("showDialogCustomView", e);
-        }
-    }
 }
