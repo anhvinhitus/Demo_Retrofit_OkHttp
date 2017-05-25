@@ -203,6 +203,7 @@ public abstract class AdapterBase {
             }
         }
     };
+
     public AdapterBase(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) {
         mOwnerActivity = new WeakReference<>(pOwnerActivity);
         mMiniPmcTransType = pMiniPmcTransType;
@@ -1666,7 +1667,7 @@ public abstract class AdapterBase {
             getActivity().finish();
         }
         // one of 2 activty is destroyed
-        else {
+        else if (BasePaymentActivity.getCurrentActivity() != null) {
             ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
         }
         Log.d(this, "terminate transaction");
