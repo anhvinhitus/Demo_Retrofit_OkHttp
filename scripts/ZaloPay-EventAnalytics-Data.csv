@@ -43,6 +43,14 @@ EventId,Category,Action
 1327,Home,TapAppIcon_5_3
 1328,Home,TapAppIcon_5_4
 1329,Home,TapBannerPosition4
+1330,Home,TouchTabHome
+1331,Home,TouchTabNearby
+1332,Home,TouchTabPromotion
+1333,Home,TouchTabMe
+1334,Home,TouchTabHomeFirst
+1335,Home,TouchTabNearbyFirst
+1336,Home,TouchTabPromotionFirst
+1337,Home,TouchTabMeFirst
 1400,Left Menu,OpenLeftMenu
 1401,Left Menu,TapLeftMenuUserProfile
 1402,Left Menu,TapLeftMenuHome
@@ -151,6 +159,8 @@ EventId,Category,Action
 2047,Timing UM,api_um_listcardinfoforclient
 2048,Timing Notification,api_notification_ping_pong
 2049,Timing TPE,api_v001_tpe_submitmapaccount
+2050,Timing TPE,api_v001_zp_upload_clientlogs
+2051,Timing UM,api_um_listbankaccountforclient
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
@@ -257,3 +267,23 @@ EventId,Category,Action
 2746,Timing TPE,connector_v001_tpe_sdkerrorreport
 2747,Timing UM,connector_um_listcardinfoforclient
 2749,Timing TPE,connector_v001_tpe_submitmapaccount
+2750,Timing UM,connector_um_listbankaccountforclient
+2800,Tab Me,Touch_Me_Profile
+2801,Tab Me,Touch_Me_Balance
+2802,Tab Me,Touch_Me_Bank
+2803,Tab Me,Touch_Me_Bank_QuickAction
+2804,Tab Me,Touch_Me_Billing
+2805,Tab Me,Touch_Me_Billing_QuickAction
+2806,Tab Me,Touch_Me_Transactions
+2807,Tab Me,Touch_Me_SupportCenter
+2808,Tab Me,Touch_Me_Feedback
+2809,Tab Me,Touch_Me_AboutApp
+2810,Tab Me,Touch_Me_Logout
+2900,Transaction Logs,TransactionLog_Launch
+2901,Transaction Logs,TransactionLog_Back
+2902,Transaction Logs,TransactionLog_Detail
+2903,Transaction Logs,TransactionLog_Filter_Touch
+2904,Transaction Logs,TransactionLog_SlideOpenMenu
+2905,Transaction Logs,TransactionLog_Filter_TouchOutside
+2906,Transaction Logs,TransactionLog_Filter_Done
+2907,Transaction Logs,TransactionLog_Filter_Reset

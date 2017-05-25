@@ -48,6 +48,14 @@ public class ZPEvents {
     public static final int TAPAPPICON_5_3 = 1327;
     public static final int TAPAPPICON_5_4 = 1328;
     public static final int TAPBANNERPOSITION4 = 1329;
+    public static final int TOUCHTABHOME = 1330;
+    public static final int TOUCHTABNEARBY = 1331;
+    public static final int TOUCHTABPROMOTION = 1332;
+    public static final int TOUCHTABME = 1333;
+    public static final int TOUCHTABHOMEFIRST = 1334;
+    public static final int TOUCHTABNEARBYFIRST = 1335;
+    public static final int TOUCHTABPROMOTIONFIRST = 1336;
+    public static final int TOUCHTABMEFIRST = 1337;
     public static final int OPENLEFTMENU = 1400;
     public static final int TAPLEFTMENUUSERPROFILE = 1401;
     public static final int TAPLEFTMENUHOME = 1402;
@@ -156,6 +164,8 @@ public class ZPEvents {
     public static final int API_UM_LISTCARDINFOFORCLIENT = 2047;
     public static final int API_NOTIFICATION_PING_PONG = 2048;
     public static final int API_V001_TPE_SUBMITMAPACCOUNT = 2049;
+    public static final int API_V001_ZP_UPLOAD_CLIENTLOGS = 2050;
+    public static final int API_UM_LISTBANKACCOUNTFORCLIENT = 2051;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -262,6 +272,26 @@ public class ZPEvents {
     public static final int CONNECTOR_V001_TPE_SDKERRORREPORT = 2746;
     public static final int CONNECTOR_UM_LISTCARDINFOFORCLIENT = 2747;
     public static final int CONNECTOR_V001_TPE_SUBMITMAPACCOUNT = 2749;
+    public static final int CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT = 2750;
+    public static final int TOUCH_ME_PROFILE = 2800;
+    public static final int TOUCH_ME_BALANCE = 2801;
+    public static final int TOUCH_ME_BANK = 2802;
+    public static final int TOUCH_ME_BANK_QUICKACTION = 2803;
+    public static final int TOUCH_ME_BILLING = 2804;
+    public static final int TOUCH_ME_BILLING_QUICKACTION = 2805;
+    public static final int TOUCH_ME_TRANSACTIONS = 2806;
+    public static final int TOUCH_ME_SUPPORTCENTER = 2807;
+    public static final int TOUCH_ME_FEEDBACK = 2808;
+    public static final int TOUCH_ME_ABOUTAPP = 2809;
+    public static final int TOUCH_ME_LOGOUT = 2810;
+    public static final int TRANSACTIONLOG_LAUNCH = 2900;
+    public static final int TRANSACTIONLOG_BACK = 2901;
+    public static final int TRANSACTIONLOG_DETAIL = 2902;
+    public static final int TRANSACTIONLOG_FILTER_TOUCH = 2903;
+    public static final int TRANSACTIONLOG_SLIDEOPENMENU = 2904;
+    public static final int TRANSACTIONLOG_FILTER_TOUCHOUTSIDE = 2905;
+    public static final int TRANSACTIONLOG_FILTER_DONE = 2906;
+    public static final int TRANSACTIONLOG_FILTER_RESET = 2907;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -353,6 +383,22 @@ public class ZPEvents {
                 return "TapAppIcon_5_4";
             case TAPBANNERPOSITION4:
                 return "TapBannerPosition4";
+            case TOUCHTABHOME:
+                return "TouchTabHome";
+            case TOUCHTABNEARBY:
+                return "TouchTabNearby";
+            case TOUCHTABPROMOTION:
+                return "TouchTabPromotion";
+            case TOUCHTABME:
+                return "TouchTabMe";
+            case TOUCHTABHOMEFIRST:
+                return "TouchTabHomeFirst";
+            case TOUCHTABNEARBYFIRST:
+                return "TouchTabNearbyFirst";
+            case TOUCHTABPROMOTIONFIRST:
+                return "TouchTabPromotionFirst";
+            case TOUCHTABMEFIRST:
+                return "TouchTabMeFirst";
             case OPENLEFTMENU:
                 return "OpenLeftMenu";
             case TAPLEFTMENUUSERPROFILE:
@@ -569,6 +615,10 @@ public class ZPEvents {
                 return "api_notification_ping_pong";
             case API_V001_TPE_SUBMITMAPACCOUNT:
                 return "api_v001_tpe_submitmapaccount";
+            case API_V001_ZP_UPLOAD_CLIENTLOGS:
+                return "api_v001_zp_upload_clientlogs";
+            case API_UM_LISTBANKACCOUNTFORCLIENT:
+                return "api_um_listbankaccountforclient";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -781,6 +831,46 @@ public class ZPEvents {
                 return "connector_um_listcardinfoforclient";
             case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
                 return "connector_v001_tpe_submitmapaccount";
+            case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
+                return "connector_um_listbankaccountforclient";
+            case TOUCH_ME_PROFILE:
+                return "Touch_Me_Profile";
+            case TOUCH_ME_BALANCE:
+                return "Touch_Me_Balance";
+            case TOUCH_ME_BANK:
+                return "Touch_Me_Bank";
+            case TOUCH_ME_BANK_QUICKACTION:
+                return "Touch_Me_Bank_QuickAction";
+            case TOUCH_ME_BILLING:
+                return "Touch_Me_Billing";
+            case TOUCH_ME_BILLING_QUICKACTION:
+                return "Touch_Me_Billing_QuickAction";
+            case TOUCH_ME_TRANSACTIONS:
+                return "Touch_Me_Transactions";
+            case TOUCH_ME_SUPPORTCENTER:
+                return "Touch_Me_SupportCenter";
+            case TOUCH_ME_FEEDBACK:
+                return "Touch_Me_Feedback";
+            case TOUCH_ME_ABOUTAPP:
+                return "Touch_Me_AboutApp";
+            case TOUCH_ME_LOGOUT:
+                return "Touch_Me_Logout";
+            case TRANSACTIONLOG_LAUNCH:
+                return "TransactionLog_Launch";
+            case TRANSACTIONLOG_BACK:
+                return "TransactionLog_Back";
+            case TRANSACTIONLOG_DETAIL:
+                return "TransactionLog_Detail";
+            case TRANSACTIONLOG_FILTER_TOUCH:
+                return "TransactionLog_Filter_Touch";
+            case TRANSACTIONLOG_SLIDEOPENMENU:
+                return "TransactionLog_SlideOpenMenu";
+            case TRANSACTIONLOG_FILTER_TOUCHOUTSIDE:
+                return "TransactionLog_Filter_TouchOutside";
+            case TRANSACTIONLOG_FILTER_DONE:
+                return "TransactionLog_Filter_Done";
+            case TRANSACTIONLOG_FILTER_RESET:
+                return "TransactionLog_Filter_Reset";
             default:
                 return "DefaultAction";
         }
@@ -875,6 +965,22 @@ public class ZPEvents {
             case TAPAPPICON_5_4:
                 return "Home";
             case TAPBANNERPOSITION4:
+                return "Home";
+            case TOUCHTABHOME:
+                return "Home";
+            case TOUCHTABNEARBY:
+                return "Home";
+            case TOUCHTABPROMOTION:
+                return "Home";
+            case TOUCHTABME:
+                return "Home";
+            case TOUCHTABHOMEFIRST:
+                return "Home";
+            case TOUCHTABNEARBYFIRST:
+                return "Home";
+            case TOUCHTABPROMOTIONFIRST:
+                return "Home";
+            case TOUCHTABMEFIRST:
                 return "Home";
             case OPENLEFTMENU:
                 return "Left Menu";
@@ -1092,6 +1198,10 @@ public class ZPEvents {
                 return "Timing Notification";
             case API_V001_TPE_SUBMITMAPACCOUNT:
                 return "Timing TPE";
+            case API_V001_ZP_UPLOAD_CLIENTLOGS:
+                return "Timing TPE";
+            case API_UM_LISTBANKACCOUNTFORCLIENT:
+                return "Timing UM";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -1304,6 +1414,46 @@ public class ZPEvents {
                 return "Timing UM";
             case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
                 return "Timing TPE";
+            case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
+                return "Timing UM";
+            case TOUCH_ME_PROFILE:
+                return "Tab Me";
+            case TOUCH_ME_BALANCE:
+                return "Tab Me";
+            case TOUCH_ME_BANK:
+                return "Tab Me";
+            case TOUCH_ME_BANK_QUICKACTION:
+                return "Tab Me";
+            case TOUCH_ME_BILLING:
+                return "Tab Me";
+            case TOUCH_ME_BILLING_QUICKACTION:
+                return "Tab Me";
+            case TOUCH_ME_TRANSACTIONS:
+                return "Tab Me";
+            case TOUCH_ME_SUPPORTCENTER:
+                return "Tab Me";
+            case TOUCH_ME_FEEDBACK:
+                return "Tab Me";
+            case TOUCH_ME_ABOUTAPP:
+                return "Tab Me";
+            case TOUCH_ME_LOGOUT:
+                return "Tab Me";
+            case TRANSACTIONLOG_LAUNCH:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_BACK:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_DETAIL:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_FILTER_TOUCH:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_SLIDEOPENMENU:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_FILTER_TOUCHOUTSIDE:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_FILTER_DONE:
+                return "Transaction Logs";
+            case TRANSACTIONLOG_FILTER_RESET:
+                return "Transaction Logs";
             default:
                 return "DefaultCategory";
         }
