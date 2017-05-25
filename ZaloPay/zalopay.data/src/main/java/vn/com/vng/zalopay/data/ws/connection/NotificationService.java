@@ -14,4 +14,6 @@ public interface NotificationService {
     void addReceiverListener(OnReceivedPushMessageListener listener);
 
     void send(NotificationApiMessage message);
+
+    void ensureConnected();
 }

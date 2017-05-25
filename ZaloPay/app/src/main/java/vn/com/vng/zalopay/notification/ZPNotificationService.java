@@ -96,6 +96,13 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
         mWsConnection.cleanup();
     }
 
+    public void ensureConnected() {
+        if (mExecutor != null) {
+            mExecutor.execute(this::connectToServer);
+        }
+    }
+
+
     private void registerEvent() {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);

@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.AppStateChangeEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.UploadFileLogEvent;
 import vn.com.vng.zalopay.network.NetworkHelper;
@@ -132,6 +133,17 @@ public class UserSession {
         }
 
         mNotifyService.start();
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onAppStateChanged(AppStateChangeEvent event) {
+        Timber.d("onAppStateChanged: [isForeground: %s]", event.isForeground);
+
+        if (!event.isForeground) {
+            return;
+        }
+
+        mNotifyService.ensureConnected();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

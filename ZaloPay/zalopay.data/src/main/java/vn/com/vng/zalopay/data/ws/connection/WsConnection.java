@@ -429,7 +429,6 @@ public class WsConnection extends Connection {
         }
     }
 
-
     private void scheduleReconnect() {
         if (mUser == null || !mUser.hasZaloPayId()) {
             Timber.d("Don't have signed in user. Skip reconnect.");
@@ -451,12 +450,13 @@ public class WsConnection extends Connection {
         if (mState != State.Connected) {
             return;
         }
-        if (!mIsAuthenSuccess) {
-            Timber.w("ConnectionState is connected but socket isn't authenticated");
-            sendAuthentication();
-        } else {
-//            Timber.d("ensureAuthenticationSuccess, state is connected");
+
+        if (mIsAuthenSuccess) {
+            return;
         }
+
+        Timber.w("ConnectionState is connected but socket isn't authenticated");
+        sendAuthentication();
     }
 
     private enum NextState {
