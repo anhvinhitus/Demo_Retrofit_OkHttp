@@ -16,18 +16,17 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
-import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
-import vn.com.vng.zalopay.network.ConnectionErrorCode;
-import vn.com.vng.zalopay.network.ConnectorListener;
-import vn.com.vng.zalopay.network.SocketConnector;
-import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.network.ConnectionErrorCode;
+import vn.com.vng.zalopay.network.ConnectorListener;
+import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.network.PushMessage;
+import vn.com.vng.zalopay.network.SocketConnector;
 import vn.com.vng.zalopay.network.SocketConnectorFactory;
 import vn.com.vng.zalopay.network.protobuf.ServerMessageType;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -413,7 +412,7 @@ public class WsConnection extends Connection {
             EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
 
-        private boolean checkUserAndWriteErrorLog(Event message) {
+        private boolean checkUserAndWriteErrorLog(PushMessage message) {
 
             if (message.usrid == 0) {
                 return true;
