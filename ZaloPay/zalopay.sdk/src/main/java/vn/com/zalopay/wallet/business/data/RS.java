@@ -365,6 +365,19 @@ public class RS {
         public static final String dialog_turn_on = "dialog_turn_on";
         public static final String dialog_turn_off = "dialog_turn_off";
 
+        public static final String zpw_string_bankcode_viettinbank = "zpw_string_bankcode_viettinbank";
+        public static final String zpw_string_bankcode_sacombank = "zpw_string_bankcode_sacombank";
+        public static final String zpw_string_bankcode_commercialbank = "zpw_string_bankcode_commercialbank";
+        public static final String zpw_string_bankcode_vietcombank = "zpw_string_bankcode_vietcombank";
+        public static final String zpw_string_bankcode_bidv = "zpw_string_bankcode_bidv";
+        public static final String zpw_string_bankcode_eximbank = "zpw_string_bankcode_eximbank";
+
+        public static final String zpw_string_bankcode_visa = "zpw_string_bankcode_visa";
+        public static final String zpw_string_bankname_visa = "zpw_string_bankname_visa";
+        public static final String zpw_string_bankcode_master = "zpw_string_bankcode_master";
+        public static final String zpw_string_bankname_master = "zpw_string_bankname_master";
+        public static final String zpw_string_bankcode_jcb = "zpw_string_bankcode_jcb";
+
         public static final String zpw_alert_linkcard_not_support = "zpw_alert_linkcard_not_support";
 
         public static final String zpw_string_vcb_link_login = "zpw_string_vcb_link_login";
