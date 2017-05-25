@@ -6,7 +6,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
- * Created by Duke on 5/25/17.
+ * Created by datnt10 on 5/25/17.
+ * Fragment bank: handle bank ui and events
  */
 
 public class BankFragment extends BaseFragment {
