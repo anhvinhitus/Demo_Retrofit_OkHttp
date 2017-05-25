@@ -413,7 +413,9 @@ public class RS {
         public static final String zpw_string_bankcode_eximbank = "zpw_string_bankcode_eximbank";
 
         public static final String zpw_string_bankcode_visa = "zpw_string_bankcode_visa";
+        public static final String zpw_string_bankname_visa = "zpw_string_bankname_visa";
         public static final String zpw_string_bankcode_master = "zpw_string_bankcode_master";
+        public static final String zpw_string_bankname_master = "zpw_string_bankname_master";
         public static final String zpw_string_bankcode_jcb = "zpw_string_bankcode_jcb";
 
         public static final String zpw_alert_linkcard_not_support = "zpw_alert_linkcard_not_support";

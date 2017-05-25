@@ -23,23 +23,20 @@ public class ZPCard implements Parcelable {
     protected String cardCode;
     protected String cardLogoName;
     protected Boolean isBankAccount;
+    protected String cardName;
 
-    public ZPCard(String pCardCode, String pCardLogoName) {
+    public ZPCard(String pCardCode, String pCardLogoName, String pCardName) {
         this.cardCode = pCardCode;
         this.cardLogoName = pCardLogoName;
         this.isBankAccount = false;
+        this.cardName = pCardName;
     }
 
-    public ZPCard(String pCardCode, String pCardLogoName, Boolean pIsBankAccount) {
+    public ZPCard(String pCardCode, String pCardLogoName, Boolean pIsBankAccount, String pCardName) {
         this.cardCode = pCardCode;
         this.cardLogoName = pCardLogoName;
         this.isBankAccount = pIsBankAccount;
-    }
-
-    public ZPCard(Parcel in) {
-        this.cardCode = in.readString();
-        this.cardLogoName = in.readString();
-        this.isBankAccount = (Boolean) in.readValue(null);
+        this.cardName = pCardName;
     }
 
     public Boolean isBankAccount() {
@@ -80,15 +77,33 @@ public class ZPCard implements Parcelable {
         this.cardCode = cardCode;
     }
 
+    public String getCardName() {
+        return cardName;
+    }
+
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int i) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.cardCode);
         dest.writeString(this.cardLogoName);
         dest.writeValue(this.isBankAccount);
+        dest.writeString(this.cardName);
     }
+
+    protected ZPCard(Parcel in) {
+        this.cardCode = in.readString();
+        this.cardLogoName = in.readString();
+        this.isBankAccount = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.cardName = in.readString();
+    }
+
+
 }
