@@ -10,6 +10,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -97,9 +98,17 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
                 String appInfoTranstypeKey = getAppTranstypeKey(transtype);
                 for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
                     String pmcKey = miniPmcTransType.getPmcKey(appID, String.valueOf(transtype), miniPmcTransType.pmcid);
-                    //save default pmc for new atm/cc
+                    //save default for new atm/cc and bank account/zalopay pmc
                     if (!transtypePmcIdList.contains(pmcKey)) {
                         transtypePmcIdList.add(pmcKey);
+                        //reset to default value to atm pmc because it is up to bank
+                        if (miniPmcTransType.isAtmChannel()) {
+                            miniPmcTransType.status = EPaymentChannelStatus.ENABLE;
+                            miniPmcTransType.minvalue = -1;
+                            miniPmcTransType.maxvalue = -1;
+                            miniPmcTransType.feerate = 0;
+                            miniPmcTransType.minfee = 0;
+                        }
                         SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
                         Log.d(this, "save channel to cache key " + pmcKey, miniPmcTransType);
                     }
