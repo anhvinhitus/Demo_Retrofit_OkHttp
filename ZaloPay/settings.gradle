@@ -11,3 +11,5 @@ include ':zalopay.network'
 
 include ':greendaogenerator'
 include ':daogenerator'
+
+include ':zalopay.promotion'

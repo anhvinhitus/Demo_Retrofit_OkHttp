@@ -47,6 +47,8 @@ import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.zalopay.promotion.ActionType;
+import vn.zalopay.promotion.PromotionType;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;

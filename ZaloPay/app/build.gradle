@@ -473,6 +473,8 @@ dependencies {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
     compile project(':zalopay.sdk')
+
+    compile project(':zalopay.promotion')
 }
 
 apply plugin: 'com.google.gms.google-services'

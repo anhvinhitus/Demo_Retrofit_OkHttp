@@ -96,4 +96,6 @@ dependencies {
     compile project(':zalopay.sdk.utils')
 
     compile libs.zalopay_feedback
+
+    compile project(':zalopay.promotion')
 }
