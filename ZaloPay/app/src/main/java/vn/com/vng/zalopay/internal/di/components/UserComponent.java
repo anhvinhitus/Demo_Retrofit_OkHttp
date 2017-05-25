@@ -22,6 +22,8 @@ import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
+import vn.com.vng.zalopay.bank.ui.BankActivity;
+import vn.com.vng.zalopay.bank.ui.BankFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.bank.ui.LinkAccountFragment;
@@ -247,4 +249,9 @@ public interface UserComponent {
     void inject(HomeTopHeaderFragment f);
 
     void inject(PaymentWrapper paymentWrapper);
+
+    void inject(BankActivity a);
+
+    void inject(BankFragment f);
+    
 }
