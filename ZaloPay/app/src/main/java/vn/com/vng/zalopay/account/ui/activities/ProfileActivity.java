@@ -157,7 +157,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         }
     }
 
-
     @Override
     public void onDestroy() {
         mAppBarLayout.removeOnOffsetChangedListener(this);

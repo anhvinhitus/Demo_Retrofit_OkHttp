@@ -75,6 +75,7 @@
     <string name="title.activity.request.support">Yêu cầu hỗ trợ</string>
     <string name="title.activity.choose.category">Phân loại</string>
     <string name="title_activity_link_bank">Ngân hàng</string>
+    <string name="title.activity.bank.support.selection">Chọn liên kết</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -107,7 +108,7 @@
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
     <string name="link_account_bank_support_hint">Để liên kết thành công TK Vietcombank và TK Zalo Pay phải sử dụng cùng 1 số điện thoại và tối thiểu 50.000 VND trong VCB</string>
     <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải là %s</string>
-    <string name="link_account_empty_bank_support_balance_require_hint">Để thanh toán thành công, số dư tối thiểu trong TK VCB là 50.000 VND</string>
+    <string name="link_account_empty_bank_support_balance_require_hint">Để thanh toán thành công, số dư tối thiểu trong TK Vietcombank là 50.000 VND</string>
     
     <string name="txt_home_bank">Ngân Hàng</string>
     <string name="txt_home_link_card">Liên Kết Thẻ</string>

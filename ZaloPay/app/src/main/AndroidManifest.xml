@@ -393,6 +393,9 @@
             android:name=".bank.ui.LinkBankActivity"
             android:label="@string/title_activity_link_bank" />
 
+        <activity android:name=".bank.ui.BankSupportSelectionActivity"
+            android:label="@string/title.activity.bank.support.selection" />
+
         <receiver
             android:name=".receivers.BootCompletedReceiver"
             android:enabled="true">
