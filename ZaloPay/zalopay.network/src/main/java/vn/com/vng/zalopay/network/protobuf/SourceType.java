@@ -8,14 +8,18 @@ import java.lang.Override;
 
 /**
  * Source Type Notification message
- * Zalo Pay: 2.10
+ * Zalo Pay: 2.12
  */
 public enum SourceType implements WireEnum {
   UNKNOWN_SOURCETYPE(0),
 
   SEND(1),
 
-  RESEND(2);
+  RESEND(2),
+
+  PUSH(3),
+
+  RECOVER(4);
 
   public static final ProtoAdapter<SourceType> ADAPTER = ProtoAdapter.newEnumAdapter(SourceType.class);
 
@@ -33,6 +37,8 @@ public enum SourceType implements WireEnum {
       case 0: return UNKNOWN_SOURCETYPE;
       case 1: return SEND;
       case 2: return RESEND;
+      case 3: return PUSH;
+      case 4: return RECOVER;
       default: return null;
     }
   }
