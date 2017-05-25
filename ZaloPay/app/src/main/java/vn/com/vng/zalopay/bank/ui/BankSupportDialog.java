@@ -13,7 +13,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -24,16 +23,16 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by longlv on 1/18/17.
- * *
+ * Dialog support banks.
  */
 
-public class ListBankDialog extends BaseDialogFragment implements OnClickBankListener {
+public class BankSupportDialog extends BaseDialogFragment implements OnClickBankListener {
 
-    public static final String TAG = ListBankDialog.class.getSimpleName();
+    public static final String TAG = BankSupportDialog.class.getSimpleName();
 
-    public static ListBankDialog newInstance(List<ZPCard> cards) {
+    public static BankSupportDialog newInstance(List<ZPCard> cards) {
         Bundle bundle = new Bundle();
-        ListBankDialog fragment = new ListBankDialog();
+        BankSupportDialog fragment = new BankSupportDialog();
         bundle.putParcelableArrayList(Constants.ARG_BANK_LIST, (ArrayList<? extends Parcelable>) cards);
         fragment.setArguments(bundle);
         return fragment;
@@ -47,7 +46,7 @@ public class ListBankDialog extends BaseDialogFragment implements OnClickBankLis
         dismiss();
     }
 
-    private BankAdapter mAdapter;
+    private BankSupportDialogAdapter mAdapter;
     private List<ZPCard> mCards;
 
     @Override
@@ -79,7 +78,7 @@ public class ListBankDialog extends BaseDialogFragment implements OnClickBankLis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new BankAdapter(getActivity(), mCards, this);
+        mAdapter = new BankSupportDialogAdapter(getActivity(), mCards, this);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
