@@ -1,3 +1,9 @@
+Zalo Pay (Staging v2.11.0 - build 247) - Released on 2017-05-25
+- [App] Điều chỉnh hành xử kết nối lại với PC
+- [SDK] fix bug fabric loadBankList null object reference
+- [Promotion Cash Back] Fix lỗi show transaction detail
+- Fix bug #ZPF-55
+
 Zalo Pay (Staging v2.11.0 - build 246) - Released on 2017-05-24
 - Update PC error log
 - Fix bug #ZPF-48

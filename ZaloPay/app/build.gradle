@@ -44,7 +44,7 @@ android {
         applicationId cfg.applicationId
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 246
+        versionCode 247
         versionName "2.11.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
@@ -472,6 +472,8 @@ dependencies {
     }
     compile project(':zalopay.feedback')
     compile project(':zalopay.sdk')
+
+    compile 'cat.ereza:customactivityoncrash:1.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
