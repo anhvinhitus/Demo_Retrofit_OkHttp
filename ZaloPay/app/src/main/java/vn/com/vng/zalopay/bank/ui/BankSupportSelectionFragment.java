@@ -34,6 +34,9 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     @BindView(R.id.bank_support_selection_list_bank)
     RecyclerView rcvListBankSupport;
 
+    @BindView(R.id.bank_support_selection_dash_line)
+    View mDashLine;
+
     @Inject
     BankSupportSelectionPresenter presenter;
 
@@ -110,8 +113,10 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
 
         if (Lists.isEmptyOrNull(cardSupportList)) {
             mAdapter.setData(Collections.emptyList());
+            mDashLine.setVisibility(View.GONE);
         } else {
             mAdapter.setData(cardSupportList);
+            mDashLine.setVisibility(View.VISIBLE);
         }
     }
 

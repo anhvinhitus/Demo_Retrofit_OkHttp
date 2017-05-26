@@ -167,6 +167,13 @@ public class PhoneUtil {
         return formattedNumber;
     }
 
+    public static String formatPhoneNumberWithDot(long number) {
+        String formattedNumber = formatPhoneNumber(number);
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 3) + "." + formattedNumber.substring(formattedNumber.length() - 3, formattedNumber.length());
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + "." + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
+        return formattedNumber;
+    }
+
     public static String getPhoneNumberScreened(long phoneNumber) {
         return getPhoneNumberScreened(formatPhoneNumber(phoneNumber));
     }
