@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.data.redpacket;
 
 import android.support.annotation.Nullable;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -406,29 +408,16 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         return Lists.transform(list, mDataMapper::transform);
     }
 
-    private List<ReceivePackage> queryReceivePackageList(int limit) {
-        List<ReceivePackageGD> list = getDaoSession()
-                .getReceivePackageGDDao()
-                .queryBuilder()
-                .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
-                .limit(limit)
-                .list();
-        return Lists.transform(list, mDataMapper::transform);
-    }
-
     private List<ReceivePackage> queryReceivePackageList(long timeCreate, int limit) {
-        if (timeCreate == 0) {
-            return queryReceivePackageList(limit);
-        } else {
-            List<ReceivePackageGD> list = getDaoSession()
-                    .getReceivePackageGDDao()
-                    .queryBuilder()
-                    .where(ReceivePackageGDDao.Properties.OpenedTime.lt(timeCreate))
-                    .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
-                    .limit(limit)
-                    .list();
-            return Lists.transform(list, mDataMapper::transform);
+
+        QueryBuilder<ReceivePackageGD> builder = getDaoSession().getReceivePackageGDDao().queryBuilder();
+        builder.orderDesc(ReceivePackageGDDao.Properties.OpenedTime);
+        builder.where(ReceivePackageGDDao.Properties.Status.eq(RedPacketStatus.Opened.getValue()));
+        builder.limit(limit);
+        if (timeCreate > 0) {
+            builder.where(ReceivePackageGDDao.Properties.OpenedTime.lt(timeCreate));
         }
+        return Lists.transform(builder.list(), mDataMapper::transform);
     }
 
     private ReceivePackage queryReceivePackage(long packetId) {
