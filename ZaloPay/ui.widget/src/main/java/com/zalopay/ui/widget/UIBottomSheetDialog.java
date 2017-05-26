@@ -9,6 +9,9 @@ import android.support.design.widget.BottomSheetDialog;
 import android.util.Log;
 import android.view.View;
 
+import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
+import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
+
 public class UIBottomSheetDialog extends BottomSheetDialog {
     private IRender mRender;
 
@@ -18,6 +21,8 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
         setContentView(mRender.getView());
         configureBottomSheetBehavior(mRender.getView());
         pRender.render(context);
+        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
+        mBottomSheetBehavior.setState(STATE_EXPANDED);
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
