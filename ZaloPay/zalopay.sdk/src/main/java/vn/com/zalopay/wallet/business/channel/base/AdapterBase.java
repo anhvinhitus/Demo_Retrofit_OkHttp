@@ -1091,7 +1091,7 @@ public abstract class AdapterBase {
         }
     }
 
-    public void moveToConfirmScreen() throws Exception {
+    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) throws Exception {
         try {
             //add overswipe for rootview scrollview
             ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
@@ -1104,10 +1104,10 @@ public abstract class AdapterBase {
 
     }
 
-    protected void showConfrimScreenForCardChannel() throws Exception {
+    protected void showConfrimScreenForCardChannel(MiniPmcTransType pMiniPmcTransType) throws Exception {
         try {
             getActivity().enableSubmitBtn(true);
-            getActivity().showConfirmView(true, true, getConfig());
+            getActivity().showConfirmView(true, true, pMiniPmcTransType);
             setBankInfoConfirmView();
 
             getActivity().setToolBarTitle();

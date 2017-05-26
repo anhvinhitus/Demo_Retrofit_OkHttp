@@ -50,6 +50,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private WeakReference<BankSmsReceiver> mSmsReceiver;
     private WeakReference<UnlockSreenReceiver> mUnLockScreenReceiver;
     private ActivityRendering mActivityRender;
+    private MiniPmcTransType mMiniPmcTransType;
     private View.OnClickListener mOnClickExitListener = v -> {
         //get status again if user back when payment in bank's site
         if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
@@ -249,13 +250,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
-        Log.d(this, "start payment channel", miniPmcTransType);
-        if (miniPmcTransType == null) {
+        mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        Log.d(this, "start payment channel", mMiniPmcTransType);
+        if (mMiniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
-        mAdapter = AdapterFactory.produce(this, miniPmcTransType);
+        mAdapter = AdapterFactory.produce(this, mMiniPmcTransType);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -298,7 +299,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
                 setConfirmTitle();
-                getAdapter().moveToConfirmScreen();
+                getAdapter().moveToConfirmScreen(mMiniPmcTransType);
                 mIsStart = true;
                 Log.d(this, "moved to confirm screen");
             } catch (Exception e) {
