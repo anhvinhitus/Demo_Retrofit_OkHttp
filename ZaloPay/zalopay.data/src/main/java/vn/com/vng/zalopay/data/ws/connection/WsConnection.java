@@ -26,6 +26,8 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
+import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -56,6 +58,7 @@ public class WsConnection extends Connection {
     private Long mCheckCountDown = 100L;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Subscription mTimeoutAuthenticate;
 
     /**
      * Next connection state.
@@ -124,7 +127,7 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
-                        }, throwable -> Timber.e(throwable, "Subscribe keep client HeartBeat error"));
+                        }, throwable -> Timber.w("Subscribe keep client HeartBeat error %s", throwable.getMessage()));
         compositeSubscription.add(subscription);
     }
 
@@ -147,8 +150,36 @@ public class WsConnection extends Connection {
                         .subscribe((obj) -> {
                             Timber.d("Server is not responding ...");
                             reconnect();
-                        }, throwable -> Timber.e(throwable, "subscribeServerPongEvent"));
+                        }, throwable -> Timber.w("Subscribe server pong error %s", throwable.getMessage()));
         compositeSubscription.add(subscription);
+    }
+
+    private void subscribeTimeoutAuthenticate() {
+
+        unsubscribeTimeoutAuthenticate();
+        mTimeoutAuthenticate = Observable.timer(5, TimeUnit.SECONDS)
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+
+                        if (mAuthenticateSuccess) {
+                            return;
+                        }
+
+                        if (!mSocketClient.isConnected()) {
+                            return;
+                        }
+
+                        sendAuthentication();
+                    }
+                });
+    }
+
+    private void unsubscribeTimeoutAuthenticate() {
+        if (mTimeoutAuthenticate != null) {
+            mTimeoutAuthenticate.unsubscribe();
+            mTimeoutAuthenticate = null;
+        }
     }
 
     private boolean isUserLoggedIn() {
@@ -322,7 +353,7 @@ public class WsConnection extends Connection {
             //    numRetry = 0;
             mAuthenticateSuccess = false;
             sendAuthentication();
-
+            subscribeTimeoutAuthenticate();
             mServerPongBus.send(1L);
 
             EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
@@ -351,11 +382,17 @@ public class WsConnection extends Connection {
             boolean needFeedback = true;
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
+                unsubscribeTimeoutAuthenticate();
+
                 numRetry = 0;
                 postResult(message);
                 mServerPongBus.send(0L);
                 mAuthenticateSuccess = true;
+
             } else if (messageType == ServerMessageType.KICK_OUT_USER) {
+
+                unsubscribeTimeoutAuthenticate();
+
                 needFeedback = false;
                 if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
                     mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
