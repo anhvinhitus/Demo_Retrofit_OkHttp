@@ -610,7 +610,7 @@ public class GlobalData {
             if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
             }
-            Log.e("getPaymentInfo", "payment info is null");
+            Log.d("getPaymentInfo", "payment info is null");
         }
         return GlobalData.mPaymentInfo;
     }

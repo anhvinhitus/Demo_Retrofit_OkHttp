@@ -39,7 +39,7 @@ public class AdapterFactory {
                 Log.i("sdk", "start create AdapterBankAccount");
                 adapter = new AdapterBankAccount(owner, pPmcTransType);
             } else {
-                Log.e("sdk", "AdapterFactory.produce adapter=null");
+                Log.d("sdk", "AdapterFactory.produce adapter=null");
             }
 
         } catch (Exception ex) {
@@ -66,7 +66,7 @@ public class AdapterFactory {
                 Log.i("sdk", "start create AdapterCreditCard");
                 adapter = new AdapterCreditCard(owner, pPmcTransType);
             }
-            Log.e("sdk", "AdapterFactory.produce adapter=null");
+            Log.d("sdk", "AdapterFactory.produce adapter=null");
 
         } catch (Exception ex) {
             Log.e("produce", ex);

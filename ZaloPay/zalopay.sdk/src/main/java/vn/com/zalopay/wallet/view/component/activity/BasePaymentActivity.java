@@ -1413,7 +1413,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     .show();
 
         } catch (Exception e) {
-            Log.e(this, e);
+            Log.d(this, e);
         }
     }
 

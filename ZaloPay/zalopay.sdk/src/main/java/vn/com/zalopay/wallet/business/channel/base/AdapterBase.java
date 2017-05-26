@@ -285,7 +285,7 @@ public abstract class AdapterBase {
     }
 
     public String getPageName() {
-        return mPageCode;
+        return (mPageCode != null) ? mPageCode : "";
     }
 
     public String getLayoutID() {
@@ -425,7 +425,7 @@ public abstract class AdapterBase {
         if (mOwnerActivity != null && mOwnerActivity.get() != null) {
             return mOwnerActivity.get();
         } else {
-            Log.e(this, "mOwnerActivity is null");
+            Log.d(this, "mOwnerActivity is null");
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             return null;
         }
