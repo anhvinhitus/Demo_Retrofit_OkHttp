@@ -20,14 +20,10 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankFragment;
+import vn.com.vng.zalopay.bank.ui.BankSupportDialog;
 import vn.com.vng.zalopay.bank.ui.BankSupportFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
-import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionFragment;
-import vn.com.vng.zalopay.bank.ui.LinkAccountFragment;
-import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
-import vn.com.vng.zalopay.bank.ui.LinkCardFragment;
-import vn.com.vng.zalopay.bank.ui.BankSupportDialog;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -120,8 +116,6 @@ public interface UserComponent {
     /* inject Fragment */
     void inject(ZaloPayFragment f);
 
-    void inject(LinkCardFragment link);
-
     void inject(BalanceTopupFragment f);
 
     void inject(LeftMenuFragment f);
@@ -206,8 +200,6 @@ public interface UserComponent {
 
     void inject(BankSupportFragment f);
 
-    void inject(LinkAccountFragment f);
-
     void inject(BankSupportDialog f);
 
     void inject(WebAppFragment f);
@@ -215,8 +207,6 @@ public interface UserComponent {
     void inject(BankSupportLinkCardDialog f);
 
     void inject(AccountSupportWithdrawFragment fragment);
-
-    void inject(LinkBankActivity a);
 
     void inject(FingerprintSuggestDialog d);
 
