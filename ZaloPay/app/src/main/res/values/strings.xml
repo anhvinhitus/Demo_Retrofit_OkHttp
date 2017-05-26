@@ -89,6 +89,7 @@
 
     <string name="free_fee">Miễn phí giao dịch</string>
     <string name="not_link_card">Bạn chưa liên kết thẻ</string>
+    <string name="not_link_bank">Bạn chưa liên kết ngân hàng</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="not_link_account">Bạn chưa liên kết tài khoản</string>
     <string name="link_account_to_use_easily">Liên kết tài khoản ngân hàng để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
@@ -126,7 +127,7 @@
     <string name="valid_money">Số tiền phải là bội số của 10.000 VND</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
-    <string name="link.card.more">Thêm Liên Kết Thẻ</string>
+    <string name="link.card.more">Thêm Liên Kết</string>
     <string name="add">Thêm</string>
     <string name="link.card">Liên Kết Thẻ</string>
     <string name="link.account">Liên Kết Tài Khoản</string>

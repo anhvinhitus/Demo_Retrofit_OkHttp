@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/not_link_card"
+            android:text="@string/not_link_bank"
             android:textColor="@color/hint"
             android:textSize="@dimen/link.bank.empty.text.size" />
     </LinearLayout>
