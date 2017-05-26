@@ -248,7 +248,7 @@ public class NotificationHelper {
         }
         switch ((int) notify.notificationtype) {
             case NotificationType.PROMOTION:
-                postPromotion(notify);//post update again promotion notification with new notification id inserted in local db
+                postPromotion(notify); //post update again promotion notification with new notification id inserted in local db
                 break;
             default:
                 Timber.d("undefine notification type");

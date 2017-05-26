@@ -4,25 +4,40 @@ import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 
-public class RenderBuilder implements IBuilder {
+public class PromotionBuilder implements IBuilder {
     protected PromotionEvent promotionEvent;
     protected IPromotionListener promotionListener;
     protected View mView;
 
     @Override
-    public RenderBuilder setPromotionEvent(PromotionEvent promotionEvent) {
+    public PromotionBuilder setPromotionEvent(PromotionEvent promotionEvent) {
         this.promotionEvent = promotionEvent;
         return this;
     }
 
     @Override
-    public RenderBuilder setPromotionListener(IPromotionListener promotionListener) {
+    public PromotionEvent getPromotion() {
+        return promotionEvent;
+    }
+
+    @Override
+    public IPromotionListener getPromotionListener() {
+        return promotionListener;
+    }
+
+    @Override
+    public PromotionBuilder setPromotionListener(IPromotionListener promotionListener) {
         this.promotionListener = promotionListener;
         return this;
     }
 
     @Override
-    public RenderBuilder setView(View pView) {
+    public View getView() {
+        return mView;
+    }
+
+    @Override
+    public PromotionBuilder setView(View pView) {
         this.mView = pView;
         return this;
     }

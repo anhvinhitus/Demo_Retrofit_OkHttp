@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
-import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 
 public class UIBottomSheetDialog extends BottomSheetDialog {
     private IRender mRender;
@@ -19,26 +18,23 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
         super(context, theme);
         mRender = pRender;
         setContentView(mRender.getView());
-        configureBottomSheetBehavior(mRender.getView());
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
+        configureBottomSheetBehavior(bottomSheetBehavior);
         pRender.render(context);
-        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
-        mBottomSheetBehavior.setState(STATE_EXPANDED);
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if (mRender != null) {
                     mRender.OnDismiss();
                 }
-                Log.d(getClass().getSimpleName(), "on dismiss UIBottomSheetDialog");
             }
         });
     }
 
-    private void configureBottomSheetBehavior(View contentView) {
-        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View) contentView.getParent());
-        if (mBottomSheetBehavior != null) {
-            mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-
+    private void configureBottomSheetBehavior(BottomSheetBehavior pBottomSheetBehavior) {
+        if (pBottomSheetBehavior != null) {
+            pBottomSheetBehavior.setState(STATE_EXPANDED);
+            pBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     //showing the different states
