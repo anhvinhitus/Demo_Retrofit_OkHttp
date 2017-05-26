@@ -5,14 +5,18 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
+import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
+import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -64,12 +68,30 @@ public class CShareDataWrapper {
         return subscription;
     }
 
-    public static List<DMappedCard> getMappedCardList(String zaloPayId) {
-        return CShareData.getInstance().getMappedCardList(zaloPayId);
+    private static List<DMappedCard> detectCCCard(List<DMappedCard> dMappedCards, User user) {
+        if (Lists.isEmptyOrNull(dMappedCards)) {
+            return Collections.emptyList();
+        }
+        for (DMappedCard bankCard : dMappedCards) {
+            if (Constants.CCCode.equalsIgnoreCase(bankCard.bankcode)) {
+                bankCard.bankcode = BankUtils.detectCCCard(bankCard.getFirstNumber(), user);
+            }
+        }
+        return dMappedCards;
     }
 
-    public static List<DBankAccount> getMapBankAccountList(String zaloPayId) {
-        return CShareData.getInstance().getMapBankAccountList(zaloPayId);
+    public static List<DMappedCard> getMappedCardList(User user) {
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        return detectCCCard(CShareData.getInstance().getMappedCardList(user.zaloPayId), user);
+    }
+
+    public static List<DBankAccount> getMapBankAccountList(User user) {
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        return CShareData.getInstance().getMapBankAccountList(user.zaloPayId);
     }
 
     public static String detectCardType(UserInfo userInfo, String first6CardNo) {

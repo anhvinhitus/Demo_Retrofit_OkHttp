@@ -61,8 +61,8 @@ class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
     private void changePageInContext() {
         int lastPageIndex = mPreferences.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
         if (lastPageIndex < 0) {
-            List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-            List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+            List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
+            List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
             LinkBankPagerIndex linkBankPagerIndex;
 
             if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {

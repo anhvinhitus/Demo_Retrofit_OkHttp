@@ -55,7 +55,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     void getListCard() {
-        List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser);
 //        List<DMappedCard> mapCardLis = new ArrayList<>();
 //        DMappedCard vtbCard = new DMappedCard();
 //        vtbCard.bankcode = ECardType.PVTB.toString();

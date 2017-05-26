@@ -87,7 +87,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        mAdapter = new BankAdapter(getContext(), mPresenter.getUserPhone(), this);
+        mAdapter = new BankAdapter(getContext(), mPresenter.getCurrentUser(), this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        mRecyclerView.setHasFixedSize(true);
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();

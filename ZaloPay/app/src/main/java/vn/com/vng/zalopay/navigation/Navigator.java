@@ -388,9 +388,9 @@ public class Navigator implements INavigator {
         boolean hasLinkBank = false;
         try {
             List<DMappedCard> mapCardLis = CShareDataWrapper
-                    .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
+                    .getMappedCardList(mUserConfig.getCurrentUser());
             List<DBankAccount> bankAccountList = CShareDataWrapper
-                    .getMapBankAccountList(mUserConfig.getCurrentUser().zaloPayId);
+                    .getMapBankAccountList(mUserConfig.getCurrentUser());
             hasLinkBank = !Lists.isEmptyOrNull(mapCardLis) || !Lists.isEmptyOrNull(bankAccountList);
         } catch (Exception ex) {
             Timber.w(ex, "startLinkCardActivity getMappedCardList exception");
@@ -776,7 +776,7 @@ public class Navigator implements INavigator {
         if (channel == 2) {
             try {
                 List<DMappedCard> mapCardLis = CShareDataWrapper
-                        .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
+                        .getMappedCardList(mUserConfig.getCurrentUser());
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);
                     return true;

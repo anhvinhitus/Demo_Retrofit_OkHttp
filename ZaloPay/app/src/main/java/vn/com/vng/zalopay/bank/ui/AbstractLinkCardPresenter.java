@@ -130,7 +130,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     }
 
     List<BankAccount> getLinkedBankAccount() {
-        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser);
         return transformBankAccount(mapCardLis);
     }
 
@@ -316,19 +316,10 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     }
 
     private BankCard transformBankCard(DMappedCard card) {
-        BankCard bankCard = null;
-
-        if (card != null) {
-            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
-            try {
-                bankCard.type = detectCardType(card.bankcode, card.first6cardno);
-                Timber.d("transform bankCard : type %s cardname %s first %s last %s", bankCard.type, card.cardname, card.first6cardno, card.last4cardno);
-            } catch (Exception e) {
-                Timber.d(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
-            }
+        if (card == null) {
+            return null;
         }
-
-        return bankCard;
+        return new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
     }
 
     List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {

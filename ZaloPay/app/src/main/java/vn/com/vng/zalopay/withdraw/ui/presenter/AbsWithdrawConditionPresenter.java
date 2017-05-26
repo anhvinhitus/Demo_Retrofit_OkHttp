@@ -62,7 +62,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(user.zaloPayId);
+            List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(user);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || bankConfig.isBankAccount()) {
@@ -84,7 +84,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DBankAccount> mappedAccounts = CShareDataWrapper.getMapBankAccountList(user.zaloPayId);
+            List<DBankAccount> mappedAccounts = CShareDataWrapper.getMapBankAccountList(user);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || !bankConfig.isBankAccount()) {

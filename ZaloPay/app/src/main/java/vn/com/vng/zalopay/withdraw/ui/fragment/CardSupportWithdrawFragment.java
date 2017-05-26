@@ -89,7 +89,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
             return;
         }
 
-        List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(mUser);
         mAdapter.setData(mergeData(cardSupportList, mappedCardList));
         mAdapter.notifyDataSetChanged();
     }

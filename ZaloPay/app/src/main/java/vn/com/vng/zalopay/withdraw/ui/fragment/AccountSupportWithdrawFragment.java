@@ -89,7 +89,7 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
         }
 
         Timber.d("refreshListCardSupport accSupportList[%s]", accountSupportList);
-        List<DBankAccount> mappedAccountList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mappedAccountList = CShareDataWrapper.getMapBankAccountList(mUser);
         mAdapter.setData(mergeData(accountSupportList, mappedAccountList));
         mAdapter.notifyDataSetChanged();
     }

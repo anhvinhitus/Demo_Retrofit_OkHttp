@@ -10,11 +10,14 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
@@ -66,13 +69,29 @@ public class BankUtils {
         return bankCardNumber.replaceAll("(.{4})(?=.)", "$1 ");
     }
 
+    public static String detectCCCard(String first6CardNo, User user) {
+        if (user == null) {
+            return CardType.UNDEFINE.toString();
+        }
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloPayUserId = user.zaloPayId;
+        userInfo.accessToken = user.accesstoken;
+
+        try {
+            return CShareDataWrapper.detectCardType(userInfo, first6CardNo);
+        } catch (Exception e) {
+            Timber.w(e, "detectCardType exception [%s]", e.getMessage());
+        }
+        return CardType.UNDEFINE.toString();
+    }
+
     public static BankCardStyle getBankCardStyle(BankCard bankCard) {
-        if (bankCard == null || TextUtils.isEmpty(bankCard.type)) {
+        if (bankCard == null || TextUtils.isEmpty(bankCard.bankcode)) {
             return BANK_DEFAULT;
         }
 
-        if (mBankSettings.containsKey(bankCard.type)) {
-            return mBankSettings.get(bankCard.type);
+        if (mBankSettings.containsKey(bankCard.bankcode)) {
+            return mBankSettings.get(bankCard.bankcode);
         } else {
             return BANK_DEFAULT;
         }
@@ -90,11 +109,12 @@ public class BankUtils {
         }
     }
 
-    public static BankCardStyle getBankCardStyle(DBaseMap bankCard) {
+    public static BankCardStyle getBankCardStyle(DBaseMap bankCard, User user) {
         if (bankCard == null || TextUtils.isEmpty(bankCard.bankcode)) {
             return BANK_DEFAULT;
         }
 
+        Timber.d("getBankCardStyle bankCode [%s]", bankCard.bankcode);
         if (mBankSettings.containsKey(bankCard.bankcode)) {
             return mBankSettings.get(bankCard.bankcode);
         } else {
