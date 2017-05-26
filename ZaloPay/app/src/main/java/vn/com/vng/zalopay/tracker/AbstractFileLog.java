@@ -52,7 +52,7 @@ abstract class AbstractFileLog {
     }
 
     void append(AbstractLogData logData) {
-        Timber.d("write log : eventType %s message %s", logData.eventType, logData.getMessage());
+        Timber.d("write log [message %s] - [file : %s]", logData.getMessage(), mCurrentFile == null ? "NULL" : mCurrentFile.getAbsolutePath());
         ensureFileLogReady(logData);
         writeToFile(logData);
     }
@@ -61,13 +61,15 @@ abstract class AbstractFileLog {
         FileUtils.mkdirs(mDirectoryFileLog);
         long timestamp = logData.timestamp;
         long lastFileCreateTime = getFileCreateTime();
-        if (Math.abs(timestamp - lastFileCreateTime) >= INTERVAL_CREATE_FILE) { // tạo file mới
+        long delayUpload = Math.abs(timestamp - lastFileCreateTime);
+
+        if (delayUpload >= INTERVAL_CREATE_FILE) { // tạo file mới
             Timber.d("Create new file log");
             mCurrentFile = createFileLog(timestamp);
             setFileCreateTime(timestamp);
             closeWriter();
 
-            createWriterAndUploadTimer();
+            createWriterAndUploadTimer(INTERVAL_CREATE_FILE);
         } else {
 
             if (mBufferedWriter != null) {
@@ -78,11 +80,11 @@ abstract class AbstractFileLog {
                 mCurrentFile = createFileLog(lastFileCreateTime);
             }
 
-            createWriterAndUploadTimer();
+            createWriterAndUploadTimer(delayUpload);
         }
     }
 
-    private void createWriterAndUploadTimer() {
+    private void createWriterAndUploadTimer(long delay) {
 
         createWriter(mCurrentFile);
 
@@ -92,7 +94,9 @@ abstract class AbstractFileLog {
             return;
         }
 
-        Observable.timer(INTERVAL_CREATE_FILE, TimeUnit.MILLISECONDS)
+        Timber.d("create timer upload file [after: %s ms]", delay);
+
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new UploadDelaySubscriber(filePath));
 
@@ -108,6 +112,7 @@ abstract class AbstractFileLog {
 
         @Override
         public void onNext(Long aLong) {
+            Timber.d("write log finish  [file : %s ]", mFilePath);
             onWriteLogFinish(mFilePath);
         }
     }
