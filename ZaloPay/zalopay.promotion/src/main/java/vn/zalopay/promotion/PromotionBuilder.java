@@ -4,13 +4,13 @@ import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 
-public class PromotionBuilder implements IBuilder {
+public abstract class PromotionBuilder implements IBuilder {
     protected PromotionEvent promotionEvent;
-    protected IPromotionListener promotionListener;
+    protected IInteractPromotion promotionListener;
     protected View mView;
 
     @Override
-    public PromotionBuilder setPromotionEvent(PromotionEvent promotionEvent) {
+    public PromotionBuilder setPromotion(PromotionEvent promotionEvent) {
         this.promotionEvent = promotionEvent;
         return this;
     }
@@ -21,12 +21,12 @@ public class PromotionBuilder implements IBuilder {
     }
 
     @Override
-    public IPromotionListener getPromotionListener() {
+    public IInteractPromotion getInteractPromotion() {
         return promotionListener;
     }
 
     @Override
-    public PromotionBuilder setPromotionListener(IPromotionListener promotionListener) {
+    public PromotionBuilder setInteractPromotion(IInteractPromotion promotionListener) {
         this.promotionListener = promotionListener;
         return this;
     }
@@ -40,11 +40,6 @@ public class PromotionBuilder implements IBuilder {
     public PromotionBuilder setView(View pView) {
         this.mView = pView;
         return this;
-    }
-
-    @Override
-    public UIBottomSheetDialog.IRender build() {
-        return new CashBackRender(this);
     }
 
     @Override

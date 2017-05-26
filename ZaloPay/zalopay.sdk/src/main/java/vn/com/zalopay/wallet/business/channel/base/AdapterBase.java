@@ -71,7 +71,8 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
-import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.IInteractPromotion;
+import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AdapterBase {
@@ -148,6 +149,7 @@ public abstract class AdapterBase {
         onClickSubmission();
     };
     protected IBuilder mPromotionBuilder;
+    protected IPromotionResult mPromotionResult;
     //prevent click duplicate
     private boolean mMoreClick = true;
     private final View.OnClickListener okClickListener = new View.OnClickListener() {
@@ -330,13 +332,9 @@ public abstract class AdapterBase {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
-        Log.d(this, "start dismiss dialog fingerprint - release pmc config - release promotion builder");
+        Log.d(this, "start dismiss dialog fingerprint - release pmc config");
         dismissDialogFingerPrint();
         mMiniPmcTransType = null;
-        if (mPromotionBuilder != null) {
-            mPromotionBuilder.release();
-            mPromotionBuilder = null;
-        }
     }
 
     public void detectCard(String pCardNumber) {
@@ -858,24 +856,21 @@ public abstract class AdapterBase {
                     return pAdditionParams;
                 }
 
-                boolean shouldUpdateEvent = mPromotionBuilder != null;
-
                 PromotionEvent promotionEvent = null;
-                IPromotionListener promotionListener = null;
                 if (pAdditionParams[0] instanceof PromotionEvent) {
                     promotionEvent = (PromotionEvent) pAdditionParams[0];
                 }
-                if (shouldUpdateEvent) {
+                if (mPromotionBuilder != null) {
                     Log.d(this, "promotion event is updated", promotionEvent);
-                    mPromotionBuilder.setPromotionEvent(promotionEvent);
+                    mPromotionBuilder.setPromotion(promotionEvent);
                     return pAdditionParams;
                 }
                 if (promotionEvent == null) {
                     Log.d(this, "stopping processing promotion from notification because promotion event is null");
                     return pAdditionParams;
                 }
-                if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionListener) {
-                    promotionListener = (IPromotionListener) pAdditionParams[1];
+                if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
+                    mPromotionResult = (IPromotionResult) pAdditionParams[1];
                 }
 
                 long transId = -1;
@@ -888,8 +883,8 @@ public abstract class AdapterBase {
                 }
                 if (transId == -1) {
                     Log.d(this, "stopping processing promotion from notification because transid is not same");
-                    if (promotionListener != null) {
-                        promotionListener.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
+                    if (mPromotionResult != null) {
+                        mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
                     }
                     return pAdditionParams;
                 }
@@ -900,9 +895,23 @@ public abstract class AdapterBase {
 
                 View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
                 mPromotionBuilder = CashBackRender.getBuilder()
-                        .setPromotionEvent(promotionEvent)
-                        .setPromotionListener(promotionListener)
-                        .setView(contentView);
+                        .setPromotion(promotionEvent)
+                        .setView(contentView)
+                        .setInteractPromotion(new IInteractPromotion() {
+                            @Override
+                            public void onUserInteract(PromotionEvent pPromotionEvent) {
+                                if(mPromotionResult != null){
+                                    mPromotionResult.onNavigateToAction(getActivity(), pPromotionEvent);
+                                }
+                            }
+
+                            @Override
+                            public void onClose() {
+                                mPromotionResult = null;
+                                mPromotionBuilder.release();
+                                mPromotionBuilder = null;
+                            }
+                        });
                 UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
                 bottomSheetDialog.show();
             }

@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.notification;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -51,10 +53,13 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.controller.SDKPayment;
+import vn.zalopay.promotion.ActionType;
+import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.PromotionAction;
 import vn.zalopay.promotion.PromotionEvent;
 
@@ -325,9 +330,22 @@ public class NotificationHelper {
 
                     @Override
                     public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
-                        mPromotionHelper.navigate(pContext, pPromotionEvent);
+                        if (pPromotionEvent != null && pPromotionEvent.actions != null && !pPromotionEvent.actions.isEmpty()) {
+                            switch (pPromotionEvent.actions.get(0).action) {
+                                case ActionType.TRANSACTION_DETAIL:
+                                    Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+                                    if (pPromotionEvent.notificationId > 0) {
+                                        navigator.startTransactionDetail(pContext, String.valueOf(pPromotionEvent.transid), String.valueOf(pPromotionEvent.notificationId));
+                                    } else {
+                                        navigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
+                                    }
+                                    break;
+                                default:
+                                    Timber.d("undefine action on promotion");
+                            }
+                        }
                     }
-                }, mResourceLoader);
+                });
                 Log.d(this, "post promotion event from notification to sdk", promotionEvent);
             } else {
                 /***

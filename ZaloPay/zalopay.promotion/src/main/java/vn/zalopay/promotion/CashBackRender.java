@@ -11,8 +11,12 @@ import android.widget.TextView;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 
 public class CashBackRender extends PromotionRender {
-    public CashBackRender(PromotionBuilder pBuilder) {
+    public CashBackRender(IBuilder pBuilder) {
         super(pBuilder);
+    }
+
+    public static IBuilder getBuilder() {
+        return new CashBackBuilder();
     }
 
     @Override
@@ -22,7 +26,7 @@ public class CashBackRender extends PromotionRender {
         }
         View view = mBuilder.getView();
         final PromotionEvent promotionEvent = mBuilder.getPromotion();
-        final IPromotionListener promotionListener = mBuilder.getPromotionListener();
+        final IInteractPromotion promotionListener = mBuilder.getInteractPromotion();
         if (view == null || promotionEvent == null) {
             Log.d(getClass().getSimpleName(), "view or promotion is null");
             return;
@@ -53,11 +57,10 @@ public class CashBackRender extends PromotionRender {
                 @Override
                 public void onClick(View view) {
                     if (promotionListener != null && mBuilder != null) {
-                        promotionListener.onPromotionAction(pContext, mBuilder.getPromotion());
+                        promotionListener.onUserInteract(mBuilder.getPromotion());
                     }
                 }
             });
         }
-
     }
 }
