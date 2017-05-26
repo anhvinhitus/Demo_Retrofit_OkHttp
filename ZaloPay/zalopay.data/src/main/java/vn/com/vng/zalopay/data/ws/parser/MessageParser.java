@@ -165,7 +165,7 @@ public class MessageParser implements Parser {
             PaymentRequestData event = new PaymentRequestData();
             event.requestid = ConvertHelper.unboxValue(message.requestid, 0);
             event.resultcode = ConvertHelper.unboxValue(message.resultcode, 0);
-            event.usrid = message.usrid;
+            event.usrid = ConvertHelper.unboxValue(message.usrid, 0);
 
             Timber.d("Parse payment request response : requestid [%s] resultdata [%s]", message.requestid, message.resultdata);
 
