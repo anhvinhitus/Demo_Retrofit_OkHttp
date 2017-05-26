@@ -8,24 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.UIBottomSheetDialog;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.Locale;
-
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 
-public class CashBackRender implements UIBottomSheetDialog.IRender {
-    private RenderBuilder mBuilder;
-
-    public CashBackRender(RenderBuilder pBuilder) {
-        mBuilder = pBuilder;
-    }
-
-    public static RenderBuilder getBuilder() {
-        return new RenderBuilder();
+public class CashBackRender extends PromotionRender {
+    public CashBackRender(PromotionBuilder pBuilder) {
+        super(pBuilder);
     }
 
     @Override
@@ -33,9 +20,9 @@ public class CashBackRender implements UIBottomSheetDialog.IRender {
         if (mBuilder == null) {
             return;
         }
-        View view = mBuilder.mView;
-        final PromotionEvent promotionEvent = mBuilder.promotionEvent;
-        final IPromotionListener promotionListener = mBuilder.promotionListener;
+        View view = mBuilder.getView();
+        final PromotionEvent promotionEvent = mBuilder.getPromotion();
+        final IPromotionListener promotionListener = mBuilder.getPromotionListener();
         if (view == null || promotionEvent == null) {
             Log.d(getClass().getSimpleName(), "view or promotion is null");
             return;
@@ -53,10 +40,10 @@ public class CashBackRender implements UIBottomSheetDialog.IRender {
         promotion_cash_back_ll_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mBuilder == null) {
+                if (mBuilder == null || mBuilder.getView() == null) {
                     return;
                 }
-                BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View) mBuilder.mView.getParent());
+                BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View) mBuilder.getView().getParent());
                 mBottomSheetBehavior.setState(STATE_HIDDEN);
             }
         });
@@ -66,45 +53,11 @@ public class CashBackRender implements UIBottomSheetDialog.IRender {
                 @Override
                 public void onClick(View view) {
                     if (promotionListener != null && mBuilder != null) {
-                        promotionListener.onPromotionAction(pContext, mBuilder.promotionEvent);
+                        promotionListener.onPromotionAction(pContext, mBuilder.getPromotion());
                     }
                 }
             });
         }
 
-    }
-
-    @Override
-    public View getView() {
-        return mBuilder != null ? mBuilder.mView : null;
-    }
-
-    @Override
-    public void OnDismiss() {
-        Log.d(getClass().getSimpleName(),"OnDismiss");
-        if (mBuilder == null) {
-            return;
-        }
-        IPromotionListener promotionListener = mBuilder.promotionListener;
-        if (promotionListener != null) {
-            promotionListener.onClose();
-        }
-    }
-
-    public String formatVnCurrence(String price) {
-        NumberFormat format = new DecimalFormat("#,##0.00");
-        format.setCurrency(Currency.getInstance(Locale.US));//Or default locale
-        price = (!TextUtils.isEmpty(price)) ? price : "0";
-        price = price.trim();
-        price = format.format(Math.ceil(Double.parseDouble(price)));
-        price = price.replaceAll(",", "\\.");
-        if (price.endsWith(".00")) {
-            int centsIndex = price.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                price = price.substring(0, centsIndex);
-            }
-        }
-        price = String.format("%s", price);
-        return price;
     }
 }

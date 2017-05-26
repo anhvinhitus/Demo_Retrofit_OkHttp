@@ -227,7 +227,7 @@ public class NotificationHelper {
                 break;
             case NotificationType.PROMOTION:
                 if (!isNotificationRecovery) {
-                    prepareRenderPromotion(notify);
+                    postPromotion(notify);
                 }
                 break;
             default:
@@ -266,7 +266,7 @@ public class NotificationHelper {
         }
         switch ((int) notify.notificationtype) {
             case NotificationType.PROMOTION:
-                prepareRenderPromotion(notify); //post update again promotion notification with new notification id inserted in local db
+                postPromotion(notify); //post update again promotion notification with new notification id inserted in local db
                 break;
             default:
                 Timber.d("undefine notification type");
@@ -310,7 +310,7 @@ public class NotificationHelper {
         mEventBus.post(event);
     }
 
-    private void prepareRenderPromotion(NotificationData data) {
+    private void postPromotion(NotificationData data) {
         try {
             JsonObject embeddata = data.getEmbeddata();
             if (embeddata == null) {

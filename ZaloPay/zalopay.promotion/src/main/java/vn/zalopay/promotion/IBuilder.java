@@ -6,11 +6,17 @@ import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 public interface IBuilder {
 
-    RenderBuilder setPromotionEvent(PromotionEvent promotionEvent);
+    PromotionEvent getPromotion();
 
-    RenderBuilder setPromotionListener(IPromotionListener promotionListener);
+    IPromotionListener getPromotionListener();
 
-    RenderBuilder setView(View pView);
+    IBuilder setPromotionListener(IPromotionListener promotionListener);
+
+    View getView();
+
+    IBuilder setView(View pView);
+
+    IBuilder setPromotionEvent(PromotionEvent promotionEvent);
 
     UIBottomSheetDialog.IRender build();
 
