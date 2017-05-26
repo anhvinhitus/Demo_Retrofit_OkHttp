@@ -1692,7 +1692,7 @@ public abstract class AdapterBase {
             bankCode = getGuiProcessor().getDetectedBankCode();
         }
         if (GlobalData.isBankAccountLink()) {
-            bankCode = GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
+            bankCode = (GlobalData.getPaymentInfo().linkAccInfo != null) ? GlobalData.getPaymentInfo().linkAccInfo.getBankCode() : null;
         }
         ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
                 getChannelID(), mTransactionID, returnCode, 1, bankCode);
