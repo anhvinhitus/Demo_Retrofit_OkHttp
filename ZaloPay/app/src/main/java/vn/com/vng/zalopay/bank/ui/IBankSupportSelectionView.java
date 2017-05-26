@@ -20,4 +20,12 @@ public interface IBankSupportSelectionView {
     void fetchListBank(List<ZPCard> cardSupportList);
 
     void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
+
+    void showLoading();
+
+    void hideLoading();
+
+    void showError(String msg);
+
+    void showNetworkErrorDialog();
 }

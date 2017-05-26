@@ -124,9 +124,29 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     }
 
     @Override
+    public void showLoading() {
+        super.showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideProgressDialog();
+    }
+
+    @Override
+    public void showError(String msg) {
+        super.showErrorDialog(msg);
+    }
+
+    @Override
+    public void showNetworkErrorDialog() {
+        super.showNetworkErrorDialog();
+    }
+
+    @Override
     public void onClickBankSupportListener(ZPCard card, int position) {
-        if("ZPVCB".equals(card.getCardCode())) {
-            presenter.showVCBWarningDialog();
+        if(card.isBankAccount()) {
+            presenter.linkAccount(card.getCardCode());
         } else {
             presenter.linkCard();
         }

@@ -1,8 +1,14 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,9 +17,11 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -73,12 +81,8 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setResponseListener(new DefaultPaymentResponseListener() {
-                    @Override
-                    protected ILoadDataView getView() {
-                        return null;
-                    }
-                })
+                .setResponseListener(new PaymentResponseListener())
+                .setLinkCardListener(new LinkCardListener(this))
                 .build();
     }
 
@@ -87,12 +91,24 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
         super.attachView(iBankSupportSelectionView);
     }
 
+    private Activity getActivity() {
+        if (mView == null)
+            return null;
+        return mView.getActivity();
+    }
+
+    private Context getContext() {
+        if (mView == null)
+            return null;
+        return mView.getContext();
+    }
+
     private void showRetryDialog() {
-        if (mView == null || mView.getContext() == null) {
+        if (mView == null || getContext() == null) {
             return;
         }
 
-        mView.showRetryDialog(mView.getContext().getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+        mView.showRetryDialog(getContext().getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
 
@@ -127,6 +143,19 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
         mBankType = (LinkBankType) bundle.getSerializable(Constants.ARG_LINK_BANK_TYPE);
     }
 
+    void linkCard() {
+        paymentWrapper.linkCard(getActivity());
+    }
+
+    void linkAccount(String cardCode) {
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        if (checkLinkedBankAccount(transformBankAccount(mapCardLis), cardCode)) {
+            paymentWrapper.linkAccount(getActivity(), cardCode);
+        } else {
+            showVCBWarningDialog();
+        }
+    }
+
     void showVCBWarningDialog() {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(mView.getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
@@ -152,7 +181,133 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
         return message.toString();
     }
 
-    void linkCard() {
-        paymentWrapper.linkCard(mView.getActivity());
+    boolean checkLinkedBankAccount(List<BankAccount> listBankAccount, String bankCode) {
+        if (Lists.isEmptyOrNull(listBankAccount)) {
+            return false;
+        }
+        for (BankAccount bankAccount : listBankAccount) {
+            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
+                continue;
+            }
+            if (bankAccount.mBankCode.equalsIgnoreCase(bankCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {
+        if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
+
+        List<BankAccount> list = new ArrayList<>();
+        for (DBankAccount dBankAccount : bankAccounts) {
+            BankAccount bankAccount = transformBankAccount(dBankAccount);
+            if (bankAccount != null) {
+                list.add(bankAccount);
+            }
+        }
+        return list;
+    }
+
+    BankAccount transformBankAccount(DBankAccount dBankAccount) {
+        if (dBankAccount == null) {
+            return null;
+        }
+
+        //bankCode [ZPVCB] firstaccountno[012240] lastaccountno[2165]
+        return new BankAccount(dBankAccount.firstaccountno,
+                dBankAccount.lastaccountno,
+                dBankAccount.bankcode);
+    }
+
+    private void showErrorView(String message) {
+        if (mView == null) {
+            return;
+        }
+        mView.hideLoading();
+        mView.showError(message);
+    }
+
+    // Inner class custom listener
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+//            showErrorView(param);
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent();
+            bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, param);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_CANCELED, intent);
+            getActivity().finish();
+        }
+
+        @Override
+        public void onResponseError(PaymentError status) {
+            if (status == PaymentError.ERR_CODE_INTERNET) {
+                if (mView == null) {
+                    return;
+                }
+                mView.hideLoading();
+                mView.showNetworkErrorDialog();
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (mView == null) return;
+
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent();
+            bundle.putParcelable(Constants.BANK_DATA_RESULT_AFTER_LINK, zpPaymentResult);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            Timber.e("Invalid token");
+        }
+
+        @Override
+        public void onResponseAccountSuspended() {
+            Timber.e("Account suspended");
+        }
+
+        @Override
+        public void onAppError(String msg) {
+//            showErrorView(msg);
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent();
+            bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, msg);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_CANCELED, intent);
+            getActivity().finish();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+
+        }
+    }
+
+    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+        WeakReference<BankSupportSelectionPresenter> mWeakReference;
+
+        LinkCardListener(BankSupportSelectionPresenter presenter) {
+            mWeakReference = new WeakReference<>(presenter);
+        }
+
+        @Override
+        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+            if (mWeakReference.get() == null) {
+                return;
+            }
+
+            mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
+        }
+    }
+
+    protected void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
     }
 }
