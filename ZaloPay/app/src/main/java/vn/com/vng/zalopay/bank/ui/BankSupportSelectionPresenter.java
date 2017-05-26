@@ -148,7 +148,7 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
     }
 
     void linkAccount(String cardCode) {
-        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser);
         if (checkLinkedBankAccount(transformBankAccount(mapCardLis), cardCode)) {
             paymentWrapper.linkAccount(getActivity(), cardCode);
         } else {
