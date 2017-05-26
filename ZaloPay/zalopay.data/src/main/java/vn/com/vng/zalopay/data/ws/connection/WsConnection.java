@@ -42,7 +42,7 @@ public class WsConnection extends Connection {
 
     private final Context context;
 
-    private boolean mIsAuthenSuccess = false;
+    private boolean mAuthenticateSuccess = false;
 
     private int numRetry;
 
@@ -120,7 +120,7 @@ public class WsConnection extends Connection {
     private void subscribeKeepClientHeartBeatEvent() {
         Subscription subscription =
                 Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                        .filter((value) -> mSocketClient.isConnected())
+                        .filter((value) -> mSocketClient.isConnected() && mAuthenticateSuccess)
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
@@ -223,7 +223,6 @@ public class WsConnection extends Connection {
         doDisconnect();
     }
 
-
     private void doDisconnect() {
         if (mSocketClient != null) {
             mSocketClient.disconnect();
@@ -321,7 +320,7 @@ public class WsConnection extends Connection {
             mState = State.Connected;
             mNextConnectionState = NextState.RETRY_CONNECT;
             //    numRetry = 0;
-            mIsAuthenSuccess = false;
+            mAuthenticateSuccess = false;
             sendAuthentication();
 
             mServerPongBus.send(1L);
@@ -355,7 +354,7 @@ public class WsConnection extends Connection {
                 numRetry = 0;
                 postResult(message);
                 mServerPongBus.send(0L);
-                mIsAuthenSuccess = true;
+                mAuthenticateSuccess = true;
             } else if (messageType == ServerMessageType.KICK_OUT_USER) {
                 needFeedback = false;
                 if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
@@ -389,7 +388,7 @@ public class WsConnection extends Connection {
         public void onDisconnected(ConnectionErrorCode code, String reason) {
             Timber.d("onDisconnected %s", code);
             mState = Connection.State.Disconnected;
-            mIsAuthenSuccess = false;
+            mAuthenticateSuccess = false;
 
             if (mSocketClient != null) {
                 mSocketClient.disconnect();
@@ -409,7 +408,7 @@ public class WsConnection extends Connection {
         public void onError(Throwable e) {
             Timber.d("onError %s", e.getMessage());
             mState = Connection.State.Disconnected;
-            mIsAuthenSuccess = false;
+            mAuthenticateSuccess = false;
 
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
@@ -457,12 +456,12 @@ public class WsConnection extends Connection {
     }
 
     private void ensureAuthenticationSuccess() {
-//        Timber.d("ensureAuthenticationSuccess start, state=[%s] isAuthenSuccess=[%s]", mState, mIsAuthenSuccess);
+//        Timber.d("ensureAuthenticationSuccess start, state=[%s] isAuthenSuccess=[%s]", mState, mAuthenticateSuccess);
         if (mState != State.Connected) {
             return;
         }
 
-        if (mIsAuthenSuccess) {
+        if (mAuthenticateSuccess) {
             return;
         }
 
