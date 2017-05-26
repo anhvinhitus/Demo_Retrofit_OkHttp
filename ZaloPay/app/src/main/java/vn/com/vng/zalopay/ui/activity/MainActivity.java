@@ -4,34 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.PromotionEvent;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -40,10 +29,12 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.PromotionEvent;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -52,6 +43,18 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
     public static final String TAG = "MainActivity";
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @Inject
+    MainPresenter presenter;
+    private long back_pressed;
+    private ActionBarDrawerToggle toggle;
+    private SweetAlertDialog mProgressDialog;
+    private LeftMenuFragment mLeftMenuFragment;
+    private ZaloPayFragment mZaloPayFragment;
+
+    public MainActivity() {
+    }
 
     @Override
     protected int getResLayoutId() {
@@ -67,41 +70,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     protected void setupActivityComponent() {
         getUserComponent().inject(this);
     }
-
-    public MainActivity() {
-    }
-
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-
-    // Promotion cash back
-    @BindView(R.id.zp_promotion_cash_back_view)
-    View mParentPromotionCashBackView;
-
-    @BindView(R.id.promotion_cash_back_view)
-    View mPromotionCashBackView;
-
-    @BindView(R.id.promotion_cash_back_tv_title)
-    TextView tvCashBackTitle;
-
-    @BindView(R.id.promotion_cash_back_tv_amount)
-    TextView tvCashBackAmount;
-
-    @BindView(R.id.promotion_cash_back_tv_campaign)
-    TextView tvCashBackCampaign;
-
-    @BindView(R.id.promotion_cash_back_tv_action)
-    TextView tvCashBackAction;
-
-    @Inject
-    MainPresenter presenter;
-
-    private long back_pressed;
-
-    private ActionBarDrawerToggle toggle;
-    private SweetAlertDialog mProgressDialog;
-    private LeftMenuFragment mLeftMenuFragment;
-    private ZaloPayFragment mZaloPayFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,62 +238,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     @Override
-    public void showCashBackView(PromotionEvent event) {
+    public void showCashBackView(IBuilder builder, PromotionEvent event) {
         if (event == null) {
             return;
         }
-        String strAmount = CurrencyUtil.formatCurrency(event.amount, false);
-
-//        SpannableString span = new SpannableString(_temp);
-//        span.setSpan(new RelativeSizeSpan(0.5f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tvCashBackTitle.setText(event.title);
-        tvCashBackAmount.setText(strAmount);
-        if(!TextUtils.isEmpty(event.campaign)){
-            tvCashBackCampaign.setText(Html.fromHtml(event.campaign));
-        }
-        if(event.actions != null && !event.actions.isEmpty() && !TextUtils.isEmpty(event.actions.get(0).title)){
-            tvCashBackAction.setText(Html.fromHtml(event.actions.get(0).title));
-        }
-
-        mParentPromotionCashBackView.setVisibility(View.VISIBLE);
-        if (mPromotionCashBackView != null) {
-            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_in_bottom);
-            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
-        }
-    }
-
-    @Override
-    public boolean showingCashBackView() {
-        return mParentPromotionCashBackView != null && (mParentPromotionCashBackView.getVisibility() == View.VISIBLE);
-    }
-
-    @Override
-    public void hideCashBackView() {
-        if (mPromotionCashBackView != null) {
-            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getActivity(), vn.com.zalopay.wallet.R.anim.slide_out_bottom);
-            mPromotionCashBackView.startAnimation(hyperspaceJumpAnimation);
-        }
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> mParentPromotionCashBackView.setVisibility(View.GONE), 300);
-    }
-
-    private final class OpenMenuRunnable implements Runnable {
-        final int id;
-        final WeakReference<MainActivity> act;
-
-        OpenMenuRunnable(MainActivity mainMenuActivity, int id) {
-            this.act = new WeakReference<>(mainMenuActivity);
-            this.id = id;
-        }
-
-        public final void run() {
-            MainActivity mainActivity = act.get();
-            if (mainActivity != null) {
-                mainActivity.replaceFragmentImmediate(id);
-            }
-        }
+        View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+        builder.setView(contentView);
+        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, builder.build());
+        bottomSheetDialog.show();
     }
 
     @Override
@@ -389,13 +309,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    @OnClick(R.id.promotion_cash_back_ll_submit)
-    public void onClickSubmitPromotionCashBack() {
-        hideCashBackView();
-    }
+    private final class OpenMenuRunnable implements Runnable {
+        final int id;
+        final WeakReference<MainActivity> act;
 
-    @OnClick(R.id.promotion_cash_back_tv_action)
-    public void onClickCashBackDetail() {
-        presenter.actionOnPromotion();
+        OpenMenuRunnable(MainActivity mainMenuActivity, int id) {
+            this.act = new WeakReference<>(mainMenuActivity);
+            this.id = id;
+        }
+
+        public final void run() {
+            MainActivity mainActivity = act.get();
+            if (mainActivity != null) {
+                mainActivity.replaceFragmentImmediate(id);
+            }
+        }
     }
 }

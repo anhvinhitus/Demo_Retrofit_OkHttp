@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.notification;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,13 +49,17 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.event.PromotionEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.zalopay.promotion.PromotionAction;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.zalopay.promotion.ActionType;
+import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.PromotionAction;
+import vn.zalopay.promotion.PromotionEvent;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -325,8 +331,45 @@ public class NotificationHelper {
             }
 
             PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
-            mEventBus.postSticky(promotionEvent);
-            Log.d(this, "post promotion event from notification", promotionEvent);
+            //send into sdk if user in payment
+            if (SDKPayment.isOpenSdk()) {
+                CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionListener() {
+                    @Override
+                    public void onReceiverNotAvailable() {
+                        //notification come late and user enter sdk for another payment
+                        mEventBus.postSticky(promotionEvent);
+                    }
+
+                    @Override
+                    public void onPromotionAction(Context pContext, PromotionEvent pPromotionEvent) {
+                        if (pPromotionEvent != null && pPromotionEvent.actions != null && !pPromotionEvent.actions.isEmpty()) {
+                            switch (pPromotionEvent.actions.get(0).action) {
+                                case ActionType.TRANSACTION_DETAIL:
+                                    Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+                                    if (pPromotionEvent.notificationId > 0) {
+                                        navigator.startTransactionDetail(pContext, String.valueOf(pPromotionEvent.transid), String.valueOf(pPromotionEvent.notificationId));
+                                    } else {
+                                        navigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
+                                    }
+                                    break;
+                                default:
+                                    Timber.d("undefine action on promotion");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onClose() {
+                    }
+                });
+                Log.d(this, "post promotion event from notification to sdk", promotionEvent);
+            } else {
+                /***
+                 * send to subscriber on {@link vn.com.vng.zalopay.ui.presenter.MainPresenter}
+                 */
+                mEventBus.postSticky(promotionEvent);
+                Log.d(this, "post promotion event from notification to subscriber", promotionEvent);
+            }
         } catch (Exception ex) {
             Timber.e(ex, "Extract PromotionEvent data error");
         }

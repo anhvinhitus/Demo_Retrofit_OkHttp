@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
 
+import com.zalopay.ui.widget.UIBottomSheetDialog;
+
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -68,6 +70,10 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.zalopay.promotion.CashBackRender;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AdapterBase {
 
@@ -143,6 +149,7 @@ public abstract class AdapterBase {
     protected String mLayoutId = null;
     protected boolean preventRetryLoadMapCardList = false;
     protected MiniPmcTransType mMiniPmcTransType;
+    protected IBuilder mPromotionBuilder;
     //prevent click duplicate
     private boolean mMoreClick = true;
     private View.OnClickListener onSupportClickListener = new View.OnClickListener() {
@@ -329,10 +336,13 @@ public abstract class AdapterBase {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
-        Log.d(this, "start dismiss dialog fingerprint");
+        Log.d(this, "start dismiss dialog fingerprint - release pmc config - release promotion builder");
         dismissDialogFingerPrint();
-        Log.d(this, "release pmc config");
         mMiniPmcTransType = null;
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.release();
+            mPromotionBuilder = null;
+        }
     }
 
     public void detectCard(String pCardNumber) {
@@ -870,6 +880,60 @@ public abstract class AdapterBase {
                 } catch (Exception ex) {
                     Log.e(this, ex);
                 }
+            } else if (pEventType == EEventType.ON_PROMOTION) {
+                Log.d(this, "got promotion from notification");
+                if (pAdditionParams == null || pAdditionParams.length <= 0) {
+                    Log.d(this, "stopping processing promotion from notification because of empty pAdditionParams");
+                    return pAdditionParams;
+                }
+
+                boolean shouldUpdateEvent = mPromotionBuilder != null;
+
+                PromotionEvent promotionEvent = null;
+                IPromotionListener promotionListener = null;
+                if (pAdditionParams[0] instanceof PromotionEvent) {
+                    promotionEvent = (PromotionEvent) pAdditionParams[0];
+                }
+                if (shouldUpdateEvent) {
+                    Log.d(this, "promotion event is updated", promotionEvent);
+                    mPromotionBuilder.setPromotionEvent(promotionEvent);
+                    return pAdditionParams;
+                }
+                if (promotionEvent == null) {
+                    Log.d(this, "stopping processing promotion from notification because promotion event is null");
+                    return pAdditionParams;
+                }
+                if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionListener) {
+                    promotionListener = (IPromotionListener) pAdditionParams[1];
+                }
+
+                long transId = -1;
+                if (!TextUtils.isEmpty(mTransactionID)) {
+                    try {
+                        transId = Long.parseLong(mTransactionID);
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                }
+                if (transId == -1) {
+                    Log.d(this, "stopping processing promotion from notification because transid is not same");
+                    if (promotionListener != null) {
+                        promotionListener.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
+                    }
+                    return pAdditionParams;
+                }
+                if (!isTransactionSuccess()) {
+                    Log.d(this, "transaction is not success, skipping process promotion notification");
+                    return pAdditionParams;
+                }
+
+                View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+                mPromotionBuilder = CashBackRender.getBuilder()
+                        .setPromotionEvent(promotionEvent)
+                        .setPromotionListener(promotionListener)
+                        .setView(contentView);
+                UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
+                bottomSheetDialog.show();
             }
 
         } catch (Exception e) {

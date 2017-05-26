@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.event;
+package vn.zalopay.promotion;
 
 import java.util.List;
 

@@ -46,13 +46,10 @@ import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.event.PromotionEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.zalopay.promotion.ActionType;
-import vn.zalopay.promotion.PromotionType;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -77,6 +74,12 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.zalopay.promotion.ActionType;
+import vn.zalopay.promotion.CashBackRender;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.PromotionType;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -105,8 +108,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
-    private PromotionEvent mPromotionEvent;
     private boolean isInitTransaction;
+    private IBuilder mPromotionBuilder;
 
     @Inject
     MainPresenter(User user, EventBus eventBus,
@@ -213,6 +216,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     @Override
     public void destroy() {
         super.destroy();
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.release();
+            mPromotionBuilder = null;
+        }
     }
 
     public void initialize() {
@@ -419,13 +426,33 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onCashBackEvent(PromotionEvent event) {
         mEventBus.removeStickyEvent(PromotionEvent.class);
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.setPromotionEvent(event);
+            return;
+        }
         if (mView != null && event != null) {
-            mPromotionEvent = event;
             switch (event.type) {
                 case PromotionType.CASHBACK:
-                    if (!mView.showingCashBackView()) {
-                        mView.showCashBackView(event);
-                    }
+                    mPromotionBuilder = CashBackRender.getBuilder()
+                            .setPromotionEvent(event)
+                            .setPromotionListener(new IPromotionListener() {
+                                @Override
+                                public void onReceiverNotAvailable() {
+
+                                }
+
+                                @Override
+                                public void onPromotionAction(Context pContext, PromotionEvent pPromotionEvent) {
+                                    actionOnPromotion(pPromotionEvent);
+                                }
+
+                                @Override
+                                public void onClose() {
+                                    mPromotionBuilder.release();
+                                    mPromotionBuilder = null;
+                                }
+                            });
+                    mView.showCashBackView(mPromotionBuilder, event);
                     break;
                 default:
                     Timber.d("undefine promotion type");
@@ -470,12 +497,15 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_NotifyInApp);
     }
 
-    public void actionOnPromotion() {
-        if (mPromotionEvent != null && mPromotionEvent.actions != null && !mPromotionEvent.actions.isEmpty()) {
-            switch (mPromotionEvent.actions.get(0).action) {
+    public void actionOnPromotion(PromotionEvent promotionEvent) {
+        if (promotionEvent == null) {
+            return;
+        }
+        if (promotionEvent != null && promotionEvent.actions != null && !promotionEvent.actions.isEmpty()) {
+            switch (promotionEvent.actions.get(0).action) {
                 case ActionType.TRANSACTION_DETAIL:
-                    if (mPromotionEvent.notificationId > 0) {
-                        mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(mPromotionEvent.transid), String.valueOf(mPromotionEvent.notificationId));
+                    if (promotionEvent.notificationId > 0) {
+                        mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(promotionEvent.transid), String.valueOf(promotionEvent.notificationId));
                     } else {
                         mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
                     }

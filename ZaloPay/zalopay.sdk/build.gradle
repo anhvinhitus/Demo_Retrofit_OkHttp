@@ -71,4 +71,5 @@ dependencies {
     compile project(':zalopay.feedback')
 
     compile project(':zalopay.promotion')
+    compile project(path: ':ui.widget')
 }
