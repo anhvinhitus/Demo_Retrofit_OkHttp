@@ -16,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -61,7 +60,7 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, Bank
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ZPCard item = getItem(position);
-        holder.bindView(item);
+        holder.bindView(item, position);
     }
 
     @Override
@@ -115,10 +114,13 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, Bank
             ButterKnife.bind(this, itemView);
         }
 
-        void bindView(ZPCard card) {
+        void bindView(ZPCard card, int position) {
             if (card == null) {
                 mLogoView.setVisibility(View.GONE);
                 return;
+            }
+            if (getItemCount() == (position + 1) ) {
+                mDashLine.setVisibility(View.GONE);
             }
             mLogoView.setImageBitmap(ResourceManager.getImage(String.format("%s.png", card.getCardCode())));
             mLogoView.setVisibility(View.VISIBLE);
