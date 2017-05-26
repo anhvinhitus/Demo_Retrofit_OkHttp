@@ -84,6 +84,7 @@ public interface Constants {
 
     // Link bank tab state
     String PREF_LINK_BANK_LAST_INDEX = "pref_link_bank_last_index";
+    String BANK_DATA_RESULT_AFTER_LINK = "bank_data_after_link";
 
     interface MoneyTransfer {
         int STAGE_PRETRANSFER = 1;
