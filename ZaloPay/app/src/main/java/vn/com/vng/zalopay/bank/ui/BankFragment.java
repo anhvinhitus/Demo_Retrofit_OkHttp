@@ -229,7 +229,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
 
         int screenHeight = AndroidUtils.displaySize.y;
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = (int) (screenHeight * 0.45);
+        int height = (int) (screenHeight * 0.5);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
         params.gravity = Gravity.CENTER;
 
