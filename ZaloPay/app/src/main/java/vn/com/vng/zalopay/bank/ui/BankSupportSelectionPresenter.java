@@ -70,6 +70,7 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
             @Override
             public void onNext(List<ZPCard> cardList) {
                 Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, cardList);
+                mView.showLoading();
                 fetchListBank(cardList);
             }
         };
@@ -171,8 +172,8 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
     String getVCBWarningMessage() {
         StringBuilder message = new StringBuilder();
         message.append(String.format(mView.getActivity().getString(R.string.link_account_empty_bank_support_phone_require_hint),
-                PhoneUtil.formatPhoneNumberWithSpace(mUser.phonenumber)));
-        message.append(String.format("%n%n", ""));
+                "<b>" + PhoneUtil.formatPhoneNumberWithDot(mUser.phonenumber) + "</b>"));
+        message.append("<br><br>");
         message.append(mView.getActivity().getString(R.string.link_account_empty_bank_support_balance_require_hint));
 
         return message.toString();
