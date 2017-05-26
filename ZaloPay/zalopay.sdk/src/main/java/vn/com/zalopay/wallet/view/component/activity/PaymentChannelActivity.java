@@ -14,7 +14,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -35,9 +34,9 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMC_CONFIG_EXTRA = "pmc_config";
@@ -48,6 +47,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private boolean mIsStart = false;
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
+    private MiniPmcTransType mMiniPmcTransType;
     private View.OnClickListener mOnClickExitListener = v -> {
         Log.d(this, "on exit");
         //get status again if user back when payment in bank's site
@@ -208,13 +208,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onCreate(savedInstanceState);
         Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        MiniPmcTransType miniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
-        Log.d(this, "start payment channel", miniPmcTransType);
-        if (miniPmcTransType == null) {
+        mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        Log.d(this, "start payment channel", mMiniPmcTransType);
+        if (mMiniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
-        mAdapter = AdapterFactory.produce(this, miniPmcTransType);
+        mAdapter = AdapterFactory.produce(this, mMiniPmcTransType);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -255,7 +255,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()))) {
             try {
                 setConfirmTitle();
-                getAdapter().moveToConfirmScreen();
+                getAdapter().moveToConfirmScreen(mMiniPmcTransType);
+                mIsStart = true;
                 Log.d(this, "moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);

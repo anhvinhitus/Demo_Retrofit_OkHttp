@@ -43,10 +43,10 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     @Override
-    public void moveToConfirmScreen() {
+    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
 
         try {
-            super.moveToConfirmScreen();
+            super.moveToConfirmScreen(pMiniPmcTransType);
         } catch (Exception e) {
             Log.e(this, e);
         }

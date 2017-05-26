@@ -993,20 +993,23 @@ public abstract class AdapterBase {
         }
     }
 
-    public void moveToConfirmScreen() throws Exception {
-        getActivity().setConfirmTitle();
-        //add overswipe for rootview scrollview
-        ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
-        if (scrollViewRoot != null) {
-            OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
+    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) throws Exception {
+        try {
+            //add overswipe for rootview scrollview
+            ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
+            if (scrollViewRoot != null) {
+                OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
+            }
+        } catch (Exception ex) {
+            throw ex;
         }
 
     }
 
-    protected void showConfrimScreenForCardChannel() throws Exception {
+    protected void showConfrimScreenForCardChannel(MiniPmcTransType pMiniPmcTransType) throws Exception {
         try {
             getActivity().enableSubmitBtn(true);
-            getActivity().showConfirmView(true, true, getConfig());
+            getActivity().showConfirmView(true, true, pMiniPmcTransType);
             setBankInfoConfirmView();
 
             getActivity().setToolBarTitle();

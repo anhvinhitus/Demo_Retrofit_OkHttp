@@ -424,11 +424,11 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-    public void moveToConfirmScreen() {
+    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
         try {
-            super.moveToConfirmScreen();
+            super.moveToConfirmScreen(pMiniPmcTransType);
 
-            showConfrimScreenForCardChannel();
+            showConfrimScreenForCardChannel(pMiniPmcTransType);
 
         } catch (Exception ex) {
             Log.e(this, ex);
