@@ -52,7 +52,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     void linkAccountIfNotExist(ZPCard zpCard) {
-        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser);
         if (checkLinkedBankAccount(transformBankAccount(mapCardLis), zpCard.getCardCode())) {
             showAccountHasLinked(zpCard);
         } else {

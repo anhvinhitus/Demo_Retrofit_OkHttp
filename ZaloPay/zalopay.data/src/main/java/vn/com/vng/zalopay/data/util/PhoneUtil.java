@@ -167,6 +167,10 @@ public class PhoneUtil {
         return formattedNumber;
     }
 
+    public static String getPhoneNumberScreened(long phoneNumber) {
+        return getPhoneNumberScreened(formatPhoneNumber(phoneNumber));
+    }
+
     public static String getPhoneNumberScreened(String phoneNumber) {
         final int FIRST_NUMBER_SHOW = 3;
         final int LAST_NUMBER_SHOW = 3;

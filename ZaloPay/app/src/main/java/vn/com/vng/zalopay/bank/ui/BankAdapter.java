@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -43,14 +44,14 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
         static final int FOOTER = 4;
     }
 
-    private String mUserPhoneNumber = "";
+    private final User mUser;
     private boolean mCurrentMenuState = false; //false: menu is hide.
     private IBankListener mListener;
 
-    BankAdapter(Context context, String userPhone, IBankListener listener) {
+    BankAdapter(Context context, User user, IBankListener listener) {
         super(context);
         this.mListener = listener;
-        this.mUserPhoneNumber = userPhone;
+        this.mUser = user;
     }
 
     @Override
@@ -201,7 +202,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
                 return "";
             }
             if (ECardType.PVCB.toString().equalsIgnoreCase(bankAccount.bankcode)) {
-                return PhoneUtil.getPhoneNumberScreened(mUserPhoneNumber);
+                return PhoneUtil.getPhoneNumberScreened(mUser.phonenumber);
             } else {
                 return bankAccount.firstaccountno + bankAccount.lastaccountno;
             }
@@ -292,7 +293,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
     }
 
     private void bindBankCard(View mRoot, ImageView imgLogo, DBaseMap bankCard, boolean borderTopOnly) {
-        BankCardStyle bankCardStyle = BankUtils.getBankCardStyle(bankCard);
+        BankCardStyle bankCardStyle = BankUtils.getBankCardStyle(bankCard, mUser);
         setBankIcon(imgLogo, bankCardStyle.bankIcon);
         setBankBackground(mRoot, bankCardStyle, borderTopOnly);
     }

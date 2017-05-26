@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
@@ -197,8 +196,8 @@ class BankPresenter extends AbstractPresenter<IBankView> {
 
     void getLinkedBank() {
         List<DBaseMap> linkedBankList = new ArrayList<>();
-        List<DMappedCard> linkedCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-        List<DBankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DMappedCard> linkedCardList = CShareDataWrapper.getMappedCardList(mUser);
+        List<DBankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(mUser);
 
         if (!Lists.isEmptyOrNull(linkedCardList)) {
             linkedBankList.addAll(linkedCardList);
@@ -251,12 +250,8 @@ class BankPresenter extends AbstractPresenter<IBankView> {
         }
     }
 
-    String getUserPhone() {
-        if (mUser == null) {
-            return "";
-        } else {
-            return PhoneUtil.formatPhoneNumber(mUser.phonenumber);
-        }
+    User getCurrentUser() {
+        return mUser;
     }
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
@@ -371,7 +366,7 @@ class BankPresenter extends AbstractPresenter<IBankView> {
             return;
         }
         Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        List<DBankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser);
         if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
             String bankName = BankUtils.getBankName(bankInfo.bankcode);
             String message;

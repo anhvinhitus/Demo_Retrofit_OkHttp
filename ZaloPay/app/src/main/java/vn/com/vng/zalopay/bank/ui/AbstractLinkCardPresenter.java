@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -131,7 +130,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     }
 
     List<BankAccount> getLinkedBankAccount() {
-        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser);
         return transformBankAccount(mapCardLis);
     }
 
@@ -319,19 +318,10 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     }
 
     private BankCard transformBankCard(DMappedCard card) {
-        BankCard bankCard = null;
-
-        if (card != null) {
-            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
-            try {
-                bankCard.type = detectCardType(card.bankcode, card.first6cardno);
-                Timber.d("transform bankCard : type %s cardname %s first %s last %s", bankCard.type, card.cardname, card.first6cardno, card.last4cardno);
-            } catch (Exception e) {
-                Timber.d(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
-            }
+        if (card == null) {
+            return null;
         }
-
-        return bankCard;
+        return new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
     }
 
     List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {
@@ -356,43 +346,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         return new BankAccount(dBankAccount.firstaccountno,
                 dBankAccount.lastaccountno,
                 dBankAccount.bankcode);
-    }
-
-
-    String detectCardType(String bankcode, String first6cardno) {
-        if (TextUtils.isEmpty(bankcode)) {
-            return ECardType.UNDEFINE.toString();
-        } else if (bankcode.equals(ECardType.PVTB.toString())) {
-            return ECardType.PVTB.toString();
-        } else if (bankcode.equals(ECardType.PBIDV.toString())) {
-            return ECardType.PBIDV.toString();
-        } else if (bankcode.equals(ECardType.PVCB.toString())) {
-            return ECardType.PVCB.toString();
-        } else if (bankcode.equals(ECardType.PSCB.toString())) {
-            return ECardType.PSCB.toString();
-        } else if (bankcode.equals(ECardType.PSGCB.toString())) {
-            return ECardType.PSGCB.toString();
-        } else if (bankcode.equals(ECardType.PEIB.toString())) {
-            return ECardType.PEIB.toString();
-        /*} else if (bankcode.equals(ECardType.PAGB.toString())) {
-            return ECardType.PAGB.toString();
-        } else if (bankcode.equals(ECardType.PTPB.toString())) {
-            return ECardType.PTPB.toString();*/
-        } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
-            return ECardType.UNDEFINE.toString();
-        } else {
-
-            UserInfo userInfo = new UserInfo();
-            userInfo.zaloPayUserId = mUser.zaloPayId;
-            userInfo.accessToken = mUser.accesstoken;
-
-            try {
-                return CShareDataWrapper.detectCardType(userInfo, first6cardno);
-            } catch (Exception e) {
-                Timber.w(e, "detectCardType exception [%s]", e.getMessage());
-            }
-        }
-        return ECardType.UNDEFINE.toString();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

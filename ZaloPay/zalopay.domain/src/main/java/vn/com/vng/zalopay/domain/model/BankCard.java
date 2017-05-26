@@ -13,8 +13,6 @@ public class BankCard {
     public String last4cardno;
     public String bankcode;
 
-    public String type;
-
     public BankCard(String cardname, String first6cardno, String last4cardno, String bankcode) {
         this.cardname = cardname;
         this.first6cardno = first6cardno;
