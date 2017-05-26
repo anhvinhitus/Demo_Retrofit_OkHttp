@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">promotion</string>
+    <string name="vnd"> VND</string>
+    <string name="accept">Đồng ý</string>
+    <string name="cancel">Huỷ</string>
+    <string name="confirm">Xác Nhận</string>
 </resources>

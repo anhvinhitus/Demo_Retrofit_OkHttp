@@ -186,6 +186,10 @@ public class CShareDataWrapper {
         CShareData.getInstance().notifyTransactionFinish(pObject);
     }
 
+    public static void notifyPromotionEventToSdk(Object... pObject) {
+        CShareData.getInstance().notifyPromotionEvent(pObject);
+    }
+
     public static void dispose() {
         CShareData.dispose();
     }

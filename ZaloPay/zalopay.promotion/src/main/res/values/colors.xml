@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#018fe5</color>
+    <color name="colorPrimaryDark">#0072b7</color>
+    <color name="colorAccent">#06a1ff</color>
+
+    <color name="colorWebAppPrimary">#ffffff</color>
+    <color name="colorWebAppPrimaryDark">#000</color>
+    <color name="colorWebAppAccent">#eeeeee</color>
+    <color name="colorWebAppPrimaryText">#000</color>
+    <color name="colorWebAppBottomSheet">#f2f2f2</color>
+    <color name="colorWebAppBottomSheetText">#686871</color>
+
+    <color name="background">#f0f4f6</color>
+    <color name="background.note">#d5efff</color>
+    <color name="statusBar">#17b5ad</color>
+    <color name="background_snackbar">#ffffc1</color>
+    <color name="txt_check_internet">#cd7a04</color>
+    <color name="txt_title_check_internet">#585858</color>
+    <color name="txt_content_check_internet">#24272b</color>
+    <color name="background_intro">#018fe5</color>
+    <color name="intro.line">#42aff1</color>
+
+    <color name="colorPrimaryLight">#4da4c6</color>
+    <color name="colorPrimaryLight2">#99cbde</color>
+    <color name="colorPrimaryAccent">#FF5722</color>
+    <color name="colorPrimaryHightlight">#4da4c6</color>
+
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+    <color name="darker_transparent">#19000000</color>
+    <color name="bg_chip">#cfd8dc</color>
+    <color name="txt_check_disable">#a3ccf2</color>
+    <color name="txt_check_enable">#018fe5</color>
+
+    <color name="number_color">#222222</color>
+    <color name="accent">#FF4081</color>
+
+    <color name="separate">#e3e6e7</color>
+    <color name="separate.login">#0c7dc1</color>
+
+    <color name="leftmenu.title">#24272b</color>
+    <color name="leftmenu.group.title">#727f8c</color>
+    <color name="leftmenu.group.bg">#e5eff1</color>
+
+    <color name="leftmenu.avatar.bg">#35a7eb</color>
+    <color name="ads.text.content">#24272b</color>
+
+    <color name="amount_edt">#333333</color>
+    <color name="deposit.title">#727f8c</color>
+    <color name="hint">#acb3ba</color>
+
+    <color name="c_text_black">#24272b</color>
+
+    <color name="bg_translucence_white">#88ffffff</color>
+    <color name="text_green">#008fe5</color>
+
+    <color name="icon_enabled">#FFFFFFFF</color>
+    <color name="icon_disabled">#FF63727B</color>
+
+    <color name="txt_cancel">#828283</color>
+
+    <color name="edt_control_normal">#e3e6e7</color>
+    <color name="avatar_border_transparent">#c8ffffff</color>
+
+    <color name="rippelColor">#0099CC</color>
+    <color name="txt_item_main">#24272b</color>
+    <color name="txt_item_sub">#727f8c</color>
+    <color name="txt_item_sub_2">#9cdaff</color>
+    <color name="txt_group_title">#727f8c</color>
+
+    <color name="bg_master_card">#ef9825</color>
+    <color name="bg_visa">#0f7ecd</color>
+    <color name="bg_jcb">#1e3368</color>
+    <color name="bg_vietinbank">#d6e0e5</color>
+    <color name="bg_vietcombank">#d6e0e5</color>
+    <color name="bg_vib">#055496</color>
+    <color name="bg_tpbank">#5d2f89</color>
+    <color name="bg_techcombank">#d6e0e5</color>
+    <color name="bg_shb">#2d2a6d</color>
+    <color name="bg_sacombank">#0474bb</color>
+    <color name="bg_mb">#2372b3</color>
+    <color name="bg_maritimebank">#d6e0e5</color>
+    <color name="bg_eximbank">#00a2e2</color>
+    <color name="bg_donga">#2f3293</color>
+    <color name="bg_bidv">#2a419a</color>
+    <color name="bg_agribank">#105c3c</color>
+
+    <color name="bg_master_card_start">#2d294e</color>
+    <color name="bg_master_card_end">#555177</color>
+    <color name="bg_visa_start">#bf903f</color>
+    <color name="bg_visa_end">#eed86f</color>
+    <color name="bg_jcb_start">#00134e</color>
+    <color name="bg_jcb_end">#0053ab</color>
+    <color name="bg_vietinbank_start">#afb5b5</color>
+    <color name="bg_vietinbank_end">#d7d8d3</color>
+    <color name="bg_vietcombank_start">#137a37</color>
+    <color name="bg_vietcombank_end">#6ac79f</color>
+    <color name="bg_vib_start">#07308d</color>
+    <color name="bg_vib_end">#1454a2</color>
+    <color name="bg_tpbank_start">#4b075f</color>
+    <color name="bg_tpbank_end">#6a0b7e</color>
+    <color name="bg_techcombank_start">#afb5b5</color>
+    <color name="bg_techcombank_end">#d7d8d3</color>
+    <color name="bg_shb_start">#ec981e</color>
+    <color name="bg_shb_end">#ffc601</color>
+    <color name="bg_sacombank_start">#0b6198</color>
+    <color name="bg_sacombank_end">#047dbb</color>
+    <color name="bg_commercialbank_start">#269144</color>
+    <color name="bg_commercialbank_end">#47cf27</color>
+    <color name="bg_mb_start">#0066b4</color>
+    <color name="bg_mb_end">#1472d1</color>
+    <color name="bg_maritimebank_start">#afb5b5</color>
+    <color name="bg_maritimebank_end">#d7d8d3</color>
+    <color name="bg_eximbank_start">#006c97</color>
+    <color name="bg_eximbank_end">#00a2e2</color>
+    <color name="bg_donga_start">#273468</color>
+    <color name="bg_donga_end">#2f3d6f</color>
+    <color name="bg_bidv_start">#010044</color>
+    <color name="bg_bidv_end">#1b2f7b</color>
+    <color name="bg_agribank_start">#9f303a</color>
+    <color name="bg_agribank_end">#b3343f</color>
+
+    <color name="bg_checkbox_uncheck">#c7c7cc</color>
+    <color name="bg_checkbox_checked">#06be04</color>
+    <color name="green">#06be04</color>
+
+    <color name="bg_line_sacombank">#0475bb</color>
+    <color name="bg_line_vietcombank">#328b49</color>
+    <color name="bg_line_vietinbank">#b72025</color>
+    <!--Menu icon color START-->
+    <color name="home_font_inside_app">#bbc1c8</color>
+    <color name="menu_font_ic_blue">#4387f6</color>
+    <color name="menu_font_ic_red">#de4438</color>
+    <color name="menu_font_ic_green">#129d5a</color>
+    <color name="menu_font_ic_yellow">#f6b501</color>
+    <color name="menu_font_ic_gray">#53718b</color>
+    <color name="transfer_font_green">#008fe5</color>
+    <color name="profile_font_gray">#848d99</color>
+    <!--Menu icon color END-->
+
+    <color name="red_packet">#D84E43</color>
+
+    <color name="arrow_right">#c7c7cc</color>
+
+    <color name="loading_progress_bar">#04be04</color>
+
+    <color name="white">#FFFFFF</color>
+</resources>

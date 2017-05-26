@@ -101,4 +101,5 @@
         <item name="android:textColor">@color/blue_btn_bg_pressed_color</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
     </style>
+
 </resources>

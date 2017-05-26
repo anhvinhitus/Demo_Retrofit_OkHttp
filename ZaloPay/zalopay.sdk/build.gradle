@@ -98,4 +98,5 @@ dependencies {
     compile libs.zalopay_feedback
 
     compile project(':zalopay.promotion')
+    compile project(path: ':ui.widget')
 }

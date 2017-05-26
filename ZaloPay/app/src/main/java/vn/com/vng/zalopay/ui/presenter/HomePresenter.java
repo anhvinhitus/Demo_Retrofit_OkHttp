@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.util.TimeUtils;
@@ -47,13 +48,11 @@ import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.zalopay.promotion.ActionType;
-import vn.zalopay.promotion.PromotionType;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
-import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
@@ -63,13 +62,18 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-
+import vn.zalopay.promotion.ActionType;
+import vn.zalopay.promotion.CashBackRender;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.PromotionType;
 
 /**
  * Created by longlv on 3/21/17.
@@ -97,6 +101,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private Subscription mRefPlatformSubscription;
     private boolean isLoadedGateWayInfo;
     private PaymentWrapper paymentWrapper;
+
+    private IBuilder mPromotionBuilder;
 
     @Inject
     HomePresenter(User user, EventBus eventBus,
@@ -195,6 +201,10 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     @Override
     public void destroy() {
         super.destroy();
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.release();
+            mPromotionBuilder = null;
+        }
     }
 
     public void initialize() {
@@ -374,12 +384,68 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onCashBackEvent(PromotionEvent event) {
+        mEventBus.removeStickyEvent(PromotionEvent.class);
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.setPromotionEvent(event);
+            return;
+        }
+        if (mView != null && event != null) {
+            switch (event.type) {
+                case PromotionType.CASHBACK:
+                    mPromotionBuilder = CashBackRender.getBuilder()
+                            .setPromotionEvent(event)
+                            .setPromotionListener(new IPromotionListener() {
+                                @Override
+                                public void onReceiverNotAvailable() {
+
+                                }
+
+                                @Override
+                                public void onPromotionAction(Context pContext, PromotionEvent pPromotionEvent) {
+                                    actionOnPromotion(pPromotionEvent);
+                                }
+
+                                @Override
+                                public void onClose() {
+                                    mPromotionBuilder.release();
+                                    mPromotionBuilder = null;
+                                }
+                            });
+                    mView.showCashBackView(mPromotionBuilder, event);
+                    break;
+                default:
+                    Timber.d("undefine promotion type");
+            }
+        }
+    }
+
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
         showLoadingView();
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
         paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_NotifyInApp);
+    }
+
+    public void actionOnPromotion(PromotionEvent promotionEvent) {
+        if (promotionEvent == null) {
+            return;
+        }
+        if (promotionEvent != null && promotionEvent.actions != null && !promotionEvent.actions.isEmpty()) {
+            switch (promotionEvent.actions.get(0).action) {
+                case ActionType.TRANSACTION_DETAIL:
+                    if (promotionEvent.notificationId > 0) {
+                        mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(promotionEvent.transid), String.valueOf(promotionEvent.notificationId));
+                    } else {
+                        mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
+                    }
+                    break;
+                default:
+                    Timber.d("undefine action on promotion");
+            }
+        }
     }
 
     private void showLoadingView() {

@@ -51,6 +51,7 @@ import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.zalopay.promotion.IPromotionListener;
 
 /***
  * class sharing data to app
@@ -165,13 +166,50 @@ public class CShareData extends SingletonBase {
         return mConfigFromServer;
     }
 
+    public void loadBankListComplete() {
+        List<BankConfig> bankConfigList = new ArrayList<>();
+        if (BankCardCheck.mBankMap != null) {
+            Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                try {
+                    BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
+
+                    if (bankConfig != null && !bankConfigList.contains(bankConfig) && bankConfig.isAllowWithDraw()) {
+                        bankConfigList.add(bankConfig);
+                    }
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
+            }
+        }
+
+        if (mGetWithDrawBankList != null) {
+            mGetWithDrawBankList.onComplete(bankConfigList);
+        }
+    }
+
+    public void notifyPromotionEvent(Object... pObjects) {
+        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+        if (!isUiThread) {
+            Log.d(this, "notification promotion event coming from background, switching thread to main thread...");
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //this runs on the UI thread
+                sendNotifyPromotionEventToAdapter(pObjects);
+            });
+        } else {
+            sendNotifyPromotionEventToAdapter(pObjects);
+        }
+    }
+
     /***
      * push notify to SDK to finish flow vcb account link
-     *
      * @param pObjects (ZPWNotication, IReloadMapInfoListener)
      */
     public void notifyLinkBankAccountFinish(Object... pObjects) {
-        //user in sdk now.
         boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
         if (!isUiThread) {
@@ -231,6 +269,19 @@ public class CShareData extends SingletonBase {
         } else {
             //user quit sdk
             Log.d(this, "user is not in sdk, skip process now...");
+        }
+    }
+
+    protected void sendNotifyPromotionEventToAdapter(Object... pObject) {
+        Log.d(this, "send notify promotion event", pObject);
+        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
+                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
+            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);
+        } else if (pObject[1] instanceof IPromotionListener) {
+            IPromotionListener promotionListener = (IPromotionListener) pObject[1];
+            promotionListener.onReceiverNotAvailable();//callback again to notify that sdk not available
+        } else {
+            Log.d(this, "skip post notification promotion event because user quit sdk");
         }
     }
 

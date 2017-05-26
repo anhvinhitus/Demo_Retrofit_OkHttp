@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
 
+import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
@@ -60,7 +61,6 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -69,6 +69,10 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
+import vn.zalopay.promotion.CashBackRender;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AdapterBase {
 
@@ -139,8 +143,31 @@ public abstract class AdapterBase {
     protected int mECardFlowType;
     protected boolean preventRetryLoadMapCardList = false;
     protected MiniPmcTransType mMiniPmcTransType;
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
+        GlobalData.setResultUpgradeCMND();
+        onClickSubmission();
+    };
+    protected IBuilder mPromotionBuilder;
     //prevent click duplicate
     private boolean mMoreClick = true;
+    private final View.OnClickListener okClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(this, "===okClickListener===starting...click");
+            if (mMoreClick) {
+                mMoreClick = false;
+                AdapterBase.this.onClickSubmission();
+                Log.d(this, "===okClickListener===onClickSubmission");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMoreClick = true;
+                        Log.d(this, "===okClickListener===release click event");
+                    }
+                }, 3000);
+            }
+        }
+    };
     private String olderPassword = null;
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -180,28 +207,6 @@ public abstract class AdapterBase {
             olderPassword = pHashPin;
             GlobalData.setTransactionPin(pHashPin);
             startSubmitTransaction();
-        }
-    };
-    private final View.OnClickListener onUpdateInfoClickListener = v -> {
-        GlobalData.setResultUpgradeCMND();
-        onClickSubmission();
-    };
-    private final View.OnClickListener okClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(this, "===okClickListener===starting...click");
-            if (mMoreClick) {
-                mMoreClick = false;
-                AdapterBase.this.onClickSubmission();
-                Log.d(this, "===okClickListener===onClickSubmission");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMoreClick = true;
-                        Log.d(this, "===okClickListener===release click event");
-                    }
-                }, 3000);
-            }
         }
     };
 
@@ -325,10 +330,13 @@ public abstract class AdapterBase {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
-        Log.d(this, "start dismiss dialog fingerprint");
+        Log.d(this, "start dismiss dialog fingerprint - release pmc config - release promotion builder");
         dismissDialogFingerPrint();
-        Log.d(this, "release pmc config");
         mMiniPmcTransType = null;
+        if (mPromotionBuilder != null) {
+            mPromotionBuilder.release();
+            mPromotionBuilder = null;
+        }
     }
 
     public void detectCard(String pCardNumber) {
@@ -461,7 +469,7 @@ public abstract class AdapterBase {
             Log.e(this, e);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
-        if(GlobalData.analyticsTrackerWrapper != null){
+        if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
         }
     }
@@ -843,6 +851,60 @@ public abstract class AdapterBase {
                 } catch (Exception ex) {
                     Log.e(this, ex);
                 }
+            } else if (pEventType == EEventType.ON_PROMOTION) {
+                Log.d(this, "got promotion from notification");
+                if (pAdditionParams == null || pAdditionParams.length <= 0) {
+                    Log.d(this, "stopping processing promotion from notification because of empty pAdditionParams");
+                    return pAdditionParams;
+                }
+
+                boolean shouldUpdateEvent = mPromotionBuilder != null;
+
+                PromotionEvent promotionEvent = null;
+                IPromotionListener promotionListener = null;
+                if (pAdditionParams[0] instanceof PromotionEvent) {
+                    promotionEvent = (PromotionEvent) pAdditionParams[0];
+                }
+                if (shouldUpdateEvent) {
+                    Log.d(this, "promotion event is updated", promotionEvent);
+                    mPromotionBuilder.setPromotionEvent(promotionEvent);
+                    return pAdditionParams;
+                }
+                if (promotionEvent == null) {
+                    Log.d(this, "stopping processing promotion from notification because promotion event is null");
+                    return pAdditionParams;
+                }
+                if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionListener) {
+                    promotionListener = (IPromotionListener) pAdditionParams[1];
+                }
+
+                long transId = -1;
+                if (!TextUtils.isEmpty(mTransactionID)) {
+                    try {
+                        transId = Long.parseLong(mTransactionID);
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                }
+                if (transId == -1) {
+                    Log.d(this, "stopping processing promotion from notification because transid is not same");
+                    if (promotionListener != null) {
+                        promotionListener.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
+                    }
+                    return pAdditionParams;
+                }
+                if (!isTransactionSuccess()) {
+                    Log.d(this, "transaction is not success, skipping process promotion notification");
+                    return pAdditionParams;
+                }
+
+                View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+                mPromotionBuilder = CashBackRender.getBuilder()
+                        .setPromotionEvent(promotionEvent)
+                        .setPromotionListener(promotionListener)
+                        .setView(contentView);
+                UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
+                bottomSheetDialog.show();
             }
 
         } catch (Exception e) {
@@ -1546,7 +1608,7 @@ public abstract class AdapterBase {
         if (GlobalData.isBankAccountLink()) {
             bankCode = GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
         }
-        if(GlobalData.analyticsTrackerWrapper != null){
+        if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
                     getChannelID(), mTransactionID, returnCode, 1, bankCode);
         }

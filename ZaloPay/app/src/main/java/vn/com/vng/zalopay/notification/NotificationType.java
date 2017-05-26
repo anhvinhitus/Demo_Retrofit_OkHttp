@@ -37,9 +37,10 @@ public class NotificationType {
     public static final int NOTIFICATION_ALL_USER = 114;
     public static final int UNLINK_ACCOUNT = 115;
     public static final int LINK_ACCOUNT = 116;
+    public static final int PROMOTION = 117;
 
     static boolean shouldMarkRead(long notificationType) {
-        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION;
+        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION || notificationType == PROMOTION;
     }
 
 
