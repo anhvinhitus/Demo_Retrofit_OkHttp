@@ -771,7 +771,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
             Log.d(this, "===recycleActivity===GlobalData.getPaymentListener() != null");
         } else {
-            Log.e(this, "===recycleActivity===ERROR");
+            Log.d(this, "===recycleActivity===ERROR");
         }
         finish();
     }
