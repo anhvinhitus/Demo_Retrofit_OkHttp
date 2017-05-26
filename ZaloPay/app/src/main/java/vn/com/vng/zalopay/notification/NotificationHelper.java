@@ -57,7 +57,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.zalopay.promotion.ActionType;
-import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.PromotionAction;
 import vn.zalopay.promotion.PromotionEvent;
 
@@ -333,15 +333,14 @@ public class NotificationHelper {
             PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
             //send into sdk if user in payment
             if (SDKPayment.isOpenSdk()) {
-                CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionListener() {
+                CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
                     public void onReceiverNotAvailable() {
-                        //notification come late and user enter sdk for another payment
-                        mEventBus.postSticky(promotionEvent);
+                        mEventBus.postSticky(promotionEvent);//notification come late and user enter sdk for another payment
                     }
 
                     @Override
-                    public void onPromotionAction(Context pContext, PromotionEvent pPromotionEvent) {
+                    public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
                         if (pPromotionEvent != null && pPromotionEvent.actions != null && !pPromotionEvent.actions.isEmpty()) {
                             switch (pPromotionEvent.actions.get(0).action) {
                                 case ActionType.TRANSACTION_DETAIL:
@@ -356,10 +355,6 @@ public class NotificationHelper {
                                     Timber.d("undefine action on promotion");
                             }
                         }
-                    }
-
-                    @Override
-                    public void onClose() {
                     }
                 });
                 Log.d(this, "post promotion event from notification to sdk", promotionEvent);

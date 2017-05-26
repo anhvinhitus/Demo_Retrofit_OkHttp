@@ -49,7 +49,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
-import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.IPromotionResult;
 
 /***
  * class sharing data to app
@@ -277,9 +277,9 @@ public class CShareData extends SingletonBase {
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);
-        } else if (pObject[1] instanceof IPromotionListener) {
-            IPromotionListener promotionListener = (IPromotionListener) pObject[1];
-            promotionListener.onReceiverNotAvailable();//callback again to notify that sdk not available
+        } else if (pObject[1] instanceof IPromotionResult) {
+            IPromotionResult promotionResult = (IPromotionResult) pObject[1];
+            promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available
         } else {
             Log.d(this, "skip post notification promotion event because user quit sdk");
         }

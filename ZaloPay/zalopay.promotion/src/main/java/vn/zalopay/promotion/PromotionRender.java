@@ -1,6 +1,5 @@
 package vn.zalopay.promotion;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -14,17 +13,8 @@ import java.util.Locale;
 public abstract class PromotionRender implements UIBottomSheetDialog.IRender {
     protected IBuilder mBuilder;
 
-    public PromotionRender(PromotionBuilder pBuilder) {
+    public PromotionRender(IBuilder pBuilder) {
         mBuilder = pBuilder;
-    }
-
-    public static PromotionBuilder getBuilder() {
-        return new PromotionBuilder();
-    }
-
-    @Override
-    public void render(Context context) {
-
     }
 
     @Override
@@ -37,7 +27,7 @@ public abstract class PromotionRender implements UIBottomSheetDialog.IRender {
         if (mBuilder == null) {
             return;
         }
-        IPromotionListener promotionListener = mBuilder.getPromotionListener();
+        IInteractPromotion promotionListener = mBuilder.getInteractPromotion();
         if (promotionListener != null) {
             promotionListener.onClose();
         }

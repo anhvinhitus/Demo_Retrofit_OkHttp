@@ -8,15 +8,15 @@ public interface IBuilder {
 
     PromotionEvent getPromotion();
 
-    IPromotionListener getPromotionListener();
+    IInteractPromotion getInteractPromotion();
 
-    IBuilder setPromotionListener(IPromotionListener promotionListener);
+    IBuilder setInteractPromotion(IInteractPromotion promotionListener);
 
     View getView();
 
     IBuilder setView(View pView);
 
-    IBuilder setPromotionEvent(PromotionEvent promotionEvent);
+    IBuilder setPromotion(PromotionEvent promotionEvent);
 
     UIBottomSheetDialog.IRender build();
 

@@ -77,7 +77,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 import vn.zalopay.promotion.ActionType;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
-import vn.zalopay.promotion.IPromotionListener;
+import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.PromotionEvent;
 import vn.zalopay.promotion.PromotionType;
 
@@ -216,10 +216,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     @Override
     public void destroy() {
         super.destroy();
-        if (mPromotionBuilder != null) {
-            mPromotionBuilder.release();
-            mPromotionBuilder = null;
-        }
     }
 
     public void initialize() {
@@ -427,22 +423,18 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     public void onCashBackEvent(PromotionEvent event) {
         mEventBus.removeStickyEvent(PromotionEvent.class);
         if (mPromotionBuilder != null) {
-            mPromotionBuilder.setPromotionEvent(event);
+            mPromotionBuilder.setPromotion(event);
             return;
         }
         if (mView != null && event != null) {
             switch (event.type) {
                 case PromotionType.CASHBACK:
                     mPromotionBuilder = CashBackRender.getBuilder()
-                            .setPromotionEvent(event)
-                            .setPromotionListener(new IPromotionListener() {
-                                @Override
-                                public void onReceiverNotAvailable() {
-
-                                }
+                            .setPromotion(event)
+                            .setInteractPromotion(new IInteractPromotion() {
 
                                 @Override
-                                public void onPromotionAction(Context pContext, PromotionEvent pPromotionEvent) {
+                                public void onUserInteract(PromotionEvent pPromotionEvent) {
                                     actionOnPromotion(pPromotionEvent);
                                 }
 
