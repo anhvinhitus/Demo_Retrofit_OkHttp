@@ -273,7 +273,6 @@ public class CShareData extends SingletonBase {
     }
 
     protected void sendNotifyPromotionEventToAdapter(Object... pObject) {
-        Log.d(this, "send notify promotion event", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);

@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.notification;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,7 +18,6 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -53,13 +51,14 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.promotion.PromotionHelper;
+import vn.com.vng.zalopay.promotion.ResourceLoader;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.controller.SDKPayment;
-import vn.zalopay.promotion.ActionType;
 import vn.zalopay.promotion.IPromotionResult;
+import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionAction;
 import vn.zalopay.promotion.PromotionEvent;
 
@@ -82,13 +81,8 @@ public class NotificationHelper {
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private List<Long> mListPacketIdToRecovery = new ArrayList<>();
-
-    {
-        @Override
-        public void onCompleted () {
-        mListPacketIdToRecovery.clear();
-    }
-    }
+    private IResourceLoader mResourceLoader;
+    private PromotionHelper mPromotionHelper;
 
     @Inject
     NotificationHelper(Context applicationContext, User user,
@@ -97,7 +91,9 @@ public class NotificationHelper {
                        RedPacketStore.Repository redPacketRepository,
                        TransactionStore.Repository transactionRepository,
                        BalanceStore.Repository balanceRepository,
-                       EventBus eventBus, UserConfig userConfig) {
+                       EventBus eventBus, UserConfig userConfig,
+                       PromotionHelper promotionHelper,
+                       ResourceLoader resourceLoader) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;
@@ -108,6 +104,8 @@ public class NotificationHelper {
         this.mBalanceRepository = balanceRepository;
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
+        this.mPromotionHelper = promotionHelper;
+        this.mResourceLoader = resourceLoader;
     }
 
     @Override
@@ -321,7 +319,8 @@ public class NotificationHelper {
                 actions.add(promotionAction);
             }
             PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
-            if (SDKPayment.isOpenSdk()) {
+            //send into sdk if user in payment
+            if (!SDKPayment.isOpenSdk()) {
                 CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
                     public void onReceiverNotAvailable() {
@@ -330,22 +329,10 @@ public class NotificationHelper {
 
                     @Override
                     public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
-                        if (pPromotionEvent != null && pPromotionEvent.actions != null && !pPromotionEvent.actions.isEmpty()) {
-                            switch (pPromotionEvent.actions.get(0).action) {
-                                case ActionType.TRANSACTION_DETAIL:
-                                    Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-                                    if (pPromotionEvent.notificationId > 0) {
-                                        navigator.startTransactionDetail(pContext, String.valueOf(pPromotionEvent.transid), String.valueOf(pPromotionEvent.notificationId));
-                                    } else {
-                                        navigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
-                                    }
-                                    break;
-                                default:
-                                    Timber.d("undefine action on promotion");
-                            }
-                        }
+                        mPromotionHelper.navigate(pContext, pPromotionEvent);
+
                     }
-                });
+                }, mResourceLoader);
                 Log.d(this, "post promotion event from notification to sdk", promotionEvent);
             } else {
                 /***

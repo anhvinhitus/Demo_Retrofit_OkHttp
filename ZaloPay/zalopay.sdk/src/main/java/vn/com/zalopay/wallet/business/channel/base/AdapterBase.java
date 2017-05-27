@@ -73,6 +73,7 @@ import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IPromotionResult;
+import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AdapterBase {
@@ -893,14 +894,21 @@ public abstract class AdapterBase {
                     return pAdditionParams;
                 }
 
+                IResourceLoader resourceLoader = null;
+                if (pAdditionParams.length >= 3 && pAdditionParams[2] instanceof IResourceLoader) {
+                    resourceLoader = (IResourceLoader) pAdditionParams[2];
+                }
+
+
                 View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
                 mPromotionBuilder = CashBackRender.getBuilder()
                         .setPromotion(promotionEvent)
                         .setView(contentView)
+                        .setResourceProvider(resourceLoader)
                         .setInteractPromotion(new IInteractPromotion() {
                             @Override
                             public void onUserInteract(PromotionEvent pPromotionEvent) {
-                                if(mPromotionResult != null){
+                                if (mPromotionResult != null) {
                                     mPromotionResult.onNavigateToAction(getActivity(), pPromotionEvent);
                                 }
                             }

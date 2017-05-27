@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -51,6 +50,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.promotion.PromotionHelper;
+import vn.com.vng.zalopay.promotion.ResourceLoader;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.UserSession;
@@ -72,6 +73,7 @@ import vn.zalopay.promotion.ActionType;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
+import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 import vn.zalopay.promotion.PromotionType;
 
@@ -103,6 +105,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private PaymentWrapper paymentWrapper;
 
     private IBuilder mPromotionBuilder;
+    private PromotionHelper mPromotionHelper;
+    private IResourceLoader mPromotionResourceLoader;
 
     @Inject
     HomePresenter(User user, EventBus eventBus,
@@ -116,10 +120,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                   NotificationStore.Repository notifyRepository,
                   UserSession userSession,
                   ApplicationState applicationState,
-                  GlobalEventHandlingService globalEventHandlingService
-    ) {
-
-
+                  GlobalEventHandlingService globalEventHandlingService,
+                  ResourceLoader resourceLoader,
+                  PromotionHelper promotionHelper) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
@@ -129,12 +132,12 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         this.mTransactionRepository = transactionRepository;
         this.mFriendRepository = friendRepository;
         this.mUser = user;
-
         this.mNotifyRepository = notifyRepository;
         this.mUserSession = userSession;
         this.mApplicationState = applicationState;
         this.globalEventHandlingService = globalEventHandlingService;
-
+        this.mPromotionResourceLoader = resourceLoader;
+        this.mPromotionHelper = promotionHelper;
     }
 
     private void getZaloFriend() {
@@ -392,11 +395,12 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 case PromotionType.CASHBACK:
                     mPromotionBuilder = CashBackRender.getBuilder()
                             .setPromotion(event)
+                            .setResourceProvider(mPromotionResourceLoader)
                             .setInteractPromotion(new IInteractPromotion() {
 
                                 @Override
                                 public void onUserInteract(PromotionEvent pPromotionEvent) {
-                                    actionOnPromotion(pPromotionEvent);
+                                    mPromotionHelper.navigate(mView.getActivity(), pPromotionEvent);
                                 }
 
                                 @Override
@@ -419,25 +423,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
         paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken, isAppToApp ? ZPPaymentSteps.OrderSource_AppToApp : ZPPaymentSteps.OrderSource_NotifyInApp);
-    }
-
-    public void actionOnPromotion(PromotionEvent promotionEvent) {
-        if (promotionEvent == null) {
-            return;
-        }
-        if (promotionEvent != null && promotionEvent.actions != null && !promotionEvent.actions.isEmpty()) {
-            switch (promotionEvent.actions.get(0).action) {
-                case ActionType.TRANSACTION_DETAIL:
-                    if (promotionEvent.notificationId > 0) {
-                        mNavigator.startTransactionDetail(mView.getActivity(), String.valueOf(promotionEvent.transid), String.valueOf(promotionEvent.notificationId));
-                    } else {
-                        mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.NOTIFICATIONS);
-                    }
-                    break;
-                default:
-                    Timber.d("undefine action on promotion");
-            }
-        }
     }
 
     private void showLoadingView() {

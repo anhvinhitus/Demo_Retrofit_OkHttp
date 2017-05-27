@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.internal.di.modules.AppApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.AppLocationModule;
 import vn.com.vng.zalopay.internal.di.modules.AppMonitorModule;
+import vn.com.vng.zalopay.internal.di.modules.AppPromotionModule;
 import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.AppTransIdLogModule;
@@ -52,7 +53,8 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
                 AppReactNativeModule.class,
                 AppResourceModule.class,
                 AppTransIdLogModule.class,
-                AppLocationModule.class
+                AppLocationModule.class,
+                AppPromotionModule.class
         }
 )
 public interface ApplicationComponent {

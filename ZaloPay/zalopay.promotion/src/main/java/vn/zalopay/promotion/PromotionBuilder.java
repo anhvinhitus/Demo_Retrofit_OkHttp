@@ -2,22 +2,32 @@ package vn.zalopay.promotion;
 
 import android.view.View;
 
-import com.zalopay.ui.widget.UIBottomSheetDialog;
-
 public abstract class PromotionBuilder implements IBuilder {
     protected PromotionEvent promotionEvent;
     protected IInteractPromotion promotionListener;
+    protected IResourceLoader resourceProvider;
     protected View mView;
 
     @Override
-    public PromotionBuilder setPromotion(PromotionEvent promotionEvent) {
-        this.promotionEvent = promotionEvent;
+    public IBuilder setResourceProvider(IResourceLoader resourceProvider) {
+        this.resourceProvider = resourceProvider;
         return this;
+    }
+
+    @Override
+    public IResourceLoader getResourceProvider() {
+        return resourceProvider;
     }
 
     @Override
     public PromotionEvent getPromotion() {
         return promotionEvent;
+    }
+
+    @Override
+    public PromotionBuilder setPromotion(PromotionEvent promotionEvent) {
+        this.promotionEvent = promotionEvent;
+        return this;
     }
 
     @Override

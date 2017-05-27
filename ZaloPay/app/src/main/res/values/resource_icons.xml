@@ -18,7 +18,4 @@
     <string name="ic_vietinbank">app_ic_vietinbank.png</string>
     <string name="ic_vietinbank_large">app_ic_vietinbank_large.png</string>
     <string name="ic_sgcb">app_ic_sgcb.png</string>
-    <string name="img_fire_popup">app_fire_popup</string>
-    <string name="img_top_cashback">app_top_cashback</string>
-
 </resources>
