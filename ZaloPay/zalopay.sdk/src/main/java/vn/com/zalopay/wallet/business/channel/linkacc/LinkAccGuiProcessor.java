@@ -302,8 +302,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public boolean isProgressVisible(){
-        if(pgbProgress != null){
+    public boolean isProgressVisible() {
+        if (pgbProgress != null) {
             return pgbProgress.getVisibility() == View.VISIBLE;
         }
         return false;
@@ -472,7 +472,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
-       // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+        // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
         getLoginHolder().getEdtCaptcha().requestFocus();
 
         getRegisterHolder().getEdtCaptcha().addTextChangedListener(mConfirmCaptchaEditTextWatcher);
@@ -483,8 +483,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
         //getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
     }
-
-
 
 
     /***
@@ -833,7 +831,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     @Override
     public String getDetectedBankCode() {
-        return GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
+        return (GlobalData.getPaymentInfo().linkAccInfo != null) ? GlobalData.getPaymentInfo().linkAccInfo.getBankCode() : "";
     }
 
     /***
@@ -1134,6 +1132,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         public ImageView getImgLogoLinkAcc() {
             return imgLogoLinkAcc;
         }
+
         public ImageView getButtonRefreshCaptcha() {
             return btnRefreshCaptcha;
         }
