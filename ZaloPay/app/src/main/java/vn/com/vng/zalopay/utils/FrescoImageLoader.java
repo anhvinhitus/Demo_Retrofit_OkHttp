@@ -4,7 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
@@ -35,8 +38,17 @@ public class FrescoImageLoader implements ImageLoader<SimpleDraweeView> {
                 .scheme(com.facebook.common.util.UriUtil.LOCAL_RESOURCE_SCHEME) // "res"
                 .path(String.valueOf(resourceId))
                 .build();
-       // target.getHierarchy().setPlaceholderImage(R.color.white);
+        // target.getHierarchy().setPlaceholderImage(R.color.white);
         target.setImageURI(uri);
+    }
+
+    @Override
+    public void loadImage(SimpleDraweeView target, String url, ControllerListener controllerListener) {
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(url)
+                .setControllerListener(controllerListener)
+                .build();
+        target.setController(controller);
     }
 
     @Override

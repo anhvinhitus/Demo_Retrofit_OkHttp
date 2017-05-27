@@ -8,6 +8,8 @@ package vn.com.vng.zalopay.utils;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
+import com.facebook.drawee.controller.ControllerListener;
+
 public interface ImageLoader<T extends ImageView> {
 
     void loadImage(T target, String url, @DrawableRes int placeHolder, @DrawableRes int error, ScaleType scaleType);
@@ -15,6 +17,8 @@ public interface ImageLoader<T extends ImageView> {
     void loadImage(T target, String url);
 
     void loadImage(T target, @DrawableRes int resourceId);
+
+    void loadImage(T target, String url, ControllerListener controllerListener);
 
     enum ScaleType {
         MATRIX(0),
@@ -26,10 +30,10 @@ public interface ImageLoader<T extends ImageView> {
         CENTER_CROP(6),
         CENTER_INSIDE(7);
 
+        final int nativeInt;
+
         ScaleType(int ni) {
             nativeInt = ni;
         }
-
-        final int nativeInt;
     }
 }

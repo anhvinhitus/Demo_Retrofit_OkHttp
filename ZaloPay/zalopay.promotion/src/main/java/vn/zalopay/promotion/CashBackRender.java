@@ -6,6 +6,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
@@ -27,6 +28,7 @@ public class CashBackRender extends PromotionRender {
         View view = mBuilder.getView();
         final PromotionEvent promotionEvent = mBuilder.getPromotion();
         final IInteractPromotion promotionListener = mBuilder.getInteractPromotion();
+        final IResourceLoader resourceProvider = mBuilder.getResourceProvider();
         if (view == null || promotionEvent == null) {
             Log.d(getClass().getSimpleName(), "view or promotion is null");
             return;
@@ -36,6 +38,8 @@ public class CashBackRender extends PromotionRender {
         TextView tvCashBackCampaign = (TextView) view.findViewById(R.id.promotion_cash_back_tv_campaign);
         TextView tvCashBackAction = (TextView) view.findViewById(R.id.promotion_cash_back_tv_action);
         View promotion_cash_back_ll_submit = view.findViewById(R.id.promotion_cash_back_ll_submit);
+        ImageView imCashBackTopIcon = (ImageView) view.findViewById(R.id.promotion_cash_back_iv_top);
+        ImageView imCashBackFire = (ImageView) view.findViewById(R.id.promotion_cash_back_iv_fire_popup);
         tvCashBackTitle.setText(promotionEvent.title);
         tvCashBackAmount.setText(formatVnCurrence(String.valueOf(promotionEvent.amount)));
         if (!TextUtils.isEmpty(promotionEvent.campaign)) {
@@ -61,6 +65,11 @@ public class CashBackRender extends PromotionRender {
                     }
                 }
             });
+        }
+        //load image from resource folder app 1
+        if (resourceProvider != null) {
+            resourceProvider.loadImage(pContext,imCashBackTopIcon, R.string.img_top_cashback);
+            resourceProvider.loadImage(pContext,imCashBackFire, R.string.img_fire_popup);
         }
     }
 }
