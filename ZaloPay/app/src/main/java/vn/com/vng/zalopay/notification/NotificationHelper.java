@@ -320,7 +320,7 @@ public class NotificationHelper {
             }
             PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
             //send into sdk if user in payment
-            if (!SDKPayment.isOpenSdk()) {
+            if (SDKPayment.isOpenSdk()) {
                 CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
                     public void onReceiverNotAvailable() {
