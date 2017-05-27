@@ -15,6 +15,9 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
@@ -61,9 +64,6 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -145,32 +145,10 @@ public abstract class AdapterBase {
     protected int mECardFlowType;
     protected boolean preventRetryLoadMapCardList = false;
     protected MiniPmcTransType mMiniPmcTransType;
-    private final View.OnClickListener onUpdateInfoClickListener = v -> {
-        GlobalData.setResultUpgradeCMND();
-        onClickSubmission();
-    };
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     //prevent click duplicate
     private boolean mMoreClick = true;
-    private final View.OnClickListener okClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(this, "===okClickListener===starting...click");
-            if (mMoreClick) {
-                mMoreClick = false;
-                AdapterBase.this.onClickSubmission();
-                Log.d(this, "===okClickListener===onClickSubmission");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMoreClick = true;
-                        Log.d(this, "===okClickListener===release click event");
-                    }
-                }, 3000);
-            }
-        }
-    };
     private String olderPassword = null;
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -210,6 +188,28 @@ public abstract class AdapterBase {
             olderPassword = pHashPin;
             GlobalData.setTransactionPin(pHashPin);
             startSubmitTransaction();
+        }
+    };
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
+        GlobalData.setResultUpgradeCMND();
+        onClickSubmission();
+    };
+    private final View.OnClickListener okClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(this, "===okClickListener===starting...click");
+            if (mMoreClick) {
+                mMoreClick = false;
+                AdapterBase.this.onClickSubmission();
+                Log.d(this, "===okClickListener===onClickSubmission");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMoreClick = true;
+                        Log.d(this, "===okClickListener===release click event");
+                    }
+                }, 3000);
+            }
         }
     };
 
@@ -573,21 +573,7 @@ public abstract class AdapterBase {
             }
             //reload map card list
             if (pEventType == EEventType.ON_GET_CARDINFO_LIST_COMPLETE) {
-                showProgressBar(false, null);
-                try {
-                    CardInfoListResponse cardInfoListResponse = (CardInfoListResponse) pAdditionParams[0];
-
-                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
-                        getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
-                    } else {
-                        processCardInfoListResponse(cardInfoListResponse);
-                    }
-                } catch (Exception ex) {
-                    if (getActivity() != null && isTransactionSuccess()) {
-                        getActivity().showInfoDialog(null, GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
-                    }
-                    Log.e(this, ex);
-                }
+                handleEventGetCardInfoListComplete(pAdditionParams[0]);
             }
             //callback finish transation from webview
             else if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
@@ -624,20 +610,7 @@ public abstract class AdapterBase {
             }
             //submit order response
             else if (pEventType == EEventType.ON_SUBMIT_ORDER_COMPLETED) {
-                if (mResponseStatus != null) {
-                    mTransactionID = mResponseStatus.zptransid;
-                }
-
-                if (isOrderProcessing()) {
-                    if (GlobalData.isMapCardChannel()) {
-                        detectCard(GlobalData.getPaymentInfo().mapBank.getFirstNumber());
-                    }
-                    getActivity().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
-                    getTransactionStatus(mTransactionID, true, null);//get status transaction
-                } else {
-                    onCheckTransactionStatus(mResponseStatus);//check status
-                    releaseClickSubmit();//allow click button again
-                }
+                handleEventSubmitOrderCompleted();
             }
             //check status again if have issue while submitting order
             else if (pEventType == EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE) {
@@ -673,23 +646,7 @@ public abstract class AdapterBase {
             //mapcard submit response
             else if (pEventType == EEventType.ON_VERIFY_MAPCARD_COMPLETE) {
                 //get transid after submit success
-                if (mResponseStatus != null) {
-                    mTransactionID = mResponseStatus.zptransid;
-                }
-
-                if (isOrderProcessing()) {
-                    if (GlobalData.isMapCardChannel()) {
-                        detectCard(GlobalData.getPaymentInfo().mapBank.getFirstNumber());
-                    }
-
-                    //start count timer for checking transaction is expired.
-                    getActivity().startTransactionExpiredTimer();
-                    //get status with checking existed of data response
-                    getTransactionStatus(mTransactionID, true, null);
-                } else {
-                    onCheckTransactionStatus(mResponseStatus);
-                    releaseClickSubmit();
-                }
+                handleEventSubmitOrderCompleted();
             }
             //get status after submit order or authen payer
             else if (pEventType == EEventType.ON_GET_STATUS_COMPLETE) {
@@ -796,132 +753,13 @@ public abstract class AdapterBase {
                     }
                 }
             } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
-                Log.d(this, "processing result payment from notification");
-                if (isTransactionSuccess()) {
-                    Log.d(this, "transaction is finish, skipping process notification");
+                if (handleEventNotifyTransactionFinish(pAdditionParams)) {
                     return pAdditionParams;
-                }
-                if (!isTransactionInProgress()) {
-                    Log.d(this, "transaction is ending, skipping process notification");
-                    return pAdditionParams;
-                }
-                if (pAdditionParams == null || pAdditionParams.length <= 0) {
-                    Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
-                    return pAdditionParams;
-                }
-                int notificationType = -1;
-                try {
-                    notificationType = Integer.parseInt(String.valueOf(pAdditionParams[0]));
-                } catch (Exception ex) {
-                    Log.e(this, ex);
-                }
-                if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
-                    Log.d(this, "notification type is not accepted for this kind of transaction");
-                    return pAdditionParams;
-                }
-
-                try {
-                    String transId = String.valueOf(pAdditionParams[1]);
-                    if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                        DataRepository.shareInstance().cancelRequest();//cancel current request
-                        GetStatus.cancelRetryTimer();//cancel timer retry get status
-                        DialogManager.closeAllDialog();//close dialog
-                        if (mResponseStatus != null) {
-                            mResponseStatus.returncode = 1;
-                            mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
-                        }
-                        /***
-                         * tranfer money exception case
-                         *  show time in success screen
-                         *  need to update time again from success notification
-                         */
-                        if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2) {
-                            try {
-                                Long paymentTime = Long.parseLong(pAdditionParams[1].toString());
-                                GlobalData.getPaymentInfo().appTime = paymentTime;
-                            } catch (Exception ex) {
-                                Log.e(this, ex);
-                            }
-                        }
-                        showTransactionSuccessView();
-                    } else {
-                        Log.d(this, "transId is null");
-                    }
-                } catch (Exception ex) {
-                    Log.e(this, ex);
                 }
             } else if (pEventType == EEventType.ON_PROMOTION) {
-                Log.d(this, "got promotion from notification");
-                if (pAdditionParams == null || pAdditionParams.length <= 0) {
-                    Log.d(this, "stopping processing promotion from notification because of empty pAdditionParams");
+                if (handleEventPromotion(pAdditionParams)) {
                     return pAdditionParams;
                 }
-
-                PromotionEvent promotionEvent = null;
-                if (pAdditionParams[0] instanceof PromotionEvent) {
-                    promotionEvent = (PromotionEvent) pAdditionParams[0];
-                }
-                if (mPromotionBuilder != null) {
-                    Log.d(this, "promotion event is updated", promotionEvent);
-                    mPromotionBuilder.setPromotion(promotionEvent);
-                    return pAdditionParams;
-                }
-                if (promotionEvent == null) {
-                    Log.d(this, "stopping processing promotion from notification because promotion event is null");
-                    return pAdditionParams;
-                }
-                if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
-                    mPromotionResult = (IPromotionResult) pAdditionParams[1];
-                }
-
-                long transId = -1;
-                if (!TextUtils.isEmpty(mTransactionID)) {
-                    try {
-                        transId = Long.parseLong(mTransactionID);
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
-                }
-                if (transId == -1) {
-                    Log.d(this, "stopping processing promotion from notification because transid is not same");
-                    if (mPromotionResult != null) {
-                        mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
-                    }
-                    return pAdditionParams;
-                }
-                if (!isTransactionSuccess()) {
-                    Log.d(this, "transaction is not success, skipping process promotion notification");
-                    return pAdditionParams;
-                }
-
-                IResourceLoader resourceLoader = null;
-                if (pAdditionParams.length >= 3 && pAdditionParams[2] instanceof IResourceLoader) {
-                    resourceLoader = (IResourceLoader) pAdditionParams[2];
-                }
-
-
-                View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
-                mPromotionBuilder = CashBackRender.getBuilder()
-                        .setPromotion(promotionEvent)
-                        .setView(contentView)
-                        .setResourceProvider(resourceLoader)
-                        .setInteractPromotion(new IInteractPromotion() {
-                            @Override
-                            public void onUserInteract(PromotionEvent pPromotionEvent) {
-                                if (mPromotionResult != null) {
-                                    mPromotionResult.onNavigateToAction(getActivity(), pPromotionEvent);
-                                }
-                            }
-
-                            @Override
-                            public void onClose() {
-                                mPromotionResult = null;
-                                mPromotionBuilder.release();
-                                mPromotionBuilder = null;
-                            }
-                        });
-                UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
-                bottomSheetDialog.show();
             }
 
         } catch (Exception e) {
@@ -931,6 +769,175 @@ public abstract class AdapterBase {
         }
 
         return pAdditionParams;
+    }
+
+    private void handleEventSubmitOrderCompleted() {
+        if (mResponseStatus != null) {
+            mTransactionID = mResponseStatus.zptransid;
+        }
+
+        if (isOrderProcessing()) {
+            if (GlobalData.isMapCardChannel()) {
+                detectCard(GlobalData.getPaymentInfo().mapBank.getFirstNumber());
+            }
+            getActivity().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
+            getTransactionStatus(mTransactionID, true, null);//get status transaction
+        } else {
+            onCheckTransactionStatus(mResponseStatus);//check status
+            releaseClickSubmit();//allow click button again
+        }
+    }
+
+    private void handleEventGetCardInfoListComplete(Object pAdditionParam) {
+        showProgressBar(false, null);
+
+        try {
+            CardInfoListResponse cardInfoListResponse = (CardInfoListResponse) pAdditionParam;
+
+            if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
+                getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
+            } else {
+                processCardInfoListResponse(cardInfoListResponse);
+            }
+        } catch (Exception ex) {
+            if (getActivity() != null && isTransactionSuccess()) {
+                getActivity().showInfoDialog(null, GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
+            }
+            Log.e(this, ex);
+        }
+    }
+
+    private boolean handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
+        Log.d(this, "processing result payment from notification");
+        if (isTransactionSuccess()) {
+            Log.d(this, "transaction is finish, skipping process notification");
+            return true;
+        }
+        if (!isTransactionInProgress()) {
+            Log.d(this, "transaction is ending, skipping process notification");
+            return true;
+        }
+        if (pAdditionParams == null || pAdditionParams.length <= 0) {
+            Log.d(this, "stopping processing result payment from notification because of empty pAdditionParams");
+            return true;
+        }
+
+        int notificationType = -1;
+        try {
+            notificationType = Integer.parseInt(String.valueOf(pAdditionParams[0]));
+        } catch (Exception ex) {
+            Log.e(this, ex);
+        }
+        if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
+            Log.d(this, "notification type is not accepted for this kind of transaction");
+            return true;
+        }
+        try {
+            String transId = String.valueOf(pAdditionParams[1]);
+            if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
+                DataRepository.shareInstance().cancelRequest();//cancel current request
+                GetStatus.cancelRetryTimer();//cancel timer retry get status
+                DialogManager.closeAllDialog();//close dialog
+                if (mResponseStatus != null) {
+                    mResponseStatus.returncode = 1;
+                    mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
+                }
+                /***
+                 *  get time from notification
+                 *  in tranferring money case
+                 */
+                if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length >= 3) {
+                    try {
+                        Long paymentTime = Long.parseLong(pAdditionParams[2].toString());
+                        GlobalData.getPaymentInfo().appTime = paymentTime;
+                        Log.d(this, "update transaction time from notification");
+                    } catch (Exception ex) {
+                        Log.e(this, ex);
+                    }
+                }
+                showTransactionSuccessView();
+            } else {
+                Log.d(this, "transId is null");
+            }
+        } catch (Exception ex) {
+            Log.e(this, ex);
+        }
+        return false;
+    }
+
+    private boolean handleEventPromotion(Object[] pAdditionParams) {
+        Log.d(this, "got promotion from notification");
+        if (pAdditionParams == null || pAdditionParams.length <= 0) {
+            Log.d(this, "stopping processing promotion from notification because of empty pAdditionParams");
+            return true;
+        }
+
+        PromotionEvent promotionEvent = null;
+        if (pAdditionParams[0] instanceof PromotionEvent) {
+            promotionEvent = (PromotionEvent) pAdditionParams[0];
+        }
+        if (mPromotionBuilder != null) {
+            Log.d(this, "promotion event is updated", promotionEvent);
+            mPromotionBuilder.setPromotion(promotionEvent);
+            return true;
+        }
+        if (promotionEvent == null) {
+            Log.d(this, "stopping processing promotion from notification because promotion event is null");
+            return true;
+        }
+        if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
+            mPromotionResult = (IPromotionResult) pAdditionParams[1];
+        }
+
+        long transId = -1;
+        if (!TextUtils.isEmpty(mTransactionID)) {
+            try {
+                transId = Long.parseLong(mTransactionID);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+        if (transId == -1) {
+            Log.d(this, "stopping processing promotion from notification because transid is not same");
+            if (mPromotionResult != null) {
+                mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
+            }
+            return true;
+        }
+        if (!isTransactionSuccess()) {
+            Log.d(this, "transaction is not success, skipping process promotion notification");
+            return true;
+        }
+
+        IResourceLoader resourceLoader = null;
+        if (pAdditionParams.length >= 3 && pAdditionParams[2] instanceof IResourceLoader) {
+            resourceLoader = (IResourceLoader) pAdditionParams[2];
+        }
+
+
+        View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+        mPromotionBuilder = CashBackRender.getBuilder()
+                .setPromotion(promotionEvent)
+                .setView(contentView)
+                .setResourceProvider(resourceLoader)
+                .setInteractPromotion(new IInteractPromotion() {
+                    @Override
+                    public void onUserInteract(PromotionEvent pPromotionEvent) {
+                        if (mPromotionResult != null) {
+                            mPromotionResult.onNavigateToAction(getActivity(), pPromotionEvent);
+                        }
+                    }
+
+                    @Override
+                    public void onClose() {
+                        mPromotionResult = null;
+                        mPromotionBuilder.release();
+                        mPromotionBuilder = null;
+                    }
+                });
+        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
+        bottomSheetDialog.show();
+        return false;
     }
 
     /***
