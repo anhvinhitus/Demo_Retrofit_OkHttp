@@ -51,7 +51,6 @@ import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
-import vn.com.vng.zalopay.promotion.ResourceLoader;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.UserSession;
@@ -121,7 +120,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                   UserSession userSession,
                   ApplicationState applicationState,
                   GlobalEventHandlingService globalEventHandlingService,
-                  ResourceLoader resourceLoader,
+                  IResourceLoader resourceLoader,
                   PromotionHelper promotionHelper) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;

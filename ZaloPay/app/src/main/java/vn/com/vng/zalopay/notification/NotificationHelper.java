@@ -93,7 +93,7 @@ public class NotificationHelper {
                        BalanceStore.Repository balanceRepository,
                        EventBus eventBus, UserConfig userConfig,
                        PromotionHelper promotionHelper,
-                       ResourceLoader resourceLoader) {
+                       IResourceLoader resourceLoader) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;

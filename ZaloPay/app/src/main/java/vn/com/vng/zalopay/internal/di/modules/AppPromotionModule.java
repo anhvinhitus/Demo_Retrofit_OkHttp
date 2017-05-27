@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.promotion.ResourceLoader;
 import vn.com.vng.zalopay.utils.ImageLoader;
+import vn.zalopay.promotion.IResourceLoader;
 
 /**
  * Created by chucvv on 5/27/17.
@@ -19,7 +20,7 @@ import vn.com.vng.zalopay.utils.ImageLoader;
 public class AppPromotionModule {
     @Provides
     @Singleton
-    ResourceLoader providePromotionResourceLoader(ImageLoader imageLoader) {
+    IResourceLoader providePromotionResourceLoader(ImageLoader imageLoader) {
         return new ResourceLoader(imageLoader);
     }
 
