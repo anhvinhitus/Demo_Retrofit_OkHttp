@@ -87,7 +87,7 @@ final class JellyBeanMR2KeyTool implements KeytoolInternal {
                 Timber.d("Public Key is: %s", keyPair.getPublic().toString());
             }
         } catch (Exception e) {
-            Timber.w(e, "Generate KeyPair error");
+            Timber.d(e, "Generate KeyPair error");
         }
     }
 
@@ -184,7 +184,7 @@ final class JellyBeanMR2KeyTool implements KeytoolInternal {
             }
             return c;
         } catch (Exception e) {
-            Timber.w(e, "Get cipher error");
+            Timber.d(e, "Get cipher error");
             return null;
         }
     }
@@ -207,7 +207,7 @@ final class JellyBeanMR2KeyTool implements KeytoolInternal {
             Timber.d("decrypt: %s", result);
             return result;
         } catch (Exception e) {
-            Timber.w(e, "decrypt error");
+            Timber.d(e, "decrypt error");
         }
 
         return null;
@@ -219,7 +219,7 @@ final class JellyBeanMR2KeyTool implements KeytoolInternal {
             encrypt(hashPassword.getBytes());
             return true;
         } catch (Exception e) {
-            Timber.w(e, "encrypt error");
+            Timber.d(e, "encrypt error");
             return false;
         }
     }
