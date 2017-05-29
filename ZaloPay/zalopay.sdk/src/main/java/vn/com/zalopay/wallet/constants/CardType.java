@@ -5,7 +5,7 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@StringDef({CardType.VISA, CardType.MASTER, CardType.JCB, CardType.PVTB, CardType.PBIDV, CardType.PSCB, CardType.PSGCB, CardType.PVCB, CardType.UNDEFINE})
+@StringDef({CardType.VISA, CardType.MASTER, CardType.JCB, CardType.PVTB, CardType.PBIDV, CardType.PSCB, CardType.PSGCB, CardType.PVCB, CardType.PEIB, CardType.UNDEFINE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface CardType {
     String VISA = "VISA";
@@ -16,5 +16,6 @@ public @interface CardType {
     String PSCB = "123PSCB";
     String PSGCB = "123PSGCB";
     String PVCB = "ZPVCB";
+    String PEIB = "123PEIB";
     String UNDEFINE = "UND";
 }

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,10 +50,10 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
  */
 
 public class BankFragment extends BaseFragment implements IBankView, BankAdapter.IBankListener {
-    public static BankFragment newInstance() {
-        Bundle args = new Bundle();
+
+    public static BankFragment newInstance(Bundle bundle) {
         BankFragment fragment = new BankFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -87,6 +88,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mPresenter.initData(getArguments());
         mAdapter = new BankAdapter(getContext(), mPresenter.getCurrentUser(), this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        mRecyclerView.setHasFixedSize(true);
@@ -147,8 +149,21 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (requestCode == Constants.REQUEST_CODE_SELECT_BANk) {
-            mPresenter.getLinkedBank();
+            if (resultCode == Activity.RESULT_CANCELED) {
+                String message = "";
+                if (data != null) {
+                    message = data.getStringExtra(Constants.BANK_DATA_RESULT_AFTER_LINK);
+                }
+                if (!TextUtils.isEmpty(message)) {
+                    showErrorDialog(message);
+                }
+            } else if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    mPresenter.onAddBankSuccess(data.getParcelableExtra(Constants.BANK_DATA_RESULT_AFTER_LINK));
+                }
+            }
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -286,6 +301,14 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                         getActivity().finish();
                     }
                 });
+    }
+
+    @Override
+    public void onAddBankSuccess(DBaseMap bankInfo) {
+        if (mAdapter != null && bankInfo != null) {
+            mAdapter.insert(bankInfo);
+        }
+        showOrHideLinkedBankEmpty();
     }
 
     @Override

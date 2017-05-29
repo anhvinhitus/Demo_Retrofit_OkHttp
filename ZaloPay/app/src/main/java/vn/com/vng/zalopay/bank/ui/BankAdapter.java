@@ -298,6 +298,12 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
         setBankBackground(mRoot, bankCardStyle, borderTopOnly);
     }
 
+    @Override
+    public void insert(DBaseMap object) {
+        super.insert(object);
+        notifyDataSetChanged();
+    }
+
     interface IBankListener {
         void onClickAddMoreBank();
     }
