@@ -43,7 +43,7 @@ final class MarshmallowKeytool implements KeytoolInternal {
         try {
             return KeyStore.getInstance("AndroidKeyStore");
         } catch (KeyStoreException e) {
-            Timber.w(e, "Failed to get an instance of KeyStore");
+            Timber.d(e, "Failed to get an instance of KeyStore");
             return null;
         }
     }
@@ -59,7 +59,7 @@ final class MarshmallowKeytool implements KeytoolInternal {
             return (SecretKey) mKeyStore.getKey(Constants.KEY_ALIAS_NAME, null);
 
         } catch (Exception e) {
-            Timber.w(e, "get secret key fail ");
+            Timber.d(e, "get secret key fail ");
         }
         return null;
     }
@@ -79,7 +79,7 @@ final class MarshmallowKeytool implements KeytoolInternal {
             return keyGenerator.generateKey();
 
         } catch (Exception e) {
-            Timber.w(e, "create secret key fail");
+            Timber.d(e, "create secret key fail");
         }
         return null;
     }
@@ -134,7 +134,7 @@ final class MarshmallowKeytool implements KeytoolInternal {
             Timber.d("decrypt: %s", result);
             return result;
         } catch (Exception e) {
-            Timber.w(e, "Failed to decrypt the data with the generated key.");
+            Timber.d(e, "Failed to decrypt the data with the generated key.");
         }
 
         return null;
@@ -176,7 +176,7 @@ final class MarshmallowKeytool implements KeytoolInternal {
             Timber.d("iv : [%s]", iv);
             return true;
         } catch (Exception ex) {
-            Timber.w(ex, "Failed to encrypt the data with the generated key.");
+            Timber.d(ex, "Failed to encrypt the data with the generated key.");
         }
         return false;
     }
