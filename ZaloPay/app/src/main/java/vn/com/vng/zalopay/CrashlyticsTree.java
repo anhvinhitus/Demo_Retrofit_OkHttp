@@ -5,6 +5,10 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
+
 import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -26,7 +30,9 @@ class CrashlyticsTree extends Timber.Tree {
         }
 
         if (t instanceof BodyException
-                || t instanceof NetworkConnectionException || t instanceof HttpException) {
+                || t instanceof NetworkConnectionException || t instanceof HttpException
+                || t instanceof SocketTimeoutException || t instanceof TimeoutException
+                || t instanceof UnknownHostException) {
             return;
         }
 
