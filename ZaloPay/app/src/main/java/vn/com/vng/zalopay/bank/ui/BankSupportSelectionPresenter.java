@@ -18,6 +18,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.BankAction;
+import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -27,14 +29,10 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -46,7 +44,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 /**
  * Created by Duke on 5/25/17.
  */
-public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupportSelectionView> {
+public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSupportSelectionView> {
     private PaymentWrapper paymentWrapper;
     private final User mUser;
     private LinkBankType mBankType;
@@ -90,6 +88,12 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
     @Override
     public void attachView(IBankSupportSelectionView iBankSupportSelectionView) {
         super.attachView(iBankSupportSelectionView);
+    }
+
+    @Override
+    public void destroy() {
+        paymentWrapper = null;
+        super.destroy();
     }
 
     private Activity getActivity() {
@@ -229,6 +233,36 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
         mView.showError(message);
     }
 
+    private void setResultActivity(BankAction bankAction, DBaseMap bankInfo) {
+        if (mView == null || bankInfo == null) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent();
+        bundle.putParcelable(Constants.BANK_DATA_RESULT_AFTER_LINK,
+                new BankInfo(bankAction, bankInfo.bankcode, bankInfo.getFirstNumber(), bankInfo.getLastNumber()));
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    void onAddBankCardSuccess(DMappedCard bankCard) {
+        setResultActivity(BankAction.LINK_CARD, bankCard);
+    }
+
+    @Override
+    void onAddBankAccountSuccess(DBankAccount bankAccount) {
+        setResultActivity(BankAction.LINK_ACCOUNT, bankAccount);
+    }
+
+    @Override
+    void onUnLinkBankAccountSuccess(DBankAccount bankAccount) {
+        setResultActivity(BankAction.UNLINK_ACCOUNT, bankAccount);
+    }
+
+
     // Inner class custom listener
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
         @Override
@@ -255,14 +289,7 @@ public class BankSupportSelectionPresenter extends AbstractPresenter<IBankSuppor
 
         @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (mView == null) return;
-
-            Bundle bundle = new Bundle();
-            Intent intent = new Intent();
-            bundle.putParcelable(Constants.BANK_DATA_RESULT_AFTER_LINK, zpPaymentResult);
-            intent.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_OK, intent);
-            getActivity().finish();
+            onResponseSuccessFromSDK(zpPaymentResult);
         }
 
         @Override

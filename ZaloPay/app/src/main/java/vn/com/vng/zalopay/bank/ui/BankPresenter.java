@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
@@ -15,8 +16,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.models.BankAction;
+import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -31,12 +35,10 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -49,12 +51,13 @@ import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
  * Handle bank logic and display ui
  */
 
-class BankPresenter extends AbstractPresenter<IBankView> {
+class BankPresenter extends AbstractBankPresenter<IBankView> {
 
     private User mUser;
     private Navigator mNavigator;
     private PaymentWrapper mPaymentWrapper;
     protected EventBus mEventBus;
+    private boolean mPayAfterLinkBank;
 
     @Inject
     BankPresenter(User user,
@@ -73,6 +76,13 @@ class BankPresenter extends AbstractPresenter<IBankView> {
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
+    }
+
+    void initData(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
     }
 
     @Override
@@ -327,22 +337,49 @@ class BankPresenter extends AbstractPresenter<IBankView> {
         }
     }
 
-    private void onResponseSuccessFromSDK(ZPPaymentResult zpPaymentResult) {
-        ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-        if (paymentInfo == null) {
-            Timber.d("PaymentSDK response success but paymentInfo null");
+    @Override
+    void onAddBankCardSuccess(DMappedCard bankCard) {
+        if (bankCard != null) {
+            mView.onAddBankSuccess(bankCard);
+        }
+        if (mPayAfterLinkBank && mView != null) {
+            mView.showConfirmPayAfterLinkBank(bankCard);
+        }
+    }
+
+    @Override
+    void onAddBankAccountSuccess(DBankAccount bankAccount) {
+        if (bankAccount != null) {
+            mView.onAddBankSuccess(bankAccount);
+        }
+        if (mPayAfterLinkBank && mView != null) {
+            mView.showConfirmPayAfterLinkBank(bankAccount);
+        }
+    }
+
+    @Override
+    void onUnLinkBankAccountSuccess(DBankAccount bankAccount) {
+        if (mView != null) {
+            mView.removeLinkedBank(bankAccount);
+        }
+    }
+
+    void onAddBankSuccess(BankInfo bankInfo) {
+        if (bankInfo == null) {
             return;
         }
-        if (paymentInfo.linkAccInfo != null) {
-            if (paymentInfo.linkAccInfo.isLinkAcc()) {
-                if (mView != null) {
-                    mView.showConfirmPayAfterLinkBank(paymentInfo.mapBank);
-                }
-            } else if (paymentInfo.linkAccInfo.isUnlinkAcc()) {
-                if (mView != null) {
-                    mView.removeLinkedBank(paymentInfo.mapBank);
-                }
-            }
+        if (bankInfo.mBankAction == BankAction.LINK_CARD) {
+            DMappedCard mappedCard = new DMappedCard();
+            mappedCard.bankcode = bankInfo.mBankCode;
+            mappedCard.first6cardno = bankInfo.mFirstNumber;
+            mappedCard.last4cardno = bankInfo.mLastNumber;
+            onAddBankCardSuccess(mappedCard);
+        } else if (bankInfo.mBankAction == BankAction.LINK_ACCOUNT) {
+            DBankAccount dBankAccount = new DBankAccount();
+            dBankAccount.bankcode = bankInfo.mBankCode;
+            dBankAccount.firstaccountno = bankInfo.mFirstNumber;
+            dBankAccount.lastaccountno = bankInfo.mLastNumber;
+            onAddBankAccountSuccess(dBankAccount);
         }
     }
 

@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -13,7 +12,7 @@ public class BankActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return new BankFragment();
+        return BankFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
