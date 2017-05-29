@@ -12,10 +12,9 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
-import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.analytics.ZPApptransidLog;
+
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -60,6 +59,7 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -270,7 +270,7 @@ public abstract class AdapterBase {
     }
 
     public String getPageName() {
-        return mPageCode;
+        return (mPageCode != null) ? mPageCode : "";
     }
 
     public String getLayoutID() {
@@ -409,7 +409,7 @@ public abstract class AdapterBase {
         if (mOwnerActivity != null && mOwnerActivity.get() != null) {
             return mOwnerActivity.get();
         } else {
-            Log.e(this, "mOwnerActivity is null");
+            Log.d(this, "mOwnerActivity is null");
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             return null;
         }

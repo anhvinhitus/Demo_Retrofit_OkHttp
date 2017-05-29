@@ -59,7 +59,7 @@ public class AdapterFactory {
                 adapter = new AdapterLinkAcc(owner);
                 break;
             default:
-                Log.e("Zmp", "AdapterFactory.produce adapter=null");
+                Log.d("Zmp", "AdapterFactory.produce adapter=null");
 
         }
         return adapter;

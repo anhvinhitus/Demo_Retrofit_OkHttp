@@ -22,8 +22,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserProfile;
-import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -561,7 +561,7 @@ public class GlobalData {
             if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
             }
-            Log.e("getPaymentInfo", "get payment info is null");
+            Log.d("getPaymentInfo", "get payment info is null");
             return null;
         }
         return GlobalData.mPaymentInfo;
