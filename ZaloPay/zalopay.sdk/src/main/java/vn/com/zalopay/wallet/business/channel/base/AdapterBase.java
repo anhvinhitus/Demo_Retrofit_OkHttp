@@ -38,6 +38,7 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
@@ -1927,15 +1928,21 @@ public abstract class AdapterBase {
                 GlobalData.getStringResource(RS.string.dialog_close_button));
     }
 
-    public void needLinkCardBeforePayment() {
+    public void needLinkCardBeforePayment(String pBankCode) {
         //save card number to show again when user go to link card again
         try {
             if (getGuiProcessor().isCardLengthMatchIdentifier(getGuiProcessor().getCardNumber())) {
                 SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
             }
+            //callback bank code to app to know what bank user input
+            DBaseMap card = new DMappedCard();
+            card.bankcode = pBankCode;
+            GlobalData.getPaymentInfo().mapBank = card;
+
         } catch (Exception e) {
             Log.e(this, e);
         }
+
         GlobalData.setResultNeedToLinkCardBeforePayment();
 
         if (getActivity() != null) {
