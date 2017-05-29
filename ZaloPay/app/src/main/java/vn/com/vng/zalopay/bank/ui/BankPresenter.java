@@ -58,6 +58,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     private PaymentWrapper mPaymentWrapper;
     protected EventBus mEventBus;
     private boolean mPayAfterLinkBank;
+    private boolean mGotoSelectBank = false;
 
     @Inject
     BankPresenter(User user,
@@ -76,13 +77,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
-    }
-
-    void initData(Bundle bundle) {
-        if (bundle == null) {
-            return;
-        }
-        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
     }
 
     @Override
@@ -104,6 +98,20 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return null;
         }
         return mView.getActivity();
+    }
+
+    void initData(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
+        mGotoSelectBank = bundle.getBoolean(Constants.ARG_GOTO_SELECT_BANK_IN_LINK_BANK);
+    }
+
+    void initPageStart() {
+        if (mGotoSelectBank) {
+            mNavigator.startBankSupportSelectionActivity(mView.getFragment());
+        }
     }
 
     private void linkAccount(String bankCode) {

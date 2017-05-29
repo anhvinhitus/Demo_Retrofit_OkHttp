@@ -45,8 +45,6 @@ public interface INavigator {
 
     Intent intentProfile(Context context);
 
-    Intent intentLinkCard(Context context);
-
     Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);
 
     boolean promptPIN(Context context, int channel, Promise promise);
