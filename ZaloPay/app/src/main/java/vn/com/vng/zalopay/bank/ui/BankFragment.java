@@ -281,11 +281,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     }
 
     @Override
-    public void showConfirmPayAfterLinkBank(DBaseMap mapBank) {
-        String message = getString(R.string.confirm_continue_pay_after_link_card);
-        if (mapBank instanceof DBankAccount) {
-            message = getString(R.string.confirm_continue_pay_after_link_account);
-        }
+    public void showConfirmDialogAfterLinkBank(String message) {
         DialogHelper.showNoticeDialog(getActivity(),
                 message,
                 getString(R.string.btn_continue),

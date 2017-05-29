@@ -10,6 +10,7 @@ import com.facebook.react.bridge.Promise;
 import java.util.Map;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 
 /**
  * Created by AnhHieu on 6/21/16.
@@ -25,13 +26,13 @@ public interface INavigator {
 
     void startDepositForResultActivity(Fragment fragment);
 
-    void startLinkCardActivityForResult(Activity activity);
+    void startLinkCardActivityForResult(Activity activity, String bankCode);
 
-    void startLinkCardActivityForResult(Fragment fragment);
+    void startLinkCardActivityForResult(Fragment fragment, String bankCode);
 
-    void startLinkAccountActivityForResult(Activity activity);
+    void startLinkAccountActivityForResult(Activity activity, String bankCode);
 
-    void startLinkAccountActivityForResult(Fragment fragment);
+    void startLinkAccountActivityForResult(Fragment fragment, String bankCode);
 
     void startUpdateProfileLevelBeforeLinkAcc(Activity activity);
 

@@ -258,23 +258,25 @@ public class Navigator implements INavigator {
 
     @Override
     public void startLinkCardActivity(Context context) {
-        startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false);
+        startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false, false);
     }
 
     public void startLinkCardActivityAndFinish(Context context) {
-        startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, true);
+        startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false, true);
     }
 
     @Override
     public void startLinkAccountActivity(Context context) {
-        startLinkCardActivity(context, LinkBankType.LINK_BANK_ACCOUNT, false, false, false);
+        startLinkCardActivity(context, LinkBankType.LINK_BANK_ACCOUNT, false, false, false, false);
     }
 
     public void startBankActivityFromWithdrawCondition(Context context) {
-        startLinkCardActivity(context, LinkBankType.LINK_BANK_ACCOUNT, true, true, false);
+        startLinkCardActivity(context, LinkBankType.LINK_BANK_ACCOUNT, true, false, true, false);
     }
 
-    private void startLinkBankActivityForResult(final Activity activity, LinkBankType linkBankType) {
+    private void startLinkBankActivityForResult(final Activity activity,
+                                                LinkBankType linkBankType,
+                                                String bankCode) {
         Timber.d("Start Link  bank for result, type [%s] activity[%s]", linkBankType, activity);
         if (activity == null) {
             return;
@@ -282,7 +284,7 @@ public class Navigator implements INavigator {
         if (!validUserBeforeLinkBank(activity)) {
             return;
         }
-        final Intent intent = getBankIntent(activity, linkBankType, true, true);
+        final Intent intent = getBankIntent(activity, linkBankType, bankCode, true, true, false);
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(activity, new AuthenticationCallback() {
                 @Override
@@ -297,7 +299,9 @@ public class Navigator implements INavigator {
         }
     }
 
-    private void startLinkBankActivityForResult(final Fragment fragment, LinkBankType linkBankType) {
+    private void startLinkBankActivityForResult(final Fragment fragment,
+                                                LinkBankType linkBankType,
+                                                String bankCode) {
         Timber.d("Start Link  bank for result, type [%s] fragment[%s]", linkBankType, fragment);
         if (fragment == null) {
             return;
@@ -305,7 +309,7 @@ public class Navigator implements INavigator {
         if (!validUserBeforeLinkBank(fragment.getContext())) {
             return;
         }
-        final Intent intent = getBankIntent(fragment.getContext(), linkBankType, true, true);
+        final Intent intent = getBankIntent(fragment.getContext(), linkBankType, bankCode, true, true, false);
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(fragment.getContext(), new AuthenticationCallback() {
                 @Override
@@ -321,33 +325,43 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public void startLinkCardActivityForResult(final Activity activity) {
-        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD);
+    public void startLinkCardActivityForResult(final Activity activity, String bankCode) {
+        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD, bankCode);
     }
 
     @Override
-    public void startLinkCardActivityForResult(Fragment fragment) {
-        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_CARD);
+    public void startLinkCardActivityForResult(Fragment fragment, String bankCode) {
+        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_CARD, bankCode);
     }
 
     @Override
-    public void startLinkAccountActivityForResult(final Activity activity) {
-        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_ACCOUNT);
+    public void startLinkAccountActivityForResult(final Activity activity, String bankCode) {
+        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_ACCOUNT, bankCode);
     }
 
     @Override
-    public void startLinkAccountActivityForResult(final Fragment fragment) {
-        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_ACCOUNT);
+    public void startLinkAccountActivityForResult(final Fragment fragment, String bankCode) {
+        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_ACCOUNT, bankCode);
     }
 
     private Intent getBankIntent(Context context,
                                  LinkBankType linkBankType,
+                                 String bankCode,
                                  boolean autoSelectBank,
-                                 boolean continuePayment) {
+                                 boolean continuePayment,
+                                 boolean continueWithdraw) {
         Intent intent = new Intent(context, BankActivity.class);
-        intent.putExtra(Constants.ARG_PAGE_INDEX, linkBankType.getValue());
+        // TODO: 5/29/17 - longlv: hiện tại không còn dùng nữa nhưng cần thiết nên giữ lại. 
+        intent.putExtra(Constants.ARG_LINK_BANK_TYPE, linkBankType.getValue());
+        Timber.d("getBankIntent linkBankType [%s]", linkBankType);
+        if (linkBankType == LinkBankType.LINK_BANK_CARD) {
+            intent.putExtra(Constants.ARG_LINK_CARD_WITH_BANK_CODE, bankCode);
+        } else {
+            intent.putExtra(Constants.ARG_LINK_ACCOUNT_WITH_BANK_CODE, bankCode);
+        }
         intent.putExtra(Constants.ARG_GOTO_SELECT_BANK_IN_LINK_BANK, autoSelectBank);
         intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK, continuePayment);
+        intent.putExtra(Constants.ARG_CONTINUE_WITHDRAW_AFTER_LINK_BANK, continueWithdraw);
         return intent;
     }
 
@@ -355,11 +369,12 @@ public class Navigator implements INavigator {
                                        LinkBankType linkBankType,
                                        boolean autoSelectBank,
                                        boolean continuePayment,
+                                       boolean continueWithdraw,
                                        boolean isFinishActivity) {
         if (!validUserBeforeLinkBank(context)) {
             return;
         }
-        Intent intent = getBankIntent(context, linkBankType, autoSelectBank, continuePayment);
+        Intent intent = getBankIntent(context, linkBankType, null, autoSelectBank, continuePayment, continueWithdraw);
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(context, intent, isFinishActivity);
         } else {

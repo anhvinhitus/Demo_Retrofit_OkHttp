@@ -88,6 +88,24 @@ class WalletListener implements ZPPaymentListener {
                     paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_CLOSE:
+                    /*// TODO: 5/29/17 - longlv: Fake data to test
+                    pPaymentResult.paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
+                    //LinkAccount
+                    pPaymentResult.paymentInfo.linkAccInfo = new LinkAccInfo(ECardType.PVCB.toString(), ELinkAccType.LINK);
+                    DBankAccount dBankAccount = new DBankAccount();
+                    dBankAccount.bankcode = ECardType.PVCB.toString();
+                    dBankAccount.firstaccountno = "097654";
+                    dBankAccount.lastaccountno = "4321";
+                    pPaymentResult.paymentInfo.mapBank = dBankAccount;
+                    //LinkCard
+                    *//*DMappedCard mappedCard = new DMappedCard();
+                    mappedCard.bankcode = ECardType.PBIDV.toString();
+                    mappedCard.first6cardno = "970418";
+                    mappedCard.last4cardno = "4321";
+                    pPaymentResult.paymentInfo.mapBank = mappedCard;*//*
+
+                    mPaymentWrapper.responseListener.onResponseSuccess(pPaymentResult);*/
+
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
                     break;
                 case ZPC_TRANXSTATUS_INPUT_INVALID:
@@ -119,18 +137,26 @@ class WalletListener implements ZPPaymentListener {
                     }
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
+                    String bankCode = null;
+                    if (pPaymentResult.paymentInfo.mapBank != null) {
+                        bankCode = pPaymentResult.paymentInfo.mapBank.bankcode;
+                    }
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkAccountActivity();
+                        mPaymentWrapper.startLinkAccountActivity(bankCode);
                     } else {
-                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity();
+                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity(bankCode);
                     }
                     paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT:
+                    String bankCodeLinkCard = null;
+                    if (pPaymentResult.paymentInfo.mapBank != null) {
+                        bankCodeLinkCard = pPaymentResult.paymentInfo.mapBank.bankcode;
+                    }
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkCardActivity();
+                        mPaymentWrapper.startLinkCardActivity(bankCodeLinkCard);
                     } else {
-                        mPaymentWrapper.mRedirectListener.startLinkCardActivity();
+                        mPaymentWrapper.mRedirectListener.startLinkCardActivity(bankCodeLinkCard);
                     }
                     paymentIsCompleted = false; // will continue after update profile
                     break;
