@@ -213,7 +213,7 @@ public class DialogHelper {
     public static void hideLoading() {
         Timber.d("hideLoading");
         try {
-            if (isShowingLoading()) {
+            if (isShowingLoading() && !mProgressDialog.getOwnerActivity().isFinishing()) {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
                 Timber.d("hide loading success.");
