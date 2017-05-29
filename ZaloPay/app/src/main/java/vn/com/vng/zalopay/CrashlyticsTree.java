@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
+import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -27,7 +28,7 @@ class CrashlyticsTree extends Timber.Tree {
         }
 
         if (t instanceof BodyException
-                || t instanceof NetworkConnectionException) {
+                || t instanceof NetworkConnectionException || t instanceof HttpException) {
             return;
         }
 
