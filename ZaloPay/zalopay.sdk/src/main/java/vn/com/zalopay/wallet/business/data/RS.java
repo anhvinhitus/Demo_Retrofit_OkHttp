@@ -48,6 +48,7 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_warning_pmc_transtype_disable = "sdk_warning_pmc_transtype_disable";
         public static final String invalid_order_amount_bank = "invalid_order_amount_bank";
         public static final String dialog_update_versionapp_button = "dialog_update_versionapp_button";
         public static final String sdk_warning_version_support_linkchannel = "sdk_warning_version_support_linkchannel";

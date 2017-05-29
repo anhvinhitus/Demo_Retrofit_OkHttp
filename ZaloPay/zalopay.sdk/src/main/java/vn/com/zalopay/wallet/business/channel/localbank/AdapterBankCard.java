@@ -61,7 +61,7 @@ public class AdapterBankCard extends AdapterBase {
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {
-                Log.d(this, "start reload pmc transtype");
+                Log.d(this, "start reload pmc transtype "+ pBankCode);
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(pBankCode), MiniPmcTransType.class);
                 Log.d(this, "new pmc transype", mMiniPmcTransType);
             }
@@ -548,7 +548,7 @@ public class AdapterBankCard extends AdapterBase {
         return false;
     }
 
-    public boolean preventPaymentBidvCard(String pCardNumber) {
+    public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) {
 
         //have some card bidv in map card list and have this card
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && hasBidvBankInMapCardList(pCardNumber))) {
@@ -571,7 +571,7 @@ public class AdapterBankCard extends AdapterBase {
 
                                                 @Override
                                                 public void onOKevent() {
-                                                    needLinkCardBeforePayment();
+                                                    needLinkCardBeforePayment(pBankCode);
                                                 }
                                             }, GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getStringResource(RS.string.dialog_linkcard_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
@@ -588,7 +588,7 @@ public class AdapterBankCard extends AdapterBase {
 
                                                 @Override
                                                 public void onOKevent() {
-                                                    needLinkCardBeforePayment();
+                                                    needLinkCardBeforePayment(pBankCode);
                                                 }
                                             }, GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getStringResource(RS.string.dialog_linkcard_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));

@@ -857,7 +857,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 getAdapter().setMiniPmcTransType(null);
             } else if (getAdapter().needReloadPmcConfig(bankCode)) {
                 MiniPmcTransType miniPmcTransType = getAdapter().getConfig(bankCode);//reload config by bank
-                if(miniPmcTransType != null  && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)){
+                if (miniPmcTransType != null && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)) {
                     GlobalData.populateOrderFee(miniPmcTransType);
                     miniPmcTransType.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
                     if (!miniPmcTransType.isAllowByAmount()) {
@@ -871,15 +871,22 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             MiniPmcTransType miniPmcTransType = getAdapter().getConfig();//reload config by bank
-            if (getCardFinder().isDetected() && miniPmcTransType != null && ! miniPmcTransType.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+            //check bank future feature
+            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
                 return;
             }
+            //check disable pmc
+            if (getCardFinder().isDetected() && (miniPmcTransType == null || (miniPmcTransType != null && miniPmcTransType.isDisable()))) {
+                showWarningDisablePmc(bankName);
+                return;
+            }
+
 
             //bidv card must paid by mapcard
             if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).isBidvBankPayment()
-                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(getCardNumber())) {
+                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(bankCode, getCardNumber())) {
                 return;
             }
 
@@ -1033,8 +1040,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             MiniPmcTransType miniPmcTransType = getAdapter().getConfig();//reload config by bank
-            if (getCardFinder().isDetected() && miniPmcTransType != null && ! miniPmcTransType.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
+                return;
+            }
+            //check disable pmc
+            if (getCardFinder().isDetected() && (miniPmcTransType == null || (miniPmcTransType != null && miniPmcTransType.isDisable()))) {
+                showWarningDisablePmc(pBankName);
                 return;
             }
 
@@ -1554,6 +1566,29 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }, 400);
             }
         }, !TextUtils.isEmpty(pBankCode) ? pBankCode : getDetectedBankCode());
+    }
+
+    protected void showWarningDisablePmc(String pBankName) {
+        String disableBankMessage = String.format(GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable), pBankName);
+        getAdapter().getActivity().showInfoDialog(new ZPWOnEventDialogListener() {
+            @Override
+            public void onOKevent() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //focus to edittext again after closing dialog
+                        try {
+                            getViewPager().setCurrentItem(0);
+                            getCardNumberView().setText(null);
+                            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+
+                        } catch (Exception e) {
+                            Log.e(this, e);
+                        }
+                    }
+                }, 400);
+            }
+        }, disableBankMessage, GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
     }
 
     protected void showSupportCardList() {

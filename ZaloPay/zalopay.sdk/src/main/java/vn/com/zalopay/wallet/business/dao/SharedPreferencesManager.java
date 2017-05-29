@@ -606,17 +606,14 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public String getBankAccountChannelConfig(String pBankCode) {
-        Log.d(this, "get cache bank account channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_bankaccount), pBankCode);
     }
 
     public String getATMChannelConfig(String pBankCode) {
-        Log.d(this, "get cache atm channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_atm), pBankCode);
     }
 
     public String getCreditCardChannelConfig(String pBankCode) {
-        Log.d(this, "get cache credit card channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_credit_card), pBankCode);
     }
 

@@ -64,6 +64,13 @@ public class MiniPmcTransType implements Parcelable {
     public MiniPmcTransType() {
     }
 
+    public void resetToDefault(){
+        this.status = EPaymentChannelStatus.ENABLE;
+        this.minvalue = -1;
+        this.maxvalue = -1;
+        this.feerate = 0;
+        this.minfee = 0;
+    }
     /***
      * copy constructor
      * @param channel
@@ -153,6 +160,10 @@ public class MiniPmcTransType implements Parcelable {
         return status == EPaymentChannelStatus.ENABLE;
     }
 
+    public boolean isDisable() {
+        return status == EPaymentChannelStatus.DISABLE;
+    }
+
     public void setStatus(EPaymentChannelStatus pStatus) {
         status = pStatus;
     }
@@ -239,8 +250,8 @@ public class MiniPmcTransType implements Parcelable {
         return mess;
     }
 
-    public String getDefaultPmcFee(){
-        return (isAtmChannel() && !isMapCardChannel()) ? GlobalData.getStringResource(RS.string.default_message_pmc_fee): GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+    public String getDefaultPmcFee() {
+        return (isAtmChannel() && !isMapCardChannel()) ? GlobalData.getStringResource(RS.string.default_message_pmc_fee) : GlobalData.getStringResource(RS.string.zpw_string_fee_free);
     }
 
     /***

@@ -101,19 +101,13 @@ public class GetAppInfo extends BaseRequest<AppInfoResponse> {
                     //save default for new atm/cc and bank account/zalopay pmc
                     if (!transtypePmcIdList.contains(pmcKey)) {
                         transtypePmcIdList.add(pmcKey);
+                        MiniPmcTransType defaultPmcTranstype = new MiniPmcTransType(miniPmcTransType);
                         //reset to default value to atm pmc because it is up to bank
                         if (miniPmcTransType.isAtmChannel()) {
-                            miniPmcTransType.status = EPaymentChannelStatus.ENABLE;
-                            miniPmcTransType.minvalue = -1;
-                            miniPmcTransType.maxvalue = -1;
-                            miniPmcTransType.feerate = 0;
-                            miniPmcTransType.minfee = 0;
+                            defaultPmcTranstype.resetToDefault();
                         }
-                        SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
-                        Log.d(this, "save channel to cache key " + pmcKey, miniPmcTransType);
-                    }
-                    if (!miniPmcTransType.isEnable()) {
-                        continue;
+                        SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));//set 1 channel
+                        Log.d(this, "save channel to cache key " + pmcKey, defaultPmcTranstype);
                     }
                     //get min,max of this channel to app use
                     if (miniPmcTransType.minvalue < minValue) {
