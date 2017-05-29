@@ -15,12 +15,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -68,20 +66,12 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @OnClick(R.id.tvAddCard)
     public void onClickAddCard() {
-        startLinkCardActivity(LinkBankPagerIndex.LINK_CARD);
+        navigator.startBankActivityFromWithdrawCondition(getContext());
     }
 
     @OnClick(R.id.tvAddAccount)
     public void onClickAddAccount() {
-        startLinkCardActivity(LinkBankPagerIndex.LINK_ACCOUNT);
-    }
-
-    private void startLinkCardActivity(LinkBankPagerIndex pageIndex) {
-        if (pageIndex == LinkBankPagerIndex.LINK_ACCOUNT) {
-            navigator.startLinkAccountActivity(getContext());
-        } else {
-            navigator.startLinkCardActivity(getContext());
-        }
+        navigator.startBankActivityFromWithdrawCondition(getContext());
     }
 
     public WithdrawConditionFragment() {

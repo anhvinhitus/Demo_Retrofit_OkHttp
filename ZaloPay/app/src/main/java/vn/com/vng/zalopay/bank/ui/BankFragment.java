@@ -108,6 +108,8 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         mPresenter.getLinkedBank();
 
         setEmptyViewHeight();
+
+        mPresenter.initPageStart();
     }
 
     @Override
