@@ -27,24 +27,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="34dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/loremipsum"
-            android:paddingRight="@dimen/spacing.medium.s"
-            android:paddingTop="@dimen/spacing.medium.t"
-            android:scaleType="center"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_chungchi" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing.medium.s"
             android:text="@string/secure_info_detail"
-            android:textColor="@color/txt_item_main"
-            android:textSize="13sp" />
+            android:lineSpacingExtra="3dp"
+            android:textColor="@color/txt_item_sub"
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
