@@ -122,7 +122,7 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, Bank
             if (getItemCount() == (position + 1) ) {
                 mDashLine.setVisibility(View.GONE);
             }
-            mLogoView.setImageBitmap(ResourceManager.getImage(String.format("%s.png", card.getCardCode())));
+            mLogoView.setImageBitmap(ResourceManager.getImage(card.getCardLogoName()));
             mLogoView.setVisibility(View.VISIBLE);
             tvBankName.setText(card.getCardName());
             ivNext.setImageBitmap(ResourceManager.getImage("ic_next.png"));

@@ -55,7 +55,7 @@ public class TaskGetCardSupportList extends TaskBase {
     }
 
     protected String getCardBitmapName(String pBankCode) {
-        return String.format("bank_%s%s", pBankCode, Constants.BITMAP_EXTENSION);
+        return String.format("%s%s", pBankCode, Constants.BITMAP_EXTENSION);
     }
 
     protected ArrayList<ZPCard> populateCardSuportList() {
@@ -63,12 +63,13 @@ public class TaskGetCardSupportList extends TaskBase {
 
         //cc must be hardcode
 
+        String bankLogoVisa = String.format("%s%s", GlobalData.getStringResource(RS.string.zpw_string_banklogo_visa), Constants.BITMAP_EXTENSION);
         String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
         String bankNameVisa = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
         String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
         String bankNameMaster = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
         if (!TextUtils.isEmpty(bankCodeVisa) && !TextUtils.isEmpty(bankNameVisa)) {
-            ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
+            ZPCard zpCard = new ZPCard(bankCodeVisa, bankLogoVisa, bankNameVisa);
             cardArrayList.add(zpCard);
         }
         if (!TextUtils.isEmpty(bankCodeMaster) && !TextUtils.isEmpty(bankNameMaster)) {

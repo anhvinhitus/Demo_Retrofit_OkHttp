@@ -419,6 +419,7 @@
     <string name="zpw_string_bankcode_bidv">123PBIDV</string>
     <string name="zpw_string_bankcode_eximbank">123PEIB</string>
 
+    <string name="zpw_string_banklogo_visa">VISA1</string>
     <string name="zpw_string_bankcode_visa">VISA</string>
     <string name="zpw_string_bankname_visa">Visa</string>
     <string name="zpw_string_bankcode_master">MASTER</string>

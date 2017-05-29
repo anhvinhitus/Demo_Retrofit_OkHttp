@@ -412,6 +412,7 @@ public class RS {
         public static final String zpw_string_bankcode_bidv = "zpw_string_bankcode_bidv";
         public static final String zpw_string_bankcode_eximbank = "zpw_string_bankcode_eximbank";
 
+        public static final String zpw_string_banklogo_visa = "zpw_string_banklogo_visa";
         public static final String zpw_string_bankcode_visa = "zpw_string_bankcode_visa";
         public static final String zpw_string_bankname_visa = "zpw_string_bankname_visa";
         public static final String zpw_string_bankcode_master = "zpw_string_bankcode_master";
