@@ -118,9 +118,9 @@ public class TaskGetCardSupportList extends TaskBase {
             return "";
         }
         if (bankConfig.name.startsWith("NH")) {
-            return bankConfig.name.substring(2);
+            return bankConfig.name.substring(2).trim();
         } else {
-            return bankConfig.name;
+            return bankConfig.name.trim();
         }
     }
 }
