@@ -43,9 +43,11 @@ public interface Constants {
     String ARG_LINK_BANK_TYPE = "link_bank_type";
     String ARG_BANK_LIST = "auto_load_data";
     String ARG_BANK = "bank";
-    String ARG_PAGE_INDEX = "page_index";
+    String ARG_LINK_CARD_WITH_BANK_CODE = "link_card_with_bank_code";
+    String ARG_LINK_ACCOUNT_WITH_BANK_CODE = "link_account_with_bank_code";
     String ARG_GOTO_SELECT_BANK_IN_LINK_BANK = "goto_select_bank_in_link_bank";
     String ARG_CONTINUE_PAY_AFTER_LINK_BANK = "continue_pay_after_link_bank";
+    String ARG_CONTINUE_WITHDRAW_AFTER_LINK_BANK = "continue_withdraw_after_link_bank";
     String ARG_UPDATE_PROFILE2_AND_LINK_ACC = "link_acc_after_update_profile2";
 
     int RESULT_END_PAYMENT = -2;

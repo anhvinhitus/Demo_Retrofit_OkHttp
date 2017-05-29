@@ -39,6 +39,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -57,7 +58,10 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     private PaymentWrapper mPaymentWrapper;
     protected EventBus mEventBus;
     private boolean mPayAfterLinkBank;
+    private boolean mWithdrawAfterLinkBank;
     private boolean mGotoSelectBank = false;
+    private String mLinkCardWithBankCode = "";
+    private String mLinkAccountWithBankCode = "";
 
     @Inject
     BankPresenter(User user,
@@ -101,13 +105,24 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return;
         }
         mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
+        mWithdrawAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_WITHDRAW_AFTER_LINK_BANK);
         mGotoSelectBank = bundle.getBoolean(Constants.ARG_GOTO_SELECT_BANK_IN_LINK_BANK);
+        mLinkCardWithBankCode = bundle.getString(Constants.ARG_LINK_CARD_WITH_BANK_CODE);
+        mLinkAccountWithBankCode = bundle.getString(Constants.ARG_LINK_ACCOUNT_WITH_BANK_CODE);
     }
 
     void initPageStart() {
-        if (mGotoSelectBank) {
+        if (!TextUtils.isEmpty(mLinkCardWithBankCode)) {
+            linkCard();
+        } else if (!TextUtils.isEmpty(mLinkAccountWithBankCode)) {
+            linkAccount(mLinkAccountWithBankCode);
+        } else if (mGotoSelectBank) {
             mNavigator.startBankSupportSelectionActivity(mView.getFragment());
         }
+    }
+
+    private void linkCard() {
+        mPaymentWrapper.linkCard(getActivity());
     }
 
     private void linkAccount(String bankCode) {
@@ -163,6 +178,12 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     /*private List<DBaseMap> getFakeData() {
         List<DBaseMap> linkedBankList = new ArrayList<>();
 
+        DMappedCard visaCard = new DMappedCard();
+        visaCard.first6cardno = "445093";
+        visaCard.last4cardno = "0161";
+        visaCard.bankcode = vn.com.zalopay.wallet.business.data.Constants.CCCode;
+        linkedBankList.add(visaCard);
+
         DMappedCard vtbCard = new DMappedCard();
         vtbCard.bankcode = ECardType.PVTB.toString();
         vtbCard.first6cardno = "970415";
@@ -187,17 +208,11 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         sgCard.last4cardno = "9999";
         linkedBankList.add(sgCard);
 
-        DBankAccount scbAccount = new DBankAccount();
-        scbAccount.firstaccountno = "0123456";
-        scbAccount.lastaccountno = "1231";
-        scbAccount.bankcode = ECardType.PSCB.toString();
-        linkedBankList.add(scbAccount);
-
-        DBankAccount vtAccount = new DBankAccount();
-        vtAccount.firstaccountno = "054321";
-        vtAccount.lastaccountno = "6789";
-        vtAccount.bankcode = ECardType.PVTB.toString();
-        linkedBankList.add(vtAccount);
+        DMappedCard bivdCard = new DMappedCard();
+        bivdCard.first6cardno = "970418";
+        bivdCard.last4cardno = "1231";
+        bivdCard.bankcode = ECardType.PBIDV.toString();
+        linkedBankList.add(bivdCard);
 
         DBankAccount vcbAccount = new DBankAccount();
         vcbAccount.firstaccountno = "098765";
@@ -221,7 +236,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
 
         mView.setListLinkedBank(linkedBankList);
-        //mView.setListLinkedBank(getFakeData());
+//        mView.setListLinkedBank(getFakeData());
     }
 
     private String getString(@StringRes int stringResource) {
@@ -344,13 +359,37 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
+    private void showConfirmPayAfterLinkBank(DBaseMap bankInfo) {
+        if (mView == null) {
+            return;
+        }
+        String message = getString(R.string.confirm_continue_pay_after_link_card);
+        if (bankInfo instanceof DBankAccount) {
+            message = getString(R.string.confirm_continue_pay_after_link_account);
+        }
+        mView.showConfirmDialogAfterLinkBank(message);
+    }
+
+    private void showConfirmWithdrawAfterLinkBank(DBaseMap bankInfo) {
+        if (mView == null) {
+            return;
+        }
+        String message = getString(R.string.confirm_continue_withdraw_after_link_card);
+        if (bankInfo instanceof DBankAccount) {
+            message = getString(R.string.confirm_continue_withdraw_after_link_account);
+        }
+        mView.showConfirmDialogAfterLinkBank(message);
+    }
+
     @Override
     void onAddBankCardSuccess(DMappedCard bankCard) {
         if (bankCard != null) {
             mView.onAddBankSuccess(bankCard);
         }
-        if (mPayAfterLinkBank && mView != null) {
-            mView.showConfirmPayAfterLinkBank(bankCard);
+        if (mPayAfterLinkBank) {
+            showConfirmPayAfterLinkBank(bankCard);
+        } else if (mWithdrawAfterLinkBank) {
+            showConfirmWithdrawAfterLinkBank(bankCard);
         }
     }
 
@@ -359,8 +398,10 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         if (bankAccount != null) {
             mView.onAddBankSuccess(bankAccount);
         }
-        if (mPayAfterLinkBank && mView != null) {
-            mView.showConfirmPayAfterLinkBank(bankAccount);
+        if (mPayAfterLinkBank) {
+            showConfirmPayAfterLinkBank(bankAccount);
+        } else if (mWithdrawAfterLinkBank) {
+            showConfirmWithdrawAfterLinkBank(bankAccount);
         }
     }
 

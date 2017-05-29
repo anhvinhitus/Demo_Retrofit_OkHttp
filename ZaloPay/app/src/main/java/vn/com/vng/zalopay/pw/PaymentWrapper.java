@@ -323,9 +323,9 @@ public class PaymentWrapper {
             clearPendingOrder();
         } else {
             if (mRedirectListener != null) {
-                mRedirectListener.startLinkAccountActivity();
+                mRedirectListener.startLinkAccountActivity(null);
             } else {
-                startLinkAccountActivity();
+                startLinkAccountActivity(null);
             }
         }
     }
@@ -532,20 +532,20 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfileLevelBeforeLinkAcc(mActivity);
     }
 
-    void startLinkCardActivity() {
+    void startLinkCardActivity(String bankCode) {
         if (mActivity == null) {
             return;
         }
 
-        mNavigator.startLinkCardActivityForResult(mActivity);
+        mNavigator.startLinkCardActivityForResult(mActivity, bankCode);
     }
 
-    void startLinkAccountActivity() {
+    void startLinkAccountActivity(String bankCode) {
         if (mActivity == null) {
             return;
         }
 
-        mNavigator.startLinkAccountActivityForResult(mActivity);
+        mNavigator.startLinkAccountActivityForResult(mActivity, bankCode);
     }
 
     public interface ILinkCardListener {
@@ -557,9 +557,9 @@ public class PaymentWrapper {
 
         void startDepositForResult();
 
-        void startLinkCardActivity();
+        void startLinkCardActivity(String bankCode);
 
-        void startLinkAccountActivity();
+        void startLinkAccountActivity(String bankCode);
 
         void startUpdateProfileBeforeLinkAcc();
     }

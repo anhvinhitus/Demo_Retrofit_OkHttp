@@ -28,6 +28,7 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_INPU
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET;
@@ -108,6 +109,23 @@ class WalletListener implements ZPPaymentListener {
                     break;
                 case ZPC_TRANXSTATUS_CLOSE:
                     responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+                    /*// TODO: 5/29/17 - longlv: Fake data to test
+                    pPaymentResult.paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
+                    //LinkAccount
+                    pPaymentResult.paymentInfo.linkAccInfo = new LinkAccInfo(ECardType.PVCB.toString(), ELinkAccType.LINK);
+                    DBankAccount dBankAccount = new DBankAccount();
+                    dBankAccount.bankcode = ECardType.PVCB.toString();
+                    dBankAccount.firstaccountno = "097654";
+                    dBankAccount.lastaccountno = "4321";
+                    pPaymentResult.paymentInfo.mapBank = dBankAccount;
+                    //LinkCard
+                    *//*DMappedCard mappedCard = new DMappedCard();
+                    mappedCard.bankcode = ECardType.PBIDV.toString();
+                    mappedCard.first6cardno = "970418";
+                    mappedCard.last4cardno = "4321";
+                    pPaymentResult.paymentInfo.mapBank = mappedCard;*//*
+
+                    mPaymentWrapper.responseListener.onResponseSuccess(pPaymentResult);*/
                     break;
                 case ZPC_TRANXSTATUS_INPUT_INVALID:
                     responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
@@ -138,22 +156,29 @@ class WalletListener implements ZPPaymentListener {
                     }
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
+                    String bankCode = null;
+                    if (pPaymentResult.paymentInfo.mapBank != null) {
+                        bankCode = pPaymentResult.paymentInfo.mapBank.bankcode;
+                    }
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkAccountActivity();
+                        mPaymentWrapper.startLinkAccountActivity(bankCode);
                     } else {
-                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity();
+                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity(bankCode);
                     }
                     paymentIsCompleted = false; // will continue after update profile
                     break;
-                // TODO: 4/28/17 - longlv: waiting PaymentSDK
-                /*case ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT:
+                case ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT:
+                    String bankCodeLinkCard = null;
+                    if (pPaymentResult.paymentInfo.mapBank != null) {
+                        bankCodeLinkCard = pPaymentResult.paymentInfo.mapBank.bankcode;
+                    }
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkCardActivity();
+                        mPaymentWrapper.startLinkCardActivity(bankCodeLinkCard);
                     } else {
-                        mPaymentWrapper.mRedirectListener.startLinkCardActivity();
+                        mPaymentWrapper.mRedirectListener.startLinkCardActivity(bankCodeLinkCard);
                     }
                     paymentIsCompleted = false; // will continue after update profile
-                    break;*/
+                    break;
                 case ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT:
                     if (mPaymentWrapper.mRedirectListener == null) {
                         mPaymentWrapper.startUpdateProfileBeforeLinkAcc();
