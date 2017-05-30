@@ -265,10 +265,12 @@ public abstract class AdapterBase {
 
     public int getChannelID() {
         MiniPmcTransType miniPmcTransType = getConfig();
-        if (GlobalData.isWithDrawChannel()) {
-            miniPmcTransType.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        if (miniPmcTransType != null) {
+            return miniPmcTransType.pmcid;
+        } else if (GlobalData.isWithDrawChannel()) {
+            return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
         }
-        return miniPmcTransType != null ? miniPmcTransType.pmcid : -1;
+        return -1;
     }
 
     public boolean isInputStep() {

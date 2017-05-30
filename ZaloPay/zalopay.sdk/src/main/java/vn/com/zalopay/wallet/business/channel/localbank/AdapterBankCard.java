@@ -52,12 +52,6 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-    public MiniPmcTransType getConfig() {
-        String bankCode = BankCardCheck.getInstance().getDetectBankCode();
-        return getConfig(bankCode);
-    }
-
-    @Override
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {

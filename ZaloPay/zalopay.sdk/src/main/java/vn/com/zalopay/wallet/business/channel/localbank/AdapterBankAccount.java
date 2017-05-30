@@ -21,11 +21,6 @@ public class AdapterBankAccount extends AdapterBankCard {
     }
 
     @Override
-    public MiniPmcTransType getConfig() {
-        return mMiniPmcTransType;
-    }
-
-    @Override
     public MiniPmcTransType getConfig(String pBankCode) {
         return mMiniPmcTransType;
     }
