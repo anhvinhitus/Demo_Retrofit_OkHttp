@@ -40,7 +40,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -97,11 +96,22 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         super.detachView();
     }
 
+    @Override
     Activity getActivity() {
         if (mView == null) {
             return null;
         }
         return mView.getActivity();
+    }
+
+    @Override
+    User getUser() {
+        return mUser;
+    }
+
+    @Override
+    PaymentWrapper getPaymentWrapper() {
+        return mPaymentWrapper;
     }
 
     void initData(Bundle bundle) {
@@ -127,14 +137,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
 
     private void linkCard() {
         mPaymentWrapper.linkCard(getActivity());
-    }
-
-    private void linkAccount(String bankCode) {
-        if (mPaymentWrapper == null || mView == null || TextUtils.isEmpty(bankCode)) {
-            return;
-        }
-        mPaymentWrapper.linkAccount(getActivity(), bankCode);
-        hideLoadingView();
     }
 
     void AddMoreBank() {
@@ -430,21 +432,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             dBankAccount.lastaccountno = bankInfo.mLastNumber;
             onAddBankAccountSuccess(dBankAccount);
         }
-    }
-
-    private boolean checkLinkedBankAccount(List<DBankAccount> listBankAccount, String bankCode) {
-        if (Lists.isEmptyOrNull(listBankAccount)) {
-            return false;
-        }
-        for (DBankAccount bankAccount : listBankAccount) {
-            if (bankAccount == null || TextUtils.isEmpty(bankAccount.bankcode)) {
-                continue;
-            }
-            if (bankAccount.bankcode.equalsIgnoreCase(bankCode)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
