@@ -248,10 +248,17 @@ public abstract class AdapterBase {
 
     public int getChannelID() {
         MiniPmcTransType miniPmcTransType = getConfig();
+<<<<<<< HEAD
         if (GlobalData.isWithDrawChannel()) {
             miniPmcTransType.pmcid = BuildConfig.channel_zalopay;
+=======
+        if (miniPmcTransType != null) {
+            return miniPmcTransType.pmcid;
+        } else if (GlobalData.isWithDrawChannel()) {
+            return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+>>>>>>> d198fe1... [SDK] Fix lỗi rút tiền pmc 39 thành 38
         }
-        return miniPmcTransType != null ? miniPmcTransType.pmcid : -1;
+        return -1;
     }
 
     public boolean isInputStep() {
