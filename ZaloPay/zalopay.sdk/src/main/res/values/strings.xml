@@ -409,9 +409,9 @@
     <string name="zpw_string_bankcode_eximbank">123PEIB</string>
 
     <string name="zpw_string_bankcode_visa">VISA</string>
-    <string name="zpw_string_bankname_visa">Visa</string>
+    <string name="zpw_string_bankname_visa">VISA</string>
     <string name="zpw_string_bankcode_master">MASTER</string>
-    <string name="zpw_string_bankname_master">MasterCard</string>
+    <string name="zpw_string_bankname_master">Mastercard</string>
     <string name="zpw_string_bankcode_jcb">JCB</string>
 
     <string name="zpw_string_level_allow_use_zalopay">2</string>

@@ -193,13 +193,23 @@ public class DataParameter {
         params.put(ConstantParams.TRANSTYPE, stringBuilder.toString());
 
         stringBuilder1.append("[");
+        boolean isReload = false;
         for (int i = 0; i < pTranstypeCheckSum.length; i++) {
-            stringBuilder1.append(pTranstypeCheckSum[i] != null ? pTranstypeCheckSum[i] : "");
+            if (TextUtils.isEmpty(pTranstypeCheckSum[i])) {
+                isReload = true;
+                break;
+            }
+            stringBuilder1.append(pTranstypeCheckSum[i]);
             if (i + 1 < pTranstypeCheckSum.length) {
                 stringBuilder1.append(",");
             }
         }
         stringBuilder1.append("]");
+
+        if (isReload) {
+            stringBuilder1 = new StringBuilder();
+            stringBuilder1.append("[]");
+        }
         params.put(ConstantParams.TRANSTYPECHECKSUMS, stringBuilder1.toString());
     }
 
