@@ -1,11 +1,13 @@
 package vn.com.vng.zalopay.tracker;
 
+import android.content.Context;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by huuhoa on 6/27/16.
@@ -17,8 +19,10 @@ public class ZPTrackerGA extends DefaultTracker {
 
     private final Tracker mTracker;
 
-    public ZPTrackerGA(Tracker tracker) {
-        mTracker = tracker;
+    public ZPTrackerGA(Context context) {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+        mTracker = analytics.newTracker(BuildConfig.GA_Tracker);
     }
 
     @Override

@@ -6,9 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
@@ -140,14 +137,4 @@ public class ApplicationModule {
                                                   EventBus eventBus) {
         return new ApplicationSessionImpl(context, daoSession, navigator, eventBus);
     }
-
-    @Provides
-    @Singleton
-    Tracker provideDefaultTracker() {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(application);
-        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        return analytics.newTracker(BuildConfig.GA_Tracker);
-
-    }
-
 }

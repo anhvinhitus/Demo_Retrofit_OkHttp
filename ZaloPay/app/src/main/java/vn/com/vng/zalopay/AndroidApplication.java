@@ -15,8 +15,6 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.react.modules.fresco.FrescoModule;
 import com.facebook.react.views.text.ReactFontManager;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
 import com.zalopay.ui.widget.iconfont.IconFontHelper;
@@ -29,6 +27,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -42,7 +41,6 @@ import vn.com.vng.zalopay.tracker.ZPTrackerAnswers;
 import vn.com.vng.zalopay.tracker.ZPTrackerApptransid;
 import vn.com.vng.zalopay.tracker.ZPTrackerFileAppender;
 import vn.com.vng.zalopay.tracker.ZPTrackerGA;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -156,12 +154,8 @@ public class AndroidApplication extends Application {
     }
 
     private void initializeZaloPayAnalytics() {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        final Tracker tracker = analytics.newTracker(BuildConfig.GA_Tracker);
-
         ZPAnalytics.addDefaultTracker();
-        ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
+        ZPAnalytics.addTracker(new ZPTrackerGA(this));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
         ZPAnalytics.addTracker(new ZPTrackerFileAppender());
         ZPAnalytics.addTracker(new ZPTrackerApptransid(appComponent.appTransIdLogRepository()));
