@@ -196,7 +196,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         String message = getString(R.string.txt_confirm_remove_card);
         DBaseMap bankInfo = mAdapter.getItem(adapterPosition);
         if (bankInfo instanceof DBankAccount) {
-            message = getString(R.string.txt_confirm_remove_account);
+            message = getString(R.string.txt_confirm_remove_vcb_account);
         }
         super.showConfirmDialog(message,
                 getString(R.string.btn_confirm),
