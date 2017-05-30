@@ -264,11 +264,13 @@ public abstract class AdapterBase {
     public abstract void onProcessPhrase() throws Exception;
 
     public int getChannelID() {
-        MiniPmcTransType miniPmcTransType = getConfig();
-        if (miniPmcTransType != null) {
-            return miniPmcTransType.pmcid;
-        } else if (GlobalData.isWithDrawChannel()) {
+        if (GlobalData.isWithDrawChannel()) {
             return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
+        }else{
+            MiniPmcTransType miniPmcTransType = getConfig();
+            if (miniPmcTransType != null) {
+                return miniPmcTransType.pmcid;
+            }
         }
         return -1;
     }
