@@ -247,16 +247,13 @@ public abstract class AdapterBase {
     public abstract void onProcessPhrase() throws Exception;
 
     public int getChannelID() {
-        MiniPmcTransType miniPmcTransType = getConfig();
-<<<<<<< HEAD
         if (GlobalData.isWithDrawChannel()) {
-            miniPmcTransType.pmcid = BuildConfig.channel_zalopay;
-=======
-        if (miniPmcTransType != null) {
-            return miniPmcTransType.pmcid;
-        } else if (GlobalData.isWithDrawChannel()) {
-            return Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
->>>>>>> d198fe1... [SDK] Fix lỗi rút tiền pmc 39 thành 38
+            return BuildConfig.channel_zalopay;
+        } else {
+            MiniPmcTransType miniPmcTransType = getConfig();
+            if (miniPmcTransType != null) {
+                return miniPmcTransType.pmcid;
+            }
         }
         return -1;
     }
@@ -1014,7 +1011,8 @@ public abstract class AdapterBase {
 
     }
 
-    protected void showConfrimScreenForCardChannel(MiniPmcTransType pMiniPmcTransType) throws Exception {
+    protected void showConfrimScreenForCardChannel(MiniPmcTransType pMiniPmcTransType) throws
+            Exception {
         try {
             getActivity().enableSubmitBtn(true);
             getActivity().showConfirmView(true, true, pMiniPmcTransType);
@@ -1257,7 +1255,8 @@ public abstract class AdapterBase {
      * networking occur an error on the way,
      * client haven't get response from server,need to check to server
      */
-    protected void checkTransactionStatusAfterSubmitFail(boolean shouldDelay, final String pAppTransID, String pMessage) {
+    protected void checkTransactionStatusAfterSubmitFail(boolean shouldDelay,
+                                                         final String pAppTransID, String pMessage) {
         try {
             isAlreadyCheckStatusFailSubmit = true;
             showProgressBar(true, TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
@@ -1343,7 +1342,8 @@ public abstract class AdapterBase {
         return MapCardHelper.isGetMapCardInfoSuccessAndHaveNewMapCard(pCardInfoResponse) && !GlobalData.isRedPacketChannel();
     }
 
-    protected void processCardInfoListResponse(CardInfoListResponse pCardInfoResponse) throws Exception {
+    protected void processCardInfoListResponse(CardInfoListResponse pCardInfoResponse) throws
+            Exception {
         try {
             //get list map card successfully, callback info mapped card to app to show tutorial page
             if (isNeedToNotifyMapCardToApp(pCardInfoResponse)) {
@@ -1684,7 +1684,8 @@ public abstract class AdapterBase {
         Log.d(this, "terminate transaction");
     }
 
-    protected void showDialogWithCallBack(String pMessage, String pButtonText, ZPWOnEventDialogListener pCallBack) {
+    protected void showDialogWithCallBack(String pMessage, String
+            pButtonText, ZPWOnEventDialogListener pCallBack) {
         showProgressBar(false, null);
 
         getActivity().showInfoDialog(pCallBack, pMessage, pButtonText);
