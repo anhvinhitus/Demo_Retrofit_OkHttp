@@ -540,6 +540,7 @@ public class AdapterBankCard extends AdapterBase {
             intentBankList.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PBIDV);
             intentBankList.putExtra(MapListSelectionActivity.CARDNUMBER_EXTRA, getGuiProcessor().getCardNumber());
             intentBankList.putExtra(MapListSelectionActivity.NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
+            intentBankList.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
             getActivity().startActivity(intentBankList);
             return true;
         }

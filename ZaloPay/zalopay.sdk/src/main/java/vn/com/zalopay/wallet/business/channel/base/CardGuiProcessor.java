@@ -861,11 +861,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             //check disable pmc
-            if (getCardFinder().isDetected() && (miniPmcTransType == null || (miniPmcTransType != null && miniPmcTransType.isDisable()))) {
+            if (getCardFinder().isDetected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
                 showWarningDisablePmc(bankName);
                 return;
             }
-
 
             //bidv card must paid by mapcard
             if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
@@ -1024,7 +1023,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             //check disable pmc
-            if (getCardFinder().isDetected() && (miniPmcTransType == null || (miniPmcTransType != null && miniPmcTransType.isDisable()))) {
+            if (getCardFinder().isDetected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
                 showWarningDisablePmc(pBankName);
                 return;
             }
@@ -1530,7 +1529,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showWarningDisablePmc(String pBankName) {
-        String disableBankMessage = String.format(GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable), pBankName);
+        String mess = GlobalData.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_link) : GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_payment);
+        String disableBankMessage = String.format(mess, pBankName);
         getAdapter().getActivity().showInfoDialog(new ZPWOnEventDialogListener() {
             @Override
             public void onOKevent() {
@@ -1542,7 +1542,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             getViewPager().setCurrentItem(0);
                             getCardNumberView().setText(null);
                             ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
-
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
