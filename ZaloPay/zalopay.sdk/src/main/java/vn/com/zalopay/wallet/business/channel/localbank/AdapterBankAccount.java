@@ -14,12 +14,6 @@ public class AdapterBankAccount extends AdapterBankCard {
     }
 
     @Override
-    public int getChannelID() {
-        int channelId = super.getChannelID();
-        return channelId != -1 ? channelId : getDefaultChannelId();
-    }
-
-    @Override
     public MiniPmcTransType getConfig(String pBankCode) {
         return mMiniPmcTransType;
     }
