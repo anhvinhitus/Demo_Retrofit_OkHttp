@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.view.component.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -540,7 +541,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     //item on listview is clicked
-    private void onSelectedChannel(DPaymentChannelView pChannel) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    public void onSelectedChannel(DPaymentChannelView pChannel) {
+        if (pChannel == null) {
+            return;
+        }
+        
         //bank is maintenance
         if (pChannel.isMaintenance()) {
             if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {

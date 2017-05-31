@@ -66,6 +66,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     def libs = rootProject.ext.libraries
+    def tests = rootProject.ext.testingLibraries
+
+    testCompile tests.junit
+    testCompile tests.robolectric
 
     compile libs.timber
 
