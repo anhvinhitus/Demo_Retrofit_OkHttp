@@ -3,6 +3,7 @@ package com.zalopay.apploader.internal;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -319,6 +320,11 @@ public class FileUtils {
         } finally {
             out.close();
         }
+    }
+
+    public static boolean existsAndIsFile(String filePath) {
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
     }
 
 }

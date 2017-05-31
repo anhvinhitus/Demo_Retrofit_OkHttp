@@ -113,7 +113,7 @@ public class FileLogHelper {
 
     public static Observable<String> uploadFileLog(String filePath, FileLogStore.Repository fileLogRepository) {
         return FileLogHelper.zipFileLog(filePath) // Zip file
-                .filter(s -> !TextUtils.isEmpty(s))
+                .filter(s -> !TextUtils.isEmpty(s) && FileUtils.existsAndIsFile(s))
                 .flatMap(fileLogRepository::uploadFileLog) // Upload file
                 .doOnNext(s -> FileUtils.deleteFileAtPathSilently(filePath)) // Remove .txt
                 .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
@@ -125,7 +125,7 @@ public class FileLogHelper {
                 .filter(logs -> logs != null && logs.length() > 0)
                 .map(logs -> ApptransidFileLog.Instance.append(new ApptransidLogData(logs)))
                 .flatMap(FileLogHelper::zipFileLog) // Zip file
-                .filter(s -> !TextUtils.isEmpty(s))
+                .filter(s -> !TextUtils.isEmpty(s) && FileUtils.existsAndIsFile(s))
                 .flatMap(fileLogRepository::uploadFileLog) // Upload file
                 .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
                 .doOnNext(s -> {
