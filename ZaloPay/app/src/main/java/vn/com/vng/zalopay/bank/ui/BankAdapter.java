@@ -25,10 +25,10 @@ import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.constants.CardType;
 
 /**
  * Created by longlv on 5/25/17.
@@ -201,7 +201,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
             if (bankAccount == null) {
                 return "";
             }
-            if (ECardType.PVCB.toString().equalsIgnoreCase(bankAccount.bankcode)) {
+            if (CardType.PVCB.toString().equalsIgnoreCase(bankAccount.bankcode)) {
                 return PhoneUtil.getPhoneNumberScreened(mUser.phonenumber);
             } else {
                 return bankAccount.firstaccountno + bankAccount.lastaccountno;

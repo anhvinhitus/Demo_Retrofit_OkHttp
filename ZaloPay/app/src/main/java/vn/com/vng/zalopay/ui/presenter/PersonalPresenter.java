@@ -215,8 +215,8 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     private void checkLinkCardStatus() {
-        List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-        List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
+        List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
@@ -323,7 +323,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     private List<BankAccount> getLinkedBankAccount() {
-        List<DBankAccount> mapCardList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        List<DBankAccount> mapCardList = CShareDataWrapper.getMapBankAccountList(mUser);
         return transformBankAccount(mapCardList);
     }
 

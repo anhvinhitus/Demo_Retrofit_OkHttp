@@ -24,6 +24,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.zalopay.ui.widget.IconFontDrawable;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
@@ -41,7 +42,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -186,6 +186,11 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                 getString(R.string.btn_cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
+                    public void onCancelEvent() {
+                        closeable.smoothCloseMenu();
+                    }
+
+                    @Override
                     public void onOKevent() {
                         closeable.smoothCloseMenu();
                         if (menuPosition == 0 && direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
@@ -193,11 +198,6 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                             mPresenter.removeLinkedBank(mAdapter.getItem(adapterPosition));
                             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
                         }
-                    }
-
-                    @Override
-                    public void onCancelEvent() {
-                        closeable.smoothCloseMenu();
                     }
                 });
     }

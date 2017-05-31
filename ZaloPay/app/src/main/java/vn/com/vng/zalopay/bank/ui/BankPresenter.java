@@ -17,20 +17,19 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
+import vn.com.vng.zalopay.pw.PaymentWrapper;
+import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
-import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -67,9 +66,6 @@ class BankPresenter extends AbstractPresenter<IBankView> {
         this.mNavigator = navigator;
         this.mEventBus = eventBus;
         mPaymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
@@ -135,7 +131,7 @@ class BankPresenter extends AbstractPresenter<IBankView> {
         if (mPaymentWrapper == null || mView == null || bankAccount == null) {
             return;
         }
-        mPaymentWrapper.unLinkAccount(mView.getActivity(), bankAccount.bankcode);
+        mPaymentWrapper.unlinkAccount(mView.getActivity(), bankAccount.bankcode);
     }
 
     void removeLinkedBank(DBaseMap item) {
@@ -280,9 +276,12 @@ class BankPresenter extends AbstractPresenter<IBankView> {
                 } else {
                     showNetworkErrorDialog();
                 }
-            } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-                mEventBus.postSticky(new TokenPaymentExpiredEvent());
-            } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
+            }
+            // TODO just comment for build - need to recheck
+//            else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
+//                mEventBus.postSticky(new TokenPaymentExpiredEvent());
+//            }
+            else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.d("err removed map card %s", pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);
             }
