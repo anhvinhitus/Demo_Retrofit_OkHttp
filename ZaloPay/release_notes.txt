@@ -1,3 +1,7 @@
+Zalo Pay (Production v2.11.0 - build 252) - Released on 2017-05-31
+- [SDK] Fix get app info
+- [SDK] Bidv - Sửa text button từ "Chọn nguồn khác" thành "Nhập thẻ khác"
+
 Zalo Pay (Production v2.11.0 - build 251) - Released on 2017-05-30
 - [SDK] Tách message pmc không hỗ trợ khi vào liên kết và giao dịch
 - [SDK] Bidv - Sửa text button từ "Chọn nguồn khác" thành "Nhập thẻ khác"
