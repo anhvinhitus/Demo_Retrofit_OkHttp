@@ -80,7 +80,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_LISTBANKACCCOUNT)
-    @API_NAME(ZPEvents.API_UM_LISTBANKACCOUNTFORCLIENT)
+    @API_NAME(ZPEvents.CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT)
     Observable<BankAccountListResponse> loadMapBankAccountList(@QueryMap Map<String, String> params);
 
     /***
