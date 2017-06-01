@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.react.base;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
@@ -35,7 +36,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case TAB_MAIN_INDEX:
                 return ZaloPayFragment.newInstance();
             case TAB_TRANSACTION_INDEX:
-                return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
+                return InternalReactFragment.newInstance(ModuleName.TRANSACTION_LOGS);
             case TAB_PROMOTION_INDEX:
                 return PromotionFragment.newInstance();
             case TAB_PERSONAL_INDEX:

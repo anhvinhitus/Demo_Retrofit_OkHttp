@@ -75,11 +75,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onResume() {
         // Set collapsing behavior
         mAppBarLayout.addOnOffsetChangedListener(this);
