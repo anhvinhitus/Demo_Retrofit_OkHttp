@@ -43,7 +43,7 @@ class FingerprintInternal {
         Timber.d("initialize: IMPL SamSung %s", IMPL);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            MarshmallowFingerprintManagerCompatImpl fingerprintManagerCompat = new MarshmallowFingerprintManagerCompatImpl();
+            MarshmallowFingerprintManagerCompatImpl fingerprintManagerCompat = new MarshmallowFingerprintManagerCompatImpl(context);
             if (fingerprintManagerCompat.isHardwareDetected(context)) {
                 IMPL = fingerprintManagerCompat;
             }

@@ -1,59 +1,92 @@
 package vn.com.vng.zalopay.authentication.fingerprintsupport;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompatApi23;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.os.CancellationSignal;
+
+import timber.log.Timber;
 
 /**
  * Created by hieuvm on 5/4/17.
  * *
  */
-
+@TargetApi(23)
 @RequiresApi(api = Build.VERSION_CODES.M)
 final class MarshmallowFingerprintManagerCompatImpl implements FingerprintManagerCompat.FingerprintManagerCompatImpl {
 
-    MarshmallowFingerprintManagerCompatImpl() {
+    private final FingerprintManager mFingerprintManager;
+
+    MarshmallowFingerprintManagerCompatImpl(Context context) {
+        mFingerprintManager = getFingerprintManagerOrNull(context);
     }
 
+    private FingerprintManager getFingerprintManagerOrNull(Context context) {
+        try {
+            return (FingerprintManager) context.getSystemService(Activity.FINGERPRINT_SERVICE);
+        } catch (Exception ignore) {
+            return null;
+        }
+    }
 
-    @Override
     public boolean hasEnrolledFingerprints(Context context) {
-        return FingerprintManagerCompatApi23.hasEnrolledFingerprints(context);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Timber.d("permission PERMISSION_GRANTED deny");
+            return false;
+        }
+        return mFingerprintManager != null && mFingerprintManager.hasEnrolledFingerprints();
     }
 
-    @Override
     public boolean isHardwareDetected(Context context) {
-        return FingerprintManagerCompatApi23.isHardwareDetected(context);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Timber.d("permission PERMISSION_GRANTED deny");
+            return false;
+        }
+
+        return (mFingerprintManager != null) && mFingerprintManager.isHardwareDetected();
     }
 
     @Override
     public void authenticate(Context context, FingerprintManagerCompat.CryptoObject crypto, int flags,
                              CancellationSignal cancel, FingerprintManagerCompat.AuthenticationCallback callback, Handler handler) {
-        FingerprintManagerCompatApi23.authenticate(context, wrapCryptoObject(crypto), flags,
-                cancel != null ? cancel.getCancellationSignalObject() : null,
+
+        if (mFingerprintManager == null) {
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        mFingerprintManager.authenticate(wrapCryptoObject(crypto),
+                cancel != null ? ((android.os.CancellationSignal) cancel.getCancellationSignalObject()) : null, flags,
                 wrapCallback(callback), handler);
     }
 
-    private static FingerprintManagerCompatApi23.CryptoObject wrapCryptoObject(
+    private static FingerprintManager.CryptoObject wrapCryptoObject(
             FingerprintManagerCompat.CryptoObject cryptoObject) {
         if (cryptoObject == null) {
             return null;
         } else if (cryptoObject.getCipher() != null) {
-            return new FingerprintManagerCompatApi23.CryptoObject(cryptoObject.getCipher());
+            return new FingerprintManager.CryptoObject(cryptoObject.getCipher());
         } else if (cryptoObject.getSignature() != null) {
-            return new FingerprintManagerCompatApi23.CryptoObject(cryptoObject.getSignature());
+            return new FingerprintManager.CryptoObject(cryptoObject.getSignature());
         } else if (cryptoObject.getMac() != null) {
-            return new FingerprintManagerCompatApi23.CryptoObject(cryptoObject.getMac());
+            return new FingerprintManager.CryptoObject(cryptoObject.getMac());
         } else {
             return null;
         }
     }
 
-    static FingerprintManagerCompat.CryptoObject unwrapCryptoObject(
-            FingerprintManagerCompatApi23.CryptoObject cryptoObject) {
+    private static FingerprintManagerCompat.CryptoObject unwrapCryptoObject(
+            FingerprintManager.CryptoObject cryptoObject) {
         if (cryptoObject == null) {
             return null;
         } else if (cryptoObject.getCipher() != null) {
@@ -67,9 +100,9 @@ final class MarshmallowFingerprintManagerCompatImpl implements FingerprintManage
         }
     }
 
-    private static FingerprintManagerCompatApi23.AuthenticationCallback wrapCallback(
+    private static FingerprintManager.AuthenticationCallback wrapCallback(
             final FingerprintManagerCompat.AuthenticationCallback callback) {
-        return new FingerprintManagerCompatApi23.AuthenticationCallback() {
+        return new FingerprintManager.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errMsgId, CharSequence errString) {
                 callback.onAuthenticationError(errMsgId, errString);
@@ -81,8 +114,7 @@ final class MarshmallowFingerprintManagerCompatImpl implements FingerprintManage
             }
 
             @Override
-            public void onAuthenticationSucceeded(
-                    FingerprintManagerCompatApi23.AuthenticationResultInternal result) {
+            public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
                 callback.onAuthenticationSucceeded(new FingerprintManagerCompat.AuthenticationResult(
                         unwrapCryptoObject(result.getCryptoObject())));
             }
