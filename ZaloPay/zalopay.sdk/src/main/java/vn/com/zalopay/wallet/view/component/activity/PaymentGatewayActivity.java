@@ -31,7 +31,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -219,7 +218,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
+<<<<<<<HEAD
         ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
+=======
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
+        }
+>>>>>>>8807597... [ZPAnalytics]Fix crash loop on
+        Crashlytic https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/592f841dbe077a4dcc81c6c4/sessions/latest?build=58389647
         //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
@@ -378,7 +384,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
+<<<<<<<HEAD
         ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
+=======
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
+        }
+>>>>>>>8807597... [ZPAnalytics]Fix crash loop on
+        Crashlytic https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/592f841dbe077a4dcc81c6c4/sessions/latest?build=58389647
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
@@ -502,11 +515,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             AdapterBase.existedMapCard = false;
         }
 
+        // TrackApptransidEvent choose pay method
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+        }
         //calculate fee and total amount order
         GlobalData.populateOrderFee(pChannel);
 
         ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
     }
 
     //item on listview is clicked

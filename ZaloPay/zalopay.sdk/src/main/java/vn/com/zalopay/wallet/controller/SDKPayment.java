@@ -132,7 +132,7 @@ public class SDKPayment {
         try {
             GlobalData.getTransactionType();
             GlobalData.selectBankFunctionByTransactionType();
-            Log.d("pay", "transaction type" + GlobalData.getTransactionType());
+            GlobalData.initializeAnalyticTracker();
         } catch (Exception e) {
             Log.e("pay", e);
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), PaymentError.DATA_INVALID);

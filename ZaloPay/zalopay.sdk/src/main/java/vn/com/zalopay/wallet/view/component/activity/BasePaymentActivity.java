@@ -658,6 +658,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         synchronized (mActivityStack) {
             mActivityStack.remove(this);
             if (getCurrentActivityCount() == 0) {
+                if(GlobalData.analyticsTrackerWrapper != null){
+                    GlobalData.analyticsTrackerWrapper.trackUserCancel();
+                }
                 //dispose all instance and static resource.
                 SingletonLifeCircleManager.disposeAll();
                 if (mCompositeSubscription.hasSubscriptions()) {
@@ -681,7 +684,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void checkAppInfo() {
         AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+        //ZPAnalyticsTrackerLog
+        if(GlobalData.analyticsTrackerWrapper != null){
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+        }
     }
 
     /***

@@ -35,6 +35,7 @@ import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
@@ -65,6 +66,8 @@ public class GlobalData {
     private static ZPPaymentListener mListener = null;
     private static ZPWPaymentInfo mPaymentInfo = null;
     private static ZPPaymentResult paymentResult = null;
+
+    public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
     /***
      * user level,map table
      * list contain policy for allowing pay which channel by which level.
@@ -381,6 +384,12 @@ public class GlobalData {
         }
     }
 
+    public static void initializeAnalyticTracker() {
+        if(mPaymentInfo != null){
+            analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(mPaymentInfo.appTransID, transactionType);
+        }
+    }
+
     /***
      * Get transtype of payment.
      */
@@ -614,28 +623,6 @@ public class GlobalData {
         if (getPaymentInfo().userInfo != null && !TextUtils.isEmpty(getPaymentInfo().userInfo.userProfile) && getUserProfileList() == null) {
             try {
                 GlobalData.mUserProfile = GsonUtils.fromJsonString(getPaymentInfo().userInfo.userProfile, ListUserProfile.class);
-
-                //for testing
-                /*
-                UserProfile vcb = new UserProfile();
-                vcb.allow = true;
-                vcb.pmcid = 37;
-                vcb.transtype = 1;
-                vcb.requireotp = false;
-                GlobalData.mUserProfile.profilelevelpermisssion.add(vcb);
-                */
-                /*
-                for (int i=0;i<GlobalData.mUserProfile.profilelevelpermisssion.size();i++)
-				{
-					if(GlobalData.mUserProfile.profilelevelpermisssion.get(i).transtype == 1 && (GlobalData.mUserProfile.profilelevelpermisssion.get(i).pmcid == 37
-                    ||GlobalData.mUserProfile.profilelevelpermisssion.get(i).pmcid == 38))
-					{
-						GlobalData.mUserProfile.profilelevelpermisssion.get(i).allow = false;
-					}
-				}
-				*/
-
-
             } catch (Exception e) {
                 Log.e("loadPermissionLevelMap", e);
             }

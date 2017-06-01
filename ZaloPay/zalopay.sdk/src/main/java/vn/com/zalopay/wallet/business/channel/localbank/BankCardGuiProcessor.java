@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.BitmapUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -188,8 +187,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
         }
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
-
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+        }
     }
 
     @Override
@@ -474,7 +474,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 break;
         }
         checkEnableSubmitButton();
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+        }
     }
 
     public boolean isBankOtpPhase() {

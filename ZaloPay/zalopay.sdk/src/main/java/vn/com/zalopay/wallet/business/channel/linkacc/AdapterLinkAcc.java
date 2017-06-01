@@ -752,7 +752,9 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
 
                 // TrackApptransidEvent confirm stage
-                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                if(GlobalData.analyticsTrackerWrapper != null){
+                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                }
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
@@ -846,7 +848,9 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().enableSubmitBtn(false);
 
                     // TrackApptransidEvent AuthenType
-                    ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                    if(GlobalData.analyticsTrackerWrapper != null){
+                        GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                    }
 
                     return null;
                 } else {
@@ -914,7 +918,9 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                if(GlobalData.analyticsTrackerWrapper != null){
+                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                }
 
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
@@ -1137,7 +1143,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
         mWebViewProcessor.start(pUrl);
         // TrackApptransidEvent input card info
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        if(GlobalData.analyticsTrackerWrapper != null){
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        }
     }
 
     public LinkAccWebViewClient getLinkWebViewProcessor() {

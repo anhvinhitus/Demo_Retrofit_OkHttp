@@ -244,8 +244,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         mOnClickExitListener.onClick(null);
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
-    }
+        if(GlobalData.analyticsTrackerWrapper != null){
+            GlobalData.analyticsTrackerWrapper.trackUserCancel();
+        }
+   }
 
     @Override
     protected void onStart() {

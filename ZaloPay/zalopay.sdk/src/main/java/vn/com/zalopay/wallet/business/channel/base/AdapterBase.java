@@ -461,8 +461,9 @@ public abstract class AdapterBase {
             Log.e(this, e);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
-
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        if(GlobalData.analyticsTrackerWrapper != null){
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+        }
     }
 
     public boolean needToSwitchChannel() {
@@ -1545,8 +1546,10 @@ public abstract class AdapterBase {
         if (GlobalData.isBankAccountLink()) {
             bankCode = GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
         }
-        ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
-                getChannelID(), mTransactionID, returnCode, 1, bankCode);
+        if(GlobalData.analyticsTrackerWrapper != null){
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
+                    getChannelID(), mTransactionID, returnCode, 1, bankCode);
+        }
     }
 
     public boolean isTransactionErrorNetworking(String pMessage) {

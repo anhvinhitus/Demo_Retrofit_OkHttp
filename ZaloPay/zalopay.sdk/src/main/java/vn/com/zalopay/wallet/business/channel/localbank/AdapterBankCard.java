@@ -29,7 +29,6 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
@@ -56,7 +55,7 @@ public class AdapterBankCard extends AdapterBase {
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {
-                Log.d(this, "start reload pmc transtype "+ pBankCode);
+                Log.d(this, "start reload pmc transtype " + pBankCode);
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(pBankCode), MiniPmcTransType.class);
                 Log.d(this, "new pmc transype", mMiniPmcTransType);
             }
@@ -452,9 +451,7 @@ public class AdapterBankCard extends AdapterBase {
             if (!checkNetworkingAndShowRequest()) {
                 return;
             }
-
             showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
-
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -462,8 +459,9 @@ public class AdapterBankCard extends AdapterBase {
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
-                // TrackApptransidEvent confirm stage
-                ZPAnalyticsTrackerWrapper.getInstance().track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                if (GlobalData.analyticsTrackerWrapper != null) {
+                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                }
             }
             mWebViewProcessor.hit();
 

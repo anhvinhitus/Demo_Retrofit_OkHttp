@@ -8,6 +8,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 
 /**
@@ -15,19 +16,11 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
  */
 
 public class ZPAnalyticsTrackerWrapper extends SingletonBase {
-    private static ZPAnalyticsTrackerWrapper mZPTrackerWrapper;
     ZPApptransidLog mZPApptransidLog;
 
-    public ZPAnalyticsTrackerWrapper() {
+    public ZPAnalyticsTrackerWrapper(String pAppTransID, @TransactionType int transactionType) {
         super();
-        initialize(GlobalData.appID, GlobalData.getPaymentInfo().appTransID, GlobalData.getTransactionType());
-    }
-
-    public static ZPAnalyticsTrackerWrapper getInstance() {
-        if (mZPTrackerWrapper == null) {
-            mZPTrackerWrapper = new ZPAnalyticsTrackerWrapper();
-        }
-        return mZPTrackerWrapper;
+        initialize(GlobalData.appID, pAppTransID, transactionType);
     }
 
     protected void initialize(long pAppId, String pAppTransId, int pTransType) {
