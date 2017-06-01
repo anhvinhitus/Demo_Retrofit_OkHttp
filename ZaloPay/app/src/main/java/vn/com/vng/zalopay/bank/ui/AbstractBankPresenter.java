@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import java.util.List;
 
 import timber.log.Timber;
@@ -10,14 +12,13 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by longlv on 5/29/17.
