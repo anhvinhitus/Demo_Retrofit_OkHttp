@@ -228,7 +228,7 @@ public class Navigator implements INavigator {
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
+
                     }
                 })
                 .setConfirmText(context.getString(R.string.txt_input_userinfo))
@@ -257,7 +257,7 @@ public class Navigator implements INavigator {
 
     public void startBankSupportSelectionActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), BankSupportSelectionActivity.class);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANk);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANK);
     }
 
     @Override
@@ -355,7 +355,7 @@ public class Navigator implements INavigator {
                                  boolean continuePayment,
                                  boolean continueWithdraw) {
         Intent intent = new Intent(context, BankActivity.class);
-        // TODO: 5/29/17 - longlv: hiện tại không còn dùng nữa nhưng cần thiết nên giữ lại. 
+        // TODO: 5/29/17 - longlv: hiện tại không còn dùng nữa nhưng cần thiết nên giữ lại.
         intent.putExtra(Constants.ARG_LINK_BANK_TYPE, linkBankType.getValue());
         Timber.d("getBankIntent linkBankType [%s]", linkBankType);
         if (linkBankType == LinkBankType.LINK_BANK_CARD) {

@@ -152,7 +152,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult requestCode [%s] resultCode [%s]", requestCode, resultCode);
-        if (requestCode == Constants.REQUEST_CODE_SELECT_BANk) {
+        if (requestCode == Constants.REQUEST_CODE_SELECT_BANK) {
             if (resultCode == Activity.RESULT_CANCELED) {
                 String message = "";
                 if (data != null) {
@@ -165,6 +165,8 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                 if (data != null) {
                     mPresenter.onAddBankSuccess(data.getParcelableExtra(Constants.BANK_DATA_RESULT_AFTER_LINK));
                 }
+            } else if (resultCode == 10000) {
+                mPresenter.linkCard();
             }
             return;
         }

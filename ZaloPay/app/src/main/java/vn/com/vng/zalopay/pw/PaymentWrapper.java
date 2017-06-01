@@ -73,7 +73,6 @@ public class PaymentWrapper {
     @Inject
     Navigator mNavigator;
 
-    @Inject
     User mCurrentUser;
 
     final ILinkCardListener mLinkCardListener;
@@ -100,12 +99,13 @@ public class PaymentWrapper {
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
+        this.mCurrentUser = getUserComponent().currentUser();
     }
 
     /**
      * Initialize internal components.
      * Should call this method right after calling build() from PaymentWrapperBuilder.
-     *
+     * <p>
      * Throws IllegalStateException when UserComponent is NULL
      */
     public void initializeComponents() {
@@ -172,15 +172,13 @@ public class PaymentWrapper {
         }
         Timber.d("payWithOrder: Order is valid");
 
-        User user = getUserComponent().currentUser();
-
-        if (user == null) {
+        if (mCurrentUser == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
             return;
         }
 
-        if (!user.hasZaloPayId()) {
+        if (!mCurrentUser.hasZaloPayId()) {
             Timber.i("payWithOrder: zaloPayId is invalid");
             responseListener.onParameterError("uid");
 //            showErrorView(mView.getContext().getString(R.string.user_invalid));
@@ -385,7 +383,11 @@ public class PaymentWrapper {
 
     private UserInfo assignBaseUserInfo(@NonNull UserInfo userInfo) {
         if (mCurrentUser == null) {
-            return userInfo;
+            return null;
+        }
+
+        if (userInfo == null) {
+            userInfo = new UserInfo();
         }
 
         userInfo.zaloUserId = String.valueOf(mCurrentUser.zaloId);
@@ -394,6 +396,7 @@ public class PaymentWrapper {
         userInfo.level = getUserProfileLevel();
         userInfo.userProfile = getUserPermission();
         userInfo.phoneNumber = getPhoneNumber();
+
         return userInfo;
     }
 
@@ -405,6 +408,11 @@ public class PaymentWrapper {
         }
 
         paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
+
+        if (paymentInfo.userInfo == null) {
+            return;
+        }
+
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             mWalletListener.onError(new CError(DATA_INVALID, owner.getString(R.string.please_update_profile)));
             mActivity = null;

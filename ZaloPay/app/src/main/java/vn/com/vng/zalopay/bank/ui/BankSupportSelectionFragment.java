@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -23,10 +22,12 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by datnt10 on 5/25/17.
+ * Fragment list bank support
  */
 
 public class BankSupportSelectionFragment extends BaseFragment implements IBankSupportSelectionView
         , BankSupportSelectionAdapter.OnClickBankSupportListener {
+
     private BankSupportSelectionAdapter mAdapter;
 
     @BindView(R.id.bank_support_selection_list_bank)
@@ -134,16 +135,6 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     @Override
     public void hideLoading() {
         super.hideProgressDialog();
-    }
-
-    @Override
-    public void showError(String msg) {
-        super.showErrorDialog(msg);
-    }
-
-    @Override
-    public void showNetworkErrorDialog() {
-        super.showNetworkErrorDialog();
     }
 
     @Override

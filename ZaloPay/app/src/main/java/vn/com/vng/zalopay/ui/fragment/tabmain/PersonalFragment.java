@@ -189,7 +189,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         switch (presenter.getLinkBankStatus()) {
             case Constants.LINK_BANK_NONE:
                 ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-                presenter.addLinkCard(getActivity());
+                presenter.addLinkCard();
                 break;
             case Constants.LINK_BANK_CARD_LINKED:
             case Constants.LINK_BANK_ACCOUNT_LINKED:

@@ -25,8 +25,4 @@ public interface IBankSupportSelectionView {
     void showLoading();
 
     void hideLoading();
-
-    void showError(String msg);
-
-    void showNetworkErrorDialog();
 }

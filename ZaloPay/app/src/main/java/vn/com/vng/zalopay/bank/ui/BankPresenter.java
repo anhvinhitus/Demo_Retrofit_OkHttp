@@ -21,13 +21,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
@@ -65,10 +61,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     @Inject
     BankPresenter(User user,
                   Navigator navigator,
-                  EventBus eventBus,
-                  ZaloPayRepository zaloPayRepository,
-                  BalanceStore.Repository balanceRepository,
-                  TransactionStore.Repository transactionRepository) {
+                  EventBus eventBus) {
         this.mUser = user;
         this.mNavigator = navigator;
         this.mEventBus = eventBus;
@@ -117,6 +110,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
         mWithdrawAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_WITHDRAW_AFTER_LINK_BANK);
         mGotoSelectBank = bundle.getBoolean(Constants.ARG_GOTO_SELECT_BANK_IN_LINK_BANK);
+//        mLinkCardWithBankCode = bundle.getBoolean(Constants.ARG_LINK_CARD_WITH_BANK_CODE);
         mLinkCardWithBankCode = bundle.getString(Constants.ARG_LINK_CARD_WITH_BANK_CODE);
         mLinkAccountWithBankCode = bundle.getString(Constants.ARG_LINK_ACCOUNT_WITH_BANK_CODE);
     }
@@ -131,7 +125,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    private void linkCard() {
+    public void linkCard() {
         mPaymentWrapper.linkCard(getActivity());
     }
 

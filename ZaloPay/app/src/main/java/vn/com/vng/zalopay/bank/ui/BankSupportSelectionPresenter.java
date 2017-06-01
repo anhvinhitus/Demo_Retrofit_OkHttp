@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
@@ -20,11 +19,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -47,10 +43,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     private DefaultSubscriber<List<ZPCard>> mGetSupportBankSubscriber;
 
     @Inject
-    BankSupportSelectionPresenter(User user,
-                                  BalanceStore.Repository balanceRepository,
-                                  TransactionStore.Repository transactionRepository,
-                                  ZaloPayRepository zaloPayRepository) {
+    BankSupportSelectionPresenter(User user) {
         this.mUser = user;
         mGetSupportBankSubscriber = new DefaultSubscriber<List<ZPCard>>() {
             @Override
@@ -73,12 +66,10 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         };
 
         paymentWrapper = new PaymentWrapperBuilder()
-//                .setBalanceRepository(balanceRepository)
-//                .setZaloPayRepository(zaloPayRepository)
-//                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
+        paymentWrapper.initializeComponents();
     }
 
     @Override
@@ -156,15 +147,8 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     }
 
     void linkCard() {
-        paymentWrapper.linkCard(getActivity());
-    }
-
-    private void showErrorView(String message) {
-        if (mView == null) {
-            return;
-        }
-        mView.hideLoading();
-        mView.showError(message);
+//        paymentWrapper.linkCard(getActivity());
+        setResultLinkCard();
     }
 
     private void setResultActivity(BankAction bankAction, DBaseMap bankInfo) {
@@ -178,6 +162,20 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
                 new BankInfo(bankAction, bankInfo.bankcode, bankInfo.getFirstNumber(), bankInfo.getLastNumber()));
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    private void setResultErrorActivity(String message) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent();
+        bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, message);
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_CANCELED, intent);
+        getActivity().finish();
+    }
+
+    private void setResultLinkCard() {
+        getActivity().setResult(10000);
         getActivity().finish();
     }
 
@@ -201,24 +199,18 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
         @Override
         public void onParameterError(String param) {
-//            showErrorView(param);
-            Bundle bundle = new Bundle();
-            Intent intent = new Intent();
-            bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, param);
-            intent.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_CANCELED, intent);
-            getActivity().finish();
+            setResultErrorActivity(param);
         }
 
         @Override
         public void onResponseError(PaymentError status) {
-            if (status == PaymentError.ERR_CODE_INTERNET) {
-                if (mView == null) {
-                    return;
-                }
-                mView.hideLoading();
-                mView.showNetworkErrorDialog();
-            }
+//            if (status == PaymentError.ERR_CODE_INTERNET) {
+//                if (mView == null) {
+//                    return;
+//                }
+//                mView.hideLoading();
+//                mView.showNetworkErrorDialog();
+//            }
         }
 
         @Override
@@ -238,13 +230,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
         @Override
         public void onAppError(String msg) {
-//            showErrorView(msg);
-            Bundle bundle = new Bundle();
-            Intent intent = new Intent();
-            bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, msg);
-            intent.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_CANCELED, intent);
-            getActivity().finish();
+            setResultErrorActivity(msg);
         }
 
         @Override

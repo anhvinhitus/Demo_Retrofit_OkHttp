@@ -79,7 +79,7 @@ public interface Constants {
     int REQUEST_CODE_BANK_DIALOG = 131;
     int REQUEST_CODE_LINK_BANK = 132;
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC = 133;
-    int REQUEST_CODE_SELECT_BANk = 134;
+    int REQUEST_CODE_SELECT_BANK = 134;
 
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
     String ARG_MONEY_ACTIVATE_SOURCE = "activateSource";

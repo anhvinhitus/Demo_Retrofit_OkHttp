@@ -237,12 +237,14 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         }
     }
 
-    public void addLinkCard(Activity activity) {
-        if (paymentWrapper == null) {
-            paymentWrapper = getPaymentWrapper();
-        }
+    public void addLinkCard() {
+//        if (paymentWrapper == null) {
+//            paymentWrapper = getPaymentWrapper();
+//        }
+//
+//        paymentWrapper.linkCard(activity);
 
-        paymentWrapper.linkCard(activity);
+        mNavigator.startLinkCardActivityForResult(getActivity(), "123PVTB");
     }
 
     void linkAccount(String bankCode) {
