@@ -200,9 +200,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         boolean isEnableShowShow = resources.contains(showshow);
         if (isEnableShowShow) {
             resources.remove(showshow);
-            resources.add(new AppResource(showshow.appid, showshow.appType, showshow.appname,
-                    mContext.getResources().getString(R.string.nav_showshow),
-                    AndroidUtils.getColorFromResource(R.color.menu_font_ic_red)));
+//            resources.add(new AppResource(showshow.appid, showshow.appType, showshow.appname,
+//                    mContext.getResources().getString(R.string.nav_showshow),
+//                    AndroidUtils.getColorFromResource(R.color.menu_font_ic_red)));
 
 //            AppResource show_show = resources.get(resources.indexOf(showshow));
 //            show_show.iconName = mContext.getResources().getString(R.string.nav_showshow);

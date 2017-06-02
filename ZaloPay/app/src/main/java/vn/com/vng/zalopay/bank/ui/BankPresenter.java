@@ -21,9 +21,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
@@ -305,12 +307,9 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
                 } else {
                     showNetworkErrorDialog();
                 }
-            }
-            // TODO just comment for build - need to recheck
-//            else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-//                mEventBus.postSticky(new TokenPaymentExpiredEvent());
-//            }
-            else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
+            } else if (pMessage.returncode == ServerErrorMessage.TOKEN_INVALID) {
+                mEventBus.postSticky(new TokenPaymentExpiredEvent());
+            } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.d("err removed map card %s", pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);
             }
