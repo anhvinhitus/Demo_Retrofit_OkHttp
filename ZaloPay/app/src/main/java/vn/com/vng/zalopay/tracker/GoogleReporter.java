@@ -12,7 +12,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -27,38 +26,46 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 public class GoogleReporter {
 
-    public static final String BASE_URL = "https://www.google-analytics.com/collect/";
+    public static final String BASE_URL = "https://www.google-analytics.com/";
     public static final String BASE_URL_2 = "https://www.google-analytics.com/batch/"; //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
 
     interface GoogleAnalyticsService {
-        @POST
+        @POST("collect")
         @FormUrlEncoded
         @Headers({"User-Agent: ZaloPayClient/2.12"})
-        Observable<String> send(@Url String url, @FieldMap Map<String, String> query);
+        Observable<String> send(@FieldMap Map<String, String> query);
     }
 
     private final GoogleAnalyticsService mAnalyticsService;
+    private final Map<String, String> mDefMap;
 
     @Inject
     public GoogleReporter(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
         mAnalyticsService = retrofit.create(GoogleAnalyticsService.class);
+        mDefMap = buildParams();
+    }
+
+    private void send(String type, Map<String, String> values) {
+        values.put("t", type); //Required
+        send(values);
     }
 
     private void send(Map<String, String> values) {
-        mAnalyticsService.send(BASE_URL, values)
+        mAnalyticsService.send(values)
                 .subscribe(new DefaultSubscriber<>());
     }
 
     void trackScreen(String screenName) {
-        Map<String, String> params = buildParams();
-        params.put("t", "screenview"); //Required
+        Map<String, String> params = new HashMap<>(mDefMap);
+
         params.put("cd", screenName);
-        send(params);
+
+        send("screenview", params);
     }
 
     void trackEvent(int eventId, Long eventValue) {
-        Map<String, String> params = buildParams();
-        params.put("t", "event"); //Required
+        Map<String, String> params = new HashMap<>(mDefMap);
+
         params.put("ec", ZPEvents.categoryFromEventId(eventId));
         params.put("ea", ZPEvents.actionFromEventId(eventId));
         params.put("el", ZPEvents.actionFromEventId(eventId));
@@ -67,17 +74,18 @@ public class GoogleReporter {
             params.put("ev", String.valueOf(eventValue));
         }
 
-        send(params);
+        send("event", params);
     }
 
     void trackTiming(int eventId, long value) {
-        Map<String, String> params = buildParams();
-        params.put("t", "timing"); //Required
+        Map<String, String> params = new HashMap<>(mDefMap);
+
         params.put("utc", ZPEvents.categoryFromEventId(eventId));
         params.put("utv", ZPEvents.actionFromEventId(eventId));
         params.put("utl", ZPEvents.actionFromEventId(eventId));
         params.put("utt", String.valueOf(value));
-        send(params);
+
+        send("timing", params);
     }
 
     private Map<String, String> buildParams() {

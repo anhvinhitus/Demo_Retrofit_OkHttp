@@ -36,9 +36,11 @@ import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
+import vn.com.vng.zalopay.network.ToStringConverterFactory;
 import vn.com.vng.zalopay.tracker.GoogleReporter;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.ZaloPay;
 
 /**
@@ -183,9 +185,9 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitGoogleAnalytics")
-    Retrofit provideRetrofitGA(Gson gson, @Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+    Retrofit provideRetrofitGA(@Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
         return new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(new ToStringConverterFactory())
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(GoogleReporter.BASE_URL)
                 .validateEagerly(BuildConfig.DEBUG)
