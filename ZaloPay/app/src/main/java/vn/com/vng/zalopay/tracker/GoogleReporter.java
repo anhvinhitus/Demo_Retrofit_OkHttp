@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.tracker;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -13,6 +17,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -27,21 +32,26 @@ import vn.com.zalopay.analytics.ZPEvents;
 public class GoogleReporter {
 
     public static final String BASE_URL = "https://www.google-analytics.com/";
-    public static final String BASE_URL_2 = "https://www.google-analytics.com/batch/"; //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
 
-    interface GoogleAnalyticsService {
+    public interface GoogleAnalyticsService {
         @POST("collect")
         @FormUrlEncoded
         @Headers({"User-Agent: ZaloPayClient/2.12"})
         Observable<String> send(@FieldMap Map<String, String> query);
+
+        @POST("batch")
+        @FormUrlEncoded
+        @Headers({"User-Agent: ZaloPayClient/2.12"})
+        Observable<String> sendBatch(@FieldMap Map<String, String> query); //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
     }
 
     private final GoogleAnalyticsService mAnalyticsService;
     private final Map<String, String> mDefMap;
+    private final String mTrackerId;
 
-    @Inject
-    public GoogleReporter(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
-        mAnalyticsService = retrofit.create(GoogleAnalyticsService.class);
+    public GoogleReporter(String trackerId) {
+        mTrackerId = trackerId;
+        mAnalyticsService = AndroidApplication.instance().getAppComponent().googleAnalyticsService();
         mDefMap = buildParams();
     }
 
@@ -55,12 +65,31 @@ public class GoogleReporter {
                 .subscribe(new DefaultSubscriber<>());
     }
 
-    void trackScreen(String screenName) {
+    public void trackScreen(String screenName) {
         Map<String, String> params = new HashMap<>(mDefMap);
 
         params.put("cd", screenName);
 
         send("screenview", params);
+    }
+
+    /**
+     * Hỗ trợ cho react-native
+     */
+    public void trackEvent(String category, String action, @Nullable String label, @Nullable String value) {
+        Map<String, String> params = new HashMap<>(mDefMap);
+        params.put("ec", category);
+        params.put("ea", action);
+
+        if (value != null) {
+            params.put("ev", value);
+        }
+
+        if (label != null) {
+            params.put("el", label);
+        }
+
+        send("event", params);
     }
 
     void trackEvent(int eventId, Long eventValue) {
@@ -77,6 +106,40 @@ public class GoogleReporter {
         send("event", params);
     }
 
+    /**
+     * Hỗ trợ cho react-native
+     */
+    public void trackTiming(@NonNull String category, double value, @NonNull String variable, @Nullable String label) {
+        Map<String, String> params = new HashMap<>(mDefMap);
+        params.put("utc", category);
+        params.put("utv", variable);
+        params.put("utt", String.valueOf(value));
+        if (!TextUtils.isEmpty(label)) {
+            params.put("utl", label);
+        }
+
+        send("timing", params);
+    }
+
+    public void trackException(String error, Boolean fatal) {
+        Map<String, String> params = new HashMap<>(mDefMap);
+
+        params.put("exd", error);
+        params.put("exf", String.valueOf(fatal));
+
+        send("exception", params);
+    }
+
+    public void trackSocialInteractions(String network, String action, String targetUrl) {
+        Map<String, String> params = new HashMap<>(mDefMap);
+
+        params.put("sn", network);
+        params.put("sa", action);
+        params.put("st", targetUrl);
+
+        send("social", params);
+    }
+
     void trackTiming(int eventId, long value) {
         Map<String, String> params = new HashMap<>(mDefMap);
 
@@ -90,7 +153,7 @@ public class GoogleReporter {
 
     private Map<String, String> buildParams() {
         Map<String, String> params = new HashMap<>();
-        params.put("tid", BuildConfig.GA_Tracker); //Required
+        params.put("tid", mTrackerId); //Required
         params.put("v", "1"); //Required
         params.put("aid", BuildConfig.APPLICATION_ID);
         params.put("cid", AndroidUtils.getDeviceId());
@@ -101,5 +164,18 @@ public class GoogleReporter {
         params.put("sr", String.valueOf(AndroidUtils.density));
         return params;
     }
+
+    public void setAppVersion(String appVersion) {
+        mDefMap.put("av", appVersion);
+    }
+
+    public void setAppName(String appName) {
+        mDefMap.put("an", appName);
+    }
+
+    public void setUserId(String userId) {
+        mDefMap.put("cid", userId);
+    }
+
 
 }

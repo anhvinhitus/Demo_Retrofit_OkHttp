@@ -47,6 +47,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.react.analytics.GoogleAnalyticsBridgePackage;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 
@@ -254,6 +255,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new VectorIconsPackage(),
                 new SQLitePluginPackage(),
                 new RNSharePackage(),
+                new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactNativePermissionsPackage(),
                 new ReactIAPPackage(paymentService,

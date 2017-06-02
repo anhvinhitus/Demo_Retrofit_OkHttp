@@ -45,10 +45,11 @@ import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.react.analytics.GoogleAnalyticsBridgePackage;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 
 /**
  * Created by hieuvm on 2/23/17.
@@ -134,6 +135,7 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
                 new MapsPackage(),
                 new VectorIconsPackage(),
                 new SQLitePluginPackage(),
+                new GoogleAnalyticsBridgePackage(),
                 new RNSharePackage(),
                 new LinearGradientPackage(),
                 new ReactNativePermissionsPackage(),

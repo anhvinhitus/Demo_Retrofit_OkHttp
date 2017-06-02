@@ -70,6 +70,8 @@ public interface ApplicationComponent {
     @Named("OkHttpClientTimeoutLonger")
     OkHttpClient okHttpClientTimeoutLonger();
 
+    GoogleReporter.GoogleAnalyticsService googleAnalyticsService();
+
     GoogleReporter googleReporter();
 
     SharedPreferences sharedPreferences();
