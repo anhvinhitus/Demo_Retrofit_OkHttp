@@ -461,7 +461,7 @@ dependencies {
 
     compile libs.zalopay_analytics
     compile('vn.com.vng.zalopay:qrcodecore:1.3')
-    compile('vn.com.vng.zalopay:rnmodules:1.25') {
+    compile('vn.com.vng.zalopay:rnmodules:1.26') {
         exclude module: 'bolts-android'
     }
     compile('vn.com.vng:webapp:0.6')

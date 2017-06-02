@@ -3,7 +3,7 @@
   <groupId>vn.com.vng.zalopay</groupId>
   <artifactId>rnmodules</artifactId>
   <versioning>
-    <release>1.25</release>
+    <release>1.26</release>
     <versions>
       <version>1.0</version>
       <version>1.2</version>
@@ -29,7 +29,8 @@
       <version>1.23</version>
       <version>1.24</version>
       <version>1.25</version>
+      <version>1.26</version>
     </versions>
-    <lastUpdated>20170412093416</lastUpdated>
+    <lastUpdated>20170602022755</lastUpdated>
   </versioning>
 </metadata>

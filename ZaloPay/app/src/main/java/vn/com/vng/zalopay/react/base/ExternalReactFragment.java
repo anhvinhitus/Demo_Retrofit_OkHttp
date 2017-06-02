@@ -9,7 +9,6 @@ import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.shell.MainReactPackage;
-import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -136,7 +135,6 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
                 new VectorIconsPackage(),
                 new SQLitePluginPackage(),
                 new RNSharePackage(),
-                new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactNativePermissionsPackage(),
                 new ReactIAPPackage(paymentService,

@@ -35,7 +35,6 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.timber
     compile libs.react_native
-    compile libs.play_services_analytics
     compile libs.play_services_map
     compile libs.support_design
 }
