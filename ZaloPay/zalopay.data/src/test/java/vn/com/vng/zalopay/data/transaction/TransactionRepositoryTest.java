@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
@@ -146,12 +147,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         List<Pair<Integer, List<TransHistory>>> result = new ArrayList<>();
         int pageIndex, count;
 
-        mRepository = new TransactionRepository(mMapper, mUser, null, null, null, EventBus.getDefault());
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage, mFragmentLocalStorage, new RequestServiceImpl(), EventBus.getDefault());
 
         pageIndex = 2;
         count = 5;
         mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions when not having data (both from local and cloud)", 0, result.size());
+        Assert.assertEquals("getTransactions when not having data (both from local and cloud)", 0, result.get(0).second.size());
     }
 
     @Test

@@ -92,11 +92,11 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     public void filterTransactionsWithEmptyDB() {
         initData();
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 0;
+        offset = 0;
         limit = TRANSACTION_SIZE;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
         assertEquals("filter transactions with empty DB", 0, result.size());
     }
 
@@ -106,11 +106,11 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         insertTransaction();
 
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 0;
+        offset = 0;
         limit = 0;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
         assertEquals("filter 0 transaction", 0, result.size());
     }
 
@@ -121,11 +121,11 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
         initData();
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 0;
+        offset = 0;
         limit = 5;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
         assertEquals("filter", true, result.containsAll(entities.subList(
                 (int)((1478834599840L - maxreqdate) / 10), (int)((1478834599840L - maxreqdate) / 10) + 5)));
     }
@@ -136,11 +136,11 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         insertTransaction();
 
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 5;
+        offset = 25;
         limit = 5;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
         assertEquals("filter oversized list", 0, result.size());
     }
 
@@ -150,11 +150,11 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         insertTransaction();
 
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 0;
+        offset = 0;
         limit = TRANSACTION_SIZE;
-        result = mLocalStorage.get(pageIndex, limit, -3, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, -3, maxreqdate, minreqdate, types, 0);
         assertEquals("filter with wrong format of status type", 0, result.size());
     }
 
@@ -164,26 +164,26 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         insertTransaction();
 
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = 0;
+        offset = 0;
         limit = -1;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
         assertEquals("filter transaction with limit is a negative number", 0, result.size());
     }
 
     @Test
-    public void filterTransactionWhenPageIndexIsANegativeNumber() {
+    public void filterTransactionWhenoffsetIsANegativeNumber() {
         initData();
         insertTransaction();
 
         List<TransHistoryEntity> result;
-        int pageIndex, limit;
+        int offset, limit;
 
-        pageIndex = -1;
+        offset = -1;
         limit = 4;
-        result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
-        assertEquals("filter transaction with pageIndex is a negative number", 0, result.size());
+        result = mLocalStorage.get(offset, limit, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, types, 0);
+        assertEquals("filter transaction with offset is a negative number", 0, result.size());
     }
 
     @Test
