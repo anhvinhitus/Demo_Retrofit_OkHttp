@@ -60,7 +60,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.iniData(getArguments());
+        presenter.initData(getArguments());
 
         mAdapter = new BankSupportSelectionAdapter(getContext(), this);
 
@@ -114,7 +114,8 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
             mAdapter.setData(Collections.emptyList());
             mDashLine.setVisibility(View.GONE);
         } else {
-            mAdapter.setData(cardSupportList);
+            List<ZPCard> sortedSupportList = sortList(cardSupportList);
+            mAdapter.setData(sortedSupportList);
             mDashLine.setVisibility(View.VISIBLE);
         }
     }
@@ -144,5 +145,10 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
         } else {
             presenter.linkCard();
         }
+    }
+
+    List<ZPCard> sortList(List<ZPCard> list) {
+        Collections.sort(list, (card1, card2) -> card1.getCardName().compareTo(card2.getCardName()));
+        return list;
     }
 }

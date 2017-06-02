@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by datnt10 on 5/25/17.
+ * adapter list bank support
  */
 
 public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, BankSupportSelectionAdapter.ViewHolder> {

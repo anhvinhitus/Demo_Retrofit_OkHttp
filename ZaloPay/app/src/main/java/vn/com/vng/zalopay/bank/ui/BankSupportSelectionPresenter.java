@@ -139,7 +139,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         mSubscription.add(subscription);
     }
 
-    void iniData(Bundle bundle) {
+    void initData(Bundle bundle) {
         if (bundle == null) {
             return;
         }
