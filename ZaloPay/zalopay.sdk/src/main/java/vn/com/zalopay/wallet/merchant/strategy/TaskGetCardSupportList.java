@@ -3,18 +3,15 @@ package vn.com.zalopay.wallet.merchant.strategy;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
@@ -22,7 +19,6 @@ import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class TaskGetCardSupportList extends TaskBase {
     /***
@@ -64,23 +60,6 @@ public class TaskGetCardSupportList extends TaskBase {
     protected ArrayList<ZPCard> populateCardSuportList() {
         ArrayList<ZPCard> cardArrayList = new ArrayList<>();
 
-        //cc must be hardcode
-
-//        String bankCodeVisa = CardType.VISA;
-//        String bankCodeMaster = CardType.MASTER;
-        String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
-        String bankNameVisa = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
-        String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
-        String bankNameMaster = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
-        if (!TextUtils.isEmpty(bankCodeVisa) && !TextUtils.isEmpty(bankNameVisa)) {
-            ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
-
-            cardArrayList.add(zpCard);
-        }
-        if (!TextUtils.isEmpty(bankCodeMaster) && !TextUtils.isEmpty(bankNameMaster)) {
-            ZPCard zpCard = new ZPCard(bankCodeMaster, getCardBitmapName(bankCodeMaster), bankNameMaster);
-            cardArrayList.add(zpCard);
-        }
 
         //load bank
         if (BankLoader.mapBank != null) {
@@ -96,7 +75,23 @@ public class TaskGetCardSupportList extends TaskBase {
                 }
             }
         }
+        //cc must be hardcode
+        // String bankCodeVisa = CardType.VISA;
+        //String bankCodeMaster = CardType.MASTER;
+        sortListCardSupport(cardArrayList);
+        String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
+        String bankNameVisa = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+        String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
+        String bankNameMaster = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
+        if (!TextUtils.isEmpty(bankCodeVisa) && !TextUtils.isEmpty(bankNameVisa)) {
+            ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
 
+            cardArrayList.add(0, zpCard);
+        }
+        if (!TextUtils.isEmpty(bankCodeMaster) && !TextUtils.isEmpty(bankNameMaster)) {
+            ZPCard zpCard = new ZPCard(bankCodeMaster, getCardBitmapName(bankCodeMaster), bankNameMaster);
+            cardArrayList.add(1, zpCard);
+        }
         Log.d(this, "===cardSupportHashMap.size()=" + cardArrayList.size());
         return cardArrayList;
     }
@@ -124,4 +119,10 @@ public class TaskGetCardSupportList extends TaskBase {
             return bankConfig.name;
         }
     }
+
+    private ArrayList<ZPCard> sortListCardSupport(ArrayList<ZPCard> pListCardSupport) {
+        Collections.sort(pListCardSupport, (o1, o2) -> o1.getCardName().compareTo(o2.getCardName()));
+        return pListCardSupport;
+    }
+
 }
