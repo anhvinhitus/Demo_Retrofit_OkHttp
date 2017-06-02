@@ -114,7 +114,8 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
             mAdapter.setData(Collections.emptyList());
             mDashLine.setVisibility(View.GONE);
         } else {
-            mAdapter.setData(cardSupportList);
+            List<ZPCard> sortedSupportList = sortList(cardSupportList);
+            mAdapter.setData(sortedSupportList);
             mDashLine.setVisibility(View.VISIBLE);
         }
     }
@@ -139,11 +140,15 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
 
     @Override
     public void onClickBankSupportListener(ZPCard card, int position) {
-        if (card.isBankAccount()) {
+        if(card.isBankAccount()) {
             presenter.linkAccount(card.getCardCode());
         } else {
             presenter.linkCard();
         }
     }
 
+    List<ZPCard> sortList(List<ZPCard> list) {
+        Collections.sort(list, (card1, card2) -> card1.getCardName().compareTo(card2.getCardName()));
+        return list;
+    }
 }
