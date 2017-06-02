@@ -187,6 +187,15 @@ public class AndroidUtils {
     private static final String PREF_NAME = "PREF_UTILS";
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
 
+    private static String mDeviceId;
+
+    public static String getDeviceId() {
+        if (mDeviceId == null) {
+            mDeviceId = getUUID();
+        }
+        return mDeviceId;
+    }
+
     public static String getUUID() {
         SharedPreferences sharedPrefs = AndroidApplication.instance().getSharedPreferences(
                 PREF_NAME, Context.MODE_PRIVATE);

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.tracker;
 
-import android.content.Context;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 /**
  * Created by huuhoa on 6/27/16.
@@ -10,19 +11,23 @@ public class ZPTrackerGA extends DefaultTracker {
 
     private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s]";
 
+    private final GoogleReporter mGoogleReporter;
+    private final ThreadExecutor mThreadExecutor;
 
-    public ZPTrackerGA(Context context) {
-
+    public ZPTrackerGA(GoogleReporter googleReporter) {
+        mGoogleReporter = googleReporter;
+        mThreadExecutor = AndroidApplication.instance().getAppComponent().threadExecutor();
     }
 
     @Override
     public void trackEvent(int eventId, Long eventValue) {
-
+        mThreadExecutor.execute(() -> mGoogleReporter.trackEvent(eventId, eventValue));
     }
 
     @Override
     public void trackScreen(String screenName) {
-
+        String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, screenName);
+        mThreadExecutor.execute(() -> mGoogleReporter.trackScreen(screenWithFormat));
     }
 
     /**
@@ -34,6 +39,6 @@ public class ZPTrackerGA extends DefaultTracker {
      */
     @Override
     public void trackTiming(int eventId, long value) {
-      
+        mThreadExecutor.execute(() -> mGoogleReporter.trackTiming(eventId, value));
     }
 }

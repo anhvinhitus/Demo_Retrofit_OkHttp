@@ -155,7 +155,7 @@ public class AndroidApplication extends Application {
 
     private void initializeZaloPayAnalytics() {
         ZPAnalytics.addDefaultTracker();
-        ZPAnalytics.addTracker(new ZPTrackerGA(this));
+        ZPAnalytics.addTracker(new ZPTrackerGA(appComponent.googleReporter()));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
         ZPAnalytics.addTracker(new ZPTrackerFileAppender());
         ZPAnalytics.addTracker(new ZPTrackerApptransid(appComponent.appTransIdLogRepository()));

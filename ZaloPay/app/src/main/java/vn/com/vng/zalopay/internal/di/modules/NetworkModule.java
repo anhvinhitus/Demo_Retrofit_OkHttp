@@ -31,12 +31,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
-import vn.com.vng.zalopay.network.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
+import vn.com.vng.zalopay.tracker.GoogleReporter;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.ZaloPay;
@@ -159,6 +159,35 @@ public class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(BuildConfig.CLIENTLOGS_URL)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("okHttpClientGA")
+    OkHttpClient provideOkHttpClientGA() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(interceptor);
+        }
+        builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
+        builder.connectTimeout(10, TimeUnit.SECONDS);
+        builder.readTimeout(5, TimeUnit.SECONDS);
+        return builder.build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("retrofitGoogleAnalytics")
+    Retrofit provideRetrofitGA(Gson gson, @Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(callAdapter)
+                .baseUrl(GoogleReporter.BASE_URL)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
