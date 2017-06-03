@@ -1,3 +1,9 @@
+stages:
+  - build
+  - test
+  - archive
+  - deploy
+
 before_script:
   - export ANDROID_HOME=/ci/android-sdk
   - export ANDROID_NDK_HOME=/ci/android-ndk-r12b
@@ -5,12 +11,6 @@ before_script:
   - export CI_BUILD=$CI_SERVER
   - export CI_BUILD_TAG=$CI_BUILD_TAG
   - mkdir -p ./releases
-
-
-stages:
-  - build
-  - test
-  - archive
 
 build:
   stage: build
@@ -39,3 +39,8 @@ archive:
       - releases/ZaloPay-sandbox-release-$CI_BUILD_TAG.apk
       - releases/ZaloPay-staging-release-$CI_BUILD_TAG.apk
       - releases/ZaloPay-production-release-$CI_BUILD_TAG.apk
+
+deploy_fabric
+  stage: deploy
+  script:
+    - sh ./ci/deploy_fabric.sh
