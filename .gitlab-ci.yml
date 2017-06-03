@@ -40,7 +40,7 @@ archive:
       - releases/ZaloPay-staging-release-$CI_BUILD_TAG.apk
       - releases/ZaloPay-production-release-$CI_BUILD_TAG.apk
 
-deploy_fabric
+deploy_fabric:
   stage: deploy
   script:
     - sh ./ci/deploy_fabric.sh
