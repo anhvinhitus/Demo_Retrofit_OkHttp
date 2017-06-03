@@ -1,38 +1,115 @@
-Zalo Pay (Sandbox v2.12.0 - build 253) - Released on 2017-05-18
-- Update analytics, client log
-
-Zalo Pay (Sandbox v2.12.0 - build 252) - Released on 2017-05-12
-- Dynamic configuration for calling API via Payment Connector
-- Thêm hỗ trợ Samsung Pass cho xác thực vân tay
-- [SDK] Fix bug
-
-Zalo Pay (Sandbox v2.12.0 - build 251) - Released on 2017-05-10
-- Update icons on empty views
-- Update Home UI
-- Update Profile UI
-
-Zalo Pay (Sandbox v2.11.0 - build 232) - Released on 2017-04-26
-- Upload client log
-- [SDK] Sử dụng Fresco để load hình ảnh
-- Build cho esale test 6 app
-
-Zalo Pay (Sandbox v2.11.0 - build 231) - Released on 2017-04-11
-- [SDK] Fix bug liên quan đến VCB
-- [SDK] Force user up level if user account map to pay
-
-Zalo Pay (Sandbox v2.11.0 - build 230) - Released on 2017-04-10
-- Update Home page UI
-
-Zalo Pay (Sandbox v2.11.0 - build 212) - Released on 2017-04-07
-- Thêm config on/off sync contact
-- Thêm remove một notification server
-- Thêm Payment Connector - dynamic config for Payment Connector
-- Thêm log tọa độ của user
-- Upgrade react-native v0.42.3
-- Cập nhật parse web vcb do website vcb thay đổi html tags
-- Refactor chức năng Chuyển Tiền
-
-Zalo Pay (Sandbox v2.11.0 - build 211) - Released on 2017-03-31
-- Cập nhật trang Home dạng Tab-based UI
-- Cập nhật trang Profile.
-
+Zalo Pay (Sandbox v2.12.0 - build 255) - Released on 2017-06-03 18:53
++ [CI] Add script to generate bump version with release notes by Nguyen Huu Hoa (#3191071b0)
++ [CI] Move CI build notes to folder ci by Nguyen Huu Hoa (#fa4ac914e)
++ [SDK] Sort list banksupport theo bankname (reverted from commit 846b3176689ecc8a1f887b0b394ec8156a41b712) by lytm (#6d391235e)
++ [GA] Support google analytics react-native (task#522) by hieuvm (#cfe41f700)
++ [GA] Update google reporter (task#522) by hieuvm (#c5c622742)
++ [GA] Update google reporter (task#522) by hieuvm (#69eaa7eb1)
++ [GA] Remove Google analytics service by hieuvm (#b18c02b58)
++ [SDK] Sort list banksupport theo bankname by lytm (#846b31766)
++ [Transaction] Fix unit tests by khattn (#39f60090a)
++ [Bank] Sort list bank support by name by datnt10 (#bcbf925df)
++ [Bank] Refactor code, hide show show by datnt10 (#5d4ddacac)
++ [Bank] Refactor code by datnt10 (#6c1b59f51)
++ [Fingerprint] Fix lỗi fingerprint - Lỗi khi sử dụng FingerprintManagerCompatApi23 - hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) = false by hieuvm (#12e3226aa)
++ [SDK] Clear user agent website by vo van chuc (#9e1a04f84)
++ [SDK] Fix lỗi show title popup bank Bidv by vo van chuc (#502b35171)
++ [SDK] Add Paymentinfo.mapBank unlink acc success by lytm (#38e11ce00)
++ [SDK] Vcb Mở lại auto fill otp trên đường web by chucvv (#118ef1ecd)
++ [SmsReceiver] Fix NPE SmsMessageBase by hieuvm (#794229a46)
++ [ZPAnalytics] Update tracking timing event api get bank account list by vo van chuc (#965e4d1d8)
++ [Home] Add tab transaction. - Đang lỗi ui home (vì react đang set lại chiều cao của statusbar) by hieuvm (#adf47c16e)
++ [Bank] Fix error after cherry pick by datnt10 (#4490b9413)
++ [Bank] Refactor code by Long le van (#546eafb4f)
++ [Bank] Update PCI-DSS UI by Long le van (#8cb401e46)
++ [Bank] Thanh toán dùng Tài khoản (chưa liên kết) -> Liên kết tài khoản -> nhảy thẳng vào SDK thay vì hiện màn hình chọn ngân hàng. by Long le van (#b9fd06888)
++ [Bank] Continue payment after link bank by Long le van (#60bb62046)
++ [Bank] Handle result after add bank. by Long le van (#935805671)
++ [Bank] Edit bank empty view height by datnt10 (#5be9e5195)
++ [Bank] Edit string by datnt10 (#25f8304fa)
++ [Bank] Update list card support UI by datnt10 (#ff306a806)
++ [APP] Bỏ line của item cuối trong listCardSupport by lytm (#3c7ef6737)
++ [SDK] Enable unit test for SDK - fix crash on PaymentGatewayActivity.onSelectedChannel(null) by Nguyen Huu Hoa (#27130e7a8)
++ [Bank] Fix bug after cherry pick from commit 5c73c89296ad97c006ead80dc04edb338d49a44d [5c73c89] [Bank] Clean code - Remove older design (undone) by datnt10 (#cfdd82ff8)
++ [Bank] Clean code by Long le van (#52cf1adca)
++ [Bank] Fix error by datnt10 (#0f1957e43)
++ [Bank] Update UI link card/account by datnt10 (#40916d494)
++ [Bank] Update detect CC card. by Long le van (#305fea200)
++ [Bank] Update new design by Long le van (#6d9addbae)
++ [Bank] Refactor name by Long le van (#02f5d6a9f)
++ [Bank] Update ui get list card support by datnt10 (#8aacc170d)
++ [SDK] Thêm bank name khi getListCardSupport() by lytm (#82cd64d52)
++ [Bank] Edit comment by datnt10 (#91832104d)
++ [Bank] New UI by datnt10 (#eb4731aee)
++ [Resource] update resource icon name by datnt10 (#5899e0527)
++ [Bank] Edit string PCI-DSS by datnt10 (#1dc1b5197)
++ [Bank] Update UI by datnt10 (#7a56fa8bb)
++ [Bank] Reduce draw background by Long le van (#d3dd82c37)
++ [Bank] Update swipe animation by Long le van (#d15eb6f61)
++ [Bank] Update UI by Long le van (#0fe6beb1f)
++ [Bank] Edit UI by datnt10 (#af6ede8b9)
++ [Bank] Update UI: link card item by Long le van (#832307bb6)
++ [Bank] Update UI by Long le van (#8e5469473)
++ [Bank] refactor link card/account ui code by datnt10 (#abe729db5)
++ [Bank] Add view bank support (in case linked card already) by datnt10 (#2d4897907)
++ [Bank] fix build on CI fail by datnt10 (#42760d31c)
++ [Bank] edit link card/account ui by datnt10 (#b80f07e91)
++ [Recyclerview Swipe] Move to ui.widget module instead of separate module. by Long le van (#9378a2c0b)
++ [Bank] Add swipe menu for remove account by Long le van (#c7c954a51)
++ [Bank] Add swipe menu for remove card by Long le van (#521aff8f8)
++ [Recyclerview Swipe] Custom for special design of Zalo Pay. by Long le van (#b484b0c27)
++ [Recyclerview Swipe] Add Recyclerview Swipe library by Long le van (#4d83627e6)
++ [Bank] refactor code by datnt10 (#107b6b76b)
++ [Bank] check ALL_CAPS in class Constants by datnt10 (#2c9023c78)
++ [Bank] Add phone number display to hint (in case list account empty) by datnt10 (#f15b0da93)
++ [Bank] remove unused icon by datnt10 (#5f4e86729)
++ [Bank] update new UI for link card/account by datnt10 (#052cb6177)
++ [ZPAnalytics] Kiểm tra file tồn tại trước khi upload file log. - https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/592e8229be077a4dcc77eaa8?time=last-seven-days by hieuvm (#3ee3e6a10)
++ [ZPAnalytics] Refactor code by hieuvm (#dfe989a94)
++ [Crashlytics] fix bug crashlytics (từ 2.11.0 to master) 1. check activity isFinishing() when dismiss progressdialog task#516 2. check ZPWPaymentInfo.linkAccInfo trong phần LinkAcc task#515 3. AdapterFactory.produce adapter=null task#501 4. Exception report on NPE: AdapterBase.getPageName() task#506 5. SDK check báo lỗi by lytm (#70c35891f)
++ [Crashlytics] ignore http timeout by hieuvm (#83f2ea1d4)
++ [Crashlytics] Remove log error: java.security.KeyStoreException (task#519) by hieuvm (#d874b1bbd)
++ [Crashlytics] ignore http exception by hieuvm (#e9d0a872b)
++ [PC] Fix convert usrid by hieuvm (#c0d0859a9)
++ [ZPAnalytics] Update filelog - create timer theo thời gian create file by hieuvm (#50748640a)
++ [Analytics] Add timing api get bank account by hieuvm (#7bce9db9d)
++ [ZPAnalytics] Build analytics module v1.23 by hieuvm (#dba0b9326)
++ [ZPAnalytics] Add new zpevent by hieuvm (#ba51581c7)
++ [PC] Điều chỉnh hành xử kết nối lại với PC (task#496) by hieuvm (#202ebe308)
++ [ZPAnalytics] Update pc error log (task#494) - Fix merge by hieuvm (#629f1f33b)
++ [Protobuf] Update protobuf file by hieuvm (#3f81e3f56)
++ [ZPAnalytics] Rebuild analytics module - v1.22 by hieuvm (#dd7a0883c)
++ [ZPAnalytics] Fix upload file log. - thêm timer upload 5 min by hieuvm (#030e0c68f)
++ [ZPAnalytics] Update pc error log (task#494) - Bỏ qua usrid = 0 by hieuvm (#1aa65b224)
++ [Filelog] Update pc error log (task#494) by hieuvm (#d5701884c)
++ [ZPAnalytics] Update pc error log (task#494) - Update lib module by hieuvm (#a96668548)
++ [PW] Reduce level of redirection by Nguyen Huu Hoa (#bee776c3a)
++ [React] Correct usage of PaymentWrapper API to dismiss lint by Nguyen Huu Hoa (#998f51e24)
++ [PW] Add @NonNull annotation for public API of PaymentWrapper by Nguyen Huu Hoa (#f4db9d221)
++ [PW] Inject current user to PaymentWrapper by Nguyen Huu Hoa (#770885585)
++ [PW] Fix compiler errors by Nguyen Huu Hoa (#37d0369eb)
++ [PW] Cleanup code by Nguyen Huu Hoa (#8c1bc92d0)
++ [PW] Refactor PaymentWrapper by Nguyen Huu Hoa (#636fef79d)
++ [PW] rename unLinkAccount to unlinkAccount by Nguyen Huu Hoa (#8da7a316a)
++ [PW] Using Dagger to inject common repository to PaymentWrapper object by Nguyen Huu Hoa (#8cf3a475d)
++ [PW] Move PaymentWrapper to package pw by Nguyen Huu Hoa (#beabee6b7)
++ [Feedback][Sdk] Update payment feedback by hieuvm (#665dd87b0)
++ [Feedback][App] Update ui feedback, payment feedback by hieuvm (#ea2a7c55d)
++ [Feedback] Rebuild feedback module - v1.2 by hieuvm (#c9e3a95f6)
++ [Feedback] Update feedback module by hieuvm (#7814dee85)
++ [Filelog] Update event log format by hieuvm (#e9666036a)
++ [Service Webview] Ẩn icon lịch sử giao dịch trong app dịch vụ khi đang ở trong trang lịch sử giao dịch. (task#493) by Long le van (#092e72375)
++ [FileLog] Update subdomain sandbox by vo van chuc (#86ade5639)
++ [FileLog] Remove v001 from url by vo van chuc (#98e4f31a1)
++ [SmsReceiver] Fix crash NullPointerException in fabric when parse ReceiveSms. Because function (SmsMessage.createFromPdu(byte[] pdu)) deprecated in Android 23. by Long le van (#47fbb51a4)
++ [Filter-Trans] Update filter transaction unittest by hieuvm (#957d53784)
++ [Filter-Trans] Update filter transaction by hieuvm (#8b6862eec)
++ [Filter-Trans] Add TransactionFragment Greendao by hieuvm (#35d7e4a9e)
++ [Filter-Trans] Add PickerView - build rnmodules v1.25 by hieuvm (#7301fc422)
++ [Bank] Reduce draw background by Long le van (#0caf03b46)
++ [Bank] Update swipe animation by Long le van (#e5025a5d5)
++ [Bank] Update UI by Long le van (#1f09a42b0)
++ [SDK] Fix crash refreshPlatformInfo on Crashlytic by vo van chuc (#9e5d09507)
++ Update message thông báo khi gọi api http code 404 (task#491) by hieuvm (#66eef6bfe)
++ Cập nhật url khi upload file log. (task#492) by hieuvm (#e37589594)
++ Update message thông báo khi gọi api http code 404 (task#491) by hieuvm (#818a82c3e)
