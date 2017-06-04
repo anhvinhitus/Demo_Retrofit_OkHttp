@@ -42,6 +42,7 @@ public interface IData {
      * @param params
      * @return
      */
+    @GET(Constants.URL_APP_INFO)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
     Observable<AppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
 
