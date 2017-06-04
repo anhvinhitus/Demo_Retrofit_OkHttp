@@ -2,15 +2,12 @@ package vn.com.zalopay.wallet.datasource.task;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadPlatformInfoImpl;
@@ -19,7 +16,6 @@ import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 /***
@@ -31,6 +27,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
     private ZPWGetGatewayInfoListener mGetGatewayInfoListener;
     private boolean mForceReload;//force sdk re download everything.
     private boolean mNoDownloadResource;//app reoad platfrom info, this will be set to true to prevent download resource file again.
+
     /***
      * overload constructor
      * @param pListener
@@ -101,24 +98,6 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             if (pResponse.approvedinsideappids != null) {
                 SharedPreferencesManager.getInstance().setApproveInsideApps(GsonUtils.toJsonString(pResponse.approvedinsideappids));
             }
-            //app info zalopay
-            if (pResponse.info != null) {
-                SharedPreferencesManager.getInstance().setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
-            }
-            //zalopay channel transtype
-            if (pResponse.transtypepmcs != null && pResponse.transtypepmcs.size() > 0) {
-                for (DChannelMapApp channelMap : pResponse.transtypepmcs) {
-                    ArrayList<String> mapAppChannelIDList = new ArrayList<>();
-                    String keyMap = String.valueOf(pResponse.info != null ? pResponse.info.appid : GlobalData.appID);
-                    keyMap += Constants.UNDERLINE + channelMap.transtype;
-                    for (DPaymentChannel channel : channelMap.pmclist) {
-                        String appChannelID = keyMap + Constants.UNDERLINE + channel.pmcid;
-                        mapAppChannelIDList.add(String.valueOf(channel.pmcid));
-                        SharedPreferencesManager.getInstance().setPmcConfig(appChannelID, GsonUtils.toJsonString(channel));
-                    }
-                    SharedPreferencesManager.getInstance().setPmcConfigList(keyMap, mapAppChannelIDList);
-                }
-            }
         }
         //need to update card info again on cache
         if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
@@ -142,7 +121,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
         if (pResponse.resource != null && (pResponse.isupdateresource || (!TextUtils.isEmpty(resrcVer) && !pResponse.resource.rsversion.equals(resrcVer)))) {
             SharedPreferencesManager.getInstance().setResourceVersion(pResponse.resource.rsversion);
             SharedPreferencesManager.getInstance().setResourceDownloadUrl(pResponse.resource.rsurl);
-            Log.d(this,"start download sdk resource "+ pResponse.resource.rsurl);
+            Log.d(this, "start download sdk resource " + pResponse.resource.rsurl);
             DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pResponse.resource.rsurl, pResponse.resource.rsversion);
             downloadResourceTask.makeRequest();
         }
@@ -169,8 +148,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             return;
         }
         //everything is ok
-        if(pResponse.returncode == 1)
-        {
+        if (pResponse.returncode == 1) {
             this.mGetGatewayInfoListener.onSuccess();
         }
     }

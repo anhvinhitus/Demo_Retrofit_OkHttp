@@ -116,12 +116,6 @@ public class BankAccountHelper {
     public static void saveMapBankAccountListToCache(String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
         //update checksum
         SharedPreferencesManager.getInstance().setBankAccountCheckSum(pInfoCheckSum);
-<<<<<<< HEAD
-        Log.d(TAG, "saved bank account list checksum " + pInfoCheckSum);
-=======
-        Log.d("updateBankAccountListOnCache", "===pInfoCheckSum=" + pInfoCheckSum);
-        Log.d("updateBankAccountListOnCache", "===pMapList=", pMapList);
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         //map card list
         if (pMapList != null && pMapList.size() > 0) {
             StringBuilder mappedCardID = new StringBuilder();

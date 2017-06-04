@@ -42,13 +42,8 @@ public interface IData {
      * @param params
      * @return
      */
-    @GET(Constants.URL_APP_INFO)
-<<<<<<< HEAD
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
-    Observable<DAppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
-=======
-    Call<AppInfoResponse> getAppInfo(@QueryMap Map<String, String> params);
->>>>>>> 9fd9a35... [SDK] Apply app info v1
+    Observable<AppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
 
     /**
      * load bank list

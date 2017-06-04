@@ -26,8 +26,7 @@ public class AppInfoLoader extends SingletonBase {
     private long appId;
     private String zaloUserId;
     private String accessToken;
-    @TransactionType
-    private int transactionType;
+    @TransactionType private int transactionType;
 
     public AppInfoLoader(long pAppId, @TransactionType int pTransType, String pZaloUserId, String pAccessToken) {
         super();
@@ -116,65 +115,19 @@ public class AppInfoLoader extends SingletonBase {
         if (existedAppInfoOnCache() && mLoadAppInfoListener != null) {
             mLoadAppInfoListener.onSuccess();
         } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            loadAppInfoForAppFromServer();
-=======
-            int[] transtypes = shouldLoadAllAppTranstype() ? new int[0] : new int[]{Integer.parseInt(GlobalData.getTransactionType().toString())};
-=======
             int[] transtypes = shouldLoadAllAppTranstype() ? new int[]{
-                    Integer.parseInt(ETransactionType.PAY.toString()),
-                    Integer.parseInt(ETransactionType.TOPUP.toString()),
-                    Integer.parseInt(ETransactionType.LINK_CARD.toString()),
-                    Integer.parseInt(ETransactionType.WALLET_TRANSFER.toString()),
-                    Integer.parseInt(ETransactionType.WITHDRAW.toString())}
-                    : new int[]{Integer.parseInt(GlobalData.getTransactionType().toString())};
->>>>>>> d390ca8... [SDK] filter 5 transtypes appinfo
-            loadAppInfoForSDK(transtypes);
+                    TransactionType.PAY,
+                    TransactionType.TOPUP,
+                    TransactionType.LINK_CARD,
+                    TransactionType.MONEY_TRANSFER,
+                    TransactionType.WITHDRAW}
+                    : new int[]{GlobalData.getTransactionType()};
+            loadAppInfo(transtypes);
         }
     }
 
-    public void execureForMerchant() {
-        if (existedAppInfoOnCache() && mLoadAppInfoListener != null) {
-            Log.d(getClass().getName(), "app info from cache and not expired");
-            mLoadAppInfoListener.onSuccess();
-        } else {
-<<<<<<< HEAD
-            loadAppInfoForApp(new int[0]);
->>>>>>> c78224b... [SDK] Update app info v1
-=======
-            int[] transtypes = new int[]{
-                    Integer.parseInt(ETransactionType.PAY.toString()),
-                    Integer.parseInt(ETransactionType.TOPUP.toString()),
-                    Integer.parseInt(ETransactionType.LINK_CARD.toString()),
-                    Integer.parseInt(ETransactionType.WALLET_TRANSFER.toString()),
-                    Integer.parseInt(ETransactionType.WITHDRAW.toString())};
-            loadAppInfoForApp(transtypes);
->>>>>>> d390ca8... [SDK] filter 5 transtypes appinfo
-        }
-    }
-
-    /***
-<<<<<<< HEAD
-     * call api get app info,used for app
-     */
-    public void loadAppInfoForAppFromServer() {
-        BaseTask appInfoTask = new AppInfoTask(mLoadAppInfoListener, String.valueOf(appId), zaloUserId, accessToken);
+    public void loadAppInfo(int[] pTranstype) {
+        BaseTask appInfoTask = new AppInfoTask(mLoadAppInfoListener, String.valueOf(appId), zaloUserId, accessToken, pTranstype);
         appInfoTask.makeRequest();
-=======
-     * call this api,used in sdk
-     */
-    public void loadAppInfoForSDK(int[] pTransype) {
-        BaseRequest getAppInfoTask = new GetAppInfo(pTransype, mLoadAppInfoListener);
-        getAppInfoTask.makeRequest();
-    }
-
-    /***
-     * call api get app info,used for app
-     */
-    public void loadAppInfoForApp(int[] pTransype) {
-        BaseRequest getAppInfoTask = new GetAppInfo(pTransype, appId, zaloUserId, accessToken, mLoadAppInfoListener);
-        getAppInfoTask.makeRequest();
->>>>>>> c78224b... [SDK] Update app info v1
     }
 }

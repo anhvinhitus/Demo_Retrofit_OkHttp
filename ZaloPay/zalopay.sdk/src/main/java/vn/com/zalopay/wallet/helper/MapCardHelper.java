@@ -96,12 +96,6 @@ public class MapCardHelper {
     }
 
     public static void notifyNewMapCardToApp(DMappedCard saveCardInfo) {
-<<<<<<< HEAD
-        Log.d("notifyNewMapCardToApp", "===saveCardInfo=" + GsonUtils.toJsonString(saveCardInfo));
-=======
-        Log.d("notifyNewMapCardToApp", "===saveCardInfo=", saveCardInfo);
-
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
         DMapCardResult mapCardResult = new DMapCardResult();
         mapCardResult.setLast4Number(saveCardInfo.last4cardno);
         String bankName = null;
@@ -130,18 +124,5 @@ public class MapCardHelper {
         }
         mapCardResult.setBankName(bankName);
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
-<<<<<<< HEAD
-<<<<<<< HEAD
-        Log.d("notifyNewMapCardToApp", "===mapCardResult=" + GsonUtils.toJsonString(mapCardResult));
-=======
-
-<<<<<<< HEAD
-        Log.d("notifyNewMapCardToApp", "===mapCardResult=", mapCardResult);
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
-=======
-=======
->>>>>>> 190d5ae... [SDK] Clear code
-        Log.d("start send map card to app", mapCardResult);
->>>>>>> ba1bb8b... [SDK] Clear code
     }
 }

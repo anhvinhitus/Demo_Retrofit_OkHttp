@@ -218,14 +218,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     @Override
     public void onBackPressed() {
-<<<<<<<HEAD
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
-=======
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
+            GlobalData.analyticsTrackerWrapper.trackUserCancel();
         }
->>>>>>>8807597... [ZPAnalytics]Fix crash loop on
-        Crashlytic https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/592f841dbe077a4dcc81c6c4/sessions/latest?build=58389647
         //user is summiting order
         if (!isInProgress()) {
             recycleActivity();
@@ -384,14 +379,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void recycleActivity() {
         Log.d(this, "recycle activity");
         setEnableView(R.id.zpsdk_exit_ctl, false);
-<<<<<<<HEAD
-        ZPAnalyticsTrackerWrapper.getInstance().trackUserCancel();
-=======
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
+            GlobalData.analyticsTrackerWrapper.trackUserCancel();
         }
->>>>>>>8807597... [ZPAnalytics]Fix crash loop on
-        Crashlytic https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/592f841dbe077a4dcc81c6c4/sessions/latest?build=58389647
         finish();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());

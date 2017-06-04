@@ -17,7 +17,6 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -25,6 +24,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
@@ -196,21 +196,11 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
         getAdapter().getActivity().runOnUiThread(() -> {
             DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-<<<<<<< HEAD
             Log.d("=====onJsPaymentResult=====", GsonUtils.toJsonString(scriptOutput));
             EEventType eventType = convertPageIdToEvent(mEventID);
             BaseResponse response = genResponse(eventType, scriptOutput);
             if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                 mIsFirst = false; // Auto hit at first step
-=======
-            Log.d("onJsPaymentResult", scriptOutput);
-            EEventType eventType = convertPageIdToEvent(mEventID);
-            BaseResponse response = genResponse(eventType, scriptOutput);
-
-            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                // Auto hit at first step
-                mIsFirst = false;
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
                 hit();
             } else {
                 if (eventType == EEventType.ON_REQUIRE_RENDER) {
@@ -219,13 +209,6 @@ public class BankWebViewClient extends PaymentWebViewClient {
                     getAdapter().onEvent(eventType, response, mPageCode, mEventID);
                 }
             }
-<<<<<<< HEAD
-=======
-
-        });
-    }
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d
-
         });
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import timber.log.Timber;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class PlayStoreUtils {
     /**

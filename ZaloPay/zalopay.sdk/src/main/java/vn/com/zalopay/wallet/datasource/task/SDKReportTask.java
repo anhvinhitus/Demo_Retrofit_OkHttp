@@ -5,11 +5,8 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/datasource/task/SDKReportTask.java
 import vn.com.zalopay.wallet.business.data.Log;
-=======
-import vn.com.zalopay.wallet.utils.Log;
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/datasource/request/SDKReport.java
+
 
 public class SDKReportTask extends BaseTask<BaseResponse> {
     public static final int DEFAULT = 0;
@@ -67,14 +64,8 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
         baseRequest.makeRequest();
     }
 
-<<<<<<< HEAD:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/datasource/task/SDKReportTask.java
     @Override
     public void onDoTaskOnResponse(BaseResponse pResponse) {
-
-=======
-    private void onPostResult() {
-        Log.d(this, getResponse());
->>>>>>> 348b7c3... [SDK] Remove Gson.toJsonString trong Log.d:ZaloPay/zalopay.sdk/src/main/java/vn/com/zalopay/wallet/datasource/request/SDKReport.java
     }
 
     @Override

@@ -1541,7 +1541,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                         try {
                             getViewPager().setCurrentItem(0);
                             getCardNumberView().setText(null);
-                            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+                            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
