@@ -30,31 +30,31 @@ import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.react.iap.RequestSubscriber;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.iap.RequestSubscriber;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -62,14 +62,13 @@ import vn.com.zalopay.analytics.ZPAnalytics;
  */
 final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
-    private INavigator navigator;
-    private AppResourceStore.Repository mResourceRepository;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    private NotificationStore.Repository mNotificationRepository;
-
     private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
+    private INavigator navigator;
+    private AppResourceStore.Repository mResourceRepository;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private NotificationStore.Repository mNotificationRepository;
+    private PaymentWrapper paymentWrapper;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
                               INavigator navigator, AppResourceStore.Repository resourceRepository,
@@ -159,7 +158,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         map.put("termsOfUseUrl", BuildConfig.TERMS_HOST);
         map.put("faqUrl", BuildConfig.FAQ_HOST);
         map.put("supportCenterUrl", BuildConfig.SUPPORT_CENTER_HOST);
-        map.put("storeUrl", AndroidUtils.getUrlPlayStore("React Native", "Internal"));
+        map.put("storeUrl", PlayStoreUtils.getUrlPlayStore(BuildConfig.PACKAGE_IN_PLAY_STORE, AndroidApplication.instance().getResources().getString(R.string.app_name), "React Native", "Internal"));
         return map;
     }
 
@@ -320,9 +319,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         }
     }
 
-
-    private PaymentWrapper paymentWrapper;
-
     private void pay(final long appId, final String zptranstoken) {
         Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
@@ -395,31 +391,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         return wrapper;
     }
 
-
-    private class PayOrderSubscriber extends DefaultSubscriber<NotificationData> {
-        private WeakReference<Promise> mPromise;
-
-        PayOrderSubscriber(Promise promise) {
-            mPromise = new WeakReference<>(promise);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "Error pay order");
-            if (mPromise.get() != null) {
-                Helpers.promiseResolveError(mPromise.get(), PaymentError.ERR_CODE_UNKNOWN.value(), e.getMessage());
-            }
-        }
-
-        @Override
-        public void onNext(NotificationData notify) {
-            payOrder(notify);
-            if (mPromise.get() != null) {
-                Helpers.promiseResolveSuccess(mPromise.get(), null);
-            }
-        }
-    }
-
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
@@ -456,7 +427,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         return writableMap;
     }
 
-
     @ReactMethod
     public void navigateIntro(String title) {
         Timber.d("navigateIntro : %s", title);
@@ -466,6 +436,30 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         }
 
         navigator.startIntroAppActivity(getCurrentActivity(), false, title);
+    }
+
+    private class PayOrderSubscriber extends DefaultSubscriber<NotificationData> {
+        private WeakReference<Promise> mPromise;
+
+        PayOrderSubscriber(Promise promise) {
+            mPromise = new WeakReference<>(promise);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Error pay order");
+            if (mPromise.get() != null) {
+                Helpers.promiseResolveError(mPromise.get(), PaymentError.ERR_CODE_UNKNOWN.value(), e.getMessage());
+            }
+        }
+
+        @Override
+        public void onNext(NotificationData notify) {
+            payOrder(notify);
+            if (mPromise.get() != null) {
+                Helpers.promiseResolveSuccess(mPromise.get(), null);
+            }
+        }
     }
 
 }

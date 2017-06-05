@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -180,7 +181,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
                                             @Override
                                             public void onOKevent() {
-                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), "force-app-update", "bank-future");
+                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE,"Zalo Pay","force-app-update", "bank-future");
                                                 getActivity().recycleActivity();
                                             }
                                         }, pMessage,

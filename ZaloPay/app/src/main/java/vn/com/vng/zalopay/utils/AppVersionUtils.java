@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
+import vn.com.zalopay.wallet.utils.PlayStoreUtils;
 
 /**
  * Created by longlv on 05/08/2016.
@@ -39,28 +40,28 @@ public class AppVersionUtils {
         return !TextUtils.isEmpty(currentVersionShowed) && currentVersionShowed.equals(version);
     }
 
-    private static void setForceUpdateApp(boolean forceUpdateApp) {
-        mPreferences.edit().putBoolean(FORCE_UPDATE_APP, forceUpdateApp).apply();
-    }
-
     private static boolean isForceUpdateApp() {
         return mPreferences.getBoolean(FORCE_UPDATE_APP, false);
     }
 
-    private static void setLatestVersionInServer(String latestVersion) {
-        mPreferences.edit().putString(LATEST_VERSION_IN_SERVER, latestVersion).apply();
+    private static void setForceUpdateApp(boolean forceUpdateApp) {
+        mPreferences.edit().putBoolean(FORCE_UPDATE_APP, forceUpdateApp).apply();
     }
 
     private static String getLatestVersionInServer() {
         return mPreferences.getString(LATEST_VERSION_IN_SERVER, "");
     }
 
-    private static void setUpdateMessageInServer(String message) {
-        mPreferences.edit().putString(UPDATE_MESSAGE_IN_SERVER, message).apply();
+    private static void setLatestVersionInServer(String latestVersion) {
+        mPreferences.edit().putString(LATEST_VERSION_IN_SERVER, latestVersion).apply();
     }
 
     private static String getUpdateMessageInServer() {
         return mPreferences.getString(UPDATE_MESSAGE_IN_SERVER, "");
+    }
+
+    private static void setUpdateMessageInServer(String message) {
+        mPreferences.edit().putString(UPDATE_MESSAGE_IN_SERVER, message).apply();
     }
 
     private static boolean needUpgradeApp() {
@@ -144,7 +145,7 @@ public class AppVersionUtils {
                         if (forceUpdate) {
                             clearSession();
                         }
-                        AndroidUtils.openPlayStoreForUpdate(activity, "force-app-update", "home-page");
+                        PlayStoreUtils.openPlayStoreForUpdate(activity, BuildConfig.PACKAGE_IN_PLAY_STORE, AndroidApplication.instance().getResources().getString(R.string.app_name), "force-app-update", "home-page");
                     }
 
                     @Override

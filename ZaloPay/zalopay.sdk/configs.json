@@ -4,6 +4,7 @@
     "host_complete" : "payment-complete",
     "resource_folder" : "/wallet/",
     "platform_code" : "android",
+    "package_playstore": "vn.com.vng.zalopay",
     "zalopay_id" : "1",
     "withdrawapp_id" : "2",
     "level_allow_use_zalopay": "2",
