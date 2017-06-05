@@ -9,7 +9,7 @@ include ':zalopay.sdk'
 include ':zalopay.sdk.utils'
 include ':zalopay.network'
 
-include ':greendaogenerator'
-include ':daogenerator'
+/*include ':greendaogenerator'
+include ':daogenerator'*/
 
 include ':zalopay.promotion'
