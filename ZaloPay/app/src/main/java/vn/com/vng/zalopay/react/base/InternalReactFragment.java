@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.react.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.beefe.picker.PickerViewPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -93,7 +94,8 @@ public class InternalReactFragment extends ReactBaseFragment {
                 new MainReactPackage(),
                 reactInternalPackage(),
                 new SQLitePluginPackage(),
-                new RNDeviceInfo());
+                new RNDeviceInfo(),
+                new PickerViewPackage());
     }
 
     protected ReactPackage reactInternalPackage() {
