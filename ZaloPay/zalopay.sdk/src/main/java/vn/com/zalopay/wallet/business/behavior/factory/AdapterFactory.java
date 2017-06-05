@@ -21,14 +21,14 @@ public class AdapterFactory {
     public static AdapterBase produce(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) {
         AdapterBase adapter = null;
         try {
-            adapter = produceChannelByID(owner, pPmcTransType);
+            adapter = produceChannelByPmc(owner, pPmcTransType);
         } catch (Exception ex) {
             Log.e("produce", ex);
         }
         return adapter;
     }
 
-    public static AdapterBase produceChannelByID(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) throws Exception {
+    public static AdapterBase produceChannelByPmc(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) throws Exception {
         AdapterBase adapter = null;
         switch (pPmcTransType.pmcid) {
             case BuildConfig.channel_zalopay:

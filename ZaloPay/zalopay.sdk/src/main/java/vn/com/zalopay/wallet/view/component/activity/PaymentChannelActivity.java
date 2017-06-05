@@ -14,6 +14,8 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -34,8 +36,6 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMC_CONFIG_EXTRA = "pmc_config";
@@ -109,7 +109,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     public void onUserInteraction() {
         super.onUserInteraction();
         if (mTimerRunning && !getAdapter().isFinalScreen()) {
-            Log.d(this, "===onUserInteraction===startTransactionExpiredTimer");
+            Log.d(this, "user tap on UI restart payment transaction countdown");
             startTransactionExpiredTimer();
         }
     }
@@ -207,7 +207,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onCreate(savedInstanceState);
         Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        if(getIntent().getExtras() != null){
+            mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+        }
         Log.d(this, "start payment channel", mMiniPmcTransType);
         if (mMiniPmcTransType == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
@@ -243,10 +245,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         mOnClickExitListener.onClick(null);
-        if(GlobalData.analyticsTrackerWrapper != null){
+        if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.trackUserCancel();
         }
-   }
+    }
 
     @Override
     protected void onStart() {
@@ -272,7 +274,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
             showKeyBoardForPin();
         }
-        //showKeyBoardOnFocusingViewAgain();
+        showKeyBoardOnFocusingViewAgain();
         //this is link account and the first call
         if (GlobalData.isBankAccountLink() && !mIsStart) {
             try {
@@ -290,24 +292,21 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             try {
                 int allowATM = GlobalData.checkPermissionByChannelMap(BuildConfig.channel_atm);
                 int allowCC = GlobalData.checkPermissionByChannelMap(BuildConfig.channel_credit_card);
-
                 if (allowATM == Constants.LEVELMAP_INVALID && allowCC == Constants.LEVELMAP_INVALID) {
                     onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
                     return;
-                } else if (allowATM == Constants.LEVELMAP_BAN && allowCC == Constants.LEVELMAP_BAN) {
+                }
+                if (allowATM == Constants.LEVELMAP_BAN && allowCC == Constants.LEVELMAP_BAN) {
                     getAdapter().confirmUpgradeLevel();
                     return;
                 }
-
                 isAllowLinkCardATM = (allowATM == Constants.LEVELMAP_ALLOW);
                 isAllowLinkCardCC = (allowCC == Constants.LEVELMAP_ALLOW);
-
                 //switch to cc adapter if link card just allow cc without atm
                 if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(BuildConfig.channel_credit_card)) {
                     initChannel();
                 }
                 checkAppInfo();
-
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
@@ -325,9 +324,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         try {
-
                             getAdapter().getGuiProcessor().onFocusView();
                             if (!getAdapter().isLinkAccFlow()) {
                                 getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
@@ -363,14 +360,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     public void renderActivity() {
         String layoutResID = getAdapter().getLayoutID();
-
         if (TextUtils.isEmpty(layoutResID)) {
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             return;
         }
-
         setContentView(RS.getLayout(layoutResID));
-
         try {
             showApplicationInfo();
         } catch (Exception e) {
@@ -384,20 +378,15 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
-
         setMarginSubmitButtonTop(false);
         //resize pin layout if this is phone
         if (!SdkUtils.isTablet(getApplicationContext())) {
             resizeGridPasswordView();
         }
-
         if (!GlobalData.isChannelHasInputCard())
             renderByResource();
-
         setListener();
-
         getAdapter().setListener();
-
         //hide header if this is link card.
         if (GlobalData.isLinkCardChannel()) {
             visibleAppInfo(false);
@@ -565,7 +554,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcID(pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType != null) {
-                mAdapter = AdapterFactory.produceChannelByID(this, miniPmcTransType);
+                mAdapter = AdapterFactory.produceChannelByPmc(this, miniPmcTransType);
                 return true;
             }
         } catch (Exception e) {

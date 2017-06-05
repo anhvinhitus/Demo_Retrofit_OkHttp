@@ -161,10 +161,10 @@ public class DataParameter {
         params.put(ConstantParams.BANKACCOUNT_CHECKSUM, checkSum);
     }
 
-    public static void prepareGetAppInfoParams(String pZaloUserId, String pAppId, String pAccessToken, String pAppInfoCheckSum, int[] pTranstype, String[] pTranstypeCheckSum, Map<String, String> params) {
+    public static void prepareGetAppInfoParams(String pZaloUserId, long pAppId, String pAccessToken, String pAppInfoCheckSum, int[] pTranstype, String[] pTranstypeCheckSum, Map<String, String> params) {
         putBase(params);
         params.put(ConstantParams.USER_ID, pZaloUserId);
-        params.put(ConstantParams.APP_ID, pAppId);
+        params.put(ConstantParams.APP_ID, String.valueOf(pAppId));
         params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
         params.put(ConstantParams.APPINFO_CHECKSUM, !TextUtils.isEmpty(pAppInfoCheckSum) ? pAppInfoCheckSum : "");
         StringBuilder stringBuilder = new StringBuilder();

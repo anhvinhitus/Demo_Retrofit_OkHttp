@@ -7,14 +7,18 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
+import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
@@ -25,8 +29,6 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -112,7 +114,7 @@ public class SDKPayment {
             SDKApplication.createPaymentInfoComponent(pPaymentInfo);
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pTransactionType);
         } catch (Exception e) {
-            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            teminateSession(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             return;
         }
         //set fingerprint listener from merchant
@@ -128,44 +130,34 @@ public class SDKPayment {
         }
         Log.d("pay", "payment transaction type", pTransactionType);
         Log.d("pay", "payment info ", pPaymentInfo);
-        //check where context is end?
-        try {
-            GlobalData.getTransactionType();
-            GlobalData.selectBankFunctionByTransactionType();
-            GlobalData.initializeAnalyticTracker();
-        } catch (Exception e) {
-            Log.e("pay", e);
-            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), PaymentError.DATA_INVALID);
-            return;
-        }
+        GlobalData.getTransactionType();
+        GlobalData.selectBankFunctionByTransactionType();
+        GlobalData.initializeAnalyticTracker();
+
         try {
             //check internet connection
             if (!ConnectionUtil.isOnline(pMerchantActivity)) {
                 if (GlobalData.getPaymentListener() != null) {
                     GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
                 }
-
                 SingletonLifeCircleManager.disposeAll();
-
                 return;
             }
             CValidation validation = new CValidation();
             //validate params order info
             String validateMessage = validation.onValidateOrderInfo(pPaymentInfo);
             if (!TextUtils.isEmpty(validateMessage)) {
-                onReturnCancel(validateMessage, PaymentError.DATA_INVALID);
+                teminateSession(validateMessage, PaymentError.DATA_INVALID);
                 return;
             }
             //validate user
             String validateUser = validation.onValidateUser();
-
             if (!TextUtils.isEmpty(validateUser)) {
-                onReturnCancel(validateUser, PaymentError.DATA_INVALID);
+                teminateSession(validateUser, PaymentError.DATA_INVALID);
                 return;
             }
 
             //1 zalopay user has only 1 vcb account
-
             if (GlobalData.isBankAccountLink()
                     && GlobalData.isLinkAccFlow()
                     && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getPaymentInfo().linkAccInfo.getBankCode())) {
@@ -180,16 +172,7 @@ public class SDKPayment {
                         }, GlobalData.getStringResource(RS.string.dialog_close_button));
                 return;
             }
-//                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-//                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
-//                            if (GlobalData.getPaymentListener() != null) {
-//                                GlobalData.setResultUserClose();
-//                                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-//                            }
-//                            SingletonLifeCircleManager.disposeAll();
-//                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
-//                return;
-//            }
+//
             //user have no link bank account so no need to unlink
             if (GlobalData.isBankAccountLink()
                     && GlobalData.isUnLinkAccFlow()
@@ -222,37 +205,51 @@ public class SDKPayment {
                 return;
             }
         } catch (Exception e) {
-            onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            teminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             Log.e("pay", e);
             return;
         }
-
         startGateway();
     }
 
     private static void startGateway() {
         Activity pOwner = GlobalData.getMerchantActivity();
-        Intent intent;
-        //this is link card , go to channel directly
-        if (GlobalData.isLinkCardChannel()) {
-            intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+        if (pOwner == null || pOwner.isFinishing()) {
+            Log.e("startGateway", "merchant activity is null");
+            teminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            return;
         }
-        //this is link acc , go to channel directly
-        else if (GlobalData.isBankAccountLink()) {
+        Intent intent;
+        MiniPmcTransType miniPmcTransType = null;
+        //this is link card , go to channel directly
+        if (GlobalData.isLinkCardChannel() || GlobalData.isBankAccountLink()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            try {
+                String pmc = GlobalData.isLinkCardChannel() ? SharedPreferencesManager.getInstance().getATMChannelConfig(null) : SharedPreferencesManager.getInstance().getBankAccountChannelConfig(null);
+                if (!TextUtils.isEmpty(pmc)) {
+                    miniPmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
+                    intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, miniPmcTransType);
+                }
+            } catch (Exception e) {
+                Log.d("startGateway", e);
+            }
         } else {
             intent = new Intent(pOwner, PaymentGatewayActivity.class);
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        pOwner.startActivity(intent);
+        if (miniPmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
+            teminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pOwner.startActivity(intent);
+        }
+        Log.d("startGateway", intent.getComponent().getShortClassName(), miniPmcTransType);
     }
 
     /***
      * show dialog and dispose sdk in error cases
-     *
      * @param pMessage
      */
-    private static void onReturnCancel(final String pMessage, @PaymentError int pPayError) {
+    private static void teminateSession(final String pMessage, @PaymentError int pPayError) {
         if (pPayError == PaymentError.DATA_INVALID) {
             SDKReportTask.makeReportError(SDKReportTask.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
         }

@@ -127,7 +127,7 @@ public class AppInfoLoader extends SingletonBase {
     }
 
     public void loadAppInfo(int[] pTranstype) {
-        BaseTask appInfoTask = new AppInfoTask(mLoadAppInfoListener, String.valueOf(appId), zaloUserId, accessToken, pTranstype);
+        BaseTask appInfoTask = new AppInfoTask(mLoadAppInfoListener, appId, zaloUserId, accessToken, pTranstype);
         appInfoTask.makeRequest();
     }
 }

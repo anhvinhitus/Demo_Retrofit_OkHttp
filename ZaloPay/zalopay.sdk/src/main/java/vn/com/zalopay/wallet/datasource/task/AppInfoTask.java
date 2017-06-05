@@ -26,12 +26,12 @@ import vn.com.zalopay.utility.GsonUtils;
 public class AppInfoTask extends BaseTask<AppInfoResponse> {
     private static final String TAG = AppInfoTask.class.getCanonicalName();
     private ILoadAppInfoListener mLoadAppInfoListener;
-    private String mAppId;
+    private long mAppId;
     private String mUserId;
     private String mAccessToken;
     private int[] transtypes;
 
-    public AppInfoTask(ILoadAppInfoListener pListener, String pAppId, String pUserId, String pAccessToken, int[] pTranstypes) {
+    public AppInfoTask(ILoadAppInfoListener pListener, long pAppId, String pUserId, String pAccessToken, int[] pTranstypes) {
         super();
         mLoadAppInfoListener = pListener;
         mAppId = pAppId;
@@ -53,7 +53,7 @@ public class AppInfoTask extends BaseTask<AppInfoResponse> {
                 return;
             }
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(mAppId, expiredTime);
+            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(mAppId), expiredTime);
             if (pResponse.hasTranstypes()) {
                 long minValue, maxValue;
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
@@ -65,7 +65,7 @@ public class AppInfoTask extends BaseTask<AppInfoResponse> {
 
                     String appInfoTranstypeKey = getAppTranstypeKey(transtype);
                     for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
-                        String pmcKey = miniPmcTransType.getPmcKey(maxValue, transtype, miniPmcTransType.pmcid);
+                        String pmcKey = miniPmcTransType.getPmcKey(mAppId, transtype, miniPmcTransType.pmcid);
                         //save default for new atm/cc and bank account/zalopay pmc
                         if (!transtypePmcIdList.contains(pmcKey)) {
                             transtypePmcIdList.add(pmcKey);
@@ -114,7 +114,7 @@ public class AppInfoTask extends BaseTask<AppInfoResponse> {
             if (pResponse.needUpdateAppInfo()) {
                 //save app info to cache(id,name,icon...)
                 SharedPreferencesManager.getInstance().setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
-                SharedPreferencesManager.getInstance().setCheckSumAppChannel(mAppId, pResponse.appinfochecksum);
+                SharedPreferencesManager.getInstance().setCheckSumAppChannel(String.valueOf(mAppId), pResponse.appinfochecksum);
                 Log.d(this, "save app info to cache and update new checksum", pResponse.info);
             }
         } catch (Exception ex) {
@@ -178,7 +178,7 @@ public class AppInfoTask extends BaseTask<AppInfoResponse> {
         String appInfoCheckSum = null;
         String[] transtypeCheckSum = new String[0];
         try {
-            appInfoCheckSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(mAppId);
+            appInfoCheckSum = SharedPreferencesManager.getInstance().getCheckSumAppChannel(String.valueOf(mAppId));
             if (!TextUtils.isEmpty(appInfoCheckSum)) {
                 transtypeCheckSum = new String[transtypes.length];
                 for (int i = 0; i < transtypes.length; i++) {
