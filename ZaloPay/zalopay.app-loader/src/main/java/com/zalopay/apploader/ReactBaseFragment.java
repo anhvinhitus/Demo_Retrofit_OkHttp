@@ -4,20 +4,28 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -60,6 +68,11 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
 
     private ReactInstanceManager mReactInstanceManager;
 
+    private boolean mDoRefresh = false;
+
+    private static final String REDBOX_PERMISSION_MESSAGE =
+            "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
+
     @Nullable
     private PermissionListener mPermissionListener;
 
@@ -88,6 +101,16 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
+        if (getUseDeveloperSupport() && Build.VERSION.SDK_INT >= 23) {
+            // Get permission to show redbox in dev builds.
+            if (!Settings.canDrawOverlays(getActivity())) {
+                Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                startActivity(serviceIntent);
+                FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
+                Toast.makeText(getActivity(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -198,7 +221,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
 
     @Override
     public void handleException(@NonNull Throwable e) {
-        getActivity().finish();
+        // getActivity().finish();
     }
 
     protected void reactInstanceCaughtError() {
@@ -216,5 +239,34 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onReactContextInitialized(ReactContext context) {
 
+    }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (mReactInstanceManager != null &&
+                mReactInstanceManager.getDevSupportManager().getDevSupportEnabled()) {
+            if (keyCode == KeyEvent.KEYCODE_MENU) {
+                mReactInstanceManager.showDevOptionsDialog();
+                return true;
+            }
+            if (keyCode == KeyEvent.KEYCODE_R && !(getActivity().getCurrentFocus() instanceof EditText)) {
+                // Enable double-tap-R-to-reload
+                if (mDoRefresh) {
+                    mReactInstanceManager.getDevSupportManager().handleReloadJS();
+                    mDoRefresh = false;
+                } else {
+                    mDoRefresh = true;
+                    new Handler().postDelayed(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    mDoRefresh = false;
+                                }
+                            },
+                            200);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

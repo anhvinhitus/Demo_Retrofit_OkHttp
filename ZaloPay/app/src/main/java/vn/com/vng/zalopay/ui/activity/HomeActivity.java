@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -212,5 +213,18 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         if (fragment instanceof ReactBaseFragment) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        Fragment fragment = getActiveFragment();
+
+        if (fragment instanceof ReactBaseFragment) {
+            return ((ReactBaseFragment) fragment).onKeyUp(keyCode, event);
+        }
+
+
+        return super.onKeyUp(keyCode, event);
     }
 }
