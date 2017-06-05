@@ -52,7 +52,6 @@ import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
-import vn.com.vng.zalopay.promotion.ResourceLoader;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -81,6 +80,7 @@ public class NotificationHelper {
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private List<Long> mListPacketIdToRecovery = new ArrayList<>();
+
     private IResourceLoader mResourceLoader;
     private PromotionHelper mPromotionHelper;
 
@@ -92,8 +92,7 @@ public class NotificationHelper {
                        TransactionStore.Repository transactionRepository,
                        BalanceStore.Repository balanceRepository,
                        EventBus eventBus, UserConfig userConfig,
-                       PromotionHelper promotionHelper,
-                       IResourceLoader resourceLoader) {
+                       PromotionHelper promotionHelper, IResourceLoader resourceLoader) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;
@@ -205,10 +204,10 @@ public class NotificationHelper {
                 CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 break;
             case NotificationType.PROMOTION:
-                if (!isRecovery) {
-                    postPromotion(notify);
-                }
+                postPromotion(notify);
                 break;
+            default:
+                Timber.d("undefine notification type %d", notificationType);
         }
 
         if (!skipStorage) {
@@ -251,7 +250,7 @@ public class NotificationHelper {
         }
         switch ((int) notify.notificationtype) {
             case NotificationType.PROMOTION:
-                postPromotion(notify); //post update again promotion notification with new notification id inserted in local db
+                postPromotion(notify);//post update again promotion notification with new notification id inserted in local db
                 break;
             default:
                 Timber.d("undefine notification type");
@@ -319,7 +318,6 @@ public class NotificationHelper {
                 actions.add(promotionAction);
             }
             PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
-            //send into sdk if user in payment
             if (SDKPayment.isOpenSdk()) {
                 CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
@@ -330,14 +328,13 @@ public class NotificationHelper {
                     @Override
                     public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
                         mPromotionHelper.navigate(pContext, pPromotionEvent);
-
                     }
                 }, mResourceLoader);
                 Log.d(this, "post promotion event from notification to sdk", promotionEvent);
             } else {
                 /***
                  * send to subscriber on {@link vn.com.vng.zalopay.ui.presenter.MainPresenter}
-                 */
+                 * */
                 mEventBus.postSticky(promotionEvent);
                 Log.d(this, "post promotion event from notification to subscriber", promotionEvent);
             }
@@ -347,6 +344,7 @@ public class NotificationHelper {
     }
 
     private void extractRedPacketFromNotification(NotificationData data, boolean addToRecovery) {
+
         JsonObject embeddata = data.getEmbeddata();
         if (embeddata == null) {
             return;
@@ -412,6 +410,7 @@ public class NotificationHelper {
         mCompositeSubscription.add(subscription);
     }
 
+
     private void updateProfilePermission(NotificationData notify) {
 
         JsonObject embeddata = notify.getEmbeddata();
@@ -466,8 +465,7 @@ public class NotificationHelper {
     /**
      * Show notification from Gcm
      */
-    void handleNotificationFromGcm(@NonNull final String message,
-                                   @Nullable final EmbedDataGcm embedDataGcm) {
+    void handleNotificationFromGcm(@NonNull final String message, @Nullable final EmbedDataGcm embedDataGcm) {
         if (embedDataGcm == null) {
             throwNotification(mContext,
                     NOTIFICATION_ID,
@@ -478,14 +476,25 @@ public class NotificationHelper {
         } else {
             Subscription subscription = mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new
-            private class NotificationSubscriber extends DefaultSubscriber<Integer> {
-
-                @Override
-                public void onNext(Integer integer) {
-                    showNotificationSystem(integer);
-                }
-            });
+                    .subscribe(new DefaultSubscriber<Boolean>() {
+                        @Override
+                        public void onNext(Boolean isExisted) {
+                            if (isExisted) {
+                                return;
+                            }
+                            NotificationData notificationData = new NotificationData();
+                            notificationData.mtaid = embedDataGcm.mtaid;
+                            notificationData.mtuid = embedDataGcm.mtuid;
+                            shouldMarkRead(notificationData);
+                            putNotification(notificationData);
+                            throwNotification(mContext,
+                                    NOTIFICATION_ID,
+                                    new Intent(mContext, NotificationEmptyActivity.class),
+                                    R.mipmap.ic_launcher,
+                                    mContext.getString(R.string.app_name),
+                                    message);
+                        }
+                    });
             mCompositeSubscription.add(subscription);
         }
     }
@@ -540,21 +549,8 @@ public class NotificationHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
-                    public void onNext(Boolean isExisted) {
-                        if (isExisted) {
-                            return;
-                        }
-                        NotificationData notificationData = new NotificationData();
-                        notificationData.mtaid = embedDataGcm.mtaid;
-                        notificationData.mtuid = embedDataGcm.mtuid;
-                        shouldMarkRead(notificationData);
-                        putNotification(notificationData);
-                        throwNotification(mContext,
-                                NOTIFICATION_ID,
-                                new Intent(mContext, NotificationEmptyActivity.class),
-                                R.mipmap.ic_launcher,
-                                mContext.getString(R.string.app_name),
-                                message);
+                    public void onCompleted() {
+                        mListPacketIdToRecovery.clear();
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -579,8 +575,6 @@ public class NotificationHelper {
         refreshGatewayInfo();
         mUserConfig.removeFingerprint();
     }
-
-        DefaultSubscriber<Boolean>()
 
     private boolean needReloadBalanceAndTransaction(NotificationData notify) {
         if (notify == null) {
@@ -660,6 +654,14 @@ public class NotificationHelper {
 
             default:
                 return true;
+        }
+    }
+
+    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override
+        public void onNext(Integer integer) {
+            showNotificationSystem(integer);
         }
     }
 
