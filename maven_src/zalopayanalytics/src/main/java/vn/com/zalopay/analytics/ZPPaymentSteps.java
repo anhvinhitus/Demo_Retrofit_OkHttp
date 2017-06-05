@@ -24,6 +24,7 @@ public interface ZPPaymentSteps {
      int OrderSource_NotifyInApp = 5; // Thanh toán khi nhận dc notification chứa bill
      int OrderSource_Bluetooth = 6; // Thanh toán khi có hóa đơn từ Bluetooth
      int OrderSource_NFC = 7; // Thanh toán khi có hóa đơn từ NFC
+     int OrderSource_Unknown = 0; // Truờng hợp gọi thanh toán SDK (withdraw, link account, link bank) không có order source
 
      int OrderStepResult_None = 0;
      int OrderStepResult_Success = 1; // Step thành công
