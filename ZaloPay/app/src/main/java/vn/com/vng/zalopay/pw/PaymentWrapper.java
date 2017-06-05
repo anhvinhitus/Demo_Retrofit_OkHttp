@@ -135,6 +135,7 @@ public class PaymentWrapper {
         int transactionType = TransactionType.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(mCurrentUser.displayName, mCurrentUser.avatar, String.valueOf(mCurrentUser.phonenumber), mCurrentUser.zalopayname);
+        paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -151,6 +152,7 @@ public class PaymentWrapper {
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, mCurrentUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
+        paymentInfo.ordersource = source;
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -186,6 +188,7 @@ public class PaymentWrapper {
         }
         try {
             ZPWPaymentInfo paymentInfo = transform(order);
+            paymentInfo.ordersource = source;
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
@@ -239,6 +242,7 @@ public class PaymentWrapper {
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
+            paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
 
             ZPApptransidLog log = new ZPApptransidLog();
             log.apptransid = paymentInfo.appTransID;
@@ -280,6 +284,7 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
+            paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
 
             ZPApptransidLog log = new ZPApptransidLog();
             log.apptransid = paymentInfo.appTransID;
