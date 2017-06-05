@@ -260,7 +260,7 @@ public class DataParameter {
      * @param pmcID
      * @param params
      */
-    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, Map<String, String> params) throws Exception {
+    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, int pOrderSource, Map<String, String> params) throws Exception {
         putBaseParameter(params);
 
         if (pAdapter != null)
@@ -293,7 +293,7 @@ public class DataParameter {
         }
         params.put(ConstantParams.LATTITUDE, String.valueOf(lat));
         params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
-        params.put(ConstantParams.ORDER_SOURCE, String.valueOf(GlobalData.getPaymentInfo().ordersource));
+        params.put(ConstantParams.ORDER_SOURCE, String.valueOf(pOrderSource));
         return true;
     }
 

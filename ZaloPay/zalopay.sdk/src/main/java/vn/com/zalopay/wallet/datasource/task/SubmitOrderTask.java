@@ -2,12 +2,12 @@ package vn.com.zalopay.wallet.datasource.task;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SubmitOrderImpl;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;
@@ -64,7 +64,8 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            return DataParameter.prepareSubmitTransactionParams(mAdapter, mChannelID, getDataParams());
+            int OrderSource = (GlobalData.getPaymentInfo() != null) ? GlobalData.getPaymentInfo().ordersource : 0;
+            return DataParameter.prepareSubmitTransactionParams(mAdapter, mChannelID, OrderSource, getDataParams());
         } catch (Exception e) {
             onRequestFail(e);
             Log.e(this, e);
