@@ -170,7 +170,7 @@ public class SDKPayment {
                     && GlobalData.isLinkAccFlow()
                     && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getPaymentInfo().linkAccInfo.getBankCode())) {
                 DialogManager.closeProcessDialog();
-                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
+                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_cannot_connect),
                         GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
                             if (GlobalData.getPaymentListener() != null) {
                                 GlobalData.setResultUserClose();
@@ -180,6 +180,16 @@ public class SDKPayment {
                         }, GlobalData.getStringResource(RS.string.dialog_close_button));
                 return;
             }
+//                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
+//                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
+//                            if (GlobalData.getPaymentListener() != null) {
+//                                GlobalData.setResultUserClose();
+//                                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+//                            }
+//                            SingletonLifeCircleManager.disposeAll();
+//                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
+//                return;
+//            }
             //user have no link bank account so no need to unlink
             if (GlobalData.isBankAccountLink()
                     && GlobalData.isUnLinkAccFlow()

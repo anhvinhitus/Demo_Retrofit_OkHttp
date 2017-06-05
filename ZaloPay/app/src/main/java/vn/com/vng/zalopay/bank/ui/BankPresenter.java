@@ -40,6 +40,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 
@@ -183,25 +184,25 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         linkedBankList.add(visaCard);
 
         DMappedCard vtbCard = new DMappedCard();
-        vtbCard.bankcode = ECardType.PVTB.toString();
+        vtbCard.bankcode = CardType.PVTB.toString();
         vtbCard.first6cardno = "970415";
         vtbCard.last4cardno = "3538";
         linkedBankList.add(vtbCard);
 
         DMappedCard vcbCard = new DMappedCard();
-        vcbCard.bankcode = ECardType.PVCB.toString();
+        vcbCard.bankcode = CardType.PVCB.toString();
         vcbCard.first6cardno = "686868";
         vcbCard.last4cardno = "1231";
         linkedBankList.add(vcbCard);
 
         DMappedCard sCard = new DMappedCard();
-        sCard.bankcode = ECardType.PSCB.toString();
+        sCard.bankcode = CardType.PSCB.toString();
         sCard.first6cardno = "970403";
         sCard.last4cardno = "1234";
         linkedBankList.add(sCard);
 
         DMappedCard sgCard = new DMappedCard();
-        sgCard.bankcode = ECardType.PSGCB.toString();
+        sgCard.bankcode = CardType.PSGCB.toString();
         sgCard.first6cardno = "157979";
         sgCard.last4cardno = "9999";
         linkedBankList.add(sgCard);
@@ -209,13 +210,13 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         DMappedCard bivdCard = new DMappedCard();
         bivdCard.first6cardno = "970418";
         bivdCard.last4cardno = "1231";
-        bivdCard.bankcode = ECardType.PBIDV.toString();
+        bivdCard.bankcode = CardType.PBIDV.toString();
         linkedBankList.add(bivdCard);
 
         DBankAccount vcbAccount = new DBankAccount();
         vcbAccount.firstaccountno = "098765";
         vcbAccount.lastaccountno = "4321";
-        vcbAccount.bankcode = ECardType.PVCB.toString();
+        vcbAccount.bankcode = CardType.PVCB.toString();
         linkedBankList.add(vcbAccount);
 
         return linkedBankList;

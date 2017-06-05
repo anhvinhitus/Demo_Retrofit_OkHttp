@@ -8,6 +8,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadPlatformInfoImpl;
@@ -104,6 +105,13 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             MapCardHelper.saveMapCardListToCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, pResponse.cardinfochecksum, pResponse.cardinfos);
         }
         //update bank account info on cache
+        // Test in case already linked account Vietcombank
+//        DBankAccount dBankAccount = new DBankAccount();
+//        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
+//        dBankAccount.firstaccountno = "093490";
+//        dBankAccount.lastaccountno = "9460";
+//        pResponse.bankaccounts.add(dBankAccount);
+        // ===============================================
         if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {
             BankAccountHelper.saveMapBankAccountListToCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
         }
