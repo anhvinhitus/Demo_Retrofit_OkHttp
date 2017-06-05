@@ -142,7 +142,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GoogleReporter.GoogleAnalyticsService proAnalyticsService(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
+    GoogleReporter.GoogleAnalyticsService providesAnalyticsService(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
         return retrofit.create(GoogleReporter.GoogleAnalyticsService.class);
     }
 

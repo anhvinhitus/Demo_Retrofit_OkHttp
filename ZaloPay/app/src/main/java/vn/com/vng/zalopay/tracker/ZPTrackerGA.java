@@ -26,8 +26,10 @@ public class ZPTrackerGA extends DefaultTracker {
 
     @Override
     public void trackScreen(String screenName) {
-        String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, screenName);
-        mThreadExecutor.execute(() -> mGoogleReporter.trackScreen(screenWithFormat));
+        mThreadExecutor.execute(() -> {
+            String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, screenName);
+            mGoogleReporter.trackScreen(screenWithFormat);
+        });
     }
 
     /**
