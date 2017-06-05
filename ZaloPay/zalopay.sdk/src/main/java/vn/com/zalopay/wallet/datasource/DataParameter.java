@@ -293,6 +293,7 @@ public class DataParameter {
         }
         params.put(ConstantParams.LATTITUDE, String.valueOf(lat));
         params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
+        params.put(ConstantParams.ORDER_SOURCE, String.valueOf(GlobalData.getPaymentInfo().ordersource));
         return true;
     }
 

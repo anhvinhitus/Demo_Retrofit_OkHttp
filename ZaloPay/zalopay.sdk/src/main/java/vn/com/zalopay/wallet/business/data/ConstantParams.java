@@ -55,4 +55,5 @@ public class ConstantParams {
     public static final String TRANSTYPECHECKSUMS = "transtypechecksums";
     public static final String TRANSTYPE = "transtypes";
     public static final String APPINFO_CHECKSUM = "appinfochecksum";
+    public static final String ORDER_SOURCE = "ordersource";
 }

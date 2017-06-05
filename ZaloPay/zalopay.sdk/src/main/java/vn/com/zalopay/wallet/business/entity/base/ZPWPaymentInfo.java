@@ -20,6 +20,7 @@ public class ZPWPaymentInfo {
     public String chargeInfo;
     public DBaseMap mapBank;
     public UserInfo userInfo;
+    public int ordersource;
 
     /**
      * Receiver who receives money in Money-Transfer transaction

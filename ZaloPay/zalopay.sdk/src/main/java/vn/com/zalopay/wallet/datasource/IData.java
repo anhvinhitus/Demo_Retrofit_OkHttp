@@ -12,6 +12,7 @@ import retrofit2.http.QueryMap;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -23,12 +24,12 @@ import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
-import vn.com.vng.zalopay.network.API_NAME;
 
 public interface IData {
 
     /**
      * load platforminfo
+     *
      * @param params
      * @return
      */
@@ -95,12 +96,14 @@ public interface IData {
 
     /**
      * get resource file
+     *
      * @param url
      * @return
      */
     @GET
     @Streaming
     Call<ResponseBody> getFile(@Url String url);
+
     /**
      * Api ATM Authen
      *
@@ -114,21 +117,21 @@ public interface IData {
     @POST(Constants.URL_ATM_AUTHEN)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER)
     Observable<StatusResponse> atmAuthen(@Query(ConstantParams.USER_ID) String userID,
-                                   @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                   @Query(ConstantParams.ZP_TRANSID) String zpTransid,
-                                   @Query(ConstantParams.AUTHEN_TYPE) String authenType,
-                                   @Query(ConstantParams.AUTHEN_VALUE) String authenValue,
-                                   @Query(ConstantParams.APP_VERSION) String appver);
+                                         @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                         @Query(ConstantParams.ZP_TRANSID) String zpTransid,
+                                         @Query(ConstantParams.AUTHEN_TYPE) String authenType,
+                                         @Query(ConstantParams.AUTHEN_VALUE) String authenValue,
+                                         @Query(ConstantParams.APP_VERSION) String appver);
 
 
     @POST(Constants.URL_REPORT_ERROR)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT)
     Observable<SaveCardResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
-                                     @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                     @Query(ConstantParams.TRANSID) String transid,
-                                     @Query(ConstantParams.BANK_CODE) String bankCode,
-                                     @Query(ConstantParams.EXINFO) String exinfo,
-                                     @Query(ConstantParams.EXCEPTION) String exception);
+                                           @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                           @Query(ConstantParams.TRANSID) String transid,
+                                           @Query(ConstantParams.BANK_CODE) String bankCode,
+                                           @Query(ConstantParams.EXINFO) String exinfo,
+                                           @Query(ConstantParams.EXCEPTION) String exception);
 
     /**
      * Api ramove card
@@ -144,12 +147,12 @@ public interface IData {
     @POST(Constants.URL_REMOVE_MAPCARD)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)
     Observable<BaseResponse> removeCard(@Query(ConstantParams.USER_ID) String userID,
-                                  @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                  @Query(ConstantParams.CARD_NAME) String cardName,
-                                  @Query(ConstantParams.FIRST6_CARDNO) String first6Cardno,
-                                  @Query(ConstantParams.LAST4_CARDNO) String last4Cardno,
-                                  @Query(ConstantParams.BANK_CODE) String bankCode,
-                                  @Query(ConstantParams.APP_VERSION) String appver);
+                                        @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                        @Query(ConstantParams.CARD_NAME) String cardName,
+                                        @Query(ConstantParams.FIRST6_CARDNO) String first6Cardno,
+                                        @Query(ConstantParams.LAST4_CARDNO) String last4Cardno,
+                                        @Query(ConstantParams.BANK_CODE) String bankCode,
+                                        @Query(ConstantParams.APP_VERSION) String appver);
 
     /**
      * Api Send Log
@@ -167,14 +170,14 @@ public interface IData {
     @POST(Constants.URL_TRACKING_LOG)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME)
     Observable<BaseResponse> sendLog(@Query(ConstantParams.USER_ID) String userID,
-                               @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                               @Query(ConstantParams.PMC_ID) String pmcID,
-                               @Query(ConstantParams.TRANS_ID) String transID,
-                               @Query(ConstantParams.ATM_CAPTCHA_BEGINDATE) String atmcaptchaBegindate,
-                               @Query(ConstantParams.ATM_CAPTCHA_ENDDATE) String atmcaptchaEnddate,
-                               @Query(ConstantParams.ATM_OTP_BEGINDATE) String atmotpBegindate,
-                               @Query(ConstantParams.ATM_OTP_ENDDATE) String atmotpEnddate,
-                               @Query(ConstantParams.APP_VERSION) String appver);
+                                     @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                     @Query(ConstantParams.PMC_ID) String pmcID,
+                                     @Query(ConstantParams.TRANS_ID) String transID,
+                                     @Query(ConstantParams.ATM_CAPTCHA_BEGINDATE) String atmcaptchaBegindate,
+                                     @Query(ConstantParams.ATM_CAPTCHA_ENDDATE) String atmcaptchaEnddate,
+                                     @Query(ConstantParams.ATM_OTP_BEGINDATE) String atmotpBegindate,
+                                     @Query(ConstantParams.ATM_OTP_ENDDATE) String atmotpEnddate,
+                                     @Query(ConstantParams.APP_VERSION) String appver);
 
     /**
      * Api submit Transaction
@@ -209,32 +212,33 @@ public interface IData {
     @POST(Constants.URL_SUBMIT_ORDER)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS)
     Observable<StatusResponse> submitOrder(@Query(ConstantParams.APP_ID) String appID,
-                                     @Query(ConstantParams.ZALO_ID) String zaloID,
-                                     @Query(ConstantParams.APP_TRANS_ID) String appTransaction,
-                                     @Query(ConstantParams.APP_USER) String appUser,
-                                     @Query(ConstantParams.APP_TIME) String appTime,
-                                     @Query(ConstantParams.ITEM) String item,
-                                     @Query(ConstantParams.DESCRIPTION) String description,
-                                     @Query(ConstantParams.EMBED_DATA) String embeddata,
-                                     @Query(ConstantParams.MAC) String mac,
-                                     @Query(ConstantParams.PLATFORM) String platform,
-                                     @Query(ConstantParams.PLATFORM_CODE) String platformcode,
-                                     @Query(ConstantParams.AMOUNT) String amount,
-                                     @Query(ConstantParams.DEVICE_ID) String deviceID,
-                                     @Query(ConstantParams.DEVICE_MODEL) String deviceModel,
-                                     @Query(ConstantParams.APP_VERSION) String appver,
-                                     @Query(ConstantParams.SDK_VERSION) String sdkver,
-                                     @Query(ConstantParams.OS_VERSION) String osver,
-                                     @Query(ConstantParams.CONN_TYPE) String connType,
-                                     @Query(ConstantParams.MNO) String mno,
-                                     @Query(ConstantParams.PMC_ID) String pmcID,
-                                     @Query(ConstantParams.CHARGE_INFO) String chargeInfo,
-                                     @Query(ConstantParams.PIN) String pin,
-                                     @Query(ConstantParams.TRANS_TYPE) String transType,
-                                     @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                     @Query(ConstantParams.USER_ID) String userID,
-                                     @Query(ConstantParams.LATTITUDE) String longitude,
-                                     @Query(ConstantParams.LONGITUDE) String latitude);
+                                           @Query(ConstantParams.ZALO_ID) String zaloID,
+                                           @Query(ConstantParams.APP_TRANS_ID) String appTransaction,
+                                           @Query(ConstantParams.APP_USER) String appUser,
+                                           @Query(ConstantParams.APP_TIME) String appTime,
+                                           @Query(ConstantParams.ITEM) String item,
+                                           @Query(ConstantParams.DESCRIPTION) String description,
+                                           @Query(ConstantParams.EMBED_DATA) String embeddata,
+                                           @Query(ConstantParams.MAC) String mac,
+                                           @Query(ConstantParams.PLATFORM) String platform,
+                                           @Query(ConstantParams.PLATFORM_CODE) String platformcode,
+                                           @Query(ConstantParams.AMOUNT) String amount,
+                                           @Query(ConstantParams.DEVICE_ID) String deviceID,
+                                           @Query(ConstantParams.DEVICE_MODEL) String deviceModel,
+                                           @Query(ConstantParams.APP_VERSION) String appver,
+                                           @Query(ConstantParams.SDK_VERSION) String sdkver,
+                                           @Query(ConstantParams.OS_VERSION) String osver,
+                                           @Query(ConstantParams.CONN_TYPE) String connType,
+                                           @Query(ConstantParams.MNO) String mno,
+                                           @Query(ConstantParams.PMC_ID) String pmcID,
+                                           @Query(ConstantParams.CHARGE_INFO) String chargeInfo,
+                                           @Query(ConstantParams.PIN) String pin,
+                                           @Query(ConstantParams.TRANS_TYPE) String transType,
+                                           @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                           @Query(ConstantParams.USER_ID) String userID,
+                                           @Query(ConstantParams.LATTITUDE) String longitude,
+                                           @Query(ConstantParams.LONGITUDE) String latitude,
+                                           @Query(ConstantParams.ORDER_SOURCE) String ordersource);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING)
@@ -259,11 +263,11 @@ public interface IData {
     @POST(Constants.URL_AUTHEN_CARD_MAP)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING)
     Observable<StatusResponse> authenMapCard(@Query(ConstantParams.USER_ID) String userID,
-                                       @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                       @Query(ConstantParams.ZP_TRANSID) String zpTransid,
-                                       @Query(ConstantParams.AUTHEN_TYPE) String authenType,
-                                       @Query(ConstantParams.AUTHEN_VALUE) String otp,
-                                       @Query(ConstantParams.APP_VERSION) String appver);
+                                             @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                             @Query(ConstantParams.ZP_TRANSID) String zpTransid,
+                                             @Query(ConstantParams.AUTHEN_TYPE) String authenType,
+                                             @Query(ConstantParams.AUTHEN_VALUE) String otp,
+                                             @Query(ConstantParams.APP_VERSION) String appver);
 
 
     /***
@@ -285,15 +289,15 @@ public interface IData {
     @POST(Constants.URL_SUBMIT_MAP_ACCOUNT)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITMAPACCOUNT)
     Observable<StatusResponse> submitMapAccount(@Query(ConstantParams.USER_ID) String userID,
-                                          @Query(ConstantParams.ZALO_ID) String zaloID,
-                                          @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                          @Query(ConstantParams.BANK_ACCOUNT_INFO) String bankAccountInfo,
-                                          @Query(ConstantParams.PLATFORM) String platform,
-                                          @Query(ConstantParams.DEVICE_ID) String deviceID,
-                                          @Query(ConstantParams.APP_VERSION) String appVer,
-                                          @Query(ConstantParams.MNO) String mno,
-                                          @Query(ConstantParams.SDK_VERSION) String sdkVer,
-                                          @Query(ConstantParams.OS_VERSION) String osVer,
-                                          @Query(ConstantParams.DEVICE_MODEL) String deviceModel,
-                                          @Query(ConstantParams.CONN_TYPE) String connType);
+                                                @Query(ConstantParams.ZALO_ID) String zaloID,
+                                                @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
+                                                @Query(ConstantParams.BANK_ACCOUNT_INFO) String bankAccountInfo,
+                                                @Query(ConstantParams.PLATFORM) String platform,
+                                                @Query(ConstantParams.DEVICE_ID) String deviceID,
+                                                @Query(ConstantParams.APP_VERSION) String appVer,
+                                                @Query(ConstantParams.MNO) String mno,
+                                                @Query(ConstantParams.SDK_VERSION) String sdkVer,
+                                                @Query(ConstantParams.OS_VERSION) String osVer,
+                                                @Query(ConstantParams.DEVICE_MODEL) String deviceModel,
+                                                @Query(ConstantParams.CONN_TYPE) String connType);
 }
