@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
-import android.content.Context;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -9,7 +7,6 @@ import dagger.Provides;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.promotion.ResourceLoader;
-import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.zalopay.promotion.IResourceLoader;
 
 /**
@@ -20,8 +17,8 @@ import vn.zalopay.promotion.IResourceLoader;
 public class AppPromotionModule {
     @Provides
     @Singleton
-    IResourceLoader providePromotionResourceLoader(ImageLoader imageLoader) {
-        return new ResourceLoader(imageLoader);
+    IResourceLoader providePromotionResourceLoader() {
+        return new ResourceLoader();
     }
 
     @Provides

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
+import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -164,31 +166,6 @@ public class CShareData extends SingletonBase {
             }
         }
         return mConfigFromServer;
-    }
-
-    public void loadBankListComplete() {
-        List<BankConfig> bankConfigList = new ArrayList<>();
-        if (BankCardCheck.mBankMap != null) {
-            Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
-
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-
-                try {
-                    BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
-
-                    if (bankConfig != null && !bankConfigList.contains(bankConfig) && bankConfig.isAllowWithDraw()) {
-                        bankConfigList.add(bankConfig);
-                    }
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
-            }
-        }
-
-        if (mGetWithDrawBankList != null) {
-            mGetWithDrawBankList.onComplete(bankConfigList);
-        }
     }
 
     public void notifyPromotionEvent(Object... pObjects) {

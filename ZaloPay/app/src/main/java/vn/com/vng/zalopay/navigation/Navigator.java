@@ -2,11 +2,9 @@ package vn.com.vng.zalopay.navigation;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -612,10 +610,11 @@ public class Navigator implements INavigator {
         activity.finish();
     }
 
-    public void startTransactionDetail(Context context, String transid) {
+    public void startTransactionDetail(Context context, String transid, String notificationid) {
         Map<String, String> launchOptions = new HashMap<>();
         launchOptions.put("view", "history");
         launchOptions.put("transid", transid);
+        launchOptions.put("notificationid", notificationid);
         Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, launchOptions);
         context.startActivity(intent);
     }

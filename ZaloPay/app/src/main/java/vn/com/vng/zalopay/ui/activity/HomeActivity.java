@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.zalopay.apploader.ReactBaseFragment;
+import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 import javax.inject.Inject;
 
@@ -25,6 +27,8 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.zalopay.promotion.IBuilder;
+import vn.zalopay.promotion.PromotionEvent;
 
 public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
@@ -40,13 +44,10 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @BindView(R.id.pager)
     ViewPager mViewPager;
-
-    private int mCurrentPosition = 0;
-
     @BindView(R.id.navigation)
     HomeBottomNavigationView mBottomNavigationView;
-
     HomePagerAdapter mHomePagerAdapter;
+    private int mCurrentPosition = 0;
 
     @Override
     protected int getResLayoutId() {
@@ -172,6 +173,17 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         if (mBottomNavigationView != null) {
             mBottomNavigationView.initTabIconFont();
         }
+    }
+
+    @Override
+    public void showCashBackView(IBuilder builder, PromotionEvent event) {
+        if (event == null) {
+            return;
+        }
+        View contentView = View.inflate(getApplicationContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+        builder.setView(contentView);
+        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, builder.build());
+        bottomSheetDialog.show();
     }
 
     @Override

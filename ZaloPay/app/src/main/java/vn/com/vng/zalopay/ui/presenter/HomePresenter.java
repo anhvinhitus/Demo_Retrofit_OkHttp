@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import com.zalopay.apploader.internal.ModuleName;
+
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.util.TimeUtils;
@@ -47,10 +47,10 @@ import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.UserSession;
@@ -68,7 +68,6 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.zalopay.promotion.ActionType;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -366,7 +365,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
             dialog.setConfirmText(mApplicationContext.getString(R.string.view_detail));
             dialog.setConfirmClickListener(dialog1 -> {
                 if (mView != null) {
-                    mNavigator.startTransactionDetail(mView.getContext(), String.valueOf(notify.transid));
+                    mNavigator.startTransactionDetail(mView.getContext(), String.valueOf(notify.transid), String.valueOf(notify.notificationId));
                 }
                 dialog1.dismiss();
             });
