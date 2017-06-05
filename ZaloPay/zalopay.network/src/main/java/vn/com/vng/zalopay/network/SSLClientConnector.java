@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.network;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -143,7 +144,11 @@ class SSLClientConnector implements SocketConnector {
 
     @Override
     public void disconnect() {
-        disposeConnection();
+        if (Looper.myLooper() != mConnectionHandler.getLooper()) {
+            mConnectionHandler.post(this::disposeConnection);
+        } else {
+            disposeConnection();
+        }
     }
 
     @Override
@@ -162,29 +167,27 @@ class SSLClientConnector implements SocketConnector {
     }
 
     private void disposeConnection() {
-        mEventHandler.post(() -> {
-            mIsConnecting = false;
+        mIsConnecting = false;
 
-            if (mSslSocket == null) {
-                return;
+        if (mSslSocket == null) {
+            return;
+        }
+
+        try {
+            if (mInputStream != null) {
+                mInputStream.close();
             }
 
-            try {
-                if (mInputStream != null) {
-                    mInputStream.close();
-                }
+            mSslSocket.close();
+        } catch (IOException e) {
+            Timber.w("Exception while disconnect socket");
+        }
 
-                mSslSocket.close();
-            } catch (IOException e) {
-                Timber.w("Exception while disconnect socket");
-            }
+        mSslSocket = null;
 
-            mSslSocket = null;
-
-            if (mConnectorListener != null) {
-                mConnectorListener.onDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE, "");
-            }
-        });
+        if (mConnectorListener != null) {
+            mConnectorListener.onDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE, "");
+        }
     }
 
 
