@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 /**
  * class for detect working with

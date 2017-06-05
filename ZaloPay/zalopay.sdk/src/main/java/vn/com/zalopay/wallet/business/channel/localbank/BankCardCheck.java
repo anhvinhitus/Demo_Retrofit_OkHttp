@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 

@@ -26,8 +26,8 @@ import vn.com.zalopay.wallet.di.module.PaymentSessionModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class SDKApplication extends Application {
     protected static ApplicationComponent mApplicationComponent;

@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 /**
  * Gateway info

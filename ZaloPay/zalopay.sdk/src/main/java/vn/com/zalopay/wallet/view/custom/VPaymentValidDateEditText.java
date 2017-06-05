@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdit
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {

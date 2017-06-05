@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.AppInfoTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 /***
  * get app info

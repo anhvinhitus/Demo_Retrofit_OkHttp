@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
 /**

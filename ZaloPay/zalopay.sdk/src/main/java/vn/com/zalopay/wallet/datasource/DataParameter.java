@@ -17,11 +17,11 @@ import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.DeviceUtil;
-import vn.com.zalopay.wallet.utils.DimensionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.DeviceUtil;
+import vn.com.zalopay.utility.DimensionUtil;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class DataParameter {
     /**

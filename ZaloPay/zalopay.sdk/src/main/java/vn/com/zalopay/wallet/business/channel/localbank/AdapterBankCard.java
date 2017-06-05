@@ -29,8 +29,8 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.PaymentUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 

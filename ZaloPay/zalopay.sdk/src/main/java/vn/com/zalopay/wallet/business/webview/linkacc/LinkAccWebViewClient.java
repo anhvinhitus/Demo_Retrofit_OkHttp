@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.PAGE_VCB_CONFIRM_LINK;
 import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_COMPLETE_PAGE;

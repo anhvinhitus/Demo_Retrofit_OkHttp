@@ -25,8 +25,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
-import vn.com.zalopay.wallet.utils.SdkUtils;
-import vn.com.zalopay.wallet.utils.ViewUtils;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
 
@@ -200,7 +200,7 @@ public class CreditCardView extends FrameLayout {
             //reset font size
             desiredWidth -= GlobalData.getAppContext().getResources().getDimension(R.dimen.card_margin_left) * 2;
 
-            ViewUtils.correctWidth((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID), desiredWidth);
+            ViewUtils.correctTextView((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID), desiredWidth);
         }
     }
 
@@ -214,9 +214,9 @@ public class CreditCardView extends FrameLayout {
         final View frontContentView = findViewById(FRONT_CARD_ID);
         View cardViewLayout = findViewById(CARD_VIEW_ID);
 
-        ViewUtils.setCardViewSize(GlobalData.getAppContext(), cardViewLayout, mPercentWitdh);
+        ViewUtils.resizeViewByPercent(GlobalData.getAppContext(), cardViewLayout, mPercentWitdh);
 
-        mWidthCardView = ViewUtils.setCardViewSize(GlobalData.getAppContext(), frontContentView, mPercentWitdh);
+        mWidthCardView = ViewUtils.resizeViewByPercent(GlobalData.getAppContext(), frontContentView, mPercentWitdh);
     }
 
     private void flip(final boolean ltr, boolean isImmediate) {

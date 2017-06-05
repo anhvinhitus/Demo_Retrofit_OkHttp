@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.FeeType;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class BankConfig {
     public String code;

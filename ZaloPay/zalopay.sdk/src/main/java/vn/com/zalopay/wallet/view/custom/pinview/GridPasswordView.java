@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.view.custom.ImeDelBugFixedEditText;
 
 public class GridPasswordView extends LinearLayout implements PasswordView {

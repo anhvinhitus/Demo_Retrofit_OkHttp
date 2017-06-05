@@ -18,8 +18,8 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BankListTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class BankLoader extends SingletonBase {
     public static Map<String, String> mapBank;

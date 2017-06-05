@@ -4,7 +4,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.business.data.Log;
 
 

@@ -14,8 +14,8 @@ import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 
 public class RemoveMapCardTask extends BaseTask<BaseResponse> {

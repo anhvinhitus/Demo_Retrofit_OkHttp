@@ -14,8 +14,8 @@ import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.StorageUtil;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.StorageUtil;
+import vn.com.zalopay.utility.SdkUtils;
 
 /***
  * download file resource

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -50,7 +48,7 @@ import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;

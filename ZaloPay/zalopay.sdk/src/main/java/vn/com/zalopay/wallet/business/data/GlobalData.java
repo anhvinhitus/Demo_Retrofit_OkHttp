@@ -36,8 +36,8 @@ import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 

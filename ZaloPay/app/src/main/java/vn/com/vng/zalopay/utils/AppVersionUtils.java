@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
-import vn.com.zalopay.wallet.utils.PlayStoreUtils;
+import vn.com.zalopay.utility.PlayStoreUtils;
 
 /**
  * Created by longlv on 05/08/2016.

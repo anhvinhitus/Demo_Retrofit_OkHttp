@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.CChannelHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public abstract class BaseChannelInjector {
     public static final int MIN_VALUE_CHANNEL = 1000000000;

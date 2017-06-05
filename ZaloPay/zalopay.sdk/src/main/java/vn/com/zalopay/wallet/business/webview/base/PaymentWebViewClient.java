@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
 import vn.com.zalopay.wallet.business.webview.atm.BidvWebViewClient;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public abstract class PaymentWebViewClient extends WebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";

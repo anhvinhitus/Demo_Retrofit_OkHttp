@@ -54,7 +54,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.utils.PlayStoreUtils;
+import vn.com.zalopay.utility.PlayStoreUtils;
 
 /**
  * Created by huuhoa on 4/25/16.

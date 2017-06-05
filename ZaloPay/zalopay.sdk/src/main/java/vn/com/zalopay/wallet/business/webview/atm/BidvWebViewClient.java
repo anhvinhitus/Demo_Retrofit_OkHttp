@@ -23,7 +23,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public class BidvWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;

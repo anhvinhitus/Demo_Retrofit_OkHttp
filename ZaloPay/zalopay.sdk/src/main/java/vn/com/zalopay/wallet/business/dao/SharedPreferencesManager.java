@@ -17,7 +17,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public class SharedPreferencesManager extends SingletonBase {
     private static final String SHARE_PREFERENCES_NAME = "ZALO_PAY_CACHED";

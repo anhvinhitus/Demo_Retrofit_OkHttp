@@ -16,8 +16,8 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 /***
  * platform api and update platform's data on cache

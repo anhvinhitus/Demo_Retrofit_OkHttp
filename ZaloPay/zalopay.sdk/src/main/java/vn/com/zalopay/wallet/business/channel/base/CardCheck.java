@@ -16,8 +16,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class CardCheck extends SingletonBase {
     public String mCardNumber;

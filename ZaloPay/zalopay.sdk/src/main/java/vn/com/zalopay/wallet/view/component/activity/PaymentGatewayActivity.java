@@ -40,10 +40,9 @@ import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.StringUtil;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 

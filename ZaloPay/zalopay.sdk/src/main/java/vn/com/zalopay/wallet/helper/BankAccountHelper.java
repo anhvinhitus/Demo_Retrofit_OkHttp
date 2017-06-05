@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapBankAccountListTask;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public class BankAccountHelper {
     private static final String TAG = BankAccountHelper.class.getCanonicalName();

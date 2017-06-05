@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public class WithDrawChannelInjector extends BaseChannelInjector {
     protected ZPWOnGetChannelListener mGetChannelListener;

@@ -15,7 +15,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadBankListImpl;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 
 public class BankListTask extends BaseTask<BankConfigResponse> {

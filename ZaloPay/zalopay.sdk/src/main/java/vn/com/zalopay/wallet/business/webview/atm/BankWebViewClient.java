@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.utility.GsonUtils;
 
 public class BankWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_DETECT_AJAX = 8000;

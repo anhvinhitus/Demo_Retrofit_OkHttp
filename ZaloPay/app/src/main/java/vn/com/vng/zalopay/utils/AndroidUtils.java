@@ -72,9 +72,8 @@ import java.util.zip.ZipInputStream;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.utils.DeviceUtil;
+import vn.com.zalopay.utility.DeviceUtil;
 
 /**
  * Created by AnhHieu on 9/14/15.

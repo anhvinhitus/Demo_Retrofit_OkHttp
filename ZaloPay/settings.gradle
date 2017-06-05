@@ -4,7 +4,7 @@ include ':zalopay.domain'
 include ':ui.widget'
 include ':zalopay.app-loader'
 include ':zalopay.sdk'
-include ':zalopay.sdk.utils'
+include ':zalopay.utility'
 include ':zalopay.network'
 
 /*include ':greendaogenerator'

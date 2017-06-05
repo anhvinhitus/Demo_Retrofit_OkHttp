@@ -34,9 +34,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
-import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMC_CONFIG_EXTRA = "pmc_config";
