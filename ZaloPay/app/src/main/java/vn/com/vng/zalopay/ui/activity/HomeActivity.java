@@ -71,8 +71,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mPresenter.attachView(this);
         mPresenter.initialize();
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
-        params.setMargins(0, 0, 0, (int) AndroidUtils.dpToPixels(this, 56));
+//        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
+//        params.setMargins(0, 0, 0, (int) AndroidUtils.dpToPixels(this, 56));
         mViewPager.setAdapter(mHomePagerAdapter);
         mViewPager.setOffscreenPageLimit(mHomePagerAdapter.getCount() - 1);
         mBottomNavigationView.setViewPager(mViewPager);
@@ -226,5 +226,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
 
         return super.onKeyUp(keyCode, event);
+    }
+
+    public void setHiddenTabbar(boolean hiddenTabbar) {
+        if (mBottomNavigationView != null) {
+            mBottomNavigationView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
+        }
     }
 }

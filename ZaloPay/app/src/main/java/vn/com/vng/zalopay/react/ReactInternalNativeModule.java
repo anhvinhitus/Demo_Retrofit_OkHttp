@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.view.View;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -48,7 +50,9 @@ import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.RequestSubscriber;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
@@ -460,6 +464,16 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 Helpers.promiseResolveSuccess(mPromise.get(), null);
             }
         }
+    }
+
+    @ReactMethod
+    public void setHiddenTabbar(boolean hiddenTabbar) {
+        AndroidUtils.runOnUIThread(() -> {
+            Activity currentActivity = getCurrentActivity();
+            if (currentActivity instanceof HomeActivity) {
+                ((HomeActivity) currentActivity).setHiddenTabbar(hiddenTabbar);
+            }
+        });
     }
 
 }
