@@ -43,4 +43,13 @@ archive:
 deploy_fabric:
   stage: deploy
   script:
-    - sh ./ci/deploy_fabric.sh
+    - shopt -s expand_aliases
+    - alias sandbox='git log --oneline -n 1 | grep -E "\[Sandbox\] Bump version"'
+    - alias staging='git log --oneline -n 1 | grep -E "\[Staging\] Bump version"'
+    - alias production='git log --oneline -n 1 | grep -E "\[Production\] Bump version"'
+    - sandbox || staging || production || (echo "No need to deploy to fabric" && exit 0)
+    - sandbox && cd ZaloPay && ./deploy.sh sandbox
+    - staging && cd ZaloPay && ./deploy.sh staging
+    - production && cd ZaloPay && ./deploy.sh production
+    - exit 0
+
