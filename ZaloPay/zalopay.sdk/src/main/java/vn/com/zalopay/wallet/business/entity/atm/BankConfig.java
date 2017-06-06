@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
@@ -13,11 +14,11 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.FeeType;
-import vn.com.zalopay.utility.SdkUtils;
 
 public class BankConfig {
     public String code;
     public String name;
+    public String fullname;
     public int banktype;
     public String otptype;
     public String type;
@@ -79,6 +80,10 @@ public class BankConfig {
         return message;
     }
 
+    public String getDisplayName() {
+        return !TextUtils.isEmpty(fullname) ? fullname : getShortBankName();
+    }
+
     public String getShortBankName() {
         if (!TextUtils.isEmpty(name) && name.startsWith("NH")) {
             return name.substring(2);
@@ -96,11 +101,6 @@ public class BankConfig {
             }
         }
         return sameSame;
-    }
-
-    public double calculateFee() {
-        totalfee = CBaseCalculateFee.getInstance().setCalculator(new CWithDrawCalculateFee(this)).countFee();
-        return totalfee;
     }
 
     public boolean isBankMaintenence(@BankFunctionCode int pBankFunction) {
