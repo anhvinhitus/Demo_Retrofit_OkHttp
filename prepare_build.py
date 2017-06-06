@@ -32,6 +32,19 @@ def increase_version(file_path):
   return (versionCode, versionName)
 
 
+def is_zalopay_bumpversion(message):
+  if 'Bump version' not in message:
+    return False
+  if '[Sandbox]' in message:
+    return True
+  if '[Staging]' in message:
+    return True
+  if '[Production]' in message:
+    return True
+
+  return False
+
+
 def extract_gitlog():
   GIT_COMMIT_FIELDS = ['shortid', 'id', 'author_name', 'author_email', 'date', 'message']
   GIT_LOG_FORMAT = ['%h', '%H', '%an', '%ae', '%ad', '%s']
@@ -49,7 +62,7 @@ def extract_gitlog():
 
   log_messages = []
   for ci in logstr:
-    if 'Bump version' in ci['message']:
+    if is_zalopay_bumpversion(ci['message']):
       break
     # add log messages
     log_messages.append(ci)
