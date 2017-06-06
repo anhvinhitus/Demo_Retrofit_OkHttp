@@ -65,11 +65,11 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
         if (checkLinkedBankAccount(mapCardLis, cardCode)) {
             getPaymentWrapper().linkAccount(getActivity(), cardCode);
         } else {
-            showVCBWarningDialog();
+            showVCBWarningDialog(cardCode);
         }
     }
 
-    private void showVCBWarningDialog() {
+    private void showVCBWarningDialog(String cardCode) {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
@@ -78,7 +78,8 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
         dialog.setContentText(getVCBWarningMessage());
         dialog.setConfirmText(getActivity().getString(R.string.accept));
         dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
-            getPaymentWrapper().linkAccount(getActivity(), "ZPVCB");
+            getPaymentWrapper().linkAccount(getActivity(), cardCode);
+//            getPaymentWrapper().linkAccount(getActivity(), "ZPVCB");
             dialog.dismiss();
         });
         dialog.show();

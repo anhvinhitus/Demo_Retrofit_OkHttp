@@ -14,15 +14,31 @@
         android:layout_marginLeft="@dimen/spacing.medium.s"
         android:scaleType="centerInside" />
 
-    <TextView
-        android:id="@+id/row_bank_support_selection_tv_bank_name"
+    <LinearLayout
+        android:id="@+id/row_bank_support_selection_ll_bank_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
         android:layout_marginLeft="14dp"
         android:layout_toRightOf="@+id/row_bank_support_selection_iv_logo"
-        android:textColor="@color/c_text_black"
-        android:textSize="@dimen/link.bank.empty.text.size" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/row_bank_support_selection_tv_bank_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/c_text_black"
+            android:textSize="@dimen/link.bank.empty.text.size" />
+
+        <TextView
+            android:id="@+id/row_bank_support_selection_tv_bank_maintain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đang bảo trì"
+            android:textColor="@color/c_text_black"
+            android:textSize="@dimen/bank_support_selection_maintain_notice"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/row_bank_support_selection_iv_next"
@@ -36,7 +52,7 @@
         android:id="@+id/row_bank_support_selection_dash_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignLeft="@+id/row_bank_support_selection_tv_bank_name"
+        android:layout_alignLeft="@+id/row_bank_support_selection_ll_bank_name"
         android:layout_alignParentBottom="true"
         android:background="@color/separate" />
 </RelativeLayout>

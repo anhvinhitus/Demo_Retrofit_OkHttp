@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,13 +55,12 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
             @Override
             public void onError(Throwable e) {
                 Timber.d("Get support bank type [%s] onError [%s]", mBankType, e.getMessage());
-                showRetryDialog();
+                showRetryDialog(e.getMessage());
             }
 
             @Override
             public void onNext(List<ZPCard> cardList) {
                 Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, cardList);
-                mView.showLoading();
                 fetchListBank(cardList);
             }
         };
@@ -106,15 +106,15 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         return mView.getContext();
     }
 
-    private void showRetryDialog() {
+    private void showRetryDialog(String message) {
         if (mView == null || getContext() == null) {
             return;
         }
 
-        mView.showRetryDialog(getContext().getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+        mView.showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-
+                getActivity().finish();
             }
 
             @Override

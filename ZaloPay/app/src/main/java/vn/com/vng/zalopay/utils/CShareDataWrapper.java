@@ -47,6 +47,7 @@ public class CShareDataWrapper {
             public void onComplete(ArrayList<ZPCard> cardSupportArrayList) {
                 Timber.d("Get support banks from PaymentSDK completed [%s]", cardSupportArrayList);
                 mCardSupportSubject.onNext(cardSupportArrayList);
+                subscriber.onNext(cardSupportArrayList);
             }
 
             @Override
@@ -58,6 +59,7 @@ public class CShareDataWrapper {
             public void onError(String pErrorMess) {
                 Timber.d("Get support banks from PaymentSDK error [%s]", pErrorMess);
                 mCardSupportSubject.onError(new Throwable(pErrorMess));
+                subscriber.onError(new Throwable(pErrorMess));
             }
 
             @Override

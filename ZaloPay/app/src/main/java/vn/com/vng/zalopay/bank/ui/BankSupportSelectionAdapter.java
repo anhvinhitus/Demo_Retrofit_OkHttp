@@ -99,6 +99,9 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, Bank
         @BindView(R.id.row_bank_support_selection_tv_bank_name)
         TextView tvBankName;
 
+        @BindView(R.id.row_bank_support_selection_tv_bank_maintain)
+        TextView tvBankMaintain;
+
         @BindView(R.id.row_bank_support_selection_dash_line)
         View mDashLine;
 
@@ -120,13 +123,31 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPCard, Bank
                 mLogoView.setVisibility(View.GONE);
                 return;
             }
+
             if (getItemCount() == (position + 1) ) {
                 mDashLine.setVisibility(View.GONE);
             }
+
             mLogoView.setImageBitmap(ResourceManager.getImage(String.format("%s.png", card.getCardCode())));
             mLogoView.setVisibility(View.VISIBLE);
             tvBankName.setText(card.getCardName());
             ivNext.setImageBitmap(ResourceManager.getImage("ic_next.png"));
+        }
+
+        private void setViewMaintain(boolean isMaintain) {
+            if (isMaintain) {
+                tvBankMaintain.setVisibility(View.VISIBLE);
+                mLogoView.setAlpha(0.5f);
+                tvBankName.setAlpha(0.5f);
+                tvBankMaintain.setAlpha(0.5f);
+                ivNext.setAlpha(0.5f);
+            } else {
+                tvBankMaintain.setVisibility(View.GONE);
+                mLogoView.setAlpha(1f);
+                tvBankName.setAlpha(1f);
+                tvBankMaintain.setAlpha(1f);
+                ivNext.setAlpha(1f);
+            }
         }
     }
 
