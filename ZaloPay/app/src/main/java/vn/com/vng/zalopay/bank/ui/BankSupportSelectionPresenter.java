@@ -147,8 +147,8 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     }
 
     void linkCard() {
-//        paymentWrapper.linkCard(getActivity());
-        setResultLinkCard();
+        getPaymentWrapper().linkCard(getActivity());
+//        setResultLinkCard();
     }
 
     private void setResultActivity(BankAction bankAction, DBaseMap bankInfo) {
