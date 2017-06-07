@@ -41,6 +41,7 @@ ext {
     testingSupportLibVersion = '0.1'
     leakCanaryVersion = '1.4-beta2'
     robolectricVersion = '3.0'
+    espressoVersionContrib = "2.2.2"
 
     zxingVersion = "3.3.0"
     zxingAndroidCoreVersion = "3.3.0"
@@ -135,6 +136,7 @@ ext {
             assertj    : "org.assertj:assertj-core:${assertJVersion}",
             mockito    : "org.mockito:mockito-core:${mockitoVersion}",
             espresso   : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            espresso_contrib   : "com.android.support.test.espresso:espresso-contrib:${espressoVersionContrib}"
     ]
 
     developmentDependencies = [

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <vn.com.zalopay.wallet.view.custom.ZPWRippleButton
+    <!--<vn.com.zalopay.wallet.view.custom.ZPWRippleButton
         android:id="@+id/zpsdk_btn_submit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/zpw_submit_button_height"
@@ -16,9 +16,8 @@
         android:text="@string/zpw_button_submit_text"
         android:textColor="@color/white"
         android:textSize="@dimen/zpw_submit_button_text_size"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />-->
 
-    <!--
     <Button
         android:id="@+id/zpsdk_btn_submit"
         android:layout_width="match_parent"
@@ -32,6 +31,5 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white"
         android:textSize="@dimen/zpw_submit_button_text_size" />
-        -->
 
 </LinearLayout>
