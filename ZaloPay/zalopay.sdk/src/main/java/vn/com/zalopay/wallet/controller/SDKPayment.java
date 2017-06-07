@@ -107,7 +107,29 @@ public class SDKPayment {
             }
             return;
         }
+        IValidate validation = new PaymentInfoValidation(pPaymentInfo.getTranstype());
+        //validate params order info and user info
+        String validateMessage = validation.onValidate(pPaymentInfo);
+        if (!TextUtils.isEmpty(validateMessage)) {
+            terminateSession(validateMessage, PaymentError.DATA_INVALID);
+            return;
+        }
+
+        //check internet connection
+        if (!ConnectionUtil.isOnline(pMerchantActivity)) {
+            if (GlobalData.getPaymentListener() != null) {
+                GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
+            }
+            SingletonLifeCircleManager.disposeAll();
+            return;
+        }
+
         PaymentInfoHelper paymentInfoHelper = new PaymentInfoHelper(pPaymentInfo);
+
+        if (!bypassBankAccount(paymentInfoHelper)) {
+            return;
+        }
+
         //set listener and data payment to global static
         try {
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener, paymentInfoHelper.getTranstype());
@@ -126,85 +148,66 @@ public class SDKPayment {
                 }
             }
         }
-        Log.d("pay", "payment transaction type", paymentInfoHelper.getTranstype());
-        Log.d("pay", "payment info ", paymentInfoHelper.getOrder());
+        Log.d("pay", "payment info ", paymentInfoHelper);
         GlobalData.selectBankFunctionByTransactionType(paymentInfoHelper.getTranstype());
         //init tracker event
         long appId = paymentInfoHelper.getAppId();
         int transtype = paymentInfoHelper.getTranstype();
-        String userid = paymentInfoHelper.getUserId();
         String appTransId = paymentInfoHelper.getAppTransId();
         GlobalData.initializeAnalyticTracker(appId, appTransId, transtype);
-        //check internet connection
-        if (!ConnectionUtil.isOnline(pMerchantActivity)) {
-            if (GlobalData.getPaymentListener() != null) {
-                GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
-            }
-            SingletonLifeCircleManager.disposeAll();
-            return;
-        }
 
-        try {
-            IValidate validation = new PaymentInfoValidation(paymentInfoHelper.getTranstype());
-            //validate params order info and user info
-            String validateMessage = validation.onValidate(pPaymentInfo);
-            if (!TextUtils.isEmpty(validateMessage)) {
-                terminateSession(validateMessage, PaymentError.DATA_INVALID);
-                return;
-            }
-            //1 zalopay user has only 1 vcb account
-            if (paymentInfoHelper.isBankAccountLink()
-                    && paymentInfoHelper.isLinkAccFlow()
-                    && BankAccountHelper.hasBankAccountOnCache(userid, paymentInfoHelper.getLinkAccBankCode())) {
-                DialogManager.closeProcessDialog();
-                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_cannot_connect),
-                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
-                            paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                            if (GlobalData.getPaymentListener() != null) {
-                                GlobalData.getPaymentListener().onComplete();
-                            }
-                            SingletonLifeCircleManager.disposeAll();
-                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
-                return;
-            }
-//
-            //user have no link bank account so no need to unlink
-            if (paymentInfoHelper.isBankAccountLink()
-                    && paymentInfoHelper.isUnLinkAccFlow()
-                    && !BankAccountHelper.hasBankAccountOnCache(userid, paymentInfoHelper.getLinkAccBankCode())) {
-                DialogManager.closeProcessDialog();
-                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
-                        GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_unlink_bankaccount_invalid),
-                        pIndex -> {
-                            paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                            if (GlobalData.getPaymentListener() != null) {
-                                GlobalData.getPaymentListener().onComplete();
-                            }
-                            SingletonLifeCircleManager.disposeAll();
-                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
-                return;
-            }
-
-            //check maintenance link bank account
-            if (paymentInfoHelper.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
-                DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
-                        GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
-                            paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                            if (GlobalData.getPaymentListener() != null) {
-                                GlobalData.getPaymentListener().onComplete();
-                            }
-                            SingletonLifeCircleManager.disposeAll();
-                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
-                return;
-            }
-        } catch (Exception e) {
-            terminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
-            Log.e("pay", e);
-            return;
-        }
         startGateway(paymentInfoHelper);
+    }
+
+    private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
+        //1 zalopay user has only 1 vcb account
+        if (paymentInfoHelper.isBankAccountLink()
+                && paymentInfoHelper.isLinkAccFlow()
+                && BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
+            DialogManager.closeProcessDialog();
+            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_cannot_connect),
+                    GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
+                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
+                        if (GlobalData.getPaymentListener() != null) {
+                            GlobalData.getPaymentListener().onComplete();
+                        }
+                        SingletonLifeCircleManager.disposeAll();
+                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
+        }
+//
+        //user have no link bank account so no need to unlink
+        else if (paymentInfoHelper.isBankAccountLink()
+                && paymentInfoHelper.isUnLinkAccFlow()
+                && !BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
+            DialogManager.closeProcessDialog();
+            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
+                    GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
+                    GlobalData.getMerchantActivity().getString(R.string.zpw_warning_unlink_bankaccount_invalid),
+                    pIndex -> {
+                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
+                        if (GlobalData.getPaymentListener() != null) {
+                            GlobalData.getPaymentListener().onComplete();
+                        }
+                        SingletonLifeCircleManager.disposeAll();
+                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
+        }
+
+        //check maintenance link bank account
+        else if (paymentInfoHelper.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
+            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
+                    GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
+                    BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
+                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
+                        if (GlobalData.getPaymentListener() != null) {
+                            GlobalData.getPaymentListener().onComplete();
+                        }
+                        SingletonLifeCircleManager.disposeAll();
+                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
+            return false;
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private static void startGateway(PaymentInfoHelper paymentInfoHelper) {

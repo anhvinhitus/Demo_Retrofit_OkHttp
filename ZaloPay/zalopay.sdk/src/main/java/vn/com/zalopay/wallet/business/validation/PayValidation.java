@@ -57,12 +57,11 @@ public class PayValidation implements IValidate {
             error = onValidateOrder(paymentInfo.getOrder());
         }
         if (TextUtils.isEmpty(error)) {
-
             if (paymentInfo.getTranstype() == TransactionType.MONEY_TRANSFER &&
-                    paymentInfo.getUser().zalopay_userid.equals(paymentInfo.getDestinationUser().zalopay_userid)) {
+                    paymentInfo.getUser().zalopay_userid.equals(paymentInfo.getOrder().appuser)) {
                 error = GlobalData.getStringResource(RS.string.zpw_string_alert_app_user_invalid_tranfer);
             } else if ((paymentInfo.getTranstype() == TransactionType.TOPUP || paymentInfo.getTranstype() == TransactionType.WITHDRAW) &&
-                    paymentInfo.getUser().zalopay_userid.equals(paymentInfo.getDestinationUser().zalopay_userid)) {
+                    !paymentInfo.getUser().zalopay_userid.equals(paymentInfo.getOrder().appuser)) {
                 error = GlobalData.getStringResource(RS.string.zingpaysdk_invalid_user_id_user_name);
             }
         }
