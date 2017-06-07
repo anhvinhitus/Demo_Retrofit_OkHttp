@@ -10,4 +10,6 @@ public class DAppInfo {
     public boolean isAllow() {
         return status == 1;
     }
+
+    public long expriretime;
 }

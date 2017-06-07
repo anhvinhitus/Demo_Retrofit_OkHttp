@@ -33,9 +33,21 @@ public class SharedPreferencesManager extends SingletonBase {
         mContext = new WeakReference<>(GlobalData.getAppContext());
     }
 
+    public SharedPreferencesManager(Context pContext) {
+        super();
+        mContext = new WeakReference<>(pContext);
+    }
+
     public static synchronized SharedPreferencesManager getInstance() throws Exception {
         if (mSharePreferencesManager == null) {
             mSharePreferencesManager = new SharedPreferencesManager();
+        }
+        return mSharePreferencesManager;
+    }
+
+    public static synchronized SharedPreferencesManager shared(Context pContext) {
+        if (mSharePreferencesManager == null) {
+            mSharePreferencesManager = new SharedPreferencesManager(pContext);
         }
         return mSharePreferencesManager;
     }

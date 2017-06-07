@@ -1144,8 +1144,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //show transaction amount when ! withdraw
         AbstractOrder order = mPaymentInfoHelper.getOrder();
-        if (order != null && order.amount_total > 0 && !mPaymentInfoHelper.isWithDrawChannel() && mPaymentInfoHelper.isTranferMoneyChannel()) {
-
+        if (order != null && order.amount_total > 0 && !mPaymentInfoHelper.isWithDrawChannel() && !mPaymentInfoHelper.isTranferMoneyChannel()) {
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
             if (!TextUtils.isEmpty(order.description)) {
                 setVisible(R.id.payment_description_label, true);
