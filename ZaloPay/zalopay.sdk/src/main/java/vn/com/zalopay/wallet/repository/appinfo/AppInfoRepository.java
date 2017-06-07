@@ -5,7 +5,7 @@ import rx.functions.Func1;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.datasource.RetryWithDelay;
 import vn.com.zalopay.wallet.exception.RequestException;
 
@@ -29,14 +29,14 @@ public class AppInfoRepository implements AppInfoStore.Repository {
     }
 
     @Override
-    public Observable<DAppInfo> fetchAppInfoCloud(String appid, String userid, String accesstoken, String checksum, String appversion) {
+    public Observable<AppInfo> fetchAppInfoCloud(String appid, String userid, String accesstoken, String checksum, String appversion) {
         return mAppInfoService.fetchAppInfo(appid, userid, accesstoken, checksum, appversion)
                 .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
                 .filter(appInfoResponse -> appInfoResponse != null)
                 .doOnNext(appInfoResponse -> mLocalStorage.putAppInfo(appid, appInfoResponse))
-                .flatMap(new Func1<AppInfoResponse, Observable<DAppInfo>>() {
+                .flatMap(new Func1<AppInfoResponse, Observable<AppInfo>>() {
                     @Override
-                    public Observable<DAppInfo> call(AppInfoResponse appInfoResponse) {
+                    public Observable<AppInfo> call(AppInfoResponse appInfoResponse) {
                         if (appInfoResponse.returncode != 1) {
                             return Observable.error(new RequestException(appInfoResponse.returncode, appInfoResponse.returnmessage));
                         } else if (appInfoResponse.info != null) {

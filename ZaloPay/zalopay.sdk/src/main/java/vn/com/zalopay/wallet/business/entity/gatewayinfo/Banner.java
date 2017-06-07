@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DBanner implements Parcelable {
+public class Banner implements Parcelable {
     public int appid;
     public int bannertype;
     public String platformcode;
@@ -16,8 +16,8 @@ public class DBanner implements Parcelable {
     @Override
     public boolean equals(Object object) {
         boolean sameSame = false;
-        if (object instanceof DBanner) {
-            DBanner other = (DBanner) object;
+        if (object instanceof Banner) {
+            Banner other = (Banner) object;
 
             String builderMe = String.valueOf(appid) +
                     bannertype +
@@ -59,10 +59,10 @@ public class DBanner implements Parcelable {
         dest.writeInt(this.orderindex);
     }
 
-    public DBanner() {
+    public Banner() {
     }
 
-    protected DBanner(Parcel in) {
+    protected Banner(Parcel in) {
         this.appid = in.readInt();
         this.bannertype = in.readInt();
         this.platformcode = in.readString();
@@ -73,15 +73,15 @@ public class DBanner implements Parcelable {
         this.orderindex = in.readInt();
     }
 
-    public static final Parcelable.Creator<DBanner> CREATOR = new Parcelable.Creator<DBanner>() {
+    public static final Parcelable.Creator<Banner> CREATOR = new Parcelable.Creator<Banner>() {
         @Override
-        public DBanner createFromParcel(Parcel source) {
-            return new DBanner(source);
+        public Banner createFromParcel(Parcel source) {
+            return new Banner(source);
         }
 
         @Override
-        public DBanner[] newArray(int size) {
-            return new DBanner[size];
+        public Banner[] newArray(int size) {
+            return new Banner[size];
         }
     };
 }

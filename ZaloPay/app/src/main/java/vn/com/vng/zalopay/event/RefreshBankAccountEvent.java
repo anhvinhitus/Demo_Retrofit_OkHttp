@@ -2,7 +2,7 @@ package vn.com.vng.zalopay.event;
 
 import java.util.List;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 
 /**
  * Created by longlv on 4/13/17.
@@ -12,11 +12,11 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 
 public class RefreshBankAccountEvent {
 
-    public List<DBankAccount> mLinkedBankAccount;
+    public List<BankAccount> mLinkedBankAccount;
     public boolean mIsError;
     public String mMessageError;
 
-    public RefreshBankAccountEvent(List<DBankAccount> mLinkedBankAccount) {
+    public RefreshBankAccountEvent(List<BankAccount> mLinkedBankAccount) {
         this.mIsError = false;
         this.mLinkedBankAccount = mLinkedBankAccount;
     }

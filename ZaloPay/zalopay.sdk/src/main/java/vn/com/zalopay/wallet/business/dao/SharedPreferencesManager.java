@@ -14,8 +14,8 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -383,8 +383,8 @@ public class SharedPreferencesManager extends SingletonBase {
      * @param pUserID
      * @return
      */
-    public List<DMappedCard> getMapCardList(String pUserID) {
-        List<DMappedCard> mappedCardList = new ArrayList<>();
+    public List<MapCard> getMapCardList(String pUserID) {
+        List<MapCard> mappedCardList = new ArrayList<>();
 
         String keyList = getMapCardKeyList(pUserID);
 
@@ -393,7 +393,7 @@ public class SharedPreferencesManager extends SingletonBase {
                 String strMappedCard = getMapCardByKey(pUserID, key);
 
                 if (!TextUtils.isEmpty(strMappedCard)) {
-                    DMappedCard mappedCard = GsonUtils.fromJsonString(strMappedCard, DMappedCard.class);
+                    MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
 
                     if (mappedCard != null)
                         mappedCardList.add(mappedCard);
@@ -404,8 +404,8 @@ public class SharedPreferencesManager extends SingletonBase {
         return mappedCardList;
     }
 
-    public List<DBankAccount> getBankAccountList(String pUserID) {
-        List<DBankAccount> bankAccountList = new ArrayList<>();
+    public List<BankAccount> getBankAccountList(String pUserID) {
+        List<BankAccount> bankAccountList = new ArrayList<>();
 
         String keyList = getBankAccountKeyList(pUserID);
 
@@ -414,7 +414,7 @@ public class SharedPreferencesManager extends SingletonBase {
                 String strMappedCard = getMapCardByKey(pUserID, key);
 
                 if (!TextUtils.isEmpty(strMappedCard)) {
-                    DBankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, DBankAccount.class);
+                    BankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, BankAccount.class);
 
                     if (bankAccount != null) {
                         bankAccountList.add(bankAccount);

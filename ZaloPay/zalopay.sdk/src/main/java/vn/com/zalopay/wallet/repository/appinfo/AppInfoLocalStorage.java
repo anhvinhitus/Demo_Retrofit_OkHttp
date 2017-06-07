@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeResponse;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -106,10 +106,10 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public Observable<DAppInfo> getAppInfo(String appId) {
+    public Observable<AppInfo> getAppInfo(String appId) {
         return Observable.defer(() -> {
             try {
-                DAppInfo appInfo = GsonUtils.fromJsonString(mSharedPreferences.getAppById(appId), DAppInfo.class);
+                AppInfo appInfo = GsonUtils.fromJsonString(mSharedPreferences.getAppById(appId), AppInfo.class);
                 appInfo.expriretime = getExpireTime(appId);
                 Log.d(this, "load app info from cache", appInfo);
                 return Observable.just(appInfo);

@@ -10,7 +10,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadPlatformInfoImpl;
@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 /***
  * platform api and update platform's data on cache
  */
-public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
+public class PlatformInfoTask extends BaseTask<PlatformInfoResponse> {
     private static final String TAG = PlatformInfoTask.class.getCanonicalName();
     private static PlatformInfoTask _object;
     protected UserInfo mUserInfo;
@@ -74,7 +74,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
      * process result from api
      * @throws Exception
      */
-    private synchronized void saveResponseToCache(DPlatformInfo pResponse) throws Exception {
+    private synchronized void saveResponseToCache(PlatformInfoResponse pResponse) throws Exception {
         Log.d(this, "===saveResponseToCache===");
         //enable/disable deposite
         SharedPreferencesManager.getInstance().setEnableDeposite(pResponse.isenabledeposit);
@@ -109,7 +109,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
         }
         //update bank account info on cache
         // Test in case already linked account Vietcombank
-//        DBankAccount dBankAccount = new DBankAccount();
+//        BankAccount dBankAccount = new BankAccount();
 //        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
 //        dBankAccount.firstaccountno = "093490";
 //        dBankAccount.lastaccountno = "9460";
@@ -138,7 +138,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
         }
     }
 
-    private void onProcessResponse(DPlatformInfo pResponse) {
+    private void onProcessResponse(PlatformInfoResponse pResponse) {
         if (this.mGetGatewayInfoListener == null) {
             Log.d(this, "mGetGatewayInfoListener = NULL");
             return;
@@ -177,7 +177,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
     }
 
     @Override
-    public void onDoTaskOnResponse(DPlatformInfo pResponse) {
+    public void onDoTaskOnResponse(PlatformInfoResponse pResponse) {
         try {
             if (pResponse == null || pResponse.returncode != 1) {
                 Log.d(this, "request not success...stopping saving response to cache");
@@ -196,14 +196,14 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
     }
 
     @Override
-    public void onRequestSuccess(DPlatformInfo pResponse) {
+    public void onRequestSuccess(PlatformInfoResponse pResponse) {
         onProcessResponse(pResponse);
     }
 
     @Override
     public void onRequestFail(Throwable e) {
         if (mGetGatewayInfoListener != null) {
-            DPlatformInfo platformResponse = new DPlatformInfo();
+            PlatformInfoResponse platformResponse = new PlatformInfoResponse();
             platformResponse.returncode = -1;
             platformResponse.returnmessage = getDefaulErrorNetwork();
             mGetGatewayInfoListener.onError(platformResponse);

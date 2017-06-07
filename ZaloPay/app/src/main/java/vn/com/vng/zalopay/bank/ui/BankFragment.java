@@ -41,7 +41,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 
 /**
@@ -197,7 +197,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         }
         String message = getString(R.string.txt_confirm_remove_card);
         DBaseMap bankInfo = mAdapter.getItem(adapterPosition);
-        if (bankInfo instanceof DBankAccount) {
+        if (bankInfo instanceof BankAccount) {
             message = getString(R.string.txt_confirm_remove_account);
         }
         super.showConfirmDialog(message,

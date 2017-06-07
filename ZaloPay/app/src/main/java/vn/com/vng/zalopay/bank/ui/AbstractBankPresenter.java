@@ -15,8 +15,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
@@ -33,11 +33,11 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
 
     abstract PaymentWrapper getPaymentWrapper();
 
-    abstract void onAddBankCardSuccess(DMappedCard bankCard);
+    abstract void onAddBankCardSuccess(MapCard bankCard);
 
-    abstract void onAddBankAccountSuccess(DBankAccount bankAccount);
+    abstract void onAddBankAccountSuccess(BankAccount bankAccount);
 
-    abstract void onUnLinkBankAccountSuccess(DBankAccount bankAccount);
+    abstract void onUnLinkBankAccountSuccess(BankAccount bankAccount);
 
     void onResponseSuccessFromSDK(IBuilder builder) {
         if (builder == null) {
@@ -47,20 +47,20 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
         switch (builder.getTransactionType()) {
             case TransactionType.LINK_ACCOUNT:
                 if (builder.getLinkAccountInfo().isLinkAcc()) {
-                    onAddBankAccountSuccess((DBankAccount) builder.getMapBank());
+                    onAddBankAccountSuccess((BankAccount) builder.getMapBank());
                 } else if (builder.getLinkAccountInfo().isUnlinkAcc()) {
-                    onUnLinkBankAccountSuccess((DBankAccount) builder.getMapBank());
+                    onUnLinkBankAccountSuccess((BankAccount) builder.getMapBank());
                 }
                 break;
             case TransactionType.LINK_CARD:
-                onAddBankCardSuccess((DMappedCard) builder.getMapBank());
+                onAddBankCardSuccess((MapCard) builder.getMapBank());
                 break;
         }
 
     }
 
     void linkAccount(String cardCode) {
-        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(getUser());
+        List<BankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(getUser());
         if (checkLinkedBankAccount(mapCardLis, cardCode)) {
             getPaymentWrapper().linkAccount(getActivity(), cardCode);
         } else {
@@ -93,11 +93,11 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
                 getActivity().getString(R.string.link_account_empty_bank_support_balance_require_hint);
     }
 
-    boolean checkLinkedBankAccount(List<DBankAccount> listBankAccount, String bankCode) {
+    boolean checkLinkedBankAccount(List<BankAccount> listBankAccount, String bankCode) {
         if (Lists.isEmptyOrNull(listBankAccount)) {
             return false;
         }
-        for (DBankAccount bankAccount : listBankAccount) {
+        for (BankAccount bankAccount : listBankAccount) {
             if (bankAccount == null || TextUtils.isEmpty(bankAccount.bankcode)) {
                 continue;
             }

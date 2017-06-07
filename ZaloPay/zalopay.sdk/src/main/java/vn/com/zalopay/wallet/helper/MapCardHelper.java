@@ -17,10 +17,9 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
-import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -73,7 +72,7 @@ public class MapCardHelper {
      * @param pMapCardList
      * @throws Exception
      */
-    public static void saveMapCardListToCache(String pUserId, String pCheckSum, List<DMappedCard> pMapCardList) throws Exception {
+    public static void saveMapCardListToCache(String pUserId, String pCheckSum, List<MapCard> pMapCardList) throws Exception {
         SharedPreferencesManager.getInstance().setCardInfoCheckSum(pCheckSum);
         Log.d(TAG, "saved card info list checksum " + pCheckSum);
         if (pMapCardList != null && pMapCardList.size() > 0) {
@@ -97,14 +96,14 @@ public class MapCardHelper {
         }
     }
 
-    public static void notifyNewMapCardToApp(PaymentInfoHelper paymentInfoHelper, DMappedCard saveCardInfo) {
+    public static void notifyNewMapCardToApp(PaymentInfoHelper paymentInfoHelper, MapCard saveCardInfo) {
         DMapCardResult mapCardResult = new DMapCardResult();
         mapCardResult.setLast4Number(saveCardInfo.last4cardno);
         String bankName = null;
         //create icon for map card.
         //this is atm
         if (!Constants.CCCode.equals(saveCardInfo.bankcode)) {
-            mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
+            mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
             //populate channel name
             bankName = BankCardCheck.getInstance().getShortBankName();
             if (!TextUtils.isEmpty(bankName)) {
@@ -117,7 +116,7 @@ public class MapCardHelper {
             cardCheck.detectOnSync(saveCardInfo.first6cardno);
             if (cardCheck.isDetected()) {
                 String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
-                mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(cardType));
+                mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(cardType));
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), cardCheck.getDetectedBankName());
             }
         }

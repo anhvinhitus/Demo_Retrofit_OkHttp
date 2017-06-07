@@ -41,9 +41,9 @@ import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
@@ -114,7 +114,7 @@ public abstract class AdapterBase {
     protected StatusResponse mResponseStatus;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
-    protected DMappedCard mMapCard;
+    protected MapCard mMapCard;
     protected String mTransactionID;
     protected String mPageCode;
     protected boolean mIsSuccess = false;
@@ -399,7 +399,7 @@ public abstract class AdapterBase {
     }
 
     public void tranferPaymentCardToMapCard() {
-        mMapCard = new DMappedCard(mCard);
+        mMapCard = new MapCard(mCard);
     }
 
     public boolean isOrderSubmit() {
@@ -1390,8 +1390,8 @@ public abstract class AdapterBase {
                     Log.d(this, "===processCardInfoListResponse===cardKey=NULL");
                     return;
                 }
-                DMappedCard mappedCard = null;
-                for (DMappedCard card : pCardInfoResponse.cardinfos) {
+                MapCard mappedCard = null;
+                for (MapCard card : pCardInfoResponse.cardinfos) {
                     if (card.getCardKey(mPaymentInfoHelper.getUserId()).equals(cardKey)) {
                         mappedCard = card.clone();
                         break;
@@ -1444,7 +1444,7 @@ public abstract class AdapterBase {
      * each type have each type of interface
      */
     protected void getSuccessPageType() {
-        DAppInfo appInfo = AppInfoLoader.getAppInfo(mPaymentInfoHelper.getAppId());
+        AppInfo appInfo = AppInfoLoader.getAppInfo(mPaymentInfoHelper.getAppId());
         if (appInfo != null && appInfo.viewresulttype == 2) {
             mPageCode = PAGE_SUCCESS_SPECIAL;
         } else
@@ -1858,7 +1858,7 @@ public abstract class AdapterBase {
      *
      * @param pMappedCard
      */
-    protected void saveMappedCardToLocal(DMappedCard pMappedCard) throws Exception {
+    protected void saveMappedCardToLocal(MapCard pMappedCard) throws Exception {
         try {
             Log.d("saveMappedCardToLocal", "pMappedCard=" + pMappedCard);
             String userId = mPaymentInfoHelper.getUserId();
@@ -1945,7 +1945,7 @@ public abstract class AdapterBase {
             Log.d(this, e);
         }
 
-        return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, DMappedCard.class) != null;
+        return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, MapCard.class) != null;
     }
 
     /**
@@ -1977,7 +1977,7 @@ public abstract class AdapterBase {
                 SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
             }
             //callback bank code to app to know what bank user input
-            DBaseMap card = new DMappedCard();
+            DBaseMap card = new MapCard();
             card.bankcode = pBankCode;
             mPaymentInfoHelper.setMapBank(card);
         } catch (Exception e) {

@@ -12,9 +12,8 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
@@ -52,7 +51,7 @@ public class BGatewayInfo extends SingletonBase {
         }
 
         @Override
-        public void onError(DPlatformInfo pMessage) {
+        public void onError(PlatformInfoResponse pMessage) {
             //mark as thread is finish
             mProcessing = false;
             if (pMessage != null) {

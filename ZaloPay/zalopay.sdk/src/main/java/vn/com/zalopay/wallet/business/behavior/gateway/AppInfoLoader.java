@@ -6,9 +6,8 @@ import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.AppInfoTask;
@@ -21,7 +20,7 @@ import vn.com.zalopay.utility.GsonUtils;
  */
 public class AppInfoLoader extends SingletonBase {
     private static final String TAG = AppInfoLoader.class.getCanonicalName();
-    public static DAppInfo appInfo;//payment app info
+    public static AppInfo appInfo;//payment app info
     private ILoadAppInfoListener mLoadAppInfoListener;
     private long appId;
     private String zaloUserId;
@@ -51,10 +50,10 @@ public class AppInfoLoader extends SingletonBase {
         return SharedPreferencesManager.getInstance().getPmcConfigList(sKey);
     }
 
-    public static DAppInfo getAppInfo(long appId) {
+    public static AppInfo getAppInfo(long appId) {
         if (appInfo == null) {
             try {
-                appInfo = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appId)), DAppInfo.class);
+                appInfo = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appId)), AppInfo.class);
             } catch (Exception e) {
                 Log.e(TAG, e);
             }

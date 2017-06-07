@@ -28,9 +28,9 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.Banner;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -264,7 +264,7 @@ public class CShareData extends SingletonBase {
      * @param pUserID
      * @return
      */
-    public List<DMappedCard> getMappedCardList(String pUserID) {
+    public List<MapCard> getMappedCardList(String pUserID) {
         try {
             return SharedPreferencesManager.getInstance().getMapCardList(pUserID);
         } catch (Exception ex) {
@@ -273,7 +273,7 @@ public class CShareData extends SingletonBase {
         return null;
     }
 
-    public List<DBankAccount> getMapBankAccountList(String pUserID) {
+    public List<BankAccount> getMapBankAccountList(String pUserID) {
         try {
             return SharedPreferencesManager.getInstance().getBankAccountList(pUserID);
         } catch (Exception ex) {
@@ -373,9 +373,9 @@ public class CShareData extends SingletonBase {
      * return banner list for top menu on app
      * @return
      */
-    public List<DBanner> getBannerList() {
+    public List<Banner> getBannerList() {
         try {
-            List<DBanner> bannerList = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBannerList(), new TypeToken<List<DBanner>>() {
+            List<Banner> bannerList = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBannerList(), new TypeToken<List<Banner>>() {
             }.getType());
             return bannerList;
         } catch (Exception e) {

@@ -25,9 +25,9 @@ import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.CardType;
 
 /**
@@ -62,9 +62,9 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
     @Override
     public int getItemViewType(int position) {
         DBaseMap dBaseMap = getItem(position);
-        if (dBaseMap instanceof DMappedCard) {
+        if (dBaseMap instanceof MapCard) {
             return ViewType.LINK_CARD;
-        } else if (dBaseMap instanceof DBankAccount) {
+        } else if (dBaseMap instanceof BankAccount) {
             return ViewType.LINK_ACCOUNT;
         } else if (dBaseMap == null && isFooter(position)) {
             return ViewType.FOOTER;
@@ -197,7 +197,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
             setMargin(isLastItem);
         }
 
-        private String getBankInfo(DBankAccount bankAccount) {
+        private String getBankInfo(BankAccount bankAccount) {
             if (bankAccount == null) {
                 return "";
             }
@@ -209,12 +209,12 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
         }
 
         private void bindBankInfo(DBaseMap baseMap) {
-            if (baseMap instanceof DMappedCard) {
-                DMappedCard mappedCard = (DMappedCard) baseMap;
+            if (baseMap instanceof MapCard) {
+                MapCard mappedCard = (MapCard) baseMap;
                 String bankCardNumber = BankUtils.formatBankCardNumber(mappedCard.first6cardno, mappedCard.last4cardno);
                 mCardNumber.setText(Html.fromHtml(bankCardNumber));
-            } else if (baseMap instanceof DBankAccount) {
-                mCardNumber.setText(getBankInfo((DBankAccount) baseMap));
+            } else if (baseMap instanceof BankAccount) {
+                mCardNumber.setText(getBankInfo((BankAccount) baseMap));
             }
         }
 

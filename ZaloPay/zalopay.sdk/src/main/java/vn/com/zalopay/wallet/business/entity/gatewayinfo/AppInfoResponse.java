@@ -8,7 +8,7 @@ public class AppInfoResponse extends BaseResponse {
     public boolean isupdateappinfo;
     public String appinfochecksum;
     public List<MiniPmcTransTypeResponse> pmctranstypes;
-    public DAppInfo info;
+    public AppInfo info;
     public long expiredtime;
 
     public boolean hasTranstypes() {

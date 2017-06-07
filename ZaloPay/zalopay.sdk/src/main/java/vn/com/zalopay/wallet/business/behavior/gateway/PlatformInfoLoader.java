@@ -5,9 +5,8 @@ import android.text.TextUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
@@ -36,7 +35,7 @@ public class PlatformInfoLoader extends SingletonBase {
         }
 
         @Override
-        public void onError(DPlatformInfo pMessage) {
+        public void onError(PlatformInfoResponse pMessage) {
             Log.d(this, pMessage != null ? pMessage.toJsonString() : "onError");
             if (pMessage != null) {
                 //ErrorManager.updateTransactionResult(pMessage.returncode);

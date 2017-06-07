@@ -14,14 +14,13 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -162,7 +161,7 @@ public class ChannelProxy extends SingletonBase {
                 //use don't have vietcombank link
                 if (!BankAccountHelper.hasBankAccountOnCache(userInfo.zalopay_userid, CardType.PVCB) && getActivity() != null) {
                     //callback bankcode to app , app will direct user to link bank account to right that bank
-                    DBankAccount dBankAccount = new DBankAccount();
+                    BankAccount dBankAccount = new BankAccount();
                     dBankAccount.bankcode = CardType.PVCB;
                     mPaymentInfoHelper.setMapBank(dBankAccount);
                     mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);

@@ -17,15 +17,14 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.CChannelHelper;
+import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
@@ -83,7 +82,7 @@ public abstract class BaseChannelInjector {
                     channel.setStatus(PaymentChannelStatus.MAINTENANCE);
                 }
                 //get icon
-                CChannelHelper.inflatChannelIcon(channel, null);
+                ChannelHelper.inflatChannelIcon(channel, null);
                 findValue(channel); //get min/max amount
                 addChannelToList(channel);
             } catch (Exception e) {
@@ -136,7 +135,7 @@ public abstract class BaseChannelInjector {
                 if (TextUtils.isEmpty(mapObject)) {
                     continue;
                 }
-                DBankAccount bankAccount = GsonUtils.fromJsonString(mapObject, DBankAccount.class);
+                BankAccount bankAccount = GsonUtils.fromJsonString(mapObject, BankAccount.class);
                 if (bankAccount == null) {
                     continue;
                 }
@@ -162,7 +161,7 @@ public abstract class BaseChannelInjector {
                     channel.pmcname = GlobalData.getStringResource(RS.string.zpw_channelname_vietcombank_mapaccount);
                     channel.isBankAccountMap = true;
 
-                    CChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
+                    ChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
                     //calculate fee
                     channel.calculateFee(mPaymentInfoHelper.getAmount());
 
@@ -218,7 +217,7 @@ public abstract class BaseChannelInjector {
                 if (TextUtils.isEmpty(strMapCard)) {
                     continue;
                 }
-                DMappedCard mapCard = GsonUtils.fromJsonString(strMapCard, DMappedCard.class);
+                MapCard mapCard = GsonUtils.fromJsonString(strMapCard, MapCard.class);
                 if (mapCard == null) {
                     continue;
                 }
@@ -259,12 +258,12 @@ public abstract class BaseChannelInjector {
                             //populate channel name
                             channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mapCard.last4cardno;
                             String cardType = CreditCardCheck.getInstance().getCodeBankForVerify();
-                            CChannelHelper.inflatChannelIcon(channel, cardType);
+                            ChannelHelper.inflatChannelIcon(channel, cardType);
                         }
                     }
                     //this is atm
                     else {
-                        CChannelHelper.inflatChannelIcon(channel, mapCard.bankcode);
+                        ChannelHelper.inflatChannelIcon(channel, mapCard.bankcode);
                         BankCardCheck.getInstance().detectOnSync(channel.f6no);
                         if (BankCardCheck.getInstance().isDetected()) {
                             //populate channel name

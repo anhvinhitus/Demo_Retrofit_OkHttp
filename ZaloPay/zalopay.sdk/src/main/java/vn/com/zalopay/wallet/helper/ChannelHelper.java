@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 
-public class CChannelHelper {
+public class ChannelHelper {
     /***
      * get icon for channel
      *

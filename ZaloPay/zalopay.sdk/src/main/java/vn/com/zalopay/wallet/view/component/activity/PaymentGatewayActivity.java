@@ -28,9 +28,9 @@ import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
@@ -441,7 +441,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private void goToChannel(PaymentChannel pChannel) {
         //map card channel clicked
         if (!TextUtils.isEmpty(pChannel.f6no) && !TextUtils.isEmpty(pChannel.l4no)) {
-            DBaseMap mapBank = pChannel.isBankAccountMap ? new DBankAccount() : new DMappedCard();
+            DBaseMap mapBank = pChannel.isBankAccountMap ? new BankAccount() : new MapCard();
             mapBank.setLastNumber(pChannel.l4no);
             mapBank.setFirstNumber(pChannel.f6no);
             mapBank.bankcode = pChannel.bankcode;

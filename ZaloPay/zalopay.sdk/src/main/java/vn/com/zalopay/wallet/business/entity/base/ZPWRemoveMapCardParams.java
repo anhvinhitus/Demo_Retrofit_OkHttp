@@ -1,9 +1,9 @@
 package vn.com.zalopay.wallet.business.entity.base;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 public class ZPWRemoveMapCardParams {
-    public DMappedCard mapCard;
+    public MapCard mapCard;
     public String userID;
     public String accessToken;
 }

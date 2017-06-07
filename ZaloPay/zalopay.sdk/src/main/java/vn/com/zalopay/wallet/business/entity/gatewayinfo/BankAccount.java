@@ -3,10 +3,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
-
-public class DBankAccount extends DBaseMap {
+public class BankAccount extends DBaseMap {
     public String firstaccountno = null;
     public String lastaccountno = null;
 
@@ -43,8 +40,8 @@ public class DBankAccount extends DBaseMap {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof DBankAccount) {
-            DBankAccount other = (DBankAccount) obj;
+        if (obj instanceof BankAccount) {
+            BankAccount other = (BankAccount) obj;
             return this.bankcode.equals(other.bankcode);
         }
         return false;

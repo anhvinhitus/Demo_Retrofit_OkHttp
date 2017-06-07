@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,13 +89,13 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
         }
 
         Timber.d("refreshListCardSupport accSupportList[%s]", accountSupportList);
-        List<DBankAccount> mappedAccountList = CShareDataWrapper.getMapBankAccountList(mUser);
+        List<BankAccount> mappedAccountList = CShareDataWrapper.getMapBankAccountList(mUser);
         mAdapter.setData(mergeData(accountSupportList, mappedAccountList));
         mAdapter.notifyDataSetChanged();
     }
 
     private List<BankSupportWithdraw> mergeData(List<BankConfig> cardSupportList,
-                                                List<DBankAccount> mappedAccountList) {
+                                                List<BankAccount> mappedAccountList) {
         List<BankSupportWithdraw> list = new ArrayList<>();
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return list;
@@ -110,7 +110,7 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
         return list;
     }
 
-    private boolean existInMappedCard(List<DBankAccount> mappedAccountList, String bankCode) {
+    private boolean existInMappedCard(List<BankAccount> mappedAccountList, String bankCode) {
         if (mappedAccountList == null || mappedAccountList.size() <= 0) {
             return false;
         }
@@ -118,7 +118,7 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
             return false;
         }
         for (int j = 0; j < mappedAccountList.size(); j++) {
-            DBankAccount bankAccount = mappedAccountList.get(j);
+            BankAccount bankAccount = mappedAccountList.get(j);
             if (bankAccount == null) {
                 continue;
             }

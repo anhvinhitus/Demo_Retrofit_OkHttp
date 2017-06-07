@@ -12,8 +12,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 
 /**
@@ -62,7 +62,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(user);
+            List<MapCard> mappedCardList = CShareDataWrapper.getMappedCardList(user);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || bankConfig.isBankAccount()) {
@@ -84,7 +84,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DBankAccount> mappedAccounts = CShareDataWrapper.getMapBankAccountList(user);
+            List<BankAccount> mappedAccounts = CShareDataWrapper.getMapBankAccountList(user);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || !bankConfig.isBankAccount()) {
@@ -100,12 +100,12 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
         return false;
     }
 
-    private boolean existInMappedCard(List<DMappedCard> userCardList, String bankCode) {
+    private boolean existInMappedCard(List<MapCard> userCardList, String bankCode) {
         if (Lists.isEmptyOrNull(userCardList) || TextUtils.isEmpty(bankCode)) {
             return false;
         }
         for (int j = 0; j < userCardList.size(); j++) {
-            DMappedCard mappedCard = userCardList.get(j);
+            MapCard mappedCard = userCardList.get(j);
             if (mappedCard == null) {
                 continue;
             }
@@ -116,12 +116,12 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
         return false;
     }
 
-    private boolean existInMappedAccount(List<DBankAccount> bankAccounts, String bankCode) {
+    private boolean existInMappedAccount(List<BankAccount> bankAccounts, String bankCode) {
         if (Lists.isEmptyOrNull(bankAccounts) || TextUtils.isEmpty(bankCode)) {
             return false;
         }
         for (int j = 0; j < bankAccounts.size(); j++) {
-            DBankAccount bankAccount = bankAccounts.get(j);
+            BankAccount bankAccount = bankAccounts.get(j);
             if (bankAccount == null) {
                 continue;
             }

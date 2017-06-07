@@ -8,7 +8,6 @@ import android.os.Bundle;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
@@ -26,9 +24,9 @@ import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -180,17 +178,17 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     }
 
     @Override
-    void onAddBankCardSuccess(DMappedCard bankCard) {
+    void onAddBankCardSuccess(MapCard bankCard) {
         setResultActivity(BankAction.LINK_CARD, bankCard);
     }
 
     @Override
-    void onAddBankAccountSuccess(DBankAccount bankAccount) {
+    void onAddBankAccountSuccess(BankAccount bankAccount) {
         setResultActivity(BankAction.LINK_ACCOUNT, bankAccount);
     }
 
     @Override
-    void onUnLinkBankAccountSuccess(DBankAccount bankAccount) {
+    void onUnLinkBankAccountSuccess(BankAccount bankAccount) {
         setResultActivity(BankAction.UNLINK_ACCOUNT, bankAccount);
     }
 

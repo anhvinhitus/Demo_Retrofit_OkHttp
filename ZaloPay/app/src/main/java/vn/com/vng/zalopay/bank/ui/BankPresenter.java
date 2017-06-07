@@ -36,9 +36,9 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -137,11 +137,11 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    private void removeLinkedCard(DMappedCard mappedCard) {
+    private void removeLinkedCard(MapCard mappedCard) {
         showLoadingView();
 
         ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
-        DMappedCard mapCard = new DMappedCard();
+        MapCard mapCard = new MapCard();
         mapCard.cardname = mappedCard.cardname;
         mapCard.first6cardno = mappedCard.first6cardno;
         mapCard.last4cardno = mappedCard.last4cardno;
@@ -158,7 +158,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         SDKApplication.removeCardMap(params, new RemoveMapCardListener());
     }
 
-    private void removeLinkedAccount(DBankAccount bankAccount) {
+    private void removeLinkedAccount(BankAccount bankAccount) {
         if (mPaymentWrapper == null || mView == null || bankAccount == null) {
             return;
         }
@@ -166,53 +166,53 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     void removeLinkedBank(DBaseMap item) {
-        if (item instanceof DMappedCard) {
-            removeLinkedCard((DMappedCard) item);
-        } else if (item instanceof DBankAccount) {
-            removeLinkedAccount((DBankAccount) item);
+        if (item instanceof MapCard) {
+            removeLinkedCard((MapCard) item);
+        } else if (item instanceof BankAccount) {
+            removeLinkedAccount((BankAccount) item);
         }
     }
 
     /*private List<DBaseMap> getFakeData() {
         List<DBaseMap> linkedBankList = new ArrayList<>();
 
-        DMappedCard visaCard = new DMappedCard();
+        MapCard visaCard = new MapCard();
         visaCard.first6cardno = "445093";
         visaCard.last4cardno = "0161";
         visaCard.bankcode = vn.com.zalopay.wallet.business.data.Constants.CCCode;
         linkedBankList.add(visaCard);
 
-        DMappedCard vtbCard = new DMappedCard();
+        MapCard vtbCard = new MapCard();
         vtbCard.bankcode = CardType.PVTB.toString();
         vtbCard.first6cardno = "970415";
         vtbCard.last4cardno = "3538";
         linkedBankList.add(vtbCard);
 
-        DMappedCard vcbCard = new DMappedCard();
+        MapCard vcbCard = new MapCard();
         vcbCard.bankcode = CardType.PVCB.toString();
         vcbCard.first6cardno = "686868";
         vcbCard.last4cardno = "1231";
         linkedBankList.add(vcbCard);
 
-        DMappedCard sCard = new DMappedCard();
+        MapCard sCard = new MapCard();
         sCard.bankcode = CardType.PSCB.toString();
         sCard.first6cardno = "970403";
         sCard.last4cardno = "1234";
         linkedBankList.add(sCard);
 
-        DMappedCard sgCard = new DMappedCard();
+        MapCard sgCard = new MapCard();
         sgCard.bankcode = CardType.PSGCB.toString();
         sgCard.first6cardno = "157979";
         sgCard.last4cardno = "9999";
         linkedBankList.add(sgCard);
 
-        DMappedCard bivdCard = new DMappedCard();
+        MapCard bivdCard = new MapCard();
         bivdCard.first6cardno = "970418";
         bivdCard.last4cardno = "1231";
         bivdCard.bankcode = CardType.PBIDV.toString();
         linkedBankList.add(bivdCard);
 
-        DBankAccount vcbAccount = new DBankAccount();
+        BankAccount vcbAccount = new BankAccount();
         vcbAccount.firstaccountno = "098765";
         vcbAccount.lastaccountno = "4321";
         vcbAccount.bankcode = CardType.PVCB.toString();
@@ -223,8 +223,8 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
 
     void getLinkedBank() {
         List<DBaseMap> linkedBankList = new ArrayList<>();
-        List<DMappedCard> linkedCardList = CShareDataWrapper.getMappedCardList(mUser);
-        List<DBankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(mUser);
+        List<MapCard> linkedCardList = CShareDataWrapper.getMappedCardList(mUser);
+        List<BankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(mUser);
 
         if (!Lists.isEmptyOrNull(linkedCardList)) {
             linkedBankList.addAll(linkedCardList);
@@ -283,7 +283,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
-        public void onSuccess(DMappedCard mapCard) {
+        public void onSuccess(MapCard mapCard) {
             Timber.d("removed map card: %s", mapCard);
             hideLoadingView();
             if (mView == null || mapCard == null) {
@@ -359,7 +359,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return;
         }
         String message = getString(R.string.confirm_continue_pay_after_link_card);
-        if (bankInfo instanceof DBankAccount) {
+        if (bankInfo instanceof BankAccount) {
             message = getString(R.string.confirm_continue_pay_after_link_account);
         }
         mView.showConfirmDialogAfterLinkBank(message);
@@ -370,14 +370,14 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return;
         }
         String message = getString(R.string.confirm_continue_withdraw_after_link_card);
-        if (bankInfo instanceof DBankAccount) {
+        if (bankInfo instanceof BankAccount) {
             message = getString(R.string.confirm_continue_withdraw_after_link_account);
         }
         mView.showConfirmDialogAfterLinkBank(message);
     }
 
     @Override
-    void onAddBankCardSuccess(DMappedCard bankCard) {
+    void onAddBankCardSuccess(MapCard bankCard) {
         if (bankCard != null) {
             mView.onAddBankSuccess(bankCard);
         }
@@ -389,7 +389,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     @Override
-    void onAddBankAccountSuccess(DBankAccount bankAccount) {
+    void onAddBankAccountSuccess(BankAccount bankAccount) {
         if (bankAccount != null) {
             mView.onAddBankSuccess(bankAccount);
         }
@@ -401,7 +401,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     @Override
-    void onUnLinkBankAccountSuccess(DBankAccount bankAccount) {
+    void onUnLinkBankAccountSuccess(BankAccount bankAccount) {
         if (mView != null) {
             mView.removeLinkedBank(bankAccount);
         }
@@ -412,13 +412,13 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return;
         }
         if (bankInfo.mBankAction == BankAction.LINK_CARD) {
-            DMappedCard mappedCard = new DMappedCard();
+            MapCard mappedCard = new MapCard();
             mappedCard.bankcode = bankInfo.mBankCode;
             mappedCard.first6cardno = bankInfo.mFirstNumber;
             mappedCard.last4cardno = bankInfo.mLastNumber;
             onAddBankCardSuccess(mappedCard);
         } else if (bankInfo.mBankAction == BankAction.LINK_ACCOUNT) {
-            DBankAccount dBankAccount = new DBankAccount();
+            BankAccount dBankAccount = new BankAccount();
             dBankAccount.bankcode = bankInfo.mBankCode;
             dBankAccount.firstaccountno = bankInfo.mFirstNumber;
             dBankAccount.lastaccountno = bankInfo.mLastNumber;
@@ -431,7 +431,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return;
         }
         Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        List<DBankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser);
+        List<BankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser);
         if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
             String bankName = BankUtils.getBankName(bankInfo.bankcode);
             String message;

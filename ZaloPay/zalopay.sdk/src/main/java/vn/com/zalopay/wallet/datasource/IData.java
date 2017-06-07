@@ -23,7 +23,7 @@ import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 
 public interface IData {
 
@@ -35,7 +35,7 @@ public interface IData {
      */
     @GET(Constants.URL_PLATFORM_INFO)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO)
-    Observable<DPlatformInfo> loadPlatformInfo(@QueryMap Map<String, String> params);
+    Observable<PlatformInfoResponse> loadPlatformInfo(@QueryMap Map<String, String> params);
 
     /**
      * load appinfo

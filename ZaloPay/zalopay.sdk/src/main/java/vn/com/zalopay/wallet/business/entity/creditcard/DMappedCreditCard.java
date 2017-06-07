@@ -2,14 +2,14 @@ package vn.com.zalopay.wallet.business.entity.creditcard;
 
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 public class DMappedCreditCard {
     public String f6no;
     public String l4no;
     public String bankcode;
 
-    public DMappedCreditCard(DMappedCard pMappedCard) {
+    public DMappedCreditCard(MapCard pMappedCard) {
         this.f6no = pMappedCard.first6cardno;
         this.l4no = pMappedCard.last4cardno;
         this.bankcode = pMappedCard.bankcode;

@@ -20,7 +20,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.bank.BankUtils;
-import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -43,9 +42,9 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 /**
  * Created by datnt10 on 3/27/17.
@@ -215,8 +214,8 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     private void checkLinkCardStatus() {
-        List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
-        List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
+        List<MapCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
+        List<BankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
@@ -290,7 +289,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             return;
         }
         Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        List<BankAccount> bankAccounts = getLinkedBankAccount();
+        List<vn.com.vng.zalopay.bank.models.BankAccount> bankAccounts = getLinkedBankAccount();
 
         if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
             String bankName = BankUtils.getBankName(bankInfo.bankcode);
@@ -309,11 +308,11 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         }
     }
 
-    private boolean checkLinkedBankAccount(List<BankAccount> listBankAccount, String bankCode) {
+    private boolean checkLinkedBankAccount(List<vn.com.vng.zalopay.bank.models.BankAccount> listBankAccount, String bankCode) {
         if (Lists.isEmptyOrNull(listBankAccount)) {
             return false;
         }
-        for (BankAccount bankAccount : listBankAccount) {
+        for (vn.com.vng.zalopay.bank.models.BankAccount bankAccount : listBankAccount) {
             if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
                 continue;
             }
@@ -324,17 +323,17 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         return false;
     }
 
-    private List<BankAccount> getLinkedBankAccount() {
-        List<DBankAccount> mapCardList = CShareDataWrapper.getMapBankAccountList(mUser);
+    private List<vn.com.vng.zalopay.bank.models.BankAccount> getLinkedBankAccount() {
+        List<BankAccount> mapCardList = CShareDataWrapper.getMapBankAccountList(mUser);
         return transformBankAccount(mapCardList);
     }
 
-    private List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {
+    private List<vn.com.vng.zalopay.bank.models.BankAccount> transformBankAccount(List<BankAccount> bankAccounts) {
         if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
 
-        List<BankAccount> list = new ArrayList<>();
-        for (DBankAccount dBankAccount : bankAccounts) {
-            BankAccount bankAccount = transformBankAccount(dBankAccount);
+        List<vn.com.vng.zalopay.bank.models.BankAccount> list = new ArrayList<>();
+        for (BankAccount dBankAccount : bankAccounts) {
+            vn.com.vng.zalopay.bank.models.BankAccount bankAccount = transformBankAccount(dBankAccount);
             if (bankAccount != null) {
                 list.add(bankAccount);
             }
@@ -342,13 +341,13 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         return list;
     }
 
-    private BankAccount transformBankAccount(DBankAccount dBankAccount) {
+    private vn.com.vng.zalopay.bank.models.BankAccount transformBankAccount(BankAccount dBankAccount) {
         if (dBankAccount == null) {
             return null;
         }
 
         //bankCode [ZPVCB] firstaccountno[012240] lastaccountno[2165]
-        return new BankAccount(dBankAccount.firstaccountno,
+        return new vn.com.vng.zalopay.bank.models.BankAccount(dBankAccount.firstaccountno,
                 dBankAccount.lastaccountno,
                 dBankAccount.bankcode);
     }

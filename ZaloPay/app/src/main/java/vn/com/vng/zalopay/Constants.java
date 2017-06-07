@@ -52,7 +52,7 @@ public interface Constants {
 
     int RESULT_END_PAYMENT = -2;
 
-    //DMappedCard: model of zalo payment sdk
+    //MapCard: model of zalo payment sdk
 
     String LAST4CARDNO = "last4cardno";
     String IMAGE_FILE_PATH = "image_file_path";

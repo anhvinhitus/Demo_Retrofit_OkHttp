@@ -22,18 +22,15 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -497,9 +494,9 @@ public class AdapterBankCard extends AdapterBase {
                 return false;
             }
 
-            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
+            List<MapCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
 
-            DMappedCard bidvCard = new DMappedCard();
+            MapCard bidvCard = new MapCard();
             bidvCard.first6cardno = pCardNumber.substring(0, 6);
             bidvCard.last4cardno = pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
 
@@ -512,10 +509,10 @@ public class AdapterBankCard extends AdapterBase {
 
     public boolean hasBidvBankInMapCardList() {
         try {
-            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
+            List<MapCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
 
             if (mappedCardList != null && mappedCardList.size() > 0) {
-                for (DMappedCard mappedCard : mappedCardList) {
+                for (MapCard mappedCard : mappedCardList) {
                     if (mappedCard.bankcode.equalsIgnoreCase(CardType.PBIDV)) {
                         return true;
                     }

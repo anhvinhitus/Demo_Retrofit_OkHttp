@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
@@ -146,7 +146,7 @@ public class GlobalData {
      */
     public static boolean isAllowApplication(long appID) {
         try {
-            DAppInfo currentApp = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appID)), DAppInfo.class);
+            AppInfo currentApp = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appID)), AppInfo.class);
 
             return (currentApp != null && currentApp.isAllow());
 

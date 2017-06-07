@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 
-public class DAppInfo {
+public class AppInfo {
     public String appname = null;
     public long appid = Long.MIN_VALUE;
     public int status = -1;

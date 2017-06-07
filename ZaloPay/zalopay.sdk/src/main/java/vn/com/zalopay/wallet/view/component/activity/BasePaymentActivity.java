@@ -85,7 +85,7 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
@@ -889,7 +889,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             return;
         }
         long appId = mPaymentInfoHelper.getAppId();
-        DAppInfo appInfo = AppInfoLoader.getAppInfo(appId);
+        AppInfo appInfo = AppInfoLoader.getAppInfo(appId);
         if (appInfo != null && !TextUtils.isEmpty(appInfo.appname)) {
             setText(R.id.zalosdk_bill_info_ctl, appInfo.appname);
             setVisible(R.id.zalosdk_bill_info_ctl, true);
@@ -1265,7 +1265,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         if (order != null) {
             long appId = order.appid;
-            DAppInfo appInfo = AppInfoLoader.getAppInfo(appId);
+            AppInfo appInfo = AppInfoLoader.getAppInfo(appId);
             if (appInfo != null && appInfo.viewresulttype == 2) {
                 setVisible(R.id.zpw_textview_transaction_description, true);
                 setText(R.id.zpw_textview_transaction_description, appInfo.appname);

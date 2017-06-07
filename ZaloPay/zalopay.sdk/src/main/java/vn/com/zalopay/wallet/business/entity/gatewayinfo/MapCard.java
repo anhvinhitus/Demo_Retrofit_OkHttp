@@ -4,22 +4,22 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 
-public class DMappedCard extends DBaseMap {
+public class MapCard extends DBaseMap {
     public String cardname;
     public String first6cardno;
     public String last4cardno;
     public long expiretime;
 
-    public DMappedCard() {
+    public MapCard() {
         bankcode = "";
     }
 
     /***
-     * convert DPaymentCard to DMappedCard
+     * convert DPaymentCard to MapCard
      *
      * @param pCard
      */
-    public DMappedCard(DPaymentCard pCard) {
+    public MapCard(DPaymentCard pCard) {
         this.expiretime = 0;
         this.bankcode = pCard.getBankcode();
         this.cardname = pCard.getCardholdername();
@@ -29,8 +29,8 @@ public class DMappedCard extends DBaseMap {
         }
     }
 
-    public DMappedCard clone() {
-        DMappedCard mappedCard = new DMappedCard();
+    public MapCard clone() {
+        MapCard mappedCard = new MapCard();
         mappedCard.cardname = this.cardname;
         mappedCard.first6cardno = this.first6cardno;
         mappedCard.last4cardno = this.last4cardno;
@@ -71,10 +71,10 @@ public class DMappedCard extends DBaseMap {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DMappedCard)) {
+        if (!(obj instanceof MapCard)) {
             return false;
         }
-        DMappedCard other = (DMappedCard) obj;
+        MapCard other = (MapCard) obj;
         return !TextUtils.isEmpty(this.getFirstNumber()) && !TextUtils.isEmpty(this.getLastNumber()) &&
                 this.getFirstNumber().equals(other.first6cardno) && this.getLastNumber().equals(other.last4cardno);
     }

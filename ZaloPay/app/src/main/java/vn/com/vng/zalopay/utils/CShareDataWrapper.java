@@ -19,8 +19,8 @@ import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
@@ -70,11 +70,11 @@ public class CShareDataWrapper {
         return subscription;
     }
 
-    private static List<DMappedCard> detectCCCard(List<DMappedCard> dMappedCards, User user) {
+    private static List<MapCard> detectCCCard(List<MapCard> dMappedCards, User user) {
         if (Lists.isEmptyOrNull(dMappedCards)) {
             return Collections.emptyList();
         }
-        for (DMappedCard bankCard : dMappedCards) {
+        for (MapCard bankCard : dMappedCards) {
             if (Constants.CCCode.equalsIgnoreCase(bankCard.bankcode)) {
                 bankCard.bankcode = BankUtils.detectCCCard(bankCard.getFirstNumber(), user);
             }
@@ -82,14 +82,14 @@ public class CShareDataWrapper {
         return dMappedCards;
     }
 
-    public static List<DMappedCard> getMappedCardList(User user) {
+    public static List<MapCard> getMappedCardList(User user) {
         if (user == null) {
             return Collections.emptyList();
         }
         return detectCCCard(CShareData.getInstance().getMappedCardList(user.zaloPayId), user);
     }
 
-    public static List<DBankAccount> getMapBankAccountList(User user) {
+    public static List<BankAccount> getMapBankAccountList(User user) {
         if (user == null) {
             return Collections.emptyList();
         }
@@ -148,7 +148,7 @@ public class CShareDataWrapper {
         ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
         params.userID = user.zaloPayId;
         params.accessToken = user.accesstoken;
-        DMappedCard card = new DMappedCard();
+        MapCard card = new MapCard();
         card.last4cardno = last4cardno;
         card.first6cardno = first6cardno;
         params.mapCard = card;
@@ -167,9 +167,9 @@ public class CShareDataWrapper {
         userInfo.accesstoken = user.accesstoken;
 
         CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
-                        new IReloadMapInfoListener<DBankAccount>() {
+                        new IReloadMapInfoListener<BankAccount>() {
                             @Override
-                            public void onComplete(List<DBankAccount> pMapList) {
+                            public void onComplete(List<BankAccount> pMapList) {
                                 Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
                                 EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
                             }

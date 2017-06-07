@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -17,7 +17,7 @@ public class AppInfoStore {
     public interface LocalStorage {
         void putAppInfo(String pAppId, AppInfoResponse appInfo);
 
-        Observable<DAppInfo> getAppInfo(String appid);
+        Observable<AppInfo> getAppInfo(String appid);
 
         long getExpireTime(String appid);
 
@@ -25,7 +25,7 @@ public class AppInfoStore {
     }
 
     public interface Repository {
-        Observable<DAppInfo> fetchAppInfoCloud(String appid, String userid, String accesstoken, String checksum, String appversion);
+        Observable<AppInfo> fetchAppInfoCloud(String appid, String userid, String accesstoken, String checksum, String appversion);
 
         AppInfoStore.LocalStorage getLocalStorage();
     }

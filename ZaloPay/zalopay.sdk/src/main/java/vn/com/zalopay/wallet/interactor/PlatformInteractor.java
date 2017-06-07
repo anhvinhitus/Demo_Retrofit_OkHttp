@@ -7,7 +7,7 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.repository.banklist.BankListStore;
@@ -37,11 +37,11 @@ public class PlatformInteractor implements IPlatform {
      * @return
      */
     @Override
-    public Observable<DAppInfo> loadAppInfo(String appid, String userid, String accesstoken, long currentTime) {
+    public Observable<AppInfo> loadAppInfo(String appid, String userid, String accesstoken, long currentTime) {
         String checksum = mAppInfoRepository.getLocalStorage().getCheckSum(appid);
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        Observable<DAppInfo> appInfoOnCache = mAppInfoRepository.getLocalStorage().getAppInfo(appid).onErrorReturn(null);
-        Observable<DAppInfo> appInfoOnCloud = mAppInfoRepository.fetchAppInfoCloud(appid, userid, accesstoken, checksum, appVersion);
+        Observable<AppInfo> appInfoOnCache = mAppInfoRepository.getLocalStorage().getAppInfo(appid).onErrorReturn(null);
+        Observable<AppInfo> appInfoOnCloud = mAppInfoRepository.fetchAppInfoCloud(appid, userid, accesstoken, checksum, appVersion);
         return Observable.concat(appInfoOnCache, appInfoOnCloud).first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime)).compose(SchedulerHelper.applySchedulers());
     }
 

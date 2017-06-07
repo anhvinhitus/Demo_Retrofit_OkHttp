@@ -40,7 +40,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
@@ -153,7 +153,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }
     };
-    private List<DBankAccount> mBankAccountList = null;
+    private List<BankAccount> mBankAccountList = null;
     protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, mPaymentInfoHelper.getUserInfo(), new ICheckExistBankAccountListener() {
@@ -415,7 +415,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         try {
             // get bankaccount from cache callback to app
-            List<DBankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
+            List<BankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             if (dBankAccountList != null && dBankAccountList.size() > 0) {
                 mPaymentInfoHelper.setMapBank(dBankAccountList.get(0));
             }

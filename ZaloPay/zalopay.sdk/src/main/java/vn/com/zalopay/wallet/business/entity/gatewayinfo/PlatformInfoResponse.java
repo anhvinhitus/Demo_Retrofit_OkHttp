@@ -4,19 +4,19 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 
-public class DPlatformInfo extends BaseResponse {
+public class PlatformInfoResponse extends BaseResponse {
     public String platforminfochecksum = null;
 
-    public List<DMappedCard> cardinfos = null;
+    public List<MapCard> cardinfos = null;
     public String cardinfochecksum = null;
 
-    public List<DBankAccount> bankaccounts = null;
+    public List<BankAccount> bankaccounts = null;
     public String bankaccountchecksum = null;
 
-    public DAppInfo info = null;
+    public AppInfo info = null;
 
     public boolean isupdateresource = false;
-    public DSDKResource resource = null;
+    public SDKResource resource = null;
 
     public boolean forceappupdate = false;
     public String forceupdatemessage = null;
@@ -30,7 +30,7 @@ public class DPlatformInfo extends BaseResponse {
 
     public String newestappversion = null;
 
-    public List<DBanner> bannerresources = null;
+    public List<Banner> bannerresources = null;
 
     public List<Integer> approvedinsideappids = null;
 

@@ -116,13 +116,13 @@ class WalletListener implements ZPPaymentListener {
                     pPaymentResult.paymentStatus = EPaymentStatus.SUCCESS;
                     //LinkAccount
                     pPaymentResult.paymentInfo.linkAccInfo = new LinkAccInfo(ECardType.PVCB.toString(), ELinkAccType.LINK);
-                    DBankAccount dBankAccount = new DBankAccount();
+                    BankAccount dBankAccount = new BankAccount();
                     dBankAccount.bankcode = ECardType.PVCB.toString();
                     dBankAccount.firstaccountno = "097654";
                     dBankAccount.lastaccountno = "4321";
                     pPaymentResult.paymentInfo.mapBank = dBankAccount;
                     //LinkCard
-                    *//*DMappedCard mappedCard = new DMappedCard();
+                    *//*MapCard mappedCard = new MapCard();
                     mappedCard.bankcode = ECardType.PBIDV.toString();
                     mappedCard.first6cardno = "970418";
                     mappedCard.last4cardno = "4321";

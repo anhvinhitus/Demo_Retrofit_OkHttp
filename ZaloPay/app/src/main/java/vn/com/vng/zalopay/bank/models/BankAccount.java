@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 
 /**
  * Created by longlv on 1/17/17.
- * Wrapper of DBankAccount (in PaymentSDK).
+ * Wrapper of BankAccount (in PaymentSDK).
  */
 
 public class BankAccount {

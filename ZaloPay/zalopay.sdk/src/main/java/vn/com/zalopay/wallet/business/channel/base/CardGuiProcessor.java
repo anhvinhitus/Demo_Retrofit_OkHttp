@@ -40,7 +40,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -973,7 +973,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                              @Override
                                                              public void onOKevent() {
                                                                  //callback bankcode to app , app will direct user to link bank account to right that bank
-                                                                 DBankAccount dBankAccount = new DBankAccount();
+                                                                 BankAccount dBankAccount = new BankAccount();
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
                                                                  mPaymentInfoHelper.setMapBank(dBankAccount);
                                                                  mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT);
@@ -991,7 +991,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                              @Override
                                                              public void onOKevent() {
                                                                  //callback bankcode to app , app will direct user to link bank account to right that bank
-                                                                 DBankAccount dBankAccount = new DBankAccount();
+                                                                 BankAccount dBankAccount = new BankAccount();
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
                                                                  mPaymentInfoHelper.setMapBank(dBankAccount);
                                                                  mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);

@@ -3,9 +3,9 @@ package vn.com.zalopay.wallet.paymentinfo;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -148,11 +148,11 @@ public class PaymentInfoHelper extends SingletonBase {
      * for checking user selected a map card channel.
      */
     public boolean isMapCardChannel() {
-        return paymentInfo != null && paymentInfo.getMapBank() instanceof DMappedCard && paymentInfo.getMapBank().isValid();
+        return paymentInfo != null && paymentInfo.getMapBank() instanceof MapCard && paymentInfo.getMapBank().isValid();
     }
 
     public boolean isMapBankAccountChannel() {
-        return paymentInfo != null && paymentInfo.getMapBank() instanceof DBankAccount && paymentInfo.getMapBank().isValid();
+        return paymentInfo != null && paymentInfo.getMapBank() instanceof BankAccount && paymentInfo.getMapBank().isValid();
     }
 
     public boolean isBankAccountLink() {

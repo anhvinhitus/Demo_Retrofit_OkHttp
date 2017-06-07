@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,13 +89,13 @@ public class CardSupportWithdrawFragment extends BaseFragment {
             return;
         }
 
-        List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(mUser);
+        List<MapCard> mappedCardList = CShareDataWrapper.getMappedCardList(mUser);
         mAdapter.setData(mergeData(cardSupportList, mappedCardList));
         mAdapter.notifyDataSetChanged();
     }
 
     private List<BankSupportWithdraw> mergeData(List<BankConfig> cardSupportList,
-                                                List<DMappedCard> mappedCardList) {
+                                                List<MapCard> mappedCardList) {
         List<BankSupportWithdraw> list = new ArrayList<>();
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return list;
@@ -110,7 +110,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
         return list;
     }
 
-    private boolean existInMappedCard(List<DMappedCard> mappedCardList, String bankCode) {
+    private boolean existInMappedCard(List<MapCard> mappedCardList, String bankCode) {
         if (mappedCardList == null || mappedCardList.size() <= 0) {
             return false;
         }
@@ -118,7 +118,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
             return false;
         }
         for (int j = 0; j < mappedCardList.size(); j++) {
-            DMappedCard mappedCard = mappedCardList.get(j);
+            MapCard mappedCard = mappedCardList.get(j);
             if (mappedCard == null) {
                 continue;
             }

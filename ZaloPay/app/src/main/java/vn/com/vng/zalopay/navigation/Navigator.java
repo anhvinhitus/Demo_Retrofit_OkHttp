@@ -78,8 +78,8 @@ import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 /*
 * Navigator
@@ -402,9 +402,9 @@ public class Navigator implements INavigator {
     private boolean hasLinkBank() {
         boolean hasLinkBank = false;
         try {
-            List<DMappedCard> mapCardLis = CShareDataWrapper
+            List<MapCard> mapCardLis = CShareDataWrapper
                     .getMappedCardList(mUserConfig.getCurrentUser());
-            List<DBankAccount> bankAccountList = CShareDataWrapper
+            List<BankAccount> bankAccountList = CShareDataWrapper
                     .getMapBankAccountList(mUserConfig.getCurrentUser());
             hasLinkBank = !Lists.isEmptyOrNull(mapCardLis) || !Lists.isEmptyOrNull(bankAccountList);
         } catch (Exception ex) {
@@ -772,7 +772,7 @@ public class Navigator implements INavigator {
 
         if (channel == 2) {
             try {
-                List<DMappedCard> mapCardLis = CShareDataWrapper
+                List<MapCard> mapCardLis = CShareDataWrapper
                         .getMappedCardList(mUserConfig.getCurrentUser());
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);

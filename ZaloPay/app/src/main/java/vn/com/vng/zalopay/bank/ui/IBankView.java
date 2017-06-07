@@ -7,7 +7,6 @@ import java.util.List;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by datnt10 on 5/25/17.

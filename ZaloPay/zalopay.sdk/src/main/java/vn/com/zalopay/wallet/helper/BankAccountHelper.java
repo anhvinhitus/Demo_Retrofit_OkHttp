@@ -10,11 +10,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -32,9 +31,9 @@ public class BankAccountHelper {
 
     public static boolean hasBankAccountOnCache(String pUserId, String pBankCode) {
         try {
-            List<DBankAccount> bankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(pUserId);
+            List<BankAccount> bankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(pUserId);
 
-            DBankAccount bankAccount = new DBankAccount();
+            BankAccount bankAccount = new BankAccount();
             bankAccount.bankcode = pBankCode;
 
             boolean existedBankAccount = bankAccountList != null && bankAccountList.size() > 0 && bankAccountList.contains(bankAccount);
@@ -54,7 +53,7 @@ public class BankAccountHelper {
                     .subscribe(new SingleSubscriber<BaseResponse>() {
                         @Override
                         public void onSuccess(BaseResponse response) {
-                            DBankAccount bankAccount = new DBankAccount();
+                            BankAccount bankAccount = new BankAccount();
                             bankAccount.bankcode = pBankCode;
                             if (response instanceof BankAccountListResponse) {
                                 pListener.onCheckExistBankAccountComplete(((BankAccountListResponse) response).bankaccounts.contains(bankAccount));
@@ -114,7 +113,7 @@ public class BankAccountHelper {
         return false;
     }
 
-    public static void saveMapBankAccountListToCache(String pUserId, String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
+    public static void saveMapBankAccountListToCache(String pUserId, String pInfoCheckSum, List<BankAccount> pMapList) throws Exception {
         //update checksum
         SharedPreferencesManager.getInstance().setBankAccountCheckSum(pInfoCheckSum);
         //map card list
