@@ -431,6 +431,11 @@ dependencies {
 
     testCompile tests.junit
     testCompile tests.robolectric
+    testCompile tests.mockito
+    androidTestCompile(tests.espresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs'
+    })
 
     compile cfgAndroid.multidex
 

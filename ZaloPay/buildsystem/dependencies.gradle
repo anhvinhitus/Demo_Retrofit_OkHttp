@@ -35,9 +35,9 @@ ext {
     robolectricVersion = '3.1.4'
     jUnitVersion = '4.12'
     assertJVersion = '1.7.1'
-    mockitoVersion = '1.9.5'
+    mockitoVersion = '1.10.19'
     dexmakerVersion = '1.0'
-    espressoVersion = '2.0'
+    espressoVersion = '2.2.2'
     testingSupportLibVersion = '0.1'
     leakCanaryVersion = '1.4-beta2'
     robolectricVersion = '3.0'
@@ -134,6 +134,7 @@ ext {
             robolectric: "org.robolectric:robolectric:${robolectricVersion}",
             assertj    : "org.assertj:assertj-core:${assertJVersion}",
             mockito    : "org.mockito:mockito-core:${mockitoVersion}",
+            espresso   : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
     ]
 
     developmentDependencies = [
