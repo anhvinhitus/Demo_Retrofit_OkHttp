@@ -9,6 +9,7 @@ import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.zalopay.AdapterZaloPay;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterFactory {
@@ -18,38 +19,38 @@ public class AdapterFactory {
      * @param pPmcTransType
      * @return
      */
-    public static AdapterBase produce(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) {
+    public static AdapterBase produce(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType, PaymentInfoHelper paymentInfoHelper) {
         AdapterBase adapter = null;
         try {
-            adapter = produceChannelByPmc(owner, pPmcTransType);
+            adapter = produceChannelByPmc(owner, pPmcTransType, paymentInfoHelper);
         } catch (Exception ex) {
             Log.e("produce", ex);
         }
         return adapter;
     }
 
-    public static AdapterBase produceChannelByPmc(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType) throws Exception {
+    public static AdapterBase produceChannelByPmc(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
         AdapterBase adapter = null;
         switch (pPmcTransType.pmcid) {
             case BuildConfig.channel_zalopay:
                 Log.i("Zmp", "AdapterFactory.produce adapter=AdapterZaloPay");
-                adapter = new AdapterZaloPay(owner, pPmcTransType);
+                adapter = new AdapterZaloPay(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_atm:
                 Log.i("Zmp", "AdapterFactory.produce adapter=AdapterBankCard");
-                adapter = new AdapterBankCard(owner, pPmcTransType);
+                adapter = new AdapterBankCard(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_credit_card:
                 Log.i("Zmp", "AdapterFactory.produce adapter=AdapterCreditCard");
-                adapter = new AdapterCreditCard(owner, pPmcTransType);
+                adapter = new AdapterCreditCard(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_bankaccount:
                 Log.i("Zmp", "AdapterFactory.produce adapter=AdapterBankAccount");
-                adapter = new AdapterBankAccount(owner, pPmcTransType);
+                adapter = new AdapterBankAccount(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_link_acc:
                 Log.i("Zmp", "AdapterFactory.produce adapter=AdapterLinkAcc");
-                adapter = new AdapterLinkAcc(owner, pPmcTransType);
+                adapter = new AdapterLinkAcc(owner, pPmcTransType, paymentInfoHelper);
                 break;
             default:
                 Log.d("Zmp", "AdapterFactory.produce adapter=null");

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -23,14 +25,16 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.PaymentUtils;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -39,10 +43,10 @@ public class AdapterBankCard extends AdapterBase {
 
     private int numberRetryCaptcha = 0;
 
-    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType);
+    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = SCREEN_ATM;
-        mPageCode = (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_ATM;
+        mPageCode = (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_ATM;
         GlobalData.cardChannelType = CardChannel.ATM;
     }
 
@@ -56,7 +60,8 @@ public class AdapterBankCard extends AdapterBase {
         try {
             if (needReloadPmcConfig(pBankCode)) {
                 Log.d(this, "start reload pmc transtype " + pBankCode);
-                mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(pBankCode), MiniPmcTransType.class);
+                long appId = mPaymentInfoHelper.getAppId();
+                mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(appId, mPaymentInfoHelper.getTranstype(), pBankCode), MiniPmcTransType.class);
                 Log.d(this, "new pmc transype", mMiniPmcTransType);
             }
         } catch (Exception e) {
@@ -68,7 +73,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void init() throws Exception {
         this.mGuiProcessor = new BankCardGuiProcessor(this);
-        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
+        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
         }
         showFee();
@@ -372,7 +377,7 @@ public class AdapterBankCard extends AdapterBase {
 							messageIntent.setAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
 							messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_SENDER, sender);
 							messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_BODY,body);
-							LocalBroadcastManager.getInstance(GlobalData.getAppContext()).sendBroadcast(messageIntent);
+							LocalBroadcastManager.get(GlobalData.getAppContext()).sendBroadcast(messageIntent);
 						}
 					},5000);
 					*/
@@ -438,7 +443,7 @@ public class AdapterBankCard extends AdapterBase {
 
             getActivity().processingOrder = true;
 
-            SDKTransactionAdapter.shared().authenPayer(this, mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
+            SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
 
             if (mOtpEndTime == 0)
                 mOtpBeginTime = System.currentTimeMillis();
@@ -468,7 +473,7 @@ public class AdapterBankCard extends AdapterBase {
             return;
         }
 
-        if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
+        if (!mPaymentInfoHelper.isMapCardChannel() && !mPaymentInfoHelper.isMapBankAccountChannel()) {
             getGuiProcessor().populateCard();
             tranferPaymentCardToMapCard();
         }
@@ -492,7 +497,7 @@ public class AdapterBankCard extends AdapterBase {
                 return false;
             }
 
-            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
 
             DMappedCard bidvCard = new DMappedCard();
             bidvCard.first6cardno = pCardNumber.substring(0, 6);
@@ -507,7 +512,7 @@ public class AdapterBankCard extends AdapterBase {
 
     public boolean hasBidvBankInMapCardList() {
         try {
-            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            List<DMappedCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
 
             if (mappedCardList != null && mappedCardList.size() > 0) {
                 for (DMappedCard mappedCard : mappedCardList) {

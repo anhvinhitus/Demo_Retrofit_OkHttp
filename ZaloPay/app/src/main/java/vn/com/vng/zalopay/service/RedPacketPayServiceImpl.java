@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 19/07/2016.
@@ -106,7 +106,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        public void onResponseSuccess(IBuilder builder) {
             if (mListener != null) {
                 mListener.onResponseSuccess(null);
             }

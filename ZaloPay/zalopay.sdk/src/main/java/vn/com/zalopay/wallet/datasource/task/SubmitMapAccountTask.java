@@ -2,21 +2,20 @@ package vn.com.zalopay.wallet.datasource.task;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SubmitMapAccountImpl;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
-
     protected String mBankAccInfo;
     protected AdapterBase mAdapter;
-
     public SubmitMapAccountTask(AdapterBase pAdapter, String pBankAccInfo) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
         mBankAccInfo = pBankAccInfo;
     }
@@ -63,7 +62,11 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareMapAccountParams(getDataParams(), mBankAccInfo);
+            if(mAdapter.getPaymentInfoHelper() == null){
+                return false;
+            }
+            UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
+            DataParameter.prepareMapAccountParams(getDataParams(), mBankAccInfo, userInfo);
             return true;
         } catch (Exception e) {
             onRequestFail(e);

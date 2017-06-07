@@ -6,6 +6,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
@@ -19,6 +20,7 @@ import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
     private static PlatformInfoLoader _object;
+    protected UserInfo mUserInfo;
     private ZPWGetGatewayInfoListener mLoadGatewayInfoListener = new ZPWGetGatewayInfoListener() {
         @Override
         public void onProcessing() {
@@ -37,7 +39,7 @@ public class PlatformInfoLoader extends SingletonBase {
         public void onError(DPlatformInfo pMessage) {
             Log.d(this, pMessage != null ? pMessage.toJsonString() : "onError");
             if (pMessage != null) {
-                ErrorManager.updateTransactionResult(pMessage.returncode);
+                //ErrorManager.updateTransactionResult(pMessage.returncode);
             }
             SdkResourceInitMessage message = new SdkResourceInitMessage(false,pMessage != null ? pMessage.returnmessage : null);
             PaymentEventBus.shared().post(message);
@@ -56,13 +58,14 @@ public class PlatformInfoLoader extends SingletonBase {
         }
     };
 
-    public PlatformInfoLoader() {
+    public PlatformInfoLoader(UserInfo pUserInfo) {
         super();
+        mUserInfo = pUserInfo;
     }
 
-    public synchronized static PlatformInfoLoader getInstance() {
+    public synchronized static PlatformInfoLoader getInstance(UserInfo pUserInfo) {
         if (PlatformInfoLoader._object == null) {
-            PlatformInfoLoader._object = new PlatformInfoLoader();
+            PlatformInfoLoader._object = new PlatformInfoLoader(pUserInfo);
         }
         return PlatformInfoLoader._object;
     }
@@ -71,7 +74,7 @@ public class PlatformInfoLoader extends SingletonBase {
         //check resource whether existed or not.
         boolean needToReloadPlatforminfo;
         try {
-            needToReloadPlatforminfo = BGatewayInfo.isNeedToGetPlatformInfo();
+            needToReloadPlatforminfo = BGatewayInfo.isNeedToGetPlatformInfo(mUserInfo.zalopay_userid);
         } catch (Exception e) {
             Log.e(this, e);
             needToReloadPlatforminfo = true;
@@ -131,7 +134,7 @@ public class PlatformInfoLoader extends SingletonBase {
 
     //retry load platform info
     private void retryLoadGateway(boolean pForceReload) {
-        BaseTask getPlatformInfo = new PlatformInfoTask(mLoadGatewayInfoListener, pForceReload);
+        BaseTask getPlatformInfo = new PlatformInfoTask(mLoadGatewayInfoListener, pForceReload, mUserInfo);
         getPlatformInfo.makeRequest();
         Log.d(this, "need to retry load platforminfo again force " + pForceReload);
     }

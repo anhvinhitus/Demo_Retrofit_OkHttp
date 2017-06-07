@@ -4,7 +4,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 public abstract class DBaseMap {
     public String bankcode;
 
-    public abstract String getCardKey();
+    public abstract String getCardKey(String pUserId);
 
     public abstract String getFirstNumber();
 

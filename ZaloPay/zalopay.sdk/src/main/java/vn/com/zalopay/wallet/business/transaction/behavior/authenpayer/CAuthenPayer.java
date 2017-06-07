@@ -8,7 +8,6 @@ import vn.com.zalopay.wallet.datasource.task.BaseTask;
 public class CAuthenPayer implements IAuthenPayer {
     @Override
     public void authenPayer(AdapterBase pAdapter, String pTransID, String authenType, String authenValue) {
-
         BaseTask atmAuthenPayerTask = new AuthenPayerTask(pAdapter, pTransID, authenType, authenValue);
         atmAuthenPayerTask.makeRequest();
     }

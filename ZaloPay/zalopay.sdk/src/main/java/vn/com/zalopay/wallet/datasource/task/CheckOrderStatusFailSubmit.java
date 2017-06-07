@@ -1,11 +1,14 @@
 package vn.com.zalopay.wallet.datasource.task;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.CheckOrderStatusFailSubmitImpl;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 
 /***
  * get status transaction in case error networking
@@ -22,7 +25,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
      * @param pAppTransID
      */
     public CheckOrderStatusFailSubmit(AdapterBase pAdapter, String pAppTransID) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mAppTransID = pAppTransID;
         this.mAdapter = pAdapter;
     }
@@ -72,7 +75,9 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareCheckSubmitOrderStatusParams(getDataParams(), mAppTransID);
+            UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
+            long appId = mAdapter.getPaymentInfoHelper().getAppId();
+            DataParameter.prepareCheckSubmitOrderStatusParams(String.valueOf(appId), userInfo, getDataParams(), mAppTransID);
             return true;
         } catch (Exception e) {
             Log.e(this, e);

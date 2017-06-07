@@ -234,7 +234,7 @@ public class VPaymentEditText extends TextInputEditText {
      */
     @Override
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && GlobalData.isChannelHasInputCard() && mAdapter != null && mAdapter.isInputStep()) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && mAdapter != null && mAdapter.isInputStep()) {
             Log.d(this, "can not back,you have to input card info");
             return true;
         }

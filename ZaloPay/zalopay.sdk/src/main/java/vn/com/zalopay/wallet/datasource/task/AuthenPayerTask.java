@@ -4,12 +4,13 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.AuthenPayerImpl;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class AuthenPayerTask extends BaseTask<StatusResponse> {
@@ -17,7 +18,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
     private String mTransID, mAuthenType, mAuthenValue;
 
     public AuthenPayerTask(AdapterBase pAdapter, String pTransID, String pAuthenType, String pAuthenValue) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
         mTransID = pTransID;
         mAuthenType = pAuthenType;
@@ -71,7 +72,8 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareAtmAuthenPayer(getDataParams(), mTransID, mAuthenType, mAuthenValue);
+            UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
+            DataParameter.prepareAtmAuthenPayer(getDataParams(), userInfo.zalopay_userid, userInfo.accesstoken, mTransID, mAuthenType, mAuthenValue);
             return true;
         } catch (Exception e) {
             Log.e(this, e);

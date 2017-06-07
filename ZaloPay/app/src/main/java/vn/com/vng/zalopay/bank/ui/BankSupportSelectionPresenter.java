@@ -26,12 +26,12 @@ import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by Duke on 5/25/17.
@@ -133,8 +133,8 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     void getCardSupport() {
         Timber.d("Get list bank support %s", mBankType);
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = mUser.zaloPayId;
-        userInfo.accessToken = mUser.accesstoken;
+        userInfo.zalopay_userid = mUser.zaloPayId;
+        userInfo.accesstoken = mUser.accesstoken;
         Subscription subscription = CShareDataWrapper.getCardSupportList(userInfo, mGetSupportBankSubscriber);
         mSubscription.add(subscription);
     }
@@ -214,8 +214,8 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            onResponseSuccessFromSDK(zpPaymentResult);
+        public void onResponseSuccess(IBuilder builder) {
+            onResponseSuccessFromSDK(builder);
         }
 
         @Override

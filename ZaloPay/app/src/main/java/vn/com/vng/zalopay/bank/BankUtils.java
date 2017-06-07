@@ -80,8 +80,8 @@ public class BankUtils {
             return CardType.UNDEFINE.toString();
         }
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = user.zaloPayId;
-        userInfo.accessToken = user.accesstoken;
+        userInfo.zalopay_userid = user.zaloPayId;
+        userInfo.accesstoken = user.accesstoken;
 
         try {
             return CShareDataWrapper.detectCardType(userInfo, first6CardNo);

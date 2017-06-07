@@ -23,7 +23,7 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
     private ILoadBankListListener mILoadBankListListener;
 
     public BankListTask(ILoadBankListListener pILoadBankListListener) {
-        super();
+        super(null);
         mILoadBankListListener = pILoadBankListListener;
     }
 

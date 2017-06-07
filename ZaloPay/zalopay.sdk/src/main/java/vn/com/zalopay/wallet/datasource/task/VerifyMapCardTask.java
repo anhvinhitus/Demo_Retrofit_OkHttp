@@ -13,7 +13,7 @@ public class VerifyMapCardTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;
 
     public VerifyMapCardTask(AdapterBase pAdapter) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mAdapter = pAdapter;
     }
 

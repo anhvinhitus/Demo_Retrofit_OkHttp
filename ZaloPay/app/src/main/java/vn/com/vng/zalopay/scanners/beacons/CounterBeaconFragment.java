@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
 
@@ -431,7 +431,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        public void onResponseSuccess(IBuilder builder) {
             CounterBeaconFragment.this.getActivity().finish();
         }
 

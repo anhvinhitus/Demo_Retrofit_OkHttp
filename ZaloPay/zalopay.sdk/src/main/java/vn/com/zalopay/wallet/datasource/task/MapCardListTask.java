@@ -21,14 +21,14 @@ public class MapCardListTask extends BaseTask<CardInfoListResponse> {
     protected UserInfo mUserInfo;
 
     public MapCardListTask(AdapterBase pAdapter, UserInfo pUserInfo) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mAdapter = pAdapter;
         this.mGetCardInfoCallBack = null;
         this.mUserInfo = pUserInfo;
     }
 
     public MapCardListTask(IGetMapCardInfo pGetCardInfoCallBack, UserInfo pUserInfo) {
-        super();
+        super(pUserInfo);
         this.mAdapter = null;
         this.mGetCardInfoCallBack = pGetCardInfoCallBack;
         this.mUserInfo = pUserInfo;
@@ -43,7 +43,7 @@ public class MapCardListTask extends BaseTask<CardInfoListResponse> {
         }
         if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
             try {
-                MapCardHelper.saveMapCardListToCache(mUserInfo.zaloPayUserId, pResponse.cardinfochecksum, pResponse.cardinfos);
+                MapCardHelper.saveMapCardListToCache(mUserInfo.zalopay_userid, pResponse.cardinfochecksum, pResponse.cardinfos);
             } catch (Exception e) {
                 Log.e(this, e);
             }

@@ -5,6 +5,7 @@ import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IDoSubmit;
 import vn.com.zalopay.wallet.datasource.task.VerifyMapCardTask;
 
 public class CVerifyCardMap implements IDoSubmit {
+
     @Override
     public void doSubmit(AdapterBase pAdapter) {
         new VerifyMapCardTask(pAdapter).makeRequest();

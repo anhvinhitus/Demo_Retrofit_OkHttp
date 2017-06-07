@@ -63,8 +63,8 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
     void getCardSupport() {
         Timber.d("Get list bank support %s", mBankType);
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = mUser.zaloPayId;
-        userInfo.accessToken = mUser.accesstoken;
+        userInfo.zalopay_userid = mUser.zaloPayId;
+        userInfo.accesstoken = mUser.accesstoken;
         Subscription subscription = CShareDataWrapper.getCardSupportList(userInfo, mGetSupportBankSubscriber);
         mSubscription.add(subscription);
     }

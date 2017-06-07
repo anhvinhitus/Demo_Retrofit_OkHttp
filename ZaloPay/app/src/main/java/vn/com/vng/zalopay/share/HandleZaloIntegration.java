@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
@@ -48,13 +47,11 @@ public class HandleZaloIntegration {
             return;
         }
 
-        final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloUserId = String.valueOf(user.zaloId);
-        userInfo.zaloPayUserId = user.zaloPayId;
-        userInfo.accessToken = user.accesstoken;
-        paymentInfo.userInfo = userInfo;
-        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        userInfo.zalo_userid = String.valueOf(user.zaloId);
+        userInfo.zalopay_userid = user.zaloPayId;
+        userInfo.accesstoken = user.accesstoken;
+        SDKApplication.loadGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     public void loadPaymentSdk() {

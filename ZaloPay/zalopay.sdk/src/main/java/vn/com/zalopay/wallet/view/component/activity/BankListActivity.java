@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardSupportGridViewAdapter;
 
@@ -73,7 +74,7 @@ public class BankListActivity extends BasePaymentDialogActivity {
             mGridViewBank.setAdapter(getAdapter());
         }
         //set text label
-        if (GlobalData.isLinkCardChannel()) {
+        if (GlobalData.mTranstype == TransactionType.LINK_CARD) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
         } else if (getAdapter() instanceof CreditCardSupportGridViewAdapter) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));

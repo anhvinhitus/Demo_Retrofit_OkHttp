@@ -25,6 +25,10 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.utility.PaymentUtils;
+import vn.com.zalopay.utility.PlayStoreUtils;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -44,12 +48,10 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.utility.PaymentUtils;
-import vn.com.zalopay.utility.PlayStoreUtils;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.StringUtil;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.component.activity.BankListActivity;
@@ -77,9 +79,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected PaymentWebView mWebView;
     protected boolean mUseOtpToken = false;
     protected boolean mNeedToShowKeyBoardWhenCloseProcessDialog = false;
-    /***
-     * card view
-     ***/
     protected int mLastPageSelected = 0;
     protected boolean checkAutoMoveCardNumberFromBundle = true;
     protected CreditCardView mCardView;
@@ -94,6 +93,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected Button mButtonNext, mButtonPre;
     protected LinearLayout mDotView;
     protected boolean needToWarningNotSupportCard = true;
+    protected PaymentInfoHelper mPaymentInfoHelper;
     protected View.OnClickListener mNextButtonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -320,7 +320,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected);
 
-            if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+            if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
                 return;
             }
 
@@ -329,7 +329,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
             if (!getAdapter().isNeedToSwitchChannel()) {
                 //workout prevent flicker when switch atm and cc
-                if (!isDetected && GlobalData.isLinkCardChannel()) {
+                if (!isDetected && mPaymentInfoHelper.isLinkCardChannel()) {
                     needToWarningNotSupportCard = false;
 
                     Log.d(this, "needToWarningNotSupportCard=false");
@@ -345,7 +345,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
             //continue detect if haven't detected card type yet
-            if (!isDetected && GlobalData.isLinkCardChannel()) {
+            if (!isDetected && mPaymentInfoHelper.isLinkCardChannel()) {
                 needToWarningNotSupportCard = true;
                 Log.d(this, "needToWarningNotSupportCard=true");
                 continueDetectCardForLinkCard();
@@ -395,8 +395,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract CardFragmentBaseAdapter onCreateCardFragmentAdapter();
 
-    protected void init() {
-        if (GlobalData.isChannelHasInputCard()) {
+    protected void init(PaymentInfoHelper paymentInfoHelper) {
+        mPaymentInfoHelper = paymentInfoHelper;
+        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             initForInputCard();
         } else {
             initForMapCardAndZaloPay();
@@ -725,7 +726,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean validateCardNumberLuhn() {
         boolean isDetected = getCardFinder().isDetected();
 
-        if (GlobalData.isLinkCardChannel() && !isDetected) {
+        if (mPaymentInfoHelper.isLinkCardChannel() && !isDetected) {
             isDetected = getCreditCardFinder().isDetected() ? getCreditCardFinder().isDetected() : getBankCardFinder().isDetected();
         }
 
@@ -841,13 +842,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 getAdapter().setMiniPmcTransType(null);
             } else if (getAdapter().needReloadPmcConfig(bankCode)) {
                 MiniPmcTransType miniPmcTransType = getAdapter().getConfig(bankCode);//reload config by bank
-                if (miniPmcTransType != null && !GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)) {
-                    GlobalData.populateOrderFee(miniPmcTransType);
-                    miniPmcTransType.checkPmcOrderAmount(GlobalData.getOrderAmount());//check amount is support or not
+                if (miniPmcTransType != null && !mPaymentInfoHelper.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)) {
+                    miniPmcTransType.calculateFee(mPaymentInfoHelper.getAmount());
+                    mPaymentInfoHelper.getOrder().populateFee(miniPmcTransType);
+                    miniPmcTransType.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
                     if (!miniPmcTransType.isAllowByAmount()) {
                         CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
                         String invalidAmountMessage = GlobalData.getStringResource(RS.string.invalid_order_amount_bank);
-                        cardNumberView.setError(String.format(invalidAmountMessage, getBankCardFinder().getShortBankName(), StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal))));
+                        double amount_total = mPaymentInfoHelper.getAmountTotal();
+                        cardNumberView.setError(String.format(invalidAmountMessage, getBankCardFinder().getShortBankName(), StringUtil.formatVnCurrence(String.valueOf(amount_total))));
                         disableNext();
                         return;
                     }
@@ -867,7 +870,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             //bidv card must paid by mapcard
-            if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
+            if (!mPaymentInfoHelper.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).isBidvBankPayment()
                     && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(bankCode, getCardNumber())) {
                 return;
@@ -902,7 +905,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean validateUserLevelBankAccount() {
         boolean userLevelValid = true;
         try {
-            if (GlobalData.getLevel() < BuildConfig.level_allow_bankaccount) {
+            int user_level = mPaymentInfoHelper.getLevel();
+            if (user_level < BuildConfig.level_allow_bankaccount) {
                 userLevelValid = false;
             }
         } catch (Exception e) {
@@ -911,7 +915,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         if (!userLevelValid && getAdapter() != null && getAdapter().getActivity() != null) {
             String pMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_linkaccount_before_payment);
-            if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
+            if (BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
                 pMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount);
             }
             getAdapter().getActivity().confirmUpgradeLevelIfUserInputBankAccount(pMessage, new ZPWOnEventConfirmDialogListener() {
@@ -922,10 +926,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
                 @Override
                 public void onOKevent() {
-                    if (BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
-                        GlobalData.setResultUpgrade();
+                    if (BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
+                        mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                     } else {
-                        GlobalData.setResultUpLevelLinkAccountAndPayment();
+                        mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
                     }
                     getAdapter().getActivity().recycleActivity();
                 }
@@ -941,7 +945,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             Log.d(this, "bank config is null");
             return;
         }
-        String pMessage = GlobalData.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+        String pMessage = mPaymentInfoHelper.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
         pMessage = String.format(pMessage, bankConfig.getShortBankName());
         getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                                          @Override
@@ -959,7 +963,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showWarningBankAccount() {
-        if (GlobalData.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isLinkCardChannel()) {
             getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                                              @Override
                                                              public void onCancelEvent() {
@@ -971,14 +975,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                                  //callback bankcode to app , app will direct user to link bank account to right that bank
                                                                  DBankAccount dBankAccount = new DBankAccount();
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
-                                                                 GlobalData.getPaymentInfo().mapBank = dBankAccount;
-
-                                                                 GlobalData.setResultNeedToLinkAccount();
+                                                                 mPaymentInfoHelper.setMapBank(dBankAccount);
+                                                                 mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT);
                                                                  getAdapter().getActivity().recycleActivity();
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
                     GlobalData.getStringResource(RS.string.dialog_linkaccount_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
-        } else if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
+        } else if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
             getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                                              @Override
                                                              public void onCancelEvent() {
@@ -990,9 +993,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                                  //callback bankcode to app , app will direct user to link bank account to right that bank
                                                                  DBankAccount dBankAccount = new DBankAccount();
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
-                                                                 GlobalData.getPaymentInfo().mapBank = dBankAccount;
-
-                                                                 GlobalData.setResultNeedToLinkAccountBeforePayment();
+                                                                 mPaymentInfoHelper.setMapBank(dBankAccount);
+                                                                 mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
                                                                  getAdapter().getActivity().recycleActivity();
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkcard_before_payment),
@@ -1014,9 +1016,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (!TextUtils.isEmpty(pBankCode)) {
                 getCardView().switchCardDateHintByBankCode(pBankCode);
             }
-            if (!TextUtils.isEmpty(pBankCode) && getAdapter().needReloadPmcConfig(pBankCode)) {
-                GlobalData.populateOrderFee(getAdapter().getConfig(pBankCode)); //user input new bank, populate again order fee
-            }
+
             MiniPmcTransType miniPmcTransType = getAdapter().getConfig();//reload config by bank
             if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 showWarningBankVersionSupport();
@@ -1383,7 +1383,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         int currentIndex = getViewPager().getCurrentItem();
 
         //prevent user move to next if input existed card in link card
-        if (currentIndex == 0 && preventNextIfLinkCardExisted() && GlobalData.isLinkCardChannel()) {
+        if (currentIndex == 0 && preventNextIfLinkCardExisted() && mPaymentInfoHelper.isLinkCardChannel()) {
             try {
                 showHintError(getCardNumberView(), GlobalData.getStringResource(RS.string.zpw_link_card_existed));
 
@@ -1529,7 +1529,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showWarningDisablePmc(String pBankName) {
-        String mess = GlobalData.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_link) : GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_payment);
+        String mess = mPaymentInfoHelper.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_link) : GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_payment);
         String disableBankMessage = String.format(mess, pBankName);
         getAdapter().getActivity().showInfoDialog(new ZPWOnEventDialogListener() {
             @Override
@@ -1553,7 +1553,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected void showSupportCardList() {
         if (cardSupportGridViewAdapter == null)
-            cardSupportGridViewAdapter = CardSupportAdapter.createAdapterProxy(isATMChannel());
+            cardSupportGridViewAdapter = CardSupportAdapter.createAdapterProxy(isATMChannel(), mPaymentInfoHelper.getTranstype());
 
         BankListActivity.setAdapter(cardSupportGridViewAdapter);
         BankListActivity.setCloseDialogListener(getCloseDialogListener());
@@ -1750,12 +1750,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected DCardIdentifier getSelectBankCardIdentifier() {
         DCardIdentifier cardIdentifier;
-
-        if (GlobalData.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isLinkCardChannel()) {
             cardIdentifier = getBankCardFinder().getCardIdentifier();
-
             Log.d(this, "===cardIdentifier = getBankCardFinder().getCardIdentifier()");
-
             if (cardIdentifier == null) {
                 cardIdentifier = getCreditCardFinder().getCardIdentifier();
                 Log.d(this, "getCreditCardFinder().getCardIdentifier()");
@@ -1763,7 +1760,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } else {
             cardIdentifier = getCardFinder().getCardIdentifier();
         }
-
         return cardIdentifier;
     }
 

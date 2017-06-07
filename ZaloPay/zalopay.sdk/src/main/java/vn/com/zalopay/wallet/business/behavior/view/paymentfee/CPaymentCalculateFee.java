@@ -16,14 +16,14 @@ public class CPaymentCalculateFee implements ICalculateFee {
     }
 
     @Override
-    public double calculateFee() {
+    public double calculateFee(long amount) {
         if (mChannel == null) {
             return 0;
         }
         double orderFee = 0;
         if (mChannel.feerate > 0) {
             try {
-                orderFee = mChannel.feerate * GlobalData.getPaymentInfo().amount;
+                orderFee = mChannel.feerate * amount;
             } catch (Exception e) {
                 Log.e(this, e);
             }

@@ -3,9 +3,12 @@ package vn.com.zalopay.wallet.datasource.task;
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -14,24 +17,21 @@ import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class RemoveMapCardTask extends BaseTask<BaseResponse> {
     private ZPWRemoveMapCardParams mMapCardParams;
     private ZPWRemoveMapCardListener mListener;
 
     public RemoveMapCardTask(ZPWRemoveMapCardParams pMapCardParams, ZPWRemoveMapCardListener pListener) {
-        super();
+        super(null);
         mMapCardParams = pMapCardParams;
         mListener = pListener;
     }
 
     private void reloadMapCardList() {
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = mMapCardParams.userID;
-        userInfo.accessToken = mMapCardParams.accessToken;
+        userInfo.zalopay_userid = mMapCardParams.userID;
+        userInfo.accesstoken = mMapCardParams.accessToken;
 
         MapCardHelper.loadMapCardList(true, userInfo)
                 .subscribeOn(Schedulers.io())
@@ -67,7 +67,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
             onRequestFail(null);
         } else if (pResponse.returncode >= 0) {
             try {
-                SharedPreferencesManager.getInstance().removeMappedCard(mMapCardParams.userID + Constants.COMMA + mMapCardParams.mapCard.getCardKey());
+                SharedPreferencesManager.getInstance().removeMappedCard(mMapCardParams.userID + Constants.COMMA + mMapCardParams.mapCard.getCardKey(mMapCardParams.userID));
                 reloadMapCardList();//reload map card list to refresh checksum and map list on cache
             } catch (Exception e) {
                 Log.e(this, e);

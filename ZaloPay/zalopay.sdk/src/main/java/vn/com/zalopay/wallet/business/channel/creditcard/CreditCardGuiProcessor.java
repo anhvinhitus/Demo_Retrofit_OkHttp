@@ -11,9 +11,10 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardFragmentAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -28,11 +29,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     public CreditCardGuiProcessor(AdapterCreditCard pAdapterCreditCard) {
         super();
         mAdapter = new WeakReference<>(pAdapterCreditCard);
-        init();
+        init(mAdapter.get().getPaymentInfoHelper());
     }
 
-    protected void init() {
-        super.init();
+    protected void init(PaymentInfoHelper paymentInfoHelper) {
+        super.init(paymentInfoHelper);
         checkAutoMoveCardNumberFromBundle = false;
     }
 
@@ -94,7 +95,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected boolean validateCardNumberLength() {
-        return GlobalData.isLinkCardChannel() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
+        return mPaymentInfoHelper.isLinkCardChannel() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
 
     }
 

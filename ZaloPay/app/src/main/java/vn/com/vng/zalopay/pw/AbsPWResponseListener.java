@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by hieuvm on 12/1/16.
@@ -72,7 +72,7 @@ public abstract class AbsPWResponseListener extends DefaultPaymentResponseListen
     }
 
     @Override
-    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+    public void onResponseSuccess(IBuilder builder) {
         this.onCompleted();
     }
 }

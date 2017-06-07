@@ -91,7 +91,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
         paymentWrapper = getPaymentWrapper();
-        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
+        Timber.d("accesstoken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     @Override

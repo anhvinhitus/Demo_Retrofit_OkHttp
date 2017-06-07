@@ -65,7 +65,6 @@ import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.zalopay.promotion.CashBackRender;
@@ -238,13 +237,11 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void loadGatewayInfoPaymentSDK() {
-        final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloUserId = String.valueOf(mUser.zaloId);
-        userInfo.zaloPayUserId = mUser.zaloPayId;
-        userInfo.accessToken = mUser.accesstoken;
-        paymentInfo.userInfo = userInfo;
-        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
+        userInfo.zalo_userid = String.valueOf(mUser.zaloId);
+        userInfo.zalopay_userid = mUser.zaloPayId;
+        userInfo.accesstoken = mUser.accesstoken;
+        SDKApplication.loadGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
@@ -341,11 +338,10 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
             return;
         }
 
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.userInfo = new UserInfo();
-        paymentInfo.userInfo.zaloPayUserId = mUser.zaloPayId;
-        paymentInfo.userInfo.accessToken = mUser.accesstoken;
-        SDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        UserInfo userInfo = new UserInfo();
+        userInfo.zalopay_userid = mUser.zaloPayId;
+        userInfo.accesstoken = mUser.accesstoken;
+        SDKApplication.refreshGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

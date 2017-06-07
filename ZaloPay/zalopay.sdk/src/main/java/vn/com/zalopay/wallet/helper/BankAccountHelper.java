@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapBankAccountListTask;
@@ -45,9 +46,9 @@ public class BankAccountHelper {
         return false;
     }
 
-    public static void existBankAccount(boolean pReloadList, final ICheckExistBankAccountListener pListener, final String pBankCode) {
+    public static void existBankAccount(boolean pReloadList,UserInfo pUserInfo, final ICheckExistBankAccountListener pListener, final String pBankCode) {
         try {
-            loadBankAccountList(pReloadList)
+            loadBankAccountList(pReloadList, pUserInfo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleSubscriber<BaseResponse>() {
@@ -84,13 +85,13 @@ public class BankAccountHelper {
      * reload bank account list
      * @param pReload
      */
-    public static Single<BaseResponse> loadBankAccountList(boolean pReload) {
+    public static Single<BaseResponse> loadBankAccountList(boolean pReload, UserInfo pUserInfo) {
         return Single.create(subscriber -> {
             try {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
                 }
-                BaseTask getBankAccount = new MapBankAccountListTask(subscriber::onSuccess);
+                BaseTask getBankAccount = new MapBankAccountListTask(subscriber::onSuccess, pUserInfo);
                 getBankAccount.makeRequest();
 
             } catch (Exception e) {
@@ -113,7 +114,7 @@ public class BankAccountHelper {
         return false;
     }
 
-    public static void saveMapBankAccountListToCache(String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
+    public static void saveMapBankAccountListToCache(String pUserId, String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
         //update checksum
         SharedPreferencesManager.getInstance().setBankAccountCheckSum(pInfoCheckSum);
         //map card list
@@ -123,18 +124,18 @@ public class BankAccountHelper {
             for (DBaseMap mappedCard : pMapList) {
                 count++;
                 //cache card info
-                SharedPreferencesManager.getInstance().setMapCard(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
-                mappedCardID.append(mappedCard.getCardKey());
+                SharedPreferencesManager.getInstance().setMapCard(pUserId, mappedCard.getCardKey(pUserId), GsonUtils.toJsonString(mappedCard));
+                mappedCardID.append(mappedCard.getCardKey(pUserId));
                 if (count < pMapList.size()) {
                     mappedCardID.append(Constants.COMMA);
                 }
             }
             //cache map list
-            SharedPreferencesManager.getInstance().setBankAccountKeyList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCardID.toString());
+            SharedPreferencesManager.getInstance().setBankAccountKeyList(pUserId, mappedCardID.toString());
             Log.d(TAG, "saved map bank account list ids " + mappedCardID.toString());
         } else {
             //clear back account list
-            SharedPreferencesManager.getInstance().resetBankListOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            SharedPreferencesManager.getInstance().resetBankListOnCache(pUserId);
             Log.d(TAG, "cleared map bank account list");
         }
     }

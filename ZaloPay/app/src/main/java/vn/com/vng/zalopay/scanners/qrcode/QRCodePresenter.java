@@ -56,7 +56,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -76,9 +76,9 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         MoneyTransfer,
         /// Zalo Pay QR Code Type 2
         ReadOnlyMoneyTransfer,
-        /// Zalo Pay Order with only appid and zptranstoken
+        /// Zalo Pay AbstractOrder with only appid and zptranstoken
         OrderWithTranstoken,
-        /// Zalo Pay Order with full order information
+        /// Zalo Pay AbstractOrder with full order information
         OrderWithFullInfo,
         /// Zalo Pay QR Code, valid but unsupported for current build version
         ZaloPayUnknown,
@@ -568,7 +568,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     @Override
-    public void onPayResponseSuccess(ZPPaymentResult zpPaymentResult) {
+    public void onPayResponseSuccess(IBuilder builder) {
         if (getActivity() != null) {
             mView.getActivity().finish();
         }

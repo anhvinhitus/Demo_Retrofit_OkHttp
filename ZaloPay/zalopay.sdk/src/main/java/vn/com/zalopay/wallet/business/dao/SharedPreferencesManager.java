@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -17,7 +18,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class SharedPreferencesManager extends SingletonBase {
     private static final String SHARE_PREFERENCES_NAME = "ZALO_PAY_CACHED";
@@ -331,17 +332,10 @@ public class SharedPreferencesManager extends SingletonBase {
         return false;
     }
 
-    public String getMapCardByKey(String pKey) {
-        try {
-            return getString(GlobalData.getPaymentInfo().userInfo.zaloPayUserId + Constants.COMMA + pKey);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return null;
-    }
-
     public String getMapCardByKey(String pUserID, String pKey) {
-        return getString(pUserID + Constants.COMMA + pKey);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(pUserID).append(Constants.COMMA).append(pKey);
+        return getString(stringBuilder.toString());
     }
 
     public boolean setBankAccountKeyList(String pKey, String pBankAccountKeyList) {
@@ -470,9 +464,9 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + keyChannelID, pConfig);
     }
 
-    public String getPmcConfigByPmcID(int pPmcID, String pBankCode) {
+    public String getPmcConfigByPmcID(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode) {
         StringBuilder channelIDkey = new StringBuilder();
-        channelIDkey.append(MiniPmcTransType.getPmcKey(GlobalData.appID, GlobalData.getTransactionType(), pPmcID));
+        channelIDkey.append(MiniPmcTransType.getPmcKey(pAppId, pTranstype, pPmcID));
         if (!TextUtils.isEmpty(pBankCode)) {
             channelIDkey.append(Constants.UNDERLINE).append(pBankCode);
         }
@@ -519,22 +513,22 @@ public class SharedPreferencesManager extends SingletonBase {
         return getString(mContext.get().getResources().getString(R.string.sdk_conf_gwinfo_transtype_list_checksum) + pKey);
     }
 
-    public String getBankAccountChannelConfig(String pBankCode) {
+    public String getBankAccountChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
         Log.d(this, "get cache bank account channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(BuildConfig.channel_bankaccount, pBankCode);
+        return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_bankaccount, pBankCode);
     }
 
-    public String getATMChannelConfig(String pBankCode) {
+    public String getATMChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
         Log.d(this, "get cache atm channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(BuildConfig.channel_atm, pBankCode);
+        return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_atm, pBankCode);
     }
 
-    public String getCreditCardChannelConfig(String pBankCode) {
+    public String getCreditCardChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
         Log.d(this, "get cache credit card channel config, bankcode " + pBankCode);
-        return getPmcConfigByPmcID(BuildConfig.channel_credit_card, pBankCode);
+        return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_credit_card, pBankCode);
     }
 
-    public String getZaloPayChannelConfig(String pBankCode) {
-        return getPmcConfigByPmcID(BuildConfig.channel_zalopay, pBankCode);
+    public String getZaloPayChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
+        return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_zalopay, pBankCode);
     }
 }

@@ -16,7 +16,7 @@ public class CWithDrawCalculateFee implements ICalculateFee {
     }
 
     @Override
-    public double calculateFee() {
+    public double calculateFee(long amount) {
         if (mBankConfig == null)
             return 0;
 
@@ -24,7 +24,7 @@ public class CWithDrawCalculateFee implements ICalculateFee {
 
         if (mBankConfig.feerate > 0)
             try {
-                orderFee = mBankConfig.feerate * GlobalData.getPaymentInfo().amount;
+                orderFee = mBankConfig.feerate * amount;
             } catch (Exception e) {
                 Log.e(this, e);
             }

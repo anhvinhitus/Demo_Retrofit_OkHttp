@@ -4,6 +4,9 @@ import android.content.Intent;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.PlayStoreUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -13,14 +16,15 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.PlayStoreUtils;
-import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -28,10 +32,11 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 /***
  * pre check before start payment channel
  */
-public class ChannelStartProcessor extends SingletonBase {
-    private static ChannelStartProcessor _object;
+public class ChannelProxy extends SingletonBase {
+    private static ChannelProxy _object;
     private PaymentGatewayActivity mOwnerActivity;
     private PaymentChannel mChannel;
+    private PaymentInfoHelper mPaymentInfoHelper;
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -52,36 +57,48 @@ public class ChannelStartProcessor extends SingletonBase {
         }
     };
 
-    public ChannelStartProcessor(PaymentGatewayActivity pOwnerActivity) {
+    public ChannelProxy() {
         super();
-        mOwnerActivity = pOwnerActivity;
     }
 
-    public static ChannelStartProcessor getInstance(PaymentGatewayActivity pOwnerActivity) {
-
-        if (ChannelStartProcessor._object == null) {
-            ChannelStartProcessor._object = new ChannelStartProcessor(pOwnerActivity);
+    public static ChannelProxy get() {
+        if (ChannelProxy._object == null) {
+            ChannelProxy._object = new ChannelProxy();
         }
-        return ChannelStartProcessor._object;
+        return ChannelProxy._object;
     }
 
     protected PaymentGatewayActivity getActivity() {
         return mOwnerActivity;
     }
 
+    public ChannelProxy setActivity(PaymentGatewayActivity paymentGatewayActivity) {
+        mOwnerActivity = paymentGatewayActivity;
+        return this;
+    }
+
     public PaymentChannel getChannel() {
         return mChannel;
     }
 
-    public ChannelStartProcessor setChannel(PaymentChannel pChannel) {
+    public ChannelProxy setChannel(PaymentChannel pChannel) {
         mChannel = pChannel;
+        return this;
+    }
+
+    public PaymentInfoHelper getPaymentInfoHelper() {
+        return mPaymentInfoHelper;
+    }
+
+    public ChannelProxy setPaymentInfo(PaymentInfoHelper paymentInfoHelper) {
+        mPaymentInfoHelper = paymentInfoHelper;
         return this;
     }
 
     /***
      * start payment channel
      */
-    public void startGateWay() {
+    public void start() {
         Log.d(this, "user selected channel for payment", mChannel);
         // Lost connection,show alert dialog
         if (getActivity() != null && !ConnectionUtil.isOnline(getActivity())) {
@@ -99,7 +116,7 @@ public class ChannelStartProcessor extends SingletonBase {
             }
             //check bank future
             if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
-                if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+                if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
                     BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
                     if (bankConfig != null) {
                         String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
@@ -114,17 +131,16 @@ public class ChannelStartProcessor extends SingletonBase {
                 }
             }
             //withdraw
-            if (GlobalData.isWithDrawChannel()) {
+            if (mPaymentInfoHelper.isWithDrawChannel()) {
                 startChannel();
                 return;
             }
-
+            UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+            int transtype = mPaymentInfoHelper.getTranstype();
             //validate in maptable
-            Log.d(this, "table map payment", GlobalData.getUserProfileList());
-            int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
+            int iCheck = userInfo.getPermissionByChannelMap(mChannel.pmcid, transtype);
             if (iCheck == Constants.LEVELMAP_INVALID) {
                 getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-
                 return;
             } else if (iCheck == Constants.LEVELMAP_BAN && getChannel().isBankAccountMap()) {
                 confirmUpgradeLevel(GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount));
@@ -144,13 +160,12 @@ public class ChannelStartProcessor extends SingletonBase {
              */
             if (mChannel != null && mChannel.isBankAccount() && !mChannel.isBankAccountMap) {
                 //use don't have vietcombank link
-                if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB) && getActivity() != null) {
+                if (!BankAccountHelper.hasBankAccountOnCache(userInfo.zalopay_userid, CardType.PVCB) && getActivity() != null) {
                     //callback bankcode to app , app will direct user to link bank account to right that bank
                     DBankAccount dBankAccount = new DBankAccount();
                     dBankAccount.bankcode = CardType.PVCB;
-                    GlobalData.getPaymentInfo().mapBank = dBankAccount;
-
-                    GlobalData.setResultNeedToLinkAccountBeforePayment();
+                    mPaymentInfoHelper.setMapBank(dBankAccount);
+                    mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
                     getActivity().recycleActivity();
                 }
                 //use has an bank account list
@@ -160,7 +175,7 @@ public class ChannelStartProcessor extends SingletonBase {
                 return;
             }
 
-            if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
+            if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
                 BankLoader.loadBankList(mLoadBankListListener);//reload bank list
             } else {
                 startChannel();
@@ -181,7 +196,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
                                             @Override
                                             public void onOKevent() {
-                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE,"Zalo Pay","force-app-update", "bank-future");
+                                                PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                                                 getActivity().recycleActivity();
                                             }
                                         }, pMessage,
@@ -195,9 +210,9 @@ public class ChannelStartProcessor extends SingletonBase {
      */
     private boolean isBankMaintenance() {
         if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
-            GlobalData.getBankFunctionPay();
+            GlobalData.getBankFunctionPay(mPaymentInfoHelper);
         }
-        return getActivity().showBankMaintenance(GlobalData.getPaymentInfo().mapBank.bankcode);
+        return getActivity().showBankMaintenance(mPaymentInfoHelper.getMapBank().bankcode);
     }
 
     /**
@@ -206,7 +221,7 @@ public class ChannelStartProcessor extends SingletonBase {
      * @return
      */
     private boolean isBankSupport() {
-        return getActivity().showBankSupport(GlobalData.getPaymentInfo().mapBank.bankcode);
+        return getActivity().showBankSupport(mPaymentInfoHelper.getMapBank().bankcode);
     }
 
     /**
@@ -227,10 +242,10 @@ public class ChannelStartProcessor extends SingletonBase {
 
             @Override
             public void onOKevent() {
-                if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, CardType.PVCB)) {
-                    GlobalData.setResultUpLevelLinkAccountAndPayment();
+                if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserInfo().zalopay_userid, CardType.PVCB)) {
+                    mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
                 } else {
-                    GlobalData.setResultUpgrade();
+                    mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                 }
                 getActivity().notifyToMerchant();
             }

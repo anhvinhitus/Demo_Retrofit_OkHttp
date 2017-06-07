@@ -17,7 +17,7 @@ public class CBaseCalculateFee {
         return this;
     }
 
-    public double countFee() {
-        return mCalculator.calculateFee();
+    public double countFee(long amount) {
+        return mCalculator.calculateFee(amount);
     }
 }

@@ -1,11 +1,10 @@
 package vn.com.zalopay.wallet.listener;
 
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 
 public interface ZPPaymentListener {
 
-    void onComplete(ZPPaymentResult pPaymentResult);
+    void onComplete();
 
     void onError(CError pError);
 

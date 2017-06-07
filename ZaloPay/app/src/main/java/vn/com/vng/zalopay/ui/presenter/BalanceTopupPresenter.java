@@ -17,9 +17,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -32,8 +30,8 @@ import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 10/05/2016.
@@ -168,7 +166,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        public void onResponseSuccess(IBuilder builder) {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }

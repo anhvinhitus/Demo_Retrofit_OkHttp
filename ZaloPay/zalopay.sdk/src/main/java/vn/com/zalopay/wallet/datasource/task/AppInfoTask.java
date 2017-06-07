@@ -32,7 +32,7 @@ public class AppInfoTask extends BaseTask<AppInfoResponse> {
     private int[] transtypes;
 
     public AppInfoTask(ILoadAppInfoListener pListener, long pAppId, String pUserId, String pAccessToken, int[] pTranstypes) {
-        super();
+        super(null);
         mLoadAppInfoListener = pListener;
         mAppId = pAppId;
         mUserId = pUserId;

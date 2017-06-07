@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.UserInputException;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -32,8 +31,8 @@ import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -181,7 +180,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        public void onResponseSuccess(IBuilder builder) {
             if (mView == null) {
                 return;
             }

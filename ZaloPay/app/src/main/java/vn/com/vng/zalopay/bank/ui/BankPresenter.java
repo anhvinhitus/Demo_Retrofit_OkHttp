@@ -35,14 +35,13 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -337,11 +336,11 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (zpPaymentResult == null) {
+        public void onResponseSuccess(IBuilder builder) {
+            if (builder == null) {
                 return;
             }
-            onResponseSuccessFromSDK(zpPaymentResult);
+            onResponseSuccessFromSDK(builder);
         }
 
         @Override

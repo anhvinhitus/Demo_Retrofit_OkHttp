@@ -2,22 +2,22 @@ package vn.com.zalopay.wallet.datasource.task;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadPlatformInfoImpl;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 
 /***
  * platform api and update platform's data on cache
@@ -25,6 +25,7 @@ import vn.com.zalopay.utility.SdkUtils;
 public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
     private static final String TAG = PlatformInfoTask.class.getCanonicalName();
     private static PlatformInfoTask _object;
+    protected UserInfo mUserInfo;
     private ZPWGetGatewayInfoListener mGetGatewayInfoListener;
     private boolean mForceReload;//force sdk re download everything.
     private boolean mNoDownloadResource;//app reoad platfrom info, this will be set to true to prevent download resource file again.
@@ -34,11 +35,12 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
      * @param pListener
      * @param pForceReload
      */
-    public PlatformInfoTask(ZPWGetGatewayInfoListener pListener, boolean pForceReload) {
-        super();
+    public PlatformInfoTask(ZPWGetGatewayInfoListener pListener, boolean pForceReload, UserInfo pUserInfo) {
+        super(pUserInfo);
         this.mGetGatewayInfoListener = pListener;
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = false;
+        this.mUserInfo = pUserInfo;
     }
 
     /***
@@ -46,11 +48,12 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
      * @param pForceReload
      * @param pNoDownloadResource
      */
-    public PlatformInfoTask(ZPWGetGatewayInfoListener pListener, boolean pForceReload, boolean pNoDownloadResource) {
-        super();
+    public PlatformInfoTask(ZPWGetGatewayInfoListener pListener, boolean pForceReload, boolean pNoDownloadResource, UserInfo pUserInfo) {
+        super(pUserInfo);
         this.mGetGatewayInfoListener = pListener;
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = pNoDownloadResource;
+        this.mUserInfo = pUserInfo;
     }
 
     /***
@@ -60,9 +63,9 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
      * @param pIsForceReload
      * @return
      */
-    public synchronized static PlatformInfoTask getInstance(ZPWGetGatewayInfoListener pListener, boolean pIsForceReload) {
+    public synchronized static PlatformInfoTask getInstance(ZPWGetGatewayInfoListener pListener, boolean pIsForceReload, UserInfo userInfo) {
         if (PlatformInfoTask._object == null) {
-            PlatformInfoTask._object = new PlatformInfoTask(pListener, pIsForceReload);
+            PlatformInfoTask._object = new PlatformInfoTask(pListener, pIsForceReload, userInfo);
         }
         return PlatformInfoTask._object;
     }
@@ -90,7 +93,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             SharedPreferencesManager.getInstance().setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
 
             SharedPreferencesManager.getInstance().setChecksumSDK(pResponse.platforminfochecksum);
-            SharedPreferencesManager.getInstance().setCurrentUserID(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            SharedPreferencesManager.getInstance().setCurrentUserID(mUserInfo.zalopay_userid);
 
             //banner list for merchant
             if (pResponse.bannerresources != null) {
@@ -102,7 +105,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
         }
         //need to update card info again on cache
         if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
-            MapCardHelper.saveMapCardListToCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, pResponse.cardinfochecksum, pResponse.cardinfos);
+            MapCardHelper.saveMapCardListToCache(mUserInfo.zalopay_userid, pResponse.cardinfochecksum, pResponse.cardinfos);
         }
         //update bank account info on cache
         // Test in case already linked account Vietcombank
@@ -113,7 +116,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
 //        pResponse.bankaccounts.add(dBankAccount);
         // ===============================================
         if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {
-            BankAccountHelper.saveMapBankAccountListToCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
+            BankAccountHelper.saveMapBankAccountListToCache(mUserInfo.zalopay_userid, pResponse.bankaccountchecksum, pResponse.bankaccounts);
         }
 
         if (mNoDownloadResource) {
@@ -240,7 +243,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
             String resrcVer = SharedPreferencesManager.getInstance().getResourceVersion();
             //is this new user ?
-            boolean isNewUser = GlobalData.isNewUser();
+            boolean isNewUser = GlobalData.isNewUser(mUserInfo.zalopay_userid);
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
             //mForceReload :: refresh gateway info from app
             if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV)) || !BGatewayInfo.isValidConfig() || isNewUser || mForceReload) {
@@ -252,7 +255,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             }
             String cardInfoCheckSum = SharedPreferencesManager.getInstance().getCardInfoCheckSum();
             String bankAccountCheckSum = SharedPreferencesManager.getInstance().getBankAccountCheckSum();
-            DataParameter.prepareGetPlatformInfoParams(checksum, resrcVer, cardInfoCheckSum, bankAccountCheckSum, getDataParams());
+            DataParameter.prepareGetPlatformInfoParams(mUserInfo, checksum, resrcVer, cardInfoCheckSum, bankAccountCheckSum, getDataParams());
             return true;
         } catch (Exception ex) {
             Log.e(this, ex);

@@ -5,7 +5,6 @@ import java.util.Date;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -18,9 +17,9 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     ZPApptransidLog mZPApptransidLog;
 
-    public ZPAnalyticsTrackerWrapper(String pAppTransID, @TransactionType int transactionType) {
+    public ZPAnalyticsTrackerWrapper(long pAppId, String pAppTransID, @TransactionType int transactionType) {
         super();
-        initialize(GlobalData.appID, pAppTransID, transactionType);
+        initialize(pAppId, pAppTransID, transactionType);
     }
 
     protected void initialize(long pAppId, String pAppTransId, int pTransType) {

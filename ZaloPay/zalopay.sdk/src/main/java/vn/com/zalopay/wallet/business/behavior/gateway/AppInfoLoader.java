@@ -51,10 +51,10 @@ public class AppInfoLoader extends SingletonBase {
         return SharedPreferencesManager.getInstance().getPmcConfigList(sKey);
     }
 
-    public static DAppInfo getAppInfo() {
+    public static DAppInfo getAppInfo(long appId) {
         if (appInfo == null) {
             try {
-                appInfo = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(GlobalData.appID)), DAppInfo.class);
+                appInfo = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appId)), DAppInfo.class);
             } catch (Exception e) {
                 Log.e(TAG, e);
             }
@@ -121,7 +121,7 @@ public class AppInfoLoader extends SingletonBase {
                     TransactionType.LINK_CARD,
                     TransactionType.MONEY_TRANSFER,
                     TransactionType.WITHDRAW}
-                    : new int[]{GlobalData.getTransactionType()};
+                    : new int[]{transactionType};
             loadAppInfo(transtypes);
         }
     }

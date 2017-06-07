@@ -7,13 +7,14 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterCreditCard extends AdapterBase {
-    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType);
+    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = SCREEN_CC;
-        mPageCode = (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_CC;
+        mPageCode = (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_CC;
         GlobalData.cardChannelType = CardChannel.CREDIT;
     }
 
@@ -26,11 +27,11 @@ public class AdapterCreditCard extends AdapterBase {
     @Override
     public void init() throws Exception {
         this.mGuiProcessor = new CreditCardGuiProcessor(this);
-        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
+        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
         }
 
-        if (GlobalData.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isLinkCardChannel()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name));
@@ -58,9 +59,7 @@ public class AdapterCreditCard extends AdapterBase {
     public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
         try {
             super.moveToConfirmScreen(pMiniPmcTransType);
-
             showConfrimScreenForCardChannel(pMiniPmcTransType);
-
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -69,17 +68,15 @@ public class AdapterCreditCard extends AdapterBase {
     @Override
     public void showTransactionFailView(String pMessage) {
         super.showTransactionFailView(pMessage);
-
         showProgressBar(false, null);
     }
 
     @Override
     public void onProcessPhrase() {
-        if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
+        if (!mPaymentInfoHelper.isMapCardChannel() && !mPaymentInfoHelper.isMapBankAccountChannel()) {
             getGuiProcessor().populateCard();
             tranferPaymentCardToMapCard();
         }
-
         startSubmitTransaction();
     }
 

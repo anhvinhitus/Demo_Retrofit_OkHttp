@@ -7,11 +7,8 @@ import android.support.v4.app.Fragment;
 import org.json.JSONObject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.ZPTransaction;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
@@ -19,7 +16,7 @@ import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 2/10/17.
@@ -33,7 +30,7 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
 
     public abstract void onPayResponseError(PaymentError paymentError);
 
-    public abstract void onPayResponseSuccess(ZPPaymentResult zpPaymentResult);
+    public abstract void onPayResponseSuccess(IBuilder builder);
 
     public abstract void onPayAppError(String msg);
 
@@ -99,9 +96,9 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            super.onResponseSuccess(zpPaymentResult);
-            onPayResponseSuccess(zpPaymentResult);
+        public void onResponseSuccess(IBuilder builder) {
+            super.onResponseSuccess(builder);
+            onPayResponseSuccess(builder);
         }
 
         @Override

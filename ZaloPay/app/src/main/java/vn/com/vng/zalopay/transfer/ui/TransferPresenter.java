@@ -53,8 +53,9 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.TrackApptransidHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 
 /**
@@ -268,13 +269,13 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mTransferObject.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
     }
 
-    private void updateTransferObject(ZPPaymentResult paymentResult) {
+    private void updateTransferObject(IBuilder builder) {
         long amount = 0;
         String message = null;
 
-        if (paymentResult != null && paymentResult.paymentInfo != null) {
-            amount = paymentResult.paymentInfo.amount;
-            message = paymentResult.paymentInfo.description;
+        if (builder != null) {
+            amount = builder.getOrder().amount;
+            message = builder.getOrder().description;
         }
 
         Timber.d("Complete transfer zalo : amount [%s] message [%s]", amount, message);
@@ -603,14 +604,14 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult paymentResult) {
-            super.onResponseSuccess(paymentResult);
+        public void onResponseSuccess(IBuilder builder) {
+            super.onResponseSuccess(builder);
 
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
 
-            updateTransferObject(paymentResult);
+            updateTransferObject(builder);
 
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
                 handleCompletedTransferZalo(mView.getActivity());

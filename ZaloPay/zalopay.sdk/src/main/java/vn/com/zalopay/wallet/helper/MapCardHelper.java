@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import java.util.List;
 
 import rx.Single;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -19,9 +20,10 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class MapCardHelper {
     private static final String TAG = MapCardHelper.class.getCanonicalName();
@@ -79,8 +81,8 @@ public class MapCardHelper {
             int count = 0;
             for (DBaseMap mappedCard : pMapCardList) {
                 count++;
-                SharedPreferencesManager.getInstance().setMapCard(pUserId, mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
-                mappedCardID.append(mappedCard.getCardKey());
+                SharedPreferencesManager.getInstance().setMapCard(pUserId, mappedCard.getCardKey(pUserId), GsonUtils.toJsonString(mappedCard));
+                mappedCardID.append(mappedCard.getCardKey(pUserId));
                 if (count < pMapCardList.size()) {
                     mappedCardID.append(Constants.COMMA);
                 }
@@ -95,7 +97,7 @@ public class MapCardHelper {
         }
     }
 
-    public static void notifyNewMapCardToApp(DMappedCard saveCardInfo) {
+    public static void notifyNewMapCardToApp(PaymentInfoHelper paymentInfoHelper, DMappedCard saveCardInfo) {
         DMapCardResult mapCardResult = new DMapCardResult();
         mapCardResult.setLast4Number(saveCardInfo.last4cardno);
         String bankName = null;
@@ -123,6 +125,6 @@ public class MapCardHelper {
             bankName = GlobalData.getStringResource(RS.string.zpw_save_credit_card_default);
         }
         mapCardResult.setBankName(bankName);
-        GlobalData.getPaymentResult().mapCardResult = mapCardResult;
+        paymentInfoHelper.setMapCardResult(mapCardResult);
     }
 }

@@ -27,7 +27,7 @@ public class DownloadResourceTask extends BaseTask<ResponseBody> {
     private ReentrantLock mLock;
 
     public DownloadResourceTask(String pResourceZipFileURL, String pResrcVer) {
-        super();
+        super(null);
         this.mResourceZipFileURL = pResourceZipFileURL;
         this.mResrcVer = pResrcVer;
         mLock = new ReentrantLock();

@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 
 public class CardSelector {
@@ -76,12 +77,11 @@ public class CardSelector {
         return CardSelector._object;
     }
 
-    public CardSelector detectCardType() {
+    public CardSelector detectCardType(@TransactionType int pTranstype) {
         String bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
 
-        if (GlobalData.isLinkCardChannel()) {
+        if (pTranstype == TransactionType.LINK_CARD) {
             bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
-
             if (TextUtils.isEmpty(bankCode)) {
                 bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();
             }
@@ -99,7 +99,7 @@ public class CardSelector {
 
     public CardSelector selectCard(String pCardNumber) {
         if (!TextUtils.isEmpty(pCardNumber) && pCardNumber.length() >= 1) {
-            CardSelector selector = detectCardType();
+            CardSelector selector = detectCardType(GlobalData.mTranstype);
             return selector;
         }
         Log.d("selectCard=====", "Return DEFAULT ");

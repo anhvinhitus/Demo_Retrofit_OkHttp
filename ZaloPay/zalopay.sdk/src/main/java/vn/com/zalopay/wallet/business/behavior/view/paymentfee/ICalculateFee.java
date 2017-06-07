@@ -6,5 +6,5 @@ package vn.com.zalopay.wallet.business.behavior.view.paymentfee;
  * easy maintenance,easy edit later.
  */
 public interface ICalculateFee {
-    double calculateFee();
+    double calculateFee(long amount);
 }

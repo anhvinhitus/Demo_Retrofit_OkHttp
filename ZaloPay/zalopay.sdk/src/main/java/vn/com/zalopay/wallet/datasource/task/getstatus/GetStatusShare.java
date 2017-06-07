@@ -4,7 +4,9 @@ package vn.com.zalopay.wallet.datasource.task.getstatus;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 
 public class GetStatusShare extends SingletonBase implements IGetPaymentStatus {
@@ -14,7 +16,7 @@ public class GetStatusShare extends SingletonBase implements IGetPaymentStatus {
     public GetStatusShare() {
         super();
 
-        if (GlobalData.isLinkCardChannel()) {
+        if (GlobalData.mTranstype == TransactionType.LINK_CARD) {
             mIGetPaymentStatus = new GetMapCardStatus();
         } else {
             mIGetPaymentStatus = new GetPaymentStatus();
@@ -37,9 +39,9 @@ public class GetStatusShare extends SingletonBase implements IGetPaymentStatus {
     }
 
     @Override
-    public void onPrepareParamsGetStatus(Map<String, String> pParamsRequest, String pTransactionId) throws Exception {
+    public void onPrepareParamsGetStatus(String pAppId, Map<String, String> pParamsRequest, UserInfo pUserInfo, String pTransactionId) throws Exception {
         if (mIGetPaymentStatus != null) {
-            mIGetPaymentStatus.onPrepareParamsGetStatus(pParamsRequest, pTransactionId);
+            mIGetPaymentStatus.onPrepareParamsGetStatus(pAppId, pParamsRequest, pUserInfo, pTransactionId);
         }
     }
 }

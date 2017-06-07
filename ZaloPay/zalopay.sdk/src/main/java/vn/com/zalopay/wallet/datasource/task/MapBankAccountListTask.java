@@ -1,25 +1,26 @@
 package vn.com.zalopay.wallet.datasource.task;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadMapBankAccountListImpl;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.IGetBankAccountList;
-import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * get map bank account list
  */
 public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
     private IGetBankAccountList mGetBankAccountCallback;
+    private UserInfo mUserInfo;
 
-    public MapBankAccountListTask(IGetBankAccountList pGetCardInfoCallBack) {
-        super();
+    public MapBankAccountListTask(IGetBankAccountList pGetCardInfoCallBack, UserInfo pUserInfo) {
+        super(pUserInfo);
         this.mGetBankAccountCallback = pGetCardInfoCallBack;
+        this.mUserInfo = pUserInfo;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
         }
         if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {
             try {
-                BankAccountHelper.saveMapBankAccountListToCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
+                BankAccountHelper.saveMapBankAccountListToCache(mUserInfo.zalopay_userid,pResponse.bankaccountchecksum, pResponse.bankaccounts);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -78,7 +79,7 @@ public class MapBankAccountListTask extends BaseTask<BankAccountListResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareGetBankAccountListParams(getDataParams());
+            DataParameter.prepareGetBankAccountListParams(mUserInfo, getDataParams());
             return true;
         } catch (Exception e) {
             onRequestFail(e);

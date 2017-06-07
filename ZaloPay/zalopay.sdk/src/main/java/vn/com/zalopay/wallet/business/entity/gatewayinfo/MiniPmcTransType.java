@@ -145,8 +145,8 @@ public class MiniPmcTransType implements Parcelable {
     /***
      * calculate fee
      */
-    public void calculateFee() {
-        this.totalfee = CBaseCalculateFee.getInstance().setCalculator(new CPaymentCalculateFee(this)).countFee();
+    public void calculateFee(long amount) {
+        this.totalfee = CBaseCalculateFee.getInstance().setCalculator(new CPaymentCalculateFee(this)).countFee(amount);
     }
 
     public boolean hasFee() {

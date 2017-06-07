@@ -2,6 +2,8 @@ package vn.com.zalopay.wallet.controller;
 
 import android.app.Application;
 
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -9,9 +11,9 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
@@ -19,32 +21,14 @@ import vn.com.zalopay.wallet.datasource.task.RemoveMapCardTask;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
-import vn.com.zalopay.wallet.di.component.PaymentSessionComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
-import vn.com.zalopay.wallet.di.module.PaymentSessionModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 
 public class SDKApplication extends Application {
     protected static ApplicationComponent mApplicationComponent;
-    protected static PaymentSessionComponent mPaymentSessionComponent;
-
-    public static PaymentSessionComponent createPaymentInfoComponent(ZPWPaymentInfo pPaymentInfo) {
-        mPaymentSessionComponent = getApplicationComponent().plus(new PaymentSessionModule(pPaymentInfo));
-        return mPaymentSessionComponent;
-    }
-
-    public static PaymentSessionComponent getPaymentSessionComponent() {
-        return mPaymentSessionComponent;
-    }
-
-    public static void releasePaymentSession() {
-        mPaymentSessionComponent = null;
-    }
 
     public static ApplicationComponent getApplicationComponent() {
         return mApplicationComponent;
@@ -66,7 +50,6 @@ public class SDKApplication extends Application {
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
-        SDKReportTask.makeReportError(null, e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
         //System.exit(1); // kill off the crashed app
     }
@@ -112,11 +95,10 @@ public class SDKApplication extends Application {
 
     /***
      * app call this after user login to load everything belong to sdk.
-     *
-     * @param pPaymentInfo
+     * @param pUserInfo
      * @param pGatewayInfoCallback
      */
-    public synchronized static void loadGatewayInfo(ZPWPaymentInfo pPaymentInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    public synchronized static void loadGatewayInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
             //prevent load gateway if user in sdk
             if (GlobalData.isUserInSDK() && pGatewayInfoCallback != null) {
@@ -124,12 +106,11 @@ public class SDKApplication extends Application {
                 Log.d("loadGatewayInfo", "===loadGatewayInfo===user in sdk,delay load gateway info now====");
                 return;
             }
-            GlobalData.initApplication(pPaymentInfo);
             checkClearCacheIfHasNewVersion();
-            loadPlatformInfo(pGatewayInfoCallback);
+            loadPlatformInfo(pUserInfo, pGatewayInfoCallback);
             BankLoader.loadBankList(null);
-            loadAppWalletInfo(pPaymentInfo.userInfo.zaloPayUserId, pPaymentInfo.userInfo.accessToken);
-            loadAppWithDrawInfo(pPaymentInfo.userInfo.zaloPayUserId, pPaymentInfo.userInfo.accessToken);
+            loadAppWalletInfo(pUserInfo);
+            loadAppWithDrawInfo(pUserInfo);
         } catch (Exception e) {
             if (pGatewayInfoCallback != null)
                 pGatewayInfoCallback.onError(null);
@@ -138,15 +119,13 @@ public class SDKApplication extends Application {
 
     /***
      * app need to call this to update user's info on cache(channels,map cards) after user reset PIN
-     *
-     * @param pPaymentInfo
+     * @param pUserInfo
      * @param pGatewayInfoCallback
      */
-    public synchronized static void refreshGatewayInfo(ZPWPaymentInfo pPaymentInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    public synchronized static void refreshGatewayInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
-            Log.d("refreshGatewayInfo", "pPaymentInfo", pPaymentInfo);
-            GlobalData.initApplicationUserInfo(pPaymentInfo);
-            refreshGatewayInfo(pGatewayInfoCallback);
+            Log.d("refreshGatewayInfo", "pUserInfo", pUserInfo);
+            BGatewayInfo.getInstance(pUserInfo).refreshPlatformInfo(pGatewayInfoCallback);
         } catch (Exception e) {
             if (pGatewayInfoCallback != null) {
                 pGatewayInfoCallback.onError(null);
@@ -154,9 +133,9 @@ public class SDKApplication extends Application {
         }
     }
 
-    private static void loadPlatformInfo(ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    private static void loadPlatformInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
-            BGatewayInfo.getInstance().execute(pGatewayInfoCallback);
+            BGatewayInfo.getInstance(pUserInfo).execute(pGatewayInfoCallback);
         } catch (Exception e) {
             if (pGatewayInfoCallback != null)
                 pGatewayInfoCallback.onError(e != null ? e.getMessage() : null);
@@ -165,17 +144,12 @@ public class SDKApplication extends Application {
         }
     }
 
-    private static void refreshGatewayInfo(ZPWGatewayInfoCallback pGatewayInfoCallback) {
-        BGatewayInfo.getInstance().refreshPlatformInfo(pGatewayInfoCallback);
-    }
-
     /***
-     * load app wallet info
-     * @param pZaloPayUserId
-     * @param pAccessToken
+     *
+     * @param pUserInfo
      */
-    private static void loadAppWalletInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, TransactionType.MONEY_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+    private static void loadAppWalletInfo(UserInfo pUserInfo) {
+        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, TransactionType.MONEY_TRANSFER, pUserInfo.zalopay_userid, pUserInfo.accesstoken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWalletInfo", "onProcessing");
@@ -193,14 +167,11 @@ public class SDKApplication extends Application {
         }).execute();
     }
 
-    /***
-     * load app withdraw info
-     *
-     * @param pZaloPayUserId
-     * @param pAccessToken
+    /**
+     * @param pUserInfo
      */
-    private static void loadAppWithDrawInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, TransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+    private static void loadAppWithDrawInfo(UserInfo pUserInfo) {
+        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, TransactionType.WITHDRAW, pUserInfo.zalopay_userid, pUserInfo.accesstoken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWithDrawInfo", "onProcessing");

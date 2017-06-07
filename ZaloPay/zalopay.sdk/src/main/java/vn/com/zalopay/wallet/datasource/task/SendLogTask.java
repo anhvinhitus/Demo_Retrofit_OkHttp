@@ -1,25 +1,27 @@
 package vn.com.zalopay.wallet.datasource.task;
 
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SendLogImpl;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class SendLogTask extends BaseTask<BaseResponse> {
+    protected UserInfo mUserInfo;
     private String mTransID;
     private int mPmcID;
     private long mCaptchaBeginTime, mCaptchaEndTime;
     private long mOtpBeginTime, mOtpEndTime;
 
-    public SendLogTask(int pPmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) {
-        super();
-
+    public SendLogTask(UserInfo pUserInfo, int pPmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) {
+        super(pUserInfo);
         mTransID = pTransID;
         mPmcID = pPmcID;
         mCaptchaBeginTime = pCaptchaBeginTime;
         mCaptchaEndTime = pCaptchaEndTime;
         mOtpBeginTime = pOtpBeginTime;
         mOtpEndTime = pOtpEndTime;
+        mUserInfo = pUserInfo;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class SendLogTask extends BaseTask<BaseResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareSendLog(mDataParams, mPmcID, mTransID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
+            DataParameter.prepareSendLog(mDataParams, mUserInfo.zalopay_userid, mUserInfo.accesstoken, mPmcID, mTransID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
             return true;
         } catch (Exception e) {
             onRequestFail(e);

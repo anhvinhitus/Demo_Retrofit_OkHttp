@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.transaction.behavior.authenpayer;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IAuthenPayer;
 import vn.com.zalopay.wallet.datasource.task.AuthenMapCardTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;

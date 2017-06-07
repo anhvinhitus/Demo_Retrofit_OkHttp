@@ -42,7 +42,7 @@ public class CShareDataWrapper {
         Timber.d("Call get support banks from PaymentSDK [%s]", subscriber);
         Subscription subscription = mCardSupportSubject.subscribe(subscriber);
 
-        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(new IGetCardSupportListListener() {
+        CShareData.getInstance().getCardSupportList(new IGetCardSupportListListener() {
             @Override
             public void onComplete(ArrayList<ZPCard> cardSupportArrayList) {
                 Timber.d("Get support banks from PaymentSDK completed [%s]", cardSupportArrayList);
@@ -97,7 +97,7 @@ public class CShareDataWrapper {
     }
 
     public static String detectCardType(UserInfo userInfo, String first6CardNo) {
-        return CShareData.getInstance().setUserInfo(userInfo).detectCardType(first6CardNo);
+        return CShareData.getInstance().detectCardType(first6CardNo);
     }
 
     public static void getWithDrawBankList(IGetWithDrawBankList listener) {
@@ -163,11 +163,10 @@ public class CShareDataWrapper {
         }
 
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = user.zaloPayId;
-        userInfo.accessToken = user.accesstoken;
+        userInfo.zalopay_userid = user.zaloPayId;
+        userInfo.accesstoken = user.accesstoken;
 
-        CShareData.getInstance().setUserInfo(userInfo)
-                .notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
+        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
                         new IReloadMapInfoListener<DBankAccount>() {
                             @Override
                             public void onComplete(List<DBankAccount> pMapList) {
@@ -181,7 +180,7 @@ public class CShareDataWrapper {
                                         notificationType, pErrorMess);
                                 EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
                             }
-                        });
+                        }, userInfo);
     }
 
     public static void notifyTransactionFinish(Object... pObject) {

@@ -14,6 +14,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -22,10 +24,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.StringUtil;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 
@@ -34,18 +34,20 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
     protected Context mContext;
     protected List<PaymentChannel> mChannelList;
     protected int mLayoutId;
+    protected PaymentInfoHelper mPaymentInfoHelper;
 
-    public ChannelAdapter(Context pContext, List<PaymentChannel> pChannelList, int pLayoutId) {
+    public ChannelAdapter(Context pContext, List<PaymentChannel> pChannelList, int pLayoutId, PaymentInfoHelper paymentInfoHelper) {
         mContext = pContext;
         mChannelList = pChannelList;
         mLayoutId = pLayoutId;
+        mPaymentInfoHelper = paymentInfoHelper;
     }
 
     protected String getChannelSubTitle(PaymentChannel pChannel) {
         String mess = null;
         if (!pChannel.isAllowByAmount()) {
             mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount);
-            if ((GlobalData.getOrderAmount() + pChannel.totalfee) < pChannel.minvalue) {
+            if ((mPaymentInfoHelper.getAmount() + pChannel.totalfee) < pChannel.minvalue) {
                 mess = GlobalData.getStringResource(RS.string.zpw_string_channel_not_allow_by_amount_small);
             }
         } else if (pChannel.isMaintenance() && pChannel.isMapCardChannel()) {
@@ -111,20 +113,17 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
 
             //show warning if user need to upgrade
             //zalopay channel
-            if ((channel.isZaloPayChannel() && GlobalData.getLevel() < BuildConfig.level_allow_use_zalopay) ||
-                    ((channel.isBankAccount() && GlobalData.getLevel() < BuildConfig.level_allow_bankaccount))) {
+            int user_level = mPaymentInfoHelper.getLevel();
+            if ((channel.isZaloPayChannel() && user_level < BuildConfig.level_allow_use_zalopay) ||
+                    ((channel.isBankAccount() && user_level < BuildConfig.level_allow_bankaccount))) {
                 //check map table for allow
-                int iCheck = GlobalData.checkPermissionByChannelMap(channel.pmcid);
-
+                int iCheck = mPaymentInfoHelper.getUserInfo().getPermissionByChannelMap(channel.pmcid, mPaymentInfoHelper.getTranstype());
                 //error map table from server, show dialog alert and quit sdk
                 if (iCheck == Constants.LEVELMAP_INVALID) {
                     ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).showErrorDialog(() -> {
-                        GlobalData.setResultInvalidInput();
+                        mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
                         ((PaymentGatewayActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
                     }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-
-                    SDKReportTask.makeReportError(SDKReportTask.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
-
                 }
                 //not allow zalopay
                 else if (iCheck == Constants.LEVELMAP_BAN) {
@@ -133,7 +132,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
                 }
             }
             //map card channel
-            if (channel.isMapCardChannel() && GlobalData.getLevel() < BuildConfig.level_allow_cardmap) {
+            if (channel.isMapCardChannel() && user_level < BuildConfig.level_allow_cardmap) {
                 feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level);
                 holder.nextIconImageView.setVisibility(View.GONE);
             }

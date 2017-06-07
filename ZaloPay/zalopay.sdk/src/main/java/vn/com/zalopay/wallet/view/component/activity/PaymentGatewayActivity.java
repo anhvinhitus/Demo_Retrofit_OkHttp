@@ -19,23 +19,24 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
+import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
@@ -117,36 +118,45 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         setContentView(RS.getLayout(RS.layout.screen__gateway));
         mChannelRecyclerView = (RecyclerView) findViewById(R.id.channel_recycler_view);
         initializeChannelRecycleView();
+        setListener();
+    }
+
+    @Override
+    public void paymentInfoReady() {
         showAmount();
         showDisplayInfo();
-        setListener();
         setToolBarTitle();
         setTitle();
+        initializeChannelAdapter();
         //validate user level
         if (!checkUserLevelValid()) {
             confirmUpgradeLevel();
             return;
         }
-        checkAppInfo(); //check app info whether this transaction is allowed or not
+        long appId = mPaymentInfoHelper.getAppId();
+        @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        checkAppInfo(appId, transtype, userInfo.zalopay_userid, userInfo.accesstoken); //check app info whether this transaction is allowed or not
     }
 
     protected void initializeChannelRecycleView() {
-        baseChannelInjector = BaseChannelInjector.createChannelInjector();
-        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mChannelRecyclerView.setHasFixedSize(true);
         mChannelRecyclerView.setLayoutManager(mLayoutManager);
         mChannelRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mChannelRecyclerView.setAdapter(mChannelAdapter);
         mChannelRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mChannelRecyclerView));
+    }
+
+    protected void initializeChannelAdapter() {
+        baseChannelInjector = BaseChannelInjector.createChannelInjector(mPaymentInfoHelper);
+        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview, mPaymentInfoHelper);
+        mChannelRecyclerView.setAdapter(mChannelAdapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
         if (mMoreClick) {   //prevent so many click on channel.
             mMoreClick = false;
-            GlobalData.getTransactionType();//reset transtype and bank func type
-            GlobalData.selectBankFunctionByTransactionType();
             onSelectedChannel(baseChannelInjector.getChannelAtPosition(pMessage.position));
             new Handler().postDelayed(() -> mMoreClick = true, 1000);
         }
@@ -214,8 +224,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     private void showChannelListView() {
         //force to some channel from client
-        if (GlobalData.isForceChannel()) {
-            baseChannelInjector.filterForceChannel(GlobalData.getPaymentInfo().forceChannelIds);
+        int[] forceChannels = mPaymentInfoHelper.getForceChannels();
+        if (forceChannels != null && forceChannels.length >= 1) {
+            baseChannelInjector.filterForceChannel(forceChannels);
         }
 
         // don't have any channel now
@@ -227,7 +238,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
                  * this is withdraw link card and no mapped card.
                  * need remind user go to link card to can withdraw
                  */
-                if (GlobalData.isWithDrawChannel()) {
+                if (mPaymentInfoHelper.isWithDrawChannel()) {
                     confirmLinkCard();
                     return;
                 }
@@ -271,7 +282,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private synchronized void showPaymentChannel() {
         showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         //show header
-        if (GlobalData.isTopupChannel() || GlobalData.isPayChannel() || GlobalData.isWithDrawChannel()) {
+        if (mPaymentInfoHelper.isTopupChannel() || mPaymentInfoHelper.isPayChannel() || mPaymentInfoHelper.isWithDrawChannel()) {
             Log.d(this, "show app info");
             showApplicationInfo();
         }
@@ -346,7 +357,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
         finish();
         if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+            GlobalData.getPaymentListener().onComplete();
         }
     }
 
@@ -358,10 +369,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      */
     public String getAmountAlert() {
         String strAlert = "";
-        if (baseChannelInjector.hasMinValueChannel() && GlobalData.getOrderAmount() < baseChannelInjector.getMinValueChannel()) {
+        long amount = mPaymentInfoHelper.getAmount();
+        if (baseChannelInjector.hasMinValueChannel() && amount < baseChannelInjector.getMinValueChannel()) {
             strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_min_amount_input),
                     StringUtil.formatVnCurrence(String.valueOf(baseChannelInjector.getMinValueChannel())));
-        } else if (baseChannelInjector.hasMaxValueChannel() && GlobalData.getOrderAmount() > baseChannelInjector.getMaxValueChannel()) {
+        } else if (baseChannelInjector.hasMaxValueChannel() && amount > baseChannelInjector.getMaxValueChannel()) {
             strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_max_amount_input),
                     StringUtil.formatVnCurrence(String.valueOf(baseChannelInjector.getMaxValueChannel())));
         }
@@ -381,7 +393,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
             @Override
             public void onOKevent() {
-                GlobalData.setResultUpgrade();
+                mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                 recycleActivity();
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update));
@@ -396,16 +408,16 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
                              @Override
                              public void onCancelEvent() {
                                  if (GlobalData.getPaymentListener() != null) {
-                                     GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+                                     GlobalData.getPaymentListener().onComplete();
                                  }
                                  finish();
                              }
 
                              @Override
                              public void onOKevent() {
-                                 GlobalData.setResultNeedToLinkCard();
+                                 mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINKCARD);
                                  if (GlobalData.getPaymentListener() != null) {
-                                     GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+                                     GlobalData.getPaymentListener().onComplete();
                                  }
                                  finish();
                              }
@@ -414,7 +426,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     public void notifyToMerchant() {
-        if (ErrorManager.needToTerminateTransaction())
+        if (ErrorManager.needToTerminateTransaction(mPaymentInfoHelper.getStatus()))
             recycleActivity();
         else
             exitIfUniqueChannel();
@@ -427,31 +439,26 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     private void goToChannel(PaymentChannel pChannel) {
-        ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
-        if (paymentInfo == null || paymentInfo.userInfo == null || !paymentInfo.userInfo.isUserInfoValid() || !paymentInfo.userInfo.isUserProfileValid()) {
-            //alert error
-            SDKReportTask.makeReportError(SDKReportTask.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
-            onReturnCancel(GlobalData.getStringResource(RS.string.zpw_error_paymentinfo));
-            return;
-        }
         //map card channel clicked
         if (!TextUtils.isEmpty(pChannel.f6no) && !TextUtils.isEmpty(pChannel.l4no)) {
-            if (pChannel.isBankAccountMap()) {
-                paymentInfo.mapBank = new DBankAccount();
-            } else {
-                paymentInfo.mapBank = new DMappedCard();
-            }
-            paymentInfo.mapBank.setLastNumber(pChannel.l4no);
-            paymentInfo.mapBank.setFirstNumber(pChannel.f6no);
-            paymentInfo.mapBank.bankcode = pChannel.bankcode;
+            DBaseMap mapBank = pChannel.isBankAccountMap ? new DBankAccount() : new DMappedCard();
+            mapBank.setLastNumber(pChannel.l4no);
+            mapBank.setFirstNumber(pChannel.f6no);
+            mapBank.bankcode = pChannel.bankcode;
+            mPaymentInfoHelper.paymentInfo.setMapBank(mapBank);
             AdapterBase.existedMapCard = true;
         } else {
-            paymentInfo.mapBank = null;
+            mPaymentInfoHelper.paymentInfo.setMapBank(null);
             AdapterBase.existedMapCard = false;
         }
         //calculate fee and total amount order
-        GlobalData.populateOrderFee(pChannel);
-        ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
+        pChannel.calculateFee(mPaymentInfoHelper.getAmount());
+        mPaymentInfoHelper.getOrder().populateFee(pChannel);
+        ChannelProxy.get()
+                .setActivity(this)
+                .setPaymentInfo(mPaymentInfoHelper)
+                .setChannel(pChannel)
+                .start();
         // TrackApptransidEvent choose pay method
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);

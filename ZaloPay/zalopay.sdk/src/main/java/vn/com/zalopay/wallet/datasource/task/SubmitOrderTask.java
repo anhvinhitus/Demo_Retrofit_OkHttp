@@ -11,10 +11,8 @@ import vn.com.zalopay.wallet.datasource.implement.SubmitOrderImpl;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;
-    protected String mChannelID;
-
     public SubmitOrderTask(AdapterBase pAdapter) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
     }
 
@@ -64,8 +62,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            int OrderSource = (GlobalData.getPaymentInfo() != null) ? GlobalData.getPaymentInfo().ordersource : 0;
-            return DataParameter.prepareSubmitTransactionParams(mAdapter, mChannelID, OrderSource, getDataParams());
+            return DataParameter.prepareSubmitTransactionParams(mAdapter,getDataParams());
         } catch (Exception e) {
             onRequestFail(e);
             Log.e(this, e);

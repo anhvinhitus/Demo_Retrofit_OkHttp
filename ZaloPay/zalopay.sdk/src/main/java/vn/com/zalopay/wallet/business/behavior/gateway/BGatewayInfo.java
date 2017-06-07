@@ -7,18 +7,19 @@ import android.text.TextUtils;
 
 import java.io.File;
 
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.utility.SdkUtils;
 
 /**
  * Gateway info
@@ -31,6 +32,7 @@ public class BGatewayInfo extends SingletonBase {
     private int count = 1;
     private boolean mProcessing;//prevent duplicate thread
     private ZPWGatewayInfoCallback mClientCallback;
+    private UserInfo mUserInfo;
     private ZPWGetGatewayInfoListener mListener = new ZPWGetGatewayInfoListener() {
 
         @Override
@@ -54,7 +56,7 @@ public class BGatewayInfo extends SingletonBase {
             //mark as thread is finish
             mProcessing = false;
             if (pMessage != null) {
-                ErrorManager.updateTransactionResult(pMessage.returncode);
+                //ErrorManager.updateTransactionResult(pMessage.returncode);
             }
             if (mClientCallback != null) {
                 mClientCallback.onError(pMessage != null ? pMessage.returnmessage : null);
@@ -71,32 +73,16 @@ public class BGatewayInfo extends SingletonBase {
         }
     };
 
-    public BGatewayInfo() {
+    public BGatewayInfo(UserInfo pUserInfo) {
         super();
+        mUserInfo = pUserInfo;
     }
 
-    public static synchronized BGatewayInfo getInstance() {
+    public static synchronized BGatewayInfo getInstance(UserInfo pUserInfo) {
         if (BGatewayInfo.mGatewayInfo == null) {
-            BGatewayInfo.mGatewayInfo = new BGatewayInfo();
+            BGatewayInfo.mGatewayInfo = new BGatewayInfo(pUserInfo);
         }
         return BGatewayInfo.mGatewayInfo;
-    }
-
-    /***
-     * rule for retry call get platform info
-     * 1.expired time over
-     * 2.app version is different
-     * 3.resource file not exist
-     * 4.new user
-     * @return
-     */
-    public static boolean isNeedToGetPlatformInfo() throws Exception {
-        long currentTime = System.currentTimeMillis();
-        long expiredTime = SharedPreferencesManager.getInstance().getPlatformInfoExpriedTime();
-        String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
-        boolean isNewUser = GlobalData.isNewUser();
-        Log.d("isNeedToGetPlatformInfo", "is new user " + isNewUser);
-        return currentTime > expiredTime || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
     }
 
     /***
@@ -114,6 +100,23 @@ public class BGatewayInfo extends SingletonBase {
         return false;
     }
 
+    /***
+     * rule for retry call get platform info
+     * 1.expired time over
+     * 2.app version is different
+     * 3.resource file not exist
+     * 4.new user
+     * @return
+     */
+    public static boolean isNeedToGetPlatformInfo(String pUserId) throws Exception {
+        long currentTime = System.currentTimeMillis();
+        long expiredTime = SharedPreferencesManager.getInstance().getPlatformInfoExpriedTime();
+        String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
+        boolean isNewUser = GlobalData.isNewUser(pUserId);
+        Log.d("isNeedToGetPlatformInfo", "is new user " + isNewUser);
+        return currentTime > expiredTime || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
+    }
+
     public boolean isProcessing() {
         return mProcessing;
     }
@@ -127,7 +130,7 @@ public class BGatewayInfo extends SingletonBase {
         this.mClientCallback = pListener;
         //keep weak merchant listener to callback in case need to retry platforminfo
         GlobalData.setMerchantCallBack(pListener);
-        boolean isNeedToReloadPlatformInfo = isNeedToGetPlatformInfo();
+        boolean isNeedToReloadPlatformInfo = isNeedToGetPlatformInfo(mUserInfo.zalopay_userid);
         if (isNeedToReloadPlatformInfo) {
             // Check if the task has finished yet?
             if (mProcessing) {
@@ -139,7 +142,7 @@ public class BGatewayInfo extends SingletonBase {
             }
             this.mClientCallback.onProcessing();
             Log.d(this, "get platforminfo from server");
-            getPlatformInfo(new PlatformInfoTask(mListener, false, false));
+            getPlatformInfo(new PlatformInfoTask(mListener, false, false, mUserInfo));
         } else if (mClientCallback != null) {
             Log.d(getClass().getName(), "get platforminfo from cache");
             mClientCallback.onFinish();
@@ -177,7 +180,7 @@ public class BGatewayInfo extends SingletonBase {
                     }
                 }, 5000);
             } else if (!isProcessing()) {
-                getPlatformInfo(new PlatformInfoTask(mListener, true, true));
+                getPlatformInfo(new PlatformInfoTask(mListener, true, true, mUserInfo));
             }
         } catch (Exception e) {
             if (this.mClientCallback != null) {

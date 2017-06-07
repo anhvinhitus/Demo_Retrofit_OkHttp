@@ -21,6 +21,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.utility.BitmapUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
@@ -32,8 +34,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.utility.BitmapUtils;
-import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
 import vn.com.zalopay.wallet.view.adapter.VietComBankAccountListViewAdapter;
@@ -75,13 +76,13 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) {
         super();
         mAdapter = new WeakReference<>(pAdapterLocalCard);
-        init();
+        init(mAdapter.get().getPaymentInfoHelper());
     }
 
     @Override
-    protected void init() {
-        super.init();
-        if (GlobalData.isLinkCardChannel()) {
+    protected void init(PaymentInfoHelper paymentInfoHelper) {
+        super.init(paymentInfoHelper);
+        if (mPaymentInfoHelper.isLinkCardChannel()) {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_atm_method_name));

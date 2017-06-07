@@ -6,22 +6,15 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.entity.user.UserProfile;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
@@ -35,9 +28,8 @@ import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -46,42 +38,20 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
  * need to dispose everything after quit sdk
  */
 public class GlobalData {
-    //region static variable
-
-    public static long appID = 1;
-    //static amount when user select 1 channel for paying.
-    public static double orderAmountTotal = 0;
-    public static double orderAmountFee = 0;
     @CardChannel
     public static int cardChannelType = CardChannel.ATM;
+    public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
     //callback to merchant after sdk retry load gateway info
     protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
-    @TransactionType
-    private static int transactionType = TransactionType.PAY;
-
-    //app's activity is calling sdk.
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
-    private static ZPWPaymentInfo mPaymentInfo = null;
-    private static ZPPaymentResult paymentResult = null;
-
-    public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
-    /***
-     * user level,map table
-     * list contain policy for allowing pay which channel by which level.
-     */
-    private static ListUserProfile mUserProfile = null;
-    //pin for payment
     private static String mTransactionPin = null;
     private static WeakReference<IChannelActivityCallBack> mChannelActivityCallBack;
 
-    public static ZPWGatewayInfoCallback getMerchantCallBack() {
-        if (mMerchantCallBack != null)
-            return mMerchantCallBack.get();
-        return null;
-    }
+    @TransactionType
+    public static int mTranstype;
 
     public static void setMerchantCallBack(ZPWGatewayInfoCallback pMerchantCallBack) {
         GlobalData.mMerchantCallBack = new WeakReference<>(pMerchantCallBack);
@@ -97,10 +67,6 @@ public class GlobalData {
     public static void setChannelActivityCallBack(IChannelActivityCallBack mChannelActivityCallBack) {
         GlobalData.mChannelActivityCallBack = new WeakReference<>(mChannelActivityCallBack);
     }
-
-    //endregion
-
-    //region functions
 
     /***
      * prevent cross call pay
@@ -123,11 +89,7 @@ public class GlobalData {
         return BasePaymentActivity.getCurrentActivityCount() > 0;
     }
 
-    public static boolean isEnoughMoneyForTransaction(long pFee) {
-        return GlobalData.getPaymentInfo() != null && GlobalData.getPaymentInfo().userInfo != null && GlobalData.getPaymentInfo().userInfo.balance >= (GlobalData.getOrderAmount() + pFee);
-    }
-
-    public static boolean isNewUser() {
+    public static boolean isNewUser(String zalopay_userid) {
         String userID;
         try {
             userID = SharedPreferencesManager.getInstance().getCurrentUserID();
@@ -135,84 +97,14 @@ public class GlobalData {
             Log.e("isNewUser", e);
             return true;
         }
-        return TextUtils.isEmpty(userID) || !userID.equals(GlobalData.mPaymentInfo.userInfo.zaloPayUserId);
-    }
-
-    /***
-     * check soft token
-     * if has new accesstoken, must notify to app to update new token to cache again
-     * @param pResponse
-     * @return
-     */
-    public static boolean checkForUpdateAccessTokenToApp(BaseResponse pResponse) {
-        if (pResponse == null || TextUtils.isEmpty(pResponse.accesstoken)) {
-            return false;
-        }
-        if (GlobalData.mPaymentInfo == null || GlobalData.mPaymentInfo.userInfo == null) {
-            return false;
-        }
-
-        Log.d("checkForUpdateAccessTokenToApp", "old token = " + GlobalData.mPaymentInfo.userInfo.accessToken);
-        Log.d("checkForUpdateAccessTokenToApp", "new token = " + pResponse.accesstoken);
-        if (GlobalData.getPaymentListener() != null && !TextUtils.isEmpty(GlobalData.mPaymentInfo.userInfo.accessToken) && !GlobalData.mPaymentInfo.userInfo.accessToken.equals(pResponse.accesstoken)) {
-            //callback to app to update new access token
-            GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);
-            GlobalData.mPaymentInfo.userInfo.accessToken = pResponse.accesstoken;
-            return true;
-        }
-        return false;
+        return TextUtils.isEmpty(userID) || !userID.equals(zalopay_userid);
     }
 
     //region is channel
 
-    /***
-     * for checking user selected a map card channel.
-     */
-    public static boolean isMapCardChannel() {
-        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard) && getPaymentInfo().mapBank.isValid();
-    }
-
-    public static boolean isMapBankAccountChannel() {
-        return (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount) && getPaymentInfo().mapBank.isValid();
-    }
-
-    public static boolean isBankAccountLink() {
-        return transactionType == TransactionType.LINK_ACCOUNT;
-    }
-
-    public static boolean isLinkAccFlow() {
-        return getPaymentInfo() != null && getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isLinkAcc();
-    }
-
-    public static boolean isUnLinkAccFlow() {
-        return getPaymentInfo() != null && getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isUnlinkAcc();
-    }
-
-    public static boolean isLinkCardChannel() {
-        return transactionType == TransactionType.LINK_CARD;
-    }
-
-    public static boolean isTranferMoneyChannel() {
-        return transactionType == TransactionType.MONEY_TRANSFER;
-    }
-
-    public static boolean isTopupChannel() {
-        return transactionType == TransactionType.TOPUP;
-    }
-
-    public static boolean isWithDrawChannel() {
-        return transactionType == TransactionType.WITHDRAW;
-    }
-
-    public static boolean isPayChannel() {
-        return transactionType == TransactionType.PAY;
-    }
-
-    public static boolean isChannelHasInputCard() {
-        boolean isTransactionHasInputCard = !GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel() && !GlobalData.isWithDrawChannel();
-
+    public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
+        boolean isTransactionHasInputCard = !paymentInfoHelper.isMapCardChannel() && !paymentInfoHelper.isMapBankAccountChannel() && !paymentInfoHelper.isWithDrawChannel();
         boolean isChannelHasInputCard = true;
-
         if (BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity
                 && ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter().isZaloPayFlow()) {
             isChannelHasInputCard = false;
@@ -221,116 +113,38 @@ public class GlobalData {
     }
     //endregion
 
-    public static String getOfflineMessage() {
-        if (GlobalData.isLinkAccFlow()) {
+    public static String getOfflineMessage(PaymentInfoHelper paymentInfoHelper) {
+        if (paymentInfoHelper.isLinkAccFlow()) {
             return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account);
-        } else if (GlobalData.isUnLinkAccFlow()) {
+        } else if (paymentInfoHelper.isUnLinkAccFlow()) {
             return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account);
         } else {
             return GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction);
         }
     }
 
-    public static boolean updateResultNetworkingError(String pMessage) {
+    public static boolean updateResultNetworkingError(PaymentInfoHelper paymentInfoHelper, String pMessage) {
         boolean isOffNetworking;
-
         try {
             isOffNetworking = !ConnectionUtil.isOnline(BasePaymentActivity.getCurrentActivity());
         } catch (Exception ex) {
             Log.e("updateResultNetworkingError", ex);
-
             isOffNetworking = false;
         }
-
         if (isOffNetworking &&
                 (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)) ||
                         pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)) ||
                         pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account)) ||
                         pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account)))) {
-            setResultNoInternet();
+            paymentInfoHelper.setResult(PaymentStatus.DISCONNECT);
         }
-
         return isOffNetworking;
     }
-
-    //region set transaction result to notify to app
-    public static void setResult(@PaymentStatus int pStatus) {
-        GlobalData.getPaymentResult().paymentStatus = pStatus;
-    }
-
-    public static void setResultSuccess() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
-    }
-
-    public static void setResultFail() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_FAIL;
-    }
-
-    public static void setResultMoneyNotEnough() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH;
-    }
-
-    public static void setResultProcessing() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_PROCESSING;
-    }
-
-    public static void setResultUpgrade() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPGRADE;
-    }
-
-    public static void setResultUpgradeCMND() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPGRADE_CMND_EMAIL;
-    }
-
-    public static void setResultInvalidInput() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
-    }
-
-    public static void setResultInvalidToken() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID;
-    }
-
-    public static void setResultLockUser() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER;
-    }
-
-    public static void setResultServiceMaintenance() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE;
-    }
-
-    public static void setResultUserClose() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_CLOSE;
-    }
-
-    public static void setResultNeedToLinkCard() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
-    }
-
-    public static void setResultNoInternet() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET;
-    }
-
-    public static void setResultNeedToLinkAccount() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT;
-    }
-
-    public static void setResultNeedToLinkAccountBeforePayment() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT;
-    }
-
-    public static void setResultUpLevelLinkAccountAndPayment() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT;
-    }
-
-    public static void setResultNeedToLinkCardBeforePayment() {
-        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT;
-    }
-    //endregion
 
     /***
      * is this app configured by backend.
      */
-    public static boolean isAllowApplication() {
+    public static boolean isAllowApplication(long appID) {
         try {
             DAppInfo currentApp = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appID)), DAppInfo.class);
 
@@ -345,24 +159,21 @@ public class GlobalData {
     /***
      * this is red package channel
      */
-    public static boolean isRedPacketChannel() {
+    public static boolean isRedPacketChannel(long appID) {
         long redPackageID;
-
         try {
             redPackageID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_redpackage_app_id));
-
-            return redPackageID == GlobalData.appID;
+            return redPackageID == appID;
         } catch (Exception ignored) {
         }
         return false;
-
     }
 
-    public static boolean isZalopayChannel() {
-        return BuildConfig.channel_zalopay == GlobalData.appID;
+    public static boolean isZalopayChannel(long appID) {
+        return BuildConfig.channel_zalopay == appID;
     }
 
-    public static void selectBankFunctionByTransactionType() {
+    public static void selectBankFunctionByTransactionType(@TransactionType int transactionType) {
         switch (transactionType) {
             case TransactionType.LINK_ACCOUNT:
                 bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
@@ -370,35 +181,19 @@ public class GlobalData {
             case TransactionType.LINK_CARD:
                 bankFunction = BankFunctionCode.LINK_CARD;
                 break;
-            case TransactionType.MONEY_TRANSFER:
-                bankFunction = BankFunctionCode.PAY;
-                break;
             case TransactionType.WITHDRAW:
                 bankFunction = BankFunctionCode.WITHDRAW;
                 break;
+            case TransactionType.MONEY_TRANSFER:
             case TransactionType.TOPUP:
-                bankFunction = BankFunctionCode.PAY;
-                break;
             case TransactionType.PAY:
                 bankFunction = BankFunctionCode.PAY;
+                break;
         }
     }
 
-    public static void initializeAnalyticTracker() {
-        if(mPaymentInfo != null){
-            analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(mPaymentInfo.appTransID, transactionType);
-        }
-    }
-
-    /***
-     * Get transtype of payment.
-     */
-    @TransactionType
-    public static int getTransactionType() {
-        if (transactionType == TransactionType.PAY && (GlobalData.appID == BuildConfig.ZALOAPP_ID)) {
-            transactionType = TransactionType.TOPUP;
-        }
-        return transactionType;
+    public static void initializeAnalyticTracker(long pAppId, String pAppTransID, @TransactionType int transactionType) {
+        analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(pAppId, pAppTransID, transactionType);
     }
 
     @BankFunctionCode
@@ -417,10 +212,10 @@ public class GlobalData {
     }
 
     @BankFunctionCode
-    public static int getBankFunctionPay() {
-        if (GlobalData.isMapBankAccountChannel()) {
+    public static int getBankFunctionPay(PaymentInfoHelper paymentInfoHelper) {
+        if (paymentInfoHelper.isMapBankAccountChannel()) {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
-        } else if (GlobalData.isMapCardChannel()) {
+        } else if (paymentInfoHelper.isMapCardChannel()) {
             bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else {
             bankFunction = BankFunctionCode.PAY_BY_CARD;
@@ -428,74 +223,18 @@ public class GlobalData {
         return bankFunction;
     }
 
-    public static void initApplication(ZPWPaymentInfo pPaymentInfo) {
-        GlobalData.mPaymentInfo = pPaymentInfo;
-        initResultReturn();
-    }
-
-    public static void initApplicationUserInfo(ZPWPaymentInfo pPaymentInfo) {
-        if (GlobalData.mPaymentInfo != null && GlobalData.mPaymentInfo.userInfo != null) {
-            GlobalData.mPaymentInfo.userInfo.zaloPayUserId = pPaymentInfo.userInfo.zaloPayUserId;
-            GlobalData.mPaymentInfo.userInfo.accessToken = pPaymentInfo.userInfo.accessToken;
-        } else {
-            GlobalData.mPaymentInfo = pPaymentInfo;
-        }
-    }
-
-    public static void setUserInfo(UserInfo pUserInfo) {
-        Log.d("GlobalData", "setUserInfo" + pUserInfo);
-        if (GlobalData.mPaymentInfo == null) {
-            GlobalData.mPaymentInfo = new ZPWPaymentInfo();
-        }
-
-        if (GlobalData.mPaymentInfo.userInfo == null) {
-            GlobalData.mPaymentInfo.userInfo = new UserInfo();
-        }
-        if (pUserInfo != null) {
-            GlobalData.mPaymentInfo.userInfo.zaloPayUserId = pUserInfo.zaloPayUserId;
-            GlobalData.mPaymentInfo.userInfo.accessToken = pUserInfo.accessToken;
-        }
-    }
-
-    //endregion
-
-    public static void initResultReturn() {
-        GlobalData.setResultFail();
-    }
-
     /***
      * alwaw call this to set static listener and info.
      */
-    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, @TransactionType int pTransactionType) throws Exception {
+    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, @TransactionType int pTranstype) throws Exception {
         if (!isAccessRight()) {
             throw new Exception("Violate Design Pattern! Only 'pay' static method of ZingPayService class can set application!");
         }
-        PaymentSessionInfo paymentSessionInfo = PaymentSessionInfo.shared();
-        GlobalData.mPaymentInfo = paymentSessionInfo.getPaymentInfo();
-        GlobalData.appID = GlobalData.mPaymentInfo.appID;
         GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
-        GlobalData.transactionType = pTransactionType;
-
-        //reset data
-        GlobalData.paymentResult = null;
         GlobalData.mTransactionPin = null;
-        GlobalData.mUserProfile = null;
-        GlobalData.orderAmountTotal = GlobalData.mPaymentInfo.amount;
-        GlobalData.orderAmountFee = 0;
         AdapterBase.existedMapCard = false;
-
-        initResultReturn();
-
-    }
-
-    public static void populateOrderFee(MiniPmcTransType pmcTransType) {
-        if (pmcTransType != null) {
-            pmcTransType.calculateFee();
-            GlobalData.orderAmountFee = pmcTransType.totalfee;
-            GlobalData.orderAmountTotal = GlobalData.getOrderAmount() + GlobalData.orderAmountFee;
-            Log.d("populate order fee", "order fee " + GlobalData.orderAmountFee);
-        }
+        GlobalData.mTranstype = pTranstype;
     }
 
     public static void setIFingerPrint(IPaymentFingerPrint pFingerPrintFromMerchant) {
@@ -540,144 +279,26 @@ public class GlobalData {
         GlobalData.mTransactionPin = mTransactionPin;
     }
 
-    /***
-     * return user balance
-     */
-    public static long getBalance() {
-        if (getPaymentInfo() != null && getPaymentInfo().userInfo != null)
-            return getPaymentInfo().userInfo.balance;
-
-        return 0;
-    }
-
-    /***
-     * return user level.
-     */
-    public static int getLevel() {
-        if (getPaymentInfo() != null && getPaymentInfo().userInfo != null)
-            return getPaymentInfo().userInfo.level;
-
-        return 0;
-    }
-
     public static ZPPaymentListener getPaymentListener() {
         return mListener;
     }
 
-    public static ZPWPaymentInfo getPaymentInfo() {
-        if (GlobalData.mPaymentInfo == null) {
-            if (GlobalData.getPaymentResult() != null) {
-                GlobalData.setResultInvalidInput();
-            }
-            if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
-                ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
-            }
-            Log.d("getPaymentInfo", "get payment info is null");
-            return null;
-        }
-        return GlobalData.mPaymentInfo;
-    }
-
-    public static boolean isForceChannel() {
-        return getPaymentInfo() != null && getPaymentInfo().isForceChannel();
-    }
-
-    public static long getOrderAmount() {
-        if (getPaymentInfo() != null)
-            return getPaymentInfo().amount;
-
-        return 0;
-    }
-
-    public static ZPPaymentResult getPaymentResult() {
-        if (GlobalData.paymentResult == null) {
-            GlobalData.paymentResult = new ZPPaymentResult(mPaymentInfo, PaymentStatus.ZPC_TRANXSTATUS_FAIL);
-        }
-
-        return GlobalData.paymentResult;
-    }
-
-    public static String getTransProcessingMessage() {
-        return isLinkCardChannel() ? RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
+    public static String getTransProcessingMessage(@TransactionType int pTranstype) {
+        return pTranstype == TransactionType.LINK_CARD ? RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
     }
 
     public static String getStringResource(String pResourceID) {
-
         try {
             // Try to get string from resource sent from before get from local
             String result = ResourceManager.getInstance(null).getString(pResourceID);
-
             return (result != null) ? result : getAppContext().getString(RS.getString(pResourceID));
-
         } catch (Exception e) {
             Log.e(GlobalData.class.getName(), e);
         }
-
         return null;
-    }
-
-    /***
-     * load user table map into variable static
-     */
-    private static void loadPermissionLevelMap() {
-        if (getPaymentInfo().userInfo != null && !TextUtils.isEmpty(getPaymentInfo().userInfo.userProfile) && getUserProfileList() == null) {
-            try {
-                GlobalData.mUserProfile = GsonUtils.fromJsonString(getPaymentInfo().userInfo.userProfile, ListUserProfile.class);
-            } catch (Exception e) {
-                Log.e("loadPermissionLevelMap", e);
-            }
-        }
-    }
-
-    /***
-     * check whether user is allowed payment this channel.
-     */
-    public static int checkPermissionByChannelMap(int pChannelID) {
-        loadPermissionLevelMap();
-        UserProfile userProfile = GlobalData.getUserProfileAtChannel(pChannelID);
-
-        if (userProfile == null)
-            return Constants.LEVELMAP_INVALID;
-
-        return userProfile.allow ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
-    }
-
-    public static UserProfile getUserProfileAtChannel(int pPmcID) {
-        if (getUserProfileList() == null) {
-            Log.d("UserProfile", "is null");
-            return null;
-        }
-
-        try {
-            Log.d("UserProfile", getUserProfileList());
-
-            for (int i = 0; i < getUserProfileList().profilelevelpermisssion.size(); i++) {
-                if (getUserProfileList().profilelevelpermisssion.get(i).pmcid == pPmcID
-                        && getUserProfileList().profilelevelpermisssion.get(i).transtype == transactionType) {
-                    return getUserProfileList().profilelevelpermisssion.get(i);
-                }
-            }
-        } catch (Exception ex) {
-            Log.e("etUserProfileAtChannel", ex);
-        }
-
-        return null;
-    }
-
-    public static ListUserProfile getUserProfileList() {
-        return mUserProfile;
     }
 
     public static boolean shouldNativeWebFlow() {
-        /*try {
-            BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
-            if (bankConfig != null && !bankConfig.isCoverBank()) {
-                return true;
-            }
-        } catch (Exception e) {
-            Log.e("shouldNativeWebFlow",e);
-        }
-        return false;*/
         return GlobalData.getStringResource(RS.string.sdk_vcb_flow_type).equals("1");
     }
 

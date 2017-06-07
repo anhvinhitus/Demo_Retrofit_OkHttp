@@ -14,14 +14,15 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.holder.ZPWItemBankHolder;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class CardSupportAdapter extends BaseAdapter {
     protected ArrayList<String> mBankCode = new ArrayList<>();
 
-    public static CardSupportAdapter createAdapterProxy(boolean pIsBank) {
-        if (GlobalData.isLinkCardChannel()) {
+    public static CardSupportAdapter createAdapterProxy(boolean pIsBank, @TransactionType int pTranstype) {
+        if (pTranstype == TransactionType.LINK_CARD) {
             return new LinkCardBankGridViewAdapter();
         } else {
             return pIsBank ? new BankSupportGridViewAdapter() : new CreditCardSupportGridViewAdapter();
@@ -55,7 +56,8 @@ public class CardSupportAdapter extends BaseAdapter {
         ImageView imImageIcon;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(BasePaymentActivity.getCurrentActivity().getApplicationContext()).inflate(R.layout.gridview__item__bank, parent);
+            convertView = LayoutInflater.from(BasePaymentActivity.getCurrentActivity().getApplicationContext()).
+                    inflate(R.layout.gridview__item__bank, parent, false);
             holder = new ZPWItemBankHolder();
             imImageIcon = (ImageView) convertView.findViewById(R.id.imBankIcon);
             holder.imBankIcon = imImageIcon;

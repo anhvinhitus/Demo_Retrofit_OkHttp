@@ -11,9 +11,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
@@ -24,7 +22,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 02/06/2016.
@@ -127,7 +125,7 @@ public class ReactPaymentServiceImpl implements IPaymentService {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        public void onResponseSuccess(IBuilder builder) {
             Helpers.promiseResolveSuccess(mPromise, null);
         }
 

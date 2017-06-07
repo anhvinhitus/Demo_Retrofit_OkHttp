@@ -15,10 +15,10 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 5/29/17.
@@ -39,25 +39,24 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onUnLinkBankAccountSuccess(DBankAccount bankAccount);
 
-    void onResponseSuccessFromSDK(ZPPaymentResult zpPaymentResult) {
-        ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-        if (paymentInfo == null) {
-            Timber.d("PaymentSDK response success but paymentInfo null");
+    void onResponseSuccessFromSDK(IBuilder builder) {
+        if (builder == null) {
+            Timber.d("PaymentSDK response success but paymentInfo builder null");
             return;
         }
-
-        // TODO: 5/29/17 - longlv: Hiện chưa phân tách rõ ràng được giữa LinkCard & LinkAcc/UnLinkAcc
-        //Nếu linkAccInfo != null && paymentInfo.mapBank != null -> LinkAcc/UnLinkAcc
-        //Nếu linkAccInfo == null && paymentInfo.mapBank != null -> LinkCard
-        if (paymentInfo.linkAccInfo != null) {
-            if (paymentInfo.linkAccInfo.isLinkAcc()) {
-                onAddBankAccountSuccess((DBankAccount) paymentInfo.mapBank);
-            } else if (paymentInfo.linkAccInfo.isUnlinkAcc()) {
-                onUnLinkBankAccountSuccess((DBankAccount) paymentInfo.mapBank);
-            }
-        } else if (paymentInfo.mapBank != null) {
-            onAddBankCardSuccess((DMappedCard) paymentInfo.mapBank);
+        switch (builder.getTransactionType()) {
+            case TransactionType.LINK_ACCOUNT:
+                if (builder.getLinkAccountInfo().isLinkAcc()) {
+                    onAddBankAccountSuccess((DBankAccount) builder.getMapBank());
+                } else if (builder.getLinkAccountInfo().isUnlinkAcc()) {
+                    onUnLinkBankAccountSuccess((DBankAccount) builder.getMapBank());
+                }
+                break;
+            case TransactionType.LINK_CARD:
+                onAddBankCardSuccess((DMappedCard) builder.getMapBank());
+                break;
         }
+
     }
 
     void linkAccount(String cardCode) {

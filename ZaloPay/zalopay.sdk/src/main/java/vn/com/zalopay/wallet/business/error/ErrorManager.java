@@ -6,7 +6,9 @@ import android.util.SparseArray;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 /***
  * error code map table
@@ -66,46 +68,41 @@ public class ErrorManager {
 
     }
 
-    public static boolean shouldShowDialog() {
-        return GlobalData.getPaymentResult() != null &&
-                (GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        && GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER);
+    public static boolean shouldShowDialog(@PaymentStatus int status) {
+        return status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK;
     }
 
-    public static boolean needToTerminateTransaction() {
-        return GlobalData.getPaymentResult() != null && (
-                GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_PROCESSING
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPGRADE
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SUCCESS
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE);
+    public static boolean needToTerminateTransaction(@PaymentStatus int status) {
+        return status == PaymentStatus.PROCESSING
+                || status == PaymentStatus.LEVEL_UPGRADE_PASSWORD
+                || status == PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT
+                || status == PaymentStatus.SUCCESS
+                || status == PaymentStatus.TOKEN_EXPIRE
+                || status == PaymentStatus.USER_LOCK
+                || status == PaymentStatus.MONEY_NOT_ENOUGH
+                || status == PaymentStatus.INVALID_DATA
+                || status == PaymentStatus.SERVICE_MAINTENANCE;
     }
 
-    public static void updateTransactionResult(int pReturnCode) {
+    public static void updateTransactionResult(PaymentInfoHelper paymentInfoHelper, int pReturnCode) {
         try {
             if (!TextUtils.isEmpty(mErrorLoginArray.get(pReturnCode))) {
-                GlobalData.setResultInvalidToken();
+                paymentInfoHelper.setResult(PaymentStatus.TOKEN_EXPIRE);
             }
-
             if (!TextUtils.isEmpty(mErrorAccountArray.get(pReturnCode))) {
-                GlobalData.setResultLockUser();
+                paymentInfoHelper.setResult(PaymentStatus.USER_LOCK);
             }
-
             if (PaymentStatusHelper.isNeedToChargeMoreMoney(pReturnCode)) {
-                GlobalData.setResultMoneyNotEnough();
+                paymentInfoHelper.setResult(PaymentStatus.MONEY_NOT_ENOUGH);
             } else if (PaymentStatusHelper.isTransactionProcessing(pReturnCode)) {
-                GlobalData.setResultProcessing();
+                paymentInfoHelper.setResult(PaymentStatus.PROCESSING);
             } else if (PaymentStatusHelper.isNeedToUpgradeLevelUser(pReturnCode)) {
-                GlobalData.setResultUpgrade();
+                paymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
             } else if (PaymentStatusHelper.isServerInMaintenance(pReturnCode)) {
-                GlobalData.setResultServiceMaintenance();
+                paymentInfoHelper.setResult(PaymentStatus.SERVICE_MAINTENANCE);
             } else {
                 if (!TextUtils.isEmpty(mErrorArray.get(pReturnCode))) {
-                    GlobalData.setResultInvalidInput();
+                    paymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
                 }
             }
         } catch (Exception e) {

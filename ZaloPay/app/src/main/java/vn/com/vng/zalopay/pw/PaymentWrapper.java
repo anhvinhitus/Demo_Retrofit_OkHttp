@@ -36,8 +36,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -47,6 +45,9 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfo;
 
 import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
 
@@ -55,42 +56,26 @@ import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
  * Wrapper for handle common processing involves with wallet SDK
  */
 public class PaymentWrapper {
-    public interface IGetOrderCallback {
-        void onResponseSuccess(Order order);
-
-        void onResponseError(int status);
-    }
-
-    @Inject
-    ZaloPayRepository zaloPayRepository;
-
-    @Inject
-    BalanceStore.Repository balanceRepository;
-
-    @Inject
-    TransactionStore.Repository transactionRepository;
-
-    @Inject
-    Navigator mNavigator;
-
-    User mCurrentUser;
-
     final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
     private final IResponseListener responseListener;
-
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    @Inject
+    ZaloPayRepository zaloPayRepository;
+    @Inject
+    BalanceStore.Repository balanceRepository;
+    @Inject
+    TransactionStore.Repository transactionRepository;
+    @Inject
+    Navigator mNavigator;
+    User mCurrentUser;
     Activity mActivity;
     boolean mShowNotificationLinkCard;
-
-    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    private ZPWPaymentInfo mPendingOrder;
+    private AbstractOrder mPendingOrder;
     @TransactionType
     private int mPendingTransaction;
     private ZPPaymentListener mWalletListener;
-
-    IResponseListener getResponseListener() {
-        return responseListener;
-    }
+    private IBuilder mPaymentInfoBuilder;
 
     PaymentWrapper(IResponseListener responseListener, IRedirectListener redirectListener,
                    ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
@@ -100,6 +85,15 @@ public class PaymentWrapper {
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
         this.mCurrentUser = getUserComponent().currentUser();
+        this.mPaymentInfoBuilder = PaymentInfo.getBuilder().setLocation(transform(LocationProvider.getLocation()));
+    }
+
+    public IBuilder getPaymentInfoBuilder() {
+        return mPaymentInfoBuilder;
+    }
+
+    IResponseListener getResponseListener() {
+        return responseListener;
     }
 
     /**
@@ -132,10 +126,9 @@ public class PaymentWrapper {
     }
 
     public void withdraw(@NonNull Activity activity, Order order) {
-        int transactionType = TransactionType.WITHDRAW;
-        ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = createUserInfo(mCurrentUser.displayName, mCurrentUser.avatar, String.valueOf(mCurrentUser.phonenumber), mCurrentUser.zalopayname);
-        paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
+        AbstractOrder paymentOrder = transform(order);
+        paymentOrder.ordersource = ZPPaymentSteps.OrderSource_Unknown;
+        UserInfo userInfo = createUserInfo(mCurrentUser.displayName, mCurrentUser.avatar, String.valueOf(mCurrentUser.phonenumber), mCurrentUser.zalopayname);
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -143,16 +136,19 @@ public class PaymentWrapper {
         log.start_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
 
-        invokePayAPI(activity, paymentInfo, transactionType);
+        mPaymentInfoBuilder.setOrder(paymentOrder)
+                .setUser(userInfo)
+                .setTransactionType(TransactionType.WITHDRAW);
+        invokePayAPI(activity, mPaymentInfoBuilder);
     }
 
     public void transfer(@NonNull Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName, int source) {
-        int transactionType = TransactionType.MONEY_TRANSFER;
         mActivity = activity;
-        ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = createUserInfo(displayName, mCurrentUser.avatar, phoneNumber, zaloPayName);
-        paymentInfo.receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
-        paymentInfo.ordersource = source;
+        AbstractOrder paymentOrder = transform(order);
+        paymentOrder.ordersource = source;
+
+        UserInfo userInfo = createUserInfo(displayName, mCurrentUser.avatar, phoneNumber, zaloPayName);
+        UserInfo receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
 
         ZPApptransidLog log = new ZPApptransidLog();
         log.apptransid = order.apptransid;
@@ -161,7 +157,11 @@ public class PaymentWrapper {
         log.start_time = System.currentTimeMillis();
         ZPAnalytics.trackApptransidEvent(log);
 
-        invokePayAPI(activity, paymentInfo, transactionType);
+        mPaymentInfoBuilder.setOrder(paymentOrder)
+                .setUser(userInfo)
+                .setDestinationUser(receiverInfo)
+                .setTransactionType(TransactionType.MONEY_TRANSFER);
+        invokePayAPI(activity, mPaymentInfoBuilder);
     }
 
     public void payWithOrder(@NonNull Activity activity, Order order, int source) {
@@ -172,7 +172,7 @@ public class PaymentWrapper {
 //            showErrorView(mView.getContext().getString(R.string.order_invalid));
             return;
         }
-        Timber.d("payWithOrder: Order is valid");
+        Timber.d("payWithOrder: AbstractOrder is valid");
 
         if (mCurrentUser == null) {
             Timber.i("payWithOrder: current user is null");
@@ -187,11 +187,9 @@ public class PaymentWrapper {
             return;
         }
         try {
-            ZPWPaymentInfo paymentInfo = transform(order);
-            paymentInfo.ordersource = source;
-
+            AbstractOrder paymentOrder = transform(order);
+            paymentOrder.ordersource = source;
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
-
             ZPApptransidLog log = new ZPApptransidLog();
             log.apptransid = order.apptransid;
             log.appid = order.appid;
@@ -200,7 +198,10 @@ public class PaymentWrapper {
             ZPAnalytics.trackApptransidEvent(log);
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            invokePayAPI(activity, paymentInfo, TransactionType.PAY);
+            int transtype = order.appid == BuildConfig.ZALOPAY_APP_ID ? TransactionType.TOPUP : TransactionType.PAY;
+            mPaymentInfoBuilder.setOrder(paymentOrder)
+                    .setTransactionType(transtype);
+            invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -239,18 +240,8 @@ public class PaymentWrapper {
             return;
         }
         try {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
-            paymentInfo.appTime = System.currentTimeMillis();
-            paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
-
-            ZPApptransidLog log = new ZPApptransidLog();
-            log.apptransid = paymentInfo.appTransID;
-            log.appid = paymentInfo.appID;
-            log.start_time = System.currentTimeMillis();
-            ZPAnalytics.trackApptransidEvent(log);
-
-            invokePayAPI(activity, paymentInfo, TransactionType.LINK_CARD);
+            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK_CARD);
+            invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -279,20 +270,9 @@ public class PaymentWrapper {
         }
         try {
             LinkAccInfo linkAccInfo = new LinkAccInfo(bankType, linkAccType);
-
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
-            paymentInfo.appTime = System.currentTimeMillis();
-            paymentInfo.linkAccInfo = linkAccInfo;
-            paymentInfo.ordersource = ZPPaymentSteps.OrderSource_Unknown;
-
-            ZPApptransidLog log = new ZPApptransidLog();
-            log.apptransid = paymentInfo.appTransID;
-            log.appid = paymentInfo.appID;
-            log.start_time = System.currentTimeMillis();
-            ZPAnalytics.trackApptransidEvent(log);
-
-            invokePayAPI(activity, paymentInfo, TransactionType.LINK_ACCOUNT);
+            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK_ACCOUNT)
+                    .setLinkAccountInfo(linkAccInfo);
+            invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -310,12 +290,11 @@ public class PaymentWrapper {
         }
 
         //Require reset forceChannelIds & mappedCreditCard before continue payment
-        mPendingOrder.forceChannelIds = null;
-        mPendingOrder.mapBank = null;
-
-        Timber.d("Continue pay pending order : userInfo [%s] zalopayId [%s] accessToken [%s]", mPendingOrder.userInfo, mPendingOrder.userInfo.zaloPayUserId, mPendingOrder.userInfo.accessToken);
-
-        invokePayAPI(mActivity, mPendingOrder, mPendingTransaction);
+        mPaymentInfoBuilder.setOrder(mPendingOrder)
+                .setForceChannels(null)
+                .setMapBank(null)
+                .setTransactionType(mPendingTransaction);
+        invokePayAPI(mActivity, mPaymentInfoBuilder);
     }
 
     private void onUpdateProfileAndLinkAcc(int resultCode) {
@@ -369,6 +348,7 @@ public class PaymentWrapper {
         mActivity = null;
         clearPendingOrder();
         mCompositeSubscription.clear();
+        mPaymentInfoBuilder.release();
     }
 
     @Override
@@ -379,9 +359,9 @@ public class PaymentWrapper {
 
     private UserInfo createUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
         UserInfo mUserInfo = new UserInfo();
-        mUserInfo.phoneNumber = phoneNumber;
-        mUserInfo.userName = displayName;
-        mUserInfo.zaloPayName = zaloPayName;
+        mUserInfo.phonenumber = phoneNumber;
+        mUserInfo.zalo_name = displayName;
+        mUserInfo.zalopay_name = zaloPayName;
         mUserInfo.avatar = avatar;
         return mUserInfo;
     }
@@ -390,76 +370,76 @@ public class PaymentWrapper {
         if (mCurrentUser == null) {
             return null;
         }
-
         if (userInfo == null) {
             userInfo = new UserInfo();
         }
 
-        userInfo.zaloUserId = String.valueOf(mCurrentUser.zaloId);
-        userInfo.zaloPayUserId = mCurrentUser.zaloPayId;
-        userInfo.accessToken = mCurrentUser.accesstoken;
+        userInfo.zalo_userid = String.valueOf(mCurrentUser.zaloId);
+        userInfo.zalopay_userid = mCurrentUser.zaloPayId;
+        userInfo.accesstoken = mCurrentUser.accesstoken;
         userInfo.level = getUserProfileLevel();
-        userInfo.userProfile = getUserPermission();
-        userInfo.phoneNumber = getPhoneNumber();
-
+        userInfo.profile = getUserPermission();
+        userInfo.phonenumber = getPhoneNumber();
         return userInfo;
     }
 
-    private void invokePayAPI(@NonNull Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
+    private void invokePayAPI(@NonNull Activity owner, IBuilder pPaymentInfoBuilder) {
         mActivity = owner;
-        if (paymentInfo == null || owner == null) {
+        if (pPaymentInfoBuilder == null || owner == null) {
             mActivity = null;
             return;
         }
 
-        paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
-
-        if (paymentInfo.userInfo == null) {
+        UserInfo userInfo = assignBaseUserInfo(pPaymentInfoBuilder.getUser());
+        if (userInfo == null) {
             return;
         }
 
-        if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
+        if (userInfo.level < 0 || TextUtils.isEmpty(userInfo.profile)) {
             mWalletListener.onError(new CError(DATA_INVALID, owner.getString(R.string.please_update_profile)));
             mActivity = null;
             return;
         }
         if (balanceRepository != null) {
-            paymentInfo.userInfo.balance = balanceRepository.currentBalance();
+            userInfo.balance = balanceRepository.currentBalance();
         }
 
-        if (transactionType != TransactionType.LINK_CARD
-                && transactionType != TransactionType.LINK_ACCOUNT
-                && !validPaymentInfo(paymentInfo)) {
+        pPaymentInfoBuilder.setUser(userInfo);
+
+        int transtype = pPaymentInfoBuilder.getTransactionType();
+        AbstractOrder order = pPaymentInfoBuilder.getOrder();
+        if (transtype != TransactionType.LINK_CARD
+                && transtype != TransactionType.LINK_ACCOUNT
+                && !validPaymentInfo(order)) {
             responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
             Exception e = new Exception(
                     String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
-                            paymentInfo.appID,
-                            paymentInfo.appTransID,
-                            paymentInfo.amount,
-                            paymentInfo.appTime,
-                            paymentInfo.mac));
+                            order.appid,
+                            order.apptransid,
+                            order.amount,
+                            order.apptime,
+                            order.mac));
             Timber.e(e, e.getMessage());
             return;
         }
 
-        Timber.d("Call Pay to sdk activity [%s] transactionType [%s] paymentInfo [%s]",
-                owner, transactionType, paymentInfo);
-        mPendingOrder = paymentInfo;
-        mPendingTransaction = transactionType;
+        Timber.d("Call Pay to sdk activity [%s] transactionType [%s] order [%s]", owner, transtype, order);
+        mPendingOrder = order;
+        mPendingTransaction = transtype;
 
-        ZPApptransidLog log = new ZPApptransidLog(paymentInfo.appTransID, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
-        Timber.d("add log");
-        ZPAnalytics.trackApptransidEvent(log);
-
-        SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()), new PaymentFeedBackCollector());
+        if(transtype != TransactionType.LINK_CARD && transtype != TransactionType.LINK_ACCOUNT){
+            ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
+            ZPAnalytics.trackApptransidEvent(log);
+        }
+        SDKPayment.pay(owner, mPaymentInfoBuilder.build(), mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()), new PaymentFeedBackCollector());
     }
 
-    private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
-        return ((paymentInfo.amount > 0) &&
-                (paymentInfo.appID > 0) &&
-                !TextUtils.isEmpty(paymentInfo.appTransID) &&
-                (paymentInfo.appTime > 0) &&
-                !TextUtils.isEmpty(paymentInfo.mac));
+    private boolean validPaymentInfo(AbstractOrder order) {
+        return ((order.amount > 0) &&
+                (order.appid > 0) &&
+                !TextUtils.isEmpty(order.apptransid) &&
+                (order.apptime > 0) &&
+                !TextUtils.isEmpty(order.mac));
     }
 
     private String getPhoneNumber() {
@@ -494,21 +474,19 @@ public class PaymentWrapper {
     }
 
     @NonNull
-    private ZPWPaymentInfo transform(Order order) {
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-
-        paymentInfo.appID = order.appid;
-        paymentInfo.appTime = order.apptime;
-        paymentInfo.appTransID = order.apptransid;
-        paymentInfo.itemName = order.item;
-        paymentInfo.amount = order.amount;
-        paymentInfo.description = order.description;
-        paymentInfo.embedData = order.embeddata;
+    private AbstractOrder transform(Order pOrder) {
+        AbstractOrder order = new AbstractOrder();
+        order.appid = pOrder.appid;
+        order.apptime = pOrder.apptime;
+        order.apptransid = pOrder.apptransid;
+        order.item = pOrder.item;
+        order.amount = pOrder.amount;
+        order.description = pOrder.description;
+        order.embeddata = pOrder.embeddata;
         //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = order.appuser;
-        paymentInfo.mac = order.mac;
-        paymentInfo.mLocation = transform(LocationProvider.getLocation());
-        return paymentInfo;
+        order.appuser = pOrder.appuser;
+        order.mac = pOrder.mac;
+        return order;
     }
 
     private PaymentLocation transform(AppLocation appLocation) {
@@ -561,6 +539,39 @@ public class PaymentWrapper {
         mNavigator.startLinkAccountActivityForResult(mActivity, bankCode);
     }
 
+    boolean shouldClearPendingOrder(@PaymentStatus int resultStatus) {
+
+        switch (resultStatus) {
+            case PaymentStatus.MONEY_NOT_ENOUGH:
+                return false;
+            case PaymentStatus.LEVEL_UPGRADE_PASSWORD:
+                return false;
+            case PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT:
+                return false;
+            case PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT:
+                return false;
+            case PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    void clearPendingOrder() {
+        Timber.d("clearPendingOrder");
+        mPendingOrder = null;
+    }
+
+    public void setShowNotificationLinkCard(boolean showNotificationLinkCard) {
+        mShowNotificationLinkCard = showNotificationLinkCard;
+    }
+
+    public interface IGetOrderCallback {
+        void onResponseSuccess(Order order);
+
+        void onResponseError(int status);
+    }
+
     public interface ILinkCardListener {
         void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo);
     }
@@ -582,7 +593,7 @@ public class PaymentWrapper {
 
         void onResponseError(PaymentError status);
 
-        void onResponseSuccess(ZPPaymentResult zpPaymentResult);
+        void onResponseSuccess(IBuilder builder);
 
         void onResponseTokenInvalid();
 
@@ -621,32 +632,5 @@ public class PaymentWrapper {
                 responseListener.onParameterError("token");
             }
         }
-    }
-
-    boolean shouldClearPendingOrder(@PaymentStatus int resultStatus) {
-
-        switch (resultStatus) {
-            case PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
-                return false;
-            case PaymentStatus.ZPC_TRANXSTATUS_UPGRADE:
-                return false;
-            case PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
-                return false;
-            case PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT:
-                return false;
-            case PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT:
-                return false;
-            default:
-                return true;
-        }
-    }
-
-    void clearPendingOrder() {
-        Timber.d("clearPendingOrder");
-        mPendingOrder = null;
-    }
-
-    public void setShowNotificationLinkCard(boolean showNotificationLinkCard) {
-        mShowNotificationLinkCard = showNotificationLinkCard;
     }
 }

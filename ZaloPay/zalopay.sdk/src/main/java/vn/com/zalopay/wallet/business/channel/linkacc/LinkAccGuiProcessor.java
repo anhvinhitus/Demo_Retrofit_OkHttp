@@ -29,16 +29,18 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.utility.BitmapUtils;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.SpinnerUtils;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -74,12 +76,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     private ProgressBar pgbProgress;
     private TextView txtMessage;
     private LoginHolder loginHolder;
-
-    @Override
-    public void useWebView(boolean pIsUseWebView) {
-        mAdapter.getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(pIsUseWebView ? View.VISIBLE : View.GONE); // disable webview
-    }
-
     ///////LISTENER////////
     // listener EditText
     private TextWatcher mLoginEditTextWatcher = new TextWatcher() {
@@ -137,7 +133,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
     private UnregisterHolder unregisterHolder;
-
     ///////LISTENER////////
     // listener EditText
     private TextWatcher mUnRegPassEditTextWatcher = new TextWatcher() {
@@ -156,7 +151,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
         }
     };
-
     private View submitButton;
     private boolean isVisibilitySpinner = false;
     private View.OnClickListener mSpinnerButtonClickListener = new View.OnClickListener() {
@@ -180,13 +174,17 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             }
         }
     };
-
     /***
      * @param pAdapter
      */
     public LinkAccGuiProcessor(AdapterBase pAdapter) {
         mAdapter = pAdapter;
         init();
+    }
+
+    @Override
+    public void useWebView(boolean pIsUseWebView) {
+        mAdapter.getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(pIsUseWebView ? View.VISIBLE : View.GONE); // disable webview
     }
 
     protected AdapterBase getAdapter() {
@@ -445,7 +443,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
-       // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+        // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
         getLoginHolder().getEdtCaptcha().requestFocus();
 
         getRegisterHolder().getEdtCaptcha().addTextChangedListener(mConfirmCaptchaEditTextWatcher);
@@ -456,8 +454,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
         //getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
     }
-
-
 
 
     /***
@@ -779,7 +775,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     @Override
     public String getDetectedBankCode() {
-        return (GlobalData.getPaymentInfo().linkAccInfo != null) ? GlobalData.getPaymentInfo().linkAccInfo.getBankCode() : "";
+        return mPaymentInfoHelper.getLinkAccBankCode();
     }
 
     /***
@@ -1080,6 +1076,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         public ImageView getImgLogoLinkAcc() {
             return imgLogoLinkAcc;
         }
+
         public ImageView getButtonRefreshCaptcha() {
             return btnRefreshCaptcha;
         }

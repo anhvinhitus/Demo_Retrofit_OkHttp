@@ -11,10 +11,7 @@ import java.net.URLDecoder;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
@@ -27,7 +24,7 @@ import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by longlv on 14/09/2016.
@@ -176,15 +173,15 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null || mView == null || mAppGamePayInfo == null) {
+        public void onResponseSuccess(IBuilder builder) {
+            if (builder == null || mView == null || mAppGamePayInfo == null) {
                 return;
             }
 
-            Timber.d("onResponseSuccess uid [%s] accessToken [%s] appId [%s] transid [%s]", mAppGamePayInfo.uid,
+            Timber.d("onResponseSuccess uid [%s] accesstoken [%s] appId [%s] transid [%s]", mAppGamePayInfo.uid,
                     mAppGamePayInfo.accessToken, mAppGamePayInfo.appId, mAppGamePayInfo.apptransid);
 
-            mAppGamePayInfo.apptransid = (zpPaymentResult.paymentInfo.appTransID);
+            mAppGamePayInfo.apptransid = builder.getOrder().apptransid;
 
             String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.apptransid,
                     mAppGamePayInfo.uid, mAppGamePayInfo.accessToken);

@@ -8,17 +8,21 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterZaloPay extends AdapterBase {
-    public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType);
+    public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = RS.layout.screen__zalopay;
         checkBalanceAndSetPage();
     }
 
     private void checkBalanceAndSetPage() {
-        mPageCode = (GlobalData.getBalance() >= (GlobalData.orderAmountTotal)) ? PAGE_CONFIRM : PAGE_BALANCE_ERROR;
+        long user_balance = mPaymentInfoHelper.getBalance();
+        double amount_total = mPaymentInfoHelper.getAmountTotal();
+        mPageCode = user_balance >= amount_total ? PAGE_CONFIRM : PAGE_BALANCE_ERROR;
     }
 
     @Override
@@ -72,7 +76,8 @@ public class AdapterZaloPay extends AdapterBase {
      */
     @Override
     public boolean processResultForRedPackage() {
-        if (GlobalData.isRedPacketChannel()) {
+        long appId = mPaymentInfoHelper.getAppId();
+        if (GlobalData.isRedPacketChannel(appId)) {
             onClickSubmission();
             return true;
         }
@@ -95,7 +100,7 @@ public class AdapterZaloPay extends AdapterBase {
         }
 
         if (isBalanceErrorPharse()) {
-            GlobalData.setResultMoneyNotEnough();
+            mPaymentInfoHelper.setResult(PaymentStatus.MONEY_NOT_ENOUGH);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_not_enough_money_wallet), false);
             return;
         }

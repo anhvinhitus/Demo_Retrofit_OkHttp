@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
  * Created by huuhoa on 12/8/16.
@@ -61,7 +61,7 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
     }
 
     @Override
-    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+    public void onResponseSuccess(IBuilder builder) {
 
     }
 

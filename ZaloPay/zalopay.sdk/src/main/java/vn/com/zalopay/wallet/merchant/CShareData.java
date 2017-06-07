@@ -15,14 +15,13 @@ import rx.Observer;
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -48,7 +47,6 @@ import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
@@ -62,35 +60,6 @@ public class CShareData extends SingletonBase {
     protected static DConfigFromServer mConfigFromServer;
     protected IMerchantTask mMerchantTask;
     protected IGetWithDrawBankList mGetWithDrawBankList;
-    /***
-     * load resource static listener
-     */
-    protected PlatformInfoLoader.onCheckResourceStaticListener checkResourceStaticListener = new PlatformInfoLoader.onCheckResourceStaticListener() {
-        @Override
-        public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
-            if (isSuccess && mMerchantTask != null) {
-                mMerchantTask.onPrepareTaskComplete();
-            } else {
-                if (mMerchantTask != null)
-                    mMerchantTask.onTaskError(null);
-            }
-            Log.d(this, "===onCheckResourceStaticComplete===" + "===success=" + isSuccess + "===pError=" + pError);
-        }
-
-        /*@Override
-        public void onCheckResourceStaticInProgress() {
-            if (mMerchantTask != null)
-                mMerchantTask.onTaskInProcess();
-        }*/
-
-        @Override
-        public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-            if (mMerchantTask != null && pForceUpdate) {
-                mMerchantTask.onUpVersion(pForceUpdate, pVersion, pMessage);
-            }
-            Log.d(this, "===onUpVersion===pForceUpdate=" + pForceUpdate + "===pVersion=" + pVersion + "===pMessage=" + pMessage);
-        }
-    };
     protected ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -228,7 +197,10 @@ public class CShareData extends SingletonBase {
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
-                BankAccountHelper.loadBankAccountList(true);
+                if (pObject.length >= 2) {
+                    UserInfo userInfo = (UserInfo) pObject[1];
+                    BankAccountHelper.loadBankAccountList(true, userInfo);
+                }
             } catch (Exception ex) {
                 Log.e(this, ex);
             }
@@ -256,22 +228,6 @@ public class CShareData extends SingletonBase {
             promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available
         } else {
             Log.d(this, "skip post notification promotion event because user quit sdk");
-        }
-    }
-
-    public CShareData setUserInfo(UserInfo pUserInfo) {
-        GlobalData.setUserInfo(pUserInfo);
-        return this;
-    }
-
-    protected void checkStaticResource() {
-        //check static resource whether ready or not
-        try {
-            PlatformInfoLoader.getInstance().checkStaticResource();
-        } catch (Exception e) {
-            if (checkResourceStaticListener != null) {
-                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
-            }
         }
     }
 
@@ -475,11 +431,11 @@ public class CShareData extends SingletonBase {
         try {
             //remove card on cache
             if (pParams != null && pParams.mapCard != null) {
-                SharedPreferencesManager.getInstance().removeMappedCard(pParams.userID + Constants.COMMA + pParams.mapCard.getCardKey());
+                SharedPreferencesManager.getInstance().removeMappedCard(pParams.userID + Constants.COMMA + pParams.mapCard.getCardKey(pParams.userID));
             }
             UserInfo userInfo = new UserInfo();
-            userInfo.zaloPayUserId = pParams.userID;
-            userInfo.accessToken = pParams.accessToken;
+            userInfo.zalopay_userid = pParams.userID;
+            userInfo.accesstoken = pParams.accessToken;
             MapCardHelper.loadMapCardList(true, userInfo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -498,7 +454,7 @@ public class CShareData extends SingletonBase {
                             pReloadMapCardInfoListener.onError(null);
                         }
                     });
-            BankAccountHelper.loadBankAccountList(true)
+            BankAccountHelper.loadBankAccountList(true, userInfo)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Observer<BaseResponse>() {
                         @Override

@@ -323,7 +323,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onSuccess(File dest) {
                         Typeface typeface = Typeface.createFromFile(dest);
-//                        ReactFontManager.getInstance().setTypeface("MerchantFont-" + fontFamilyName, Typeface.NORMAL, typeface);
+//                        ReactFontManager.get().setTypeface("MerchantFont-" + fontFamilyName, Typeface.NORMAL, typeface);
                         ReactFontManager.getInstance().setTypeface(fontFamilyName, Typeface.NORMAL, typeface);
                         Timber.d("FileDownloader onSuccess");
                         promise.resolve(Arguments.createMap());

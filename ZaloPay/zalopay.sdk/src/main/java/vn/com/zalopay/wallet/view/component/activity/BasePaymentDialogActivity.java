@@ -40,13 +40,11 @@ public abstract class BasePaymentDialogActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        PaymentEventBus.shared().register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        PaymentEventBus.shared().unregister(this);
     }
 
     @Override

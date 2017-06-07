@@ -36,14 +36,8 @@ public class DBankAccount extends DBaseMap {
     }
 
     @Override
-    public String getCardKey() {
-        String userId = null;
-        try {
-            userId = GlobalData.getPaymentInfo().userInfo.zaloPayUserId;
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return userId + bankcode;
+    public String getCardKey(String pUserId) {
+        return pUserId + bankcode;
     }
 
     @Override

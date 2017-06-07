@@ -1,11 +1,12 @@
 package vn.com.zalopay.wallet.datasource.task;
 
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.wallet.business.data.Log;
 
 
 public class SDKReportTask extends BaseTask<BaseResponse> {
@@ -23,10 +24,12 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
     protected String mBankCode;
     protected String mException;
     protected int mExInfo;
+    protected UserInfo mUserInfo;
 
-    public SDKReportTask(int pExInfo, String... pParams) {
-        super();
+    public SDKReportTask(UserInfo pUserInfo, int pExInfo, String... pParams) {
+        super(pUserInfo);
         this.mExInfo = pExInfo;
+        this.mUserInfo = pUserInfo;
         if (pParams != null && pParams.length > 0) {
             this.mTranId = pParams.length >= 1 ? pParams[0] : null;
             this.mException = pParams.length >= 2 ? pParams[1] : null;
@@ -35,8 +38,8 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
 
     }
 
-    public SDKReportTask(String... pParams) {
-        super();
+    public SDKReportTask(UserInfo pUserInfo, String... pParams) {
+        super(pUserInfo);
         this.mExInfo = DEFAULT;
         if (pParams != null && pParams.length > 0) {
             this.mTranId = pParams.length >= 1 ? pParams[0] : null;
@@ -49,8 +52,8 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
      * @param pCode
      * @param pParams [transid,exception,bankcode]
      */
-    public static void makeReportError(int pCode, String... pParams) {
-        BaseTask baseRequest = new SDKReportTask(pCode, pParams);
+    public static void makeReportError(UserInfo pUserInfo, int pCode, String... pParams) {
+        BaseTask baseRequest = new SDKReportTask(pUserInfo, pCode, pParams);
         baseRequest.makeRequest();
     }
 
@@ -59,8 +62,8 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
      *
      * @param pParams [transid,exception,bankcode]
      */
-    public static void makeReportError(String... pParams) {
-        BaseTask baseRequest = new SDKReportTask(pParams);
+    public static void makeReportError(UserInfo pUserInfo, String... pParams) {
+        BaseTask baseRequest = new SDKReportTask(pUserInfo, pParams);
         baseRequest.makeRequest();
     }
 
@@ -99,6 +102,6 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
 
     @Override
     protected boolean doParams() {
-        return DataParameter.prepareSDKReport(getDataParams(), mTranId, mBankCode, mExInfo, mException);
+        return DataParameter.prepareSDKReport(getDataParams(), mUserInfo.zalopay_userid, mUserInfo.accesstoken, mTranId, mBankCode, mExInfo, mException);
     }
 }

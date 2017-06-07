@@ -5,23 +5,26 @@ import android.text.TextUtils;
 
 import java.util.Map;
 
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.DeviceUtil;
+import vn.com.zalopay.utility.DimensionUtil;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.DeviceUtil;
-import vn.com.zalopay.utility.DimensionUtil;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class DataParameter {
     /**
@@ -35,10 +38,10 @@ public class DataParameter {
      * @param pOtpBeginTime
      * @param pOtpEndTime
      */
-    public static void prepareSendLog(Map<String, String> params, int pmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) throws Exception {
+    public static void prepareSendLog(Map<String, String> params, String pUserId, String pAccessToken, int pmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) throws Exception {
         putBase(params);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
+        params.put(ConstantParams.USER_ID, pUserId);
+        params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
         params.put(ConstantParams.PMC_ID, String.valueOf(pmcID));
         params.put(ConstantParams.TRANS_ID, pTransID);
         params.put(ConstantParams.ATM_CAPTCHA_BEGINDATE, String.valueOf(pCaptchaBeginTime));
@@ -62,10 +65,10 @@ public class DataParameter {
      * @param pAuthenType
      * @param pAuthenValue
      */
-    public static void prepareAtmAuthenPayer(Map<String, String> params, String pTransID, String pAuthenType, String pAuthenValue) throws Exception {
+    public static void prepareAtmAuthenPayer(Map<String, String> params, String pUserId, String pAccessToken, String pTransID, String pAuthenType, String pAuthenValue) throws Exception {
         putBase(params);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
+        params.put(ConstantParams.USER_ID, pUserId);
+        params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
         params.put(ConstantParams.ZP_TRANSID, pTransID);
         params.put(ConstantParams.AUTHEN_TYPE, pAuthenType);
         params.put(ConstantParams.AUTHEN_VALUE, pAuthenValue);
@@ -88,11 +91,11 @@ public class DataParameter {
     }
 
 
-    public static boolean prepareSDKReport(Map<String, String> params, String pTranID, String pBankCode, int pExInfo, String pException) {
+    public static boolean prepareSDKReport(Map<String, String> params, String pUserId, String pAccessToken, String pTranID, String pBankCode, int pExInfo, String pException) {
         try {
             putBase(params);
-            params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-            params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
+            params.put(ConstantParams.USER_ID, pUserId);
+            params.put(ConstantParams.ACCESS_TOKEN, pAccessToken);
             params.put(ConstantParams.TRANSID, !TextUtils.isEmpty(pTranID) ? pTranID : "");
             params.put(ConstantParams.BANK_CODE, !TextUtils.isEmpty(pBankCode) ? pBankCode : "");
             params.put(ConstantParams.EXINFO, (pExInfo != SDKReportTask.DEFAULT) ? String.valueOf(pExInfo) : "");
@@ -110,12 +113,12 @@ public class DataParameter {
      * @param params
      * @param pTransID
      */
-    public static void prepareGetStatusParams(Map<String, String> params, String pTransID) throws Exception {
+    public static void prepareGetStatusParams(String pAppId, UserInfo pUserInfo, Map<String, String> params, String pTransID) throws Exception {
         putBase(params);
-        params.put(ConstantParams.APP_ID, String.valueOf(GlobalData.getPaymentInfo().appID));
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
+        params.put(ConstantParams.APP_ID, pAppId);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
         params.put(ConstantParams.ZP_TRANSID, pTransID);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
     }
 
@@ -125,11 +128,11 @@ public class DataParameter {
      * @param params
      * @param pAppTransID
      */
-    public static void prepareCheckSubmitOrderStatusParams(Map<String, String> params, String pAppTransID) throws Exception {
+    public static void prepareCheckSubmitOrderStatusParams(String appID, UserInfo pUserInfo, Map<String, String> params, String pAppTransID) throws Exception {
         putBase(params);
-        params.put(ConstantParams.APP_ID, String.valueOf(GlobalData.getPaymentInfo().appID));
+        params.put(ConstantParams.APP_ID, appID);
         params.put(ConstantParams.APP_TRANS_ID, pAppTransID);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
     }
 
     /***
@@ -139,8 +142,8 @@ public class DataParameter {
      */
     public static void prepareGetCardInfoListParams(Map<String, String> params, UserInfo pUserInfo) throws Exception {
         putBase(params);
-        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accessToken);
-        params.put(ConstantParams.USER_ID, pUserInfo.zaloPayUserId);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
 
         String checkSum = SharedPreferencesManager.getInstance().getCardInfoCheckSum();
         if (checkSum == null) {
@@ -149,11 +152,10 @@ public class DataParameter {
         params.put(ConstantParams.CARDINFO_CHECKSUM, checkSum);
     }
 
-    public static void prepareGetBankAccountListParams(Map<String, String> params) throws Exception {
+    public static void prepareGetBankAccountListParams(UserInfo pUserInfo, Map<String, String> params) throws Exception {
         putBase(params);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
         String checkSum = SharedPreferencesManager.getInstance().getBankAccountCheckSum();
         if (checkSum == null) {
             checkSum = "";
@@ -208,17 +210,14 @@ public class DataParameter {
      * @param params
      */
 
-    public static void prepareGetPlatformInfoParams(String checksum, String resrcVer, String cardInfoCheckSum, String bankAccountChecksum, Map<String, String> params) throws Exception {
-
-        ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
-
+    public static void prepareGetPlatformInfoParams(UserInfo pUserInfo, String checksum, String resrcVer, String cardInfoCheckSum, String bankAccountChecksum, Map<String, String> params) throws Exception {
         cardInfoCheckSum = cardInfoCheckSum != null ? cardInfoCheckSum : "";
         checksum = checksum != null ? checksum : "";
         resrcVer = resrcVer != null ? resrcVer : "";
         bankAccountChecksum = bankAccountChecksum != null ? bankAccountChecksum : "";
 
-        params.put(ConstantParams.USER_ID, paymentInfo.userInfo.zaloPayUserId);
-        params.put(ConstantParams.ACCESS_TOKEN, paymentInfo.userInfo.accessToken);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
         params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(GlobalData.getAppContext()));
         params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
@@ -231,17 +230,18 @@ public class DataParameter {
 
     }
 
-    public static void prepareGetStatusMapCardParams(Map<String, String> params, String pTransID) throws Exception {
+    public static void prepareGetStatusMapCardParams(Map<String, String> params, UserInfo pUserInfo, String pTransID) throws Exception {
         putBase(params);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
         params.put(ConstantParams.ZP_TRANSID, pTransID);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
     }
 
     public static void prepareVerifyMapCardParams(AdapterBase pAdapter, Map<String, String> params) throws Exception {
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
+        UserInfo userInfo = pAdapter.getPaymentInfoHelper().getUserInfo();
+        params.put(ConstantParams.ACCESS_TOKEN, userInfo.accesstoken);
+        params.put(ConstantParams.USER_ID, userInfo.zalopay_userid);
+        params.put(ConstantParams.ZALO_ID, userInfo.zalo_userid);
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
@@ -253,28 +253,36 @@ public class DataParameter {
         params.put(ConstantParams.CARDINFO, GsonUtils.toJsonString(pAdapter.getCard()));
     }
 
-    /**
-     * Add params submit transaction
+    /***
      *
      * @param pAdapter
-     * @param pmcID
      * @param params
+     * @throws Exception
      */
-    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, int pOrderSource, Map<String, String> params) throws Exception {
-        putBaseParameter(params);
-
-        if (pAdapter != null)
-            params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
-
-        if (!TextUtils.isEmpty(pmcID)) {
-            params.put(ConstantParams.PMC_ID, pmcID);
+    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, Map<String, String> params) throws Exception {
+        if (pAdapter == null) {
+            return false;
         }
-        if (GlobalData.isMapCardChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {
-            DMappedCreditCard mapCard = new DMappedCreditCard((DMappedCard) GlobalData.getPaymentInfo().mapBank);
+        PaymentInfoHelper paymentInfoHelper = pAdapter.getPaymentInfoHelper();
+        if (paymentInfoHelper == null) {
+            return false;
+        }
+        AbstractOrder order = paymentInfoHelper.getOrder();
+        long appId = paymentInfoHelper.getAppId();
+        UserInfo userInfo = paymentInfoHelper.getUserInfo();
+        PaymentLocation location = paymentInfoHelper.getLocation();
+        int transtype = paymentInfoHelper.getTranstype();
+
+        if (pAdapter != null) {
+            params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
+        }
+        DBaseMap mapBank = paymentInfoHelper.getMapBank();
+        if (paymentInfoHelper.isMapCardChannel() && mapBank.isValid()) {
+            DMappedCreditCard mapCard = new DMappedCreditCard((DMappedCard) mapBank);
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapCard));
-        } else if (GlobalData.isMapBankAccountChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {
-            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo().mapBank));
-        } else if (pAdapter != null && pAdapter.isCardFlow()) {
+        } else if (paymentInfoHelper.isMapBankAccountChannel() && mapBank.isValid()) {
+            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapBank));
+        } else if (pAdapter.isCardFlow()) {
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(pAdapter.getCard()));
         } else {
             params.put(ConstantParams.CHARGE_INFO, "");
@@ -282,39 +290,31 @@ public class DataParameter {
         if (!TextUtils.isEmpty(GlobalData.getTransactionPin())) {
             params.put(ConstantParams.PIN, GlobalData.getTransactionPin());
         }
-        params.put(ConstantParams.TRANS_TYPE, String.valueOf(GlobalData.getTransactionType()));
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
+        params.put(ConstantParams.TRANS_TYPE, String.valueOf(transtype));
+        params.put(ConstantParams.ACCESS_TOKEN, userInfo.accesstoken);
+        params.put(ConstantParams.USER_ID, userInfo.zalopay_userid);
+        params.put(ConstantParams.ZALO_ID, userInfo.zalo_userid);
+
         double lat = 0, lng = 0;
-        if (GlobalData.getPaymentInfo().mLocation != null) {
-            lat = GlobalData.getPaymentInfo().mLocation.latitude;
-            lng = GlobalData.getPaymentInfo().mLocation.longitude;
+        if (location != null) {
+            lat = location.latitude;
+            lng = location.longitude;
         }
         params.put(ConstantParams.LATTITUDE, String.valueOf(lat));
         params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
-        params.put(ConstantParams.ORDER_SOURCE, String.valueOf(pOrderSource));
-        return true;
-    }
+        params.put(ConstantParams.ORDER_SOURCE, String.valueOf(order.ordersource));
 
-    /**
-     * Add params Base
-     *
-     * @param params
-     */
-    public static void putBaseParameter(Map<String, String> params) throws Exception {
-        ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
-        params.put(ConstantParams.APP_ID, String.valueOf(paymentInfo.appID));
-        params.put(ConstantParams.APP_TRANS_ID, paymentInfo.appTransID);
-        params.put(ConstantParams.APP_USER, paymentInfo.appUser);
-        params.put(ConstantParams.APP_TIME, String.valueOf(paymentInfo.appTime));
-        params.put(ConstantParams.ITEM, paymentInfo.itemName);
-        params.put(ConstantParams.DESCRIPTION, paymentInfo.description);
-        params.put(ConstantParams.EMBED_DATA, paymentInfo.embedData);
-        params.put(ConstantParams.MAC, paymentInfo.mac);
+        params.put(ConstantParams.APP_ID, String.valueOf(appId));
+        params.put(ConstantParams.APP_TRANS_ID, order.apptransid);
+        params.put(ConstantParams.APP_USER, order.appuser);
+        params.put(ConstantParams.APP_TIME, String.valueOf(order.apptime));
+        params.put(ConstantParams.ITEM, order.item);
+        params.put(ConstantParams.DESCRIPTION, order.description);
+        params.put(ConstantParams.EMBED_DATA, order.embeddata);
+        params.put(ConstantParams.MAC, order.mac);
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
-        params.put(ConstantParams.AMOUNT, String.valueOf(GlobalData.getPaymentInfo().amount));
+        params.put(ConstantParams.AMOUNT, String.valueOf(order.amount));
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.APP_VERSION, SdkUtils.getAppVersion(GlobalData.getAppContext()));
@@ -322,6 +322,7 @@ public class DataParameter {
         params.put(ConstantParams.OS_VERSION, Build.VERSION.RELEASE);
         params.put(ConstantParams.CONN_TYPE, ConnectionUtil.getConnectionType(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
+        return true;
     }
 
     public static void putBase(Map<String, String> params) {
@@ -333,11 +334,10 @@ public class DataParameter {
      *
      * @param params
      */
-    public static void prepareMapAccountParams(Map<String, String> params, String pBankAccInfo) throws Exception {
-        ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
-        params.put(ConstantParams.USER_ID, String.valueOf(paymentInfo.userInfo.zaloPayUserId));
-        params.put(ConstantParams.ZALO_ID, String.valueOf(paymentInfo.userInfo.zaloUserId));
-        params.put(ConstantParams.ACCESS_TOKEN, String.valueOf(paymentInfo.userInfo.accessToken));
+    public static void prepareMapAccountParams(Map<String, String> params, String pBankAccInfo, UserInfo pUserInfo) throws Exception {
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
+        params.put(ConstantParams.ZALO_ID, pUserInfo.zalo_userid);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
         params.put(ConstantParams.BANK_ACCOUNT_INFO, String.valueOf(pBankAccInfo));
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));

@@ -6,18 +6,20 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 /***
@@ -25,19 +27,22 @@ import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
  */
 public class GetStatus extends BaseTask<StatusResponse> {
     protected static CountDownTimer mTimer;//coundown timer to retry get status
+    protected long mAppId;
     private String mTransID;
     private boolean mIsNeedToCheckDataInResponse;
     private AdapterBase mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
     private int mRetryCount = 1;
+    private PaymentInfoHelper paymentInfoHelper;
 
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
-        super();
+        super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mTransID = pTransID;
         this.mIsNeedToCheckDataInResponse = pIsCheckData;
         this.mAdapter = pAdapter;
         this.mMessage = pMessage;
+        paymentInfoHelper = this.mAdapter.getPaymentInfoHelper();
         initTimer();
     }
 
@@ -50,7 +55,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private void initTimer() {
         //reduce double to zalopay channel
         int intervalRetry = Constants.SLEEPING_INTERVAL_OF_RETRY;
-        if (GlobalData.isZalopayChannel())
+        if (GlobalData.isZalopayChannel(mAppId))
             intervalRetry /= 2;
 
         mTimer = new CountDownTimer(Constants.MAX_INTERVAL_OF_RETRY, intervalRetry) {
@@ -89,19 +94,19 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
         Activity activity = BasePaymentActivity.getCurrentActivity();
         if (activity == null || activity.isFinishing() || !(activity instanceof BasePaymentActivity)) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage())));
+            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
             return;
         }
 
         if (mRetryCount == Constants.MAX_RETRY_GETSTATUS) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage())));
+            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
             return;
         }
 
         ((BasePaymentActivity) activity).showRetryDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage())));
+                onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
             }
 
             @Override
@@ -165,7 +170,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         if (mAdapter.isLoadWebTimeout() && pResponse.isprocessing) {
             pResponse.isprocessing = false;
             pResponse.returncode = -1;
-            pResponse.returnmessage = GlobalData.getStringResource(GlobalData.getTransProcessingMessage());
+            pResponse.returnmessage = GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()));
 
             mAdapter.setLoadWebTimeout(false);
             cancelTimer();
@@ -232,7 +237,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            GetStatusShare.shared().onPrepareParamsGetStatus(mDataParams, mTransID);
+            GetStatusShare.shared().onPrepareParamsGetStatus(String.valueOf(mAppId), mDataParams, paymentInfoHelper.getUserInfo(), mTransID);
             return true;
         } catch (Exception e) {
             Log.e(this, e);

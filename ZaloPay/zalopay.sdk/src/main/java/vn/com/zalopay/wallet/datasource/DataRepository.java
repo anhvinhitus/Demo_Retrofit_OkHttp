@@ -52,7 +52,9 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         public void call(T response) {
             releaseLock();
             mTask.onRequestSuccess(response);
-            GlobalData.checkForUpdateAccessTokenToApp(response); //update access token if have new
+            if(mTask.mUserInfo != null){
+                mTask.mUserInfo.checkForUpdateAccessTokenToApp(response);//update access token if have new
+            }
         }
     };
 

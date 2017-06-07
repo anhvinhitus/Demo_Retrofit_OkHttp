@@ -6,14 +6,17 @@ import android.util.ArrayMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 
 public abstract class BaseTask<T> extends SingletonBase {
+    public UserInfo mUserInfo;
     protected Map<String, String> mDataParams;
 
-    public BaseTask() {
+    public BaseTask(UserInfo pUserInfo) {
         super();
+        mUserInfo = pUserInfo;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mDataParams = new ArrayMap<>();
         } else {

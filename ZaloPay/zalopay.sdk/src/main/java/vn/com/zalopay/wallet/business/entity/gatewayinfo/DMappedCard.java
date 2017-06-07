@@ -21,11 +21,8 @@ public class DMappedCard extends DBaseMap {
      */
     public DMappedCard(DPaymentCard pCard) {
         this.expiretime = 0;
-
         this.bankcode = pCard.getBankcode();
-
         this.cardname = pCard.getCardholdername();
-
         if (!TextUtils.isEmpty(pCard.getCardnumber())) {
             this.first6cardno = pCard.getCardnumber().substring(0, 6);
             this.last4cardno = pCard.getCardnumber().substring(pCard.getCardnumber().length() - 4);
@@ -40,6 +37,11 @@ public class DMappedCard extends DBaseMap {
         mappedCard.bankcode = this.bankcode;
         mappedCard.expiretime = this.expiretime;
         return mappedCard;
+    }
+
+    @Override
+    public String getCardKey(String pUserId) {
+        return first6cardno + last4cardno;
     }
 
     @Override
@@ -68,19 +70,11 @@ public class DMappedCard extends DBaseMap {
     }
 
     @Override
-    public String getCardKey() {
-        return first6cardno + last4cardno;
-    }
-
-    @Override
     public boolean equals(Object obj) {
-
         if (!(obj instanceof DMappedCard)) {
             return false;
         }
-
         DMappedCard other = (DMappedCard) obj;
-
         return !TextUtils.isEmpty(this.getFirstNumber()) && !TextUtils.isEmpty(this.getLastNumber()) &&
                 this.getFirstNumber().equals(other.first6cardno) && this.getLastNumber().equals(other.last4cardno);
     }
