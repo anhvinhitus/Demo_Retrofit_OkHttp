@@ -56,6 +56,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
@@ -118,6 +119,7 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
     private static Stack<BasePaymentActivity> mActivityStack = new Stack<>();//stack to keep activity
+    public final String TAG = getClass().getSimpleName();
     public boolean mIsBackClick = true;
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -606,6 +608,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         PaymentEventBus.shared().register(this);
+        ZPAnalytics.trackScreen(TAG);
         Log.d(this, "onStart");
     }
 
