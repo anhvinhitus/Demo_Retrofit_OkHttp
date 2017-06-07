@@ -33,14 +33,15 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
     }
 
     /***
-     * tranfer use zalopay channel success
+     * testcase : tranfer money use zalopay
+     * expected result: payment success and update balance
      */
     @Test
-    public void tranfer_zalopayname_zalopay_password_HAPPYCASE() {
+    public void tranfer_zalopayname_zalopay_HAPPYCASE() {
         //delay for app start
-        SystemClock.sleep(10000);
+        SystemClock.sleep(5000);
         tranfer_item_name = mResource.getString(R.string.transfer_money);
-        long balance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".",""));
+        long balance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
         /*onView(withId(R.id.home_rcv_list_app))
                 .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(tranfer_item_name)), click()));*/
         //select tranfer
@@ -57,10 +58,13 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         onView(withId(R.id.edtAmount)).perform(replaceText(String.valueOf(Info.AMOUNT_TRANFER)));
         //click button
         onView(withId(R.id.btnContinue)).perform(click());
-        //delay for sdk check payment info
-        SystemClock.sleep(1000);
 
-        //USER enter SDK
+        tranfer_happen_insdk(balance);
+    }
+
+    protected void tranfer_happen_insdk(long balance) {
+        //delay for sdk check payment info
+        SystemClock.sleep(500);
         //select zalopay channel
         //onRow(Info.CHANNEL_ZALOPAY_NAME).perform(click());
         onView(withId(R.id.channel_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -72,11 +76,10 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         SystemClock.sleep(1000);
         //click button finish on result screen
         onView(withId(R.id.zpsdk_btn_submit)).perform(click());
-        //delay for update balance
-        SystemClock.sleep(500);
+        //delay for update balance and release payment resource
+        SystemClock.sleep(1000);
         //asset balance again
-        long updatedBalance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".",""));
+        long updatedBalance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
         Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANFER);
-        //home_tv_balance
     }
 }
