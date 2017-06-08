@@ -6,6 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoLocalStorage;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoRepository;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
@@ -17,7 +18,7 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 public class AppInfoRepositoryModule {
     @Provides
     @Singleton
-    public AppInfoStore.AppInfoService provideAppInfoService(Retrofit retrofit) {
+    public AppInfoStore.AppInfoService provideAppInfoService(@Api Retrofit retrofit) {
         return retrofit.create(AppInfoStore.AppInfoService.class);
     }
 

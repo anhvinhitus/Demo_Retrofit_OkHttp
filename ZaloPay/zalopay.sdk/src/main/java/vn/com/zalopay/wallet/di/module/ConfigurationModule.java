@@ -8,6 +8,8 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
+import vn.com.zalopay.wallet.di.qualifier.Api;
+import vn.com.zalopay.wallet.di.qualifier.Download;
 
 @Singleton
 @Module
@@ -28,13 +30,14 @@ public class ConfigurationModule {
 
     @Provides
     @Singleton
+    @Api
     public Retrofit provideRetrofit() {
         return this.mConfig.getRetrofit();
     }
 
     @Provides
     @Singleton
-    @Named("HttpDownloadResource")
+    @Download
     public Retrofit provideRetrofitDownloadResource() {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(mConfig.getBaseHostUrl())

@@ -5,13 +5,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import retrofit2.Retrofit;
+import vn.com.zalopay.wallet.di.qualifier.Api;
+import vn.com.zalopay.wallet.di.qualifier.Download;
 
 public class InjectionWrapper {
     @Inject
+    @Api
     protected Retrofit mRetrofit;
 
     @Inject
-    @Named("HttpDownloadResource")
+    @Download
     protected Retrofit mRetrofitDownloadResource;
 
     public Retrofit getRetrofit() {

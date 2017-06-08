@@ -6,6 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.repository.banklist.BankListLocalStorage;
 import vn.com.zalopay.wallet.repository.banklist.BankListRepository;
 import vn.com.zalopay.wallet.repository.banklist.BankListStore;
@@ -17,7 +18,7 @@ import vn.com.zalopay.wallet.repository.banklist.BankListStore;
 public class BankListRepositoryModule {
     @Provides
     @Singleton
-    public BankListStore.BankListService provideBankListService(Retrofit retrofit) {
+    public BankListStore.BankListService provideBankListService(@Api Retrofit retrofit) {
         return retrofit.create(BankListStore.BankListService.class);
     }
 

@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -65,8 +66,14 @@ import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.interactor.IPlatform;
+import vn.com.zalopay.wallet.interactor.PlatformInteractor;
+import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -273,6 +280,13 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                         forceUpdate, latestVersion, msg);
             }
         });
+        //load bank list
+        Subscription subscription = SDKApplication.getApplicationComponent().platform().getBankList(BuildConfig.PAYMENT_PLATFORM,
+                SdkUtils.getAppVersion(mApplicationContext), System.currentTimeMillis())
+                .subscribe(bankConfigResponse -> {
+
+                });
+        mSubscription.add(subscription);
     }
 
     private void unsubscribeIfNotNull(Subscription subscription) {

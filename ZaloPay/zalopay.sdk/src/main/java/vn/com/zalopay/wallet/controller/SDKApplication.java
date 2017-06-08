@@ -7,7 +7,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -18,7 +17,6 @@ import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.RemoveMapCardTask;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
@@ -108,7 +106,6 @@ public class SDKApplication extends Application {
             }
             checkClearCacheIfHasNewVersion();
             loadPlatformInfo(pUserInfo, pGatewayInfoCallback);
-            BankLoader.loadBankList(null);
             loadAppWalletInfo(pUserInfo);
             loadAppWithDrawInfo(pUserInfo);
         } catch (Exception e) {

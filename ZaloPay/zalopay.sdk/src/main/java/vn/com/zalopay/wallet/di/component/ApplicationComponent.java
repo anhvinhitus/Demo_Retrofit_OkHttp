@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.BankListRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.di.module.InteractorModule;
+import vn.com.zalopay.wallet.interactor.IPlatform;
 import vn.com.zalopay.wallet.interactor.PlatformInteractor;
 
 @Singleton
@@ -27,4 +28,6 @@ public interface ApplicationComponent {
     Application application();
 
     SDKConfiguration sdkConfiguration();
+
+    IPlatform platform();
 }
