@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 59;
-    private static final int GLOBAL_DB_VERSION = 2;
+    private static final int GLOBAL_DB_VERSION = 3;
 
     /**
      * ./gradlew :greendaogenerator:run
@@ -28,13 +28,14 @@ public class GreenDaoGenerator {
         addNotification(appSchema);
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
-    
+
         addTransactionFragment(appSchema);
 
         //ADD TABLE GLOBAL
         addGlobalKeyValue(globalSchema);
         addApptransidLog(globalSchema);
         addApptransidLogTiming(globalSchema);
+        addGoogleAnalytics(globalSchema);
 
         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
         daoGenerator.generateAll(appSchema, "../zalopay.data/src/main/java");
@@ -240,6 +241,15 @@ public class GreenDaoGenerator {
         entity.addLongProperty("finish_time");
         entity.addStringProperty("bank_code");
         entity.addIntProperty("status");
+    }
+
+    private static void addGoogleAnalytics(Schema schema) {
+        Entity entity = schema.addEntity("GoogleAnalytics");
+        entity.setConstructors(false);
+        entity.addIdProperty().primaryKey().autoincrement();
+        entity.addStringProperty("type").notNull();
+        entity.addStringProperty("payload").notNull();
+        entity.addLongProperty("timestamp").notNull();
     }
 
     private static void addApptransidLogTiming(Schema schema) {

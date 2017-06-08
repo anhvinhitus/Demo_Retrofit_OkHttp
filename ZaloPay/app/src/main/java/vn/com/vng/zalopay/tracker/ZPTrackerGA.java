@@ -1,7 +1,15 @@
 package vn.com.vng.zalopay.tracker;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.ga.AnalyticsStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 
 /**
  * Created by huuhoa on 6/27/16.
@@ -9,14 +17,39 @@ import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
  */
 public class ZPTrackerGA extends DefaultTracker {
 
+    private static final long INTERVAL_SEND_PAYLOAD = 20;
     private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s]";
+
+    private static boolean initialized = false;
 
     private final GoogleReporter mGoogleReporter;
     private final ThreadExecutor mThreadExecutor;
+    private final AnalyticsStore.Repository mAnalyticsRepository;
 
     public ZPTrackerGA(GoogleReporter googleReporter) {
+        
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+
+        mThreadExecutor = applicationComponent.threadExecutor();
+        mAnalyticsRepository = applicationComponent.analyticsRepository();
+
         mGoogleReporter = googleReporter;
-        mThreadExecutor = AndroidApplication.instance().getAppComponent().threadExecutor();
+
+        startTimerSendPayloadData();
+    }
+
+    private void startTimerSendPayloadData() {
+
+        if (initialized) {
+            return;
+        }
+
+        initialized = true;
+
+        Observable.interval(INTERVAL_SEND_PAYLOAD, TimeUnit.SECONDS)
+                .flatMap(aLong -> mAnalyticsRepository.sendBatch())
+                .subscribeOn(Schedulers.from(mThreadExecutor))
+                .subscribe(new DefaultSubscriber<>());
     }
 
     @Override

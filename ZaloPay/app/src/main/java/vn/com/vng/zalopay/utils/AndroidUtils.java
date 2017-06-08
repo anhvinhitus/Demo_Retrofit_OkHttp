@@ -44,6 +44,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,7 +62,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -1102,5 +1106,29 @@ public class AndroidUtils {
 
     public static boolean isXiaomiDevice() {
         return DeviceUtil.getDeviceName().toUpperCase().matches("(.*)XIAOMI(.*)");
+    }
+
+    public static String getUserAgent(Context context) {
+
+        String ua = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            ua = WebSettings.getDefaultUserAgent(context);
+        } else {
+            try {
+                final Class<?> webSettingsClassicClass = Class.forName("android.webkit.WebSettingsClassic");
+                final Constructor<?> constructor = webSettingsClassicClass.getDeclaredConstructor(Context.class, Class.forName("android.webkit.WebViewClassic"));
+                constructor.setAccessible(true);
+                final Method method = webSettingsClassicClass.getMethod("getUserAgentString");
+                ua = (String) method.invoke(constructor.newInstance(context, null));
+            } catch (Exception ignore) {
+            }
+        }
+
+        if (TextUtils.isEmpty(ua)) {
+            ua = System.getProperty("http.agent");
+        }
+        
+        return ua;
     }
 }

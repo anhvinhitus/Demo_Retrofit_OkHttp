@@ -166,35 +166,6 @@ public class NetworkModule {
                 .build();
     }
 
-    @Provides
-    @Singleton
-    @Named("okHttpClientGA")
-    OkHttpClient provideOkHttpClientGA() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(interceptor);
-        }
-        builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
-        builder.connectTimeout(10, TimeUnit.SECONDS);
-        builder.readTimeout(5, TimeUnit.SECONDS);
-        return builder.build();
-    }
-
-    @Provides
-    @Singleton
-    @Named("retrofitGoogleAnalytics")
-    Retrofit provideRetrofitGA(@Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new ToStringConverterFactory())
-                .addCallAdapterFactory(callAdapter)
-                .baseUrl(GoogleReporter.BASE_URL)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
-    }
-
     private static final TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
 
         /**

@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.UIThread;
@@ -138,12 +137,6 @@ public class ApplicationModule {
                                                   @Named("daosession") DaoSession daoSession,
                                                   EventBus eventBus) {
         return new ApplicationSessionImpl(context, daoSession, navigator, eventBus);
-    }
-
-    @Provides
-    @Singleton
-    GoogleReporter.GoogleAnalyticsService providesAnalyticsService(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
-        return retrofit.create(GoogleReporter.GoogleAnalyticsService.class);
     }
 
     @Provides

@@ -4,22 +4,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import retrofit2.Retrofit;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Headers;
-import retrofit2.http.POST;
-import rx.Observable;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.ga.AnalyticsStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -33,35 +27,25 @@ public class GoogleReporter {
 
     public static final String BASE_URL = "https://www.google-analytics.com/";
 
-    public interface GoogleAnalyticsService {
-        @POST("collect")
-        @FormUrlEncoded
-        @Headers({"User-Agent: ZaloPayClient/2.12"})
-        Observable<String> send(@FieldMap Map<String, String> query);
-
-        @POST("batch")
-        @FormUrlEncoded
-        @Headers({"User-Agent: ZaloPayClient/2.12"})
-        Observable<String> sendBatch(@FieldMap Map<String, String> query); //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
-    }
-
-    private final GoogleAnalyticsService mAnalyticsService;
+    private final AnalyticsStore.Repository mAnalyticsService;
     private final Map<String, String> mDefMap;
     private final String mTrackerId;
 
     public GoogleReporter(String trackerId) {
         mTrackerId = trackerId;
-        mAnalyticsService = AndroidApplication.instance().getAppComponent().googleAnalyticsService();
+        mAnalyticsService = AndroidApplication.instance().getAppComponent().analyticsRepository();
         mDefMap = buildParams();
     }
 
     private void send(String type, Map<String, String> values) {
         values.put("t", type); //Required
-        send(values);
-    }
+        String payload = urlEncodeUTF8(values);
 
-    private void send(Map<String, String> values) {
-        mAnalyticsService.send(values)
+        if (TextUtils.isEmpty(payload)) {
+            return;
+        }
+
+        mAnalyticsService.append(type, payload)
                 .subscribe(new DefaultSubscriber<>());
     }
 
@@ -177,5 +161,25 @@ public class GoogleReporter {
         mDefMap.put("cid", userId);
     }
 
+    private String urlEncodeUTF8(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+    }
 
+    private String urlEncodeUTF8(Map<?, ?> map) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(String.format("%s=%s",
+                    urlEncodeUTF8(entry.getKey().toString()),
+                    urlEncodeUTF8(entry.getValue().toString())
+            ));
+        }
+        return sb.toString();
+    }
 }

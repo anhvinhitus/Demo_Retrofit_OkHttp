@@ -16,6 +16,8 @@ import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.global.GoogleAnalytics;
+import vn.com.vng.zalopay.data.ga.AnalyticsStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -28,6 +30,7 @@ import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.AppTransIdLogModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
+import vn.com.vng.zalopay.internal.di.modules.GoogleAnalyticsModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.location.LocationStore;
@@ -54,7 +57,8 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
                 AppResourceModule.class,
                 AppTransIdLogModule.class,
                 AppLocationModule.class,
-                AppPromotionModule.class
+                AppPromotionModule.class,
+                GoogleAnalyticsModule.class
         }
 )
 public interface ApplicationComponent {
@@ -72,7 +76,7 @@ public interface ApplicationComponent {
     @Named("OkHttpClientTimeoutLonger")
     OkHttpClient okHttpClientTimeoutLonger();
 
-    GoogleReporter.GoogleAnalyticsService googleAnalyticsService();
+    AnalyticsStore.Repository analyticsRepository();
 
     GoogleReporter googleReporter();
 
