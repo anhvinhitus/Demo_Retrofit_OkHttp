@@ -7,7 +7,6 @@ stages:
 before_script:
   - export ANDROID_HOME=/ci/android-sdk
   - export ANDROID_NDK_HOME=/ci/android-ndk-r12b
-  - export GRADLE_USER_HOME=/ci/gradle
   - export CI_BUILD=$CI_SERVER
   - export CI_BUILD_TAG=$CI_BUILD_TAG
   - mkdir -p ./releases
