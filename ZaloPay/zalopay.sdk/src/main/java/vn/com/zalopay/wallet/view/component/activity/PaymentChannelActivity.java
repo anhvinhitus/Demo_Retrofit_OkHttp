@@ -22,7 +22,6 @@ import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -146,9 +145,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void startPayment() {
-        AbstractOrder order = mPaymentInfoHelper.getOrder();
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        int transtype = mPaymentInfoHelper.getTranstype();
         mAdapter = AdapterFactory.produce(this, mMiniPmcTransType, mPaymentInfoHelper);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
@@ -309,8 +305,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             //check profile level permission in table map
             try {
                 UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-                int allowATM = userInfo.getPermissionByChannelMap(BuildConfig.channel_atm, TransactionType.LINK_CARD);
-                int allowCC = userInfo.getPermissionByChannelMap(BuildConfig.channel_credit_card, TransactionType.LINK_CARD);
+                int allowATM = userInfo.getPermissionByChannelMap(BuildConfig.channel_atm, TransactionType.LINK);
+                int allowCC = userInfo.getPermissionByChannelMap(BuildConfig.channel_credit_card, TransactionType.LINK);
                 if (allowATM == Constants.LEVELMAP_INVALID && allowCC == Constants.LEVELMAP_INVALID) {
                     onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
                     return;
@@ -326,7 +322,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     initChannel();
                 }
                 long appId = BuildConfig.ZALOAPP_ID;
-                checkAppInfo(appId, TransactionType.LINK_CARD, userInfo.zalopay_userid, userInfo.accesstoken);
+                checkAppInfo(appId, TransactionType.LINK, userInfo.zalopay_userid, userInfo.accesstoken);
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
@@ -579,7 +575,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
             AbstractOrder order = mPaymentInfoHelper.getOrder();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            int transtype = TransactionType.LINK_CARD;
+            int transtype = TransactionType.LINK;
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
                     getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, transtype, pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType != null) {

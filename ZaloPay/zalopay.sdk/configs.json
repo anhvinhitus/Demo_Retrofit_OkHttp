@@ -17,7 +17,6 @@
     "channel_bankaccount": "37",
     "channel_credit_card": "36",
     "channel_atm": "39",
-    "channel_link_acc": "2000",
     "cc_code": "123PCC"
   }
 }

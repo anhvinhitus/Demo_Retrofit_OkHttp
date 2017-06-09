@@ -41,6 +41,8 @@ public class GlobalData {
     @CardChannel
     public static int cardChannelType = CardChannel.ATM;
     public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
+    @TransactionType
+    public static int mTranstype;
     //callback to merchant after sdk retry load gateway info
     protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
     @BankFunctionCode
@@ -49,9 +51,6 @@ public class GlobalData {
     private static ZPPaymentListener mListener = null;
     private static String mTransactionPin = null;
     private static WeakReference<IChannelActivityCallBack> mChannelActivityCallBack;
-
-    @TransactionType
-    public static int mTranstype;
 
     public static void setMerchantCallBack(ZPWGatewayInfoCallback pMerchantCallBack) {
         GlobalData.mMerchantCallBack = new WeakReference<>(pMerchantCallBack);
@@ -173,12 +172,13 @@ public class GlobalData {
         return BuildConfig.channel_zalopay == appID;
     }
 
-    public static void selectBankFunctionByTransactionType(@TransactionType int transactionType) {
-        switch (transactionType) {
-            case TransactionType.LINK_ACCOUNT:
-                bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
-                break;
-            case TransactionType.LINK_CARD:
+    public static void selectBankFunctionByTransactionType(PaymentInfoHelper paymentInfoHelper) {
+        if (paymentInfoHelper.isBankAccountLink()) {
+            bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
+            return;
+        }
+        switch (paymentInfoHelper.getTranstype()) {
+            case TransactionType.LINK:
                 bankFunction = BankFunctionCode.LINK_CARD;
                 break;
             case TransactionType.WITHDRAW:
@@ -284,7 +284,7 @@ public class GlobalData {
     }
 
     public static String getTransProcessingMessage(@TransactionType int pTranstype) {
-        return pTranstype == TransactionType.LINK_CARD ? RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
+        return pTranstype == TransactionType.LINK ? RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
     }
 
     public static String getStringResource(String pResourceID) {

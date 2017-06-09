@@ -107,13 +107,6 @@ public class SDKPayment {
             }
             return;
         }
-        IValidate validation = new PaymentInfoValidation(pPaymentInfo.getTranstype());
-        //validate params order info and user info
-        String validateMessage = validation.onValidate(pPaymentInfo);
-        if (!TextUtils.isEmpty(validateMessage)) {
-            terminateSession(validateMessage, PaymentError.DATA_INVALID);
-            return;
-        }
 
         //check internet connection
         if (!ConnectionUtil.isOnline(pMerchantActivity)) {
@@ -125,6 +118,14 @@ public class SDKPayment {
         }
 
         PaymentInfoHelper paymentInfoHelper = new PaymentInfoHelper(pPaymentInfo);
+
+        IValidate validation = new PaymentInfoValidation(paymentInfoHelper);
+        //validate params order info and user info
+        String validateMessage = validation.onValidate(pPaymentInfo);
+        if (!TextUtils.isEmpty(validateMessage)) {
+            terminateSession(validateMessage, PaymentError.DATA_INVALID);
+            return;
+        }
 
         if (!bypassBankAccount(paymentInfoHelper)) {
             return;
@@ -149,7 +150,7 @@ public class SDKPayment {
             }
         }
         Log.d("pay", "payment info ", paymentInfoHelper);
-        GlobalData.selectBankFunctionByTransactionType(paymentInfoHelper.getTranstype());
+        GlobalData.selectBankFunctionByTransactionType(paymentInfoHelper);
         //init tracker event
         long appId = paymentInfoHelper.getAppId();
         int transtype = paymentInfoHelper.getTranstype();
@@ -225,8 +226,8 @@ public class SDKPayment {
         if (paymentInfoHelper.isLinkCardChannel() || paymentInfoHelper.isBankAccountLink()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
             try {
-                String pmc = paymentInfoHelper.isLinkCardChannel() ? SharedPreferencesManager.getInstance().getATMChannelConfig(appId, transtype, null) :
-                        SharedPreferencesManager.getInstance().getBankAccountChannelConfig(appId, transtype, null);
+                String pmc = paymentInfoHelper.isBankAccountLink() ? SharedPreferencesManager.getInstance().getBankAccountChannelConfig(appId, transtype, null) :
+                        SharedPreferencesManager.getInstance().getATMChannelConfig(appId, transtype, null);
                 if (!TextUtils.isEmpty(pmc)) {
                     miniPmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
                     intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, miniPmcTransType);

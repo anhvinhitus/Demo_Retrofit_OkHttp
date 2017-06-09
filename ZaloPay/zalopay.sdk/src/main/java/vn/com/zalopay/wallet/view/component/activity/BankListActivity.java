@@ -74,7 +74,7 @@ public class BankListActivity extends BasePaymentDialogActivity {
             mGridViewBank.setAdapter(getAdapter());
         }
         //set text label
-        if (GlobalData.mTranstype == TransactionType.LINK_CARD) {
+        if (GlobalData.mTranstype == TransactionType.LINK) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
         } else if (getAdapter() instanceof CreditCardSupportGridViewAdapter) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));

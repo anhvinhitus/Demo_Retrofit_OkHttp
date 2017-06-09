@@ -80,7 +80,7 @@ public class CardSelector {
     public CardSelector detectCardType(@TransactionType int pTranstype) {
         String bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
 
-        if (pTranstype == TransactionType.LINK_CARD) {
+        if (pTranstype == TransactionType.LINK) {
             bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
             if (TextUtils.isEmpty(bankCode)) {
                 bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();

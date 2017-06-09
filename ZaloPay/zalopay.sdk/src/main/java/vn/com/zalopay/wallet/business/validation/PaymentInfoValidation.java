@@ -4,14 +4,15 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class PaymentInfoValidation implements IValidate {
     protected IValidate validate;
 
-    public PaymentInfoValidation(@TransactionType int transtype) {
-        if (transtype == TransactionType.LINK_ACCOUNT) {
+    public PaymentInfoValidation(PaymentInfoHelper paymentInfoHelper) {
+        if (paymentInfoHelper.isBankAccountLink()) {
             setValidator(new LinkAccValidation());
-        } else if (transtype == TransactionType.LINK_CARD) {
+        } else if (paymentInfoHelper.isLinkCardChannel()) {
             setValidator(new LinkCardValidation());
         } else {
             setValidator(new PayValidation());

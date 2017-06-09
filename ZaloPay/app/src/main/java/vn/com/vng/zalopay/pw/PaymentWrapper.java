@@ -240,7 +240,7 @@ public class PaymentWrapper {
             return;
         }
         try {
-            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK_CARD);
+            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK);
             invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -270,7 +270,7 @@ public class PaymentWrapper {
         }
         try {
             LinkAccInfo linkAccInfo = new LinkAccInfo(bankType, linkAccType);
-            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK_ACCOUNT)
+            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK)
                     .setLinkAccountInfo(linkAccInfo);
             invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
@@ -408,8 +408,7 @@ public class PaymentWrapper {
 
         int transtype = pPaymentInfoBuilder.getTransactionType();
         AbstractOrder order = pPaymentInfoBuilder.getOrder();
-        if (transtype != TransactionType.LINK_CARD
-                && transtype != TransactionType.LINK_ACCOUNT
+        if (transtype != TransactionType.LINK
                 && !validPaymentInfo(order)) {
             responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
             Exception e = new Exception(
@@ -427,7 +426,7 @@ public class PaymentWrapper {
         mPendingOrder = order;
         mPendingTransaction = transtype;
 
-        if(transtype != TransactionType.LINK_CARD && transtype != TransactionType.LINK_ACCOUNT){
+        if(transtype != TransactionType.LINK){
             ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
             ZPAnalytics.trackApptransidEvent(log);
         }

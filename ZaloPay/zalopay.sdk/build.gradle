@@ -48,7 +48,6 @@ android {
         buildConfigField 'int', 'channel_bankaccount', configJson.configs.channel_bankaccount
         buildConfigField 'int', 'channel_credit_card', configJson.configs.channel_credit_card
         buildConfigField 'int', 'channel_atm', configJson.configs.channel_atm
-        buildConfigField 'int', 'channel_link_acc', configJson.configs.channel_link_acc
     }
 
     compileOptions {

@@ -117,7 +117,7 @@ public class AppInfoLoader extends SingletonBase {
             int[] transtypes = shouldLoadAllAppTranstype() ? new int[]{
                     TransactionType.PAY,
                     TransactionType.TOPUP,
-                    TransactionType.LINK_CARD,
+                    TransactionType.LINK,
                     TransactionType.MONEY_TRANSFER,
                     TransactionType.WITHDRAW}
                     : new int[]{transactionType};

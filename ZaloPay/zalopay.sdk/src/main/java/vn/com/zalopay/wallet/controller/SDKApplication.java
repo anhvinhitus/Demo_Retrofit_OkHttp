@@ -122,7 +122,7 @@ public class SDKApplication extends Application {
             subscription[0] = subscription0;
             //load app zalopay with 4 transtype
             Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
-                    new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK_CARD, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
+                    new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
                     .subscribe(appInfo -> Timber.d("load app info %s", appInfo),
                             throwable -> Timber.e("load app info on error %s", throwable),
                             () -> Timber.d("load app 1 completed"));

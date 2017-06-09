@@ -44,19 +44,13 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
             Timber.d("PaymentSDK response success but paymentInfo builder null");
             return;
         }
-        switch (builder.getTransactionType()) {
-            case TransactionType.LINK_ACCOUNT:
-                if (builder.getLinkAccountInfo().isLinkAcc()) {
-                    onAddBankAccountSuccess((BankAccount) builder.getMapBank());
-                } else if (builder.getLinkAccountInfo().isUnlinkAcc()) {
-                    onUnLinkBankAccountSuccess((BankAccount) builder.getMapBank());
-                }
-                break;
-            case TransactionType.LINK_CARD:
-                onAddBankCardSuccess((MapCard) builder.getMapBank());
-                break;
+        if (builder.getLinkAccountInfo().isLinkAcc()) {
+            onAddBankAccountSuccess((BankAccount) builder.getMapBank());
+        } else if (builder.getLinkAccountInfo().isUnlinkAcc()) {
+            onUnLinkBankAccountSuccess((BankAccount) builder.getMapBank());
+        } else if(builder.getMapBank() != null){
+            onAddBankCardSuccess((MapCard) builder.getMapBank());
         }
-
     }
 
     void linkAccount(String cardCode) {

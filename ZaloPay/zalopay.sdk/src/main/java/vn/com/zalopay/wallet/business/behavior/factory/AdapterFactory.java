@@ -33,28 +33,23 @@ public class AdapterFactory {
         AdapterBase adapter = null;
         switch (pPmcTransType.pmcid) {
             case BuildConfig.channel_zalopay:
-                Log.i("Zmp", "AdapterFactory.produce adapter=AdapterZaloPay");
                 adapter = new AdapterZaloPay(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_atm:
-                Log.i("Zmp", "AdapterFactory.produce adapter=AdapterBankCard");
                 adapter = new AdapterBankCard(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_credit_card:
-                Log.i("Zmp", "AdapterFactory.produce adapter=AdapterCreditCard");
                 adapter = new AdapterCreditCard(owner, pPmcTransType, paymentInfoHelper);
                 break;
             case BuildConfig.channel_bankaccount:
-                Log.i("Zmp", "AdapterFactory.produce adapter=AdapterBankAccount");
-                adapter = new AdapterBankAccount(owner, pPmcTransType, paymentInfoHelper);
+                if (pPmcTransType.isBankAccountMap()) {
+                    adapter = new AdapterBankAccount(owner, pPmcTransType, paymentInfoHelper);
+                } else {
+                    adapter = new AdapterLinkAcc(owner, pPmcTransType, paymentInfoHelper);
+                }
                 break;
-            case BuildConfig.channel_link_acc:
-                Log.i("Zmp", "AdapterFactory.produce adapter=AdapterLinkAcc");
-                adapter = new AdapterLinkAcc(owner, pPmcTransType, paymentInfoHelper);
-                break;
-            default:
-                Log.d("Zmp", "AdapterFactory.produce adapter=null");
         }
+        Log.d("produceChannelByPmc", "create adapter", adapter.getClass().getSimpleName());
         return adapter;
     }
 }

@@ -156,7 +156,7 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public boolean isBankAccountLink() {
-        return getTranstype() == TransactionType.LINK_ACCOUNT;
+        return isLinkAccFlow() || isUnLinkAccFlow();
     }
 
     public boolean isLinkAccFlow() {
@@ -168,7 +168,7 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public boolean isLinkCardChannel() {
-        return getTranstype() == TransactionType.LINK_CARD;
+        return getTranstype() == TransactionType.LINK;
     }
 
     public boolean isTranferMoneyChannel() {
