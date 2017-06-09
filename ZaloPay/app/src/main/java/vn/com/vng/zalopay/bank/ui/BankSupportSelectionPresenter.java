@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
@@ -28,6 +29,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
@@ -36,8 +38,8 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
  * List support bank.
  */
 public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSupportSelectionView> {
-    private PaymentWrapper paymentWrapper;
     private final User mUser;
+    private PaymentWrapper paymentWrapper;
     private LinkBankType mBankType;
     private DefaultSubscriber<List<ZPCard>> mGetSupportBankSubscriber;
 
@@ -130,11 +132,13 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
     void getCardSupport() {
         Timber.d("Get list bank support %s", mBankType);
-        UserInfo userInfo = new UserInfo();
-        userInfo.zalopay_userid = mUser.zaloPayId;
-        userInfo.accesstoken = mUser.accesstoken;
-        Subscription subscription = CShareDataWrapper.getCardSupportList(userInfo, mGetSupportBankSubscriber);
+       Subscription subscription = SDKApplication
+               .getApplicationComponent()
+               .bankListInteractor()
+               .getSupportCards(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+               .subscribe(mGetSupportBankSubscriber);
         mSubscription.add(subscription);
+
     }
 
     void initData(Bundle bundle) {
@@ -192,6 +196,8 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         setResultActivity(BankAction.UNLINK_ACCOUNT, bankAccount);
     }
 
+    protected void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+    }
 
     // Inner class custom listener
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
@@ -252,8 +258,5 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
             mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
         }
-    }
-
-    protected void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
     }
 }

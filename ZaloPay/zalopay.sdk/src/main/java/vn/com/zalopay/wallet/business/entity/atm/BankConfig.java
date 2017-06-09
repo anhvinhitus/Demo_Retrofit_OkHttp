@@ -6,8 +6,6 @@ import java.util.List;
 
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -38,6 +36,7 @@ public class BankConfig {
     public String feecaltype = null;
     @BankStatus
     public int status;
+    public int displayorder = 0;// order sort in UI
 
     /***
      * get detail maintenance message from bankconfig

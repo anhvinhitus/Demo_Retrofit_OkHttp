@@ -216,10 +216,11 @@
     <string name="zpw_app_info_map_channel_checksum">app_map_channel_checksum_</string>
     <string name="zpw_app_info_map_channel_expired_time">app_map_channel_expired_time_</string>
 
-    <string name="zpw_banklist_expired_time">banklist_expired_time</string>
-    <string name="zpw_banklist_checksum">banklist_checksum</string>
-    <string name="zpw_bankconfig">zpw_bankconfig</string>
-    <string name="zpw_bankmap">zpw_bankmap</string>
+    <string name="sdk_banklist_expire_time">banklist_expire_time</string>
+    <string name="sdk_banklist_checksum">banklist_checksum</string>
+    <string name="sdk_bankconfig">bankconfig</string>
+    <string name="sdk_bank_prefix">bank_prefix</string>
+    <string name="sdk_sort_bank_code_list">bank_code_list</string>
 
     <string name="zpw_string_fee_free">Miễn phí giao dịch</string>
 
@@ -416,7 +417,7 @@
     <string name="zpw_string_level_allow_mapcard">2</string>
     <string name="zpw_string_level_allow_withdraw">2</string>
     <string name="zpw_string_level_allow_bankaccount">2</string>
-    
+
     <string name="zpw_string_withdraw_description">Số tiền</string>
 
     <string name="zpw_string_visible_pin_on">Hiện</string>

@@ -188,7 +188,7 @@ public abstract class BaseChannelInjector {
         }
         if (BankAccountHelper.isBankAccount(pChannel.bankcode)) {
             pChannel.pmcid = BuildConfig.channel_bankaccount;
-        } else if (Constants.CCCode.equals(pChannel.bankcode)) {
+        } else if (BuildConfig.CC_CODE.equals(pChannel.bankcode)) {
             pChannel.pmcid = BuildConfig.channel_credit_card;
         } else {
             pChannel.pmcid = BuildConfig.channel_atm;
@@ -225,7 +225,7 @@ public abstract class BaseChannelInjector {
                 MiniPmcTransType activeChannel;
                 if (mPaymentInfoHelper.isWithDrawChannel()) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
-                } else if (Constants.CCCode.equals(mapCard.bankcode)) {
+                } else if (BuildConfig.CC_CODE.equals(mapCard.bankcode)) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
                 } else {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
@@ -252,7 +252,7 @@ public abstract class BaseChannelInjector {
                         channel.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
                     }
 
-                    if (Constants.CCCode.equals(channel.bankcode)) {
+                    if (BuildConfig.CC_CODE.equals(channel.bankcode)) {
                         CreditCardCheck.getInstance().detectOnSync(channel.f6no);
                         if (CreditCardCheck.getInstance().isDetected()) {
                             //populate channel name

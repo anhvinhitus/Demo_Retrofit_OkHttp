@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -97,7 +98,7 @@ public class BankUtils {
         }
 
         Timber.d("getBankCardStyle bankCode [%s]", bankCard.bankcode);
-        if (Constants.CCCode.equals(bankCard.bankcode)) {
+        if (BuildConfig.CC_CODE.equals(bankCard.bankcode)) {
             return mBankSettings.get(detectCCCard(bankCard.getFirstNumber(), user));
         } else if (mBankSettings.containsKey(bankCard.bankcode)) {
             return mBankSettings.get(bankCard.bankcode);

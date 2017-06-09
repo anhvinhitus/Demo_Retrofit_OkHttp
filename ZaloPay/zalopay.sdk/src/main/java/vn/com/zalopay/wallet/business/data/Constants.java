@@ -51,7 +51,6 @@ public class Constants {
     public static final int DOWNLOAD_RESOURCE_MAX_RETRY = 10;
     public static final long GETSTATUS_CLIENT_COUNT = 5;
     public static final int MAX_RETRY_GETSTATUS = 5;
-    public static final String CCCode = "123PCC";
     public static final int MIN_CC_LENGTH = 6;
     public static final int MIN_ATM_LENGTH = 6;
     public static final int MAX_COUNT_RETRY_PIN = 5;

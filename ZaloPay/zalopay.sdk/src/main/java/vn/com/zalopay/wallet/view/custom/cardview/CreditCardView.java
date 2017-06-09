@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.codetail.animation.ViewAnimationUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -440,7 +441,7 @@ public class CreditCardView extends FrameLayout {
      */
     public void switchCardDateHintByBankCode(String bankCode) {
 
-        if (bankCode.equalsIgnoreCase(Constants.CCCode)) {
+        if (BuildConfig.CC_CODE.equals(bankCode)) {
             ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_expire);
         } else {
             ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_local);

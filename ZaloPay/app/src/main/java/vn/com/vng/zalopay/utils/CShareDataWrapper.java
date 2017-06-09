@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -77,7 +78,7 @@ public class CShareDataWrapper {
             return Collections.emptyList();
         }
         for (MapCard bankCard : dMappedCards) {
-            if (Constants.CCCode.equalsIgnoreCase(bankCard.bankcode)) {
+            if (BuildConfig.CC_CODE.equalsIgnoreCase(bankCard.bankcode)) {
                 bankCard.bankcode = BankUtils.detectCCCard(bankCard.getFirstNumber(), user);
             }
         }

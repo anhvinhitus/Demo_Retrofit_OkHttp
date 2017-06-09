@@ -51,7 +51,7 @@ public class BankLoader extends SingletonBase {
     protected static boolean isNeedToLoadBankList() throws Exception {
         long expiredTime = SharedPreferencesManager.getInstance().getExpiredBankList();
         String checkSum = SharedPreferencesManager.getInstance().getCheckSumBankList();
-        String cachedBankList = SharedPreferencesManager.getInstance().getBankMap();
+        String cachedBankList = SharedPreferencesManager.getInstance().getBankPrefix();
         return expiredTime < System.currentTimeMillis() || TextUtils.isEmpty(cachedBankList) || TextUtils.isEmpty(checkSum);
     }
 
@@ -75,7 +75,7 @@ public class BankLoader extends SingletonBase {
                 Log.d("loadBankList", "===reload banklist from ache===");
                 java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
                 }.getType();
-                HashMap<String, String> bankMap = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankMap(), type);
+                HashMap<String, String> bankMap = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankPrefix(), type);
                 BankLoader.mapBank = bankMap;
                 if (pListener != null) {
                     pListener.onComplete();

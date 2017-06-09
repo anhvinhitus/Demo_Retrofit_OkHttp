@@ -6,6 +6,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 
 /**
@@ -22,9 +23,14 @@ public class BankListStore {
 
         String getCheckSum();
 
-        String getMap();
+        String getBankPrefix();
+
+        String getBankCodeList();
+
+        BankConfig getBankConfig(String bankCode);
 
         void clearCheckSum();
+
         void clearConfig();
     }
 

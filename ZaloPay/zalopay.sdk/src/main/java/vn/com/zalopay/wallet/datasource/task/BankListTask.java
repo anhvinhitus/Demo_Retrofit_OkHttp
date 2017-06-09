@@ -81,7 +81,7 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
             java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
             }.getType();
             try {
-                HashMap<String, String> bankMap = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankMap(), type);
+                HashMap<String, String> bankMap = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankPrefix(), type);
                 BankLoader.mapBank = bankMap;
             } catch (Exception e) {
                 Log.e(this, e);

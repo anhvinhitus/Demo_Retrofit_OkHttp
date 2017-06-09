@@ -211,35 +211,43 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public boolean setExpiredBankList(long pExpiredTime) {
-        return setLong(mContext.get().getResources().getString(R.string.zpw_banklist_expired_time), pExpiredTime);
+        return setLong(mContext.get().getResources().getString(R.string.sdk_banklist_expire_time), pExpiredTime);
     }
 
     public boolean setCheckSumBankList(String pCheckSum) {
-        return setString(mContext.get().getResources().getString(R.string.zpw_banklist_checksum), pCheckSum);
+        return setString(mContext.get().getResources().getString(R.string.sdk_banklist_checksum), pCheckSum);
     }
 
     public long getExpiredBankList() {
-        return getLong(mContext.get().getResources().getString(R.string.zpw_banklist_expired_time));
+        return getLong(mContext.get().getResources().getString(R.string.sdk_banklist_expire_time));
     }
 
     public String getCheckSumBankList() {
-        return getString(mContext.get().getResources().getString(R.string.zpw_banklist_checksum));
+        return getString(mContext.get().getResources().getString(R.string.sdk_banklist_checksum));
     }
 
     public boolean setBankConfig(String pKey, String pBankConfig) {
-        return setString(mContext.get().getResources().getString(R.string.zpw_bankconfig) + pKey, pBankConfig);
+        return setString(mContext.get().getResources().getString(R.string.sdk_bankconfig) + pKey, pBankConfig);
     }
 
     public String getBankConfig(String pKey) {
-        return getString(mContext.get().getResources().getString(R.string.zpw_bankconfig) + pKey);
+        return getString(mContext.get().getResources().getString(R.string.sdk_bankconfig) + pKey);
     }
 
     public boolean setBankConfigMap(String pBankMap) {
-        return setString(mContext.get().getResources().getString(R.string.zpw_bankmap), pBankMap);
+        return setString(mContext.get().getResources().getString(R.string.sdk_bank_prefix), pBankMap);
     }
 
-    public String getBankMap() {
-        return getString(mContext.get().getResources().getString(R.string.zpw_bankmap));
+    public String getBankPrefix() {
+        return getString(mContext.get().getResources().getString(R.string.sdk_bank_prefix));
+    }
+
+    public boolean setBankCodeList(String pBankCodeList) {
+        return setString(mContext.get().getResources().getString(R.string.sdk_sort_bank_code_list), pBankCodeList);
+    }
+
+    public String getBankCodeList() {
+        return getString(mContext.get().getString(R.string.sdk_sort_bank_code_list));
     }
 
     public boolean setCheckSumAppChannel(String pAppID, String pCheckSum) {

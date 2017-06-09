@@ -6,6 +6,7 @@ import java.util.List;
 
 import rx.Single;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -102,7 +103,7 @@ public class MapCardHelper {
         String bankName = null;
         //create icon for map card.
         //this is atm
-        if (!Constants.CCCode.equals(saveCardInfo.bankcode)) {
+        if (!BuildConfig.CC_CODE.equals(saveCardInfo.bankcode)) {
             mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
             //populate channel name
             bankName = BankCardCheck.getInstance().getShortBankName();

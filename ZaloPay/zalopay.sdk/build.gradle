@@ -36,6 +36,7 @@ android {
         buildConfigField 'int', 'WITHDRAWAPP_ID', configJson.configs.withdrawapp_id
         buildConfigField 'int', 'REDPACKAGEAPP_ID', configJson.configs.redpackage_app_id
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', '"' + configJson.configs.package_playstore + '"'
+        buildConfigField 'String', 'CC_CODE', '"' + configJson.configs.cc_code + '"'
 
         buildConfigField 'int', 'level_allow_use_zalopay', configJson.configs.level_allow_use_zalopay
         buildConfigField 'int', 'level_allow_cardmap', configJson.configs.level_allow_cardmap

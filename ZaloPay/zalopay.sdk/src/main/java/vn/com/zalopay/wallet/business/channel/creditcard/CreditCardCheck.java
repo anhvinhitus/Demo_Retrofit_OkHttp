@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import java.util.List;
 
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -65,7 +66,7 @@ public class CreditCardCheck extends CardCheck {
 
     @Override
     public String getDetectBankCode() {
-        return Constants.CCCode;
+        return BuildConfig.CC_CODE;
     }
 
     @Override

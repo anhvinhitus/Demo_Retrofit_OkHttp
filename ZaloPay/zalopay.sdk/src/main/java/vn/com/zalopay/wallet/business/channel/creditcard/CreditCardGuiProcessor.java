@@ -164,7 +164,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void populateBankCode() {
-        getAdapter().getCard().setBankcode(Constants.CCCode);
+        getAdapter().getCard().setBankcode(BuildConfig.CC_CODE);
     }
 
     @Override
