@@ -1,3 +1,2 @@
-Zalo Pay (Sandbox v2.14.0 - build 262) - Released on 2017-06-08 17:46
-+ [CI] Update script ci. - Không sử dụng config gradle, thay bằng gradlew by hieuvm (#0143292)
-+ [GA] Update google reporter - Batching multiple hits in a single request by hieuvm (#dafa409)
+Zalo Pay (Sandbox v2.14.0 - build 263) - Released on 2017-06-09 10:17
++ [SDK] Refactor lại phần load gateway info by vo van chuc (#03a6ed9)
