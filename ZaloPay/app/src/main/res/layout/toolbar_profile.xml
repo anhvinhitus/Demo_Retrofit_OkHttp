@@ -34,9 +34,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/personal_margin_12"
+                android:gravity="center_vertical"
                 android:textColor="@color/white"
-                app:iconName="@string/personal_history"
-                app:iconSize="@dimen/personal_margin_18" />
+                app:iconName="@string/personal_setting"
+                app:iconSize="@dimen/personal_iconfont" />
         </RelativeLayout>
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
