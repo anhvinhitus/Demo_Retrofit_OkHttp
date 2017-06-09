@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -111,7 +111,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     private boolean isMaintainWithdraw() {
-        WDMaintenance wdMaintenance = CShareDataWrapper.getWithdrawMaintenance();
+        Maintenance wdMaintenance = CShareDataWrapper.getWithdrawMaintenance();
         if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
             return false;
         }

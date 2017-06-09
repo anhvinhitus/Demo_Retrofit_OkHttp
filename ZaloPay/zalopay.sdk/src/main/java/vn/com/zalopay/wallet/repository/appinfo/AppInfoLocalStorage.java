@@ -11,8 +11,8 @@ import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeResponse;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -28,15 +28,15 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public void putAppInfo(String pAppId, AppInfoResponse pResponse) {
+    public void put(long pAppId, AppInfoResponse pResponse) {
         try {
-            Log.d(this, "onDoTaskOnResponse");
+            Log.d(this, "start save app info", pResponse);
             if (pResponse == null || pResponse.returncode != 1) {
                 Log.d(this, "request not success...stopping saving response to cache");
                 return;
             }
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(pAppId), expiredTime);
+            mSharedPreferences.setExpiredTimeAppChannel(String.valueOf(pAppId), expiredTime);
             if (pResponse.hasTranstypes()) {
                 long minValue, maxValue;
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
@@ -46,9 +46,9 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                     maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
                     ArrayList<String> transtypePmcIdList = new ArrayList<>();
 
-                    String appInfoTranstypeKey = getAppTranstypeKey(pAppId, transtype);
+                    String appInfoTranstypeKey = getTranstypeCheckSumKey(pAppId, transtype);
                     for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
-                        String pmcKey = miniPmcTransType.getPmcKey(Long.parseLong(pAppId), transtype, miniPmcTransType.pmcid);
+                        String pmcKey = MiniPmcTransType.getPmcKey(pAppId, transtype, miniPmcTransType.pmcid);
                         //save default for new atm/cc and bank account/zalopay pmc
                         if (!transtypePmcIdList.contains(pmcKey)) {
                             transtypePmcIdList.add(pmcKey);
@@ -57,7 +57,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                             if (miniPmcTransType.isAtmChannel()) {
                                 defaultPmcTranstype.resetToDefault();
                             }
-                            SharedPreferencesManager.getInstance().setPmcConfig(pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));//set 1 channel
+                            mSharedPreferences.setPmcConfig(pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));//set 1 channel
                             Log.d(this, "save channel to cache key " + pmcKey, defaultPmcTranstype);
                         }
                         //get min,max of this channel to app use
@@ -72,22 +72,20 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                         }
                         StringBuilder pmcId = new StringBuilder();
                         pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
-                        SharedPreferencesManager.getInstance().setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
+                        mSharedPreferences.setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
                         Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
                     }
-                    SharedPreferencesManager.getInstance().setPmcConfigList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
-                    SharedPreferencesManager.getInstance().setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
+                    mSharedPreferences.setPmcConfigList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
+                    mSharedPreferences.setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
                     Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
-                    //save min,max value for each channel.those values is used by app
-                    if (transtype == TransactionType.MONEY_TRANSFER
-                            || transtype == TransactionType.TOPUP
-                            || transtype == TransactionType.WITHDRAW) {
+                    //save min,max value for each channel.those values is used when user input amount
+                    if (transtype == TransactionType.MONEY_TRANSFER || transtype == TransactionType.TOPUP || transtype == TransactionType.WITHDRAW) {
                         if (minValue != BaseChannelInjector.MIN_VALUE_CHANNEL) {
-                            SharedPreferencesManager.getInstance().setMinValueChannel(String.valueOf(transtype), minValue);
+                            mSharedPreferences.setMinValueChannel(String.valueOf(transtype), minValue);
                             Log.d(this, "save min value " + minValue + " transtype " + transtype);
                         }
                         if (maxValue != BaseChannelInjector.MAX_VALUE_CHANNEL) {
-                            SharedPreferencesManager.getInstance().setMaxValueChannel(String.valueOf(transtype), maxValue);
+                            mSharedPreferences.setMaxValueChannel(String.valueOf(transtype), maxValue);
                             Log.d(this, "save max value " + maxValue + " transtype " + transtype);
                         }
                     }
@@ -96,8 +94,8 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
 
             if (pResponse.needUpdateAppInfo()) {
                 //save app info to cache(id,name,icon...)
-                SharedPreferencesManager.getInstance().setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
-                SharedPreferencesManager.getInstance().setCheckSumAppChannel(String.valueOf(pAppId), pResponse.appinfochecksum);
+                mSharedPreferences.setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
+                mSharedPreferences.setCheckSumAppChannel(String.valueOf(pAppId), pResponse.appinfochecksum);
                 Log.d(this, "save app info to cache and update new checksum", pResponse.info);
             }
         } catch (Exception ex) {
@@ -106,13 +104,17 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public Observable<AppInfo> getAppInfo(String appId) {
+    public Observable<AppInfo> get(long appId) {
         return Observable.defer(() -> {
             try {
-                AppInfo appInfo = GsonUtils.fromJsonString(mSharedPreferences.getAppById(appId), AppInfo.class);
-                appInfo.expriretime = getExpireTime(appId);
-                Log.d(this, "load app info from cache", appInfo);
-                return Observable.just(appInfo);
+                AppInfo appInfo = GsonUtils.fromJsonString(mSharedPreferences.getAppById(String.valueOf(appId)), AppInfo.class);
+                if (appInfo != null) {
+                    appInfo.expriretime = getExpireTime(appId);
+                    Log.d(this, "load app info from cache", appInfo);
+                    return Observable.just(appInfo);
+                } else {
+                    return Observable.just(null);
+                }
             } catch (Exception e) {
                 return Observable.error(e);
             }
@@ -120,9 +122,9 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public long getExpireTime(String appId) {
+    public long getExpireTime(long appId) {
         try {
-            return mSharedPreferences.getExpiredTimeAppChannel(appId);
+            return mSharedPreferences.getExpiredTimeAppChannel(String.valueOf(appId));
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -130,11 +132,34 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public String getCheckSum(String appId) {
-        return mSharedPreferences.getCheckSumAppChannel(appId);
+    public String getAppInfoCheckSum(long appId) {
+        String checksum = null;
+        try {
+            checksum = mSharedPreferences.getCheckSumAppChannel(String.valueOf(appId));
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
 
-    private String getAppTranstypeKey(String pAppId, int transtype) {
+    @Override
+    public String getTranstypeCheckSum(String key) {
+        String checksum = null;
+        try {
+            checksum = mSharedPreferences.getTransypePmcCheckSum(key);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return !TextUtils.isEmpty(checksum) ? checksum : "";
+    }
+
+    @Override
+    public void setExpireTime(long appId, long expireTime) {
+        mSharedPreferences.setExpiredTimeAppChannel(String.valueOf(appId), expireTime);
+    }
+
+    @Override
+    public String getTranstypeCheckSumKey(long pAppId, int transtype) {
         StringBuilder appTransTypePmcKey = new StringBuilder();
         appTransTypePmcKey.append(pAppId)
                 .append(Constants.UNDERLINE)

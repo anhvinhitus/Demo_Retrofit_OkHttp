@@ -14,19 +14,22 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 
 public class BankListStore {
     public interface LocalStorage {
-        void putBankList(BankConfigResponse bankConfigResponse);
+        void put(BankConfigResponse bankConfigResponse);
 
         long getExpireTime();
 
-        Observable<BankConfigResponse> getBankList();
+        Observable<BankConfigResponse> get();
 
         String getCheckSum();
 
         String getMap();
+
+        void clearCheckSum();
+        void clearConfig();
     }
 
     public interface Repository {
-        Observable<BankConfigResponse> fetchBankListCloud(String platform, String checksum, String appversion);
+        Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion);
 
         BankListStore.LocalStorage getLocalStorage();
     }
@@ -34,6 +37,6 @@ public class BankListStore {
     public interface BankListService {
         @GET(Constants.URL_GET_BANKLIST)
         @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)
-        Observable<BankConfigResponse> fetchBankList(@Query("platform") String platform, @Query("checksum") String checksum, @Query("appversion") String appversion);
+        Observable<BankConfigResponse> fetch(@Query("platform") String platform, @Query("checksum") String checksum, @Query("appversion") String appversion);
     }
 }

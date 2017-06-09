@@ -7,10 +7,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
@@ -51,7 +51,13 @@ public class HandleZaloIntegration {
         userInfo.zalo_userid = String.valueOf(user.zaloId);
         userInfo.zalopay_userid = user.zaloPayId;
         userInfo.accesstoken = user.accesstoken;
-        SDKApplication.loadGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack());
+        String appVersion = BuildConfig.VERSION_NAME;
+        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber());
+        if (subscriptions != null && subscriptions.length > 0) {
+            for (int i = 0; i < subscriptions.length; i++) {
+                mCompositeSubscription.add(subscriptions[i]);
+            }
+        }
     }
 
     public void loadPaymentSdk() {

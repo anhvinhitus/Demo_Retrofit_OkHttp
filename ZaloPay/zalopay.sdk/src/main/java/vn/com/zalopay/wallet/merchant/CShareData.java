@@ -41,7 +41,7 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
@@ -336,16 +336,16 @@ public class CShareData extends SingletonBase {
         return 0;
     }
 
-    public WDMaintenance getWithdrawMaintenance() {
+    public Maintenance getWithdrawMaintenance() {
         try {
             String maintenanceOb = SharedPreferencesManager.getInstance().getMaintenanceWithDraw();
             if (!TextUtils.isEmpty(maintenanceOb)) {
-                return GsonUtils.fromJsonString(maintenanceOb, WDMaintenance.class);
+                return GsonUtils.fromJsonString(maintenanceOb, Maintenance.class);
             }
         } catch (Exception ex) {
             Log.e(this, ex);
         }
-        return new WDMaintenance();
+        return new Maintenance();
     }
 
     /****

@@ -17,7 +17,7 @@ import vn.com.zalopay.wallet.datasource.implement.LoadPlatformInfoImpl;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 
 /***
  * platform api and update platform's data on cache
@@ -80,7 +80,7 @@ public class PlatformInfoTask extends BaseTask<PlatformInfoResponse> {
         SharedPreferencesManager.getInstance().setEnableDeposite(pResponse.isenabledeposit);
         Log.d(this, "saved pResponse.isenabledeposit to cache");
         //set maintenance withdraw
-        WDMaintenance wdMaintenance = new WDMaintenance();
+        Maintenance wdMaintenance = new Maintenance();
         wdMaintenance.ismaintainwithdraw = pResponse.ismaintainwithdraw;
         wdMaintenance.maintainwithdrawfrom = pResponse.maintainwithdrawfrom;
         wdMaintenance.maintainwithdrawto = pResponse.maintainwithdrawto;

@@ -23,16 +23,6 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
         super(sharedPreferencesManager);
     }
 
-    protected void saveBankListToCache(BankConfigResponse pResponse) {
-        mSharedPreferences.setCheckSumBankList(pResponse.checksum);
-        for (BankConfig bankConfig : pResponse.banklist) {
-            mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
-        }
-        String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
-        mSharedPreferences.setBankConfigMap(hashMapBank);
-        Log.d(this, "save bank list to cache", pResponse);
-    }
-
     protected boolean isCheckSumChanged(String pNewCheckSum) {
         String checkSumOnCache = null;
         try {
@@ -45,40 +35,63 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
 
     @Override
     public String getCheckSum() {
-        return mSharedPreferences.getCheckSumBankList();
+        String checksum = null;
+        try {
+            checksum = mSharedPreferences.getCheckSumBankList();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
 
     @Override
     public String getMap() {
-        return mSharedPreferences.getBankMap();
+        String mapBankConfig = null;
+        try {
+            mapBankConfig = mSharedPreferences.getBankMap();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return mapBankConfig;
     }
 
     @Override
     public long getExpireTime() {
-        return mSharedPreferences.getExpiredBankList();
+        long expiretime = 0;
+        try {
+            expiretime = mSharedPreferences.getExpiredBankList();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return expiretime;
     }
 
     @Override
-    public void putBankList(BankConfigResponse bankConfigResponse) {
-        if (bankConfigResponse == null || bankConfigResponse.returncode != 1) {
+    public void put(BankConfigResponse pResponse) {
+        Log.d(this, "start save bank list to cache", pResponse);
+        if (pResponse == null || pResponse.returncode != 1) {
             Log.d(this, "request not success, stopping saving bank list to cache");
             return;
         }
-        Log.d(this, "start update expire time bank list");
-        long time_to_live = System.currentTimeMillis() + bankConfigResponse.expiredtime;
+        long time_to_live = System.currentTimeMillis() + pResponse.expiredtime;
         mSharedPreferences.setExpiredBankList(time_to_live);
-        if (isCheckSumChanged(bankConfigResponse.checksum)) {
-            saveBankListToCache(bankConfigResponse);
+        if (isCheckSumChanged(pResponse.checksum)) {
+            mSharedPreferences.setCheckSumBankList(pResponse.checksum);
+            for (BankConfig bankConfig : pResponse.banklist) {
+                mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
+            }
+            String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
+            mSharedPreferences.setBankConfigMap(hashMapBank);
         }
     }
 
     @Override
-    public Observable<BankConfigResponse> getBankList() {
+    public Observable<BankConfigResponse> get() {
         return Observable.defer(() -> {
             try {
                 java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
                 }.getType();
-                HashMap<String, String> bankMap = GsonUtils.fromJsonString(mSharedPreferences.getBankMap(), type);
+                HashMap<String, String> bankMap = GsonUtils.fromJsonString(getMap(), type);
                 BankConfigResponse bankConfigResponse = new BankConfigResponse();
                 bankConfigResponse.bankcardprefixmap = bankMap;
                 bankConfigResponse.expiredtime = getExpireTime();
@@ -88,5 +101,15 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
                 return Observable.error(e);
             }
         });
+    }
+
+    @Override
+    public void clearCheckSum() {
+        mSharedPreferences.setCheckSumBankList(null);
+    }
+
+    @Override
+    public void clearConfig() {
+        mSharedPreferences.setBankConfigMap(null);
     }
 }

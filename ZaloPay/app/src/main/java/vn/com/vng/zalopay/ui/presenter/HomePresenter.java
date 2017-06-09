@@ -21,11 +21,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -62,18 +62,13 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
-import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.interactor.IPlatform;
-import vn.com.zalopay.wallet.interactor.PlatformInteractor;
-import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
+import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
+import vn.com.zalopay.wallet.interactor.UpversionCallback;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -102,12 +97,32 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private final UserSession mUserSession;
     private final ApplicationState mApplicationState;
     private final GlobalEventHandlingService globalEventHandlingService;
-
     private boolean isInitTransaction;
     private Subscription mRefPlatformSubscription;
     private boolean isLoadedGateWayInfo;
-    private PaymentWrapper paymentWrapper;
+    private DefaultSubscriber<PlatformInfoCallback> platformInfoSubscriber = new DefaultSubscriber<PlatformInfoCallback>() {
+        @Override
+        public void onError(Throwable e) {
+            Timber.d("load platform info on result", e);
+        }
 
+        @Override
+        public void onNext(PlatformInfoCallback platformInfoCallback) {
+            Timber.d("load payment sdk finish");
+            if (mView == null) {
+                return;
+            }
+            if (platformInfoCallback instanceof UpversionCallback) {
+                updateHomePage(((UpversionCallback) platformInfoCallback).forceupdate);
+                AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
+                        ((UpversionCallback) platformInfoCallback).forceupdate, ((UpversionCallback) platformInfoCallback).newestappversion,
+                        ((UpversionCallback) platformInfoCallback).forceupdatemessage);
+            } else {
+                updateHomePage(false);
+            }
+        }
+    };
+    private PaymentWrapper paymentWrapper;
     private IBuilder mPromotionBuilder;
     private PromotionHelper mPromotionHelper;
     private IResourceLoader mPromotionResourceLoader;
@@ -248,45 +263,21 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         userInfo.zalo_userid = String.valueOf(mUser.zaloId);
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
-        SDKApplication.loadGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack() {
-            @Override
-            public void onFinish() {
-                Timber.d("load payment sdk finish");
-                if (mView == null) {
-                    return;
-                }
-
-                isLoadedGateWayInfo = true;
-
-                refreshBanners();
-                beginAutoRefreshPlatform();
+        String appVersion = BuildConfig.VERSION_NAME;
+        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, platformInfoSubscriber);
+        if (subscriptions != null && subscriptions.length > 0) {
+            for (int i = 0; i < subscriptions.length; i++) {
+                mSubscription.add(subscriptions[i]);
             }
+        }
+    }
 
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
-                Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
-                if (mView == null) {
-                    return;
-                }
-
-                isLoadedGateWayInfo = true;
-
-                if (!forceUpdate) {
-                    beginAutoRefreshPlatform();
-                }
-
-                refreshBanners();
-                AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
-                        forceUpdate, latestVersion, msg);
-            }
-        });
-        //load bank list
-        Subscription subscription = SDKApplication.getApplicationComponent().platform().getBankList(BuildConfig.PAYMENT_PLATFORM,
-                SdkUtils.getAppVersion(mApplicationContext), System.currentTimeMillis())
-                .subscribe(bankConfigResponse -> {
-
-                });
-        mSubscription.add(subscription);
+    private void updateHomePage(boolean forceUpdate) {
+        isLoadedGateWayInfo = true;
+        refreshBanners();
+        if (!forceUpdate) {
+            beginAutoRefreshPlatform();
+        }
     }
 
     private void unsubscribeIfNotNull(Subscription subscription) {
@@ -355,7 +346,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         UserInfo userInfo = new UserInfo();
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
-        SDKApplication.refreshGatewayInfo(userInfo, new DefaultZPGatewayInfoCallBack());
+        String appVersion = BuildConfig.VERSION_NAME;
+        Subscription subscription = SDKApplication.refreshSDKData(userInfo, appVersion, new DefaultSubscriber());
+        mSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -12,14 +12,17 @@ import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.BankListRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.di.module.InteractorModule;
-import vn.com.zalopay.wallet.interactor.IPlatform;
-import vn.com.zalopay.wallet.interactor.PlatformInteractor;
+import vn.com.zalopay.wallet.di.module.PlatformInfoRepositoryModule;
+import vn.com.zalopay.wallet.interactor.IAppInfo;
+import vn.com.zalopay.wallet.interactor.IBankList;
+import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 
 @Singleton
 @Component(modules = {ApplicationModule.class,
         ConfigurationModule.class,
         AppInfoRepositoryModule.class,
         BankListRepositoryModule.class,
+        PlatformInfoRepositoryModule.class,
         InteractorModule.class})
 public interface ApplicationComponent {
 
@@ -29,5 +32,9 @@ public interface ApplicationComponent {
 
     SDKConfiguration sdkConfiguration();
 
-    IPlatform platform();
+    IPlatformInfo platformInfoInteractor();
+
+    IBankList bankListInteractor();
+
+    IAppInfo appInfoInteractor();
 }

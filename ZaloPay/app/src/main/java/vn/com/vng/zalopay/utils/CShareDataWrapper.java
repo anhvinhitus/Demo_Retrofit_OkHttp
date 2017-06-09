@@ -23,7 +23,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
@@ -104,7 +104,7 @@ public class CShareDataWrapper {
         CShareData.getInstance().getWithDrawBankList(listener);
     }
 
-    public static WDMaintenance getWithdrawMaintenance() {
+    public static Maintenance getWithdrawMaintenance() {
         return CShareData.getInstance().getWithdrawMaintenance();
     }
 

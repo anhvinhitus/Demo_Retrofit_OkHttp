@@ -13,8 +13,6 @@ public class PlatformInfoResponse extends BaseResponse {
     public List<BankAccount> bankaccounts = null;
     public String bankaccountchecksum = null;
 
-    public AppInfo info = null;
-
     public boolean isupdateresource = false;
     public SDKResource resource = null;
 

@@ -1,13 +1,15 @@
 package vn.com.zalopay.wallet.controller;
 
 import android.app.Application;
+import android.content.Context;
 
+import rx.Observer;
+import rx.Subscription;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -21,6 +23,9 @@ import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
+import vn.com.zalopay.wallet.interactor.IAppInfo;
+import vn.com.zalopay.wallet.interactor.IBankList;
+import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
@@ -62,72 +67,98 @@ public class SDKApplication extends Application {
         removeMapCardTask.makeRequest();
     }
 
-    private static boolean newVersion() {
-        String checksumSDKV = null;
-        try {
-            checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
-        } catch (Exception ignored) {
-        }
-        return !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
-    }
-
     /***
-     * clear all cache if user use
-     * newer version
-     * @throws Exception
+     * clear all cache if this is new user setup
+     * @param pAppVersion
      */
-    private static void checkClearCacheIfHasNewVersion() throws Exception {
-        if (newVersion()) {
+    private static void removeCacheOnSetupOverride(String pAppVersion) {
+        IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
+        IAppInfo appInfo = getApplicationComponent().appInfoInteractor();
+        IBankList bankList = getApplicationComponent().bankListInteractor();
+        if (platformInfo.isNewVersion(pAppVersion) && platformInfo != null && appInfo != null && bankList != null) {
+            Log.d("removeCacheOnSetupOverride", "start clear cache in previous version");
             //clear banklist
-            SharedPreferencesManager.getInstance().setCheckSumBankList(null);
-            SharedPreferencesManager.getInstance().setBankConfigMap(null);
+            bankList.clearCheckSum();
+            bankList.clearConfig();
             //clear map card checksum
-            SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
+            platformInfo.clearCardMapCheckSum();
             //clear clear map account checksum
-            SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
+            platformInfo.clearBankAccountMapCheckSum();
             //reset expire time app info
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(BuildConfig.ZALOAPP_ID), 0);
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(BuildConfig.WITHDRAWAPP_ID), 0);
+            appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
+            appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
         }
     }
 
     /***
      * app call this after user login to load everything belong to sdk.
      * @param pUserInfo
-     * @param pGatewayInfoCallback
+     * @param pAppVersion
+     * @param pObserver
+     * @return
      */
-    public synchronized static void loadGatewayInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    public synchronized static Subscription[] loadSDKData(UserInfo pUserInfo, String pAppVersion, Observer pObserver) {
         try {
             //prevent load gateway if user in sdk
-            if (GlobalData.isUserInSDK() && pGatewayInfoCallback != null) {
-                pGatewayInfoCallback.onFinish();
-                Log.d("loadGatewayInfo", "===loadGatewayInfo===user in sdk,delay load gateway info now====");
-                return;
+            if (GlobalData.isUserInSDK() && pObserver != null) {
+                pObserver.onCompleted();
+                Log.d("loadSDKData", "user in sdk - delay load gateway info");
+                return null;
             }
-            checkClearCacheIfHasNewVersion();
-            loadPlatformInfo(pUserInfo, pGatewayInfoCallback);
-            loadAppWalletInfo(pUserInfo);
-            loadAppWithDrawInfo(pUserInfo);
+            removeCacheOnSetupOverride(pAppVersion);
+
+            String userId = pUserInfo.zalopay_userid;
+            String accessToken = pUserInfo.accesstoken;
+            long currentTime = System.currentTimeMillis();
+            Subscription[] subscription = new Subscription[3];
+            //load platform info
+            getApplicationComponent().platformInfoInteractor()
+                    .loadPlatformInfoCloud(userId, accessToken, false, true, currentTime, pAppVersion)
+                    .subscribe(pObserver);
+            //load bank list
+            Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
+                    .subscribe(bankConfigResponse -> {
+                    });
+            subscription[0] = subscription0;
+            //load app zalopay with 4 transtype
+            Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
+                    new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK_CARD, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
+                    .subscribe(appInfo -> Timber.d("load app info %s", appInfo),
+                            throwable -> Timber.e("load app info on error %s", throwable),
+                            () -> Timber.d("load app 1 completed"));
+            subscription[1] = subscription1;
+            //load app withdraw (appid = 2)
+            Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAWAPP_ID,
+                    new int[]{TransactionType.WITHDRAW}, userId, accessToken, pAppVersion, currentTime)
+                    .subscribe(appInfo -> Timber.d("load app info %s", appInfo),
+                            throwable -> Timber.e("load app info on error %s", throwable),
+                            () -> Timber.d("load app 2 completed"));
+            subscription[2] = subscription2;
+            return subscription;
         } catch (Exception e) {
-            if (pGatewayInfoCallback != null)
-                pGatewayInfoCallback.onError(null);
+            if (pObserver != null)
+                pObserver.onError(e);
         }
+        return null;
     }
 
     /***
      * app need to call this to update user's info on cache(channels,map cards) after user reset PIN
      * @param pUserInfo
-     * @param pGatewayInfoCallback
+     * @param pObserver
      */
-    public synchronized static void refreshGatewayInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, String pAppVersion, Observer pObserver) {
         try {
-            Log.d("refreshGatewayInfo", "pUserInfo", pUserInfo);
-            BGatewayInfo.getInstance(pUserInfo).refreshPlatformInfo(pGatewayInfoCallback);
+            long currentTime = System.currentTimeMillis();
+            //load platform info
+            return getApplicationComponent().platformInfoInteractor()
+                    .loadPlatformInfoCloud(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false, currentTime, pAppVersion)
+                    .subscribe(pObserver);
         } catch (Exception e) {
-            if (pGatewayInfoCallback != null) {
-                pGatewayInfoCallback.onError(null);
-            }
+            if (pObserver != null)
+                pObserver.onError(e);
         }
+        return null;
     }
 
     private static void loadPlatformInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
@@ -188,6 +219,10 @@ public class SDKApplication extends Application {
 
     public static Application getApplication() {
         return getApplicationComponent().application();
+    }
+
+    public static Context getContext() {
+        return getApplication().getBaseContext();
     }
 
     public static boolean isReleaseBuild() {
