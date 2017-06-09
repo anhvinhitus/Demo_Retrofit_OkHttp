@@ -80,6 +80,7 @@
     <string name="personal_feedback">personal_feedback</string>
     <string name="personal_infomation">personal_infomation</string>
     <string name="personal_logout">personal_logout</string>
+    <string name="personal_setting">personal_settingaccount</string>
     <!--Tab in Personal END-->
 
     <string name="tab_notifynew">tab_notifynew</string>

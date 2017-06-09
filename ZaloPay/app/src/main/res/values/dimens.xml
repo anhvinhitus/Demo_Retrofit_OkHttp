@@ -148,7 +148,7 @@
     <!-- tab personal -->
     <dimen name="personal_avatar">50dp</dimen>
     <dimen name="personal_margin">12dp</dimen>
-    <dimen name="personal_iconfont">20dp</dimen>
+    <dimen name="personal_iconfont">25dp</dimen>
     <dimen name="personal_iconfont_text">13sp</dimen>
     <dimen name="personal_name">14sp</dimen>
     <dimen name="personal_zalopayid">12sp</dimen>
@@ -156,16 +156,6 @@
     <dimen name="personal_balance">18sp</dimen>
     <dimen name="personal_menu_item_height">48dp</dimen>
     <dimen name="personal_info_height">62dp</dimen>
-
-    <!--<dimen name="personal_avatar">64dp</dimen>-->
-    <!--<dimen name="personal_iconfont">26dp</dimen>-->
-    <!--<dimen name="personal_iconfont_text">17sp</dimen>-->
-    <!--<dimen name="personal_name">18sp</dimen>-->
-    <!--<dimen name="personal_zalopayid">15sp</dimen>-->
-    <!--<dimen name="personal_link_text">15sp</dimen>-->
-    <!--<dimen name="personal_balance">20sp</dimen>-->
-    <!--<dimen name="personal_menu_item_height">60dp</dimen>-->
-    <!--<dimen name="personal_info_height">80dp</dimen>-->
     <dimen name="personal_margin_12">12dp</dimen>
     <dimen name="personal_margin_18">18dp</dimen>
     <dimen name="personal_dashline_margin_left">50dp</dimen>

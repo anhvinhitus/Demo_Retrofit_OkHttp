@@ -5,6 +5,12 @@
     android:layout_height="@dimen/personal_info_height"
     android:background="@drawable/default_white_selector">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/personal_dashline_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/separate" />
+
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/profile_iv_avatar"
         style="@style/AvatarDraweeView"
@@ -47,4 +53,10 @@
         android:textColor="@color/arrow_right"
         app:iconName="@string/general_arrowright"
         app:iconSize="@dimen/personal_margin_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/personal_dashline_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/separate" />
 </RelativeLayout>

@@ -173,6 +173,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
         }
 
         sandbox {
@@ -226,7 +227,6 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
         }
 
         internalSandbox {
