@@ -16,7 +16,7 @@
             <RelativeLayout
                 android:id="@+id/header_top_rl_search_view"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="@dimen/spacing.large"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/header_top_rl_notification">
 

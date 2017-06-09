@@ -30,6 +30,8 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+    <color name="silver">#e3e6e7</color>
+
     <color name="darker_transparent">#19000000</color>
     <color name="bg_chip">#cfd8dc</color>
     <color name="txt_check_disable">#a3ccf2</color>
@@ -148,7 +150,7 @@
     <color name="arrow_right">#c7c7cc</color>
 
     <color name="loading_progress_bar">#04be04</color>
-    
+
     <!-- Tab personal -->
     <color name="personal_text_dark_grey">#24272b</color>
     <color name="personal_text_steel_grey">#727f8c</color>
