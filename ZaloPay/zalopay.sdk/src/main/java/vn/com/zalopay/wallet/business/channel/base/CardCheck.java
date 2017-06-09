@@ -10,16 +10,18 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 
-public class CardCheck extends SingletonBase {
+public abstract class CardCheck extends SingletonBase {
     public String mCardNumber;
     public String mTempCardNumber;
     protected OnDetectCardListener mDetectCardListener;
@@ -36,6 +38,24 @@ public class CardCheck extends SingletonBase {
         mIdentifier = null;
         mValidLuhn = true;
         mOtpReceiverPatternList = new ArrayList<>();
+    }
+
+    public String getCardNumber() {
+        return mCardNumber;
+    }
+
+    public String getFirst6CardNo() {
+        if (TextUtils.isEmpty(mCardNumber) || mCardNumber.length() <= 6) {
+            return null;
+        }
+        return mCardNumber.substring(0, 6);
+    }
+
+    public String getLast4CardNo() {
+        if (TextUtils.isEmpty(mCardNumber) || mCardNumber.length() <= 4) {
+            return null;
+        }
+        return mCardNumber.substring(mCardNumber.length() - 4);
     }
 
     protected void reset() {
@@ -70,9 +90,9 @@ public class CardCheck extends SingletonBase {
         return mIdentifier;
     }
 
-    public String getDetectedBankName() {
-        return null;
-    }
+    public abstract String getBankName();
+
+    public abstract String getShortBankName();
 
     public boolean isValidCardLength() {
         return true;
@@ -110,7 +130,7 @@ public class CardCheck extends SingletonBase {
     }
 
     public boolean isDetected() {
-        return !TextUtils.isEmpty(getDetectedBankName());
+        return !TextUtils.isEmpty(getBankName());
     }
 
     protected boolean detect(String pCardNumber) {
@@ -164,5 +184,14 @@ public class CardCheck extends SingletonBase {
             subscriber.onCompleted();
         });
     }
-    //endregion
+
+    public String warningCardExistMessage() {
+        String bankName = getShortBankName();
+        String last4Number = getLast4CardNo();
+        String message = GlobalData.getStringResource(RS.string.sdk_link_card_exist);
+        if (!TextUtils.isEmpty(bankName)) {
+            message = String.format(GlobalData.getStringResource(RS.string.sdk_link_card_exist_detail), bankName, last4Number);
+        }
+        return message;
+    }
 }

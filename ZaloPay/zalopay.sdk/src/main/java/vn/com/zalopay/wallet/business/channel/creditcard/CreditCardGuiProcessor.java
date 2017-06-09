@@ -65,11 +65,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                 populateTextOnCardView();
 
                 if (isDetected) {
-                    setDetectedCard(getBankCardFinder().getDetectedBankName(), getBankCardFinder().getDetectBankCode());
+                    setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
 
                     checkAutoMoveCardNumberFromBundle = true;
 
-                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " bank=" + getBankCardFinder().getDetectedBankName());
+                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " bank=" + getBankCardFinder().getBankName());
 
                 } else {
                     setDetectedCard();

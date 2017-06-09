@@ -22,6 +22,7 @@ import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -628,14 +629,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         //prevent user move to next if input existed card in link card
         if (getAdapter().getGuiProcessor() != null && getAdapter().getGuiProcessor().preventNextIfLinkCardExisted()) {
             try {
-                getAdapter().getGuiProcessor().showHintError(getAdapter().getGuiProcessor().getCardNumberView(), GlobalData.getStringResource(RS.string.zpw_link_card_existed));
-
+                getAdapter().getGuiProcessor().showHintError(getAdapter().getGuiProcessor().getCardNumberView(), getAdapter().getGuiProcessor().warningCardExist());
                 return;
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
-
         if (!createChannelAdapter(pChannelID)) {
             return;
         }

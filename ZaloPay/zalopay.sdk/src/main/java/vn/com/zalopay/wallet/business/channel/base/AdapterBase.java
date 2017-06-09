@@ -1085,7 +1085,7 @@ public abstract class AdapterBase {
             if (mPaymentInfoHelper.isMapCardChannel()) {
                 getGuiProcessor().getCardFinder().detectOnAsync(mPaymentInfoHelper.getMapBank().getFirstNumber(), isDetected -> {
                     if (isDetected) {
-                        getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getDetectedBankName());
+                        getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getBankName());
                     }
                 });
             } else if (mPaymentInfoHelper.isMapBankAccountChannel()) {

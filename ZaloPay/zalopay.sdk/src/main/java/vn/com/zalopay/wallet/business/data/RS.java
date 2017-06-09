@@ -122,7 +122,9 @@ public class RS {
         public static final String zpw_string_transaction_expired = "zpw_string_transaction_expired";
         public static final String zpw_alert_cardname_has_whitespace = "zpw_alert_cardname_has_whitespace";
         public static final String zpw_string_pin_wrong = "zpw_string_pin_wrong";
-        public static final String zpw_link_card_existed = "zpw_link_card_existed";
+
+        public static final String sdk_link_card_exist = "sdk_link_card_exist";
+        public static final String sdk_link_card_exist_detail = "sdk_link_card_exist_detail";
 
         public static final String percent_ontablet = "percent_ontablet";
         public static final String percent_ondefault = "percent_ondefault";

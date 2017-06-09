@@ -545,17 +545,23 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean isValidCardNumber() {
         boolean validateLuhn = validateCardNumberLuhn();
-
         try {
             boolean isValidCardNumber = ((TextUtils.isEmpty(getCardNumber()) || !validateLuhn || !validateCardNumberLength() || mCardAdapter.getCardNumberFragment().hasError()));
-
             return !isValidCardNumber;
-
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         return false;
+    }
+
+    public String warningCardExist(){
+        String message = getCardFinder().warningCardExistMessage();
+        if(getBankCardFinder().isDetected()){
+            message = getBankCardFinder().warningCardExistMessage();
+        }else if(getCreditCardFinder().isDetected()){
+            message = getCreditCardFinder().warningCardExistMessage();
+        }
+        return message;
     }
 
     protected boolean validateCardNumber() {
@@ -564,32 +570,24 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 try {
                     //come back last page
                     getViewPager().setCurrentItem(mLastPageSelected);
-
-                    //set message to edittext
                     String errMes = getCardNumberView().getPatternErrorMessage();
-
                     if (TextUtils.isEmpty(getCardNumber())) {
                         errMes = GlobalData.getStringResource(RS.string.zpw_missing_card_number);
                     } else if (!validateCardNumberLength()) {
                         errMes = getCardNumberView().getPatternErrorMessage();
                     } else if (preventNextIfLinkCardExisted()) {
-                        errMes = GlobalData.getStringResource(RS.string.zpw_link_card_existed);
+                        errMes = warningCardExist();
                     } else if (!validateCardNumberLuhn()) {
                         errMes = GlobalData.getStringResource(RS.string.zpw_string_card_error_luhn);
                     }
-
                     showHintError(getCardNumberView(), errMes);
-
                     //disable next button
                     disableNext();
-
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
-
                 return false;
             }
-
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1047,7 +1045,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public String getDetectedBankName() {
-        return getCardFinder().getDetectedBankName();
+        return getCardFinder().getBankName();
     }
 
     public String getDetectedBankCode() {
@@ -1381,39 +1379,31 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void showNext() {
         int max = mCardAdapter.getCount();
         int currentIndex = getViewPager().getCurrentItem();
-
         //prevent user move to next if input existed card in link card
         if (currentIndex == 0 && preventNextIfLinkCardExisted() && mPaymentInfoHelper.isLinkCardChannel()) {
             try {
-                showHintError(getCardNumberView(), GlobalData.getStringResource(RS.string.zpw_link_card_existed));
-
+                showHintError(getCardNumberView(), warningCardExist());
                 return;
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
-
         //validate card number before move to next page
         if (currentIndex == 0 && !validateCardNumberLuhn()) {
             try {
                 showHintError(getCardNumberView(), GlobalData.getStringResource(RS.string.zpw_string_card_error_luhn));
-
-                Log.d(this, "===showNext===validateCardNumberLuhn fail before move to next page");
-
+                Log.d(this, "validdate Luhn fail");
                 return;
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
-
         if (currentIndex + 1 < max) {
             getViewPager().setCurrentItem(currentIndex + 1);
         } else {
             // completed the card entry.
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
         }
-
         refreshNavigateButton();
     }
 

@@ -440,7 +440,8 @@
 
     <string name="zpw_otp_instruction">Mã OTP đã được gửi qua SMS đến số ĐT của bạn</string>
 
-    <string name="zpw_link_card_existed">Thẻ bạn nhập đã được liên kết</string>
+    <string name="sdk_link_card_exist_detail">Thẻ %1$s •••%2$s đã được liên kết</string>
+    <string name="sdk_link_card_exist">Thẻ bạn nhập đã được liên kết</string>
     <string name="zpw_string_card_error_luhn">Thẻ không hợp lệ</string>
     <string name="zpsdk_luhn_check_cc">true</string>
     <string name="zpsdk_luhn_check_atm">true</string>
@@ -509,7 +510,6 @@
     <string name="zpw_warning_vietcombank_linkbankaccount_not_linkcard">Ngân hàng Vietcombank chỉ hỗ trợ Liên kết tài khoản</string>
 
     <string name="zpw_warning_link_bankaccount_existed">Quý khách đã liên kết với ngân hàng Vietcombank</string>
-    <!--<string name="zpw_warning_link_bankaccount_existed">Tài khoản của bạn đã liên kết với ngân hàng đã chọn</string>-->
     <string name="zpw_warning_unlink_bankaccount_invalid">Tài khoản của bạn chưa liên kết với ngân hàng</string>
 
     <string name="zpw_channelname_vietcombank_mapaccount">Tài khoản Vietcombank</string>

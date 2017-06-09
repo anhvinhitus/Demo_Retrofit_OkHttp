@@ -210,13 +210,13 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 populateTextOnCardView();
 
                 if (isDetected) {
-                    setDetectedCard(getCreditCardFinder().getDetectedBankName(), getCreditCardFinder().getDetectBankCode());
+                    setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
 
                     checkAutoMoveCardNumberFromBundle = false;
 
                     getCardView().visibleCardDate();
 
-                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " cc=" + getBankCardFinder().getDetectedBankName());
+                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " cc=" + getBankCardFinder().getBankName());
                     isInputBankMaintenance();
                 } else {
                     setDetectedCard();

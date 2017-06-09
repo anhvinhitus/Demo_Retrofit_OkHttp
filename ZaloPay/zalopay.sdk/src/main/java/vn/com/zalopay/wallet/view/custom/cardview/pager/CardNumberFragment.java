@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -201,7 +202,13 @@ public class CardNumberFragment extends CreditCardFragment {
         }
 
         //this is not error hint,it is detected bank name
-        if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_link_card_existed))) {
+        String warning = null;
+        try {
+            warning = getPaymentAdapter().getGuiProcessor().warningCardExist();
+        } catch (Exception e) {
+            Log.e(this,e);
+        }
+        if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(warning)) {
             try {
                 if ((getPaymentAdapter().isATMFlow() && (BankCardCheck.getInstance().isDetected()
                         || CreditCardCheck.getInstance().isDetected()))) {

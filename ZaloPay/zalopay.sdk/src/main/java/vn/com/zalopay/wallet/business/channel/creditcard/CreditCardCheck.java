@@ -4,12 +4,12 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
-import vn.com.zalopay.utility.GsonUtils;
 
 /**
  * class for detect working with
@@ -74,8 +74,17 @@ public class CreditCardCheck extends CardCheck {
     }
 
     @Override
-    public String getDetectedBankName() {
+    public String getBankName() {
         return mCardName;
+    }
+
+    @Override
+    public String getShortBankName() {
+        String bankName = getBankName();
+        if (!TextUtils.isEmpty(bankName) && bankName.startsWith("Thẻ")) {
+            bankName = bankName.substring(3);
+        }
+        return bankName;
     }
 
     @Override
@@ -130,7 +139,7 @@ public class CreditCardCheck extends CardCheck {
         if (mIdentifier != null) {
             mCardCode = mIdentifier.code;
             mCardName = mIdentifier.name;
-            Log.d(this,"found card "+ GsonUtils.toJsonString(mIdentifier));
+            Log.d(this, "found card " + GsonUtils.toJsonString(mIdentifier));
             matchCardLength(pCardNumber, mIdentifier);
         }
         return !TextUtils.isEmpty(mCardName);

@@ -117,7 +117,7 @@ public class MapCardHelper {
             if (cardCheck.isDetected()) {
                 String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
                 mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(cardType));
-                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), cardCheck.getDetectedBankName());
+                bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), cardCheck.getBankName());
             }
         }
         if (TextUtils.isEmpty(bankName)) {

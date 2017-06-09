@@ -256,7 +256,7 @@ public abstract class BaseChannelInjector {
                         CreditCardCheck.getInstance().detectOnSync(channel.f6no);
                         if (CreditCardCheck.getInstance().isDetected()) {
                             //populate channel name
-                            channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mapCard.last4cardno;
+                            channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getBankName()) + mapCard.last4cardno;
                             String cardType = CreditCardCheck.getInstance().getCodeBankForVerify();
                             ChannelHelper.inflatChannelIcon(channel, cardType);
                         }

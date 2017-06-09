@@ -72,10 +72,11 @@ public class BankCardCheck extends CardCheck {
     }
 
     @Override
-    public String getDetectedBankName() {
+    public String getBankName() {
         return mSelectBank != null ? mSelectBank.name : null;
     }
 
+    @Override
     public String getShortBankName() {
         if (mSelectBank != null) {
             return mSelectBank.getShortBankName();
