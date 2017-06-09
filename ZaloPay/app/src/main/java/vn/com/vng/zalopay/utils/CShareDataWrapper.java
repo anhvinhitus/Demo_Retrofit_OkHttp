@@ -39,40 +39,6 @@ import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 public class CShareDataWrapper {
 
-    private static PublishSubject<List<ZPCard>> mCardSupportSubject = PublishSubject.create();
-
-    public static Subscription getCardSupportList(UserInfo userInfo, DefaultSubscriber<List<ZPCard>> subscriber) {
-        Timber.d("Call get support banks from PaymentSDK [%s]", subscriber);
-        Subscription subscription = mCardSupportSubject.subscribe(subscriber);
-
-        CShareData.getInstance().getCardSupportList(new IGetCardSupportListListener() {
-            @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportArrayList) {
-                Timber.d("Get support banks from PaymentSDK completed [%s]", cardSupportArrayList);
-                mCardSupportSubject.onNext(cardSupportArrayList);
-                subscriber.onNext(cardSupportArrayList);
-            }
-
-            @Override
-            public void onProcess() {
-
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("Get support banks from PaymentSDK error [%s]", pErrorMess);
-                mCardSupportSubject.onError(new Throwable(pErrorMess));
-                subscriber.onError(new Throwable(pErrorMess));
-            }
-
-            @Override
-            public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-                // TODO: 4/27/17 - longlv: hiện tại đã ko còn dùng, chờ PaymentSDK remove
-            }
-        });
-        return subscription;
-    }
-
     private static List<MapCard> detectCCCard(List<MapCard> dMappedCards, User user) {
         if (Lists.isEmptyOrNull(dMappedCards)) {
             return Collections.emptyList();

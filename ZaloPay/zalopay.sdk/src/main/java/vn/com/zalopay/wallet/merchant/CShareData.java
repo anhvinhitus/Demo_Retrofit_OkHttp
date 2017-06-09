@@ -58,7 +58,6 @@ public class CShareData extends SingletonBase {
 
     protected static CShareData _object;
     protected static DConfigFromServer mConfigFromServer;
-    protected IMerchantTask mMerchantTask;
     protected IGetWithDrawBankList mGetWithDrawBankList;
     protected ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
@@ -113,10 +112,6 @@ public class CShareData extends SingletonBase {
     public static void dispose() {
         SingletonLifeCircleManager.disposeMerchant();
         Log.d("CShareData", "dispose merchant");
-    }
-
-    public static DConfigFromServer getConfigResource() {
-        return CShareData.mConfigFromServer;
     }
 
     /***
@@ -229,17 +224,6 @@ public class CShareData extends SingletonBase {
         } else {
             Log.d(this, "skip post notification promotion event because user quit sdk");
         }
-    }
-
-    /***
-     * get card support list
-     * app use this function to show bank list icon before
-     * user go to the link card channel
-     */
-    public void getCardSupportList(IGetCardSupportListListener pListener) {
-        IMerchantTask merchantTask = new TaskGetCardSupportList();
-        merchantTask.setTaskListener(pListener);
-        merchantTask.onPrepareTaskComplete();
     }
 
     /***
