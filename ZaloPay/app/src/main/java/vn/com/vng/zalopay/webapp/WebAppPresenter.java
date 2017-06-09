@@ -149,6 +149,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         mWebViewProcessor.registerNativeModule(new WebAppNativeModule(mProcessMessageListener));
 
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
                 mView.updateLoadProgress(progress);
@@ -158,6 +159,12 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
                 mView.onReceivedTitle(title);
+
+                if (view.canGoBack()) {
+                    mView.showBackButton();
+                } else {
+                    mView.hideBackButton();
+                }
             }
         });
     }

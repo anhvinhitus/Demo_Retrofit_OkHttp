@@ -18,6 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing.medium"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:iconName="@string/general_backandroid"
             app:iconSize="@dimen/font_size_toolbar_icon" />
 

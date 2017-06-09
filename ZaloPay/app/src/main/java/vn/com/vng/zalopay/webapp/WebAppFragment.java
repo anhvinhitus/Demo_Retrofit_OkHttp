@@ -192,6 +192,24 @@ public class WebAppFragment extends BaseFragment
         getActivity().setTitle(title);
     }
 
+    @Override
+    public void showBackButton() {
+        if(btnBack == null) {
+            return;
+        }
+
+        btnBack.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBackButton() {
+        if(btnBack == null) {
+            return;
+        }
+
+        btnBack.setVisibility(View.GONE);
+    }
+
     public void showError(String message) {
         showErrorDialog(message, getString(R.string.txt_close), null);
     }
