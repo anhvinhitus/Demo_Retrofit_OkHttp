@@ -403,24 +403,6 @@ public class CShareData extends SingletonBase {
     }
 
     /***
-     * Platform info expire time,unix time to exprired time (in milisecond)
-     * After this expire time, sdk or app need hit to server again
-     * if api's response isupdateinfo=true,then sdk need to update cache
-     *
-     * @return
-     */
-    public long getPlatformInfoExpiredTime() {
-        try {
-            return SharedPreferencesManager.getInstance().getPlatformInfoExpriedTimeDuration();
-
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-
-        return 0;
-    }
-
-    /***
      * call api get card info again
      * app use this function in get notify remove map card
      *

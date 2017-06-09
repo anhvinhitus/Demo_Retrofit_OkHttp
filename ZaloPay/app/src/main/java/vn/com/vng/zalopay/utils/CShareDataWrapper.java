@@ -22,6 +22,8 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -109,7 +111,7 @@ public class CShareDataWrapper {
     }
 
     public static long getPlatformInfoExpiredTime() {
-        return CShareData.getInstance().getPlatformInfoExpiredTime();
+        return SDKApplication.getApplicationComponent().platformInfoInteractor().getPlatformInfoDurationExpire();
     }
 
     public static boolean isEnableDeposite() {

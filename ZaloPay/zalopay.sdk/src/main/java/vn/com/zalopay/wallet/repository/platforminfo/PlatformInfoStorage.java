@@ -7,7 +7,9 @@ import rx.functions.Func0;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
@@ -82,6 +84,13 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             }
             //need to update card info again on cache
             if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
+                //for testing
+                MapCard mapCard = new MapCard();
+                mapCard.bankcode = CardType.PVTB;
+                mapCard.cardname = "VO VAN CHUC";
+                mapCard.last4cardno = "8156";
+                mapCard.first6cardno = "970415";
+                pResponse.cardinfos.add(mapCard);
                 MapCardHelper.saveMapCardListToCache(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
             }
             //update bank account info on cache

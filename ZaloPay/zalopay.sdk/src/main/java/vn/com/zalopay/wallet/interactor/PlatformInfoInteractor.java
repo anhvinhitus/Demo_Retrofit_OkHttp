@@ -161,4 +161,9 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     public void clearBankAccountMapCheckSum() {
         repository.getLocalStorage().clearBankAccountMapCheckSum();
     }
+
+    @Override
+    public long getPlatformInfoDurationExpire() {
+        return repository.getLocalStorage().getExpireTimeDuration();
+    }
 }
