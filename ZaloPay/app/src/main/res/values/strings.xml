@@ -418,5 +418,7 @@
     <string name="missing.image.pick">Vui lòng kiểm tra lại ứng dụng thư viện ảnh trên thiết bị của bạn</string>
     <string name="missing.image.capture">Vui lòng kiểm tra lại ứng dụng chụp ảnh trên thiết bị của bạn</string>
 
+    <string name="link.account.vcb.exist">Quý khách đã liên kết với ngân hàng Vietcombank</string>
+
 </resources>
 
