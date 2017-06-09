@@ -387,10 +387,6 @@
         </activity>
 
         <activity
-            android:name=".bank.ui.LinkBankActivity"
-            android:label="@string/title_activity_link_bank"/>
-
-        <activity
             android:name=".searchcategory.SearchCategoryActivity"
             android:label="@string/title.activity.search.category"/>
 

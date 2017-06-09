@@ -1,27 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:indeterminate="false"
-        android:progress="0"
-        android:max="100"
-        android:progressDrawable="@drawable/bg_progressbar_webapp"
-        />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include
-        layout="@layout/layout_retry_with_image"
+    <RelativeLayout
+        android:id="@+id/webapp_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/back_ground_blue">
 
-    <vn.com.vng.webapp.framework.ZPWebViewApp
-        android:id="@+id/webview"
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/promotion_btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:textColor="@color/white"
+            app:iconName="@string/general_backandroid"
+            app:iconSize="@dimen/font_size_toolbar_icon" />
+
+        <TextView
+            android:id="@+id/promotion_tv_title"
+            style="@style/Toolbar.TitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/promotion_title" />
+    </RelativeLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/progressBar" />
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_progressbar_webapp" />
+
+        <include
+            layout="@layout/layout_retry_with_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <vn.com.vng.webapp.framework.ZPWebViewApp
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/progressBar" />
+    </FrameLayout>
+
+</LinearLayout>

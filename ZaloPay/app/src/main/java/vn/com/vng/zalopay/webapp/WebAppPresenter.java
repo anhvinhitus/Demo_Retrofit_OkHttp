@@ -20,12 +20,12 @@ import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.AccountStore;
-import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ZPTransfer;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
@@ -162,7 +162,6 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK || requestCode != TRANSFER_MONEY_WEB_APP_REQUEST_CODE) {
@@ -270,7 +269,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
     private void onGetProfileSuccess(Person person, String zaloPayName) {
         Timber.d("Got profile for %s: %s", zaloPayName, person);
-      
+
         TransferObject object = new TransferObject(person);
         object.amount = mZPTransfer.amount;
         object.message = mZPTransfer.message;

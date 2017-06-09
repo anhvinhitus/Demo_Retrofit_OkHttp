@@ -20,4 +20,6 @@ interface IProcessMessageListener {
     void hideLoading();
 
     void writeLog(String type, long time, String data);
+
+    void launchApp(String packageID);
 }

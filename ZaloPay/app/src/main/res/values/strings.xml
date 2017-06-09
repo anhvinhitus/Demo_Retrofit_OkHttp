@@ -410,6 +410,9 @@
     <string name="profile_phone_and_zpid_update_hint_text">Cập nhật Số điện thoại và Zalo Pay ID để thực hiện các giao dịch chuyển tiền, rút tiền và lì xì cho bạn bè</string>
     <string name="profile_email_and_id_update_hint_text">Cập nhật Email và CMND/Hộ chiếu để tăng hạn mức tối đa các giao dịch</string>
 
+    <!-- tab promotion -->
+    <string name="promotion_title">Ưu đãi</string>
+
     <string name="link.account.support.only.vietcombank">Hiện tại Zalo Pay chỉ hỗ trợ liên kết tài khoản Vietcombank. Liên kết tài khoản các ngân hàng khác sẽ được hỗ trợ trong thời gian tới.</string>
 
     <string name="missing.image.pick">Vui lòng kiểm tra lại ứng dụng thư viện ảnh trên thiết bị của bạn</string>

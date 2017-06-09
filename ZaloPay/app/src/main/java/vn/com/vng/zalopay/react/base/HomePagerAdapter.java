@@ -7,13 +7,11 @@ import android.support.v4.app.FragmentManager;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.promotion.PromotionFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
-import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webapp.WebAppFragment;
 
 /**
  * Created by hieuvm on 2/28/17.
@@ -35,7 +33,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle bundlePromotion = new Bundle();
-        bundlePromotion.putString(Constants.ARG_URL, "https://zalopay.vn");
+        bundlePromotion.putString(Constants.ARG_URL, BuildConfig.PROMOTION_URL);
 
         switch (position) {
             case TAB_MAIN_INDEX:
@@ -43,8 +41,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case TAB_TRANSACTION_INDEX:
                 return InternalReactFragment.newInstance(ModuleName.TRANSACTION_LOGS);
             case TAB_PROMOTION_INDEX:
-//                return PromotionFragment.newInstance();
-                return WebViewFragment.newInstance(bundlePromotion);
+                return WebAppFragment.newInstance(bundlePromotion);
             case TAB_PERSONAL_INDEX:
                 return PersonalFragment.newInstance();
         }

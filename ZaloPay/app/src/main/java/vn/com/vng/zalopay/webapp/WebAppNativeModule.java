@@ -28,6 +28,7 @@ class WebAppNativeModule implements NativeModule {
     private final static String MESSAGE_HIDE_LOADING = "hideLoading";
     private final static String MESSAGE_SHOW_DIALOG = "showDialog";
     private final static String MESSAGE_WRITE_LOG = "writeLog";
+    private final static String MESSAGE_LAUNCH_APP = "launchApp";
 
     private final static int FUNCTION_PAY_ORDER = 1;
     private final static int FUNCTION_TRANSFER_MONEY = 2;
@@ -35,6 +36,7 @@ class WebAppNativeModule implements NativeModule {
     private final static int FUNCTION_HIDE_LOADING = 4;
     private final static int FUNCTION_SHOW_DIALOG = 5;
     private final static int FUNCTION_WRITE_LOG = 6;
+    private final static int FUNCTION_LAUNCH_APP = 7;
 
     private static Map<String, Integer> sMessageToFunctionMap;
 
@@ -51,6 +53,7 @@ class WebAppNativeModule implements NativeModule {
         sMessageToFunctionMap.put(MESSAGE_HIDE_LOADING, FUNCTION_HIDE_LOADING);
         sMessageToFunctionMap.put(MESSAGE_SHOW_DIALOG, FUNCTION_SHOW_DIALOG);
         sMessageToFunctionMap.put(MESSAGE_WRITE_LOG, FUNCTION_WRITE_LOG);
+        sMessageToFunctionMap.put(MESSAGE_LAUNCH_APP, FUNCTION_LAUNCH_APP);
     }
 
     @Override
@@ -87,6 +90,8 @@ class WebAppNativeModule implements NativeModule {
             case FUNCTION_WRITE_LOG:
                 writeLog(data, promise);
                 break;
+            case FUNCTION_LAUNCH_APP:
+                launchApp(data, promise);
         }
     }
 
@@ -151,5 +156,17 @@ class WebAppNativeModule implements NativeModule {
         String arg = data.optString("data");
 
         mProcessMessageListener.writeLog(type, time, arg);
+    }
+
+    // message = {"func":"launchApp",
+    // "param":{'url': 'zalo://launch?params=1', // use on iOS 'packageId': 'com.zing.zalo' // use on Android, if url is not available},
+    // "msgType":"launch",
+    // "clientId":"14865289272660.004411039873957634"}
+    private void launchApp(final JSONObject data, Promise promise) {
+        String strPackageID = data.optString("packageId");
+
+        mProcessMessageListener.launchApp(strPackageID);
+
+        promise.resolve(null);
     }
 }

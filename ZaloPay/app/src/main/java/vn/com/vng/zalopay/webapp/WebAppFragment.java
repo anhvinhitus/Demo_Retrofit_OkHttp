@@ -19,6 +19,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
@@ -67,6 +68,14 @@ public class WebAppFragment extends BaseFragment
 
     @Inject
     WebAppPresenter mPresenter;
+
+    @BindView(R.id.promotion_btn_back)
+    IconFont btnBack;
+
+    @OnClick(R.id.promotion_btn_back)
+    public void onClickBack() {
+        onBackPressed();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
