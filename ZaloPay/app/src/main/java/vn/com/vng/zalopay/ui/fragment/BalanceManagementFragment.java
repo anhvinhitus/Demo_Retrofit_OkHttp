@@ -129,16 +129,16 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_withdraw, menu);
+//        inflater.inflate(R.menu.menu_withdraw, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_history) {
-            navigator.startTransactionHistoryList(getActivity());
-            return true;
-        }
+//        if (item.getItemId() == R.id.action_history) {
+//            navigator.startTransactionHistoryList(getActivity());
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
