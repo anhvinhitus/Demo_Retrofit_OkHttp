@@ -28,7 +28,7 @@ class WebAppNativeModule implements NativeModule {
     private final static String MESSAGE_HIDE_LOADING = "hideLoading";
     private final static String MESSAGE_SHOW_DIALOG = "showDialog";
     private final static String MESSAGE_WRITE_LOG = "writeLog";
-    private final static String MESSAGE_LAUNCH_APP = "launchApp";
+    private final static String MESSAGE_LAUNCH_APP = "promotionEvent";
 
     private final static int FUNCTION_PAY_ORDER = 1;
     private final static int FUNCTION_TRANSFER_MONEY = 2;

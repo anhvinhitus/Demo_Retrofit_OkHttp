@@ -63,7 +63,7 @@ class ProcessMessageListener implements IProcessMessageListener {
                 mWebAppPresenterWeakReference.get().getActivity().startActivity(launchIntent);
             } else {
                 String strDownloadLink = "https://play.google.com/store/apps/details?id=" + packageID;
-                if (TextUtils.isEmpty(strDownloadLink)) {
+                if (!TextUtils.isEmpty(strDownloadLink)) {
                     Intent i = new Intent(android.content.Intent.ACTION_VIEW);
                     i.setData(Uri.parse(strDownloadLink));
                     mWebAppPresenterWeakReference.get().getActivity().startActivity(i);
