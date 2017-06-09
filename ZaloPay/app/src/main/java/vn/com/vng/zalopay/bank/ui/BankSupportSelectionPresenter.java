@@ -24,11 +24,9 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -132,11 +130,11 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
     void getCardSupport() {
         Timber.d("Get list bank support %s", mBankType);
-       Subscription subscription = SDKApplication
-               .getApplicationComponent()
-               .bankListInteractor()
-               .getSupportCards(BuildConfig.VERSION_NAME, System.currentTimeMillis())
-               .subscribe(mGetSupportBankSubscriber);
+        Subscription subscription = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getSupportCards(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+                .subscribe(mGetSupportBankSubscriber);
         mSubscription.add(subscription);
 
     }

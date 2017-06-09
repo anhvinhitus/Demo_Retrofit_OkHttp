@@ -28,16 +28,13 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 public class BankSupportSelectionFragment extends BaseFragment implements IBankSupportSelectionView
         , BankSupportSelectionAdapter.OnClickBankSupportListener {
 
-    private BankSupportSelectionAdapter mAdapter;
-
     @BindView(R.id.bank_support_selection_list_bank)
     RecyclerView rcvListBankSupport;
-
     @BindView(R.id.bank_support_selection_dash_line)
     View mDashLine;
-
     @Inject
     BankSupportSelectionPresenter presenter;
+    private BankSupportSelectionAdapter mAdapter;
 
     public static BankSupportSelectionFragment newInstance() {
         Bundle args = new Bundle();
@@ -139,7 +136,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
 
     @Override
     public void onClickBankSupportListener(ZPCard card, int position) {
-        if(card.isBankAccount()) {
+        if (card.isBankAccount()) {
             presenter.linkAccount(card.getCardCode());
         } else {
             presenter.linkCard();
