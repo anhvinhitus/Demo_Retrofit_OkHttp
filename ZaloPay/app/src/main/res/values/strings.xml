@@ -42,6 +42,7 @@
     <string name="btn_send">Gửi</string>
     <string name="btn_link">Liên Kết</string>
     <string name="btn_cancel_transaction">Hủy Giao Dịch</string>
+    <string name="btn_retry_select_bank">Chọn ngân hàng khác</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
@@ -418,7 +419,10 @@
     <string name="missing.image.pick">Vui lòng kiểm tra lại ứng dụng thư viện ảnh trên thiết bị của bạn</string>
     <string name="missing.image.capture">Vui lòng kiểm tra lại ứng dụng chụp ảnh trên thiết bị của bạn</string>
 
-    <string name="link.account.vcb.exist">Quý khách đã liên kết với ngân hàng Vietcombank</string>
+    <string name="bank.link.account.vcb.exist">Quý khách đã liên kết với ngân hàng Vietcombank</string>
+    <string name="bank.networking.error.load.supportbank">Mạng không ổn định, không tải được thông tin ngân hàng.\nVui lòng thử lại!</string>
+    <string name="bank.maintenance.message">Đang bảo trì</string>
+    <string name="bank.upversion.message">Nâng cấp phiên bản để sử dụng</string>
 
 </resources>
 

@@ -1640,7 +1640,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-                showInfoDialog(pListener, BankConfig.getFormattedBankMaintenaceMessage());
+                showInfoDialog(pListener, BankLoader.getInstance().maintenanceBank.getMaintenanceMessage(GlobalData.getCurrentBankFunction()));
                 return true;
             }
         } catch (Exception e) {

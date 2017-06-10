@@ -37,7 +37,7 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
             if (bankConfig == null) {
                 continue;
             }
-            if (!bankConfig.isAllowWithDraw()) {
+            if (!bankConfig.isWithDrawAllow()) {
                 channelView.setStatus(PaymentChannelStatus.DISABLE);
             } else if (bankConfig.isBankMaintenence(BankFunctionCode.WITHDRAW)) {
                 channelView.setStatus(PaymentChannelStatus.MAINTENANCE);

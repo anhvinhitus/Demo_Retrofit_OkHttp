@@ -9,6 +9,7 @@ import rx.functions.Func1;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -27,6 +28,11 @@ public class AppInfoInteractor implements IAppInfo {
     public AppInfoInteractor(AppInfoStore.Repository appInfoRepository) {
         this.mAppInfoRepository = appInfoRepository;
         Log.d(this, "call constructor AppInfoInteractor");
+    }
+
+    @Override
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
+        return this.mAppInfoRepository.getLocalStorage().getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
     }
 
     /***

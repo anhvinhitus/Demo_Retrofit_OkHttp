@@ -16,19 +16,22 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
@@ -39,27 +42,26 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     private final User mUser;
     private PaymentWrapper paymentWrapper;
     private LinkBankType mBankType;
-    private DefaultSubscriber<List<ZPCard>> mGetSupportBankSubscriber;
+    private DefaultSubscriber<List<ZPBank>> mGetSupportBankSubscriber;
 
     @Inject
     BankSupportSelectionPresenter(User user) {
         this.mUser = user;
-        mGetSupportBankSubscriber = new DefaultSubscriber<List<ZPCard>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
+        mGetSupportBankSubscriber = new DefaultSubscriber<List<ZPBank>>() {
             @Override
             public void onError(Throwable e) {
                 Timber.d("Get support bank type [%s] onError [%s]", mBankType, e.getMessage());
-                showRetryDialog(e.getMessage());
+                showRetryDialog(mView.getActivity().getString(R.string.bank_networking_error_load_supportbank));
             }
 
             @Override
-            public void onNext(List<ZPCard> cardList) {
-                Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, cardList);
-                fetchListBank(cardList);
+            public void onNext(List<ZPBank> cardList) {
+                Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, GsonUtils.toJsonString(cardList));
+                if (Lists.isEmptyOrNull(cardList)) {
+                    showRetryDialog(mView.getActivity().getString(R.string.bank_networking_error_load_supportbank));
+                }else{
+                    fetchListBank(cardList);
+                }
             }
         };
 
@@ -117,23 +119,23 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
             @Override
             public void onOKevent() {
-                getCardSupport();
+                getBankSupport();
             }
         });
     }
 
-    private void fetchListBank(List<ZPCard> listBank) {
+    private void fetchListBank(List<ZPBank> listBank) {
         if (mView != null) {
             mView.fetchListBank(listBank);
         }
     }
 
-    void getCardSupport() {
+    void getBankSupport() {
         Timber.d("Get list bank support %s", mBankType);
         Subscription subscription = SDKApplication
                 .getApplicationComponent()
                 .bankListInteractor()
-                .getSupportCards(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+                .getSupportBanks(BuildConfig.VERSION_NAME, System.currentTimeMillis())
                 .subscribe(mGetSupportBankSubscriber);
         mSubscription.add(subscription);
 

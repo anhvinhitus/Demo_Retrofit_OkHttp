@@ -34,7 +34,7 @@
             android:id="@+id/row_bank_support_selection_tv_bank_maintain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đang bảo trì"
+            android:text="@string/bank.maintenance.message"
             android:textColor="@color/c_text_black"
             android:textSize="@dimen/bank_support_selection_maintain_notice"
             android:visibility="gone" />

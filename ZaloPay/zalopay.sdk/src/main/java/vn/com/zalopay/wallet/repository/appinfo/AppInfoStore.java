@@ -8,6 +8,8 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -27,7 +29,9 @@ public class AppInfoStore {
 
         String getTranstypeCheckSum(String key);
 
-        String getTranstypeCheckSumKey(long pAppId, int transtype);
+        String getTranstypeCheckSumKey(long pAppId, @TransactionType int transtype);
+
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
     }
 
     public interface Repository {

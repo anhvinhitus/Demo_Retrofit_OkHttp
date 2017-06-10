@@ -2,8 +2,8 @@ package vn.com.zalopay.wallet.merchant.listener;
 
 import java.util.ArrayList;
 
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
 public interface IGetCardSupportListListener extends IMerchantListener {
-    void onComplete(ArrayList<ZPCard> cardSupportArrayList);
+    void onComplete(ArrayList<ZPBank> cardSupportArrayList);
 }

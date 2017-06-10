@@ -4,31 +4,23 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Subscription;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 

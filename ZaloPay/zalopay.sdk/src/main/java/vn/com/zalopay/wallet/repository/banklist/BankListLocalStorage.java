@@ -10,7 +10,6 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -87,6 +86,13 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
             Collections.sort(bankConfigList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
             StringBuilder stringBuilder = new StringBuilder();
             for (BankConfig bankConfig : bankConfigList) {
+                //for testing
+                /*if (bankConfig.code.equals(CardType.PVTB)) {
+                   *//* bankConfig.status = BankStatus.MAINTENANCE;
+                    bankConfig.maintenanceto = Long.parseLong("1480063794000");
+                    bankConfig.maintenancemsg = "NH VietinBank bảo trì tới %s, vui lòng chọn ngân hàng khác hoặc quay lại sau";*//*
+                    bankConfig.functions.get(0).status = BankStatus.MAINTENANCE;
+                }*/
                 //save bank config
                 mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
                 stringBuilder.append(bankConfig.code).append(Constants.COMMA);

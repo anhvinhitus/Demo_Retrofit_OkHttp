@@ -120,7 +120,7 @@ public class BankCardCheck extends CardCheck {
         try {
             mSelectBank = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
             mCardNumber = pCardNumber;
-            if (mSelectBank != null && mSelectBank.isBankActive()) {
+            if (mSelectBank != null && mSelectBank.isActive()) {
                 try {
                     if (!TextUtils.isEmpty(mSelectBank.code)) {
                         mOtpReceiverPatternList = ResourceManager.getInstance(null).getOtpReceiverPattern(bankCode);

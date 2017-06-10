@@ -547,4 +547,6 @@
     <string name="invalid_order_amount_bank">%1$s không hỗ trợ mệnh giá %2$s VND</string>
     <string name="sdk_warning_pmc_transtype_disable_payment"><![CDATA[<b>%1$s</b> hiện không hỗ trợ loại giao dịch bạn đã chọn. Vui lòng thử lại sau!]]></string>
     <string name="sdk_warning_pmc_transtype_disable_link"><![CDATA[<b>%1$s</b> hiện tại không hỗ trợ liên kết. Vui lòng thử lại sau!]]></string>
+
+    <string name="sdk_warning_bank_not_support_link">Ngân hàng không còn được hỗ trợ liên kết. Vui lòng chọn ngân hàng khác!</string>
 </resources>

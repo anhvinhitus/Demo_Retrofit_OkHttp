@@ -42,11 +42,8 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
-import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
-import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
@@ -72,7 +69,7 @@ public class CShareData extends SingletonBase {
                     Map.Entry pair = (Map.Entry) o;
                     try {
                         BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
-                        if (bankConfig != null && bankConfig.isAllowWithDraw() && !bankConfigList.contains(bankConfig)) {
+                        if (bankConfig != null && bankConfig.isWithDrawAllow() && !bankConfigList.contains(bankConfig)) {
                             bankConfigList.add(bankConfig);
                         }
                     } catch (Exception e) {

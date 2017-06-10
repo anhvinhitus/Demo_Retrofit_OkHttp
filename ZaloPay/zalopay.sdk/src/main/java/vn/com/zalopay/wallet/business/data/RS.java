@@ -47,6 +47,8 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_warning_bank_not_support_link = "sdk_warning_bank_not_support_link";
+
         public static final String sdk_warning_pmc_transtype_disable_payment = "sdk_warning_pmc_transtype_disable_payment";
         public static final String sdk_warning_pmc_transtype_disable_link = "sdk_warning_pmc_transtype_disable_link";
         public static final String invalid_order_amount_bank = "invalid_order_amount_bank";

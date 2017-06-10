@@ -8,14 +8,12 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
@@ -197,7 +195,7 @@ public class SDKPayment {
         else if (paymentInfoHelper.isBankAccountTrans() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
             DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                     GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                    BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
+                    BankLoader.getInstance().maintenanceBank.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT), pIndex -> {
                         paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
                         if (GlobalData.getPaymentListener() != null) {
                             GlobalData.getPaymentListener().onComplete();
@@ -219,33 +217,29 @@ public class SDKPayment {
             return;
         }
         Intent intent;
-        MiniPmcTransType miniPmcTransType = null;
-        long appId = paymentInfoHelper.getAppId();
+        MiniPmcTransType pmcTransType = null;
         int transtype = paymentInfoHelper.getTranstype();
         //this is link card , go to channel directly
         if (paymentInfoHelper.isCardLinkTrans() || paymentInfoHelper.isBankAccountTrans()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-            try {
-                String pmc = paymentInfoHelper.isBankAccountTrans() ? SharedPreferencesManager.getInstance().getBankAccountChannelConfig(appId, transtype, null) :
-                        SharedPreferencesManager.getInstance().getATMChannelConfig(appId, transtype, null);
-                if (!TextUtils.isEmpty(pmc)) {
-                    miniPmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
-                    intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, miniPmcTransType);
-                }
-            } catch (Exception e) {
-                Log.d("startGateway", e);
+            pmcTransType = SDKApplication
+                    .getApplicationComponent()
+                    .appInfoInteractor()
+                    .getPmcTranstype(BuildConfig.ZALOAPP_ID, transtype, paymentInfoHelper.isBankAccountTrans(), null);
+            if (pmcTransType != null) {
+                intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, pmcTransType);
             }
         } else {
             intent = new Intent(pOwner, PaymentGatewayActivity.class);
         }
-        if (miniPmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
+        if (pmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
         } else {
             PaymentEventBus.shared().postSticky(paymentInfoHelper);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pOwner.startActivity(intent);
         }
-        Log.d("startGateway", intent.getComponent().getShortClassName(), miniPmcTransType);
+        Log.d("startGateway", intent.getComponent().getShortClassName(), pmcTransType);
     }
 
     /***

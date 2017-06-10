@@ -65,7 +65,7 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
         dialog.setTitleText(getActivity().getString(R.string.notification));
-        dialog.setContentText(getActivity().getString(R.string.link_account_vcb_exist));
+        dialog.setContentText(getActivity().getString(R.string.bank_link_account_vcb_exist));
         dialog.setConfirmText(getActivity().getString(R.string.txt_close));
         dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
             dialog.dismiss();

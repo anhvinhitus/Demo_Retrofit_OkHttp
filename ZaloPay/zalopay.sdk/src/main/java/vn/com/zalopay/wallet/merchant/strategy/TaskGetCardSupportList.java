@@ -17,7 +17,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 public class TaskGetCardSupportList extends TaskBase {
@@ -28,7 +28,7 @@ public class TaskGetCardSupportList extends TaskBase {
         }
         @Override
         public void onComplete() {
-            ArrayList<ZPCard> cardArrayList = populateCardSuportList();
+            ArrayList<ZPBank> cardArrayList = populateCardSuportList();
 
             if (getListener() instanceof IGetCardSupportListListener) {
                 Log.d(this, "callback to app", cardArrayList);
@@ -53,8 +53,8 @@ public class TaskGetCardSupportList extends TaskBase {
         return String.format("bank_%s%s", pBankCode, Constants.BITMAP_EXTENSION);
     }
 
-    protected ArrayList<ZPCard> populateCardSuportList() {
-        ArrayList<ZPCard> cardArrayList = new ArrayList<>();
+    protected ArrayList<ZPBank> populateCardSuportList() {
+        ArrayList<ZPBank> cardArrayList = new ArrayList<>();
 
         //cc must be hardcode
         String bankCodeVisa = CardType.VISA;
@@ -62,12 +62,12 @@ public class TaskGetCardSupportList extends TaskBase {
         String bankNameVisa = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
         String bankNameMaster = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
         if (!TextUtils.isEmpty(bankCodeVisa) && !TextUtils.isEmpty(bankNameVisa)) {
-            ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
+            ZPBank zpCard = new ZPBank(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
 
             cardArrayList.add(zpCard);
         }
         if (!TextUtils.isEmpty(bankCodeMaster) && !TextUtils.isEmpty(bankNameMaster)) {
-            ZPCard zpCard = new ZPCard(bankCodeMaster, getCardBitmapName(bankCodeMaster), bankNameMaster);
+            ZPBank zpCard = new ZPBank(bankCodeMaster, getCardBitmapName(bankCodeMaster), bankNameMaster);
             cardArrayList.add(zpCard);
         }
 
@@ -78,7 +78,7 @@ public class TaskGetCardSupportList extends TaskBase {
                 String bankCode = String.valueOf(pair.getValue());
                 if (!TextUtils.isEmpty(bankCode)) {
                     boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
-                    ZPCard zpCard = new ZPCard(bankCode, getCardBitmapName(bankCode), isBankAccount, getBankName(bankCode));
+                    ZPBank zpCard = new ZPBank(bankCode, getCardBitmapName(bankCode), isBankAccount, getBankName(bankCode));
                     if (!cardArrayList.contains(zpCard))
                         cardArrayList.add(zpCard);
                 }

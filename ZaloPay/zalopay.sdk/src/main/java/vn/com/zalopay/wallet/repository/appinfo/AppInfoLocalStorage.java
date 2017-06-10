@@ -15,6 +15,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeResponse;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
@@ -42,12 +43,17 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
                     int transtype = miniPmcTransTypeResponse.transtype;
                     List<MiniPmcTransType> miniPmcTransTypeList = miniPmcTransTypeResponse.transtypes;
+
                     minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
                     maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
                     ArrayList<String> transtypePmcIdList = new ArrayList<>();
 
                     String appInfoTranstypeKey = getTranstypeCheckSumKey(pAppId, transtype);
                     for (MiniPmcTransType miniPmcTransType : miniPmcTransTypeList) {
+                        //for testing
+                       /* if (transtype == TransactionType.LINK && miniPmcTransType.bankcode.equals(CardType.PBIDV)) {
+                            miniPmcTransType.minappversion = "2.15.0";
+                        }*/
                         String pmcKey = MiniPmcTransType.getPmcKey(pAppId, transtype, miniPmcTransType.pmcid);
                         //save default for new atm/cc and bank account/zalopay pmc
                         if (!transtypePmcIdList.contains(pmcKey)) {
@@ -122,6 +128,20 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
+        MiniPmcTransType pmcTransType = null;
+        try {
+            String pmc = isBankAcount ? mSharedPreferences.getBankAccountChannelConfig(pAppId, transtype, bankCode) : mSharedPreferences.getATMChannelConfig(pAppId, transtype, bankCode);
+            if (!TextUtils.isEmpty(pmc)) {
+                pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return pmcTransType;
+    }
+
+    @Override
     public long getExpireTime(long appId) {
         try {
             return mSharedPreferences.getExpiredTimeAppChannel(String.valueOf(appId));
@@ -159,7 +179,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public String getTranstypeCheckSumKey(long pAppId, int transtype) {
+    public String getTranstypeCheckSumKey(long pAppId, @TransactionType int transtype) {
         StringBuilder appTransTypePmcKey = new StringBuilder();
         appTransTypePmcKey.append(pAppId)
                 .append(Constants.UNDERLINE)

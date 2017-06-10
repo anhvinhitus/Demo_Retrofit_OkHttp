@@ -6,7 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +17,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.utility.PlayStoreUtils;
+import vn.com.zalopay.wallet.constants.BankStatus;
+import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -68,7 +74,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
         rcvListBankSupport.setAdapter(mAdapter);
         rcvListBankSupport.setFocusable(false);
 
-        presenter.getCardSupport();
+        presenter.getBankSupport();
     }
 
     @Override
@@ -96,7 +102,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     }
 
     @Override
-    public void fetchListBank(List<ZPCard> cardSupportList) {
+    public void fetchListBank(List<ZPBank> cardSupportList) {
         if (!isAdded()) {
             Timber.d("Refresh Bank Supports error because fragment didn't add.");
             return;
@@ -135,9 +141,28 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     }
 
     @Override
-    public void onClickBankSupportListener(ZPCard card, int position) {
-        if (card.isBankAccount()) {
-            presenter.linkAccount(card.getCardCode());
+    public void showMessageDialog(String message, ZPWOnEventDialogListener closeDialogListener) {
+        DialogHelper.showCustomDialog(getActivity(), message, getString(R.string.btn_retry_select_bank), SweetAlertDialog.INFO_TYPE, closeDialogListener);
+    }
+
+    @Override
+    public void onClickBankSupportListener(ZPBank card, int position) {
+        if (card.bankStatus == BankStatus.MAINTENANCE) {
+            showMessageDialog(card.bankMessage, null);
+        } else if (card.bankStatus == BankStatus.UPVERSION) {
+            showConfirmDialog(card.bankMessage, getString(R.string.txt_update), getString(R.string.txt_close), new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                }
+
+                @Override
+                public void onOKevent() {
+                    PlayStoreUtils.openPlayStoreForUpdate(getActivity(), vn.com.vng.zalopay.BuildConfig.PACKAGE_IN_PLAY_STORE,
+                            AndroidApplication.instance().getResources().getString(R.string.app_name), "force-app-update", "bank-future");
+                }
+            });
+        } else if (card.isBankAccount()) {
+            presenter.linkAccount(card.bankCode);
         } else {
             presenter.linkCard();
         }

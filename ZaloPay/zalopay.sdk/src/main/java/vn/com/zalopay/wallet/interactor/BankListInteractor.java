@@ -22,11 +22,17 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.atm.BankFunction;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.banklist.BankListStore;
 
 /**
@@ -53,49 +59,64 @@ public class BankListInteractor implements IBankList {
             return Observable.error(new RequestException(bankConfigResponse.returncode, bankConfigResponse.returnmessage));
         }
     };
-    private Func1<BankConfigResponse, Observable<List<ZPCard>>> supportCards = new Func1<BankConfigResponse, Observable<List<ZPCard>>>() {
-        @Override
-        public Observable<List<ZPCard>> call(BankConfigResponse bankConfigResponse) {
-            Log.d(this, "start load support card");
-            try {
-                List<ZPCard> supportCards = new ArrayList<>();
-                //cc must be hardcode
-                String bankCodeVisa = CardType.VISA;
-                String bankCodeMaster = CardType.MASTER;
-                String bankNameVisa = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
-                String bankNameMaster = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
-                ZPCard visaCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa), bankNameVisa);
-                ZPCard masterCard = new ZPCard(bankCodeMaster, getCardBitmapName(bankCodeMaster), bankNameMaster);
-                //build support cards
-                String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
-                if (!TextUtils.isEmpty(bankCodes)) {
-                    String[] arrayBankCode = bankCodes.split(Constants.COMMA);
-                    for (int i = 0; i < arrayBankCode.length; i++) {
-                        String bankCode = arrayBankCode[i];
-                        if (!TextUtils.isEmpty(bankCode) && !BuildConfig.CC_CODE.equals(bankCode)) {
-                            boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
-                            ZPCard zpCard = new ZPCard(bankCode, getCardBitmapName(bankCode), isBankAccount, getBankName(bankCode));
-                            if (!supportCards.contains(zpCard)) {
-                                supportCards.add(zpCard);
-                            }
-                        }else if(!TextUtils.isEmpty(bankCode) && BuildConfig.CC_CODE.equals(bankCode)){
-                            supportCards.add(visaCard);
-                            supportCards.add(masterCard);
-                        }
-                    }
-                }
-                return Observable.just(supportCards);
-            } catch (Exception e) {
-                Log.e(this, e);
-                return Observable.error(e);
-            }
-        }
-    };
 
     @Inject
     public BankListInteractor(BankListStore.Repository bankListRepository) {
         this.mBankListRepository = bankListRepository;
         Log.d(this, "call constructor BankListInteractor");
+    }
+
+    private Func1<BankConfigResponse, Observable<List<ZPBank>>> supportBanks(String appVersion) {
+        return new Func1<BankConfigResponse, Observable<List<ZPBank>>>() {
+            @Override
+            public Observable<List<ZPBank>> call(BankConfigResponse bankConfigResponse) {
+                Log.d(this, "start load support banks");
+                try {
+                    List<ZPBank> supportBank = new ArrayList<>();
+                    //cc must be hardcode
+                    String bankCodeVisa = CardType.VISA;
+                    String bankCodeMaster = CardType.MASTER;
+                    ZPBank visa = getCardFromBankConfig(appVersion, BuildConfig.CC_CODE, false);
+                    visa.bankLogo = getBankLogo(bankCodeVisa);
+                    visa.bankCode = bankCodeVisa;
+                    visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+                    ;
+                    ZPBank masterCard = getCardFromBankConfig(appVersion, BuildConfig.CC_CODE, false);
+                    masterCard.bankLogo = getBankLogo(bankCodeMaster);
+                    masterCard.bankCode = bankCodeMaster;
+                    masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
+                    ;
+
+                    //build support cards
+                    String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
+                    if (!TextUtils.isEmpty(bankCodes)) {
+                        String[] arrayBankCode = bankCodes.split(Constants.COMMA);
+                        for (int i = 0; i < arrayBankCode.length; i++) {
+                            String bankCode = arrayBankCode[i];
+                            if (!TextUtils.isEmpty(bankCode) && !BuildConfig.CC_CODE.equals(bankCode)) {
+                                boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
+                                ZPBank zpBank = getCardFromBankConfig(appVersion, bankCode, isBankAccount);
+                                if (zpBank == null) {
+                                    continue;
+                                }
+                                zpBank.bankLogo = getBankLogo(bankCode);
+                                zpBank.isBankAccount = isBankAccount;
+                                if (!supportBank.contains(zpBank)) {
+                                    supportBank.add(zpBank);
+                                }
+                            } else if (!TextUtils.isEmpty(bankCode) && BuildConfig.CC_CODE.equals(bankCode)) {
+                                supportBank.add(visa);
+                                supportBank.add(masterCard);
+                            }
+                        }
+                    }
+                    return Observable.just(supportBank);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                    return Observable.error(e);
+                }
+            }
+        };
     }
 
     @Override
@@ -122,23 +143,61 @@ public class BankListInteractor implements IBankList {
      * @return
      */
     @Override
-    public Observable<List<ZPCard>> getSupportCards(String appVersion, long currentTime) {
+    public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
                 .subscribeOn(Schedulers.io())
-                .flatMap(supportCards)
+                .flatMap(supportBanks(appVersion))
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    protected String getCardBitmapName(String pBankCode) {
+    protected String getBankLogo(String pBankCode) {
         return String.format("bank_%s%s", pBankCode, Constants.BITMAP_EXTENSION);
     }
 
-    private String getBankName(String bankCode) {
+    private ZPBank getCardFromBankConfig(String appVersion, String bankCode, boolean isBankAccount) {
         if (TextUtils.isEmpty(bankCode)) {
             return null;
         }
+        //get bank status and message in maintenance or need up version for link transtype
+        @BankFunctionCode int bankFunctionCode = isBankAccount ? BankFunctionCode.LINK_BANK_ACCOUNT : BankFunctionCode.LINK_CARD;
         BankConfig bankConfig = this.mBankListRepository.getLocalStorage().getBankConfig(bankCode);
-        return bankConfig != null ? bankConfig.getDisplayName() : null;
+        if (bankConfig == null) {
+            return null;
+        }
+        ZPBank bank = new ZPBank(bankCode);
+        bank.bankName = bankConfig.getDisplayName();
+        bank.setBankStatus(bankConfig.status);
+        if (bank.bankStatus == BankStatus.ACTIVE) {
+            //continue with status in bank function
+            BankFunction bankFunction = bankConfig.getBankFunction(bankFunctionCode);
+            bank.setBankStatus(BankStatus.DISABLE);
+            if (bankFunction != null) {
+                bank.setBankStatus(bankFunction.status);
+            }
+        }
+        switch (bank.bankStatus) {
+            case BankStatus.DISABLE:
+                return null;
+            case BankStatus.MAINTENANCE:
+                //set maintenance message
+                bank.bankMessage = bankConfig.getMaintenanceMessage(bankFunctionCode);
+                break;
+        }
+        if (bank.bankStatus != BankStatus.ACTIVE) {
+            return bank;
+        }
+        //continue check bank future version
+        MiniPmcTransType pmcTransType = SDKApplication
+                .getApplicationComponent()
+                .appInfoInteractor()
+                .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, isBankAccount, bankCode);
+        if (pmcTransType != null && !pmcTransType.isVersionSupport(appVersion)) {
+            String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel);
+            message = String.format(message, bankConfig.getShortBankName());
+            bank.setBankStatus(BankStatus.UPVERSION);
+            bank.bankMessage = message;
+        }
+        return bank;
     }
 
     @Override

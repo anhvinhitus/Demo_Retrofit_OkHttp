@@ -113,7 +113,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 // get bank config
                 String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
                 BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
-                if (bankConfig == null || !bankConfig.isBankActive()) {
+                if (bankConfig == null || !bankConfig.isActive()) {
                     getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
                 } else {
                     String loginBankUrl = bankConfig.loginbankurl;

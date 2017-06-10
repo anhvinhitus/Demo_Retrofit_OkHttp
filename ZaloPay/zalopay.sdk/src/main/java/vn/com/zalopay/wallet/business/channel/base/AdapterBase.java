@@ -662,7 +662,7 @@ public abstract class AdapterBase {
                             return null;
                         }
                         //flow cover parse web (vietinbank)
-                        if (isCardFlow() && getGuiProcessor().getCardFinder().isDetected() && getGuiProcessor().getCardFinder().getDetectBankConfig() != null && getGuiProcessor().getCardFinder().getDetectBankConfig().isCoverBank()) {
+                        if (isCardFlow() && getGuiProcessor().getCardFinder().isDetected() && getGuiProcessor().getCardFinder().getDetectBankConfig() != null && getGuiProcessor().getCardFinder().getDetectBankConfig().isParseWebsite()) {
                             setECardFlowType(BankFlow.PARSEWEB);
                             showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
                             initWebView(dataResponse.redirecturl);

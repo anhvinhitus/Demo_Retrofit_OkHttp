@@ -25,12 +25,9 @@ public class BankLoader extends SingletonBase {
     public static Map<String, String> mapBank;
     private static BankLoader _object;
     public BankConfig maintenanceBank;
-    public BankFunction maintenanceBankFunction;
-
     public BankLoader() {
         super();
         maintenanceBank = null;
-        maintenanceBankFunction = null;
     }
 
     public static synchronized BankLoader getInstance() {
@@ -89,46 +86,6 @@ public class BankLoader extends SingletonBase {
         }
     }
 
-    /***
-     * get detail maintenance message from bankconfig
-     * @return
-     */
-    public String getFormattedBankMaintenaceMessage() {
-        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
-        try {
-            String maintenanceTo = "";
-
-            if (maintenanceBank != null) {
-                message = maintenanceBank.maintenancemsg;
-            }
-            if (maintenanceBank != null && maintenanceBank.isBankFunctionAllMaintenance()) {
-                if (maintenanceBank.maintenanceto > 0) {
-                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBank.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, maintenanceBank.name, maintenanceTo);
-                }
-            }
-            if (maintenanceBank != null && maintenanceBankFunction != null && maintenanceBankFunction.isFunctionMaintenance()) {
-                if (maintenanceBankFunction.maintenanceto > 0) {
-                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBankFunction.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, maintenanceBank.name, maintenanceTo);
-                }
-            }
-        } catch (Exception ex) {
-            Log.e("getFormattedBankMaintenaceMessage", ex);
-        }
-        return message;
-    }
-
     public BankConfig getBankByBankCode(String pBankCode) {
         if (!TextUtils.isEmpty(pBankCode)) {
             try {
@@ -150,7 +107,6 @@ public class BankLoader extends SingletonBase {
         BankConfig bankConfig = getBankByBankCode(pBankCode);
         if (bankConfig != null && bankConfig.isBankMaintenence(GlobalData.getCurrentBankFunction())) {
             maintenanceBank = bankConfig;
-            maintenanceBankFunction = bankConfig.getBankFunction(GlobalData.getCurrentBankFunction());
             return true;
         }
         return false;
@@ -165,7 +121,6 @@ public class BankLoader extends SingletonBase {
         BankConfig bankConfig = getBankByBankCode(pBankCode);
         if (bankConfig != null && bankConfig.isBankMaintenence(pBankFunction)) {
             maintenanceBank = bankConfig;
-            maintenanceBankFunction = bankConfig.getBankFunction(GlobalData.getCurrentBankFunction());
             return true;
         }
         return false;
@@ -178,7 +133,6 @@ public class BankLoader extends SingletonBase {
      */
     public boolean isBankSupport(String pBankCode) {
         BankConfig bankConfig = getBankByBankCode(pBankCode);
-        return bankConfig != null && bankConfig.isBankActive();
+        return bankConfig != null && bankConfig.isActive();
     }
-
 }
