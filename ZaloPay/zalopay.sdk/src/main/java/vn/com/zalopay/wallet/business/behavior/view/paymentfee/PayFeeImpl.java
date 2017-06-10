@@ -1,17 +1,16 @@
 package vn.com.zalopay.wallet.business.behavior.view.paymentfee;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.FeeType;
 
 /***
- * payment fee
+ * calculate fee for pay transtype
  */
-public class CPaymentCalculateFee implements ICalculateFee {
+public class PayFeeImpl implements ICalculateFee {
     private MiniPmcTransType mChannel;
 
-    public CPaymentCalculateFee(MiniPmcTransType pChannel) {
+    public PayFeeImpl(MiniPmcTransType pChannel) {
         this.mChannel = pChannel;
     }
 

@@ -21,19 +21,13 @@ public class BankConfig {
     public String otptype;
     public String type;
     public int interfacetype;
-    public int requireotp;
     public int allowwithdraw = 0;
-    public double feerate = -1;
-    public double minfee = -1;
     public long maintenancefrom = 0;
     public long maintenanceto = 0;
     public String maintenancemsg = null;
     public int supporttype = 1;
-    public double totalfee = 0;
     public String loginbankurl;
     public List<BankFunction> functions = null;
-    @FeeType
-    public String feecaltype = null;
     @BankStatus
     public int status;
     public int displayorder = 0;// order sort in UI
@@ -157,11 +151,6 @@ public class BankConfig {
     //is bank use webview for hiding bank's website?
     public boolean isCoverBank() {
         return interfacetype == 1;
-    }
-
-    //can bank use pin instead of bank's otp?
-    public boolean isRequireOtp() {
-        return requireotp == 1;
     }
 
     //can bank allow withdrawing

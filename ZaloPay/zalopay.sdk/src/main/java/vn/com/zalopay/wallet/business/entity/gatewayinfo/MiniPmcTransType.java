@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CPaymentCalculateFee;
+import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
+import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -146,7 +146,7 @@ public class MiniPmcTransType implements Parcelable {
      * calculate fee
      */
     public void calculateFee(long amount) {
-        this.totalfee = CBaseCalculateFee.getInstance().setCalculator(new CPaymentCalculateFee(this)).countFee(amount);
+        this.totalfee = CalculateFee.newInstance().setCalculator(new PayFeeImpl(this)).calculate(amount);
     }
 
     public boolean hasFee() {
