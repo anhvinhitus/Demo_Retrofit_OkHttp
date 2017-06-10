@@ -53,6 +53,10 @@ public interface IBuilder {
 
     LinkAccInfo getLinkAccountInfo();
 
+    boolean isLinkAccount();
+    boolean isUnLinkAccount();
+
+
     IBuilder setLinkAccountInfo(LinkAccInfo linkAccountInfo);
 
     IPaymentInfo build();

@@ -19,10 +19,6 @@ public class LinkAccInfo {
         return mBankCode;
     }
 
-    public ELinkAccType getLinkAccType() {
-        return mLinkAccType;
-    }
-
     public boolean isLinkAcc() {
         return mLinkAccType == ELinkAccType.LINK;
     }

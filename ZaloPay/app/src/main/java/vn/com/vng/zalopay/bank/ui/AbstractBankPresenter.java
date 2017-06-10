@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
@@ -44,11 +43,11 @@ abstract class AbstractBankPresenter<View> extends AbstractPresenter<View> {
             Timber.d("PaymentSDK response success but paymentInfo builder null");
             return;
         }
-        if (builder.getLinkAccountInfo().isLinkAcc()) {
+        if (builder.isLinkAccount()) {
             onAddBankAccountSuccess((BankAccount) builder.getMapBank());
-        } else if (builder.getLinkAccountInfo().isUnlinkAcc()) {
+        } else if (builder.isUnLinkAccount()) {
             onUnLinkBankAccountSuccess((BankAccount) builder.getMapBank());
-        } else if(builder.getMapBank() != null){
+        } else if (builder.getMapBank() != null) {
             onAddBankCardSuccess((MapCard) builder.getMapBank());
         }
     }

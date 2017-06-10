@@ -143,6 +143,16 @@ public final class PaymentInfoBuilder implements IBuilder {
     }
 
     @Override
+    public boolean isLinkAccount() {
+        return link_acc_info != null && link_acc_info.isLinkAcc();
+    }
+
+    @Override
+    public boolean isUnLinkAccount() {
+        return link_acc_info != null && link_acc_info.isUnlinkAcc();
+    }
+
+    @Override
     public void release() {
         Log.d(this, "start release payment info");
         order = null;
