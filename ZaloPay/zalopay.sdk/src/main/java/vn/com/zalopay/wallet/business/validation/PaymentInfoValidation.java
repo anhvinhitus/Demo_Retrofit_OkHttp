@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.business.validation;
 
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -10,9 +9,9 @@ public class PaymentInfoValidation implements IValidate {
     protected IValidate validate;
 
     public PaymentInfoValidation(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isBankAccountLink()) {
+        if (paymentInfoHelper.isBankAccountTrans()) {
             setValidator(new LinkAccValidation());
-        } else if (paymentInfoHelper.isLinkCardChannel()) {
+        } else if (paymentInfoHelper.isCardLinkTrans()) {
             setValidator(new LinkCardValidation());
         } else {
             setValidator(new PayValidation());

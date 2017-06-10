@@ -272,7 +272,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             input.otpValidType = mAdapter.getOTPValidValue();
             input.captchaConfirm = mAdapter.getCaptchaConfirm();
             input.otp = mAdapter.getOTPValue();
-            input.linkerType = mAdapter.getPaymentInfoHelper().isLinkAccFlow() ? 1 : 0; // 1. isLink, other. isUnLink
+            input.linkerType = mAdapter.getPaymentInfoHelper().bankAccountLink() ? 1 : 0; // 1. isLink, other. isUnLink
             input.walletTypeUnregister = mAdapter.getWalletTypeUnRegValue();
             input.phoneNumUnregister = mAdapter.getPhoneNumUnRegValue();
             input.passwordUnregister = mAdapter.getPasswordUnRegValue();

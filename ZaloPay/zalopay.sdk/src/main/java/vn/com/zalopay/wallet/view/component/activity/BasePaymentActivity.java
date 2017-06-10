@@ -225,7 +225,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             }
                         }
                         Log.d(this, "getOneShotTransactionStatus");
-                    } else if (mPaymentInfoHelper.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc && getAdapter().isFinalStep()) {
+                    } else if (mPaymentInfoHelper.isBankAccountTrans() && getAdapter() instanceof AdapterLinkAcc && getAdapter().isFinalStep()) {
                         ((AdapterLinkAcc) getAdapter()).verifyServerAfterParseWebTimeout();
                         Log.d(this, "load website timeout, continue to verify server again to ask for new data list");
                     } else if (!getAdapter().isFinalScreen()) {
@@ -817,11 +817,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public String getTransactionTitle() {
         String barTitle = GlobalData.getStringResource(RS.string.walletsdk_string_bar_title);
-        if (mPaymentInfoHelper.isTopupChannel()) {
+        if (mPaymentInfoHelper.isTopupTrans()) {
             barTitle = GlobalData.getStringResource(RS.string.zpw_string_pay_title);
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             barTitle = GlobalData.getStringResource(RS.string.zpw_string_tranfer_title);
-        } else if (mPaymentInfoHelper.isWithDrawChannel()) {
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             barTitle = GlobalData.getStringResource(RS.string.zpw_string_withdraw_title);
         }
         return barTitle;
@@ -885,7 +885,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     protected void showApplicationInfo() {
         //withdraw no need to show app name
-        if (mPaymentInfoHelper.isWithDrawChannel()) {
+        if (mPaymentInfoHelper.isWithDrawTrans()) {
             return;
         }
         long appId = mPaymentInfoHelper.getAppId();
@@ -984,19 +984,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void setTitle() {
         String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway);
-        if (mPaymentInfoHelper.isTopupChannel()) {
+        if (mPaymentInfoHelper.isTopupTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_topup);
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_tranfer);
-        } else if (mPaymentInfoHelper.isWithDrawChannel()) {
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_withdraw);
         }
         setText(R.id.title_payment_method, title);
     }
 
     public void visibleHeaderInfo() {
-        if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
-            if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
+            if (mPaymentInfoHelper.isMoneyTranferTrans()) {
                 getAdapter().getActivity().visibleTranferWalletInfo(true);
             } else {
                 getAdapter().getActivity().visibleAppInfo(true);
@@ -1090,7 +1090,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, !((mPaymentInfoHelper.isBankAccountLink() && GlobalData.shouldNativeWebFlow()) || mPaymentInfoHelper.isUnLinkAccFlow()));//hide all if unlink account
+            setVisible(R.id.zpw_notransid_textview, !((mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()) || mPaymentInfoHelper.bankAccountUnlink()));//hide all if unlink account
         }
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
@@ -1134,7 +1134,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || mPaymentInfoHelper.isUnLinkAccFlow()));//hide all if unlink account
+            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || mPaymentInfoHelper.bankAccountUnlink()));//hide all if unlink account
         }
         setVisible(R.id.zpw_pay_info_buttom_view, true);
         long appId = mPaymentInfoHelper.getAppId();
@@ -1147,7 +1147,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //show transaction amount when ! withdraw
         AbstractOrder order = mPaymentInfoHelper.getOrder();
-        if (order != null && order.amount_total > 0 && !mPaymentInfoHelper.isWithDrawChannel() && !mPaymentInfoHelper.isTranferMoneyChannel()) {
+        if (order != null && order.amount_total > 0 && !mPaymentInfoHelper.isWithDrawTrans() && !mPaymentInfoHelper.isMoneyTranferTrans()) {
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
             if (!TextUtils.isEmpty(order.description)) {
                 setVisible(R.id.payment_description_label, true);
@@ -1155,7 +1155,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             } else {
                 setVisible(R.id.payment_description_label, false);
             }
-        } else if (mPaymentInfoHelper.isBankAccountLink()) { // show label for linkAcc
+        } else if (mPaymentInfoHelper.isBankAccountTrans()) { // show label for linkAcc
             if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setVisible(R.id.payment_description_label, true);
@@ -1180,7 +1180,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setVisible(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {// Show detail tranfer
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {// Show detail tranfer
             //prevent capture screen
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
@@ -1336,7 +1336,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * show special view for wallet tranfer and withdraw
      */
     protected void showUserInfoWalletTransfer() {
-        if (!mPaymentInfoHelper.isTranferMoneyChannel()) {
+        if (!mPaymentInfoHelper.isMoneyTranferTrans()) {
             return;
         }
 
@@ -1392,7 +1392,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             return;
         }
 
-        if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             visibleTranferWalletInfo(true);
             visibleAppInfo(false);
 
@@ -1430,15 +1430,15 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * show header text
      */
     protected void showDisplayInfo() {
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             setVisible(R.id.app_info_linerlayout, false);
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             visibleTranferWalletInfo(true);
             visibleAppInfo(false);
             showUserInfoWalletTransfer();
         } else {
             AbstractOrder order = mPaymentInfoHelper.getOrder();
-            if (mPaymentInfoHelper.isWithDrawChannel()) {
+            if (mPaymentInfoHelper.isWithDrawTrans()) {
                 setText(R.id.item_name, GlobalData.getStringResource(RS.string.zpw_string_withdraw_description));
             } else if (order != null) {
                 setText(R.id.item_name, order.description);
@@ -1534,11 +1534,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         boolean userLevelValid = true;
         try {
             int user_level = mPaymentInfoHelper.getLevel();
-            if (mPaymentInfoHelper.isTranferMoneyChannel() && user_level < BuildConfig.level_allow_use_zalopay) {
+            if (mPaymentInfoHelper.isMoneyTranferTrans() && user_level < BuildConfig.level_allow_use_zalopay) {
                 userLevelValid = false;
-            } else if (mPaymentInfoHelper.isWithDrawChannel() && user_level < BuildConfig.level_allow_withdraw) {
+            } else if (mPaymentInfoHelper.isWithDrawTrans() && user_level < BuildConfig.level_allow_withdraw) {
                 userLevelValid = false;
-            } else if ((mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) && user_level < BuildConfig.level_allow_cardmap) {
+            } else if ((mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) && user_level < BuildConfig.level_allow_cardmap) {
                 userLevelValid = false;
             }
         } catch (Exception e) {
@@ -1795,7 +1795,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             byte[] byteArray = stream.toByteArray();
             String transactionTitle = getTransactionTitle();
 
-            if (mPaymentInfoHelper.isLinkCardChannel()) {
+            if (mPaymentInfoHelper.isCardLinkTrans()) {
                 transactionTitle = GlobalData.getStringResource(RS.string.zpw_string_credit_card_link);
             }
             int errorcode = getAdapter().getResponseStatus() != null ? getAdapter().getResponseStatus().returncode : Constants.NULL_ERRORCODE;

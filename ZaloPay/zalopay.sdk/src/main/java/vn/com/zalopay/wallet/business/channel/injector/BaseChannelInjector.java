@@ -46,9 +46,9 @@ public abstract class BaseChannelInjector {
      * @return
      */
     public static BaseChannelInjector createChannelInjector(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isTranferMoneyChannel()) {
+        if (paymentInfoHelper.isMoneyTranferTrans()) {
             return new TranferChannelInjector(paymentInfoHelper);
-        } else if (paymentInfoHelper.isWithDrawChannel()) {
+        } else if (paymentInfoHelper.isWithDrawTrans()) {
             return new WithDrawChannelInjector(paymentInfoHelper);
         } else {
             return new PaymentChannelInjector(paymentInfoHelper);
@@ -141,7 +141,7 @@ public abstract class BaseChannelInjector {
                 }
 
                 MiniPmcTransType activeChannel = null;
-                if (mPaymentInfoHelper.isWithDrawChannel()) {
+                if (mPaymentInfoHelper.isWithDrawTrans()) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), bankAccount.bankcode), MiniPmcTransType.class);
                 } else if (BankAccountHelper.isBankAccount(bankAccount.bankcode)) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), bankAccount.bankcode), MiniPmcTransType.class);
@@ -223,7 +223,7 @@ public abstract class BaseChannelInjector {
                 }
                 Log.d(this, "map card ", mapCard);
                 MiniPmcTransType activeChannel;
-                if (mPaymentInfoHelper.isWithDrawChannel()) {
+                if (mPaymentInfoHelper.isWithDrawTrans()) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
                 } else if (BuildConfig.CC_CODE.equals(mapCard.bankcode)) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);

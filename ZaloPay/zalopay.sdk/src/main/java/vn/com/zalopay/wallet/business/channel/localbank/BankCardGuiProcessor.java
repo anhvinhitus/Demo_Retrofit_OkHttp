@@ -82,7 +82,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void init(PaymentInfoHelper paymentInfoHelper) {
         super.init(paymentInfoHelper);
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_atm_method_name));

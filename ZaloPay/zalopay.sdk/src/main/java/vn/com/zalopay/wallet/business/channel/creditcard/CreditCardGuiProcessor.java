@@ -95,7 +95,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected boolean validateCardNumberLength() {
-        return mPaymentInfoHelper.isLinkCardChannel() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
+        return mPaymentInfoHelper.isCardLinkTrans() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
 
     }
 

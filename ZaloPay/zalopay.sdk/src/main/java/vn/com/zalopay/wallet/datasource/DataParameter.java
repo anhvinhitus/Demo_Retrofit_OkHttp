@@ -277,10 +277,10 @@ public class DataParameter {
             params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
         }
         DBaseMap mapBank = paymentInfoHelper.getMapBank();
-        if (paymentInfoHelper.isMapCardChannel() && mapBank.isValid()) {
+        if (paymentInfoHelper.payByCardMap() && mapBank.isValid()) {
             DMappedCreditCard mapCard = new DMappedCreditCard((MapCard) mapBank);
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapCard));
-        } else if (paymentInfoHelper.isMapBankAccountChannel() && mapBank.isValid()) {
+        } else if (paymentInfoHelper.payByBankAccountMap() && mapBank.isValid()) {
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapBank));
         } else if (pAdapter.isCardFlow()) {
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(pAdapter.getCard()));

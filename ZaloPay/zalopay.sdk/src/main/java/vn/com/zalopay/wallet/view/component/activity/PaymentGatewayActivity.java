@@ -238,7 +238,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
                  * this is withdraw link card and no mapped card.
                  * need remind user go to link card to can withdraw
                  */
-                if (mPaymentInfoHelper.isWithDrawChannel()) {
+                if (mPaymentInfoHelper.isWithDrawTrans()) {
                     confirmLinkCard();
                     return;
                 }
@@ -282,7 +282,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private synchronized void showPaymentChannel() {
         showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         //show header
-        if (mPaymentInfoHelper.isTopupChannel() || mPaymentInfoHelper.isPayChannel() || mPaymentInfoHelper.isWithDrawChannel()) {
+        if (mPaymentInfoHelper.isTopupTrans() || mPaymentInfoHelper.isPayTrans() || mPaymentInfoHelper.isWithDrawTrans()) {
             Log.d(this, "show app info");
             showApplicationInfo();
         }

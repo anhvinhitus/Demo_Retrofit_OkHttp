@@ -251,7 +251,7 @@ public abstract class AdapterBase {
     public abstract void onProcessPhrase() throws Exception;
 
     public int getChannelID() {
-        if (mPaymentInfoHelper.isWithDrawChannel()) {
+        if (mPaymentInfoHelper.isWithDrawTrans()) {
             return BuildConfig.channel_zalopay;
         } else {
             MiniPmcTransType miniPmcTransType = getConfig();
@@ -755,7 +755,7 @@ public abstract class AdapterBase {
         }
 
         if (isOrderProcessing()) {
-            if (mPaymentInfoHelper.isMapCardChannel()) {
+            if (mPaymentInfoHelper.payByCardMap()) {
                 detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
             }
             getActivity().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
@@ -824,7 +824,7 @@ public abstract class AdapterBase {
                  *  get time from notification
                  *  in tranferring money case
                  */
-                if (mPaymentInfoHelper.isTranferMoneyChannel() && pAdditionParams.length >= 3) {
+                if (mPaymentInfoHelper.isMoneyTranferTrans() && pAdditionParams.length >= 3) {
                     try {
                         Long paymentTime = Long.parseLong(pAdditionParams[2].toString());
                         mPaymentInfoHelper.getOrder().apptime = paymentTime;
@@ -998,7 +998,7 @@ public abstract class AdapterBase {
             }
         } catch (Exception ex) {
             sdkReportErrorOnPharse(Constants.UNDEFINE, GsonUtils.toJsonString(mResponseStatus) + (ex != null ? ex.getMessage() : "onClickSubmission"));
-            if (mPaymentInfoHelper.isLinkCardChannel()) {
+            if (mPaymentInfoHelper.isCardLinkTrans()) {
                 terminate(null, true);
             } else {
                 showDialog(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
@@ -1082,13 +1082,13 @@ public abstract class AdapterBase {
             setBankInfoConfirmView();
 
             getActivity().setToolBarTitle();
-            if (mPaymentInfoHelper.isMapCardChannel()) {
+            if (mPaymentInfoHelper.payByCardMap()) {
                 getGuiProcessor().getCardFinder().detectOnAsync(mPaymentInfoHelper.getMapBank().getFirstNumber(), isDetected -> {
                     if (isDetected) {
                         getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getBankName());
                     }
                 });
-            } else if (mPaymentInfoHelper.isMapBankAccountChannel()) {
+            } else if (mPaymentInfoHelper.payByBankAccountMap()) {
                 BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mPaymentInfoHelper.getMapBank().bankcode);
                 if (bankConfig != null) {
                     getActivity().setText(R.id.zpw_channel_label_textview, bankConfig.name);
@@ -1361,13 +1361,13 @@ public abstract class AdapterBase {
      */
     protected void setSuccessLabel() {
         String strMessage = GlobalData.getStringResource(RS.string.zpw_string_payment_success_label);
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_linkcard_success_label);
-        } else if (mPaymentInfoHelper.isTopupChannel()) {
+        } else if (mPaymentInfoHelper.isTopupTrans()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_topup_success_label);
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_tranfer_success_label);
-        } else if (mPaymentInfoHelper.isWithDrawChannel()) {
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_withdraw_success_label);
         } else if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_lixi_success_label);
@@ -1426,11 +1426,11 @@ public abstract class AdapterBase {
     }
 
     protected void setFailLabel() {
-        String strMessage = mPaymentInfoHelper.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.zpw_string_payment_fail_linkcard) :
+        String strMessage = mPaymentInfoHelper.isCardLinkTrans() ? GlobalData.getStringResource(RS.string.zpw_string_payment_fail_linkcard) :
                 GlobalData.getStringResource(RS.string.zpw_string_payment_fail_transaction);
 
         if (isFailProcessingPharse()) {
-            strMessage = mPaymentInfoHelper.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.zpw_string_linkcard_processing) :
+            strMessage = mPaymentInfoHelper.isCardLinkTrans() ? GlobalData.getStringResource(RS.string.zpw_string_linkcard_processing) :
                     GlobalData.getStringResource(RS.string.zpw_string_transaction_processing);
         } else if (isFailNetworkingPharse()) {
             strMessage = GlobalData.getStringResource(RS.string.zpw_string_transaction_networking_error);
@@ -1457,7 +1457,7 @@ public abstract class AdapterBase {
         }
 
         //link card channel, server auto save card , client only save card to local cache withou hit server
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             try {
                 if (mMapCard == null) {
                     tranferPaymentCardToMapCard();
@@ -1579,7 +1579,7 @@ public abstract class AdapterBase {
         if (getGuiProcessor() != null) {
             bankCode = getGuiProcessor().getDetectedBankCode();
         }
-        if (mPaymentInfoHelper.isBankAccountLink()) {
+        if (mPaymentInfoHelper.isBankAccountTrans()) {
             bankCode = mPaymentInfoHelper.getLinkAccBankCode();
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
@@ -1621,7 +1621,7 @@ public abstract class AdapterBase {
             getGuiProcessor().useWebView(false);
         }
         //hide webview
-        if (mPaymentInfoHelper.isBankAccountLink() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
+        if (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
         }
         //notify to app to do some background task
@@ -1908,7 +1908,7 @@ public abstract class AdapterBase {
             return AdapterBase.existedMapCard;
         }
         //this is card channel
-        AdapterBase.existedMapCard = mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel();
+        AdapterBase.existedMapCard = mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap();
         if (!AdapterBase.existedMapCard) {
             try {
                 AdapterBase.existedMapCard = isExistedCardNumberOnCache();
@@ -1916,7 +1916,7 @@ public abstract class AdapterBase {
                 Log.d(this, e);
             }
         }
-        return !mPaymentInfoHelper.isWithDrawChannel() && !AdapterBase.existedMapCard;
+        return !mPaymentInfoHelper.isWithDrawTrans() && !AdapterBase.existedMapCard;
     }
 
     /**

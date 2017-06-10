@@ -147,43 +147,43 @@ public class PaymentInfoHelper extends SingletonBase {
     /***
      * for checking user selected a map card channel.
      */
-    public boolean isMapCardChannel() {
+    public boolean payByCardMap() {
         return paymentInfo != null && paymentInfo.getMapBank() instanceof MapCard && paymentInfo.getMapBank().isValid();
     }
 
-    public boolean isMapBankAccountChannel() {
+    public boolean payByBankAccountMap() {
         return paymentInfo != null && paymentInfo.getMapBank() instanceof BankAccount && paymentInfo.getMapBank().isValid();
     }
 
-    public boolean isBankAccountLink() {
-        return isLinkAccFlow() || isUnLinkAccFlow();
+    public boolean isBankAccountTrans() {
+        return bankAccountLink() || bankAccountUnlink();
     }
 
-    public boolean isLinkAccFlow() {
+    public boolean bankAccountLink() {
         return getLinkAccountInfo() != null && getLinkAccountInfo().isLinkAcc();
     }
 
-    public boolean isUnLinkAccFlow() {
+    public boolean bankAccountUnlink() {
         return getLinkAccountInfo() != null && getLinkAccountInfo().isUnlinkAcc();
     }
 
-    public boolean isLinkCardChannel() {
+    public boolean isCardLinkTrans() {
         return getTranstype() == TransactionType.LINK;
     }
 
-    public boolean isTranferMoneyChannel() {
+    public boolean isMoneyTranferTrans() {
         return getTranstype() == TransactionType.MONEY_TRANSFER;
     }
 
-    public boolean isTopupChannel() {
+    public boolean isTopupTrans() {
         return getTranstype() == TransactionType.TOPUP;
     }
 
-    public boolean isWithDrawChannel() {
+    public boolean isWithDrawTrans() {
         return getTranstype() == TransactionType.WITHDRAW;
     }
 
-    public boolean isPayChannel() {
+    public boolean isPayTrans() {
         return getTranstype() == TransactionType.PAY;
     }
 }

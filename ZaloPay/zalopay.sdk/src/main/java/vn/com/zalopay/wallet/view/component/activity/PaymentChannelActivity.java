@@ -275,8 +275,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         Log.d(this, "onStart");
         updateFontCardNumber();
-        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || mPaymentInfoHelper.isMapCardChannel()
-                || mPaymentInfoHelper.isMapBankAccountChannel()))) {
+        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || mPaymentInfoHelper.payByCardMap()
+                || mPaymentInfoHelper.payByBankAccountMap()))) {
             try {
                 setConfirmTitle();
                 getAdapter().moveToConfirmScreen(mMiniPmcTransType);
@@ -290,7 +290,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     protected void prepareLink() {
         //this is link account and the first call
-        if (mPaymentInfoHelper.isBankAccountLink()) {
+        if (mPaymentInfoHelper.isBankAccountTrans()) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();
@@ -301,7 +301,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
         }
         //this is link card channel and the first call.
-        else if (mPaymentInfoHelper.isLinkCardChannel()) {
+        else if (mPaymentInfoHelper.isCardLinkTrans()) {
             //check profile level permission in table map
             try {
                 UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
@@ -412,7 +412,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         setListener();
         getAdapter().setListener();
         //hide header if this is link card.
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             visibleAppInfo(false);
         }
         applyFont();
@@ -516,11 +516,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     public void setConfirmTitle() {
         String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_pay);
 
-        if (mPaymentInfoHelper.isTopupChannel()) {
+        if (mPaymentInfoHelper.isTopupTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_topup);
-        } else if (mPaymentInfoHelper.isTranferMoneyChannel()) {
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_tranfer);
-        } else if (mPaymentInfoHelper.isWithDrawChannel()) {
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_withdraw);
         }
         setConfirmTitle(title);
@@ -682,9 +682,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected void confirmQuitPayment() {
         String message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit);
 
-        if (mPaymentInfoHelper.isPayChannel()) {
+        if (mPaymentInfoHelper.isPayTrans()) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
-        } else if (mPaymentInfoHelper.isBankAccountLink()) {
+        } else if (mPaymentInfoHelper.isBankAccountTrans()) {
             message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
         }
 

@@ -14,7 +14,7 @@ public class AdapterCreditCard extends AdapterBase {
     public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
         super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = SCREEN_CC;
-        mPageCode = (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_CC;
+        mPageCode = (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) ? PAGE_CONFIRM : SCREEN_CC;
         GlobalData.cardChannelType = CardChannel.CREDIT;
     }
 
@@ -31,7 +31,7 @@ public class AdapterCreditCard extends AdapterBase {
             getGuiProcessor().initPager();
         }
 
-        if (mPaymentInfoHelper.isLinkCardChannel()) {
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name));
@@ -73,7 +73,7 @@ public class AdapterCreditCard extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        if (!mPaymentInfoHelper.isMapCardChannel() && !mPaymentInfoHelper.isMapBankAccountChannel()) {
+        if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
             tranferPaymentCardToMapCard();
         }

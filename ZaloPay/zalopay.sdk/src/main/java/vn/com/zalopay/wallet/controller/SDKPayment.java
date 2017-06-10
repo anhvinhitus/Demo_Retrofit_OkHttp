@@ -162,8 +162,8 @@ public class SDKPayment {
 
     private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
         //1 zalopay user has only 1 vcb account
-        if (paymentInfoHelper.isBankAccountLink()
-                && paymentInfoHelper.isLinkAccFlow()
+        if (paymentInfoHelper.isBankAccountTrans()
+                && paymentInfoHelper.bankAccountLink()
                 && BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
             DialogManager.closeProcessDialog();
             DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_cannot_connect),
@@ -177,8 +177,8 @@ public class SDKPayment {
         }
 //
         //user have no link bank account so no need to unlink
-        else if (paymentInfoHelper.isBankAccountLink()
-                && paymentInfoHelper.isUnLinkAccFlow()
+        else if (paymentInfoHelper.isBankAccountTrans()
+                && paymentInfoHelper.bankAccountUnlink()
                 && !BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
             DialogManager.closeProcessDialog();
             DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
@@ -194,7 +194,7 @@ public class SDKPayment {
         }
 
         //check maintenance link bank account
-        else if (paymentInfoHelper.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
+        else if (paymentInfoHelper.isBankAccountTrans() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
             DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                     GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
                     BankConfig.getFormattedBankMaintenaceMessage(), pIndex -> {
@@ -223,10 +223,10 @@ public class SDKPayment {
         long appId = paymentInfoHelper.getAppId();
         int transtype = paymentInfoHelper.getTranstype();
         //this is link card , go to channel directly
-        if (paymentInfoHelper.isLinkCardChannel() || paymentInfoHelper.isBankAccountLink()) {
+        if (paymentInfoHelper.isCardLinkTrans() || paymentInfoHelper.isBankAccountTrans()) {
             intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
             try {
-                String pmc = paymentInfoHelper.isBankAccountLink() ? SharedPreferencesManager.getInstance().getBankAccountChannelConfig(appId, transtype, null) :
+                String pmc = paymentInfoHelper.isBankAccountTrans() ? SharedPreferencesManager.getInstance().getBankAccountChannelConfig(appId, transtype, null) :
                         SharedPreferencesManager.getInstance().getATMChannelConfig(appId, transtype, null);
                 if (!TextUtils.isEmpty(pmc)) {
                     miniPmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);

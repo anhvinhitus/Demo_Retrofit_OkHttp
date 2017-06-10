@@ -102,7 +102,7 @@ public class GlobalData {
     //region is channel
 
     public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
-        boolean isTransactionHasInputCard = !paymentInfoHelper.isMapCardChannel() && !paymentInfoHelper.isMapBankAccountChannel() && !paymentInfoHelper.isWithDrawChannel();
+        boolean isTransactionHasInputCard = !paymentInfoHelper.payByCardMap() && !paymentInfoHelper.payByBankAccountMap() && !paymentInfoHelper.isWithDrawTrans();
         boolean isChannelHasInputCard = true;
         if (BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity
                 && ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter().isZaloPayFlow()) {
@@ -113,9 +113,9 @@ public class GlobalData {
     //endregion
 
     public static String getOfflineMessage(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isLinkAccFlow()) {
+        if (paymentInfoHelper.bankAccountLink()) {
             return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account);
-        } else if (paymentInfoHelper.isUnLinkAccFlow()) {
+        } else if (paymentInfoHelper.bankAccountUnlink()) {
             return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account);
         } else {
             return GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction);
@@ -173,7 +173,7 @@ public class GlobalData {
     }
 
     public static void selectBankFunctionByTransactionType(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isBankAccountLink()) {
+        if (paymentInfoHelper.isBankAccountTrans()) {
             bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
             return;
         }
@@ -213,9 +213,9 @@ public class GlobalData {
 
     @BankFunctionCode
     public static int getBankFunctionPay(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isMapBankAccountChannel()) {
+        if (paymentInfoHelper.payByBankAccountMap()) {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
-        } else if (paymentInfoHelper.isMapCardChannel()) {
+        } else if (paymentInfoHelper.payByCardMap()) {
             bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else {
             bankFunction = BankFunctionCode.PAY_BY_CARD;

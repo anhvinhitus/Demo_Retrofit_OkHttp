@@ -279,9 +279,9 @@ public class AdapterLinkAcc extends AdapterBase {
         mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_num_times_allow_login_wrong));
 
         // show title bar
-        if (mPaymentInfoHelper.isLinkAccFlow()) {
+        if (mPaymentInfoHelper.bankAccountLink()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        } else if (mPaymentInfoHelper.isUnLinkAccFlow()) {
+        } else if (mPaymentInfoHelper.bankAccountUnlink()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
             try {
                 mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
@@ -365,9 +365,9 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void verifyServerAfterParseWebTimeout() {
-        if (mPaymentInfoHelper.isLinkAccFlow()) {
+        if (mPaymentInfoHelper.bankAccountLink()) {
             checkLinkAccountList();
-        } else if (mPaymentInfoHelper.isUnLinkAccFlow()) {
+        } else if (mPaymentInfoHelper.bankAccountUnlink()) {
             checkUnlinkAccountList();
         }
     }
@@ -541,9 +541,9 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     protected void showFailScreenOnType(String pMessage) {
-        if (mPaymentInfoHelper.isLinkAccFlow()) {
+        if (mPaymentInfoHelper.bankAccountLink()) {
             linkAccFail(pMessage, mTransactionID);
-        } else if (mPaymentInfoHelper.isUnLinkAccFlow()) {
+        } else if (mPaymentInfoHelper.bankAccountUnlink()) {
             unlinkAccFail(pMessage, mTransactionID);
         }
     }
@@ -717,14 +717,14 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow), mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
                                 linkAccGuiProcessor.getLoginHolder().getEdtUsername().selectAll();
                                 linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
-                            } else if (mPaymentInfoHelper.isLinkAccFlow()) {
+                            } else if (mPaymentInfoHelper.bankAccountLink()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
-                            } else if (mPaymentInfoHelper.isUnLinkAccFlow()) {
+                            } else if (mPaymentInfoHelper.bankAccountUnlink()) {
                                 unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             }
                             return null;
                         case ACCOUNT_LOCKED:
-                            if (mPaymentInfoHelper.isLinkAccFlow()) {
+                            if (mPaymentInfoHelper.bankAccountLink()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             } else {
                                 unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);

@@ -115,7 +115,7 @@ public class ChannelProxy extends SingletonBase {
             }
             //check bank future
             if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
-                if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
+                if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                     BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
                     if (bankConfig != null) {
                         String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
@@ -130,7 +130,7 @@ public class ChannelProxy extends SingletonBase {
                 }
             }
             //withdraw
-            if (mPaymentInfoHelper.isWithDrawChannel()) {
+            if (mPaymentInfoHelper.isWithDrawTrans()) {
                 startChannel();
                 return;
             }
@@ -174,7 +174,7 @@ public class ChannelProxy extends SingletonBase {
                 return;
             }
 
-            if (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) {
+            if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                 BankLoader.loadBankList(mLoadBankListListener);//reload bank list
             } else {
                 startChannel();

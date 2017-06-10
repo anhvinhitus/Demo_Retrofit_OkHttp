@@ -43,7 +43,7 @@ public class AdapterBankCard extends AdapterBase {
     public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
         super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = SCREEN_ATM;
-        mPageCode = (mPaymentInfoHelper.isMapCardChannel() || mPaymentInfoHelper.isMapBankAccountChannel()) ? PAGE_CONFIRM : SCREEN_ATM;
+        mPageCode = (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) ? PAGE_CONFIRM : SCREEN_ATM;
         GlobalData.cardChannelType = CardChannel.ATM;
     }
 
@@ -470,7 +470,7 @@ public class AdapterBankCard extends AdapterBase {
             return;
         }
 
-        if (!mPaymentInfoHelper.isMapCardChannel() && !mPaymentInfoHelper.isMapBankAccountChannel()) {
+        if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
             tranferPaymentCardToMapCard();
         }
