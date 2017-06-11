@@ -131,6 +131,18 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     }
 
     @Override
+    public void showDialogThenClose(String message, String cancelText, int dialogType) {
+        ZPWOnEventDialogListener onClickCancel = () -> getActivity().finish();
+        if (dialogType == SweetAlertDialog.ERROR_TYPE) {
+            super.showErrorDialog(message, cancelText, onClickCancel);
+        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
+            super.showWarningDialog(message, cancelText, onClickCancel);
+        } else if (dialogType == SweetAlertDialog.NO_INTERNET) {
+            super.showNetworkErrorDialog(i -> getActivity().finish());
+        }
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }

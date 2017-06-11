@@ -28,4 +28,6 @@ public interface IBankSupportSelectionView {
     void hideLoading();
 
     void showMessageDialog(String message, ZPWOnEventDialogListener closeDialogListener);
+
+    void showDialogThenClose(String content, String title, int dialogType);
 }

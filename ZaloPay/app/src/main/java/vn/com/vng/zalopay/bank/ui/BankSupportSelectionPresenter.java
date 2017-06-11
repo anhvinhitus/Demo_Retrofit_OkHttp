@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
@@ -13,22 +15,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
-import vn.com.vng.zalopay.bank.models.LinkBankType;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
@@ -40,28 +43,42 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
  */
 public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSupportSelectionView> {
     private final User mUser;
+    private final Context applicationContext;
     private PaymentWrapper paymentWrapper;
-    private LinkBankType mBankType;
     private DefaultSubscriber<List<ZPBank>> mGetSupportBankSubscriber;
 
     @Inject
-    BankSupportSelectionPresenter(User user) {
+    BankSupportSelectionPresenter(Context applicationContext, User user) {
+        this.applicationContext = applicationContext;
         this.mUser = user;
         mGetSupportBankSubscriber = new DefaultSubscriber<List<ZPBank>>() {
             @Override
             public void onError(Throwable e) {
-                Timber.d("Get support bank type [%s] onError [%s]", mBankType, e.getMessage());
-                showRetryDialog(mView.getActivity().getString(R.string.bank_networking_error_load_supportbank));
+                Timber.d("Get support bank  onError [%s]", e.getMessage());
+                if (mView == null || getContext() == null) {
+                    return;
+                }
+                mView.hideLoading();
+                //showRetryDialog(mView.getActivity().getString(R.string.bank_error_load_supportbank));
+                String message = ErrorMessageFactory.create(applicationContext, e);
+                if (message.equals(getContext().getString(R.string.exception_generic))) {
+                    message = getContext().getString(R.string.bank_error_load_supportbank);
+                }
+                if (e instanceof NetworkConnectionException) {
+                    showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                } else {
+                    showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
+                }
             }
 
             @Override
             public void onNext(List<ZPBank> cardList) {
-                Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, GsonUtils.toJsonString(cardList));
-                if (Lists.isEmptyOrNull(cardList)) {
-                    showRetryDialog(mView.getActivity().getString(R.string.bank_networking_error_load_supportbank));
-                }else{
-                    fetchListBank(cardList);
+                Log.d(this, "get suport bank onComplete", cardList);
+                if (mView == null || getContext() == null) {
+                    return;
                 }
+                mView.hideLoading();
+                fetchListBank(cardList);
             }
         };
 
@@ -70,6 +87,13 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
         paymentWrapper.initializeComponents();
+    }
+
+    private void showDialogThenClose(String error, @StringRes int cancelText, int dialogType) {
+        if (mView == null) {
+            return;
+        }
+        mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
     }
 
     @Override
@@ -131,11 +155,17 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
     }
 
     void getBankSupport() {
-        Timber.d("Get list bank support %s", mBankType);
+        Timber.d("start get bank support");
         Subscription subscription = SDKApplication
                 .getApplicationComponent()
                 .bankListInteractor()
                 .getSupportBanks(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> {
+                    if(mView != null){
+                        mView.showLoading();
+                    }
+                })
                 .subscribe(mGetSupportBankSubscriber);
         mSubscription.add(subscription);
 
@@ -145,7 +175,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         if (bundle == null) {
             return;
         }
-        mBankType = (LinkBankType) bundle.getSerializable(Constants.ARG_LINK_BANK_TYPE);
+        //mBankType = (LinkBankType) bundle.getSerializable(Constants.ARG_LINK_BANK_TYPE);
     }
 
     void linkCard() {
@@ -153,7 +183,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 //        setResultLinkCard();
     }
 
-    private void setResultActivity(BankAction bankAction, DBaseMap bankInfo) {
+    private void setResultActivity(BankAction bankAction, BaseMap bankInfo) {
         if (mView == null || bankInfo == null) {
             return;
         }
@@ -196,7 +226,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         setResultActivity(BankAction.UNLINK_ACCOUNT, bankAccount);
     }
 
-    protected void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+    protected void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
     }
 
     // Inner class custom listener
@@ -251,7 +281,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
         }
 
         @Override
-        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
             if (mWeakReference.get() == null) {
                 return;
             }
