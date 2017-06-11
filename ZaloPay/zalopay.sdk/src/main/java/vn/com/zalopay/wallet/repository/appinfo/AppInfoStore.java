@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.repository.appinfo;
 
+import java.util.List;
+
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -32,6 +34,8 @@ public class AppInfoStore {
         String getTranstypeCheckSumKey(long pAppId, @TransactionType int transtype);
 
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
+
+        List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
     }
 
     public interface Repository {

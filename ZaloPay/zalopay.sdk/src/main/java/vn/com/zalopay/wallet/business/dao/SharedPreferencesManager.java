@@ -343,16 +343,18 @@ public class SharedPreferencesManager extends SingletonBase {
     /***
      * save map card
      */
-    public boolean setMapCard(String pUserId, String pKey, String pConfig) {
+    public boolean setMap(String pUserId, String pKey, String pConfig) {
         try {
-            return setString(pUserId + Constants.COMMA + pKey, pConfig);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(pUserId).append(Constants.COMMA).append(pKey);
+            return setString(stringBuilder.toString(), pConfig);
         } catch (Exception e) {
             Log.e(this, e);
         }
         return false;
     }
 
-    public String getMapCardByKey(String pUserID, String pKey) {
+    public String getMap(String pUserID, String pKey) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(pUserID).append(Constants.COMMA).append(pKey);
         return getString(stringBuilder.toString());
@@ -398,7 +400,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                String strMappedCard = getMapCardByKey(pUserID, key);
+                String strMappedCard = getMap(pUserID, key);
 
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
@@ -419,7 +421,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                String strMappedCard = getMapCardByKey(pUserID, key);
+                String strMappedCard = getMap(pUserID, key);
 
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     BankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, BankAccount.class);
@@ -445,7 +447,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                setMapCard(pUserId, key, null);
+                setMap(pUserId, key, null);
             }
         }
 
@@ -464,7 +466,7 @@ public class SharedPreferencesManager extends SingletonBase {
         String keyList = getBankAccountKeyList(pUserId);
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                setMapCard(pUserId, key, null);
+                setMap(pUserId, key, null);
             }
         }
         //remove bank id list
@@ -498,7 +500,7 @@ public class SharedPreferencesManager extends SingletonBase {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + pPmcKey);
     }
 
-    public boolean setPmcConfigList(String pKey, ArrayList<String> pPmcIdList) {
+    public boolean setPmcTranstypeKeyList(String pKey, List<String> pPmcIdList) {
         StringBuilder pmcIdList = new StringBuilder();
         for (int i = 0; i < pPmcIdList.size(); i++) {
             pmcIdList.append(pPmcIdList.get(i));
@@ -509,8 +511,8 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_list) + pKey, pmcIdList.toString());
     }
 
-    public ArrayList<String> getPmcConfigList(String pKey) {
-        ArrayList<String> result = new ArrayList<>();
+    public List<String> getPmcTranstypeKeyList(String pKey) {
+        List<String> result = new ArrayList<>();
         String raw = getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_list) + pKey);
         if (TextUtils.isEmpty(raw)) {
             return result;

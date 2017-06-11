@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.message;
+package vn.com.zalopay.wallet.event;
 
 public class SdkSelectedChannelMessage {
     public int position;

@@ -1,3 +1,4 @@
+/*
 package vn.com.zalopay.wallet.business.behavior.gateway;
 
 import android.os.Build;
@@ -20,11 +21,13 @@ import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 
+*/
 /**
  * Gateway info
  * checksum and check expiredtime check version ....
  * download new gateway info ..
- */
+ *//*
+
 public class BGatewayInfo extends SingletonBase {
     public static final int MAX_RETRY_REFRESH = 5;
     private static BGatewayInfo mGatewayInfo = null;
@@ -84,10 +87,12 @@ public class BGatewayInfo extends SingletonBase {
         return BGatewayInfo.mGatewayInfo;
     }
 
-    /***
+    */
+/***
      * is file config.json existed?
      * @return
-     */
+     *//*
+
     public static boolean isValidConfig() {
         try {
             String path = SharedPreferencesManager.getInstance().getUnzipPath();
@@ -99,14 +104,16 @@ public class BGatewayInfo extends SingletonBase {
         return false;
     }
 
-    /***
+    */
+/***
      * rule for retry call get platform info
      * 1.expired time over
      * 2.app version is different
      * 3.resource file not exist
      * 4.new user
      * @return
-     */
+     *//*
+
     public static boolean isNeedToGetPlatformInfo(String pUserId) throws Exception {
         long currentTime = System.currentTimeMillis();
         long expiredTime = SharedPreferencesManager.getInstance().getPlatformInfoExpriedTime();
@@ -120,11 +127,13 @@ public class BGatewayInfo extends SingletonBase {
         return mProcessing;
     }
 
-    /***
+    */
+/***
      * call get platform info
      *
      * @param pListener
-     */
+     *//*
+
     public synchronized void execute(ZPWGatewayInfoCallback pListener) throws Exception {
         this.mClientCallback = pListener;
         //keep weak merchant listener to callback in case need to retry platforminfo
@@ -151,10 +160,12 @@ public class BGatewayInfo extends SingletonBase {
 
     }
 
-    /***
+    */
+/***
      * app need to call this to re-update after user reset PIN
      * @param pListener
-     */
+     *//*
+
 
     public synchronized void refreshPlatformInfo(ZPWGatewayInfoCallback pListener) {
         try {
@@ -196,3 +207,4 @@ public class BGatewayInfo extends SingletonBase {
         }
     }
 }
+*/

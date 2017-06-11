@@ -5,16 +5,20 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by longlv on 04/09/2016.
@@ -22,13 +26,13 @@ import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
  */
 public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresenter<View> {
 
-    public abstract Activity getActivity();
-
     protected User mUser;
 
     protected AbsWithdrawConditionPresenter(User user) {
         this.mUser = user;
     }
+
+    public abstract Activity getActivity();
 
     protected boolean isValidProfile() {
         User user = mUser;
@@ -36,24 +40,33 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
     }
 
     protected void validLinkCard(final IListenerValid listenerValid) {
-        CShareDataWrapper.getWithDrawBankList(new IGetWithDrawBankList() {
+        Timber.d("start get bank support");
+        Subscription subscription = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getWithdrawBanks(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<List<BankConfig>>() {
                     @Override
-                    public void onComplete(List<BankConfig> list) {
+                    public void onError(Throwable e) {
+                        Timber.d("validLinkCard onError");
+                        String message = ErrorMessageFactory.create(getActivity().getApplicationContext(), e);
+                        if (listenerValid != null) {
+                            listenerValid.onError(message);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(List<BankConfig> bankConfigs) {
                         Timber.d("validLinkCard onComplete");
                         if (listenerValid == null) {
                             return;
                         }
-                        listenerValid.onSuccess(list, validLinkCard(list), validLinkAccount(list));
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Timber.d("validLinkCard onError");
-                        if (listenerValid != null) {
-                            listenerValid.onError(error);
-                        }
+                        listenerValid.onSuccess(bankConfigs, validLinkCard(bankConfigs), validLinkAccount(bankConfigs));
                     }
                 });
+
+        mSubscription.add(subscription);
     }
 
     private boolean validLinkCard(List<BankConfig> bankConfigs) {

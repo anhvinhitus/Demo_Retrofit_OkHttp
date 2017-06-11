@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.CardType;
 
@@ -34,7 +34,7 @@ import vn.com.zalopay.wallet.constants.CardType;
  * Created by longlv on 5/25/17.
  * Adapter of recycleView in BankFragment
  */
-class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerView.ViewHolder> {
+class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<BaseMap, RecyclerView.ViewHolder> {
 
     private class ViewType {
         static final int UNKNOWN = 0;
@@ -61,7 +61,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        DBaseMap dBaseMap = getItem(position);
+        BaseMap dBaseMap = getItem(position);
         if (dBaseMap instanceof MapCard) {
             return ViewType.LINK_CARD;
         } else if (dBaseMap instanceof BankAccount) {
@@ -102,7 +102,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        DBaseMap baseMap = getItem(position);
+        BaseMap baseMap = getItem(position);
         boolean isLastItem = isLatestItem(position);
         if (holder instanceof BankViewHolder) {
             ((BankViewHolder) holder).bindView(baseMap, isLastItem);
@@ -191,7 +191,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindView(DBaseMap bankCard, boolean isLastItem) {
+        public void bindView(BaseMap bankCard, boolean isLastItem) {
             bindBankCard(mRoot, imgLogo, bankCard, true);
             bindBankInfo(bankCard);
             setMargin(isLastItem);
@@ -208,7 +208,7 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
             }
         }
 
-        private void bindBankInfo(DBaseMap baseMap) {
+        private void bindBankInfo(BaseMap baseMap) {
             if (baseMap instanceof MapCard) {
                 MapCard mappedCard = (MapCard) baseMap;
                 String bankCardNumber = BankUtils.formatBankCardNumber(mappedCard.first6cardno, mappedCard.last4cardno);
@@ -292,14 +292,14 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<DBaseMap, RecyclerVie
         mRoot.setBackground(gradientDrawable);
     }
 
-    private void bindBankCard(View mRoot, ImageView imgLogo, DBaseMap bankCard, boolean borderTopOnly) {
+    private void bindBankCard(View mRoot, ImageView imgLogo, BaseMap bankCard, boolean borderTopOnly) {
         BankCardStyle bankCardStyle = BankUtils.getBankCardStyle(bankCard, mUser);
         setBankIcon(imgLogo, bankCardStyle.bankIcon);
         setBankBackground(mRoot, bankCardStyle, borderTopOnly);
     }
 
     @Override
-    public void insert(DBaseMap object) {
+    public void insert(BaseMap object) {
         super.insert(object);
         notifyDataSetChanged();
     }

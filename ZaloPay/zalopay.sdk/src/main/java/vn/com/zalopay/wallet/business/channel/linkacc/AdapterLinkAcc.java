@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -27,7 +30,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -37,6 +39,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -44,14 +47,12 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -101,40 +102,6 @@ public class AdapterLinkAcc extends AdapterBase {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
-    private final ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-        }
-
-        @Override
-        public void onComplete() {
-            try {
-                hideLoadingDialog();
-                // get bank config
-                String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
-                BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
-                if (bankConfig == null || !bankConfig.isActive()) {
-                    getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
-                } else {
-                    String loginBankUrl = bankConfig.loginbankurl;
-                    if (TextUtils.isEmpty(loginBankUrl)) {
-                        loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
-                    }
-                    initWebView(loginBankUrl);
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            if (TextUtils.isEmpty(pMessage)) {
-                pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
-            }
-            getActivity().onExit(pMessage, true);
-        }
-    };
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -153,50 +120,63 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }
     };
-    private List<BankAccount> mBankAccountList = null;
-    protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
-        // get & check bankaccount list
-        BankAccountHelper.existBankAccount(true, mPaymentInfoHelper.getUserInfo(), new ICheckExistBankAccountListener() {
-            @Override
-            public void onCheckExistBankAccountComplete(boolean pExisted) {
+    private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
+        @Override
+        public void call(BankConfigResponse bankConfigResponse) {
+            try {
                 hideLoadingDialog();
-                if (!pExisted) {
-                    unlinkAccSuccess();
+                // get bank config
+                String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
+                BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
+                if (bankConfig == null || !bankConfig.isActive()) {
+                    getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
                 } else {
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
-                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
+                    String loginBankUrl = bankConfig.loginbankurl;
+                    if (TextUtils.isEmpty(loginBankUrl)) {
+                        loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
+                    }
+                    initWebView(loginBankUrl);
                 }
+            } catch (Exception e) {
+                Log.e(this, e);
             }
-
-            @Override
-            public void onCheckExistBankAccountFail(String pMessage) {
-                hideLoadingDialog();
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
-                unlinkAccFail(pMessage, mTransactionID);
-            }
-        }, CardType.PVCB);
+        }
     };
-    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
+    private List<BankAccount> mBankAccountList = null;
+    private Action1<Boolean> loadBankAccountSubscriber = new Action1<Boolean>() {
+        @Override
+        public void call(Boolean aBoolean) {
+            Log.d(this, "load bank account finish");
+            hideLoadingDialog();
+            loadBankAccountSuccess();
+        }
+    };
+    private Action1<Throwable> loadBankAccountException = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            hideLoadingDialog();
+            Log.d(this, "load bank account error", throwable);
+            String message = getActivity().getMessage(throwable);
+            if (TextUtils.isEmpty(message)) {
+                message = GlobalData.getStringResource(RS.string.zpw_alert_network_error_loadmapbankaccountlist);
+            }
+            if (mPaymentInfoHelper.bankAccountLink()) {
+                linkAccFail(message, mTransactionID);
+            } else {
+                unlinkAccFail(message, mTransactionID);
+            }
+        }
+    };
+    protected final Runnable runnableWaitingNotifyLink = () -> {
         // get & check bankaccount list
-        BankAccountHelper.existBankAccount(true, mPaymentInfoHelper.getUserInfo(), new ICheckExistBankAccountListener() {
-            @Override
-            public void onCheckExistBankAccountComplete(boolean pExisted) {
-                hideLoadingDialog();
-                if (!pExisted) {
-                    unlinkAccSuccess();
-                } else {
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
-                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
-                }
-            }
-
-            @Override
-            public void onCheckExistBankAccountFail(String pMessage) {
-                hideLoadingDialog();
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
-                unlinkAccFail(pMessage, mTransactionID);
-            }
-        }, CardType.PVCB);
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loadBankAccountSubscriber, loadBankAccountException);
+        getActivity().addSuscription(subscription);
     };
     private int mNumAllowLoginWrong;
     private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
@@ -221,6 +201,22 @@ public class AdapterLinkAcc extends AdapterBase {
         super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
         mLayoutId = SCREEN_LINK_ACC;
         mPageCode = SCREEN_LINK_ACC;
+    }
+
+    private void loadBankAccountSuccess() {
+        if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
+            if (mPaymentInfoHelper.bankAccountLink()) {
+                linkAccSuccess();
+            } else {
+                unlinkAccSuccess();
+            }
+        } else {
+            if (mPaymentInfoHelper.bankAccountLink()) {
+                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
+            } else {
+                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+            }
+        }
     }
 
     public boolean exitWithoutConfirm() {
@@ -262,7 +258,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public void startFlow() {
         Log.d(this, "start flow link account");
         visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        BankLoader.loadBankList(mLoadBankListListener);
+        getActivity().loadBankList(bankListSubscriber, getActivity().bankListException);
     }
 
     @Override
@@ -365,32 +361,17 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void verifyServerAfterParseWebTimeout() {
-        if (mPaymentInfoHelper.bankAccountLink()) {
-            checkLinkAccountList();
-        } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-            checkUnlinkAccountList();
-        }
+        checkBankAccount();
     }
 
     // call API,get bankAccount
-    private void checkUnlinkAccountList() {
+    private void checkBankAccount() {
         if (isFinalScreen()) {
             Log.d(this, "stopping reload bank account because user in result screen");
             return;
         }
         visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
-    }
-
-    // call API, get bankAccount
-    protected void checkLinkAccountList() {
-        if (isFinalScreen()) {
-            Log.d(this, "stopping reload bank account because user in result screen");
-            return;
-        }
-        // loop to get notification here.
-        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        mHandler.postDelayed(runnableWaitingNotifyLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
+        mHandler.postDelayed(runnableWaitingNotifyLink, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
     /***
@@ -976,7 +957,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
                     // get & check bankaccount list
-                    checkLinkAccountList();
+                    checkBankAccount();
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
@@ -987,7 +968,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
                             // get & check bankaccount list
-                            checkLinkAccountList();
+                            checkBankAccount();
                         } else {
                             hideLoadingDialog();
                             if (!GlobalData.shouldNativeWebFlow()) {
@@ -1039,7 +1020,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
                     // get & check bankaccount list
-                    checkUnlinkAccountList();
+                    checkBankAccount();
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
@@ -1049,7 +1030,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     } else {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
-                            checkUnlinkAccountList();
+                            checkBankAccount();
                         } else if (!GlobalData.shouldNativeWebFlow()) {
                             showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                         }
@@ -1090,18 +1071,12 @@ public class AdapterLinkAcc extends AdapterBase {
             }
             mNotification = (ZPWNotification) pAdditionParams[0];
 
-            if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.LINKACC) {
+            if (mNotification != null) {
                 if (mHandler != null) {
-                    mHandler.removeCallbacks(runnableWaitingNotifyLinkAcc);
+                    mHandler.removeCallbacks(runnableWaitingNotifyLink);
                     Log.d(this, "cancelling current notify after getting notify from app...");
                 }
-                runnableWaitingNotifyLinkAcc.run();
-            } else if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.UNLINKACC) {
-                if (mHandler != null) {
-                    mHandler.removeCallbacks(runnableWaitingNotifyUnLinkAcc);
-                    Log.d(this, "cancelling current notify after getting notify from app...");
-                }
-                runnableWaitingNotifyUnLinkAcc.run();
+                runnableWaitingNotifyLink.run();
             } else {
                 Log.d(this, "notification=", mNotification);
                 hideLoadingDialog();

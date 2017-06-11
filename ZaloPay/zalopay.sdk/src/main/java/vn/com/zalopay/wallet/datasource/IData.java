@@ -16,46 +16,11 @@ import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
-import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 
 public interface IData {
-
-    /**
-     * load platforminfo
-     *
-     * @param params
-     * @return
-     */
-    @GET(Constants.URL_PLATFORM_INFO)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO)
-    Observable<PlatformInfoResponse> loadPlatformInfo(@QueryMap Map<String, String> params);
-
-    /**
-     * load appinfo
-     *
-     * @param params
-     * @return
-     */
-    @GET(Constants.URL_APP_INFO)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
-    Observable<AppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
-
-    /**
-     * load bank list
-     *
-     * @return
-     */
-    @GET(Constants.URL_GET_BANKLIST)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)
-    Observable<BankConfigResponse> loadBankList(@QueryMap Map<String, String> params);
-
     /**
      * get transaction status
      *
@@ -65,24 +30,6 @@ public interface IData {
     @GET(Constants.URL_GET_STATUS)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
     Observable<StatusResponse> getStatus(@QueryMap Map<String, String> params);
-
-    /***
-     * get map card info list
-     * @param params
-     * @return
-     */
-    @GET(Constants.URL_LISTCARDINFO)
-    @API_NAME(ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT)
-    Observable<CardInfoListResponse> loadMapCardList(@QueryMap Map<String, String> params);
-
-    /***
-     * get bank account list(vietcombank)
-     * @param params
-     * @return
-     */
-    @GET(Constants.URL_LISTBANKACCCOUNT)
-    @API_NAME(ZPEvents.CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT)
-    Observable<BankAccountListResponse> loadMapBankAccountList(@QueryMap Map<String, String> params);
 
     /***
      * get status by apptrans id which is created by app when creating order.

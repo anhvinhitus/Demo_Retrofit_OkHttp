@@ -7,4 +7,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 public class CardInfoListResponse extends BaseResponse {
     public String cardinfochecksum = null;
     public List<MapCard> cardinfos = null;
+    public CardInfoListResponse(){}
+    public CardInfoListResponse(String checksum, List<MapCard> mapCardList){
+        this.cardinfochecksum = checksum;
+        this.cardinfos = mapCardList;
+    }
 }

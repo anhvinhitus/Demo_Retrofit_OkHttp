@@ -31,7 +31,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
@@ -49,6 +48,7 @@ import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -554,11 +554,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return false;
     }
 
-    public String warningCardExist(){
+    public String warningCardExist() {
         String message = getCardFinder().warningCardExistMessage();
-        if(getBankCardFinder().isDetected()){
+        if (getBankCardFinder().isDetected()) {
             message = getBankCardFinder().warningCardExistMessage();
-        }else if(getCreditCardFinder().isDetected()){
+        } else if (getCreditCardFinder().isDetected()) {
             message = getCreditCardFinder().warningCardExistMessage();
         }
         return message;
@@ -1472,6 +1472,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean isInputBankMaintenance() {
         boolean isBankDetect = BankCardCheck.getInstance().isDetected();
+        boolean isCCDetect = CreditCardCheck.getInstance().isDetected();
         if (isBankDetect && GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
             GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_CARD);
             if (BankCardCheck.getInstance().isBankAccount()) {
@@ -1479,20 +1480,29 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         }
 
-        if ((isBankDetect && BankLoader.getInstance().isBankMaintenance(getBankCardFinder().getDetectBankCode()))) {
+        int bankFunction = GlobalData.getCurrentBankFunction();
+        String bankCode = null;
+        if (isBankDetect) {
+            bankCode = getBankCardFinder().getDetectBankCode();
+        } else if (isCCDetect) {
+            bankCode = getCreditCardFinder().getDetectBankCode();
+        }
+        BankConfig bankConfig = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(bankCode);
+        if (isBankDetect && bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
             showMaintenanceBank(null);
             return true;
         }
-        //detect is cc maintenance?
-        if (CreditCardCheck.getInstance().isDetected() && BankLoader.getInstance().isBankMaintenance(getCreditCardFinder().getDetectBankCode())) {
+        if (isCCDetect && bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
             if (getAdapter().isATMFlow()) {
-                showMaintenanceBank(getCreditCardFinder().getDetectBankCode());
+                showMaintenanceBank(bankCode);
             } else {
                 showMaintenanceBank(null);
             }
             return true;
         }
-
         return false;
     }
 

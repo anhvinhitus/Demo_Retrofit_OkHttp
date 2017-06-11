@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import java.util.List;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -18,15 +18,15 @@ interface IBankView extends ILoadDataView {
 
     Fragment getFragment();
 
-    void setListLinkedBank(List<DBaseMap> linkedBankList);
+    void setListLinkedBank(List<BaseMap> linkedBankList);
 
     void refreshLinkedBankList();
 
-    void removeLinkedBank(DBaseMap mapBank);
+    void removeLinkedBank(BaseMap mapBank);
 
     void showNotificationDialog(String message);
 
     void showConfirmDialogAfterLinkBank(String message);
 
-    void onAddBankSuccess(DBaseMap bankInfo);
+    void onAddBankSuccess(BaseMap bankInfo);
 }

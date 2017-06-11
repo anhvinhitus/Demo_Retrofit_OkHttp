@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.repository.banklist;
+package vn.com.zalopay.wallet.repository.bank;
 
 import android.text.TextUtils;
 
@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
@@ -21,8 +22,8 @@ import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
  * Created by chucvv on 6/7/17.
  */
 
-public class BankListLocalStorage extends AbstractLocalStorage implements BankListStore.LocalStorage {
-    public BankListLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
+public class BankLocalStorage extends AbstractLocalStorage implements BankStore.LocalStorage {
+    public BankLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
         super(sharedPreferencesManager);
     }
 
@@ -48,14 +49,16 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
     }
 
     @Override
-    public String getBankPrefix() {
-        String mapBankConfig = null;
+    public Map<String, String> getBankPrefix() {
+        Map<String, String> bankPrefix = null;
         try {
-            mapBankConfig = mSharedPreferences.getBankPrefix();
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+            }.getType();
+            bankPrefix = GsonUtils.fromJsonString(mSharedPreferences.getBankPrefix(), type);
         } catch (Exception e) {
             Log.e(this, e);
         }
-        return mapBankConfig;
+        return bankPrefix;
     }
 
     @Override
@@ -109,13 +112,10 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
     public Observable<BankConfigResponse> get() {
         return Observable.defer(() -> {
             try {
-                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
-                }.getType();
-                HashMap<String, String> bankMap = GsonUtils.fromJsonString(getBankPrefix(), type);
                 BankConfigResponse bankConfigResponse = new BankConfigResponse();
-                bankConfigResponse.bankcardprefixmap = bankMap;
+                bankConfigResponse.bankcardprefixmap = getBankPrefix();
                 bankConfigResponse.expiredtime = getExpireTime();
-                Log.d(this, "loaded bank list from cache", bankConfigResponse);
+                Log.d(this, "load bank list from cache", bankConfigResponse);
                 return Observable.just(bankConfigResponse);
             } catch (Exception e) {
                 return Observable.error(e);
@@ -136,16 +136,20 @@ public class BankListLocalStorage extends AbstractLocalStorage implements BankLi
 
     @Override
     public BankConfig getBankConfig(String bankCode) {
-        String bankConfig = "";
         try {
-            bankConfig = mSharedPreferences.getBankConfig(bankCode);
+            String bankConfig = "";
+            try {
+                bankConfig = mSharedPreferences.getBankConfig(bankCode);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+            if (!TextUtils.isEmpty(bankConfig)) {
+                return GsonUtils.fromJsonString(bankConfig, BankConfig.class);
+            }
         } catch (Exception e) {
             Log.e(this, e);
         }
-        if (TextUtils.isEmpty(bankConfig)) {
-            return null;
-        }
-        return GsonUtils.fromJsonString(bankConfig, BankConfig.class);
+        return null;
     }
 
     @Override

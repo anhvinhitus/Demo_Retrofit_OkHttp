@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.error.CError;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
@@ -64,7 +64,7 @@ class WalletListener implements ZPPaymentListener {
     @Override
     public void onComplete() {
         int paymentStatus = mPaymentWrapper.getPaymentInfoBuilder().getStatus();
-        DBaseMap mapBank = mPaymentWrapper.getPaymentInfoBuilder().getMapBank();
+        BaseMap mapBank = mPaymentWrapper.getPaymentInfoBuilder().getMapBank();
         Timber.d("pay complete, result [%d]", paymentStatus);
         boolean paymentIsCompleted = true;
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();

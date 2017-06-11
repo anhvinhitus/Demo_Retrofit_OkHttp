@@ -37,6 +37,10 @@ public class PlatformInfoStore {
 
         String getBankAccountCheckSum();
 
+        String getUnzipPath();
+
+        String getResourceDownloadUrl();
+
         void setBankAccountCheckSum(String checkSum);
 
         void setResourceDownloadUrl(String resourceDownloadUrl);

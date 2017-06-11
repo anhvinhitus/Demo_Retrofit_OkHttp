@@ -7,26 +7,16 @@ import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import rx.Observer;
-import rx.SingleSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.functions.Action1;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.Banner;
@@ -38,12 +28,8 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.constants.TransactionType;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.MapCardHelper;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
-import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
@@ -55,42 +41,6 @@ public class CShareData extends SingletonBase {
 
     protected static CShareData _object;
     protected static DConfigFromServer mConfigFromServer;
-    protected IGetWithDrawBankList mGetWithDrawBankList;
-    protected ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-        }
-
-        @Override
-        public void onComplete() {
-            List<BankConfig> bankConfigList = new ArrayList<>();
-            if (BankLoader.mapBank != null) {
-                for (Object o : BankLoader.mapBank.entrySet()) {
-                    Map.Entry pair = (Map.Entry) o;
-                    try {
-                        BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
-                        if (bankConfig != null && bankConfig.isWithDrawAllow() && !bankConfigList.contains(bankConfig)) {
-                            bankConfigList.add(bankConfig);
-                        }
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
-                }
-            }
-            if (mGetWithDrawBankList != null) {
-                mGetWithDrawBankList.onComplete(bankConfigList);
-            }
-
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            Log.e(this, pMessage);
-            if (mGetWithDrawBankList != null) {
-                mGetWithDrawBankList.onError("Mạng không ổn định, không tải được danh sách ngân hàng.\n Vui lòng thử lại!");
-            }
-        }
-    };
 
     public CShareData() {
         super();
@@ -186,12 +136,27 @@ public class CShareData extends SingletonBase {
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
+
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
                 if (pObject.length >= 2) {
                     UserInfo userInfo = (UserInfo) pObject[1];
-                    BankAccountHelper.loadBankAccountList(true, userInfo);
+                    String appVersion = SdkUtils.getAppVersion(SDKApplication.getContext());
+                    SDKApplication.getApplicationComponent()
+                            .linkInteractor()
+                            .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
+                            .subscribe(new Action1<Boolean>() {
+                                @Override
+                                public void call(Boolean aBoolean) {
+                                    Log.d(this, "reload bank account finish");
+                                }
+                            }, new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    Log.d(this, "reload bank account error", throwable);
+                                }
+                            });
                 }
             } catch (Exception ex) {
                 Log.e(this, ex);
@@ -221,22 +186,6 @@ public class CShareData extends SingletonBase {
         } else {
             Log.d(this, "skip post notification promotion event because user quit sdk");
         }
-    }
-
-    /***
-     * 1 zalopay id map to 1 vietcombank's account only
-     * check this user has 1 vietcombank account is linked
-     *
-     * @param pUserId
-     * @return
-     */
-    public boolean hasVietcomBank(String pUserId) {
-        try {
-            return BankAccountHelper.hasBankAccountOnCache(pUserId, CardType.PVCB);
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return false;
     }
 
     /***
@@ -345,11 +294,6 @@ public class CShareData extends SingletonBase {
         return true;
     }
 
-    public void getWithDrawBankList(IGetWithDrawBankList pListener) {
-        this.mGetWithDrawBankList = pListener;
-        BankLoader.loadBankList(mLoadBankListListener);
-    }
-
     /***
      * return banner list for top menu on app
      * @return
@@ -384,64 +328,6 @@ public class CShareData extends SingletonBase {
     }
 
     /***
-     * call api get card info again
-     * app use this function in get notify remove map card
-     *
-     * @param pParams
-     * @param pReloadMapCardInfoListener
-     */
-    public void reloadMapCardList(ZPWRemoveMapCardParams pParams, final IReloadMapInfoListener pReloadMapCardInfoListener) {
-        try {
-            //remove card on cache
-            if (pParams != null && pParams.mapCard != null) {
-                SharedPreferencesManager.getInstance().removeMappedCard(pParams.userID + Constants.COMMA + pParams.mapCard.getCardKey(pParams.userID));
-            }
-            UserInfo userInfo = new UserInfo();
-            userInfo.zalopay_userid = pParams.userID;
-            userInfo.accesstoken = pParams.accessToken;
-            MapCardHelper.loadMapCardList(true, userInfo)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleSubscriber<BaseResponse>() {
-                        @Override
-                        public void onSuccess(BaseResponse response) {
-                            if (response instanceof CardInfoListResponse && response.returncode == 1) {
-                                pReloadMapCardInfoListener.onComplete(((CardInfoListResponse) response).cardinfos);
-                            } else {
-                                pReloadMapCardInfoListener.onError(response.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable error) {
-                            pReloadMapCardInfoListener.onError(null);
-                        }
-                    });
-            BankAccountHelper.loadBankAccountList(true, userInfo)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<BaseResponse>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(BaseResponse baseResponse) {
-
-                        }
-                    });
-            Log.d(this, "reload map card and map bankaccount list from notification");
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    }
-
-    /***
      * support app detect type of visa card.
      * @param pCardNumber
      * @return type card
@@ -456,15 +342,4 @@ public class CShareData extends SingletonBase {
             return CardType.UNDEFINE;
         }
     }
-
-    /***
-     * path to resource folder
-     *
-     * @return
-     * @throws Exception
-     */
-    public String getUnzipFolderPath() throws Exception {
-        return SharedPreferencesManager.getInstance().getUnzipPath();
-    }
-
 }

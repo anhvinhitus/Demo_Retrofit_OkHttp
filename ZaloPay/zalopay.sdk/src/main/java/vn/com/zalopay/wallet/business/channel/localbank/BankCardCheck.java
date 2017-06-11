@@ -1,50 +1,26 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
-import android.app.Activity;
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
+import java.util.Map;
+
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class BankCardCheck extends CardCheck {
     private static BankCardCheck _object;
-    /***
-     * load bank list again
-     */
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-        }
-
-        @Override
-        public void onComplete() {
-            detectOnSync(mTempCardNumber);//detect again card number after loading bank list
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            Activity activity = BasePaymentActivity.getCurrentActivity();
-            if (activity != null && activity instanceof PaymentChannelActivity && !activity.isFinishing()) {
-                ((PaymentChannelActivity) activity).onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);
-            }
-        }
-    };
+    private Map<String, String> bankPrefix;
 
     public BankCardCheck() {
         super();
         this.mSelectBank = null;
         this.mCardIdentifier = ResourceManager.getInstance(null).getBankCardIdentifier();
-        BankLoader.loadBankList(null);
+        this.bankPrefix = SDKApplication.getApplicationComponent().bankListInteractor().getBankPrefix();
     }
 
     public static BankCardCheck getInstance() {
@@ -97,16 +73,15 @@ public class BankCardCheck extends CardCheck {
         }
         mTempCardNumber = pCardNumber;
 
-        if (!BankLoader.existedBankListOnMemory()) {
-            BankLoader.loadBankList(mLoadBankListListener);
-            mSelectBank = null;
+        if (bankPrefix == null) {
+            Log.d(this, "bank prefix is null");
             return false;
         }
 
         //get bank code in bank map
         String bankCode = null;
         for (int i = 3; i <= pCardNumber.length(); i++) {
-            bankCode = BankLoader.mapBank.get(pCardNumber.substring(0, i));
+            bankCode = bankPrefix.get(pCardNumber.substring(0, i));
             if (!TextUtils.isEmpty(bankCode)) {
                 break;
             }

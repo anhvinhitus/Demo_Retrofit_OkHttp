@@ -42,7 +42,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -196,7 +196,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
             return;
         }
         String message = getString(R.string.txt_confirm_remove_card);
-        DBaseMap bankInfo = mAdapter.getItem(adapterPosition);
+        BaseMap bankInfo = mAdapter.getItem(adapterPosition);
         if (bankInfo instanceof BankAccount) {
             message = getString(R.string.txt_confirm_remove_vcb_account);
         }
@@ -261,7 +261,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     }
 
     @Override
-    public void setListLinkedBank(List<DBaseMap> linkedBankList) {
+    public void setListLinkedBank(List<BaseMap> linkedBankList) {
         mAdapter.setData(linkedBankList);
         showOrHideLinkedBankEmpty();
     }
@@ -275,7 +275,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     }
 
     @Override
-    public void removeLinkedBank(DBaseMap linkedBank) {
+    public void removeLinkedBank(BaseMap linkedBank) {
         if (mAdapter != null) {
             mAdapter.remove(linkedBank);
         }
@@ -304,7 +304,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     }
 
     @Override
-    public void onAddBankSuccess(DBaseMap bankInfo) {
+    public void onAddBankSuccess(BaseMap bankInfo) {
         if (mAdapter != null && bankInfo != null) {
             mAdapter.insert(bankInfo);
         }

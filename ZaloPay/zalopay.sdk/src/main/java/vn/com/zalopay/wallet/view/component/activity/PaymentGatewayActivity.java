@@ -18,18 +18,19 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -38,10 +39,9 @@ import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
-import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
+import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 
@@ -84,25 +84,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * exit click
      */
     private View.OnClickListener mOnClickExitListener = v -> recycleActivity();
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-        }
-
-        @Override
-        public void onComplete() {
-            showPaymentChannel();
-            Log.d(this, "===show Channel===ILoadBankListListener() onComplete");
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            if (TextUtils.isEmpty(pMessage)) {
-                pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
-            }
-            onExit(pMessage, true);
-        }
-    };
 
     public static boolean isUniqueChannel() {
         return isUniqueChannel;
@@ -136,7 +117,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         long appId = mPaymentInfoHelper.getAppId();
         @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        checkAppInfo(appId, transtype, userInfo.zalopay_userid, userInfo.accesstoken); //check app info whether this transaction is allowed or not
+        loadAppInfo(appId, transtype, userInfo.zalopay_userid, userInfo.accesstoken); //check app info whether this transaction is allowed or not
     }
 
     protected void initializeChannelRecycleView() {
@@ -281,11 +262,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      */
     private synchronized void showPaymentChannel() {
         showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
-        //show header
-        if (mPaymentInfoHelper.isTopupTrans() || mPaymentInfoHelper.isPayTrans() || mPaymentInfoHelper.isWithDrawTrans()) {
-            Log.d(this, "show app info");
-            showApplicationInfo();
-        }
         try {
             Log.d(this, "show channels");
             getPaymentChannel();   //get channel from cache for this transaction
@@ -320,7 +296,13 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     protected void readyForPayment() {
         showProgress(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        BankLoader.loadBankList(mLoadBankListListener);
+        loadBankList(new Action1<BankConfigResponse>() {
+            @Override
+            public void call(BankConfigResponse bankConfigResponse) {
+                showPaymentChannel();
+                Log.d(this, "load bank list finish");
+            }
+        }, bankListException);
         Log.d(this, "ready for payment");
     }
 
@@ -441,7 +423,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private void goToChannel(PaymentChannel pChannel) {
         //map card channel clicked
         if (!TextUtils.isEmpty(pChannel.f6no) && !TextUtils.isEmpty(pChannel.l4no)) {
-            DBaseMap mapBank = pChannel.isBankAccountMap ? new BankAccount() : new MapCard();
+            BaseMap mapBank = pChannel.isBankAccountMap ? new BankAccount() : new MapCard();
             mapBank.setLastNumber(pChannel.l4no);
             mapBank.setFirstNumber(pChannel.f6no);
             mapBank.bankcode = pChannel.bankcode;

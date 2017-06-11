@@ -7,9 +7,9 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.di.qualifier.Api;
-import vn.com.zalopay.wallet.repository.banklist.BankListLocalStorage;
-import vn.com.zalopay.wallet.repository.banklist.BankListRepository;
-import vn.com.zalopay.wallet.repository.banklist.BankListStore;
+import vn.com.zalopay.wallet.repository.bank.BankLocalStorage;
+import vn.com.zalopay.wallet.repository.bank.BankRepository;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -18,19 +18,19 @@ import vn.com.zalopay.wallet.repository.banklist.BankListStore;
 public class BankListRepositoryModule {
     @Provides
     @Singleton
-    public BankListStore.BankListService provideBankListService(@Api Retrofit retrofit) {
-        return retrofit.create(BankListStore.BankListService.class);
+    public BankStore.BankListService provideBankListService(@Api Retrofit retrofit) {
+        return retrofit.create(BankStore.BankListService.class);
     }
 
     @Provides
     @Singleton
-    public BankListStore.LocalStorage provideBankListLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
-        return new BankListLocalStorage(sharedPreferencesManager);
+    public BankStore.LocalStorage provideBankListLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
+        return new BankLocalStorage(sharedPreferencesManager);
     }
 
     @Provides
     @Singleton
-    public BankListStore.Repository provideBankListRepository(BankListStore.BankListService bankListService, BankListStore.LocalStorage localStorage) {
-        return new BankListRepository(bankListService, localStorage);
+    public BankStore.Repository provideBankListRepository(BankStore.BankListService bankListService, BankStore.LocalStorage localStorage) {
+        return new BankRepository(bankListService, localStorage);
     }
 }

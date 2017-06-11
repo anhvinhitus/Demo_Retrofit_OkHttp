@@ -14,14 +14,15 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -35,17 +36,18 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
@@ -54,15 +56,16 @@ import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.CheckOrderStatusFailSubmit;
-import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.SendLogTask;
 import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
-import vn.com.zalopay.wallet.helper.MapCardHelper;
+import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -150,8 +153,27 @@ public abstract class AdapterBase {
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
+        mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
+        onClickSubmission();
+    };
     //prevent click duplicate
     private boolean mMoreClick = true;
+    private final View.OnClickListener okClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mMoreClick) {
+                mMoreClick = false;
+                AdapterBase.this.onClickSubmission();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMoreClick = true;
+                    }
+                }, 3000);
+            }
+        }
+    };
     private String olderPassword = null;
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -185,26 +207,36 @@ public abstract class AdapterBase {
             startSubmitTransaction();
         }
     };
-    private final View.OnClickListener onUpdateInfoClickListener = v -> {
-        mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
-        onClickSubmission();
+    private Action1<Throwable> loadCardException = throwable -> {
+        Log.d(this,"load card list on error", throwable);
+        showProgressBar(false, null);
+        String message = null;
+        if (throwable instanceof RequestException) {
+            message = throwable.getMessage();
+        }
+        if (TextUtils.isEmpty(message)) {
+            message = GlobalData.getStringResource(RS.string.sdk_load_card_error);
+        }
+        getActivity().showInfoDialog(null, message);
     };
-    private final View.OnClickListener okClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(this, "===okClickListener===starting...click");
-            if (mMoreClick) {
-                mMoreClick = false;
-                AdapterBase.this.onClickSubmission();
-                Log.d(this, "===okClickListener===onClickSubmission");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMoreClick = true;
-                        Log.d(this, "===okClickListener===release click event");
-                    }
-                }, 3000);
+    private Action1<Boolean> loadCard = aBoolean -> {
+        Log.d(this,"load card list finish");
+        showProgressBar(false, null);
+        String cardKey = getCard().getCardKey();
+        if (!TextUtils.isEmpty(cardKey)) {
+            MapCard mapCard = SDKApplication
+                    .getApplicationComponent()
+                    .linkInteractor()
+                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
+            if (mapCard != null) {
+                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
+                mPaymentInfoHelper.setMapCardResult(mapCardResult);
+                Log.d(this,"set map card to app", mapCardResult);
             }
+        }
+        //quit sdk right away
+        if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
+            onClickSubmission();
         }
     };
 
@@ -549,10 +581,6 @@ public abstract class AdapterBase {
                 getActivity().showServerMaintenanceDialog(mResponseStatus.getMessage());
                 return null;
             }
-            //reload map card list
-            if (pEventType == EEventType.ON_GET_CARDINFO_LIST_COMPLETE) {
-                handleEventGetCardInfoListComplete(pAdditionParams[0]);
-            }
             //callback finish transation from webview
             else if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
                 //ending timer loading site
@@ -766,25 +794,6 @@ public abstract class AdapterBase {
         }
     }
 
-    private void handleEventGetCardInfoListComplete(Object pAdditionParam) {
-        showProgressBar(false, null);
-
-        try {
-            CardInfoListResponse cardInfoListResponse = (CardInfoListResponse) pAdditionParam;
-
-            if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
-                getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
-            } else {
-                processCardInfoListResponse(cardInfoListResponse);
-            }
-        } catch (Exception ex) {
-            if (getActivity() != null && isTransactionSuccess()) {
-                getActivity().showInfoDialog(null, GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
-            }
-            Log.e(this, ex);
-        }
-    }
-
     private boolean handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
         Log.d(this, "processing result payment from notification");
         if (isTransactionSuccess()) {
@@ -934,7 +943,6 @@ public abstract class AdapterBase {
 
     private boolean shouldSendLogToServer() {
         Log.d("sendLogTransaction===time loading site", "captcha " + (mCaptchaEndTime - mCaptchaBeginTime) + " ms" + ", otp " + (mOtpEndTime - mOtpBeginTime) + " ms");
-
         return ((mCaptchaEndTime - mCaptchaBeginTime) >= 0) || ((mOtpEndTime - mOtpBeginTime) > 0);
     }
 
@@ -969,18 +977,13 @@ public abstract class AdapterBase {
                 try {
                     if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
                         //ask user use finger print
-                        //  if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
-                        long start = System.currentTimeMillis();
-                        Log.d(this, "===starting get dialog fingerprint===" + start);
                         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(getActivity(), mFingerPrintCallback);
-
                         if (mFingerPrintDialog != null) {
                             mPageCode = PAGE_REQUIRE_PIN;
                             if (getDialogFingerPrint() != null) {
                                 getDialogFingerPrint().show(getActivity().getFragmentManager(), null);
                             } else {
                                 moveToRequirePin();
-                                Log.d(this, "mFingerPrintDialog=NULL");
                             }
                         } else {
                             moveToRequirePin();
@@ -1089,7 +1092,8 @@ public abstract class AdapterBase {
                     }
                 });
             } else if (mPaymentInfoHelper.payByBankAccountMap()) {
-                BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mPaymentInfoHelper.getMapBank().bankcode);
+                BankConfig bankConfig = SDKApplication.getApplicationComponent().bankListInteractor()
+                        .getBankConfig(mPaymentInfoHelper.getMapBank().bankcode);
                 if (bankConfig != null) {
                     getActivity().setText(R.id.zpw_channel_label_textview, bankConfig.name);
                 }
@@ -1233,7 +1237,7 @@ public abstract class AdapterBase {
     protected void onCheckTransactionStatus(StatusResponse pStatusResponse) {
         try {
             if (pStatusResponse != null && pStatusResponse.returncode < 0) {
-                ErrorManager.updateTransactionResult(mPaymentInfoHelper, pStatusResponse.returncode);
+                getActivity().updatePaymentStatus(pStatusResponse.returncode);
             }
             //error pin
             if (pStatusResponse != null && pStatusResponse.returncode == Constants.PIN_WRONG_RETURN_CODE) {
@@ -1330,11 +1334,8 @@ public abstract class AdapterBase {
 
     protected void finishTransaction(String pMessage) {
         mIsSuccess = true;
-        if (pMessage == null || pMessage.length() == 0) {
-            pMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_transaction_success);
-        }
         mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-        terminate(pMessage, false);
+        terminate(null, true);
     }
 
     protected boolean needUserPasswordPayment() {
@@ -1375,55 +1376,6 @@ public abstract class AdapterBase {
         getActivity().setText(R.id.zpw_payment_success_textview, strMessage);
     }
 
-    protected boolean isNeedToNotifyMapCardToApp(CardInfoListResponse pCardInfoResponse) {
-        return MapCardHelper.isGetMapCardInfoSuccessAndHaveNewMapCard(pCardInfoResponse) && !GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId());
-    }
-
-    protected void processCardInfoListResponse(CardInfoListResponse pCardInfoResponse) throws
-            Exception {
-        try {
-            //get list map card successfully, callback info mapped card to app to show tutorial page
-            if (isNeedToNotifyMapCardToApp(pCardInfoResponse)) {
-                //get new map card to notify
-                String cardKey = getCard().getCardKey();
-                if (TextUtils.isEmpty(cardKey)) {
-                    Log.d(this, "===processCardInfoListResponse===cardKey=NULL");
-                    return;
-                }
-                MapCard mappedCard = null;
-                for (MapCard card : pCardInfoResponse.cardinfos) {
-                    if (card.getCardKey(mPaymentInfoHelper.getUserId()).equals(cardKey)) {
-                        mappedCard = card.clone();
-                        break;
-                    }
-                }
-                if (mappedCard != null) {
-                    MapCardHelper.notifyNewMapCardToApp(mPaymentInfoHelper, mappedCard);
-                }
-            }
-
-            //this is redpacket channel
-            //quit sdk right away
-            if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
-                onClickSubmission();
-                return;
-            }
-
-            //this card is mapped by another account
-            if (pCardInfoResponse != null && PaymentStatusHelper.isCardMapByOtherAccount(pCardInfoResponse)) {
-                Log.d(this, "this card is maped by other account");
-                return;
-            }
-            if (PaymentStatusHelper.isErrorResponse(pCardInfoResponse)) {
-                showDialog(pCardInfoResponse.getMessage());
-            } else if (PaymentStatusHelper.isNetworkingErrorResponse(pCardInfoResponse)) {
-                showDialog(GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
-            }
-        } catch (Exception ex) {
-            sdkReportErrorOnPharse(Constants.RESULT_PHARSE, ex != null ? ex.getMessage() : GsonUtils.toJsonString(mResponseStatus));
-            throw ex;
-        }
-    }
 
     protected void setFailLabel() {
         String strMessage = mPaymentInfoHelper.isCardLinkTrans() ? GlobalData.getStringResource(RS.string.zpw_string_payment_fail_linkcard) :
@@ -1444,11 +1396,12 @@ public abstract class AdapterBase {
      * each type have each type of interface
      */
     protected void getSuccessPageType() {
-        AppInfo appInfo = AppInfoLoader.getAppInfo(mPaymentInfoHelper.getAppId());
+        AppInfo appInfo = getActivity().appInfo;
         if (appInfo != null && appInfo.viewresulttype == 2) {
             mPageCode = PAGE_SUCCESS_SPECIAL;
-        } else
+        } else {
             mPageCode = PAGE_SUCCESS;
+        }
     }
 
     protected boolean processSaveCardOnResult() {
@@ -1474,7 +1427,7 @@ public abstract class AdapterBase {
         }
 
         if (isNeedToGetCardInfoListAfterPayment()) {
-            reloadMapCardList(true);
+            reloadMapCard(true);
         } else {
             showProgressBar(false, null);
         }
@@ -1489,14 +1442,12 @@ public abstract class AdapterBase {
     protected boolean processResultForRedPackage() {
         if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
             if (isNeedToGetCardInfoListAfterPayment()) {
-                reloadMapCardList(true);
+                reloadMapCard(true);
             } else {
                 onClickSubmission();
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -1674,7 +1625,7 @@ public abstract class AdapterBase {
                 && needToReloadMapCardListOnTransactionFail(pMessage)
                 && !shouldCheckTransactionStatusByClientId()) {
             preventRetryLoadMapCardList = true;
-            reloadMapCardList(false);
+            reloadMapCard(false);
         }
         showProgressBar(false, null);
         //send log
@@ -1865,11 +1816,11 @@ public abstract class AdapterBase {
             String mappedCardList = SharedPreferencesManager.getInstance().getMapCardKeyList(userId);
 
             if (TextUtils.isEmpty(mappedCardList)) {
-                mappedCardList = pMappedCard.getCardKey(userId);
-            } else if (!mappedCardList.contains(pMappedCard.getCardKey(userId))) {
-                mappedCardList += (Constants.COMMA + pMappedCard.getCardKey(userId));
+                mappedCardList = pMappedCard.getKey();
+            } else if (!mappedCardList.contains(pMappedCard.getKey())) {
+                mappedCardList += (Constants.COMMA + pMappedCard.getKey());
             }
-            SharedPreferencesManager.getInstance().setMapCard(userId, pMappedCard.getCardKey(userId), GsonUtils.toJsonString(pMappedCard));
+            SharedPreferencesManager.getInstance().setMap(userId, pMappedCard.getKey(), GsonUtils.toJsonString(pMappedCard));
             SharedPreferencesManager.getInstance().setMapCardList(userId, mappedCardList);
             mPaymentInfoHelper.setMapBank(pMappedCard);
             //clear checksum cardinfo
@@ -1883,12 +1834,18 @@ public abstract class AdapterBase {
     /***
      * reload map card list
      */
-    protected void reloadMapCardList(boolean pIsShowProgress) {
+    protected void reloadMapCard(boolean pIsShowProgress) {
         if (pIsShowProgress) {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
         }
-        BaseTask getCardInfoList = new MapCardListTask(this, mPaymentInfoHelper.getUserInfo());
-        getCardInfoList.makeRequest();
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loadCard, loadCardException);
+        getActivity().addSuscription(subscription);
     }
 
     /***
@@ -1940,7 +1897,7 @@ public abstract class AdapterBase {
         //get card on cache
         String strMappedCard = null;
         try {
-            strMappedCard = SharedPreferencesManager.getInstance().getMapCardByKey(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
+            strMappedCard = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
         } catch (Exception e) {
             Log.d(this, e);
         }
@@ -1977,7 +1934,7 @@ public abstract class AdapterBase {
                 SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
             }
             //callback bank code to app to know what bank user input
-            DBaseMap card = new MapCard();
+            BaseMap card = new MapCard();
             card.bankcode = pBankCode;
             mPaymentInfoHelper.setMapBank(card);
         } catch (Exception e) {

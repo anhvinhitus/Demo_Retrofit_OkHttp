@@ -6,4 +6,5 @@ public class ZPWRemoveMapCardParams {
     public MapCard mapCard;
     public String userID;
     public String accessToken;
+    public String appVersion;
 }

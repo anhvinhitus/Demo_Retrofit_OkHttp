@@ -1,4 +1,6 @@
-package vn.com.zalopay.wallet.repository.banklist;
+package vn.com.zalopay.wallet.repository.bank;
+
+import java.util.Map;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -13,7 +15,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
  * Created by chucvv on 6/7/17.
  */
 
-public class BankListStore {
+public class BankStore {
     public interface LocalStorage {
         void put(BankConfigResponse bankConfigResponse);
 
@@ -23,7 +25,7 @@ public class BankListStore {
 
         String getCheckSum();
 
-        String getBankPrefix();
+        Map<String, String> getBankPrefix();
 
         String getBankCodeList();
 
@@ -37,7 +39,7 @@ public class BankListStore {
     public interface Repository {
         Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion);
 
-        BankListStore.LocalStorage getLocalStorage();
+        BankStore.LocalStorage getLocalStorage();
     }
 
     public interface BankListService {

@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.repository.banklist;
+package vn.com.zalopay.wallet.repository.bank;
 
 import rx.Observable;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -9,11 +9,11 @@ import vn.com.zalopay.wallet.datasource.RetryWithDelay;
  * Created by chucvv on 6/7/17.
  */
 
-public class BankListRepository implements BankListStore.Repository {
-    protected BankListStore.LocalStorage mLocalStorage;
-    protected BankListStore.BankListService mBankListService;
+public class BankRepository implements BankStore.Repository {
+    protected BankStore.LocalStorage mLocalStorage;
+    protected BankStore.BankListService mBankListService;
 
-    public BankListRepository(BankListStore.BankListService bankListService, BankListStore.LocalStorage localStorage) {
+    public BankRepository(BankStore.BankListService bankListService, BankStore.LocalStorage localStorage) {
         this.mBankListService = bankListService;
         this.mLocalStorage = localStorage;
     }
@@ -26,7 +26,7 @@ public class BankListRepository implements BankListStore.Repository {
     }
 
     @Override
-    public BankListStore.LocalStorage getLocalStorage() {
+    public BankStore.LocalStorage getLocalStorage() {
         return mLocalStorage;
     }
 }

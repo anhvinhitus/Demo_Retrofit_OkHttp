@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
@@ -276,7 +276,7 @@ public class DataParameter {
         if (pAdapter != null) {
             params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
         }
-        DBaseMap mapBank = paymentInfoHelper.getMapBank();
+        BaseMap mapBank = paymentInfoHelper.getMapBank();
         if (paymentInfoHelper.payByCardMap() && mapBank.isValid()) {
             DMappedCreditCard mapCard = new DMappedCreditCard((MapCard) mapBank);
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapCard));

@@ -4,6 +4,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,18 +13,18 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
 /**
@@ -47,12 +48,41 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     private boolean isNewUser(String userId) {
-        String userIdOnCache = this.repository.getLocalStorage().getUserId();
+        String userIdOnCache = getUserId();
         return TextUtils.isEmpty(userIdOnCache) || !userIdOnCache.equals(userId);
     }
 
     @Override
-    public Observable<PlatformInfoCallback> loadPlatformInfoCloud(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
+    public String getUserId() {
+        return this.repository.getLocalStorage().getUserId();
+    }
+
+    @Override
+    public String getUnzipPath() {
+        return this.repository.getLocalStorage().getUnzipPath();
+    }
+
+    /***
+     * is file config.json existed?
+     * @return
+     */
+    @Override
+    public boolean isValidConfig() {
+        try {
+            String path = getUnzipPath();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(path).append(File.separator).append(ResourceManager.CONFIG_FILE);
+            File file = new File(stringBuilder.toString());
+            return !TextUtils.isEmpty(path) && file.exists();//Check if res is missing
+        } catch (Exception e) {
+            Log.e("isValidConfig", e);
+        }
+        return false;
+    }
+
+
+    @Override
+    public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
         //build params
         Log.d(this, "===prepare param to get platform info from server===");
         String checksum = repository.getLocalStorage().getChecksumSDK();
@@ -61,7 +91,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         //is this new user ?
         boolean isNewUser = isNewUser(userId);
         //mForceReload :: refresh gateway info from app
-        if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV)) || !BGatewayInfo.isValidConfig() || isNewUser || forceReload) {
+        if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV)) || !isValidConfig() || isNewUser || forceReload) {
             checksum = null;   //server will see this is new install, so return new resource to download
             resrcVer = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
@@ -97,13 +127,14 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
         Observable<PlatformInfoCallback> infoOnCache = repository
                 .getLocalStorage()
-                .get();
+                .get()
+                .subscribeOn(Schedulers.io());
         Observable<PlatformInfoCallback> infoOnCloud = repository
                 .fetchCloud(params)
                 .doOnNext(downloadResource(shouldDownloadResource))
                 .flatMap(mapResult(params.get(ConstantParams.APP_VERSION)));
-        return Observable.concat(infoOnCache, infoOnCloud).first(platformInfoCallback -> platformInfoCallback != null && (platformInfoCallback.expire_time > currentTime))
-                .compose(SchedulerHelper.applySchedulers());
+        return Observable.concat(infoOnCache, infoOnCloud)
+                .first(platformInfoCallback -> platformInfoCallback != null && (platformInfoCallback.expire_time > currentTime));
     }
 
     private Action1<PlatformInfoResponse> downloadResource(boolean shouldDownloadResource) {
@@ -165,5 +196,25 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public long getPlatformInfoDurationExpire() {
         return repository.getLocalStorage().getExpireTimeDuration();
+    }
+
+    @Override
+    public long getExpireTime() {
+        return repository.getLocalStorage().getExpireTime();
+    }
+
+    @Override
+    public String getCheckSum() {
+        return repository.getLocalStorage().getChecksumSDKVersion();
+    }
+
+    @Override
+    public String getResourceDownloadUrl() {
+        return repository.getLocalStorage().getResourceDownloadUrl();
+    }
+
+    @Override
+    public String getResourceVersion() {
+        return repository.getLocalStorage().getResourceVersion();
     }
 }

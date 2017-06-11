@@ -38,7 +38,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.error.CError;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -572,7 +572,7 @@ public class PaymentWrapper {
     }
 
     public interface ILinkCardListener {
-        void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo);
+        void onErrorLinkCardButInputBankAccount(BaseMap bankInfo);
     }
 
     public interface IRedirectListener {

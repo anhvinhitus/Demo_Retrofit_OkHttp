@@ -6,7 +6,6 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.utility.SdkUtils;
 
 public abstract class BasePaymentDialogActivity extends Activity {

@@ -2,6 +2,8 @@ package vn.com.zalopay.wallet.di.component;
 
 import android.app.Application;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -9,12 +11,15 @@ import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.datasource.InjectionWrapper;
 import vn.com.zalopay.wallet.di.module.AppInfoRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
+import vn.com.zalopay.wallet.di.module.BankAccountRepositoryModule;
 import vn.com.zalopay.wallet.di.module.BankListRepositoryModule;
+import vn.com.zalopay.wallet.di.module.CardRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.di.module.InteractorModule;
 import vn.com.zalopay.wallet.di.module.PlatformInfoRepositoryModule;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
-import vn.com.zalopay.wallet.interactor.IBankList;
+import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 
 @Singleton
@@ -22,6 +27,8 @@ import vn.com.zalopay.wallet.interactor.IPlatformInfo;
         ConfigurationModule.class,
         AppInfoRepositoryModule.class,
         BankListRepositoryModule.class,
+        CardRepositoryModule.class,
+        BankAccountRepositoryModule.class,
         PlatformInfoRepositoryModule.class,
         InteractorModule.class})
 public interface ApplicationComponent {
@@ -32,9 +39,13 @@ public interface ApplicationComponent {
 
     SDKConfiguration sdkConfiguration();
 
+    EventBus eventBus();
+
     IPlatformInfo platformInfoInteractor();
 
-    IBankList bankListInteractor();
+    IBank bankListInteractor();
 
     IAppInfo appInfoInteractor();
+
+    ILink linkInteractor();
 }

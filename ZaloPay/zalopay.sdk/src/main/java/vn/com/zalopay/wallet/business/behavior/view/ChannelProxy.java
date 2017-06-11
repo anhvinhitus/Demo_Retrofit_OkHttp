@@ -4,11 +4,11 @@ import android.content.Intent;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import rx.functions.Action1;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -21,8 +21,9 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
+import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -36,28 +37,11 @@ public class ChannelProxy extends SingletonBase {
     private PaymentGatewayActivity mOwnerActivity;
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        }
-
-        @Override
-        public void onComplete() {
-            if (!isBankMaintenance() && isBankSupport()) {
-                startChannel();
-            }
-            showProgressBar(false, null);
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            alertNetworking();
-        }
-    };
+    private IBank mBankInteractor;
 
     public ChannelProxy() {
         super();
+        mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
     }
 
     public static ChannelProxy get() {
@@ -101,9 +85,9 @@ public class ChannelProxy extends SingletonBase {
         Log.d(this, "user selected channel for payment", mChannel);
         // Lost connection,show alert dialog
         if (getActivity() != null && !ConnectionUtil.isOnline(getActivity())) {
-            if (getActivity() != null && !getActivity().isFinishing())
+            if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().askToOpenSettingNetwoking(null);
-
+            }
             return;
         }
 
@@ -116,13 +100,13 @@ public class ChannelProxy extends SingletonBase {
             //check bank future
             if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
                 if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-                    BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(mChannel.bankcode);
+                    BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
                     if (bankConfig != null) {
                         String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
                         pMessage = String.format(pMessage, bankConfig.getShortBankName());
                         showSupportBankVersionDialog(pMessage, mChannel.minappversion);
-                        return;
                     }
+                    return;
                 } else if (!mChannel.isAtmChannel()) {
                     String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
                     showSupportBankVersionDialog(String.format(message, mChannel.pmcname), mChannel.minappversion);
@@ -175,7 +159,13 @@ public class ChannelProxy extends SingletonBase {
             }
 
             if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-                BankLoader.loadBankList(mLoadBankListListener);//reload bank list
+                showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+                getActivity().loadBankList(bankConfigResponse -> {
+                    if (!isBankMaintenance() && isBankSupport()) {
+                        startChannel();
+                    }
+                    showProgressBar(false, null);
+                }, getActivity().bankListException);
             } else {
                 startChannel();
             }

@@ -28,9 +28,9 @@
     <string name="zpw_string_transaction_expired">Thời gian giao dịch hết hiệu lực.\nVui lòng thực hiện lại giao dịch!</string>
     <string name="zpw_string_params_wrong">Thông tin thanh toán không hợp lệ.</string>
     <string name="zpw_not_allow_payment_app">Ứng dụng chưa được phép giao dịch.\nVui lòng chọn ứng dụng khác.</string>
-    <string name="zpw_save_credit_card">%s ••• </string>
-    <string name="zpw_save_credit_card_atm">Thẻ %s ••• </string>
-    <string name="zpw_save_credit_card_default">Thẻ đã liên kết ••• </string>
+    <string name="sdk_creditcard_label">%s ••• </string>
+    <string name="sdk_card_generic_label">Thẻ %s ••• </string>
+    <string name="sdk_card_default_label">Thẻ đã liên kết ••• </string>
     <string name="zpw_string_all_channel_maintenance">Kênh thanh toán đang bảo trì.</string>
 
     <string name="zpw_string_alert_min_amount_input">Số tiền giao dịch tối thiểu là %s VND</string>
@@ -300,7 +300,7 @@
 
     <string name="zpw_string_authen_atm">Xác thực thông tin</string>
 
-    <string name="zpw_string_save_card_error">Mạng không ổn định.\nKhông thể cập nhật thông tin danh sách thẻ liên kết lúc này!</string>
+    <string name="sdk_load_card_error">Mạng không ổn định.\nKhông thể cập nhật thông tin danh sách thẻ liên kết lúc này!</string>
     <string name="zpw_string_get_bank_account_error">Mạng không ổn định.\nKhông thể cập nhật thông tin tài khoản liên kết lúc này!</string>
 
     <string name="zpw_string_number_retry">3</string>
@@ -397,18 +397,6 @@
     <string name="zpw_string_service_time_title">Thời gian giao dịch</string>
     <string name="zpw_string_service_transaction_title">Mã giao dịch</string>
     <string name="zpw_string_service_transaction_success">Thành công</string>
-
-    <!--li xi -->
-    <string name="zpw_string_lixi_notice_title">Sau 24 giờ số tiền chuyển được hoàn lại vào ví của bạn nếu người nhận chưa cài đặt %s</string>
-    <string name="zpw_string_lixi_notice_title_02">Zalo Pay</string>
-
-    <string name="zpw_string_bankcode_viettinbank">123PVTB</string>
-    <string name="zpw_string_bankcode_sacombank">123PSCB</string>
-    <string name="zpw_string_bankcode_commercialbank">123PSGCB</string>
-    <string name="zpw_string_bankcode_agribank">123PAGB</string>
-    <string name="zpw_string_bankcode_vietcombank">ZPVCB</string>
-    <string name="zpw_string_bankcode_bidv">123PBIDV</string>
-    <string name="zpw_string_bankcode_eximbank">123PEIB</string>
 
     <string name="zpw_string_bankname_visa">VISA</string>
     <string name="zpw_string_bankname_master">Mastercard</string>
@@ -548,5 +536,6 @@
     <string name="sdk_warning_pmc_transtype_disable_payment"><![CDATA[<b>%1$s</b> hiện không hỗ trợ loại giao dịch bạn đã chọn. Vui lòng thử lại sau!]]></string>
     <string name="sdk_warning_pmc_transtype_disable_link"><![CDATA[<b>%1$s</b> hiện tại không hỗ trợ liên kết. Vui lòng thử lại sau!]]></string>
 
-    <string name="sdk_warning_bank_not_support_link">Ngân hàng không còn được hỗ trợ liên kết. Vui lòng chọn ngân hàng khác!</string>
+    <string name="sdk_load_appinfo_error_message">Không tải được thông tin ứng dụng. Vui lòng thử lại!</string>
+    <string name="sdk_load_generic_error_message">Không tải được thông tin. Vui lòng thử lại!</string>
 </resources>

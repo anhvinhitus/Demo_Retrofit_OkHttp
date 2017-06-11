@@ -2,19 +2,15 @@ package vn.com.zalopay.wallet.interactor;
 
 import android.text.TextUtils;
 
-import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -31,9 +27,8 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
-import vn.com.zalopay.wallet.repository.banklist.BankListStore;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 /**
  * Interactor decide which get data from
@@ -41,29 +36,54 @@ import vn.com.zalopay.wallet.repository.banklist.BankListStore;
  * Created by chucvv on 6/8/17.
  */
 
-public class BankListInteractor implements IBankList {
-    public BankListStore.Repository mBankListRepository;
+public class BankInteractor implements IBank {
+    public BankStore.Repository mBankListRepository;
+
     protected Func1<BankConfigResponse, Observable<BankConfigResponse>> mapResult = bankConfigResponse -> {
         if (bankConfigResponse == null) {
             return Observable.error(new RequestException(RequestException.NULL, null));
         } else if (bankConfigResponse.returncode == 1) {
             bankConfigResponse.expiredtime = mBankListRepository.getLocalStorage().getExpireTime();
             if (bankConfigResponse.bankcardprefixmap == null) {
-                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
-                }.getType();
-                HashMap<String, String> bankMap = GsonUtils.fromJsonString(mBankListRepository.getLocalStorage().getBankPrefix(), type);
-                bankConfigResponse.bankcardprefixmap = bankMap;
+                bankConfigResponse.bankcardprefixmap = getBankPrefix();
             }
             return Observable.just(bankConfigResponse);
         } else {
             return Observable.error(new RequestException(bankConfigResponse.returncode, bankConfigResponse.returnmessage));
         }
     };
+    private Func1<BankConfigResponse, Observable<List<BankConfig>>> withDrawBank = new Func1<BankConfigResponse, Observable<List<BankConfig>>>() {
+        @Override
+        public Observable<List<BankConfig>> call(BankConfigResponse bankConfigResponse) {
+            Log.d(this, "start load withdraw banks");
+            try {
+                List<BankConfig> withDrawBanks = new ArrayList<>();
+                String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
+                if (!TextUtils.isEmpty(bankCodes)) {
+                    String[] arrayBankCode = bankCodes.split(Constants.COMMA);
+                    for (int i = 0; i < arrayBankCode.length; i++) {
+                        String bankCode = arrayBankCode[i];
+                        BankConfig bankConfig = mBankListRepository.getLocalStorage().getBankConfig(bankCode);
+                        if (bankConfig == null) {
+                            continue;
+                        }
+                        if (bankConfig != null && bankConfig.isWithDrawAllow() && !withDrawBanks.contains(bankConfig)) {
+                            withDrawBanks.add(bankConfig);
+                        }
+                    }
+                }
+                return Observable.just(withDrawBanks);
+            } catch (Exception e) {
+                Log.e(this, e);
+                return Observable.error(e);
+            }
+        }
+    };
 
     @Inject
-    public BankListInteractor(BankListStore.Repository bankListRepository) {
+    public BankInteractor(BankStore.Repository bankListRepository) {
         this.mBankListRepository = bankListRepository;
-        Log.d(this, "call constructor BankListInteractor");
+        Log.d(this, "call constructor BankInteractor");
     }
 
     private Func1<BankConfigResponse, Observable<List<ZPBank>>> supportBanks(String appVersion) {
@@ -76,16 +96,16 @@ public class BankListInteractor implements IBankList {
                     //cc must be hardcode
                     String bankCodeVisa = CardType.VISA;
                     String bankCodeMaster = CardType.MASTER;
-                    ZPBank visa = getCardFromBankConfig(appVersion, BuildConfig.CC_CODE, false);
+
+                    ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
                     visa.bankLogo = getBankLogo(bankCodeVisa);
                     visa.bankCode = bankCodeVisa;
                     visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
-                    ;
-                    ZPBank masterCard = getCardFromBankConfig(appVersion, BuildConfig.CC_CODE, false);
+
+                    ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
                     masterCard.bankLogo = getBankLogo(bankCodeMaster);
                     masterCard.bankCode = bankCodeMaster;
                     masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
-                    ;
 
                     //build support cards
                     String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
@@ -95,7 +115,7 @@ public class BankListInteractor implements IBankList {
                             String bankCode = arrayBankCode[i];
                             if (!TextUtils.isEmpty(bankCode) && !BuildConfig.CC_CODE.equals(bankCode)) {
                                 boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
-                                ZPBank zpBank = getCardFromBankConfig(appVersion, bankCode, isBankAccount);
+                                ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
                                 if (zpBank == null) {
                                     continue;
                                 }
@@ -126,13 +146,18 @@ public class BankListInteractor implements IBankList {
         Observable<BankConfigResponse> bankListCache = mBankListRepository
                 .getLocalStorage()
                 .get()
+                .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<BankConfigResponse> bankListCloud = mBankListRepository
                 .fetchCloud(platform, checksum, appVersion)
                 .flatMap(mapResult);
         return Observable.concat(bankListCache, bankListCloud)
-                .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime))
-                .compose(SchedulerHelper.applySchedulers());
+                .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
+    }
+
+    @Override
+    public BankConfig getBankConfig(String bankCode) {
+        return mBankListRepository.getLocalStorage().getBankConfig(bankCode);
     }
 
     /***
@@ -145,16 +170,22 @@ public class BankListInteractor implements IBankList {
     @Override
     public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
-                .subscribeOn(Schedulers.io())
                 .flatMap(supportBanks(appVersion))
-                .observeOn(AndroidSchedulers.mainThread());
+                .doOnError(throwable -> Log.d(this, throwable));
+    }
+
+    @Override
+    public Observable<List<BankConfig>> getWithdrawBanks(String appVersion, long currentTime) {
+        return getBankList(appVersion, currentTime)
+                .flatMap(withDrawBank)
+                .doOnError(throwable -> Log.d(this, throwable));
     }
 
     protected String getBankLogo(String pBankCode) {
         return String.format("bank_%s%s", pBankCode, Constants.BITMAP_EXTENSION);
     }
 
-    private ZPBank getCardFromBankConfig(String appVersion, String bankCode, boolean isBankAccount) {
+    private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {
         if (TextUtils.isEmpty(bankCode)) {
             return null;
         }
@@ -201,7 +232,7 @@ public class BankListInteractor implements IBankList {
     }
 
     @Override
-    public String getBankPrefix() {
+    public Map<String, String> getBankPrefix() {
         return this.mBankListRepository.getLocalStorage().getBankPrefix();
     }
 

@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.paymentinfo;
 
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -33,9 +33,9 @@ public interface IBuilder {
 
     IBuilder setMapCard(DMapCardResult mapCard);
 
-    DBaseMap getMapBank();
+    BaseMap getMapBank();
 
-    IBuilder setMapBank(DBaseMap mapBank);
+    IBuilder setMapBank(BaseMap mapBank);
 
     IBuilder setLocation(PaymentLocation location);
 

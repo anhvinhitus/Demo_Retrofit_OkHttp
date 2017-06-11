@@ -39,6 +39,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -50,12 +51,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Stack;
 
-import rx.Single;
-import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.feedback.FeedbackCollector;
@@ -67,9 +68,6 @@ import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -81,10 +79,10 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -95,19 +93,17 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.MapCardHelper;
-import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
+import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
+import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
+import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
+import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
+import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
+import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
-import vn.com.zalopay.wallet.message.SdkLoadingTaskMessage;
-import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
-import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
-import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
@@ -122,6 +118,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public final String TAG = getClass().getSimpleName();
     public boolean mIsBackClick = true;
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
+    public AppInfo appInfo;
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
     //dialog asking open networking listener
@@ -140,6 +137,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+    protected EventBus mBus;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected int numberOfRetryOpenNetwoking = 0;//number of openning networking dialog retry
     protected boolean isAllowLinkCardATM = true;
@@ -251,51 +249,16 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+    public Action1<Throwable> bankListException = throwable -> {
+        Log.d(this, "load appinfo on error", throwable);
+        String message = getMessage(throwable);
+        if (TextUtils.isEmpty(message)) {
+            message = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
+        }
+        onExit(message, true);
+    };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
-    /***
-     * load app info listener
-     */
-    private ILoadAppInfoListener loadAppInfoListener = new ILoadAppInfoListener() {
-        @Override
-        public void onProcessing() {
-            showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-        }
-
-        @Override
-        public void onSuccess() {
-            Log.d(this, "load appinfo success");
-            long appId = mPaymentInfoHelper.getAppId();
-            if (!GlobalData.isAllowApplication(appId)) {
-                actionIfPreventApp();
-                return;
-            }
-            try {
-                showApplicationInfo();
-            } catch (Exception e) {
-                Log.d(this, e);
-            }
-            loadStaticReload();
-        }
-
-        @Override
-        public void onError(AppInfoResponse pMessage) {
-            Log.d(this, "load appinfo on error");
-            showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
-            String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-            if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
-                message = pMessage.getMessage();
-            }
-            if (pMessage != null && pMessage.returncode < 0) {
-                //sometimes shared app info return empty message and return code -2.that mean app not allow from backend.
-                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage())) {
-                    message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
-                }
-                ErrorManager.updateTransactionResult(mPaymentInfoHelper, pMessage.returncode);
-            }
-            showDialogAndExit(message, ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus()));
-        }
-    };
     //close snackbar networking alert listener
     private onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
     private View.OnClickListener mSupportButtonClickListener = new View.OnClickListener() {
@@ -325,6 +288,15 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 Log.e(this, ex);
             }
         }
+    };
+    private Action1<Throwable> appInfoException = throwable -> {
+        Log.d(this, "load appinfo on error", throwable);
+        showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
+        String message = getMessage(throwable);
+        if (TextUtils.isEmpty(message)) {
+            message = GlobalData.getStringResource(RS.string.sdk_load_appinfo_error_message);
+        }
+        showDialogAndExit(message, ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus()));
     };
 
     public static Activity getCurrentActivity() {
@@ -378,9 +350,35 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
+    public void updatePaymentStatus(int code) {
+        mPaymentInfoHelper.updateTransactionResult(code);
+    }
+
+    public String getMessage(Throwable throwable) {
+        String message = null;
+        if (throwable instanceof RequestException) {
+            RequestException requestException = (RequestException) throwable;
+            message = requestException.getMessage();
+            switch (requestException.code) {
+                case RequestException.NULL:
+                    message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+                    break;
+                default:
+                    updatePaymentStatus(requestException.code);
+            }
+        } else if (throwable instanceof NetworkConnectionException) {
+            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        }
+        return message;
+    }
+
+    public void addSuscription(Subscription subscription) {
+        mCompositeSubscription.add(subscription);
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void OnPaymentInfoEvent(PaymentInfoHelper paymentInfoHelper) {
-        PaymentEventBus.shared().removeStickyEvent(PaymentInfoHelper.class);
+        mBus.removeStickyEvent(PaymentInfoHelper.class);
         mPaymentInfoHelper = paymentInfoHelper;
         paymentInfoReady();
         Log.d(this, "got event payment info", mPaymentInfoHelper);
@@ -397,22 +395,16 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         Log.d(this, "OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
         if (pMessage.success) {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false, userInfo),
-                    BankAccountHelper.loadBankAccountList(false, userInfo), (t1, t2) -> true)
+            String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+            Subscription subscription = SDKApplication.getApplicationComponent()
+                    .linkInteractor()
+                    .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleSubscriber<Boolean>() {
-                        @Override
-                        public void onSuccess(Boolean aBoolean) {
-                            readyForPayment();
-                        }
-
-                        @Override
-                        public void onError(Throwable error) {
-                            showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
-                            Log.d("onError", error);
-                        }
+                    .subscribe(aBoolean -> readyForPayment(), throwable -> {
+                        showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
+                        Log.e("load card and bank account error", throwable.getMessage());
                     });
-            mCompositeSubscription.add(subscription);
+            addSuscription(subscription);
         } else {
             Log.d(this, "init resource error " + pMessage);
             /***
@@ -448,12 +440,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             initializeResource();
         } else {
             SdkResourceInitMessage message = new SdkResourceInitMessage(result.success, result.message);
-            PaymentEventBus.shared().post(message);
+            mBus.post(message);
         }
     }
 
     public void initializeResource() {
-        if (!BGatewayInfo.isValidConfig()) {
+
+        if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
             Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
             return;
         }
@@ -462,10 +455,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     SdkResourceInitMessage message = new SdkResourceInitMessage(true);
-                    PaymentEventBus.shared().post(message);
+                    mBus.post(message);
                 }, throwable -> {
                     SdkResourceInitMessage message = new SdkResourceInitMessage(false, GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download));
-                    PaymentEventBus.shared().post(message);
+                    mBus.post(message);
                     Log.d("init resource fail", throwable);
                 });
         mCompositeSubscription.add(subscription);
@@ -487,7 +480,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void loadStaticReload() {
         try {
             Log.d(this, "check static resource start");
-            PlatformInfoLoader.getInstance(mPaymentInfoHelper.getUserInfo()).checkStaticResource();
+            PlatformInfoLoader.getInstance(mPaymentInfoHelper.getUserInfo()).checkPlatformInfo();
         } catch (Exception e) {
             showDialogAndExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);   //notify error and close sdk
             Log.e(this, e);
@@ -607,7 +600,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        PaymentEventBus.shared().register(this);
+        mBus.register(this);
         ZPAnalytics.trackScreen(TAG);
         Log.d(this, "onStart");
     }
@@ -636,6 +629,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
             mActivityStack.push(this);
         }
+        mBus = SDKApplication.getApplicationComponent().eventBus();
     }
 
     @Override
@@ -675,15 +669,48 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        PaymentEventBus.shared().unregister(this);
+        mBus.unregister(this);
         Log.d(this, "onStop");
+    }
+
+    public void loadBankList(Action1<BankConfigResponse> success, Action1<Throwable> error) {
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        long currentTime = System.currentTimeMillis();
+        Subscription subscription = SDKApplication.getApplicationComponent().bankListInteractor()
+                .getBankList(appVersion, currentTime)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success, error);
+        addSuscription(subscription);
     }
 
     /***
      * load app info from cache or api
      */
-    protected void checkAppInfo(long appId, @TransactionType int transtype, String userId, String accessToken) {
-        AppInfoLoader.get(appId, transtype, userId, accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
+    protected void loadAppInfo(long appId, @TransactionType int transtype, String userId, String accessToken) {
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        long currentTime = System.currentTimeMillis();
+        Subscription subscription = SDKApplication.getApplicationComponent().appInfoInteractor().loadAppInfo(appId, new int[]{transtype},
+                userId, accessToken, appVersion, currentTime)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info)))
+                .subscribe(new Action1<AppInfo>() {
+                    @Override
+                    public void call(AppInfo pAppInfo) {
+                        Log.d(this, "load appinfo success");
+                        if (pAppInfo == null || !pAppInfo.isAllow()) {
+                            actionIfPreventApp();
+                            return;
+                        }
+                        try {
+                            appInfo = pAppInfo;
+                            showApplicationInfo(appInfo);
+                        } catch (Exception e) {
+                            Log.d(this, e);
+                        }
+                        loadStaticReload();
+                    }
+                }, appInfoException);
+        mCompositeSubscription.add(subscription);
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
         }
@@ -883,13 +910,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return findViewById(RS.getID(pName));
     }
 
-    protected void showApplicationInfo() {
+    protected void showApplicationInfo(AppInfo appInfo) {
         //withdraw no need to show app name
         if (mPaymentInfoHelper.isWithDrawTrans()) {
             return;
         }
-        long appId = mPaymentInfoHelper.getAppId();
-        AppInfo appInfo = AppInfoLoader.getAppInfo(appId);
         if (appInfo != null && !TextUtils.isEmpty(appInfo.appname)) {
             setText(R.id.zalosdk_bill_info_ctl, appInfo.appname);
             setVisible(R.id.zalosdk_bill_info_ctl, true);
@@ -1264,8 +1289,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             findViewById(R.id.zpw_textview_transaction_amount).setVisibility(View.GONE);
         }
         if (order != null) {
-            long appId = order.appid;
-            AppInfo appInfo = AppInfoLoader.getAppInfo(appId);
             if (appInfo != null && appInfo.viewresulttype == 2) {
                 setVisible(R.id.zpw_textview_transaction_description, true);
                 setText(R.id.zpw_textview_transaction_description, appInfo.appname);
@@ -1639,8 +1662,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
-            if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-                showInfoDialog(pListener, BankLoader.getInstance().maintenanceBank.getMaintenanceMessage(GlobalData.getCurrentBankFunction()));
+            int bankFunction = GlobalData.getCurrentBankFunction();
+            BankConfig bankConfig = SDKApplication
+                    .getApplicationComponent()
+                    .bankListInteractor()
+                    .getBankConfig(pBankCode);
+            if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
+                showInfoDialog(pListener, bankConfig.getMaintenanceMessage(bankFunction));
                 return true;
             }
         } catch (Exception e) {
@@ -1657,7 +1685,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public boolean showBankSupport(String pBankCode) {
         try {
-            if (!BankLoader.getInstance().isBankSupport(pBankCode)) {
+            BankConfig bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(pBankCode);
+            if (bankConfig == null || !bankConfig.isActive()) {
                 String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
                 showInfoDialog(null, message);
                 return false;

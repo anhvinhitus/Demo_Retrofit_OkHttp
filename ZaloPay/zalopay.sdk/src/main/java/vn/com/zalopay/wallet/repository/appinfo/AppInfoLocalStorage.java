@@ -15,7 +15,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeResponse;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
@@ -81,7 +80,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                         mSharedPreferences.setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
                         Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
                     }
-                    mSharedPreferences.setPmcConfigList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
+                    mSharedPreferences.setPmcTranstypeKeyList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
                     mSharedPreferences.setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
                     Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used when user input amount
@@ -107,6 +106,13 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
         } catch (Exception ex) {
             Log.d(this, ex);
         }
+    }
+
+    @Override
+    public List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType) {
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append(pAppID).append(Constants.UNDERLINE).append(pTransType);
+        return mSharedPreferences.getPmcTranstypeKeyList(keyBuilder.toString());
     }
 
     @Override

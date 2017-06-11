@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -17,7 +16,7 @@ import vn.com.zalopay.wallet.business.entity.base.CardColorText;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class CardSelector {
     private static CardColorText CardColorTextDefault = new CardColorText(R.color.default_color_text_normal, R.color.default_color_text_highline, R.color.default_color_text_selected);
@@ -35,32 +34,7 @@ public class CardSelector {
         } else {
             cardSelectorHashMap = new HashMap<>();
         }
-        //fill bankcode and selector
-        if (BankLoader.existedBankListOnMemory()) {
-            populateCardSelector();
-        } else {
-            //reload bank map
-            ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-                @Override
-                public void onProcessing() {
-                    Log.d(this, "===loading bank list===");
-                }
-
-                @Override
-                public void onComplete() {
-                    Log.d(this, "===load bank list onComplete===");
-                    populateCardSelector();
-                }
-
-                @Override
-                public void onError(String pMessage) {
-
-                    Log.d(this, "===load bank list error " + pMessage);
-                }
-            };
-            BankLoader.loadBankList(mLoadBankListListener);
-        }
-
+        populateCardSelector();
     }
 
     public CardSelector(int mDrawableCard, int mDrawableCenterImage, int logoId, CardColorText pCardColorText) {
@@ -150,12 +124,13 @@ public class CardSelector {
     }
 
     protected void populateCardSelector() {
-        if (BankLoader.existedBankListOnMemory()) {
-            for (Object o : BankLoader.mapBank.entrySet()) {
+        Map<String, String> bankPrefix = SDKApplication.getApplicationComponent()
+                .bankListInteractor()
+                .getBankPrefix();
+        if (bankPrefix != null) {
+            for (Object o : bankPrefix.entrySet()) {
                 Map.Entry pair = (Map.Entry) o;
-
                 String bankCode = String.valueOf(pair.getValue());
-
                 if (!TextUtils.isEmpty(bankCode)) {
                     addCardSelectorToHashMap(bankCode);
                 }

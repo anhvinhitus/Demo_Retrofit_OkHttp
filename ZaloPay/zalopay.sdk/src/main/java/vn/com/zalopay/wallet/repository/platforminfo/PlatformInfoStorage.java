@@ -8,8 +8,8 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.MapCardHelper;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
@@ -80,28 +80,22 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
                     mSharedPreferences.setApproveInsideApps(GsonUtils.toJsonString(pResponse.approvedinsideappids));
                 }
             }
-            //need to update card info again on cache
-            if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
-                //for testing
-               /* MapCard mapCard = new MapCard();
+            /* MapCard mapCard = new MapCard();
                 mapCard.bankcode = CardType.PVTB;
                 mapCard.cardname = "VO VAN CHUC";
                 mapCard.last4cardno = "8156";
                 mapCard.first6cardno = "970415";
                 pResponse.cardinfos.add(mapCard);*/
-                MapCardHelper.saveMapCardListToCache(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
-            }
-            //update bank account info on cache
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();
 //        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
 //        dBankAccount.firstaccountno = "093490";
 //        dBankAccount.lastaccountno = "9460";
 //        pResponse.bankaccounts.add(dBankAccount);
-            // ===============================================
-            if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {
-                BankAccountHelper.saveMapBankAccountListToCache(userId, pResponse.bankaccountchecksum, pResponse.bankaccounts);
-            }
+            //update card and bank account info again on cache
+            ILink linkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
+            linkInteractor.putCards(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
+            linkInteractor.putBankAccounts(userId, pResponse.bankaccountchecksum, pResponse.bankaccounts);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -152,6 +146,17 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
+    public String getUnzipPath() {
+        String unzipPath = null;
+        try {
+            unzipPath = mSharedPreferences.getUnzipPath();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return unzipPath;
+    }
+
+    @Override
     public String getResourceVersion() {
         String resoureVersion = null;
         try {
@@ -184,6 +189,22 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
+    public String getResourceDownloadUrl() {
+        String url = null;
+        try {
+            url = mSharedPreferences.getResourceDownloadUrl();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return url;
+    }
+
+    @Override
+    public void setResourceDownloadUrl(String resourceDownloadUrl) {
+        mSharedPreferences.setResourceDownloadUrl(resourceDownloadUrl);
+    }
+
+    @Override
     public String getBankAccountCheckSum() {
         String checksum = null;
         try {
@@ -197,11 +218,6 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     @Override
     public void setBankAccountCheckSum(String checkSum) {
         mSharedPreferences.setBankAccountCheckSum(checkSum);
-    }
-
-    @Override
-    public void setResourceDownloadUrl(String resourceDownloadUrl) {
-        mSharedPreferences.setResourceDownloadUrl(resourceDownloadUrl);
     }
 
     @Override

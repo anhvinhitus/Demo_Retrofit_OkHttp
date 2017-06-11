@@ -34,6 +34,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -55,6 +56,7 @@ import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
@@ -371,7 +373,12 @@ public class NotificationHelper {
     }
 
     private void reloadMapCardList(NotificationData data) {
-        CShareDataWrapper.reloadMapCardList("", "", mUser, null);
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getMap(mUser.zaloPayId, mUser.accesstoken, true, BuildConfig.VERSION_NAME)
+                .subscribe(aBoolean -> Timber.d("reload card and bank account"),
+                        throwable -> Timber.d("reload card and bank account on error %s", throwable));
+        mCompositeSubscription.add(subscription);
     }
 
     private void payOrderFromNotify(NotificationData notify) {

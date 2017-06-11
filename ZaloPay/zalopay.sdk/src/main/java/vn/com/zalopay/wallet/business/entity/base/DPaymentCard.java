@@ -63,7 +63,7 @@ public class DPaymentCard {
 
     public String getCardKey() {
         if (TextUtils.isEmpty(cardnumber) || cardnumber.length() < 6) {
-            Log.d(this, "===getCardKey()=NULL");
+            Log.d(this, "===getKey()=NULL");
             return null;
         }
 

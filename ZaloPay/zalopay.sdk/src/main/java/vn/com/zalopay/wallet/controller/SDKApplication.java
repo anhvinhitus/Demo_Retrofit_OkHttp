@@ -5,15 +5,13 @@ import android.content.Context;
 
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -24,10 +22,8 @@ import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
-import vn.com.zalopay.wallet.interactor.IBankList;
+import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
-import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
-import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 
 public class SDKApplication extends Application {
@@ -74,7 +70,7 @@ public class SDKApplication extends Application {
     private static void removeCacheOnSetupOverride(String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
         IAppInfo appInfo = getApplicationComponent().appInfoInteractor();
-        IBankList bankList = getApplicationComponent().bankListInteractor();
+        IBank bankList = getApplicationComponent().bankListInteractor();
         if (platformInfo.isNewVersion(pAppVersion) && platformInfo != null && appInfo != null && bankList != null) {
             Log.d("removeCacheOnSetupOverride", "start clear cache in previous version");
             //clear banklist
@@ -113,7 +109,8 @@ public class SDKApplication extends Application {
             Subscription[] subscription = new Subscription[3];
             //load platform info
             getApplicationComponent().platformInfoInteractor()
-                    .loadPlatformInfoCloud(userId, accessToken, false, true, currentTime, pAppVersion)
+                    .loadPlatformInfo(userId, accessToken, false, true, currentTime, pAppVersion)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(pObserver);
             //load bank list
             Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
@@ -152,69 +149,13 @@ public class SDKApplication extends Application {
             long currentTime = System.currentTimeMillis();
             //load platform info
             return getApplicationComponent().platformInfoInteractor()
-                    .loadPlatformInfoCloud(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false, currentTime, pAppVersion)
+                    .loadPlatformInfo(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false, currentTime, pAppVersion)
                     .subscribe(pObserver);
         } catch (Exception e) {
             if (pObserver != null)
                 pObserver.onError(e);
         }
         return null;
-    }
-
-    private static void loadPlatformInfo(UserInfo pUserInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
-        try {
-            BGatewayInfo.getInstance(pUserInfo).execute(pGatewayInfoCallback);
-        } catch (Exception e) {
-            if (pGatewayInfoCallback != null)
-                pGatewayInfoCallback.onError(e != null ? e.getMessage() : null);
-
-            Log.e("loadPlatformInfo", e);
-        }
-    }
-
-    /***
-     *
-     * @param pUserInfo
-     */
-    private static void loadAppWalletInfo(UserInfo pUserInfo) {
-        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, TransactionType.MONEY_TRANSFER, pUserInfo.zalopay_userid, pUserInfo.accesstoken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
-            @Override
-            public void onProcessing() {
-                Log.d("loadAppWalletInfo", "onProcessing");
-            }
-
-            @Override
-            public void onSuccess() {
-                Log.d("loadAppWalletInfo", "onSuccess");
-            }
-
-            @Override
-            public void onError(AppInfoResponse message) {
-                Log.d("loadAppWalletInfo", "onError");
-            }
-        }).execute();
-    }
-
-    /**
-     * @param pUserInfo
-     */
-    private static void loadAppWithDrawInfo(UserInfo pUserInfo) {
-        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, TransactionType.WITHDRAW, pUserInfo.zalopay_userid, pUserInfo.accesstoken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
-            @Override
-            public void onProcessing() {
-                Log.d("loadAppWithDrawInfo", "onProcessing");
-            }
-
-            @Override
-            public void onSuccess() {
-                Log.d("loadAppWithDrawInfo", "onSuccess");
-            }
-
-            @Override
-            public void onError(AppInfoResponse message) {
-                Log.d("loadAppWithDrawInfo", "onError");
-            }
-        }).execute();
     }
 
     public static Application getApplication() {

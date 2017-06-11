@@ -11,10 +11,9 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.utility.GsonUtils;
 
@@ -92,7 +91,7 @@ public class BankUtils {
         return CardType.UNDEFINE.toString();
     }
 
-    public static BankCardStyle getBankCardStyle(DBaseMap bankCard, User user) {
+    public static BankCardStyle getBankCardStyle(BaseMap bankCard, User user) {
         if (bankCard == null || TextUtils.isEmpty(bankCard.bankcode)) {
             return BANK_DEFAULT;
         }

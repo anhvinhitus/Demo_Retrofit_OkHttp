@@ -27,13 +27,6 @@ public class RS {
         return get(pName, "color");
     }
 
-    public static String getResourceName(int pResourceID) {
-        if (SDKApplication.getApplication() != null) {
-            return SDKApplication.getApplication().getResources().getResourceEntryName(pResourceID);
-        }
-        return null;
-    }
-
     private static int get(String pName, String pDef) {
         if (SDKApplication.getApplication() != null) {
             int ret = SDKApplication.getApplication().getBaseContext().getResources()
@@ -47,8 +40,10 @@ public class RS {
     }
 
     public static final class string {
-        public static final String sdk_warning_bank_not_support_link = "sdk_warning_bank_not_support_link";
+        public static final String zpw_string_vcb_account_notfound_in_server = "zpw_string_vcb_account_notfound_in_server";
 
+        public static final String sdk_load_generic_error_message = "sdk_load_generic_error_message";
+        public static final String sdk_load_appinfo_error_message = "sdk_load_appinfo_error_message";
         public static final String sdk_warning_pmc_transtype_disable_payment = "sdk_warning_pmc_transtype_disable_payment";
         public static final String sdk_warning_pmc_transtype_disable_link = "sdk_warning_pmc_transtype_disable_link";
         public static final String invalid_order_amount_bank = "invalid_order_amount_bank";
@@ -61,10 +56,6 @@ public class RS {
         public static final String prefix_numberphone_vcb = "prefix_numberphone_vcb";
         public static final String suffix_numberphone_vcb = "suffix_numberphone_vcb";
 
-        public static final String zpw_alert_network_error_loadappinfo = "zpw_alert_network_error_loadappinfo";
-        public static final String zpw_alert_network_error_loadbanklist = "zpw_alert_network_error_loadbanklist";
-        public static final String zpw_alert_network_error_loadplatforminfo = "zpw_alert_network_error_loadplatforminfo";
-        public static final String zpw_alert_network_error_loadmapcardlist = "zpw_alert_network_error_loadmapcardlist";
         public static final String zpw_alert_network_error_loadmapbankaccountlist = "zpw_alert_network_error_loadmapbankaccountlist";
         public static final String zpw_alert_network_error_submitorder = "zpw_alert_network_error_submitorder";
         public static final String zpw_alert_network_error_verifymapcard = "zpw_alert_network_error_verifymapcard";
@@ -75,17 +66,12 @@ public class RS {
         public static final String zpw_generic_error = "zpw_generic_error";
 
         public static final String payment_success_label = "payment_success_label";
-        public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
-        public static final String zpw_payment_fail_rl_update_info = "zpw_payment_fail_rl_update_info";
-        public static final String zpw_payment_fail_rl_support = "zpw_payment_fail_rl_support";
         public static final String zpw_loading_website_message = "zpw_loading_website_message";
         public static final String zpw_alert_error_networking_when_load_banklist = "zpw_alert_error_networking_when_load_banklist";
-        public static final String zpw_string_vcb_account_notfound_in_server = "zpw_string_vcb_account_notfound_in_server";
         public static final String zpw_string_vcb_account_in_server = "zpw_string_vcb_account_in_server";
         public static final String zpw_string_vcb_phonenumber_notfound_register = "zpw_string_vcb_phonenumber_notfound_register";
         public static final String zpw_string_vcb_phonenumber_notfound_unregister = "zpw_string_vcb_phonenumber_notfound_unregister";
         public static final String zpw_alert_networking_error_parse_website = "zpw_alert_networking_error_parse_website";
-        public static final String zpw_string_vcb_error_password = "zpw_string_vcb_error_password";
         public static final String zpw_warning_bidv_select_linkcard_payment = "zpw_warning_bidv_select_linkcard_payment";
         public static final String zpw_warning_bidv_linkcard_before_payment = "zpw_warning_bidv_linkcard_before_payment";
 
@@ -97,7 +83,6 @@ public class RS {
         public static final String dialog_linkaccount_button = "dialog_linkaccount_button";
         public static final String dialog_retry_other_channel = "dialog_retry_other_channel";
         public static final String zpw_warning_vietcombank_linkcard_before_payment = "zpw_warning_vietcombank_linkcard_before_payment";
-        public static final String zpw_warning_vietcombank_select_linkcard_payment = "zpw_warning_vietcombank_select_linkcard_payment";
 
         public static final String zpw_warning_vietcombank_linkbankaccount_not_linkcard = "zpw_warning_vietcombank_linkbankaccount_not_linkcard";
 
@@ -228,18 +213,15 @@ public class RS {
 
         public static final String zingpaysdk_alert_transition_screen = "zingpaysdk_alert_transition_screen";
 
-        public static final String zpw_save_credit_card = "zpw_save_credit_card";
-        public static final String zpw_save_credit_card_atm = "zpw_save_credit_card_atm";
-        public static final String zpw_save_credit_card_default = "zpw_save_credit_card_default";
+        public static final String sdk_creditcard_label = "sdk_creditcard_label";
+        public static final String sdk_card_default_label = "sdk_card_default_label";
+        public static final String sdk_card_generic_label = "sdk_card_generic_label";
 
         public static final String zpw_string_bank_maintenance = "zpw_string_bank_maintenance";
         public static final String zpw_string_channel_maintenance = "zpw_string_channel_maintenance";
 
         public static final String zpw_string_get_card_info_processing = "zpw_string_get_card_info_processing";
-
         public static final String zingpaysdk_alert_processing_check_app_info = "zingpaysdk_alert_processing_check_app_info";
-        public static final String zingpaysdk_alert_processing_loading_resource = "zingpaysdk_alert_processing_loading_resource";
-
         public static final String zingpaysdk_alert_network_error = "zingpaysdk_alert_network_error";
         public static final String zpw_alert_networking_off_in_transaction = "zpw_alert_networking_off_in_transaction";
         public static final String sdk_alert_networking_off_in_link_account = "sdk_alert_networking_off_in_link_account";
@@ -277,7 +259,6 @@ public class RS {
 
         public static final String zingpaysdk_alert_network_error_download_resource = "zingpaysdk_alert_network_error_download_resource";
 
-        public static final String zpw_conf_wallet_linkcard_desc = "zpw_conf_wallet_linkcard_desc";
         public static final String zingpaysdk_invalid_app_amount = "zingpaysdk_invalid_app_amount";
         public static final String zingpaysdk_missing_mac_info = "zingpaysdk_missing_mac_info";
         public static final String zalopay_invalid_app_id = "zalopay_invalid_app_id";
@@ -310,15 +291,10 @@ public class RS {
         public static final String zpw_string_credit_card_link = "zpw_string_credit_card_link";
         public static final String zpw_string_zalopay_wallet_method_name = "zpw_string_zalopay_wallet_method_name";
 
-        public static final String zpw_string_card_number_hint = "zpw_string_card_number_hint";
-        public static final String zpw_string_card_name_hint = "zpw_string_card_name_hint";
-
         public static final String zpw_string_card_not_support = "zpw_string_card_not_support";
 
         public static final String zpw_string_payment_currency_label = "zpw_string_payment_currency_label";
 
-
-        public static final String zpw_string_hidden_character = "zpw_string_hidden_character";
         public static final String zpw_string_title_header_pay_result = "zpw_string_title_header_pay_result";
 
         public static final String zpw_string_not_enough_money_wallet = "zpw_string_not_enough_money_wallet";
@@ -335,9 +311,7 @@ public class RS {
 
         public static final String zpw_button_submit_text = "zpw_button_submit_text";
 
-        public static final String zpw_string_save_card_error = "zpw_string_save_card_error";
-        public static final String zpw_string_get_bank_account_error = "zpw_string_get_bank_account_error";
-
+        public static final String sdk_load_card_error = "sdk_load_card_error";
         public static final String zpw_string_number_retry = "zpw_string_number_retry";
         public static final String zpw_string_alert_over_retry_otp = "zpw_string_alert_over_retry_otp";
         public static final String zpw_string_number_load_web_retry = "zpw_string_number_load_web_retry";
@@ -377,13 +351,6 @@ public class RS {
         public static final String dialog_turn_on = "dialog_turn_on";
         public static final String dialog_turn_off = "dialog_turn_off";
 
-        public static final String zpw_string_bankcode_viettinbank = "zpw_string_bankcode_viettinbank";
-        public static final String zpw_string_bankcode_sacombank = "zpw_string_bankcode_sacombank";
-        public static final String zpw_string_bankcode_commercialbank = "zpw_string_bankcode_commercialbank";
-        public static final String zpw_string_bankcode_vietcombank = "zpw_string_bankcode_vietcombank";
-        public static final String zpw_string_bankcode_bidv = "zpw_string_bankcode_bidv";
-        public static final String zpw_string_bankcode_eximbank = "zpw_string_bankcode_eximbank";
-
         public static final String zpw_string_bankname_visa = "zpw_string_bankname_visa";
         public static final String zpw_string_bankname_master = "zpw_string_bankname_master";
 
@@ -406,11 +373,6 @@ public class RS {
         public static final String zpw_string_vcb_wrong_times_allow = "zpw_string_vcb_wrong_times_allow";
         public static final String zpw_int_vcb_num_times_allow_login_wrong = "zpw_int_vcb_num_times_allow_login_wrong";
 
-        // auto-fill otp
-        public static final String zpw_string_vcb_otp_sender = "zpw_string_vcb_otp_sender";
-        public static final String zpw_int_vcb_otp_size = "zpw_int_vcb_otp_size";
-        public static final String zpw_string_vcb_otp_identify = "zpw_string_vcb_otp_identify";
-        public static final String zpw_string_vcb_otp_prefixOtp = "zpw_string_vcb_otp_prefixOtp";
         public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
         public static final String zpw_string_number_retry_captcha = "zpw_string_number_retry_captcha";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
@@ -480,11 +442,5 @@ public class RS {
         public static final String ic_next = "ic_next.png";
         public static final String ic_bank_support_help = "ic_bank_support_help.png";
 
-    }
-
-    public static final class styleable {
-    }
-
-    public static final class color {
     }
 }

@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -41,5 +43,11 @@ public class ApplicationModule {
     @Singleton
     public SharedPreferencesManager providerSharePreferenceManager(Context pContext) {
         return SharedPreferencesManager.shared(pContext);
+    }
+
+    @Provides
+    @Singleton
+    public EventBus provideEventBus() {
+        return EventBus.getDefault();
     }
 }

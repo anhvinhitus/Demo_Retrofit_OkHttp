@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkSmsMessage;
 
 /***
  * sms otp is comming
@@ -29,15 +29,15 @@ public class SmsReceiver extends BroadcastReceiver {
 
         SmsMessage sms = messages[0];
         if (sms == null) {
-            throw new Exception("===sms=NULL");
+            throw new Exception("Nội dung tin nhắn trống");
         }
         sender = sms.getOriginatingAddress();//shared numberphone
-        Log.d("SmsReceiver", "sender:" + sender);
+        Log.d("SmsReceiver", "sender", sender);
 
         try {
             if (messages.length == 1 || sms.isReplace()) {
                 body = sms.getDisplayMessageBody();
-                Log.d("SmsReceiver", "content sms: " + body);
+                Log.d("SmsReceiver", "content sms", body);
             } else {
                 //if sms has length over 160,it's devided by multipart to send
                 StringBuilder bodyText = new StringBuilder();
@@ -45,7 +45,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     bodyText.append(message.getMessageBody());
                 }
                 body = bodyText.toString();
-                Log.d("SmsReceiver", "content sms: " + body);
+                Log.d("SmsReceiver", "content sms", body);
             }
 
             if (!TextUtils.isEmpty(body)) {
@@ -53,10 +53,10 @@ public class SmsReceiver extends BroadcastReceiver {
                 SdkSmsMessage smsEventMessage = new SdkSmsMessage();
                 smsEventMessage.sender = sender;
                 smsEventMessage.message = body;
-                PaymentEventBus.shared().postSticky(smsEventMessage);
+                SDKApplication.getApplicationComponent().eventBus().post(smsEventMessage);
             }
         } catch (Exception e) {
-            Log.e("SmsReceiver", e != null ? e.getMessage() : "error");
+            Log.e("SmsReceiver", e);
         }
     }
 

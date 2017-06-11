@@ -11,7 +11,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.merchant.strategy.TaskBase;
 
 /**
  * This class is used to manage all static instance
@@ -46,7 +45,6 @@ public class SingletonLifeCircleManager {
 
     public static synchronized void disposeMerchant() {
         dispose(CShareData.class);
-        disposeNoStaticObject(TaskBase.class);
     }
 
     public static synchronized void disposeDataRepository() {

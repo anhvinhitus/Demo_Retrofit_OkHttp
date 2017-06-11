@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.interactor;
 
+import java.util.List;
+
 import rx.Observable;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -13,6 +15,10 @@ public interface IAppInfo {
     void setExpireTime(long appId, long expireTime);
 
     MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
+
+    Observable<AppInfo> get(long appid);
+
+    List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
 
     Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime);
 }

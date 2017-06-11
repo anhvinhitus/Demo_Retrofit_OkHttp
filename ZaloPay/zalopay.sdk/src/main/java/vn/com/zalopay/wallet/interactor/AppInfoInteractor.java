@@ -2,17 +2,19 @@ package vn.com.zalopay.wallet.interactor;
 
 import android.text.TextUtils;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
@@ -31,8 +33,18 @@ public class AppInfoInteractor implements IAppInfo {
     }
 
     @Override
+    public List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType) {
+        return this.mAppInfoRepository.getLocalStorage().getPmcTranstypeKeyList(pAppID, pTransType);
+    }
+
+    @Override
     public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
         return this.mAppInfoRepository.getLocalStorage().getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
+    }
+
+    @Override
+    public Observable<AppInfo> get(long appid) {
+        return this.mAppInfoRepository.getLocalStorage().get(appid);
     }
 
     /***
@@ -52,12 +64,13 @@ public class AppInfoInteractor implements IAppInfo {
         Observable<AppInfo> appInfoOnCache = mAppInfoRepository
                 .getLocalStorage()
                 .get(appid)
+                .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<AppInfo> appInfoOnCloud = mAppInfoRepository
                 .fetchCloud(appid, userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
                 .flatMap(mapResult(appid));
-        return Observable.concat(appInfoOnCache, appInfoOnCloud).first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime))
-                .compose(SchedulerHelper.applySchedulers());
+        return Observable.concat(appInfoOnCache, appInfoOnCloud)
+                .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));
     }
 
     protected Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {

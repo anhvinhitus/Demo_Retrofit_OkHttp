@@ -16,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
@@ -37,7 +38,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
@@ -154,6 +155,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         params.accessToken = mUser.accesstoken;
         params.userID = String.valueOf(mUser.zaloPayId);
         params.mapCard = mapCard;
+        params.appVersion = BuildConfig.VERSION_NAME;
 
         SDKApplication.removeCardMap(params, new RemoveMapCardListener());
     }
@@ -165,7 +167,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mPaymentWrapper.unlinkAccount(mView.getActivity(), bankAccount.bankcode);
     }
 
-    void removeLinkedBank(DBaseMap item) {
+    void removeLinkedBank(BaseMap item) {
         if (item instanceof MapCard) {
             removeLinkedCard((MapCard) item);
         } else if (item instanceof BankAccount) {
@@ -173,8 +175,8 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    /*private List<DBaseMap> getFakeData() {
-        List<DBaseMap> linkedBankList = new ArrayList<>();
+    /*private List<BaseMap> getFakeData() {
+        List<BaseMap> linkedBankList = new ArrayList<>();
 
         MapCard visaCard = new MapCard();
         visaCard.first6cardno = "445093";
@@ -222,7 +224,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }*/
 
     void getLinkedBank() {
-        List<DBaseMap> linkedBankList = new ArrayList<>();
+        List<BaseMap> linkedBankList = new ArrayList<>();
         List<MapCard> linkedCardList = CShareDataWrapper.getMappedCardList(mUser);
         List<BankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(mUser);
 
@@ -354,7 +356,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    private void showConfirmPayAfterLinkBank(DBaseMap bankInfo) {
+    private void showConfirmPayAfterLinkBank(BaseMap bankInfo) {
         if (mView == null) {
             return;
         }
@@ -365,7 +367,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mView.showConfirmDialogAfterLinkBank(message);
     }
 
-    private void showConfirmWithdrawAfterLinkBank(DBaseMap bankInfo) {
+    private void showConfirmWithdrawAfterLinkBank(BaseMap bankInfo) {
         if (mView == null) {
             return;
         }
@@ -426,7 +428,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    private void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+    private void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
         if (bankInfo == null) {
             return;
         }
@@ -456,7 +458,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
 
         @Override
-        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
             if (mWeakReference.get() == null) {
                 return;
             }

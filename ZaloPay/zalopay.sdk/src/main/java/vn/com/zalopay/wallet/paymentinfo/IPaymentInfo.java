@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.paymentinfo;
 
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -24,7 +24,7 @@ public interface IPaymentInfo {
 
     LinkAccInfo getLinkAccoutInfo(); // info about link/unlink bank account
 
-    DBaseMap getMapBank();
+    BaseMap getMapBank();
 
     int[] getForceChannels();
 
@@ -35,7 +35,7 @@ public interface IPaymentInfo {
     @PaymentStatus
     int getPaymentStatus();
 
-    void setMapBank(DBaseMap mapBank);
+    void setMapBank(BaseMap mapBank);
 
     void setMapCard(DMapCardResult mapCard);
 }

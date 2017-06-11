@@ -37,9 +37,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SdkSmsMessage;
-import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
+import vn.com.zalopay.wallet.event.SdkSmsMessage;
+import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
@@ -322,7 +321,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     initChannel();
                 }
                 long appId = BuildConfig.ZALOAPP_ID;
-                checkAppInfo(appId, TransactionType.LINK, userInfo.zalopay_userid, userInfo.accesstoken);
+                loadAppInfo(appId, TransactionType.LINK, userInfo.zalopay_userid, userInfo.accesstoken);
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
@@ -390,11 +389,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         setContentView(RS.getLayout(layoutResID));
-        try {
-            showApplicationInfo();
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
         try {
             showAmount();
             showDisplayInfo();
@@ -750,7 +744,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && mAdapter.isCardFlow()) {
             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
-        PaymentEventBus.shared().removeStickyEvent(SdkUnlockScreenMessage.class);
+        mBus.removeStickyEvent(SdkUnlockScreenMessage.class);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -760,7 +754,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
             getAdapter().autoFillOtp(sender, body);
         }
-        PaymentEventBus.shared().removeStickyEvent(SdkSmsMessage.class);
+        mBus.removeStickyEvent(SdkSmsMessage.class);
         Log.d(this, "on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
     }
 }

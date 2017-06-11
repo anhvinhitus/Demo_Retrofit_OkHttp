@@ -10,10 +10,10 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
@@ -26,7 +26,6 @@ import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
@@ -159,6 +158,10 @@ public class SDKPayment {
     }
 
     private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
+        BankConfig bankConfig = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(paymentInfoHelper.getLinkAccBankCode());
         //1 zalopay user has only 1 vcb account
         if (paymentInfoHelper.isBankAccountTrans()
                 && paymentInfoHelper.bankAccountLink()
@@ -192,10 +195,10 @@ public class SDKPayment {
         }
 
         //check maintenance link bank account
-        else if (paymentInfoHelper.isBankAccountTrans() && BankLoader.getInstance().isBankMaintenance(paymentInfoHelper.getLinkAccBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
+        else if (paymentInfoHelper.isBankAccountTrans() && bankConfig != null && bankConfig.isBankMaintenence(BankFunctionCode.LINK_BANK_ACCOUNT)) {
             DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                     GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                    BankLoader.getInstance().maintenanceBank.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT), pIndex -> {
+                    bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT), pIndex -> {
                         paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
                         if (GlobalData.getPaymentListener() != null) {
                             GlobalData.getPaymentListener().onComplete();
@@ -235,7 +238,7 @@ public class SDKPayment {
         if (pmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
         } else {
-            PaymentEventBus.shared().postSticky(paymentInfoHelper);
+            SDKApplication.getApplicationComponent().eventBus().postSticky(paymentInfoHelper);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pOwner.startActivity(intent);
         }

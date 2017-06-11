@@ -14,7 +14,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -22,8 +21,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
+import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private static DataRepository _object;
@@ -108,7 +106,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
             SdkNetworkEventMessage networkEventMessage = new SdkNetworkEventMessage();
             networkEventMessage.origin = Constants.API_ORIGIN;
-            PaymentEventBus.shared().post(networkEventMessage);
+            SDKApplication.getApplicationComponent().eventBus().post(networkEventMessage);
             return true;
         }
         return false;

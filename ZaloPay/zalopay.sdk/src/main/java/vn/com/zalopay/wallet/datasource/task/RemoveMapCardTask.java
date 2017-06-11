@@ -1,8 +1,7 @@
 package vn.com.zalopay.wallet.datasource.task;
 
-import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.functions.Action1;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -13,9 +12,9 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
-import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 
 public class RemoveMapCardTask extends BaseTask<BaseResponse> {
@@ -33,19 +32,15 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
         userInfo.zalopay_userid = mMapCardParams.userID;
         userInfo.accesstoken = mMapCardParams.accessToken;
 
-        MapCardHelper.loadMapCardList(true, userInfo)
-                .subscribeOn(Schedulers.io())
+        SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getCards(mMapCardParams.userID, mMapCardParams.accessToken, true, mMapCardParams.appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<BaseResponse>() {
+                .subscribe(aBoolean -> callbackSuccessToMerchant(), new Action1<Throwable>() {
                     @Override
-                    public void onSuccess(BaseResponse response) {
-                        callbackSuccessToMerchant();
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        onRequestFail(error);
-                        Log.d(this, error);
+                    public void call(Throwable throwable) {
+                        onRequestFail(throwable);
+                        Log.d(this, throwable);
                     }
                 });
     }
@@ -67,7 +62,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
             onRequestFail(null);
         } else if (pResponse.returncode >= 0) {
             try {
-                SharedPreferencesManager.getInstance().removeMappedCard(mMapCardParams.userID + Constants.COMMA + mMapCardParams.mapCard.getCardKey(mMapCardParams.userID));
+                SharedPreferencesManager.getInstance().removeMappedCard(mMapCardParams.userID + Constants.COMMA + mMapCardParams.mapCard.getKey());
                 reloadMapCardList();//reload map card list to refresh checksum and map list on cache
             } catch (Exception e) {
                 Log.e(this, e);

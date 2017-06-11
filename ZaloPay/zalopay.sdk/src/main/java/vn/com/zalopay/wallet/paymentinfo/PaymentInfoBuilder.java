@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.paymentinfo;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -24,7 +24,7 @@ public final class PaymentInfoBuilder implements IBuilder {
     public LinkAccInfo link_acc_info; // info about link/unlink bank account
     public int[] forceChannelIds;// force user go to 1 channel
     public PaymentLocation mLocation; // user location payment
-    public DBaseMap mapBank; //info about map bank after user payment success
+    public BaseMap mapBank; //info about map bank after user payment success
     public DMapCardResult mapCardResult;//notify about card map success in payment
 
     @Override
@@ -77,12 +77,12 @@ public final class PaymentInfoBuilder implements IBuilder {
     }
 
     @Override
-    public DBaseMap getMapBank() {
+    public BaseMap getMapBank() {
         return mapBank;
     }
 
     @Override
-    public IBuilder setMapBank(DBaseMap mapBank) {
+    public IBuilder setMapBank(BaseMap mapBank) {
         this.mapBank = mapBank;
         return this;
     }

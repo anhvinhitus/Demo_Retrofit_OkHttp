@@ -10,7 +10,6 @@ import com.facebook.react.bridge.Promise;
 import java.util.Map;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 
 /**
  * Created by AnhHieu on 6/21/16.

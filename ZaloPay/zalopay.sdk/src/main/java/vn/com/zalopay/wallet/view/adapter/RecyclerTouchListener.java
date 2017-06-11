@@ -6,8 +6,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 
 public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
     private GestureDetector gestureDetector;
@@ -22,7 +22,9 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
             @Override
             public void onLongPress(MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                PaymentEventBus.shared().post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
+                SDKApplication.getApplicationComponent()
+                        .eventBus()
+                        .post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
             }
         });
     }
@@ -31,7 +33,9 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
     public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
         View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
         if (child != null && gestureDetector.onTouchEvent(e)) {
-            PaymentEventBus.shared().post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
+            SDKApplication.getApplicationComponent()
+                    .eventBus()
+                    .post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
         }
         return false;
     }

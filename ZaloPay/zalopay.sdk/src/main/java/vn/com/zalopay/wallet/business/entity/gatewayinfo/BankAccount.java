@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import android.text.TextUtils;
 
-public class BankAccount extends DBaseMap {
+public class BankAccount extends BaseMap {
     public String firstaccountno = null;
     public String lastaccountno = null;
 
@@ -33,8 +33,8 @@ public class BankAccount extends DBaseMap {
     }
 
     @Override
-    public String getCardKey(String pUserId) {
-        return pUserId + bankcode;
+    public String getKey() {
+        return firstaccountno + lastaccountno;
     }
 
     @Override

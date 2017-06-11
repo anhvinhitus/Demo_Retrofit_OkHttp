@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by longlv on 5/29/17.
- * Wrapper DBaseMap
+ * Wrapper BaseMap
  */
 
 public class BankInfo implements Parcelable {

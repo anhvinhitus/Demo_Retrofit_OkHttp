@@ -1,14 +1,8 @@
 package vn.com.zalopay.wallet.business.error;
 
-import android.text.TextUtils;
 import android.util.SparseArray;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.controller.SDKPayment;
-import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 /***
  * error code map table
@@ -82,31 +76,5 @@ public class ErrorManager {
                 || status == PaymentStatus.MONEY_NOT_ENOUGH
                 || status == PaymentStatus.INVALID_DATA
                 || status == PaymentStatus.SERVICE_MAINTENANCE;
-    }
-
-    public static void updateTransactionResult(PaymentInfoHelper paymentInfoHelper, int pReturnCode) {
-        try {
-            if (!TextUtils.isEmpty(mErrorLoginArray.get(pReturnCode))) {
-                paymentInfoHelper.setResult(PaymentStatus.TOKEN_EXPIRE);
-            }
-            if (!TextUtils.isEmpty(mErrorAccountArray.get(pReturnCode))) {
-                paymentInfoHelper.setResult(PaymentStatus.USER_LOCK);
-            }
-            if (PaymentStatusHelper.isNeedToChargeMoreMoney(pReturnCode)) {
-                paymentInfoHelper.setResult(PaymentStatus.MONEY_NOT_ENOUGH);
-            } else if (PaymentStatusHelper.isTransactionProcessing(pReturnCode)) {
-                paymentInfoHelper.setResult(PaymentStatus.PROCESSING);
-            } else if (PaymentStatusHelper.isNeedToUpgradeLevelUser(pReturnCode)) {
-                paymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-            } else if (PaymentStatusHelper.isServerInMaintenance(pReturnCode)) {
-                paymentInfoHelper.setResult(PaymentStatus.SERVICE_MAINTENANCE);
-            } else {
-                if (!TextUtils.isEmpty(mErrorArray.get(pReturnCode))) {
-                    paymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("updateTransactionResult", e);
-        }
     }
 }

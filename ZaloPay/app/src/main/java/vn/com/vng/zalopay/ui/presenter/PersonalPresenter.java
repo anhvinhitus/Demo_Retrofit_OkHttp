@@ -43,7 +43,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 /**
@@ -279,12 +279,12 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
     private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
         @Override
-        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
             handleErrorLinkCardButInputBankAccount(bankInfo);
         }
     }
 
-    private void handleErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+    private void handleErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
         if (bankInfo == null) {
             return;
         }

@@ -21,7 +21,6 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 /**
@@ -61,10 +60,6 @@ public class CShareDataWrapper {
         return CShareData.getInstance().detectCardType(first6CardNo);
     }
 
-    public static void getWithDrawBankList(IGetWithDrawBankList listener) {
-        CShareData.getInstance().getWithDrawBankList(listener);
-    }
-
     public static Maintenance getWithdrawMaintenance() {
         return CShareData.getInstance().getWithdrawMaintenance();
     }
@@ -101,21 +96,6 @@ public class CShareDataWrapper {
         return CShareData.getInstance().getMaxWithDrawValue();
     }
 
-    public static void reloadMapCardList(String last4cardno, String first6cardno, User user, IReloadMapInfoListener listener) {
-        if (user == null) {
-            return;
-        }
-
-        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
-        params.userID = user.zaloPayId;
-        params.accessToken = user.accesstoken;
-        MapCard card = new MapCard();
-        card.last4cardno = last4cardno;
-        card.first6cardno = first6cardno;
-        params.mapCard = card;
-        CShareData.getInstance().reloadMapCardList(params, listener);
-    }
-
     public static void pushNotificationToSdk(User user, int notificationType, String message) {
         if (user == null
                 || TextUtils.isEmpty(user.zaloPayId)
@@ -128,20 +108,20 @@ public class CShareDataWrapper {
         userInfo.accesstoken = user.accesstoken;
 
         CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
-                        new IReloadMapInfoListener<BankAccount>() {
-                            @Override
-                            public void onComplete(List<BankAccount> pMapList) {
-                                Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
-                                EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
-                            }
+                new IReloadMapInfoListener<BankAccount>() {
+                    @Override
+                    public void onComplete(List<BankAccount> pMapList) {
+                        Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
+                    }
 
-                            @Override
-                            public void onError(String pErrorMess) {
-                                Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
-                                        notificationType, pErrorMess);
-                                EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
-                            }
-                        }, userInfo);
+                    @Override
+                    public void onError(String pErrorMess) {
+                        Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
+                                notificationType, pErrorMess);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
+                    }
+                }, userInfo);
     }
 
     public static void notifyTransactionFinish(Object... pObject) {

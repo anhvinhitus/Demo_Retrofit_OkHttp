@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.business.data.Log;
 
 /***
@@ -16,9 +16,9 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(this, "===networking is changing===");
+        Log.d(this, "networking is changing");
         SdkNetworkEventMessage networkEventMessage = new SdkNetworkEventMessage();
         networkEventMessage.origin = Constants.RECEIVER_ORIGIN;
-        PaymentEventBus.shared().post(networkEventMessage);
+        SDKApplication.getApplicationComponent().eventBus().post(networkEventMessage);
     }
 }

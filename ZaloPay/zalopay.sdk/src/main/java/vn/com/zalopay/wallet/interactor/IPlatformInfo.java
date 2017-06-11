@@ -13,6 +13,20 @@ public interface IPlatformInfo {
 
     void clearBankAccountMapCheckSum();
 
+    long getExpireTime();
+
+    String getCheckSum();
+
+    String getUserId();
+
+    String getUnzipPath();
+
+    String getResourceDownloadUrl();
+
+    String getResourceVersion();
+
+    boolean isValidConfig();
+
     /***
      * Platform info expire time,unix time to exprired time (in milisecond)
      * After this expire time, client need hit to server again
@@ -20,5 +34,5 @@ public interface IPlatformInfo {
      */
     long getPlatformInfoDurationExpire();
 
-    Observable<PlatformInfoCallback> loadPlatformInfoCloud(String userId, String accessToken, boolean forceReload, boolean downloadResource, long currentTime, String appVersion);
+    Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean downloadResource, long currentTime, String appVersion);
 }

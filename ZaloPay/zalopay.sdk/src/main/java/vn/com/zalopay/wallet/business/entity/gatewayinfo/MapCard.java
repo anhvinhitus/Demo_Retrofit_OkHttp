@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 
-public class MapCard extends DBaseMap {
+public class MapCard extends BaseMap {
     public String cardname;
     public String first6cardno;
     public String last4cardno;
@@ -40,7 +40,7 @@ public class MapCard extends DBaseMap {
     }
 
     @Override
-    public String getCardKey(String pUserId) {
+    public String getKey() {
         return first6cardno + last4cardno;
     }
 
