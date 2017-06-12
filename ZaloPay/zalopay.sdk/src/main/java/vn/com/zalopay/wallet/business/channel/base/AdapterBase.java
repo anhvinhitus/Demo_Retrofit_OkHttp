@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.business.channel.base;
 import android.app.DialogFragment;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
+import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
@@ -924,6 +925,7 @@ public abstract class AdapterBase {
                 });
         UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
         bottomSheetDialog.show();
+        bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
         return false;
     }
 

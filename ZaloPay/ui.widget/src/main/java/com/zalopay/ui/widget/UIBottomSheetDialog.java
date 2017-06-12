@@ -6,10 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
-import android.util.Log;
 import android.view.View;
-
-import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
 
 public class UIBottomSheetDialog extends BottomSheetDialog {
     private IRender mRender;
@@ -31,9 +28,13 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
         });
     }
 
+    public void setState(int state) {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
+        bottomSheetBehavior.setState(state);
+    }
+
     private void configureBottomSheetBehavior(BottomSheetBehavior pBottomSheetBehavior) {
         if (pBottomSheetBehavior != null) {
-            pBottomSheetBehavior.setState(STATE_EXPANDED);
             pBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
