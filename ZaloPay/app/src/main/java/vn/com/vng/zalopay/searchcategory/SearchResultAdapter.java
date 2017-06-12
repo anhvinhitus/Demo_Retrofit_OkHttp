@@ -74,8 +74,7 @@ class SearchResultAdapter extends EpoxyAdapter {
                 models.addAll(listApp);
             }
         }
-
-        if (friendList.size() != 0) {
+        /*if (friendList.size() != 0) {
             listFriend = friendTransform(friendList);
 
             models.add(new SectionTitleModel(context.getResources().getString(R.string.search_friend)));
@@ -87,7 +86,7 @@ class SearchResultAdapter extends EpoxyAdapter {
             } else {
                 models.addAll(listFriend);
             }
-        }
+        }*/
 
         notifyModelsChanged();
     }
