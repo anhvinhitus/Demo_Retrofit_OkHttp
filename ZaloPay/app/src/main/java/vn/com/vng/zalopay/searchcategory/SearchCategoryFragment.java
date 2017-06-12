@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -59,6 +60,9 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     @BindView(R.id.layoutNoResultFound)
     View layoutNoResult;
 
+    @BindView(R.id.search_result_emty)
+    TextView mTextSearchEmty;
+
     @Inject
     SearchCategoryPresenter mPresenter;
 
@@ -70,6 +74,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     private GridLayoutManager mGridLayoutManager;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
+    private ZPEditText edtSearch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +102,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         
         mSearchIcon = (IconFont) getActivity().findViewById(R.id.ifSearch);
         mSearchIcon.setIcon(R.string.general_search);
-        ZPEditText edtSearch = (ZPEditText) getActivity().findViewById(R.id.edtSearch);
+        edtSearch = (ZPEditText) getActivity().findViewById(R.id.edtSearch);
         edtSearch.addTextChangedListener(this);
     }
 
@@ -188,6 +193,8 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         if (noResult) {
             mRecyclerView.setVisibility(View.GONE);
             layoutNoResult.setVisibility(View.VISIBLE);
+            String message = getString(R.string.search_no_result,edtSearch.getText());
+            mTextSearchEmty.setText(message);
             return;
         }
 

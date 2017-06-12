@@ -9,10 +9,17 @@
     android:padding="@dimen/spacing.medium">
 
     <TextView
+        android:id="@+id/search_result_emty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:drawablePadding="28dp"
-        android:drawableTop="@drawable/webapp_ic_noload"
-        android:text="@string/search_no_result" />
+        android:textSize="@dimen/font_size_xlarge"
+        android:drawableTop="@drawable/search_emty" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing.medium"
+        android:gravity="center"
+        android:text="@string/search_no_result_description" />
 </LinearLayout>
