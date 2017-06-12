@@ -101,7 +101,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
         if (getUseDeveloperSupport() && Build.VERSION.SDK_INT >= 23) {
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getActivity())) {
@@ -242,28 +242,39 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (mReactInstanceManager != null &&
-                mReactInstanceManager.getDevSupportManager().getDevSupportEnabled()) {
-            if (keyCode == KeyEvent.KEYCODE_MENU) {
-                mReactInstanceManager.showDevOptionsDialog();
+        if (mReactInstanceManager != null) {
+            if (mReactInstanceManager.getDevSupportManager().getDevSupportEnabled()) {
+                if (keyCode == KeyEvent.KEYCODE_MENU) {
+                    mReactInstanceManager.showDevOptionsDialog();
+                    return true;
+                }
+                if (keyCode == KeyEvent.KEYCODE_R && !(getActivity().getCurrentFocus() instanceof EditText)) {
+                    // Enable double-tap-R-to-reload
+                    if (mDoRefresh) {
+                        mReactInstanceManager.getDevSupportManager().handleReloadJS();
+                        mDoRefresh = false;
+                    } else {
+                        mDoRefresh = true;
+                        new Handler().postDelayed(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDoRefresh = false;
+                                    }
+                                },
+                                200);
+                    }
+                    return true;
+                }
+            }
+
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                mReactInstanceManager.onBackPressed();
                 return true;
             }
-            if (keyCode == KeyEvent.KEYCODE_R && !(getActivity().getCurrentFocus() instanceof EditText)) {
-                // Enable double-tap-R-to-reload
-                if (mDoRefresh) {
-                    mReactInstanceManager.getDevSupportManager().handleReloadJS();
-                    mDoRefresh = false;
-                } else {
-                    mDoRefresh = true;
-                    new Handler().postDelayed(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    mDoRefresh = false;
-                                }
-                            },
-                            200);
-                }
+        } else {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                invokeDefaultOnBackPressed();
                 return true;
             }
         }
