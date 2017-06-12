@@ -162,8 +162,10 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
 
                 if (view.canGoBack()) {
                     mView.showBackButton();
+                    mView.setHiddenTabBar(true);
                 } else {
                     mView.hideBackButton();
+                    mView.setHiddenTabBar(false);
                 }
             }
         });

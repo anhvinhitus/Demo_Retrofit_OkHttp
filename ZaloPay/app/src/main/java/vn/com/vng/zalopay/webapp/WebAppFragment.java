@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
@@ -27,6 +28,7 @@ import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -36,11 +38,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  * Created by chucvv on 8/28/16.
  * WebAppFragment
  */
-public class WebAppFragment extends BaseFragment
-        implements
-            IWebViewListener,
-            IWebAppView
-{
+public class WebAppFragment extends BaseFragment implements IWebViewListener, IWebAppView {
 
     public static WebAppFragment newInstance(Bundle bundle) {
         WebAppFragment fragment = new WebAppFragment();
@@ -62,6 +60,7 @@ public class WebAppFragment extends BaseFragment
     private View mLayoutRetry;
     private ImageView mErrorImageView;
     private TextView mErrorTextView;
+    private ShareActionProvider mShareActionProvider;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -194,7 +193,7 @@ public class WebAppFragment extends BaseFragment
 
     @Override
     public void showBackButton() {
-        if(btnBack == null) {
+        if (btnBack == null) {
             return;
         }
 
@@ -203,11 +202,20 @@ public class WebAppFragment extends BaseFragment
 
     @Override
     public void hideBackButton() {
-        if(btnBack == null) {
+        if (btnBack == null) {
             return;
         }
 
         btnBack.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setHiddenTabBar(boolean hide) {
+        AndroidUtils.runOnUIThread(() -> {
+            if (getActivity() instanceof HomeActivity) {
+                ((HomeActivity) getActivity()).setHiddenTabbar(hide);
+            }
+        });
     }
 
     public void showError(String message) {
@@ -247,7 +255,7 @@ public class WebAppFragment extends BaseFragment
     }
 
     public boolean onBackPressed() {
-        return mPresenter.onBackPressed() || super.onBackPressed();
+        return mPresenter.onBackPressed();
     }
 
     @Override
