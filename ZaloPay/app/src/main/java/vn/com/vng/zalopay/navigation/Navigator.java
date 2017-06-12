@@ -249,7 +249,7 @@ public class Navigator implements INavigator {
                 }
             }
         }
-        Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<String, String>());
+        Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<>());
         activity.startActivity(intent);
     }
 
@@ -620,15 +620,8 @@ public class Navigator implements INavigator {
     }
 
     public void startTransactionHistoryList(Context context) {
-        if (!mUserConfig.hasCurrentUser()) {
-            return;
-        }
-        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
-        if (shouldShowPinDialog()) {
-            showPinDialog(context, intent);
-        } else {
-            context.startActivity(intent);
-        }
+        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<>());
+        context.startActivity(intent);
     }
 
     public void startTermActivity(Context context) {
