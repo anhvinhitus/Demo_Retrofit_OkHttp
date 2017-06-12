@@ -55,6 +55,12 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
+    public void remove(long id) {
+        TransactionLog transactionLog = queryTransactionById(id);
+        getDaoSession().getTransactionLogDao().delete(transactionLog);
+    }
+
+    @Override
     public boolean isHaveTransactionInDb() {
         return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
     }
@@ -218,34 +224,6 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public boolean isLoadedTransactionFail() {
         return getDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_FAIL, 0) == 1;
-    }
-
-    @Override
-    public long getLatestTimeTransaction(int statusType) {
-        long timeUpdate = 0;
-        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
-                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
-                .orderDesc(TransactionLogDao.Properties.Reqdate)
-                .limit(1).list();
-        if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = ConvertHelper.unboxValue(log.get(0).reqdate, 0);
-        }
-        Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
-        return timeUpdate;
-    }
-
-    @Override
-    public long getOldestTimeTransaction(int statusType) {
-        long timeUpdate = 0;
-        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
-                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
-                .orderAsc(TransactionLogDao.Properties.Reqdate)
-                .limit(1).list();
-        if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = ConvertHelper.unboxValue(log.get(0).reqdate, 0);
-        }
-        Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
-        return timeUpdate;
     }
 
     @Override

@@ -26,6 +26,8 @@ public interface TransactionStore {
 
         List<TransHistoryEntity> get(int offset, int count, int statusType, long maxreqdate, long minreqdate, List<Integer> transTypes, int sign);
 
+        void remove(long id);
+
         boolean isHaveTransactionInDb();
 
         TransHistoryEntity getTransaction(long id);
@@ -39,10 +41,6 @@ public interface TransactionStore {
         boolean isLoadedTransactionSuccess();
 
         boolean isLoadedTransactionFail();
-
-        long getLatestTimeTransaction(int statusType);
-
-        long getOldestTimeTransaction(int statusType);
 
         void putBackup(@Nullable TransHistoryEntity val);
 
@@ -66,6 +64,8 @@ public interface TransactionStore {
         Observable<List<TransHistory>> getTransactionsLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
         Observable<List<TransHistory>> getTransactionsFailLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
+
+        Observable<Boolean> removeTransaction(long id);
 
         Observable<TransHistory> getTransaction(long id);
 

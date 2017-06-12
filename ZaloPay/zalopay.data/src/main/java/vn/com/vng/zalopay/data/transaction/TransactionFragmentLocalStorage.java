@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionFragmentGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionFragmentGDDao;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 
 /**
@@ -103,6 +104,34 @@ public class TransactionFragmentLocalStorage extends SqlBaseScopeImpl implements
             return null;
         }
         return transform(transDao.get(0));
+    }
+
+    @Override
+    public long getLatestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionFragmentGD> log = getDaoSession().getTransactionFragmentGDDao().queryBuilder()
+                .where(TransactionFragmentGDDao.Properties.Statustype.eq(statusType))
+                .orderDesc(TransactionFragmentGDDao.Properties.Maxreqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = ConvertHelper.unboxValue(log.get(0).maxreqdate, 0);
+        }
+        Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
+    }
+
+    @Override
+    public long getOldestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionFragmentGD> log = getDaoSession().getTransactionFragmentGDDao().queryBuilder()
+                .where(TransactionFragmentGDDao.Properties.Statustype.eq(statusType))
+                .orderDesc(TransactionFragmentGDDao.Properties.Minreqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = ConvertHelper.unboxValue(log.get(0).minreqdate, 0);
+        }
+        Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
     }
 
     @Override

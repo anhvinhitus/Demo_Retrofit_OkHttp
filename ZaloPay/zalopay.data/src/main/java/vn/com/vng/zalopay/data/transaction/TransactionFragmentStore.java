@@ -24,6 +24,10 @@ public interface TransactionFragmentStore {
 
         TransactionFragmentEntity getLatestFragment(int statustype);
 
+        long getLatestTimeTransaction(int statusType);
+
+        long getOldestTimeTransaction(int statusType);
+
         boolean isHasData(long timestamp, int statustype);
     }
 }

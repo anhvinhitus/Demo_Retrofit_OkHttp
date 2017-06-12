@@ -431,11 +431,11 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<Long> getLatestTimeTransaction(int statusType) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getLatestTimeTransaction(statusType));
+        return ObservableHelper.makeObservable(() -> mFragmentLocalStorage.getLatestTimeTransaction(statusType));
     }
 
     private Observable<Long> getOldestTimeTransaction(int statusType) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getOldestTimeTransaction(statusType));
+        return ObservableHelper.makeObservable(() -> mFragmentLocalStorage.getOldestTimeTransaction(statusType));
     }
 
     private Observable<Boolean> fetchTransactionHistoryOldestSuccess(long thresholdTime) {
@@ -478,6 +478,14 @@ public class TransactionRepository implements TransactionStore.Repository {
             long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
         return getTransactionHistoryLocal(timestamp, transTypes, offset, count, TRANSACTION_STATUS_FAIL, sign)
                 .map(entities -> Lists.transform(entities, mDataMapper::transform));
+    }
+
+    @Override
+    public Observable<Boolean> removeTransaction(long id) {
+        return ObservableHelper.makeObservable(() -> {
+            mLocalStorage.remove(id);
+            return Boolean.TRUE;
+        });
     }
 
     /**

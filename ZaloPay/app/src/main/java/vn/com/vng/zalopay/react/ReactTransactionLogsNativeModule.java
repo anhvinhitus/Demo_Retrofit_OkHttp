@@ -153,6 +153,27 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
+    public void removeTransactionWithId(String id, Promise promise) {
+
+        Timber.d("removeTransactionWithId %s", id);
+
+        long value;
+        try {
+            value = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            Timber.i("Invalid format for number: %s", id);
+            Helpers.promiseResolveError(promise, ERR_CODE_FAIL.value(), "Invalid input");
+            return;
+        }
+
+        Subscription subscription = mTransactionRepository.removeTransaction(value)
+                .map(result -> new TransactionResult(result ? ERR_CODE_SUCCESS.value() : ERR_CODE_FAIL.value(), "", Collections.emptyList()))
+                .subscribe(new TransactionLogSubscriber(promise));
+
+        mCompositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
     public void loadTransactionWithId(String id, Promise promise) {
 
         Timber.d("loadTransactionWithId %s", id);
