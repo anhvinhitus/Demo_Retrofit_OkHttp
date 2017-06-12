@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -185,6 +186,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         builder.setView(contentView);
         UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, builder.build());
         bottomSheetDialog.show();
+        bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @Override
