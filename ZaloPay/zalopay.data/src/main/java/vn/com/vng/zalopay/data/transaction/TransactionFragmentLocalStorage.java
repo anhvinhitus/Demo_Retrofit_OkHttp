@@ -125,7 +125,7 @@ public class TransactionFragmentLocalStorage extends SqlBaseScopeImpl implements
         long timeUpdate = 0;
         List<TransactionFragmentGD> log = getDaoSession().getTransactionFragmentGDDao().queryBuilder()
                 .where(TransactionFragmentGDDao.Properties.Statustype.eq(statusType))
-                .orderDesc(TransactionFragmentGDDao.Properties.Minreqdate)
+                .orderAsc(TransactionFragmentGDDao.Properties.Minreqdate)
                 .limit(1).list();
         if (!Lists.isEmptyOrNull(log)) {
             timeUpdate = ConvertHelper.unboxValue(log.get(0).minreqdate, 0);
