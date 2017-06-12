@@ -227,6 +227,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
         }
 
         internalSandbox {
@@ -244,6 +245,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/"'
         }
 
         internalStaging {
@@ -261,6 +263,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/"'
         }
 
         iapProduction {
@@ -279,6 +282,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
         }
 
         iapSandbox {
@@ -297,6 +301,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/"'
         }
 
         iapStaging {
@@ -315,6 +320,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/"'
         }
     }
 
