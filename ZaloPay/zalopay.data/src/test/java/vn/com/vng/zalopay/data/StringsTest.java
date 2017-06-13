@@ -2,15 +2,22 @@ package vn.com.vng.zalopay.data;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.internal.ArrayComparisonFailure;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.data.util.Strings;
 
 /**
  * Created by huuhoa on 7/5/16.
  */
+@RunWith(CustomRobolectricRunner.class)
+@Config(constants = BuildConfig.class, sdk = 16, application = AndroidApplicationTest.class)
 public class StringsTest {
 
     @Test
@@ -150,6 +157,66 @@ public class StringsTest {
         Assert.assertEquals("(?,?,?)", Strings.getRawQueryMultipleValue("a", "b", "c"));
         Assert.assertEquals("(?,?,?,?,?)", Strings.getRawQueryMultipleValue("a", "b", "c", "d", "d"));
         Assert.assertEquals("(?)", Strings.getRawQueryMultipleValue("a"));
+    }
+
+    @Test
+    public void testNullInputParseNameValuePair() {
+        Assert.assertNotEquals("Ensure not return null", null, Strings.parseNameValues(null));
+        ArrayList<NameValuePair> emptyList = new ArrayList<>();
+        Assert.assertArrayEquals("Ensure return empty list", emptyList.toArray(), Strings.parseNameValues(null).toArray());
+        Assert.assertArrayEquals("Ensure return empty list", emptyList.toArray(), Strings.parseNameValues("").toArray());
+    }
+
+    @Test
+    public void testInvalidInputParseNameValuePair() {
+        ArrayList<NameValuePair> emptyList = new ArrayList<>();
+        Assert.assertArrayEquals("Ensure return empty list for invalid input", emptyList.toArray(), Strings.parseNameValues("00").toArray());
+    }
+
+    @Test
+    public void testValidInputParseNameValuePair() {
+        ArrayList<NameValuePair> expected = new ArrayList<>();
+        expected.add(new NameValuePair("key", "value"));
+        ArrayList<NameValuePair> actual = Strings.parseNameValues("key:value");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+        expected = new ArrayList<>();
+        expected.add(new NameValuePair("key", "value"));
+        actual = Strings.parseNameValues("key:value\t");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+        expected = new ArrayList<>();
+        expected.add(new NameValuePair("key", "value"));
+        actual = Strings.parseNameValues("key:value\tkey1:");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+        expected = new ArrayList<>();
+        expected.add(new NameValuePair("key", "value"));
+        expected.add(new NameValuePair("key2", "v2"));
+        actual = Strings.parseNameValues("key:value\tkey1:\tkey2:v2");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+        expected = new ArrayList<>();
+        expected.add(new NameValuePair("Nhà mạng", "Viettel"));
+        expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
+        expected.add(new NameValuePair("Nạp cho", "Số của tôi - 0902167233"));
+        actual = Strings.parseNameValues("Nhà mạng:Viettel\tMệnh giá:50.000 VND\tNạp cho:Số của tôi - 0902167233");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+        expected = new ArrayList<>();
+        expected.add(new NameValuePair("Nhà mạng", "Viettel"));
+        expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
+        expected.add(new NameValuePair("Nạp cho", "Số của tôi - 0902167233:123"));
+        actual = Strings.parseNameValues("Nhà mạng  :  Viettel   \t  Mệnh giá     : 50.000 VND\tNạp cho : Số của tôi - 0902167233:123");
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+    }
+
+
+    @Test
+    public void testCompareNameValuePair() {
+        NameValuePair v1 = new NameValuePair("key", "value");
+        NameValuePair v2 = new NameValuePair("key", "value");
+        Assert.assertEquals(v1, v2);
     }
 
 }

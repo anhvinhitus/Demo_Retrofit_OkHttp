@@ -1,10 +1,16 @@
 package vn.com.vng.zalopay.data.util;
 
+import android.text.TextUtils;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
+
 
 public final class Strings {
 
@@ -143,5 +149,47 @@ public final class Strings {
             out.append(pathSegments.get(i));
         }
         return out.toString();
+    }
+
+    /**
+     * Parse input string with format
+     * ((key1:value1)\t)+
+     *
+     * Example input
+     *  Nhà mạng:Viettel\tMệnh giá:50.000 VND\tNạp cho:Số của tôi - 0902167233
+     *
+     * @param collection input string
+     * @return list of name-value pair with exact order appears in input string
+     */
+    public static ArrayList<NameValuePair> parseNameValues(String collection) {
+        if (TextUtils.isEmpty(collection)) {
+            return new ArrayList<>();
+        }
+
+        String[] pairs = collection.split("\t");
+
+        ArrayList<NameValuePair> result = new ArrayList<>();
+        for (String nameValue : pairs) {
+            int firstIndex = nameValue.indexOf(':');
+            if (firstIndex < 0) {
+                Timber.d("Skip pair without semicolon: %s", nameValue);
+                continue;
+            }
+
+            String name = nameValue.substring(0, firstIndex);
+            String value = nameValue.substring(firstIndex + 1);
+
+            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(value)) {
+                Timber.d("Skip invalid pair");
+                continue;
+            }
+
+            name = name.trim();
+            value = value.trim();
+
+            result.add(new NameValuePair(name, value));
+        }
+
+        return result;
     }
 }
