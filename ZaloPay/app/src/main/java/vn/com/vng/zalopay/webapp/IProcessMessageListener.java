@@ -22,4 +22,6 @@ interface IProcessMessageListener {
     void writeLog(String type, long time, String data);
 
     void launchApp(String packageID);
+
+    void launchInternalApp(int internalAppID);
 }

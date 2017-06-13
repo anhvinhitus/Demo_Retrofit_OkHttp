@@ -29,6 +29,16 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/promotion_title" />
+
+        <ImageView
+            android:id="@+id/promotion_btn_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/spacing.medium"
+            android:src="@android:drawable/ic_menu_share" />
+
     </RelativeLayout>
 
     <RelativeLayout

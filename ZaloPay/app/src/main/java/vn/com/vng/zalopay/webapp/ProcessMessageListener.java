@@ -11,9 +11,17 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by huuhoa on 4/20/17.
@@ -75,6 +83,15 @@ class ProcessMessageListener implements IProcessMessageListener {
     }
 
     @Override
+    public void launchInternalApp(int internalAppID) {
+        AppResource appResource = getAppResource(internalAppID);
+        if (appResource == null) {
+            appResource = new AppResource(internalAppID);
+        }
+        startExternalApp(appResource);
+    }
+
+    @Override
     public void showDialog(final int dialogType, final String title, final String message, final String buttonLabel) {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
@@ -128,5 +145,15 @@ class ProcessMessageListener implements IProcessMessageListener {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    private void startExternalApp(AppResource app) {
+        CompositeSubscription mSubscription = new CompositeSubscription();
+        Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.existResource(app.appid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new StartPaymentAppSubscriber(mWebAppPresenterWeakReference.get().mNavigator,
+                        mWebAppPresenterWeakReference.get().getActivity(), app));
+        mSubscription.add(subscription);
     }
 }

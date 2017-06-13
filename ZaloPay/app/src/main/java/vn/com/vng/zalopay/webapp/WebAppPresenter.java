@@ -19,6 +19,8 @@ import timber.log.Timber;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
@@ -45,14 +47,18 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
     private AccountStore.Repository mAccountRepository;
     private ZPTransfer mZPTransfer;
     private ZPWebViewAppProcessor mWebViewProcessor;
+    protected AppResourceStore.Repository mAppResourceRepository;
+    protected Navigator mNavigator;
     private final ProcessMessageListener mProcessMessageListener = new ProcessMessageListener(this);
 
 
     @Inject
     WebAppPresenter(AccountStore.Repository accountRepository,
-                    Navigator navigator) {
+                    Navigator navigator, AppResourceStore.Repository appResourceRepository) {
         super(navigator);
         this.mAccountRepository = accountRepository;
+        this.mAppResourceRepository = appResourceRepository;
+        this.mNavigator = navigator;
     }
 
     public void pay(JSONObject data, IPaymentListener listener) {
@@ -169,6 +175,14 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
                 }
             }
         });
+    }
+
+    public void shareContent(String url) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, url);
+        getActivity().startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
     @Override

@@ -68,12 +68,20 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @Inject
     WebAppPresenter mPresenter;
 
+    @BindView(R.id.webview)
+    ZPWebViewApp webView;
+
     @BindView(R.id.promotion_btn_back)
     IconFont btnBack;
 
     @OnClick(R.id.promotion_btn_back)
     public void onClickBack() {
         onBackPressed();
+    }
+
+    @OnClick(R.id.promotion_btn_share)
+    public void onClickShare() {
+        mPresenter.shareContent(webView.getUrl());
     }
 
     @Override
@@ -92,7 +100,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     protected void initPresenter(View view) {
         mPresenter.attachView(WebAppFragment.this);
-        ZPWebViewApp webView = (ZPWebViewApp) view.findViewById(R.id.webview);
         mPresenter.initWebView(webView);
     }
 
