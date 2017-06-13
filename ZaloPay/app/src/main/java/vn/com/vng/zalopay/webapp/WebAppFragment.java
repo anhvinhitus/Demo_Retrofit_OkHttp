@@ -11,7 +11,6 @@ import android.view.View;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
@@ -60,7 +59,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     private View mLayoutRetry;
     private ImageView mErrorImageView;
     private TextView mErrorTextView;
-    private ShareActionProvider mShareActionProvider;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -72,7 +70,13 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     ZPWebViewApp webView;
 
     @BindView(R.id.promotion_btn_back)
-    IconFont btnBack;
+    View btnBack;
+
+    @BindView(R.id.promotion_btn_share)
+    View btnShare;
+
+    @BindView(R.id.promotion_tv_title)
+    TextView tvTitle;
 
     @OnClick(R.id.promotion_btn_back)
     public void onClickBack() {
@@ -81,7 +85,8 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     @OnClick(R.id.promotion_btn_share)
     public void onClickShare() {
-        mPresenter.shareContent(webView.getUrl());
+        showBottomSheetDialog();
+//        mPresenter.shareContent(webView.getUrl());
     }
 
     @Override
@@ -196,24 +201,33 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @Override
     public void onReceivedTitle(String title) {
         getActivity().setTitle(title);
+        tvTitle.setText(title);
     }
 
     @Override
-    public void showBackButton() {
+    public void setHiddenBackButton(boolean hide) {
         if (btnBack == null) {
             return;
         }
 
-        btnBack.setVisibility(View.VISIBLE);
+        if(hide) {
+            btnBack.setVisibility(View.GONE);
+        } else {
+            btnBack.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void hideBackButton() {
-        if (btnBack == null) {
+    public void setHiddenShareButton(boolean hide) {
+        if (btnShare == null) {
             return;
         }
 
-        btnBack.setVisibility(View.GONE);
+        if(hide) {
+            btnShare.setVisibility(View.GONE);
+        } else {
+            btnShare.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

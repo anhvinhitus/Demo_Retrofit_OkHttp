@@ -24,4 +24,8 @@ interface IProcessMessageListener {
     void launchApp(String packageID);
 
     void launchInternalApp(int internalAppID);
+
+    void sendEmail();
+
+    void openDial();
 }

@@ -19,6 +19,7 @@ import timber.log.Timber;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -164,17 +165,28 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                mView.onReceivedTitle(title);
-
                 if (view.canGoBack()) {
-                    mView.showBackButton();
-                    mView.setHiddenTabBar(true);
+                    setHomeDisplayStatus(false);
                 } else {
-                    mView.hideBackButton();
-                    mView.setHiddenTabBar(false);
+                    setHomeDisplayStatus(true);
+                    title = getActivity().getString(R.string.promotion_title);
                 }
+
+                mView.onReceivedTitle(title);
             }
         });
+    }
+
+    private void setHomeDisplayStatus(boolean isHome) {
+        if(isHome) {
+            mView.setHiddenBackButton(true);
+            mView.setHiddenShareButton(true);
+            mView.setHiddenTabBar(false);
+        } else {
+            mView.setHiddenBackButton(false);
+            mView.setHiddenShareButton(false);
+            mView.setHiddenTabBar(true);
+        }
     }
 
     public void shareContent(String url) {

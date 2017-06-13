@@ -92,6 +92,8 @@ class WebAppNativeModule implements NativeModule {
                 break;
             case FUNCTION_LAUNCH_APP:
                 launchApp(data, promise);
+//                sendEmail(data, promise);
+//                openDial(data, promise);
         }
     }
 
@@ -171,6 +173,20 @@ class WebAppNativeModule implements NativeModule {
         } else if (nInternalAppID > 0) {
             mProcessMessageListener.launchInternalApp(nInternalAppID);
         }
+
+        promise.resolve(null);
+    }
+
+    // {"mailto":"hotro@zalopay.vn","cc":"","subject":"Hoàn tiền","content":"yêu cầu hoàn tiền thanh toán game"}
+    private void sendEmail(final JSONObject data, Promise promise) {
+        mProcessMessageListener.sendEmail();
+
+        promise.resolve(null);
+    }
+
+    // {"phoneto":"0908133987"}
+    private void openDial(final JSONObject data, Promise promise) {
+        mProcessMessageListener.openDial();
 
         promise.resolve(null);
     }

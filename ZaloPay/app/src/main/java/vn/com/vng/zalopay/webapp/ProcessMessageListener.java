@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.zalopay.apploader.internal.ModuleName;
+
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -17,6 +19,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -84,11 +87,36 @@ class ProcessMessageListener implements IProcessMessageListener {
 
     @Override
     public void launchInternalApp(int internalAppID) {
-        AppResource appResource = getAppResource(internalAppID);
-        if (appResource == null) {
-            appResource = new AppResource(internalAppID);
+        if (internalAppID == PaymentAppConfig.Constants.RED_PACKET) {
+            mWebAppPresenterWeakReference.get().mNavigator.startMiniAppActivity(
+                    mWebAppPresenterWeakReference.get().getActivity(), ModuleName.RED_PACKET);
+        } else if (internalAppID == PaymentAppConfig.Constants.TRANSFER_MONEY) {
+            mWebAppPresenterWeakReference.get().mNavigator.startTransferMoneyActivity(mWebAppPresenterWeakReference.get().getActivity());
+        } else if (internalAppID == PaymentAppConfig.Constants.RECEIVE_MONEY) {
+            mWebAppPresenterWeakReference.get().mNavigator.startReceiveMoneyActivity(mWebAppPresenterWeakReference.get().getActivity());
+        } else {
+            AppResource appResource = getAppResource(internalAppID);
+            if (appResource == null) {
+                appResource = new AppResource(internalAppID);
+            }
+            startExternalApp(appResource);
         }
-        startExternalApp(appResource);
+    }
+
+    @Override
+    public void sendEmail() {
+//        mWebAppPresenterWeakReference.get().mNavigator.startEmail(
+//                mWebAppPresenterWeakReference.get().getActivity(),
+//                "hotro@zalopay.vn",
+//                null,
+//                "Yêu cầu hỗ trợ thanh toán game",
+//                "Muốn hoàn tiền",
+//                null);
+    }
+
+    @Override
+    public void openDial() {
+//        mWebAppPresenterWeakReference.get().mNavigator.startDialSupport(mWebAppPresenterWeakReference.get().getActivity());
     }
 
     @Override

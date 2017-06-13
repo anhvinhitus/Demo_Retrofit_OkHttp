@@ -25,9 +25,9 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
 
     void onReceivedTitle(String title);
 
-    void showBackButton();
+    void setHiddenBackButton(boolean hide);
 
-    void hideBackButton();
+    void setHiddenShareButton(boolean hide);
 
     void setHiddenTabBar(boolean hide);
 }
