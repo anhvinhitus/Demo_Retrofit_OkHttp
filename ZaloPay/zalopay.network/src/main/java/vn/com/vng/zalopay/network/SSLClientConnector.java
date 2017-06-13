@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.network;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -18,10 +17,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.network.WriteSocketException;
-import vn.com.vng.zalopay.network.ConnectionErrorCode;
-import vn.com.vng.zalopay.network.ConnectorListener;
-import vn.com.vng.zalopay.network.SocketConnector;
 
 /**
  * Created by huuhoa on 12/20/16.
@@ -144,11 +139,28 @@ class SSLClientConnector implements SocketConnector {
 
     @Override
     public void disconnect() {
-        if (Looper.myLooper() != mConnectionHandler.getLooper()) {
-            mConnectionHandler.post(this::disposeConnection);
-        } else {
+        Timber.d("Disconnect current socket!");
+        mEventHandler.post(this::close);
+    }
+
+    private void close() {
+        if (isConnected() || isConnecting()) {
+            Timber.d("Closing this socket");
+            try {
+                if (mInputStream != null) {
+                    mInputStream.close();
+                }
+
+                if (mSslSocket != null) {
+                    mSslSocket.close();
+                }
+
+            } catch (IOException e) {
+                Timber.d(e, "close socket");
+            }
+        } /*else {
             disposeConnection();
-        }
+        }*/
     }
 
     @Override

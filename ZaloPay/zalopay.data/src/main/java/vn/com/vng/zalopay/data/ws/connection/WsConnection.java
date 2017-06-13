@@ -162,10 +162,6 @@ public class WsConnection extends Connection {
         if (compositeSubscription != null) {
             compositeSubscription.clear();
         }
-
-        if (mSocketConnector != null) {
-            mSocketConnector.disconnect();
-        }
     }
 
     @Override
@@ -383,10 +379,6 @@ public class WsConnection extends Connection {
             Timber.d("onDisconnected %s", code);
             mState = Connection.State.Disconnected;
             mIsAuthenSuccess = false;
-
-            if (mSocketConnector != null) {
-                mSocketConnector.disconnect();
-            }
 
             Timber.d("Next expected network state: %s", mNextConnectionState);
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
