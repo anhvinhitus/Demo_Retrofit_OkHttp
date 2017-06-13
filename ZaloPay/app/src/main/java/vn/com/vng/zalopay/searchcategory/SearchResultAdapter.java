@@ -105,7 +105,7 @@ class SearchResultAdapter extends EpoxyAdapter {
 
     private String changeWordColor(String text, int startIdx, int endIdx) {
         return (text.substring(0, startIdx)
-                + "<font color='#9cdaff'>" + text.substring(startIdx, endIdx) + "</font>"
+                + "<font color='#018fe5'>" + text.substring(startIdx, endIdx) + "</font>"
                 + text.substring(endIdx));
     }
 
