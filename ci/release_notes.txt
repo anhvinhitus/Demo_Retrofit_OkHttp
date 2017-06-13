@@ -1,12 +1,2 @@
-Zalo Pay (Sandbox v2.14.0 - build 266) - Released on 2017-06-13 08:21
-+ [script] add tool check resource sdk by phucpv (#2ed0127)
-+ [Promotion] task#558 [Android] Build v2.14 - 264 by datnt10 (#9c32899)
-+ [Transaction Log] Handle android back button press by datnt10 (#beacc21)
-+ [SEARCH] Ẩn phần tìm kiếm bạn bè task#547 by lytm (#363a9e4)
-+ [Promotion] Sửa lỗi không show full màn hình popup by vo van chuc (#47295c2)
-+ [Promotion] Sửa lỗi không show full màn hình popup by vo van chuc (#e1567a1)
-+ [SEARCH] Fix bug UI task#547 by lytm (#467a475)
-+ [Transaction] Fix unit test by khattn (#bcd5470)
-+ [Transaction] Add api remove transaction by khattn (#e48ffdf)
-+ [Promotion] Update config promotion url by hieuvm (#72f8879)
-+ [App] Fix feedback Build v2.14-263 (task#557) by hieuvm (#31fe802)
+Zalo Pay (Sandbox v2.14.0 - build 267) - Released on 2017-06-13 08:41
++ [Promotion] Handle task by datnt10 (#302d601)
