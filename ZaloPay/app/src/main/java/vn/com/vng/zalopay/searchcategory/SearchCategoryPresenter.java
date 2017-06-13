@@ -128,7 +128,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         mListApp.clear();
         mListApp.addAll(insideAppList);
         mListApp.addAll(Lists.transform(resources, InsideAppUtil::transform));
-        mView.refreshInsideApps(mListApp);
+        mView.refreshInsideApps(getTopRateApp(mListApp, 3));
     }
 
     void filter(String s) {
@@ -150,8 +150,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                     public void onNext(Pair<List<InsideApp>, List<ZaloProfile>> pair) {
                         List<InsideApp> appList = pair.first;
                         List<ZaloProfile> friendList = pair.second;
-
-                        if (friendList != null && (appList.size() != 0 || friendList.size() != 0)) {
+                        if (appList != null && appList.size() != 0) {
                             Timber.d("search list app size [%s] friend size [%s]", appList.size(), friendList.size());
                             mView.setFindResult(appList, friendList, key);
                             mView.showResultView(false, true);
@@ -355,5 +354,13 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
             return null;
         }
         return (Activity) mView.getContext();
+    }
+
+    private List<InsideApp> getTopRateApp(List<InsideApp> pAllApp, int pNumber) {
+        List<InsideApp> TopRateApp = new ArrayList<InsideApp>();
+        for (int i = 0; i < pNumber; i++) {
+            TopRateApp.add(pAllApp.get(i));
+        }
+        return TopRateApp;
     }
 }
