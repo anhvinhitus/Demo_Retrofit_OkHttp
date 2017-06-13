@@ -44,7 +44,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
         Subscription subscription = SDKApplication
                 .getApplicationComponent()
                 .bankListInteractor()
-                .getWithdrawBanks(BuildConfig.VERSION_NAME, System.currentTimeMillis())
+                .getWithdrawBanks(vn.com.vng.zalopay.BuildConfig.VERSION_NAME, System.currentTimeMillis())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<List<BankConfig>>() {
                     @Override
