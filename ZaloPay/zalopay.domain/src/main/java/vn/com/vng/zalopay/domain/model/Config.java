@@ -15,6 +15,9 @@ public class Config {
     @SerializedName("phone_format")
     public PhoneFormat mPhoneFormat;
 
+    @SerializedName("search_config")
+    public int mSearchConfig;
+
     @SerializedName("inside_app")
     public List<InsideApp> mInsideAppList;
 

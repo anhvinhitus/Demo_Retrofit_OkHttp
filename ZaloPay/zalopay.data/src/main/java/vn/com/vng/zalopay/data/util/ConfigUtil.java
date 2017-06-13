@@ -59,7 +59,7 @@ public class ConfigUtil {
         try {
 
             String filePath = getFileConfigPath(zalopayAppId);
-            
+
             String jsonConfig = FileUtil.readFileToString(filePath);
             return loadConfig(jsonConfig);
         } catch (IOException e) {
@@ -80,6 +80,7 @@ public class ConfigUtil {
                 mConfig = config;
                 loadConfigPhoneFormat(config);
                 loadConfigInsideApp(config);
+                loadConfigSearch(config);
                 FriendConfig.sEnableSyncContact = isSyncContact();
                 return true;
             }
@@ -97,6 +98,10 @@ public class ConfigUtil {
 
     private static boolean loadConfigInsideApp(@NonNull Config config) {
         return InsideAppUtil.setInsideApps(config.mInsideAppList);
+    }
+
+    private static void loadConfigSearch(@NonNull Config config) {
+        SearchUtil.setTopRateApp(config.mSearchConfig);
     }
 
     /**

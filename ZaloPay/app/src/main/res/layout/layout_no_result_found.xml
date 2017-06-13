@@ -12,7 +12,7 @@
         android:id="@+id/search_result_emty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="40dp"
         android:drawablePadding="28dp"
         android:textSize="@dimen/font_size_xlarge"
         android:drawableTop="@drawable/search_emty" />

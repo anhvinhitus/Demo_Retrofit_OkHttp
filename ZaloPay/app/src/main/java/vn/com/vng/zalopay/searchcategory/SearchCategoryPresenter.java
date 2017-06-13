@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.util.InsideAppUtil;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.SearchUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -128,7 +129,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         mListApp.clear();
         mListApp.addAll(insideAppList);
         mListApp.addAll(Lists.transform(resources, InsideAppUtil::transform));
-        mView.refreshInsideApps(getTopRateApp(mListApp, 3));
+        mView.refreshInsideApps(getTopRateApp(mListApp, SearchUtil.TopRateApp));
     }
 
     void filter(String s) {

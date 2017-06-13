@@ -192,9 +192,8 @@ public class ZPEditText extends AppCompatEditText {
 
         iconSize = getPixel(32);
         iconOuterWidth = getPixel(40);
-        iconOuterHeight = getPixel(32);
+        iconOuterHeight = getPixel(35);
         bottomSpacing = getPixel(2);
-
         bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
         // default baseColor is black

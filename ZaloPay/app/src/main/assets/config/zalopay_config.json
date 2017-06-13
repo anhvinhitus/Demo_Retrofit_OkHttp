@@ -10,6 +10,7 @@
     "general_message": "Số điện thoại không hợp lệ"
   },
   "api_route": "connector",
+  "search_config": 3,
   "api_names": [
     "v001/tpe/getbalance",
     "v001/tpe/getorderinfo",
