@@ -1,0 +1,863 @@
+From 619c6b6eaf5e2fb9d968f925b548506f1f454504 Mon Sep 17 00:00:00 2001
+From: hieuvm <hieuvm@vng.com.vn>
+Date: Tue, 6 Jun 2017 17:55:26 +0700
+Subject: [PATCH] [GA] Update google reporter
+
+---
+ .../di/components/ApplicationComponent.java        |   8 +-
+ .../internal/di/modules/ApplicationModule.java     |   7 --
+ .../internal/di/modules/GoogleAnalyticsModule.java |  79 +++++++++++++
+ .../zalopay/internal/di/modules/NetworkModule.java |  29 -----
+ .../vn/com/vng/zalopay/tracker/GoogleReporter.java |  43 ++++---
+ .../java/vn/com/vng/zalopay/tracker/MapQuery.java  |  35 ++++++
+ .../vng/zalopay/greendao/GreenDaoGenerator.java    |  14 ++-
+ .../vng/zalopay/data/cache/global/DaoMaster.java   |   7 +-
+ .../vng/zalopay/data/cache/global/DaoSession.java  |  14 +++
+ .../zalopay/data/cache/global/GoogleAnalytics.java |  24 ++++
+ .../data/cache/global/GoogleAnalyticsDao.java      | 127 +++++++++++++++++++++
+ .../vng/zalopay/data/ga/AnalyticsLocalStorage.java |  79 +++++++++++++
+ .../vng/zalopay/data/ga/AnalyticsRepository.java   |  47 ++++++++
+ .../vn/com/vng/zalopay/data/ga/AnalyticsStore.java |  51 +++++++++
+ 14 files changed, 499 insertions(+), 65 deletions(-)
+ create mode 100644 ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/GoogleAnalyticsModule.java
+ create mode 100644 ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/MapQuery.java
+ create mode 100644 ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalytics.java
+ create mode 100644 ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalyticsDao.java
+ create mode 100644 ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsLocalStorage.java
+ create mode 100644 ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsRepository.java
+ create mode 100644 ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsStore.java
+
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/components/ApplicationComponent.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/components/ApplicationComponent.java
+index c68b27c..93aefee 100644
+--- a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/components/ApplicationComponent.java
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/components/ApplicationComponent.java
+@@ -16,6 +16,8 @@ import okhttp3.OkHttpClient;
+ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+ import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
+ import vn.com.vng.zalopay.data.cache.UserConfig;
++import vn.com.vng.zalopay.data.cache.global.GoogleAnalytics;
++import vn.com.vng.zalopay.data.ga.AnalyticsStore;
+ import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+ import vn.com.vng.zalopay.domain.repository.PassportRepository;
+@@ -28,6 +30,7 @@ import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
+ import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
+ import vn.com.vng.zalopay.internal.di.modules.AppTransIdLogModule;
+ import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
++import vn.com.vng.zalopay.internal.di.modules.GoogleAnalyticsModule;
+ import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
+ import vn.com.vng.zalopay.internal.di.modules.UserModule;
+ import vn.com.vng.zalopay.location.LocationStore;
+@@ -54,7 +57,8 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
+                 AppResourceModule.class,
+                 AppTransIdLogModule.class,
+                 AppLocationModule.class,
+-                AppPromotionModule.class
++                AppPromotionModule.class,
++                GoogleAnalyticsModule.class
+         }
+ )
+ public interface ApplicationComponent {
+@@ -72,7 +76,7 @@ public interface ApplicationComponent {
+     @Named("OkHttpClientTimeoutLonger")
+     OkHttpClient okHttpClientTimeoutLonger();
+ 
+-    GoogleReporter.GoogleAnalyticsService googleAnalyticsService();
++    AnalyticsStore.Repository analyticsRepository();
+ 
+     GoogleReporter googleReporter();
+ 
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/ApplicationModule.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/ApplicationModule.java
+index d9195d3..c698e8b 100644
+--- a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/ApplicationModule.java
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/ApplicationModule.java
+@@ -15,7 +15,6 @@ import javax.inject.Singleton;
+ 
+ import dagger.Module;
+ import dagger.Provides;
+-import retrofit2.Retrofit;
+ import vn.com.vng.zalopay.AndroidApplication;
+ import vn.com.vng.zalopay.BuildConfig;
+ import vn.com.vng.zalopay.UIThread;
+@@ -142,12 +141,6 @@ public class ApplicationModule {
+ 
+     @Provides
+     @Singleton
+-    GoogleReporter.GoogleAnalyticsService providesAnalyticsService(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
+-        return retrofit.create(GoogleReporter.GoogleAnalyticsService.class);
+-    }
+-
+-    @Provides
+-    @Singleton
+     GoogleReporter providesGoogleReporter(Context context) {
+         return new GoogleReporter(BuildConfig.GA_Tracker);
+     }
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/GoogleAnalyticsModule.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/GoogleAnalyticsModule.java
+new file mode 100644
+index 0000000..b3ad8e5
+--- /dev/null
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/GoogleAnalyticsModule.java
+@@ -0,0 +1,79 @@
++package vn.com.vng.zalopay.internal.di.modules;
++
++import java.util.concurrent.TimeUnit;
++
++import javax.inject.Named;
++import javax.inject.Singleton;
++
++import dagger.Module;
++import dagger.Provides;
++import okhttp3.ConnectionPool;
++import okhttp3.OkHttpClient;
++import retrofit2.CallAdapter;
++import retrofit2.Retrofit;
++import timber.log.Timber;
++import vn.com.vng.zalopay.BuildConfig;
++import vn.com.vng.zalopay.Constants;
++import vn.com.vng.zalopay.data.cache.global.DaoSession;
++import vn.com.vng.zalopay.data.ga.AnalyticsLocalStorage;
++import vn.com.vng.zalopay.data.ga.AnalyticsRepository;
++import vn.com.vng.zalopay.data.ga.AnalyticsStore;
++import vn.com.vng.zalopay.network.ToStringConverterFactory;
++import vn.com.vng.zalopay.tracker.GoogleReporter;
++import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
++
++/**
++ * Created by hieuvm on 6/6/17.
++ * *
++ */
++@Module
++public class GoogleAnalyticsModule {
++
++    @Singleton
++    @Provides
++    AnalyticsStore.LocalStorage provideAnalyticsStorage(@Named("globaldaosession") DaoSession session) {
++        return new AnalyticsLocalStorage(session);
++    }
++
++    @Singleton
++    @Provides
++    AnalyticsStore.RequestService providesAnalyticsService(@Named("retrofitGoogleAnalytics") Retrofit retrofit) {
++        return retrofit.create(AnalyticsStore.RequestService.class);
++    }
++
++    @Singleton
++    @Provides
++    AnalyticsStore.Repository provideAnalyticsRepository(AnalyticsStore.LocalStorage localStorage, AnalyticsStore.RequestService requestService) {
++        return new AnalyticsRepository(localStorage, requestService);
++    }
++
++    @Provides
++    @Singleton
++    @Named("okHttpClientGA")
++    OkHttpClient provideOkHttpClientGA() {
++        OkHttpClient.Builder builder = new OkHttpClient.Builder();
++        if (BuildConfig.DEBUG) {
++            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
++            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
++            builder.addInterceptor(interceptor);
++        }
++        builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
++        builder.connectTimeout(10, TimeUnit.SECONDS);
++        builder.readTimeout(5, TimeUnit.SECONDS);
++        return builder.build();
++    }
++
++    @Provides
++    @Singleton
++    @Named("retrofitGoogleAnalytics")
++    Retrofit provideRetrofitGA(@Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
++        return new Retrofit.Builder()
++                .addConverterFactory(new ToStringConverterFactory())
++                .addCallAdapterFactory(callAdapter)
++                .baseUrl(GoogleReporter.BASE_URL)
++                .validateEagerly(BuildConfig.DEBUG)
++                .client(okHttpClient)
++                .build();
++    }
++
++}
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/NetworkModule.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/NetworkModule.java
+index 5a7601d..ef46b8c 100644
+--- a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/NetworkModule.java
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/internal/di/modules/NetworkModule.java
+@@ -166,35 +166,6 @@ public class NetworkModule {
+                 .build();
+     }
+ 
+-    @Provides
+-    @Singleton
+-    @Named("okHttpClientGA")
+-    OkHttpClient provideOkHttpClientGA() {
+-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+-        if (BuildConfig.DEBUG) {
+-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
+-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+-            builder.addInterceptor(interceptor);
+-        }
+-        builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
+-        builder.connectTimeout(10, TimeUnit.SECONDS);
+-        builder.readTimeout(5, TimeUnit.SECONDS);
+-        return builder.build();
+-    }
+-
+-    @Provides
+-    @Singleton
+-    @Named("retrofitGoogleAnalytics")
+-    Retrofit provideRetrofitGA(@Named("okHttpClientGA") OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+-        return new Retrofit.Builder()
+-                .addConverterFactory(new ToStringConverterFactory())
+-                .addCallAdapterFactory(callAdapter)
+-                .baseUrl(GoogleReporter.BASE_URL)
+-                .validateEagerly(BuildConfig.DEBUG)
+-                .client(okHttpClient)
+-                .build();
+-    }
+-
+     private static final TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
+ 
+         /**
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/GoogleReporter.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/GoogleReporter.java
+index 1586974..cae33b6 100644
+--- a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/GoogleReporter.java
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/GoogleReporter.java
+@@ -4,22 +4,26 @@ import android.support.annotation.NonNull;
+ import android.support.annotation.Nullable;
+ import android.text.TextUtils;
+ 
++import java.util.ArrayList;
+ import java.util.HashMap;
++import java.util.List;
+ import java.util.Locale;
+ import java.util.Map;
+ 
+-import javax.inject.Inject;
+-import javax.inject.Named;
+-
+-import retrofit2.Retrofit;
++import okhttp3.MediaType;
++import okhttp3.RequestBody;
++import retrofit2.http.Body;
+ import retrofit2.http.FieldMap;
+ import retrofit2.http.FormUrlEncoded;
+ import retrofit2.http.Headers;
+ import retrofit2.http.POST;
+ import rx.Observable;
++import timber.log.Timber;
+ import vn.com.vng.zalopay.AndroidApplication;
+ import vn.com.vng.zalopay.BuildConfig;
+ import vn.com.vng.zalopay.Constants;
++import vn.com.vng.zalopay.data.ga.AnalyticsStore;
++import vn.com.vng.zalopay.data.util.Strings;
+ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+ import vn.com.vng.zalopay.utils.AndroidUtils;
+ import vn.com.zalopay.analytics.ZPEvents;
+@@ -33,38 +37,32 @@ public class GoogleReporter {
+ 
+     public static final String BASE_URL = "https://www.google-analytics.com/";
+ 
+-    public interface GoogleAnalyticsService {
+-        @POST("collect")
+-        @FormUrlEncoded
+-        @Headers({"User-Agent: ZaloPayClient/2.12"})
+-        Observable<String> send(@FieldMap Map<String, String> query);
+-
+-        @POST("batch")
+-        @FormUrlEncoded
+-        @Headers({"User-Agent: ZaloPayClient/2.12"})
+-        Observable<String> sendBatch(@FieldMap Map<String, String> query); //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
+-    }
+-
+-    private final GoogleAnalyticsService mAnalyticsService;
++    private final AnalyticsStore.Repository mAnalyticsService;
+     private final Map<String, String> mDefMap;
+     private final String mTrackerId;
+ 
+     public GoogleReporter(String trackerId) {
+         mTrackerId = trackerId;
+-        mAnalyticsService = AndroidApplication.instance().getAppComponent().googleAnalyticsService();
++        mAnalyticsService = AndroidApplication.instance().getAppComponent().analyticsRepository();
+         mDefMap = buildParams();
+     }
+ 
+     private void send(String type, Map<String, String> values) {
+         values.put("t", type); //Required
+-        send(values);
+-    }
++        String payload = MapQuery.urlEncodeUTF8(values);
+ 
+-    private void send(Map<String, String> values) {
+-        mAnalyticsService.send(values)
++        if (TextUtils.isEmpty(payload)) {
++            return;
++        }
++
++        mAnalyticsService.append(type, payload)
+                 .subscribe(new DefaultSubscriber<>());
+     }
+ 
++    private void sendBatch() {
++        mAnalyticsService.sendBatch();
++    }
++
+     public void trackScreen(String screenName) {
+         Map<String, String> params = new HashMap<>(mDefMap);
+ 
+@@ -177,5 +175,4 @@ public class GoogleReporter {
+         mDefMap.put("cid", userId);
+     }
+ 
+-
+ }
+diff --git a/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/MapQuery.java b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/MapQuery.java
+new file mode 100644
+index 0000000..0cc8f38
+--- /dev/null
++++ b/ZaloPay/app/src/main/java/vn/com/vng/zalopay/tracker/MapQuery.java
+@@ -0,0 +1,35 @@
++package vn.com.vng.zalopay.tracker;
++
++import java.io.UnsupportedEncodingException;
++import java.net.URLEncoder;
++import java.util.Map;
++
++/**
++ * Created by hieuvm on 6/5/17.
++ * *
++ */
++
++
++public class MapQuery {
++    static String urlEncodeUTF8(String s) {
++        try {
++            return URLEncoder.encode(s, "UTF-8");
++        } catch (UnsupportedEncodingException e) {
++            return "";
++        }
++    }
++
++    static String urlEncodeUTF8(Map<?, ?> map) {
++        StringBuilder sb = new StringBuilder();
++        for (Map.Entry<?, ?> entry : map.entrySet()) {
++            if (sb.length() > 0) {
++                sb.append("&");
++            }
++            sb.append(String.format("%s=%s",
++                    urlEncodeUTF8(entry.getKey().toString()),
++                    urlEncodeUTF8(entry.getValue().toString())
++            ));
++        }
++        return sb.toString();
++    }
++}
+diff --git a/ZaloPay/greendaogenerator/src/main/java/vn/com/vng/zalopay/greendao/GreenDaoGenerator.java b/ZaloPay/greendaogenerator/src/main/java/vn/com/vng/zalopay/greendao/GreenDaoGenerator.java
+index 3cc6858..61e19e2 100644
+--- a/ZaloPay/greendaogenerator/src/main/java/vn/com/vng/zalopay/greendao/GreenDaoGenerator.java
++++ b/ZaloPay/greendaogenerator/src/main/java/vn/com/vng/zalopay/greendao/GreenDaoGenerator.java
+@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.Schema;
+ 
+ public class GreenDaoGenerator {
+     private static final int APP_DB_VERSION = 59;
+-    private static final int GLOBAL_DB_VERSION = 2;
++    private static final int GLOBAL_DB_VERSION = 3;
+ 
+     /**
+      * ./gradlew :greendaogenerator:run
+@@ -28,13 +28,14 @@ public class GreenDaoGenerator {
+         addNotification(appSchema);
+         addRedPacket(appSchema);
+         addMerchantUser(appSchema);
+-    
++
+         addTransactionFragment(appSchema);
+ 
+         //ADD TABLE GLOBAL
+         addGlobalKeyValue(globalSchema);
+         addApptransidLog(globalSchema);
+         addApptransidLogTiming(globalSchema);
++        addGoogleAnalytics(globalSchema);
+ 
+         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
+         daoGenerator.generateAll(appSchema, "../zalopay.data/src/main/java");
+@@ -242,6 +243,15 @@ public class GreenDaoGenerator {
+         entity.addIntProperty("status");
+     }
+ 
++    private static void addGoogleAnalytics(Schema schema) {
++        Entity entity = schema.addEntity("GoogleAnalytics");
++        entity.setConstructors(false);
++        entity.addIdProperty().primaryKey().autoincrement();
++        entity.addStringProperty("type").notNull();
++        entity.addStringProperty("payload").notNull();
++        entity.addLongProperty("timestamp").notNull();
++    }
++
+     private static void addApptransidLogTiming(Schema schema) {
+         Entity entity = schema.addEntity("ApptransidLogTimingGD");
+         entity.setConstructors(false);
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoMaster.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoMaster.java
+index 8c2a63f..a8d421d 100644
+--- a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoMaster.java
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoMaster.java
+@@ -14,16 +14,17 @@ import org.greenrobot.greendao.identityscope.IdentityScopeType;
+ 
+ // THIS CODE IS GENERATED BY greenDAO, DO NOT EDIT.
+ /**
+- * Master of DAO (schema version 2): knows all DAOs.
++ * Master of DAO (schema version 3): knows all DAOs.
+  */
+ public class DaoMaster extends AbstractDaoMaster {
+-    public static final int SCHEMA_VERSION = 2;
++    public static final int SCHEMA_VERSION = 3;
+ 
+     /** Creates underlying database table using DAOs. */
+     public static void createAllTables(Database db, boolean ifNotExists) {
+         KeyValueGDDao.createTable(db, ifNotExists);
+         ApptransidLogGDDao.createTable(db, ifNotExists);
+         ApptransidLogTimingGDDao.createTable(db, ifNotExists);
++        GoogleAnalyticsDao.createTable(db, ifNotExists);
+     }
+ 
+     /** Drops underlying database table using DAOs. */
+@@ -31,6 +32,7 @@ public class DaoMaster extends AbstractDaoMaster {
+         KeyValueGDDao.dropTable(db, ifExists);
+         ApptransidLogGDDao.dropTable(db, ifExists);
+         ApptransidLogTimingGDDao.dropTable(db, ifExists);
++        GoogleAnalyticsDao.dropTable(db, ifExists);
+     }
+ 
+     /**
+@@ -52,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
+         registerDaoClass(KeyValueGDDao.class);
+         registerDaoClass(ApptransidLogGDDao.class);
+         registerDaoClass(ApptransidLogTimingGDDao.class);
++        registerDaoClass(GoogleAnalyticsDao.class);
+     }
+ 
+     public DaoSession newSession() {
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoSession.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoSession.java
+index 38841d1..8cb89c6 100644
+--- a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoSession.java
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/DaoSession.java
+@@ -11,10 +11,12 @@ import org.greenrobot.greendao.internal.DaoConfig;
+ import vn.com.vng.zalopay.data.cache.global.KeyValueGD;
+ import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
+ import vn.com.vng.zalopay.data.cache.global.ApptransidLogTimingGD;
++import vn.com.vng.zalopay.data.cache.global.GoogleAnalytics;
+ 
+ import vn.com.vng.zalopay.data.cache.global.KeyValueGDDao;
+ import vn.com.vng.zalopay.data.cache.global.ApptransidLogGDDao;
+ import vn.com.vng.zalopay.data.cache.global.ApptransidLogTimingGDDao;
++import vn.com.vng.zalopay.data.cache.global.GoogleAnalyticsDao;
+ 
+ // THIS CODE IS GENERATED BY greenDAO, DO NOT EDIT.
+ 
+@@ -28,10 +30,12 @@ public class DaoSession extends AbstractDaoSession {
+     private final DaoConfig keyValueGDDaoConfig;
+     private final DaoConfig apptransidLogGDDaoConfig;
+     private final DaoConfig apptransidLogTimingGDDaoConfig;
++    private final DaoConfig googleAnalyticsDaoConfig;
+ 
+     private final KeyValueGDDao keyValueGDDao;
+     private final ApptransidLogGDDao apptransidLogGDDao;
+     private final ApptransidLogTimingGDDao apptransidLogTimingGDDao;
++    private final GoogleAnalyticsDao googleAnalyticsDao;
+ 
+     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
+             daoConfigMap) {
+@@ -46,19 +50,25 @@ public class DaoSession extends AbstractDaoSession {
+         apptransidLogTimingGDDaoConfig = daoConfigMap.get(ApptransidLogTimingGDDao.class).clone();
+         apptransidLogTimingGDDaoConfig.initIdentityScope(type);
+ 
++        googleAnalyticsDaoConfig = daoConfigMap.get(GoogleAnalyticsDao.class).clone();
++        googleAnalyticsDaoConfig.initIdentityScope(type);
++
+         keyValueGDDao = new KeyValueGDDao(keyValueGDDaoConfig, this);
+         apptransidLogGDDao = new ApptransidLogGDDao(apptransidLogGDDaoConfig, this);
+         apptransidLogTimingGDDao = new ApptransidLogTimingGDDao(apptransidLogTimingGDDaoConfig, this);
++        googleAnalyticsDao = new GoogleAnalyticsDao(googleAnalyticsDaoConfig, this);
+ 
+         registerDao(KeyValueGD.class, keyValueGDDao);
+         registerDao(ApptransidLogGD.class, apptransidLogGDDao);
+         registerDao(ApptransidLogTimingGD.class, apptransidLogTimingGDDao);
++        registerDao(GoogleAnalytics.class, googleAnalyticsDao);
+     }
+     
+     public void clear() {
+         keyValueGDDaoConfig.clearIdentityScope();
+         apptransidLogGDDaoConfig.clearIdentityScope();
+         apptransidLogTimingGDDaoConfig.clearIdentityScope();
++        googleAnalyticsDaoConfig.clearIdentityScope();
+     }
+ 
+     public KeyValueGDDao getKeyValueGDDao() {
+@@ -73,4 +83,8 @@ public class DaoSession extends AbstractDaoSession {
+         return apptransidLogTimingGDDao;
+     }
+ 
++    public GoogleAnalyticsDao getGoogleAnalyticsDao() {
++        return googleAnalyticsDao;
++    }
++
+ }
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalytics.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalytics.java
+new file mode 100644
+index 0000000..22206e5
+--- /dev/null
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalytics.java
+@@ -0,0 +1,24 @@
++package vn.com.vng.zalopay.data.cache.global;
++
++import org.greenrobot.greendao.annotation.*;
++
++// THIS CODE IS GENERATED BY greenDAO, DO NOT EDIT. Enable "keep" sections if you want to edit.
++
++/**
++ * Entity mapped to table "GOOGLE_ANALYTICS".
++ */
++@Entity
++public class GoogleAnalytics {
++
++    @Id(autoincrement = true)
++    public Long id;
++
++    @NotNull
++    public String type;
++
++    @NotNull
++    public String payload;
++    public long timestamp;
++
++
++}
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalyticsDao.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalyticsDao.java
+new file mode 100644
+index 0000000..d3bbb58
+--- /dev/null
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/cache/global/GoogleAnalyticsDao.java
+@@ -0,0 +1,127 @@
++package vn.com.vng.zalopay.data.cache.global;
++
++import android.database.Cursor;
++import android.database.sqlite.SQLiteStatement;
++
++import org.greenrobot.greendao.AbstractDao;
++import org.greenrobot.greendao.Property;
++import org.greenrobot.greendao.internal.DaoConfig;
++import org.greenrobot.greendao.database.Database;
++import org.greenrobot.greendao.database.DatabaseStatement;
++
++// THIS CODE IS GENERATED BY greenDAO, DO NOT EDIT.
++/** 
++ * DAO for table "GOOGLE_ANALYTICS".
++*/
++public class GoogleAnalyticsDao extends AbstractDao<GoogleAnalytics, Long> {
++
++    public static final String TABLENAME = "GOOGLE_ANALYTICS";
++
++    /**
++     * Properties of entity GoogleAnalytics.<br/>
++     * Can be used for QueryBuilder and for referencing column names.
++     */
++    public static class Properties {
++        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
++        public final static Property Type = new Property(1, String.class, "type", false, "TYPE");
++        public final static Property Payload = new Property(2, String.class, "payload", false, "PAYLOAD");
++        public final static Property Timestamp = new Property(3, long.class, "timestamp", false, "TIMESTAMP");
++    }
++
++
++    public GoogleAnalyticsDao(DaoConfig config) {
++        super(config);
++    }
++    
++    public GoogleAnalyticsDao(DaoConfig config, DaoSession daoSession) {
++        super(config, daoSession);
++    }
++
++    /** Creates the underlying database table. */
++    public static void createTable(Database db, boolean ifNotExists) {
++        String constraint = ifNotExists? "IF NOT EXISTS ": "";
++        db.execSQL("CREATE TABLE " + constraint + "\"GOOGLE_ANALYTICS\" (" + //
++                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
++                "\"TYPE\" TEXT NOT NULL ," + // 1: type
++                "\"PAYLOAD\" TEXT NOT NULL ," + // 2: payload
++                "\"TIMESTAMP\" INTEGER NOT NULL );"); // 3: timestamp
++    }
++
++    /** Drops the underlying database table. */
++    public static void dropTable(Database db, boolean ifExists) {
++        String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"GOOGLE_ANALYTICS\"";
++        db.execSQL(sql);
++    }
++
++    @Override
++    protected final void bindValues(DatabaseStatement stmt, GoogleAnalytics entity) {
++        stmt.clearBindings();
++ 
++        Long id = entity.id;
++        if (id != null) {
++            stmt.bindLong(1, id);
++        }
++        stmt.bindString(2, entity.type);
++        stmt.bindString(3, entity.payload);
++        stmt.bindLong(4, entity.timestamp);
++    }
++
++    @Override
++    protected final void bindValues(SQLiteStatement stmt, GoogleAnalytics entity) {
++        stmt.clearBindings();
++ 
++        Long id = entity.id;
++        if (id != null) {
++            stmt.bindLong(1, id);
++        }
++        stmt.bindString(2, entity.type);
++        stmt.bindString(3, entity.payload);
++        stmt.bindLong(4, entity.timestamp);
++    }
++
++    @Override
++    public Long readKey(Cursor cursor, int offset) {
++        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
++    }    
++
++    @Override
++    public GoogleAnalytics readEntity(Cursor cursor, int offset) {
++        GoogleAnalytics entity = new GoogleAnalytics();
++        readEntity(cursor, entity, offset);
++        return entity;
++    }
++     
++    @Override
++    public void readEntity(Cursor cursor, GoogleAnalytics entity, int offset) {
++        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
++        entity.type = cursor.getString(offset + 1);
++        entity.payload = cursor.getString(offset + 2);
++        entity.timestamp = cursor.getLong(offset + 3);
++     }
++    
++    @Override
++    protected final Long updateKeyAfterInsert(GoogleAnalytics entity, long rowId) {
++        entity.id = rowId;
++        return rowId;
++    }
++    
++    @Override
++    public Long getKey(GoogleAnalytics entity) {
++        if(entity != null) {
++            return entity.id;
++        } else {
++            return null;
++        }
++    }
++
++    @Override
++    public boolean hasKey(GoogleAnalytics entity) {
++        return entity.id != null;
++    }
++
++    @Override
++    protected final boolean isEntityUpdateable() {
++        return true;
++    }
++    
++}
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsLocalStorage.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsLocalStorage.java
+new file mode 100644
+index 0000000..546ccb5
+--- /dev/null
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsLocalStorage.java
+@@ -0,0 +1,79 @@
++package vn.com.vng.zalopay.data.ga;
++
++import java.util.List;
++
++import timber.log.Timber;
++import vn.com.vng.zalopay.data.cache.global.DaoSession;
++import vn.com.vng.zalopay.data.cache.global.GoogleAnalytics;
++import vn.com.vng.zalopay.data.cache.global.GoogleAnalyticsDao;
++import vn.com.vng.zalopay.data.util.Lists;
++
++/**
++ * Created by hieuvm on 6/6/17.
++ * *
++ */
++
++public class AnalyticsLocalStorage implements AnalyticsStore.LocalStorage {
++
++    private final GoogleAnalyticsDao mGoogleAnalyticsDao;
++
++    public AnalyticsLocalStorage(DaoSession daoSession) {
++        mGoogleAnalyticsDao = daoSession.getGoogleAnalyticsDao();
++    }
++
++    @Override
++    public void append(String type, String payload) {
++
++        Timber.d("append analytics [type: %s payload: %s]", type, payload);
++        try {
++            mGoogleAnalyticsDao.insertInTx(transform(type, payload));
++        } catch (Exception e) {
++            Timber.d(e);
++        }
++    }
++
++    @Override
++    public List<String> getAll() {
++        List<GoogleAnalytics> list = mGoogleAnalyticsDao.queryBuilder()
++                .orderAsc(GoogleAnalyticsDao.Properties.Timestamp)
++                .list();
++        return transforms(list);
++    }
++
++    @Override
++    public List<String> get(int limit) {
++        List<GoogleAnalytics> list = mGoogleAnalyticsDao.queryBuilder()
++                .limit(limit)
++                .orderAsc(GoogleAnalyticsDao.Properties.Timestamp)
++                .list();
++
++        Timber.d("get analytics [size %s]", list.size());
++
++        for (GoogleAnalytics analytics : list) {
++            Timber.d("get timestamp %s", analytics.timestamp);
++        }
++
++        return transforms(list);
++    }
++
++    @Override
++    public void remove(long timestamp) {
++
++    }
++
++    private List<String> transforms(List<GoogleAnalytics> list) {
++        return Lists.transform(list, this::transform);
++    }
++
++    private String transform(GoogleAnalytics analytics) {
++        return analytics.payload;
++    }
++
++    private GoogleAnalytics transform(String type, String payload) {
++        GoogleAnalytics analytics = new GoogleAnalytics();
++        analytics.type = type;
++        analytics.payload = payload;
++        analytics.timestamp = System.currentTimeMillis();
++        return analytics;
++    }
++}
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsRepository.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsRepository.java
+new file mode 100644
+index 0000000..da1ba4e
+--- /dev/null
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsRepository.java
+@@ -0,0 +1,47 @@
++package vn.com.vng.zalopay.data.ga;
++
++import okhttp3.MediaType;
++import okhttp3.RequestBody;
++import rx.Observable;
++import vn.com.vng.zalopay.data.util.ObservableHelper;
++import vn.com.vng.zalopay.data.util.Strings;
++
++/**
++ * Created by hieuvm on 6/6/17.
++ * *
++ */
++
++public class AnalyticsRepository implements AnalyticsStore.Repository {
++
++    private final AnalyticsStore.RequestService mRequestService;
++    private final AnalyticsStore.LocalStorage mLocalStorage;
++
++    public AnalyticsRepository(AnalyticsStore.LocalStorage localStorage, AnalyticsStore.RequestService requestService) {
++        mRequestService = requestService;
++        mLocalStorage = localStorage;
++    }
++
++    @Override
++    public Observable<Boolean> append(String type, String payload) {
++        return ObservableHelper.makeObservable(() -> {
++            mLocalStorage.append(type, payload);
++            return Boolean.TRUE;
++        });
++    }
++
++    @Override
++    public Observable<Boolean> sendBatch() {
++        return ObservableHelper
++                .makeObservable(() -> {
++                    String text = Strings.joinWithDelimiter("\n", mLocalStorage.get(20));
++                    return createRequestBody(text);
++                })
++                .flatMap(mRequestService::sendBatch)
++                .map(s -> Boolean.TRUE)
++                ;
++    }
++
++    private RequestBody createRequestBody(String text) {
++        return RequestBody.create(MediaType.parse("text/plain"), text);
++    }
++}
+diff --git a/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsStore.java b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsStore.java
+new file mode 100644
+index 0000000..d7d4d51
+--- /dev/null
++++ b/ZaloPay/zalopay.data/src/main/java/vn/com/vng/zalopay/data/ga/AnalyticsStore.java
+@@ -0,0 +1,51 @@
++package vn.com.vng.zalopay.data.ga;
++
++import java.util.List;
++import java.util.Map;
++
++import okhttp3.RequestBody;
++import retrofit2.http.Body;
++import retrofit2.http.FieldMap;
++import retrofit2.http.FormUrlEncoded;
++import retrofit2.http.GET;
++import retrofit2.http.Headers;
++import retrofit2.http.POST;
++import retrofit2.http.Query;
++import rx.Observable;
++import vn.com.vng.zalopay.data.Constants;
++import vn.com.vng.zalopay.data.api.response.BalanceResponse;
++import vn.com.vng.zalopay.network.API_NAME;
++import vn.com.zalopay.analytics.ZPEvents;
++
++/**
++ * Created by hieuvm on 6/6/17.
++ * AnalyticsStore interface
++ */
++public interface AnalyticsStore {
++    interface LocalStorage {
++        void append(String type, String payload);
++
++        List<String> getAll();
++
++        List<String> get(int limit);
++
++        void remove(long timestamp);
++    }
++
++    interface RequestService {
++        @POST("collect")
++        @FormUrlEncoded
++        @Headers({"User-Agent: ZaloPayClient/2.12"})
++        Observable<String> send(@FieldMap Map<String, String> query);
++
++        @POST("batch")
++        @Headers({"User-Agent: ZaloPayClient/2.12"})
++        Observable<String> sendBatch(@Body RequestBody body); //multiple hits in a single request - https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
++    }
++
++    interface Repository {
++        Observable<Boolean> append(String type, String payload);
++
++        Observable<Boolean> sendBatch();
++    }
++}
+-- 
+2.8.1
+
