@@ -1,2 +1,10 @@
-Zalo Pay (Sandbox v2.14.0 - build 267) - Released on 2017-06-13 08:41
-+ [Promotion] Handle task by datnt10 (#302d601)
+Zalo Pay (Sandbox v2.14.0 - build 268) - Released on 2017-06-14 08:58
++ [SDK] Update VERSION_NAME khi trút tiền by lytm (#c7a1e52)
++ [SEARCH] update color text khi search by lytm (#caa2de7)
++ [SEARCH] Thêm Config TopRate app by lytm (#1da916c)
++ [Promotion] Handle click/event behavior by datnt10 (#e15e845)
++ [SEARCH] Update UI by lytm (#7cbd4f3)
++ [Fix] Remove accidentally added patch.diff by Nguyen Huu Hoa (#eab3c90)
++ [Gradle] Update gradle build tool to 2.3.3 by Nguyen Huu Hoa (#61ba8cc)
++ [Util] Add parse for item.ext field of payment order by Nguyen Huu Hoa (#0469afc)
++ [Socket] Sửa lỗi close socket by hieuvm (#41d07d8)
