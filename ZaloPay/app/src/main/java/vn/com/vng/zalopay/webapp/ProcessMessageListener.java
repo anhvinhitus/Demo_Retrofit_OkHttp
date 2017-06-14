@@ -12,14 +12,16 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
+import java.util.List;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -31,6 +33,7 @@ import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
  */
 class ProcessMessageListener implements IProcessMessageListener {
     private WeakReference<WebAppPresenter> mWebAppPresenterWeakReference;
+    private List<AppResource> mListResources;
 
     public ProcessMessageListener(WebAppPresenter presenter) {
         mWebAppPresenterWeakReference = new WeakReference<>(presenter);
@@ -63,7 +66,7 @@ class ProcessMessageListener implements IProcessMessageListener {
     }
 
     @Override
-    public void launchApp(String packageID) {
+    public void launchApp(String packageID, String alternateUrl) {
         try {
             // Check whether the application exists or not
             boolean isPackageInstalled = isPackageInstalled(packageID, mWebAppPresenterWeakReference.get().getActivity());
@@ -87,6 +90,7 @@ class ProcessMessageListener implements IProcessMessageListener {
 
     @Override
     public void launchInternalApp(int internalAppID) {
+        getListAppResource();
         if (internalAppID == PaymentAppConfig.Constants.RED_PACKET) {
             mWebAppPresenterWeakReference.get().mNavigator.startMiniAppActivity(
                     mWebAppPresenterWeakReference.get().getActivity(), ModuleName.RED_PACKET);
@@ -94,6 +98,20 @@ class ProcessMessageListener implements IProcessMessageListener {
             mWebAppPresenterWeakReference.get().mNavigator.startTransferMoneyActivity(mWebAppPresenterWeakReference.get().getActivity());
         } else if (internalAppID == PaymentAppConfig.Constants.RECEIVE_MONEY) {
             mWebAppPresenterWeakReference.get().mNavigator.startReceiveMoneyActivity(mWebAppPresenterWeakReference.get().getActivity());
+        } else if (internalAppID == 15) {
+            if(mListResources == null) return;
+
+            String webURL = "";
+            for (AppResource appResource : mListResources) {
+                if (appResource.appid == 15) {
+                    webURL = appResource.webUrl;
+                    break;
+                }
+            }
+
+            if (!TextUtils.isEmpty(webURL)) {
+                starWebAppService(internalAppID, webURL);
+            }
         } else {
             AppResource appResource = getAppResource(internalAppID);
             if (appResource == null) {
@@ -176,12 +194,44 @@ class ProcessMessageListener implements IProcessMessageListener {
     }
 
     private void startExternalApp(AppResource app) {
-        CompositeSubscription mSubscription = new CompositeSubscription();
         Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.existResource(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new StartPaymentAppSubscriber(mWebAppPresenterWeakReference.get().mNavigator,
                         mWebAppPresenterWeakReference.get().getActivity(), app));
-        mSubscription.add(subscription);
+        mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
+    }
+
+    public void getListAppResource() {
+        Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.getListAppHome()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
+    }
+
+    private void starWebAppService(int internalAppID, String webURL) {
+        Subscription subscription = mWebAppPresenterWeakReference.get().mMerchantRepository.getMerchantUserInfo(internalAppID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MerchantUserInfoSubscribe(mWebAppPresenterWeakReference.get().mNavigator,
+                        mWebAppPresenterWeakReference.get().getActivity(), internalAppID, webURL));
+        mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
+    }
+
+    private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
+        @Override
+        public void onCompleted() {
+            super.onCompleted();
+        }
+
+        @Override
+        public void onNext(List<AppResource> appResources) {
+            mListResources = appResources;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+        }
     }
 }

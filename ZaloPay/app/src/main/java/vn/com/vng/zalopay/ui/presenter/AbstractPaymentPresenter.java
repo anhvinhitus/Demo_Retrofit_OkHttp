@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import org.json.JSONObject;
 
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.ZPTransaction;
@@ -119,6 +120,14 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
     public Fragment getFragment() {
         if (mView != null) {
             return mView.getFragment();
+        } else {
+            return null;
+        }
+    }
+
+    public CompositeSubscription getSubscription() {
+        if (mSubscription != null) {
+            return mSubscription;
         } else {
             return null;
         }

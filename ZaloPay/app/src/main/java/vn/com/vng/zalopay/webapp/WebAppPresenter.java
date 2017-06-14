@@ -20,9 +20,9 @@ import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ZPTransfer;
@@ -49,16 +49,20 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
     private ZPTransfer mZPTransfer;
     private ZPWebViewAppProcessor mWebViewProcessor;
     protected AppResourceStore.Repository mAppResourceRepository;
+    protected MerchantStore.Repository mMerchantRepository;
     protected Navigator mNavigator;
     private final ProcessMessageListener mProcessMessageListener = new ProcessMessageListener(this);
 
 
     @Inject
     WebAppPresenter(AccountStore.Repository accountRepository,
-                    Navigator navigator, AppResourceStore.Repository appResourceRepository) {
+                    Navigator navigator,
+                    AppResourceStore.Repository appResourceRepository,
+                    MerchantStore.Repository merchantRepository) {
         super(navigator);
         this.mAccountRepository = accountRepository;
         this.mAppResourceRepository = appResourceRepository;
+        this.mMerchantRepository = merchantRepository;
         this.mNavigator = navigator;
     }
 

@@ -21,7 +21,7 @@ interface IProcessMessageListener {
 
     void writeLog(String type, long time, String data);
 
-    void launchApp(String packageID);
+    void launchApp(String packageID, String alternateUrl);
 
     void launchInternalApp(int internalAppID);
 

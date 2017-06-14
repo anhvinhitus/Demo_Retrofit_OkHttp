@@ -166,10 +166,12 @@ class WebAppNativeModule implements NativeModule {
     // "clientId":"14865289272660.004411039873957634"}
     private void launchApp(final JSONObject data, Promise promise) {
         String strPackageID = data.optString("packageId");
+        String strAlternateUrl = data.optString("alternateUrl");
+        int nCampaignId = data.optInt("campaignId");
         int nInternalAppID = data.optInt("internalApp");
 
         if (!TextUtils.isEmpty(strPackageID)) {
-            mProcessMessageListener.launchApp(strPackageID);
+            mProcessMessageListener.launchApp(strPackageID, strAlternateUrl);
         } else if (nInternalAppID > 0) {
             mProcessMessageListener.launchInternalApp(nInternalAppID);
         }
