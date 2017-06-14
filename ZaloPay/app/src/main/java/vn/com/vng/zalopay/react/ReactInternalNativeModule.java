@@ -126,14 +126,17 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showDetail(final int appid, final String transid) {
+    public void showDetail(final int appid, final String transid, final Promise promise) {
         Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
         Subscription subscription = mResourceRepository.existResource(appid)
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
+                            Helpers.promiseResolveSuccess(promise, "");
                             startPaymentApp(appid, transid);
+                        } else {
+                            Helpers.promiseResolveError(promise, -1, "App disabled");
                         }
                     }
                 });
