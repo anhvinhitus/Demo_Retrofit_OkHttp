@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.data.appresources;
 
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +48,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private long mLastTimeFetchApplication;
 
-    private IFExceptionCallBack ExceptionCallBack;
+    private EventBus mEventBus;
 
     private Exception mException;
 
@@ -397,20 +399,19 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public void getException(IFExceptionCallBack exceptionCallBack) {
+    public void setException(EventBus eventBus) {
         if (mException != null) {
-            exceptionCallBack.getEception(mException);
+            eventBus.post(new ExceptionEvent(mException));
         } else {
-            ExceptionCallBack = exceptionCallBack;
+            mEventBus = eventBus;
         }
-
     }
 
 
     @Override
     public Exception exception(Exception pException) {
-        if (ExceptionCallBack != null) {
-            ExceptionCallBack.getEception(pException);
+        if (mEventBus != null) {
+            mEventBus.post(new ExceptionEvent(pException));
         } else {
             mException = pException;
         }

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.appresources;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,10 +76,9 @@ public interface AppResourceStore {
         Observable<List<AppResource>> fetchListAppHome();
 
         Observable<Void> resetStateResource(long appId);
-
         Boolean existAppResource(long appid);
 
-        void getException(IFExceptionCallBack exceptionCallBack);
+        void setException(EventBus eventBus);
 
         Exception exception(Exception pException);
 
