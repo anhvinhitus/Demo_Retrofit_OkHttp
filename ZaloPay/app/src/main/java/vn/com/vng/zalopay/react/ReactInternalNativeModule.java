@@ -69,19 +69,16 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
     private INavigator navigator;
-    private AppResourceStore.Repository mResourceRepository;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private NotificationStore.Repository mNotificationRepository;
     private PaymentWrapper paymentWrapper;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
-                              INavigator navigator, AppResourceStore.Repository resourceRepository,
-                              NotificationStore.Repository mNotificationRepository,
+                              INavigator navigator, NotificationStore.Repository mNotificationRepository,
                               NetworkService networkServiceWithRetry
     ) {
         super(reactContext);
         this.navigator = navigator;
-        this.mResourceRepository = resourceRepository;
         this.mNotificationRepository = mNotificationRepository;
 
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
@@ -123,40 +120,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Timber.d("trackEvent eventId %s", eventId);
 
         ZPAnalytics.trackEvent(eventId);
-    }
-
-    @ReactMethod
-    public void showDetail(final int appid, final String transid, final Promise promise) {
-        Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
-        Subscription subscription = mResourceRepository.existResource(appid)
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            Helpers.promiseResolveSuccess(promise, "");
-                            startPaymentApp(appid, transid);
-                        } else {
-                            Helpers.promiseResolveError(promise, -1, "App disabled");
-                        }
-                    }
-                });
-        mCompositeSubscription.add(subscription);
-    }
-
-    private void startPaymentApp(int appid, String transid) {
-        Activity activity = getCurrentActivity();
-        if (activity == null) {
-            return;
-        }
-
-        Map<String, String> options = new HashMap<>();
-        options.put("view", "history");
-        options.put("transid", transid);
-
-        Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
-        if (intent != null) {
-            activity.startActivity(intent);
-        }
     }
 
     @Override

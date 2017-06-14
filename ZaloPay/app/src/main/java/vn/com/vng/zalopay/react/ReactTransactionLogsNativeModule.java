@@ -23,13 +23,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -37,7 +40,9 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.model.TransactionResult;
 
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_FAIL;
@@ -51,19 +56,24 @@ import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_TRANSACTION_N
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private TransactionStore.Repository mTransactionRepository;
+    private INavigator mNavigator;
     private final EventBus mEventBus;
     private final NotificationStore.Repository mNotificationRepository;
+    private AppResourceStore.Repository mResourceRepository;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private static final int ERR_CODE_OUT_OF_DATA = 2;
 
-    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext,
-                                     TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
+    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, INavigator navigator,
+                                     TransactionStore.Repository repository, AppResourceStore.Repository resourceRepository,
+                                     NotificationStore.Repository notificationRepository,
                                      EventBus eventBus) {
         super(reactContext);
         this.mTransactionRepository = repository;
         this.mEventBus = eventBus;
         this.mNotificationRepository = notificationRepository;
+        this.mResourceRepository = resourceRepository;
+        this.mNavigator = navigator;
 
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
@@ -343,6 +353,40 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 .subscribe(new TransactionLogSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void showTransactionDetail(final int appid, final String transid, final Promise promise) {
+        Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
+        Subscription subscription = mResourceRepository.existResource(appid)
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            Helpers.promiseResolveSuccess(promise, "");
+                            startPaymentApp(appid, transid);
+                        } else {
+                            Helpers.promiseResolveError(promise, -1, "App disabled");
+                        }
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void startPaymentApp(int appid, String transid) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Map<String, String> options = new HashMap<>();
+        options.put("view", "history");
+        options.put("transid", transid);
+
+        Intent intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
+        if (intent != null) {
+            activity.startActivity(intent);
+        }
     }
 
     private Observable<TransactionResult> resolveTransactionFail(

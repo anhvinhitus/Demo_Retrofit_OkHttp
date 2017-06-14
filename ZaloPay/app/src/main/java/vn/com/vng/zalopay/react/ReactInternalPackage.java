@@ -89,8 +89,8 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, resourceRepository, mNotificationRepository, mNetworkServiceWithRetry));
-        modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mNotificationRepository, mEventBus));
+        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, mNotificationRepository, mNetworkServiceWithRetry));
+        modules.add(new ReactTransactionLogsNativeModule(reactContext, navigator, mTransactionRepository, resourceRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mUser, mNotificationRepository, mEventBus));
 
