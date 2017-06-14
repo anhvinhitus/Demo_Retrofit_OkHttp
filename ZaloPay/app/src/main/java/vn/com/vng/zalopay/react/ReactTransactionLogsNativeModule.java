@@ -85,6 +85,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
+    public void getTransactionsSuccess(final int pageIndex, final int count, final Promise promise) {
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", ERR_CODE_SUCCESS.value());
+        promise.resolve(item);
+    }
+
+    @ReactMethod
     public void successfulTransactionWithTransTypes(final ReadableArray transTypes,
                                                     final String timeStamp,
                                                     final int offset,
