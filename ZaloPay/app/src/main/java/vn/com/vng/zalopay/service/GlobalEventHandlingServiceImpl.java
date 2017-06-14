@@ -20,11 +20,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.appresources.IFExceptionCallBack;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
 
 /**
  * Created by huuhoa on 6/11/16.
@@ -40,6 +41,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         this.mEventBus = eventBus;
         this.mEventBus.register(this);
         this.mAppRepository = appRepository;
+        this.mAppRepository.getException(ExceptionCallBack);
     }
 
     @Override
@@ -133,10 +135,19 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         if (!mAppRepository.existAppResource(event.mDownloadInfo.appid)) {
             return;
         }
-
         Timber.d("begin load config");
 
         ConfigUtil.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
         AndroidApplication.instance().initIconFont(true);
     }
+
+    private IFExceptionCallBack ExceptionCallBack = new IFExceptionCallBack() {
+        @Override
+        public void getEception(Exception e) {
+            if (e != null && e.getMessage().matches(".* " + "ENOSPC" + " .*")) {
+                enqueueMessage(SweetAlertDialog.WARNING_TYPE, "ĐÓNG", "Bộ nhớ đã đầy, không tải được dữ liệu.");
+            }
+
+        }
+    };
 }

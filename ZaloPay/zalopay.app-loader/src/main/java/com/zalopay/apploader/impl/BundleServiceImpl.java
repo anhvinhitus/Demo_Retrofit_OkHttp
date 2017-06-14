@@ -128,6 +128,7 @@ public class BundleServiceImpl implements BundleService {
             return true;
         } catch (Exception e) {
             Timber.w(e, "exception %s", e.getMessage());
+            mAppResourceRepository.exception(e);
             return false;
         }
     }

@@ -10,16 +10,13 @@ import com.zalopay.apploader.impl.BundleReactConfigExternalDev;
 import com.zalopay.apploader.impl.BundleReactConfigInternalDev;
 import com.zalopay.apploader.impl.BundleReactConfigRelease;
 import com.zalopay.apploader.impl.BundleServiceImpl;
-import com.zalopay.apploader.network.NetworkService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.data.api.DynamicUrlService;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
@@ -27,7 +24,6 @@ import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
 
 /**
  * Created by AnhHieu on 5/12/16.

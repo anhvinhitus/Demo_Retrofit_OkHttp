@@ -129,7 +129,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         mListApp.clear();
         mListApp.addAll(insideAppList);
         mListApp.addAll(Lists.transform(resources, InsideAppUtil::transform));
-        mView.refreshInsideApps(getTopRateApp(mListApp, SearchUtil.TopRateApp));
+        mView.refreshInsideApps(getTopRateApp(mListApp, SearchUtil.getTopRateApp()));
     }
 
     void filter(String s) {

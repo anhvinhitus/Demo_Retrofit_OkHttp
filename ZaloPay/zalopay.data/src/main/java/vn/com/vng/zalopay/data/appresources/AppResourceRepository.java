@@ -46,6 +46,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private long mLastTimeFetchApplication;
 
+    private IFExceptionCallBack ExceptionCallBack;
+
+    private Exception mException;
+
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
                                  AppResourceStore.LocalStorage localStorage,
@@ -391,4 +395,28 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         AppResourceEntity entity = mLocalStorage.get(appid);
         return entity != null && entity.downloadState >= DownloadState.STATE_SUCCESS;
     }
+
+    @Override
+    public void getException(IFExceptionCallBack exceptionCallBack) {
+        if (mException != null) {
+            exceptionCallBack.getEception(mException);
+        } else {
+            ExceptionCallBack = exceptionCallBack;
+        }
+
+    }
+
+
+    @Override
+    public Exception exception(Exception pException) {
+        if (ExceptionCallBack != null) {
+            ExceptionCallBack.getEception(pException);
+        } else {
+            mException = pException;
+        }
+        Timber.d("app show in home page: %s", pException.getMessage());
+        return null;
+    }
+
+
 }
