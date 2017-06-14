@@ -42,7 +42,6 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         this.mEventBus = eventBus;
         this.mEventBus.register(this);
         this.mAppRepository = appRepository;
-        this.mAppRepository.setException(mEventBus);
     }
 
     @Override
@@ -141,9 +140,8 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         ConfigUtil.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
         AndroidApplication.instance().initIconFont(true);
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe
     public void onExceptionEvent(ExceptionEvent event){
-   
         if (event != null && event.exception != null && event.exception.getMessage().matches(".* " + "ENOSPC" + " .*")) {
             enqueueMessage(SweetAlertDialog.WARNING_TYPE, "ĐÓNG", "Bộ nhớ đã đầy, không tải được dữ liệu.");
         }

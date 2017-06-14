@@ -78,8 +78,6 @@ public interface AppResourceStore {
         Observable<Void> resetStateResource(long appId);
         Boolean existAppResource(long appid);
 
-        void setException(EventBus eventBus);
-
         Exception exception(Exception pException);
 
     }

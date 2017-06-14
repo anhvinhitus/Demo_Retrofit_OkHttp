@@ -2,7 +2,8 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 
-import java.util.Arrays;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -57,7 +58,7 @@ public class AppResourceModule {
                                                              AppResourceStore.LocalStorage localStorage,
                                                              @Named("params_request_default") HashMap<String, String> paramsReq,
                                                              DownloadAppResourceTaskQueue taskQueue,
-                                                             OkHttpClient mOkHttpClient) {
+                                                             OkHttpClient mOkHttpClient, EventBus eventBus) {
 
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
@@ -65,7 +66,7 @@ public class AppResourceModule {
                 BuildConfig.VERSION_NAME,
                 Collections.singletonList(PaymentAppConfig.Constants.RED_PACKET),
                 PaymentAppConfig.APP_RESOURCE_LIST,
-                PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST
+                PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST, eventBus
         );
     }
 }

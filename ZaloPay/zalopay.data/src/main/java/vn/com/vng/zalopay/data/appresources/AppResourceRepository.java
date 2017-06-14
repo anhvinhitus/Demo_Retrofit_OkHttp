@@ -62,7 +62,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  String appVersion,
                                  List<Long> excludeDownloadApps,
                                  List<AppResource> listDefaultApp,
-                                 List<AppResource> listExcludeApp
+                                 List<AppResource> listExcludeApp,
+                                 EventBus eventBus
     ) {
         this.mDataMapper = mapper;
         this.mRequestService = requestService;
@@ -74,9 +75,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mDownloadAppResource = download;
         this.mAppVersion = appVersion;
         this.mListAppIdExcludeDownload = excludeDownloadApps;
-
         this.mListDefaultApp = listDefaultApp;
         this.mListExcludeApp = listExcludeApp;
+        this.mEventBus = eventBus;
     }
 
     private Boolean ensureResourceAvailable() {
@@ -398,22 +399,13 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         return entity != null && entity.downloadState >= DownloadState.STATE_SUCCESS;
     }
 
-    @Override
-    public void setException(EventBus eventBus) {
-        if (mException != null) {
-            eventBus.post(new ExceptionEvent(mException));
-        } else {
-            mEventBus = eventBus;
-        }
-    }
+
 
 
     @Override
     public Exception exception(Exception pException) {
         if (mEventBus != null) {
             mEventBus.post(new ExceptionEvent(pException));
-        } else {
-            mException = pException;
         }
         Timber.d("app show in home page: %s", pException.getMessage());
         return null;
