@@ -1,9 +1,4 @@
-Zalo Pay (Sandbox v2.14.0 - build 269) - Released on 2017-06-15 08:59
-+ [SDK] Add catch exception load bank list on app startup by vo van chuc (#d6987bd)
-+ [APP] Clear c by lytm (#920d9de)
-+ [APP] Update Xử lý Exception ENOSPC by lytm (#d577a0f)
-+ [APP] Xử lý Exception ENOSPC task#562 by lytm (#bba9258)
-+ [React module] Fix lỗi loading react native khi lần đầu chạy app by vo van chuc (#41b7644)
-+ [Promotion] task#587 [Android] Lỗi gọi launchApp với internal app by datnt10 (#3843b2f)
-+ [React] Change showTransactionDetail function to module ZaloPayTransactionLogs by khattn (#e93fc27)
-+ [React] Return value when check show detail merchant app by khattn (#337efdc)
+Zalo Pay (Sandbox v2.14.0 - build 270) - Released on 2017-06-15 09:51
++ [Withdraw] Bỏ check điều kiện user profile level by vo van chuc (#2df7a0c)
++ [APP] add EventBus in AppResoureRepositoryTest by lytm (#d315cc0)
++ [react-native] update internal resource by phucpv (#4a07e12)
