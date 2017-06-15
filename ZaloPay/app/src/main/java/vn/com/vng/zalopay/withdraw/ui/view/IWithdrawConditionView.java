@@ -16,8 +16,6 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 public interface IWithdrawConditionView extends ILoadDataView {
     Activity getActivity();
 
-    void setProfileValid(boolean isValid);
-
     void refreshListCardSupport(List<BankConfig> list);
 
     void hideLinkCardNote();

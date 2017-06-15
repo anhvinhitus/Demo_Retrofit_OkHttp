@@ -44,25 +44,8 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @BindView(R.id.tvAccountNote)
     View tvAddAccount;
 
-    @BindView(R.id.tvUserNote)
-    View tvUserNote;
-
-    @BindView(R.id.chkPhone)
-    CheckBox chkPhone;
-
-    @BindView(R.id.chkPin)
-    CheckBox chkPin;
-
-    @BindView(R.id.tvUpdateProfile)
-    View tvUpdateProfile;
-
     CardSupportWithdrawFragment mCardSupportFragment;
     AccountSupportWithdrawFragment mAccSupportWithdrawFragment;
-
-    @OnClick(R.id.tvUpdateProfile)
-    public void onClickUpdateProfile() {
-        navigator.startUpdateProfileLevel2Activity(getActivity());
-    }
 
     @OnClick(R.id.tvAddCard)
     public void onClickAddCard() {
@@ -124,22 +107,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         mAccSupportWithdrawFragment = (AccountSupportWithdrawFragment)
                 getChildFragmentManager().findFragmentById(R.id.accSupportWithdrawFragment);
         showLoading();
-    }
-
-    @Override
-    public void setProfileValid(boolean isValid) {
-        Timber.d("setProfileValid[%s]", isValid);
-        if (isValid) {
-            chkPhone.setChecked(true);
-            chkPin.setChecked(true);
-            tvUserNote.setVisibility(View.GONE);
-            tvUpdateProfile.setVisibility(View.GONE);
-        } else {
-            chkPhone.setChecked(false);
-            chkPin.setChecked(false);
-            tvUserNote.setVisibility(View.VISIBLE);
-            tvUpdateProfile.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override

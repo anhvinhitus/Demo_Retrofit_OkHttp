@@ -49,7 +49,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                 .subscribe(new DefaultSubscriber<List<BankConfig>>() {
                     @Override
                     public void onError(Throwable e) {
-                        Timber.d("validLinkCard onError");
+                        Timber.d("validLinkCard onError %s", e);
                         String message = ErrorMessageFactory.create(getActivity().getApplicationContext(), e);
                         if (listenerValid != null) {
                             listenerValid.onError(message);

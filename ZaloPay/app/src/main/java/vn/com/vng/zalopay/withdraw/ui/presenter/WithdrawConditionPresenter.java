@@ -73,9 +73,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
         if (mView == null) {
             return;
         }
-        final boolean isProfileValid = isValidProfile();
-        mView.setProfileValid(isProfileValid);
-
         validLinkCard(mIListenerValid);
     }
 
