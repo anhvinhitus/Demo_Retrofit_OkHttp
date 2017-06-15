@@ -114,8 +114,8 @@ public class SDKApplication extends Application {
                     .subscribe(pObserver);
             //load bank list
             Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
-                    .subscribe(bankConfigResponse -> {
-                    });
+                    .subscribe(bankConfigResponse -> Timber.d("load bank list finish %s", bankConfigResponse),
+                            throwable -> Timber.e("load bank list on error %s", throwable));
             subscription[0] = subscription0;
             //load app zalopay with 4 transtype
             Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
