@@ -1,12 +1,10 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -42,10 +40,7 @@ public class InputItem extends AbstractItem<InputItem.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
-        String fee_desc = mContext.getString(R.string.zpw_string_fee_free);
-        if (channel.hasFee() && channel.isBankAccount()) {
-            fee_desc = StringUtil.formatVnCurrence(String.valueOf(channel.totalfee));
-        }
+        String fee_desc = getFeeDesc(channel);
         if (channel.isBankAccount() && userInfo.level < BuildConfig.level_allow_bankaccount) {
             //check map table for allow
             int iCheck = userInfo.getPermissionByChannelMap(channel.pmcid, transtype);
@@ -57,21 +52,13 @@ public class InputItem extends AbstractItem<InputItem.ViewHolder> {
                 fee_desc = GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level);
             }
         }
-        if (!TextUtils.isEmpty(fee_desc)
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_free))
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_upgrade_level))) {
-            fee_desc = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), fee_desc);
-        }
+        fee_desc = formatFeeDesc(fee_desc);
         holder.fee_textview.setText(fee_desc);
-
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {
-        View line;
-
         public ViewHolder(View view) {
             super(view);
-            line = view.findViewById(R.id.line);
         }
     }
 }

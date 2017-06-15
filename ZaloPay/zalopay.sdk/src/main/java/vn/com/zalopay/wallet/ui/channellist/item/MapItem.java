@@ -34,26 +34,17 @@ public class MapItem extends AbstractItem<MapItem.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
-        String fee_desc = mContext.getString(R.string.zpw_string_fee_free);
-        if (channel.hasFee()) {
-            fee_desc = StringUtil.formatVnCurrence(String.valueOf(channel.totalfee));
-        }
+        String fee_desc = getFeeDesc(channel);
         if (channel.isMapCardChannel() && user_level < BuildConfig.level_allow_cardmap) {
             fee_desc = mContext.getString(R.string.zpw_string_fee_upgrade_level);
         }
-        if (!TextUtils.isEmpty(fee_desc)
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_free))
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_upgrade_level))) {
-            fee_desc = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), fee_desc);
-        }
+        fee_desc = formatFeeDesc(fee_desc);
         holder.fee_textview.setText(fee_desc);
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {
-        View line;
         public ViewHolder(View view) {
             super(view);
-            line = view.findViewById(R.id.line);
         }
     }
 }

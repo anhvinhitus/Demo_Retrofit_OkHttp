@@ -150,6 +150,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         if (getActivity() != null) {
             getActivity().setTitle(pTitle);
             DialogManager.showProcessDialog(getActivity(), () -> {
+                showError(getResources().getString(R.string.zingpaysdk_alert_network_error));
             });
         }
     }

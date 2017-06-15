@@ -77,7 +77,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private ChannelProxy mChannelProxy;
     private List<Object> mChannelList = new ArrayList<>();
     private BaseChannelInjector baseChannelInjector;
-    private int mPreviousPosition;
+    private int mPreviousPosition = -1;
     private Action1<AppInfo> appInfoSubscriber = new Action1<AppInfo>() {
         @Override
         public void call(AppInfo appInfo) {

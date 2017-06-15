@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/channel_relativelayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/channel_relativelayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/white">
@@ -16,7 +16,7 @@
         android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
         android:scaleType="centerInside"
         android:src="@drawable/ic_select"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/icon_imageview"
