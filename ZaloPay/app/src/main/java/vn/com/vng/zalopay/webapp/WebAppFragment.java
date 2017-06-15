@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
+import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import javax.inject.Inject;
@@ -37,7 +39,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  * Created by chucvv on 8/28/16.
  * WebAppFragment
  */
-public class WebAppFragment extends BaseFragment implements IWebViewListener, IWebAppView {
+public class WebAppFragment extends BaseFragment implements IWebViewListener, IWebAppView, SwipeRefreshLayout.OnRefreshListener {
 
     public static WebAppFragment newInstance(Bundle bundle) {
         WebAppFragment fragment = new WebAppFragment();
@@ -78,6 +80,9 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @BindView(R.id.promotion_tv_title)
     TextView tvTitle;
 
+    @BindView(R.id.promotion_refresh_layout)
+    MultiSwipeRefreshLayout refreshLayout;
+
     @OnClick(R.id.promotion_btn_back)
     public void onClickBack() {
         onBackPressed();
@@ -106,6 +111,9 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     protected void initPresenter(View view) {
         mPresenter.attachView(WebAppFragment.this);
         mPresenter.initWebView(webView);
+
+        refreshLayout.setSwipeableChildren(R.id.webview);
+        refreshLayout.setOnRefreshListener(this);
     }
 
     protected void loadDefaultWebView() {
@@ -200,7 +208,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     @Override
     public void onReceivedTitle(String title) {
-        getActivity().setTitle(title);
+//        getActivity().setTitle(title);
         tvTitle.setText(title);
     }
 
@@ -237,6 +245,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
                 ((HomeActivity) getActivity()).setHiddenTabbar(hide);
             }
         });
+    }
+
+    @Override
+    public void setRefreshing(boolean setRefresh) {
+        refreshLayout.setRefreshing(setRefresh);
     }
 
     public void showError(String message) {
@@ -352,6 +365,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
         mBottomSheetDialog.dismiss();
         mBottomSheetDialog = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        mPresenter.onRequestRefreshPage();
     }
 }
 

@@ -337,6 +337,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         mWebViewProcessor.refreshWeb(getActivity());
         mView.hideError();
         mView.dismissBottomSheet();
+        mView.setRefreshing(false);
     }
 
     public boolean onBackPressed() {

@@ -28,16 +28,17 @@
                 app:iconSize="@dimen/font_size_toolbar_icon" />
         </LinearLayout>
 
-
         <TextView
             android:id="@+id/promotion_tv_title"
             style="@style/Toolbar.TitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
             android:layout_toLeftOf="@+id/promotion_btn_share"
             android:layout_toRightOf="@+id/promotion_btn_back"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
             android:text="@string/promotion_title" />
 
         <LinearLayout
@@ -83,12 +84,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <vn.com.vng.webapp.framework.ZPWebViewApp
-                android:id="@+id/webview"
+            <com.zalopay.ui.widget.MultiSwipeRefreshLayout
+                android:id="@+id/promotion_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
+                <vn.com.vng.webapp.framework.ZPWebViewApp
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
         </FrameLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

@@ -30,4 +30,6 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
     void setHiddenShareButton(boolean hide);
 
     void setHiddenTabBar(boolean hide);
+
+    void setRefreshing(boolean setRefresh);
 }
