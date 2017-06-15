@@ -95,6 +95,7 @@ dependencies {
     compile project(":zalopay.network")
     compile project(':ui.widget')
     compile project(':zalopay.utility')
+    compile project(':zalopay.data')
 
     compile libs.zalopay_feedback
 

@@ -246,8 +246,6 @@ public class ChannelProxy extends SingletonBase {
             mPaymentInfoHelper.paymentInfo.setMapBank(null);
             AdapterBase.existedMapCard = false;
         }
-        //calculate fee and total amount order
-        mChannel.calculateFee(mPaymentInfoHelper.getAmount());
         mPaymentInfoHelper.getOrder().populateFee(mChannel);
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));

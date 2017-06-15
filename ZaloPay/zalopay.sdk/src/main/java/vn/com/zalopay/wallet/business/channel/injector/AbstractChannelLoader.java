@@ -24,33 +24,41 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
-public abstract class BaseChannelInjector {
+public abstract class AbstractChannelLoader {
     public static final int MIN_VALUE_CHANNEL = 1000000000;
     public static final int MAX_VALUE_CHANNEL = -1;
     public ReplaySubject<PaymentChannel> source = ReplaySubject.create();
     protected List<String> pmcConfigList = new ArrayList<>();
-    protected PaymentInfoHelper mPaymentInfoHelper;
-    private double mMinValue = MIN_VALUE_CHANNEL,
-            mMaxValue = MAX_VALUE_CHANNEL;
+    @TransactionType
+    int mTranstype;
+    private double mMinValue = MIN_VALUE_CHANNEL, mMaxValue = MAX_VALUE_CHANNEL;
+    private long mAppId;
+    private String mUserId;
+    private long mAmount;
+    private long mBalance;
 
-    public BaseChannelInjector(PaymentInfoHelper paymentInfoHelper) {
-        mPaymentInfoHelper = paymentInfoHelper;
+    public AbstractChannelLoader(long pAppId, String pUserId, long pAmount, long pBalance, @TransactionType int pTranstype) {
+        this.mAppId = pAppId;
+        this.mUserId = pUserId;
+        this.mAmount = pAmount;
+        this.mBalance = pBalance;
+        this.mTranstype = pTranstype;
     }
 
     /***
      * adapter create channel injector
      * @return
      */
-    public static BaseChannelInjector createChannelInjector(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isWithDrawTrans()) {
-            return new WithDrawChannelInjector(paymentInfoHelper);
+    public static AbstractChannelLoader createChannelInjector(long pAppId, String pUserId, long pAmount, long pBalance, @TransactionType int pTranstype) {
+        if (pTranstype == TransactionType.WITHDRAW) {
+            return new WithDrawChannelLoader(pAppId, pUserId, pAmount, pBalance, pTranstype);
         } else {
-            return new PaymentChannelInjector(paymentInfoHelper);
+            return new PaymentChannelLoader(pAppId, pUserId, pAmount, pBalance, pTranstype);
         }
     }
 
@@ -86,12 +94,12 @@ public abstract class BaseChannelInjector {
                 }
                 PaymentChannel channel = new PaymentChannel(activeChannel);
                 if (channel.isBankAccount()
-                        && BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
+                        && BankAccountHelper.hasBankAccountOnCache(mUserId, CardType.PVCB)) {
                     continue;//user has linked vietcombank account , no need show bank account channel
                 }
                 if (channel.isEnable()) {
-                    channel.calculateFee(mPaymentInfoHelper.getAmount());//calculate fee of this channel
-                    channel.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
+                    channel.calculateFee(mAmount);//calculate fee of this channel
+                    channel.checkPmcOrderAmount(mAmount);//check amount is support or not
                 }
                 //check maintenance for cc
                 if (channel.isEnable() && ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
@@ -116,7 +124,7 @@ public abstract class BaseChannelInjector {
     protected void getMapBankAccount() throws Exception {
         try {
             //get list of mapped bank account from cached.
-            String mapBankAccountKeyList = SharedPreferencesManager.getInstance().getBankAccountKeyList(mPaymentInfoHelper.getUserId());
+            String mapBankAccountKeyList = SharedPreferencesManager.getInstance().getBankAccountKeyList(mUserId);
             if (TextUtils.isEmpty(mapBankAccountKeyList)) {
                 Log.d(this, "get map bank account from cache is empty");
                 return;
@@ -127,7 +135,7 @@ public abstract class BaseChannelInjector {
                     continue;
                 }
                 //get card info from cache.
-                String mapObject = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), mapCardID);
+                String mapObject = SharedPreferencesManager.getInstance().getMap(mUserId, mapCardID);
                 if (TextUtils.isEmpty(mapObject)) {
                     continue;
                 }
@@ -137,10 +145,10 @@ public abstract class BaseChannelInjector {
                 }
 
                 MiniPmcTransType activeChannel = null;
-                if (mPaymentInfoHelper.isWithDrawTrans()) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), bankAccount.bankcode), MiniPmcTransType.class);
+                if (mTranstype == TransactionType.WITHDRAW) {
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mAppId, mTranstype, bankAccount.bankcode), MiniPmcTransType.class);
                 } else if (BankAccountHelper.isBankAccount(bankAccount.bankcode)) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), bankAccount.bankcode), MiniPmcTransType.class);
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(mAppId, mTranstype, bankAccount.bankcode), MiniPmcTransType.class);
                 }
                 Log.d(this, "active channel ", activeChannel);
                 if (activeChannel != null) {
@@ -159,11 +167,11 @@ public abstract class BaseChannelInjector {
 
                     ChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
                     //calculate fee
-                    channel.calculateFee(mPaymentInfoHelper.getAmount());
+                    channel.calculateFee(mAmount);
 
                     //check amount is support or not
                     if (channel.isEnable()) {
-                        channel.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
+                        channel.checkPmcOrderAmount(mAmount);//check amount is support or not
                     }
                     send(channel);
                 }
@@ -195,7 +203,7 @@ public abstract class BaseChannelInjector {
     protected void getMapCard() throws Exception {
         try {
             //get list of mapped card from cached.
-            String mappCardIdList = SharedPreferencesManager.getInstance().getMapCardKeyList(mPaymentInfoHelper.getUserId());
+            String mappCardIdList = SharedPreferencesManager.getInstance().getMapCardKeyList(mUserId);
             if (TextUtils.isEmpty(mappCardIdList)) {
                 Log.d(this, "get map card is null");
                 return;
@@ -205,7 +213,7 @@ public abstract class BaseChannelInjector {
                 if (TextUtils.isEmpty(mapCardID)) {
                     continue;
                 }
-                String strMapCard = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), mapCardID); //get card info from cache
+                String strMapCard = SharedPreferencesManager.getInstance().getMap(mUserId, mapCardID); //get card info from cache
                 if (TextUtils.isEmpty(strMapCard)) {
                     continue;
                 }
@@ -215,12 +223,12 @@ public abstract class BaseChannelInjector {
                 }
                 Log.d(this, "map card ", mapCard);
                 MiniPmcTransType activeChannel;
-                if (mPaymentInfoHelper.isWithDrawTrans()) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
+                if (mTranstype == TransactionType.WITHDRAW) {
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
                 } else if (BuildConfig.CC_CODE.equals(mapCard.bankcode)) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
                 } else {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), mapCard.bankcode), MiniPmcTransType.class);
+                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
                 }
                 Log.d(this, "active channel is", activeChannel);
                 if (activeChannel != null) {
@@ -237,11 +245,11 @@ public abstract class BaseChannelInjector {
                     channel.bankcode = mapCard.bankcode;
 
                     //calculate fee
-                    channel.calculateFee(mPaymentInfoHelper.getAmount());
+                    channel.calculateFee(mAmount);
 
                     //check amount is support or not
                     if (channel.isEnable()) {
-                        channel.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
+                        channel.checkPmcOrderAmount(mAmount);//check amount is support or not
                     }
 
                     if (BuildConfig.CC_CODE.equals(channel.bankcode)) {
@@ -281,7 +289,7 @@ public abstract class BaseChannelInjector {
 
     protected void send(PaymentChannel pChannel) {
         if (pChannel != null) {
-            if (this instanceof WithDrawChannelInjector) {
+            if (this instanceof WithDrawChannelLoader) {
                 processWithDrawCase(pChannel);
             }
             //sometimes network not stable, so 2 channels same in listview, we must exclude it if it existed
@@ -303,9 +311,8 @@ public abstract class BaseChannelInjector {
         }
 
         //check fee + amount <= balance
-        long balance = mPaymentInfoHelper.getBalance();
-        double amount_total = mPaymentInfoHelper.getAmount() + pChannel.totalfee;
-        if (balance < amount_total) {
+        double amount_total = mAmount + pChannel.totalfee;
+        if (mBalance < amount_total) {
             pChannel.setAllowByAmountAndFee(false);
         }
     }
@@ -336,7 +343,7 @@ public abstract class BaseChannelInjector {
         if (pChannel == null) {
             return;
         }
-        if (pmcConfigList == null || !pmcConfigList.contains(pChannel.getPmcKey(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), pChannel.pmcid))) {
+        if (pmcConfigList == null || !pmcConfigList.contains(pChannel.getPmcKey(mAppId, mTranstype, pChannel.pmcid))) {
             pChannel.setStatus(PaymentChannelStatus.DISABLE);
         }
     }
@@ -361,7 +368,7 @@ public abstract class BaseChannelInjector {
         try {
             pmcConfigList = SDKApplication.getApplicationComponent()
                     .appInfoInteractor()
-                    .getPmcTranstypeKeyList(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype());
+                    .getPmcTranstypeKeyList(mAppId, mTranstype);
             detectChannel();
         } catch (Exception ex) {
             throw ex;

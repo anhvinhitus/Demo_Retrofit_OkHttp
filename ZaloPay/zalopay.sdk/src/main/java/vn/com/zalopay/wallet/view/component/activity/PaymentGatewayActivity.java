@@ -24,7 +24,7 @@ import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
+import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -40,7 +40,6 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
-import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
@@ -75,7 +74,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         }
     };
     protected ChannelAdapter mChannelAdapter;
-    private BaseChannelInjector baseChannelInjector;
+    private AbstractChannelLoader baseChannelInjector;
     private RecyclerView mChannelRecyclerView;
 
     //prevent click duplicate
@@ -129,8 +128,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     protected void initializeChannelAdapter() {
-        baseChannelInjector = BaseChannelInjector.createChannelInjector(mPaymentInfoHelper);
-        //mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview, mPaymentInfoHelper);
+        //baseChannelInjector = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper);
         mChannelRecyclerView.setAdapter(mChannelAdapter);
     }
 

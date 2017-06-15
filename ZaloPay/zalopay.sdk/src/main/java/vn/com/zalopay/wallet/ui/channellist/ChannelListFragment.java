@@ -4,29 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import java.util.List;
+
+import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
@@ -49,22 +52,14 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     };
     private RecyclerView channel_list_recycler;
     private String mOriginTitle;
-    private TextView amount_txt;
-    private View amount_linearlayout;
+
+    private View order_amount_linearlayout;
+    private TextView order_amount_txt;
+    private TextView order_description_txt;
+    private View appname_relativelayout;
     private TextView appname_txt;
-    private View app_info_module;
-    private View transfer_info_module;
-    private TextView item_name;
-    private TextView receiver_zaloname_txt;
-    private View receiver_zalopay_relativelayout;
-    private View receiver_zalopayname_relativelayout;
-    private TextView receiver_zalopayname_txt;
-    private TextView transfer_description_txt;
-    private TextView transfer_amount_txt;
-    private View transfer_fee_relativelayout;
-    private View transfer_amounttotal_relativelayout;
-    private TextView transfer_fee_txt;
-    private TextView transfer_amounttotal_txt;
+    private TextView order_fee_txt;
+    private LinearLayout item_detail_linearlayout;
     private Button confirm_button;
 
     public static BaseFragment newInstance() {
@@ -86,23 +81,14 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     protected void onViewBound(View view) {
         super.onViewBound(view);
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
-        amount_txt = (TextView) view.findViewById(R.id.amount_txt);
-        amount_linearlayout = view.findViewById(R.id.amount_linearlayout);
-        appname_txt = (TextView) view.findViewById(R.id.appname_txt);
-        app_info_module = view.findViewById(R.id.app_info_module);
-        transfer_info_module = view.findViewById(R.id.transfer_info_module);
-        item_name = (TextView) view.findViewById(R.id.item_name);
 
-        receiver_zalopay_relativelayout = view.findViewById(R.id.receiver_zaloname_relativelayout);
-        receiver_zaloname_txt = (TextView) view.findViewById(R.id.receiver_zaloname_txt);
-        receiver_zalopayname_relativelayout = view.findViewById(R.id.receiver_zalopayname_relativelayout);
-        receiver_zalopayname_txt = (TextView) view.findViewById(R.id.receiver_zalopayname_txt);
-        transfer_description_txt = (TextView) view.findViewById(R.id.transfer_description_txt);
-        transfer_amount_txt = (TextView) view.findViewById(R.id.transfer_amount_txt);
-        transfer_fee_relativelayout = view.findViewById(R.id.transfer_fee_relativelayout);
-        transfer_amounttotal_relativelayout = view.findViewById(R.id.transfer_amounttotal_relativelayout);
-        transfer_fee_txt = (TextView) view.findViewById(R.id.transfer_fee_txt);
-        transfer_amounttotal_txt = (TextView) view.findViewById(R.id.transfer_amounttotal_txt);
+        order_amount_linearlayout = view.findViewById(R.id.order_amount_linearlayout);
+        order_amount_txt = (TextView) view.findViewById(R.id.order_amount_txt);
+        order_description_txt = (TextView) view.findViewById(R.id.order_description_txt);
+        appname_relativelayout = view.findViewById(R.id.appname_relativelayout);
+        appname_txt = (TextView) view.findViewById(R.id.appname_txt);
+        order_fee_txt = (TextView) view.findViewById(R.id.order_fee_txt);
+        item_detail_linearlayout = (LinearLayout) view.findViewById(R.id.item_detail_linearlayout);
 
         confirm_button = (Button) view.findViewById(R.id.confirm_button);
         confirm_button.setOnClickListener(mConfirmClick);
@@ -121,19 +107,10 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     protected void setupRecyclerView() {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        //channel_list_recycler.setHasFixedSize(true);
+        channel_list_recycler.setHasFixedSize(true);
         channel_list_recycler.setLayoutManager(mLayoutManager);
-        //channel_list_recycler.setItemAnimator(new DefaultItemAnimator());
+        channel_list_recycler.setItemAnimator(new DefaultItemAnimator());
         channel_list_recycler.addOnItemTouchListener(new RecyclerTouchListener(getContext(), channel_list_recycler));
-    }
-
-    protected void showOrderAmount(long amount) {
-        if (amount > 0) {
-            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(amount));
-            amount_txt.setText(txtAmount);
-        } else {
-            amount_linearlayout.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -187,79 +164,84 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void renderAppInfo(AppInfo appInfo) {
-        boolean hasAppName = appInfo != null && !TextUtils.isEmpty(appInfo.appname);
-        if (hasAppName) {
-            appname_txt.setText(appInfo.appname);
+    public void renderDynamicItemDetail(List<NameValuePair> nameValuePairList) {
+        if(nameValuePairList == null){
+            return;
         }
-        appname_txt.setVisibility(hasAppName ? View.VISIBLE : View.GONE);
+        for (int i = 0; i < nameValuePairList.size(); i++) {
+            NameValuePair nameValuePair = nameValuePairList.get(i);
+            if (nameValuePair != null) {
+                RelativeLayout relativeLayout = new RelativeLayout(getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.bottomMargin = (int) getResources().getDimension(R.dimen.zpw_padding_app_info_left_right);
+                relativeLayout.setLayoutParams(params);
+                if (!TextUtils.isEmpty(nameValuePair.key)) {
+                    TextView name_txt = new TextView(getContext());
+                    name_txt.setText(nameValuePair.key);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    name_txt.setLayoutParams(layoutParams);
+                    relativeLayout.addView(name_txt);
+                }
+                if (!TextUtils.isEmpty(nameValuePair.value)) {
+                    TextView value_txt = new TextView(getContext());
+                    value_txt.setText(nameValuePair.value);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    value_txt.setLayoutParams(layoutParams);
+                    relativeLayout.addView(value_txt);
+                }
+                item_detail_linearlayout.addView(relativeLayout);
+            }
+        }
+        item_detail_linearlayout.setVisibility(nameValuePairList.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
-    public void renderOrderInfo(UserInfo userInfo, AbstractOrder order, @TransactionType int transtype) {
-        switch (transtype) {
-            case TransactionType.MONEY_TRANSFER:
-                app_info_module.setVisibility(View.GONE);
-                transfer_info_module.setVisibility(View.VISIBLE);
-                renderTranferMoneyInfo(userInfo, order);
-                renderFee(order);
-                break;
-            case TransactionType.WITHDRAW:
-                item_name.setText(GlobalData.getStringResource(RS.string.zpw_string_withdraw_description));
-                break;
-            default:
-                if (order != null) {
-                    item_name.setText(order.description);
-                }
-            case TransactionType.LINK:
-                break;
-            case TransactionType.PAY:
-                break;
-            case TransactionType.TOPUP:
-                break;
+    public void renderAppInfo(String appName) {
+        boolean hasAppName = !TextUtils.isEmpty(appName);
+        if (hasAppName) {
+            appname_txt.setText(appName);
         }
+        appname_relativelayout.setVisibility(hasAppName ? View.VISIBLE : View.GONE);
     }
 
-    private void renderFee(AbstractOrder order) {
-        boolean hasFee = order.fee > 0;
-        if (hasFee) {
-            String formatPrice = StringUtil.formatVnCurrence(String.valueOf(order.fee));
-            transfer_fee_txt.setText(formatPrice);
-            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount_total));
-            transfer_amounttotal_txt.setText(txtAmount);
+    @Override
+    public void renderOrderFee(double total_amount, double fee) {
+        if (fee > 0) {
+            String txtFee = StringUtil.formatVnCurrence(String.valueOf(fee));
+            order_fee_txt.setText(txtFee);
+        } else {
+            order_fee_txt.setText(getResources().getString(R.string.sdk_order_fee_free));
         }
-        transfer_fee_relativelayout.setVisibility(hasFee ? View.VISIBLE : View.GONE);
-        transfer_amounttotal_relativelayout.setVisibility(hasFee ? View.VISIBLE : View.GONE);
+        //order amount
+        boolean hasAmount = total_amount > 0;
+        if (hasAmount) {
+            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
+            order_amount_txt.setText(txtAmount);
+        }
+        order_amount_linearlayout.setVisibility(hasAmount ? View.VISIBLE : View.GONE);
     }
 
-    private void renderTranferMoneyInfo(UserInfo userInfo, AbstractOrder order) {
-        //receiver zalo name
-        boolean hasZaloName = !TextUtils.isEmpty(userInfo.zalo_name);
-        if (hasZaloName) {
-            receiver_zaloname_txt.setText(userInfo.zalo_name);
+    @Override
+    public void renderOrderInfo(AbstractOrder order) {
+        if (order == null) {
+            Log.d(this, "order is null - skip render order info");
+            return;
         }
-        receiver_zalopay_relativelayout.setVisibility(hasZaloName ? View.VISIBLE : View.GONE);
-
-        //zalopay name
-        boolean hasZaloPayName = !TextUtils.isEmpty(userInfo.zalopay_name);
-        if (hasZaloPayName) {
-            receiver_zalopayname_txt.setText(userInfo.zalopay_name);
-        }
-        receiver_zalopayname_relativelayout.setVisibility(hasZaloPayName ? View.VISIBLE : View.GONE);
-
-        //description
+        //order desc
         boolean hasDesc = !TextUtils.isEmpty(order.description);
         if (hasDesc) {
-            transfer_description_txt.setText(order.description);
+            order_description_txt.setText(order.description);
         }
-        transfer_description_txt.setVisibility(hasDesc ? View.VISIBLE : View.GONE);
-
-        //amount
-        if (order.amount > 0) {
-            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount));
-            transfer_amount_txt.setText(txtAmount);
-        }
-
+        order_description_txt.setVisibility(hasDesc ? View.VISIBLE : View.GONE);
+        //order amount
+        order.amount_total = order.amount + order.fee;
+        renderOrderFee(order.amount_total, order.fee);
     }
 
     @Override

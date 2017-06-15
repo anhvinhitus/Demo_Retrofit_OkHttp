@@ -7,7 +7,7 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
+import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -43,8 +43,8 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                     int transtype = miniPmcTransTypeResponse.transtype;
                     List<MiniPmcTransType> miniPmcTransTypeList = miniPmcTransTypeResponse.transtypes;
 
-                    minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
-                    maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
+                    minValue = AbstractChannelLoader.MIN_VALUE_CHANNEL;
+                    maxValue = AbstractChannelLoader.MAX_VALUE_CHANNEL;
                     ArrayList<String> transtypePmcIdList = new ArrayList<>();
 
                     String appInfoTranstypeKey = getTranstypeCheckSumKey(pAppId, transtype);
@@ -85,11 +85,11 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                     Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used when user input amount
                     if (transtype == TransactionType.MONEY_TRANSFER || transtype == TransactionType.TOPUP || transtype == TransactionType.WITHDRAW) {
-                        if (minValue != BaseChannelInjector.MIN_VALUE_CHANNEL) {
+                        if (minValue != AbstractChannelLoader.MIN_VALUE_CHANNEL) {
                             mSharedPreferences.setMinValueChannel(String.valueOf(transtype), minValue);
                             Log.d(this, "save min value " + minValue + " transtype " + transtype);
                         }
-                        if (maxValue != BaseChannelInjector.MAX_VALUE_CHANNEL) {
+                        if (maxValue != AbstractChannelLoader.MAX_VALUE_CHANNEL) {
                             mSharedPreferences.setMaxValueChannel(String.valueOf(transtype), maxValue);
                             Log.d(this, "save max value " + maxValue + " transtype " + transtype);
                         }

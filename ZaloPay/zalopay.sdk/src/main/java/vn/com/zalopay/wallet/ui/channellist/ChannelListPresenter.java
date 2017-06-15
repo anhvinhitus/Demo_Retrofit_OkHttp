@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,13 +19,15 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
-import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
+import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -65,7 +68,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     @Inject
     public IAppInfo mAppInfoInteractor;
     public Action1<Throwable> mBankListException = throwable -> {
-        Log.d(this, "load appinfo on error", throwable);
+        Log.d(this, "load bank list error", throwable);
         String message = TransactionHelper.getMessage(throwable);
         if (TextUtils.isEmpty(message)) {
             message = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
@@ -76,24 +79,26 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private ChannelListAdapter mChannelAdapter;
     private ChannelProxy mChannelProxy;
     private List<Object> mChannelList = new ArrayList<>();
-    private BaseChannelInjector baseChannelInjector;
+    private AbstractChannelLoader mChannelLoader;
     private int mPreviousPosition = -1;
     private Action1<AppInfo> appInfoSubscriber = new Action1<AppInfo>() {
         @Override
         public void call(AppInfo appInfo) {
-            Log.d(this, "load appinfo success", appInfo);
+            Log.d(this, "load app info success", appInfo);
             if (appInfo == null || !appInfo.isAllow()) {
                 getViewOrThrow().showAppInfoNotFoundDialog();
                 return;
             }
-            if (!mPaymentInfoHelper.isWithDrawTrans()) {
-                getViewOrThrow().renderAppInfo(appInfo);
+            String appName = TransactionHelper.getAppNameByTranstype(getViewOrThrow().getContext(), mPaymentInfoHelper.getTranstype());
+            if (TextUtils.isEmpty(appName)) {
+                appName = appInfo.appname;
             }
+            getViewOrThrow().renderAppInfo(appName);
             loadStaticReload();
         }
     };
     private Action1<Throwable> appInfoException = throwable -> {
-        Log.d(this, "load appinfo on error", throwable);
+        Log.d(this, "load app info on error", throwable);
         getViewOrThrow().hideLoading();
         //update payment status depend on api code from server
         if (throwable instanceof RequestException) {
@@ -173,6 +178,12 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
         setSelectChannel(pPosition);
         mChannelAdapter.notifyBinderItemChanged(pPosition);
+        //update fee
+        if (pChannel.hasFee()) {
+            double fee = pChannel.totalfee;
+            double total_amount = mPaymentInfoHelper.getAmount() + fee;
+            getViewOrThrow().renderOrderFee(total_amount, fee);
+        }
 
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
@@ -217,8 +228,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     private void paymentInfoReady() {
         getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans());
-        getViewOrThrow().showOrderAmount(mPaymentInfoHelper.getAmount());
-        getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getUserInfo(), mPaymentInfoHelper.getOrder(), mPaymentInfoHelper.getTranstype());
+        getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
+        renderItemDetail();
         //init channel proxy
         mChannelProxy = ChannelProxy.get()
                 .setChannelListPresenter(this)
@@ -230,6 +241,29 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
         //check app info whether this transaction is allowed or not
         loadAppInfo();
+    }
+
+    private void renderItemDetail() {
+        if (TextUtils.isEmpty(mPaymentInfoHelper.getOrder().item)) {
+            Log.d(this, "item is empty - skip render item detail");
+            return;
+        }
+        List<NameValuePair> items = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(mPaymentInfoHelper.getOrder().item);
+            String itemExt = jsonObject.optString("ext");
+            if (!TextUtils.isEmpty(itemExt)) {
+                items = Strings.parseNameValues(itemExt);
+            }
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
+
+       /* List<NameValuePair> expected = new ArrayList<>();
+        expected.add(new NameValuePair("Nhà mạng", "Viettel"));
+        expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
+        expected.add(new NameValuePair("Nạp cho", "Số của tôi - 0902167233"));*/
+        getViewOrThrow().renderDynamicItemDetail(items);
     }
 
     private void send(PaymentChannel pChannel) {
@@ -250,10 +284,10 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         mChannelAdapter.setChannel(itemType, pChannel);
     }
 
-    private void doCompleteLoadChannel(){
+    private void doCompleteLoadChannel() {
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.ZALOPAY));
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.MAP));
-        if(mChannelAdapter.hasTitle()){
+        if (mChannelAdapter.hasTitle()) {
             mChannelList.add(new Object());
         }
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.INPUT));
@@ -266,13 +300,15 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (mPaymentInfoHelper.isWithDrawTrans()) {
                 getViewOrThrow().showWarningLinkCardBeforeWithdraw();
             } else {
-                String alertMessage = baseChannelInjector.getAlertAmount(mPaymentInfoHelper.getAmount());
+                String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
                 if (TextUtils.isEmpty(alertMessage)) {
                     alertMessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
                 }
                 getViewOrThrow().showError(alertMessage);
             }
         }
+        //release it
+        mChannelLoader = null;
     }
 
     private Observer<PaymentChannel> getChannelObserver() {
@@ -313,9 +349,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     mPaymentInfoHelper.getUserInfo(), mPaymentInfoHelper.getTranstype());
             getViewOrThrow().onBindingChannel(mChannelAdapter);
 
-            baseChannelInjector = BaseChannelInjector.createChannelInjector(mPaymentInfoHelper);
-            baseChannelInjector.source.subscribe(getChannelObserver());
-            baseChannelInjector.getChannels();
+            mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
+                    mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getAmount(), mPaymentInfoHelper.getBalance(),
+                    mPaymentInfoHelper.getTranstype());
+            mChannelLoader.source.subscribe(getChannelObserver());
+            mChannelLoader.getChannels();
         } catch (Exception e) {
             Log.e(this, e);
             getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));

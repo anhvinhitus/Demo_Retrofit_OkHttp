@@ -2,9 +2,9 @@ package vn.com.zalopay.wallet.ui.channellist;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.constants.TransactionType;
+import java.util.List;
+
+import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
@@ -17,9 +17,13 @@ public interface ChannelListContract extends IContract {
     interface IView extends IContract {
         void setTitle(String title);
 
-        void renderAppInfo(AppInfo pAppInfo);
+        void renderAppInfo(String appName);
 
-        void renderOrderInfo(UserInfo userInfo, AbstractOrder order, @TransactionType int transtype);
+        void renderOrderInfo(AbstractOrder order);
+
+        void renderOrderFee(double total_amount, double fee);
+
+        void renderDynamicItemDetail(List<NameValuePair> nameValuePair);
 
         void onBindingChannel(ChannelListAdapter pChannelAdapter);
 

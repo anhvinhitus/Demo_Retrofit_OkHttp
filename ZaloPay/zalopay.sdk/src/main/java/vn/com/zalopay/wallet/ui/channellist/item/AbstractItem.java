@@ -57,12 +57,6 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         pLine.requestLayout();
     }
 
-    protected void makeFullLine(View pLine) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pLine.getLayoutParams();
-        params.leftMargin = 0;
-        pLine.requestLayout();
-    }
-
     protected String getFeeDesc(PaymentChannel pChannel) {
         String fee_desc = mContext.getString(R.string.zpw_string_fee_free);
         if (pChannel.hasFee()) {

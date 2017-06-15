@@ -543,4 +543,13 @@
     <string name="sdk_load_generic_error_message">Không tải được thông tin. Vui lòng thử lại!</string>
 
     <string name="sdk_button_confirm_txt">Xác Nhận Thanh Toán</string>
+
+    <string name="sdk_appname_title">Dịch vụ</string>
+    <string name="sdk_order_fee_title">Phí giao dịch</string>
+    <string name="sdk_order_fee_free">Miễn phí</string>
+
+    <string name="sdk_withdraw_service">Rút tiền</string>
+    <string name="sdk_tranfer_money_service">Chuyển tiền</string>
+    <string name="sdk_topup_service">Nạp tiền</string>
+
 </resources>

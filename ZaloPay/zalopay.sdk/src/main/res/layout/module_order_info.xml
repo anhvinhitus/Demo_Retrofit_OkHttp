@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/zpw_padding_app_info_left_right"
+        android:layout_marginTop="@dimen/zpw_padding_app_info_left_right"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/order_amount_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/order_amount_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_supper_big"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/zpw_margin_left"
+                android:layout_marginTop="2dp"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:text="@string/zpw_string_payment_currency_label"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium_small" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/order_description_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_app_info_left_right"
+            android:gravity="center"
+            android:textColor="@color/text_color_bold"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
+        android:layout_marginRight="@dimen/zpw_padding_app_info_left_right"
+        android:background="@drawable/dash_line" />
+
+    <RelativeLayout
+        android:id="@+id/appname_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="@dimen/zpw_padding_app_info_left_right"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/sdk_appname_title"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <TextView
+            android:id="@+id/appname_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/item_detail_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/zpw_padding_app_info_left_right"
+        android:paddingRight="@dimen/zpw_padding_app_info_left_right">
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/zpw_padding_app_info_left_right"
+        android:paddingLeft="@dimen/zpw_padding_app_info_left_right"
+        android:paddingRight="@dimen/zpw_padding_app_info_left_right">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/sdk_order_fee_title"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <TextView
+            android:id="@+id/order_fee_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/sdk_order_fee_free"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
+        android:background="@color/dark_transparent" />
+
+</LinearLayout>

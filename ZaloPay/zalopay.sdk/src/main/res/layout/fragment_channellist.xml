@@ -1,51 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/transfer_info_module"
-        layout="@layout/module_transfer_info"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/confirm_button"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <include
-        android:id="@+id/app_info_module"
-        layout="@layout/module__app__info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/channel_list_recycler"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/confirm_button"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/transparent"
-            android:scrollbars="none" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/confirm_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/zpw_submit_button_height"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/padding_large"
-            android:layout_marginLeft="@dimen/padding_large"
-            android:layout_marginRight="@dimen/padding_large"
-            android:layout_marginTop="@dimen/padding_large"
-            android:background="@drawable/zpw_bg_button_final"
-            android:enabled="false"
-            android:gravity="center"
-            android:text="@string/sdk_button_confirm_txt"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white"
-            android:textSize="@dimen/zpw_submit_button_text_size" />
-    </RelativeLayout>
+            <include
+                android:id="@+id/orderinfo_module"
+                layout="@layout/module_order_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-</LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/channel_list_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scrollbars="none" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_submit_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/padding_large"
+        android:background="@drawable/zpw_bg_button_final"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/sdk_button_confirm_txt"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:textSize="@dimen/zpw_submit_button_text_size" />
+
+</RelativeLayout>
