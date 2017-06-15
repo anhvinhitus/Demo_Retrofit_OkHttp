@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.pinlayout.interfaces.IBuilder;
+import com.zalopay.ui.widget.pinlayout.interfaces.IFControl;
 import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
 import com.zalopay.ui.widget.pinlayout.interfaces.IFSetDataToView;
 
@@ -16,6 +17,7 @@ public abstract class PinBuilder implements IBuilder {
     protected String mIdLogo;
     protected String mTextContent;
     protected IFSetDataToView mIFSetDataToView;
+    protected IFControl mControl;
 
     public UIBottomSheetDialog.IRender build() {
         return new PinViewRender(this);
@@ -99,5 +101,16 @@ public abstract class PinBuilder implements IBuilder {
     @Override
     public String getTextContent() {
         return mTextContent;
+    }
+
+    @Override
+    public IBuilder setIFControl(IFControl control) {
+        mControl = control;
+        return this;
+    }
+
+    @Override
+    public IFControl getIFControl() {
+        return mControl;
     }
 }

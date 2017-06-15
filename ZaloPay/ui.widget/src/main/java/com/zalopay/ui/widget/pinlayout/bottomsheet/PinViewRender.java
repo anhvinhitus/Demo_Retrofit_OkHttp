@@ -39,7 +39,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
     protected int mType = 1;
     protected int mAttempts = 1;
     protected String mPinCode;
-    protected String mOldPinCode;
     protected SimpleDraweeView mLogo;
     protected TextView mTextContent;
     private int backgroundResource;
@@ -138,7 +137,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         backgroundResource = typedArray.getResourceId(0, 0);
 
         mPinCode = "";
-        mOldPinCode = "";
         mStepTextView = (TextView) pWView.findViewById(R.id.pin_code_step_textview);
         mPinCodeRoundView = (PinCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
         mPinCodeRoundView.setPinLength(this.getPinLength());
@@ -245,7 +243,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
     }
 
     public void closePinView() {
-        mBuilder.getIFPinCallBack().onCancel();
+        mBuilder.getIFControl().clickCancel();
 
     }
 
@@ -275,7 +273,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         mBuilder.showLoadding(true);
         isSuccess = true;
         mBuilder.getIFPinCallBack().onComplete(Encryptor.sha256(mPinCode));
-
         Log.e(TAG, "onPinSuccess!" + attempts);
     }
 
@@ -284,7 +281,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
      */
     public void onPinCodeError(final Activity pActivity) {
         isSuccess = false;
-
         onPinFailure(mAttempts++);
         Thread thread = new Thread() {
             public void run() {

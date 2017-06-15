@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.BottomSheetBehavior;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
@@ -308,6 +309,7 @@ public class ChannelProxy extends SingletonBase {
             String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
             mPassword = new PinManager(getView().getActivity(), mChannel.pmcname, logo_path, mIFIfPinCallBack);
             mPassword.showPinView();
+            mPassword.setState(BottomSheetBehavior.STATE_EXPANDED);
             return;
         }
         //input flow

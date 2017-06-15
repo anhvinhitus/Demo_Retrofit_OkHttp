@@ -1,12 +1,14 @@
 package com.zalopay.ui.widget.pinlayout.managers;
 
 import android.app.Activity;
+import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.pinlayout.bottomsheet.PinViewRender;
 import com.zalopay.ui.widget.pinlayout.interfaces.IBuilder;
+import com.zalopay.ui.widget.pinlayout.interfaces.IFControl;
 import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
 
 import java.lang.ref.WeakReference;
@@ -34,6 +36,7 @@ public class PinManager {
         mIBuilder = PinViewRender.getBuilder()
                 .setView(contentView)
                 .setIFPinCallBack(mIPinCloseCallBack.get())
+                .setIFControl(Control)
                 .setTitle(pTitle)
                 .setLogoPath(pIdImage);
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
@@ -59,6 +62,7 @@ public class PinManager {
         if (mUiBottomSheetDialog != null && isShowingPin() && mIBuilder != null) {
             mIBuilder.showLoadding(false);
             mIBuilder.clearText();
+            mIBuilder.getIFPinCallBack().onCancel();
             mUiBottomSheetDialog.dismiss();
         }
         mActivity = null;
@@ -87,4 +91,11 @@ public class PinManager {
             mIBuilder.setTitle(pContent);
         }
     }
+
+    private IFControl Control = new IFControl() {
+        @Override
+        public void clickCancel() {
+            closePinView();
+        }
+    };
 }

@@ -33,5 +33,9 @@ public interface IBuilder {
 
     UIBottomSheetDialog.IRender build();
 
+    IBuilder setIFControl(IFControl control);
+
+    IFControl getIFControl();
+
     void release();
 }
