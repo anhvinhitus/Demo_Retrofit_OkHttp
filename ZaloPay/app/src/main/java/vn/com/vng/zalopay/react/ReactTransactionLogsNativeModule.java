@@ -265,7 +265,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     public void onHostPause() {
         Timber.d("onPause");
         //run on Main Thread
-        mEventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
     }
 
     @Override
@@ -324,7 +326,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, param);
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND, sticky = true)
     public void onGetTransactionComplete(TransactionChangeEvent event) {
         Timber.d("send event zalopayTransactionsUpdated");
         WritableMap item = Arguments.createMap();

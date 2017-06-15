@@ -400,7 +400,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
 
         if (hasData && sortOrder == TRANSACTION_ORDER_LATEST) {
-            mEventBus.post(new TransactionChangeEvent(statusType));
+            mEventBus.postSticky(new TransactionChangeEvent(statusType));
         }
     }
 
