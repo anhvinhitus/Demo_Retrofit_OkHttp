@@ -90,7 +90,6 @@ class ProcessMessageListener implements IProcessMessageListener {
 
     @Override
     public void launchInternalApp(int internalAppID) {
-        getListAppResource();
         if (internalAppID == PaymentAppConfig.Constants.RED_PACKET) {
             mWebAppPresenterWeakReference.get().mNavigator.startMiniAppActivity(
                     mWebAppPresenterWeakReference.get().getActivity(), ModuleName.RED_PACKET);
@@ -99,19 +98,7 @@ class ProcessMessageListener implements IProcessMessageListener {
         } else if (internalAppID == PaymentAppConfig.Constants.RECEIVE_MONEY) {
             mWebAppPresenterWeakReference.get().mNavigator.startReceiveMoneyActivity(mWebAppPresenterWeakReference.get().getActivity());
         } else if (internalAppID == 15) {
-            if(mListResources == null) return;
-
-            String webURL = "";
-            for (AppResource appResource : mListResources) {
-                if (appResource.appid == 15) {
-                    webURL = appResource.webUrl;
-                    break;
-                }
-            }
-
-            if (!TextUtils.isEmpty(webURL)) {
-                starWebAppService(internalAppID, webURL);
-            }
+            openAppWebService(internalAppID);
         } else {
             AppResource appResource = getAppResource(internalAppID);
             if (appResource == null) {
@@ -202,11 +189,11 @@ class ProcessMessageListener implements IProcessMessageListener {
         mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
     }
 
-    public void getListAppResource() {
+    public void openAppWebService(int appID) {
         Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.getListAppHome()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResourceSubscriber());
+                .subscribe(new AppResourceSubscriber(appID));
         mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
     }
 
@@ -219,7 +206,29 @@ class ProcessMessageListener implements IProcessMessageListener {
         mWebAppPresenterWeakReference.get().getSubscription().add(subscription);
     }
 
+    private void handleOpenWebService(int internalAppID, List<AppResource> listResouces) {
+        if(listResouces == null) return;
+
+        String webURL = "";
+        for (AppResource appResource : listResouces) {
+            if (appResource.appid == 15) {
+                webURL = appResource.webUrl;
+                break;
+            }
+        }
+
+        if (!TextUtils.isEmpty(webURL)) {
+            starWebAppService(internalAppID, webURL);
+        }
+    }
+
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
+        private int mAppID;
+
+        AppResourceSubscriber(int appID) {
+            this.mAppID = appID;
+        }
+
         @Override
         public void onCompleted() {
             super.onCompleted();
@@ -227,7 +236,7 @@ class ProcessMessageListener implements IProcessMessageListener {
 
         @Override
         public void onNext(List<AppResource> appResources) {
-            mListResources = appResources;
+            handleOpenWebService(mAppID, appResources);
         }
 
         @Override
