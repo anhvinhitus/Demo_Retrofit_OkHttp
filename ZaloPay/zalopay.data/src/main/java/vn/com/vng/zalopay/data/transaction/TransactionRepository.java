@@ -155,7 +155,8 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private boolean checkOutOfData(long timestamp, int statusType) {
         if (timestamp <= 0) {
-            return mFragmentLocalStorage.getLatestFragment(statusType).outofdata;
+            TransactionFragmentEntity entity = mFragmentLocalStorage.getLatestFragment(statusType);
+            return entity != null && entity.outofdata;
         }
         return mFragmentLocalStorage.isOutOfData(timestamp, statusType);
     }
