@@ -277,13 +277,8 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <declare-styleable name="SmoothCheckBox">
-        <attr name="duration" format="integer" />
-        <attr name="stroke_width_c" format="dimension" />
-        <attr name="color_tick" format="color" />
-        <attr name="color_checked" format="color" />
-        <attr name="color_unchecked" format="color" />
-        <attr name="color_unchecked_stroke" format="color" />
-    </declare-styleable>
-
+    <style name="CheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/silver</item>
+        <item name="colorControlActivated">@color/green_lv_3</item>
+    </style>
 </resources>

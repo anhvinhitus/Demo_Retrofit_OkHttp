@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.R;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
-import com.zalopay.ui.widget.pinlayout.checkbox.SmoothCheckBox;
 import com.zalopay.ui.widget.pinlayout.encryption.Encryptor;
 import com.zalopay.ui.widget.pinlayout.enums.KeyboardButtonEnum;
 import com.zalopay.ui.widget.pinlayout.indicator.LoadingIndicatorView;
@@ -45,7 +45,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
     private boolean isSuccess = false;
     private View mRootView;
     private Context mContext;
-    private SmoothCheckBox mSmoothCheckBox;
+    private CheckBox mCheckBox;
     private LinearLayout mLayoutCheckBox;
     private LoadingIndicatorView mLoadingIndicatorView;
     IFSetDataToView mIFIfSetDataToView = new IFSetDataToView() {
@@ -147,7 +147,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         mRootView = pWView.findViewById(R.id.layout_root_view);
         mTextContent = (TextView) pWView.findViewById(R.id.text_content);
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
-        mSmoothCheckBox = (SmoothCheckBox) pWView.findViewById(R.id.checkBox);
+        mCheckBox = (CheckBox) pWView.findViewById(R.id.checkBox);
         mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
 
@@ -209,12 +209,12 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
             closePinView();
         }
         if (v.getId() == R.id.layout_checkbox) {
-            if (mSmoothCheckBox.isChecked()) {
-                mSmoothCheckBox.setChecked(false, true);
+            if (mCheckBox.isChecked()) {
+                mCheckBox.setChecked(false);
             } else {
-                mSmoothCheckBox.setChecked(true, true);
+                mCheckBox.setChecked(true);
             }
-            mBuilder.getIFPinCallBack().onCheckedFingerPrint(mSmoothCheckBox.isChecked());
+            mBuilder.getIFPinCallBack().onCheckedFingerPrint(mCheckBox.isChecked());
         }
     }
 

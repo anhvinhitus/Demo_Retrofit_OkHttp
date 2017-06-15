@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/layout_spview_animation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/broder_background_white"
         android:clickable="true"
         android:gravity="center_horizontal"
@@ -58,8 +58,8 @@
                     android:id="@+id/ic_content"
                     android:layout_width="@dimen/channel_image_size"
                     android:layout_height="wrap_content"
-                    app:actualImageScaleType="centerInside"
                     android:padding="@dimen/btn_cancel_round_padding"
+                    app:actualImageScaleType="centerInside"
                     app:viewAspectRatio="1" />
 
                 <TextView
@@ -116,25 +116,18 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.zalopay.ui.widget.pinlayout.checkbox.SmoothCheckBox
+                <CheckBox
                     android:id="@+id/checkBox"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="5dp" />
-
-                <TextView
-                    android:id="@+id/tv_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/spacing.tiny"
+                    android:layout_margin="5dp"
                     android:text="@string/pin_code_step_fingerprint_check"
+                    android:textColor="@color/c.text.title"
                     android:textSize="14sp"
                     android:textStyle="normal"
-                    android:textColor="@color/c.text.title"/>
+                    android:theme="@style/CheckBox"/>
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/pin_code_gray_bar"
                 android:layout_width="match_parent"
@@ -145,7 +138,6 @@
                 android:layout_marginRight="@dimen/light_gray_bar_margin_sides"
                 android:background="@color/light_gray_bar"
                 android:orientation="horizontal" />
-
 
             <com.zalopay.ui.widget.pinlayout.view.KeyboardView
                 android:id="@+id/pin_code_keyboard_view"
