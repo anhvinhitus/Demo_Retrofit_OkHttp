@@ -22,7 +22,7 @@ import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.view.ChannelProxy;
+import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -130,7 +130,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     protected void initializeChannelAdapter() {
         baseChannelInjector = BaseChannelInjector.createChannelInjector(mPaymentInfoHelper);
-        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview, mPaymentInfoHelper);
+        //mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList(), R.layout.channel_item_recyclerview, mPaymentInfoHelper);
         mChannelRecyclerView.setAdapter(mChannelAdapter);
     }
 
@@ -138,7 +138,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
         if (mMoreClick) {   //prevent so many click on channel.
             mMoreClick = false;
-            onSelectedChannel(baseChannelInjector.getChannelAtPosition(pMessage.position));
+            //onSelectedChannel(baseChannelInjector.getChannelAtPosition(pMessage.position));
             new Handler().postDelayed(() -> mMoreClick = true, 1000);
         }
     }
@@ -205,9 +205,9 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     private void showChannelListView() {
         //force to some channel from client
-        int[] forceChannels = mPaymentInfoHelper.getForceChannels();
+        /*int[] forceChannels = mPaymentInfoHelper.getForceChannels();
         if (forceChannels != null && forceChannels.length >= 1) {
-            baseChannelInjector.filterForceChannel(forceChannels);
+            //baseChannelInjector.filterForceChannel(forceChannels);
         }
 
         // don't have any channel now
@@ -215,10 +215,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             isUniqueChannel = true;
             String alertMessage = getAmountAlert();
             if (TextUtils.isEmpty(alertMessage)) {
-                /***
+                *//***
                  * this is withdraw link card and no mapped card.
                  * need remind user go to link card to can withdraw
-                 */
+                 *//*
                 if (mPaymentInfoHelper.isWithDrawTrans()) {
                     confirmLinkCard();
                     return;
@@ -249,12 +249,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             }
         }
 
-        refreshChannelRecyclerView();
+        refreshChannelRecyclerView();*/
     }
 
     private void refreshChannelRecyclerView() {
         mChannelAdapter.notifyDataSetChanged();
-        isUniqueChannel = baseChannelInjector.isChannelUnique();
+        //isUniqueChannel = baseChannelInjector.isChannelUnique();
     }
 
     /***
@@ -277,7 +277,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      */
     private void getPaymentChannel() throws Exception {
         Log.d(this, "===show Channel===getPaymentChannel()");
-        baseChannelInjector.getChannels(new ZPWOnGetChannelListener() {
+        /*baseChannelInjector.getChannels(new ZPWOnGetChannelListener() {
             @Override
             public void onGetChannelComplete() {
                 showChannelListView();
@@ -289,7 +289,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             public void onGetChannelError(String pError) {
                 onExit(pError, true);
             }
-        });
+        });*/
 
     }
 
@@ -437,7 +437,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         pChannel.calculateFee(mPaymentInfoHelper.getAmount());
         mPaymentInfoHelper.getOrder().populateFee(pChannel);
         ChannelProxy.get()
-                .setActivity(this)
+                //.setActivity(this)
                 .setPaymentInfo(mPaymentInfoHelper)
                 .setChannel(pChannel)
                 .start();
@@ -489,7 +489,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
     public List<PaymentChannel> getChannelList() {
         if (baseChannelInjector != null) {
-            return baseChannelInjector.getChannelList();
+            //return baseChannelInjector.getChannelList();
         }
         return null;
     }

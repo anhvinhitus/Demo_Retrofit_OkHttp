@@ -14,12 +14,13 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
+import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
+import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
+import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.interactor.UpversionCallback;
-import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
-import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
@@ -56,18 +57,16 @@ public class PlatformInfoLoader extends SingletonBase {
                 UpversionCallback upversionCallback = (UpversionCallback) platformInfoCallback;
                 Log.d(this, "need to up version from get platform info");
                 if (!upversionCallback.forceupdate) {
-                    if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
-                        ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
-                    }
+                    SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
+                    SDKApplication.getApplicationComponent().eventBus().post(message);
                 }
                 SdkUpVersionMessage message = new SdkUpVersionMessage(upversionCallback.forceupdate, upversionCallback.forceupdatemessage,
                         upversionCallback.newestappversion);
                 SDKApplication.getApplicationComponent().eventBus().post(message);
             } else {
                 Log.d(this, "get platforminfo success, continue initialize resource to memory");
-                if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
-                    ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
-                }
+                SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
+                SDKApplication.getApplicationComponent().eventBus().post(message);
             }
         }
     };
@@ -131,9 +130,8 @@ public class PlatformInfoLoader extends SingletonBase {
         //resource existed  and need to load into memory
         else if (!ResourceManager.isInit()) {
             Log.d(this, "resource was downloaded but not init - init resource now");
-            if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
-                ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
-            }
+            SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
+            SDKApplication.getApplicationComponent().eventBus().post(message);
         }
         //everything is ok now.
         else {

@@ -207,7 +207,6 @@ public class GlobalData {
         } else {
             bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
-
         return bankFunction;
     }
 
@@ -265,9 +264,9 @@ public class GlobalData {
     }
 
     public static Activity getMerchantActivity() {
-        if (mMerchantActivity != null)
+        if (mMerchantActivity != null) {
             return mMerchantActivity.get();
-
+        }
         return null;
     }
 

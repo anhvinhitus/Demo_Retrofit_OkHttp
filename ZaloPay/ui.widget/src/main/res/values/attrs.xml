@@ -8,25 +8,25 @@
     </declare-styleable>
 
     <declare-styleable name="IconFont">
-        <attr name="typefaceAsset" format="string"/>
-        <attr name="iconName" format="string"/>
+        <attr name="typefaceAsset" format="string" />
+        <attr name="iconName" format="string" />
         <attr name="iconSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="IconFontTextView">
-        <attr name="iconLeftName" format="string"/>
+        <attr name="iconLeftName" format="string" />
         <attr name="iconLeftSize" format="dimension" />
         <attr name="iconLeftColor" format="reference" />
         <attr name="iconLeftPadding" format="reference" />
-        <attr name="iconRightName" format="string"/>
+        <attr name="iconRightName" format="string" />
         <attr name="iconRightSize" format="dimension" />
         <attr name="iconRightColor" format="reference" />
         <attr name="iconRightPadding" format="reference" />
-        <attr name="iconTopName" format="string"/>
+        <attr name="iconTopName" format="string" />
         <attr name="iconTopSize" format="dimension" />
         <attr name="iconTopColor" format="reference" />
         <attr name="iconTopPadding" format="reference" />
-        <attr name="iconBottomName" format="string"/>
+        <attr name="iconBottomName" format="string" />
         <attr name="iconBottomSize" format="dimension" />
         <attr name="iconBottomColor" format="reference" />
         <attr name="iconBottomPadding" format="reference" />
@@ -425,17 +425,17 @@
     </declare-styleable>
 
     <declare-styleable name="ZPTextInputLayout">
-        <attr name="autoValidate" format="boolean"/>
-        <attr name="autoTrim" format="boolean"/>
-        <attr name="isRequired" format="boolean"/>
-        <attr name="requiredValidationMessage" format="string"/>
+        <attr name="autoValidate" format="boolean" />
+        <attr name="autoTrim" format="boolean" />
+        <attr name="isRequired" format="boolean" />
+        <attr name="requiredValidationMessage" format="string" />
         <attr name="minLength" format="integer">
-            <enum name="zero" value="0"/>
+            <enum name="zero" value="0" />
         </attr>
         <attr name="maxLength" format="integer">
-            <enum name="indefinite" value="-1"/>
+            <enum name="indefinite" value="-1" />
         </attr>
-        <attr name="lengthValidationMessage" format="string"/>
+        <attr name="lengthValidationMessage" format="string" />
     </declare-styleable>
 
 
@@ -456,4 +456,20 @@
         </attr>
         <attr name="indicator_color" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="PinCodeView">
+        <attr name="lp_empty_pin_dot" format="integer" />
+        <attr name="lp_full_pin_dot" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardButtonView">
+        <attr name="lp_keyboard_button_text" format="string" />
+        <attr name="lp_keyboard_button_image" format="integer" />
+        <attr name="lp_keyboard_button_ripple_enabled" format="boolean" />
+        <attr name="lp_pin_forgot_dialog_title" format="string" />
+        <attr name="lp_pin_forgot_dialog_content" format="string" />
+        <attr name="lp_pin_forgot_dialog_positive" format="string" />
+        <attr name="lp_pin_forgot_dialog_negative" format="string" />
+    </declare-styleable>
+
 </resources>

@@ -28,6 +28,7 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -233,7 +234,8 @@ public class SDKPayment {
                 intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, pmcTransType);
             }
         } else {
-            intent = new Intent(pOwner, PaymentGatewayActivity.class);
+            //intent = new Intent(pOwner, PaymentGatewayActivity.class);
+            intent = new Intent(pOwner, ChannelListActivity.class);
         }
         if (pmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);

@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/zpw_wallet_transfer_description"
+            android:id="@+id/transfer_description_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
@@ -30,7 +30,7 @@
             android:gravity="bottom|center">
 
             <TextView
-                android:id="@+id/zpw_wallet_transfer_amount"
+                android:id="@+id/transfer_amount_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -38,7 +38,6 @@
                 android:ellipsize="end"
                 android:gravity="bottom"
                 android:singleLine="true"
-                android:text="0"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_supper_big"
                 android:textStyle="bold" />
@@ -66,15 +65,9 @@
         android:layout_marginRight="@dimen/zpw_padding_app_info_left_right"
         android:background="@color/dark_transparent" />
 
-    <LinearLayout
-        android:id="@+id/zpw_userinfo_view_root"
+    <include
+        layout="@layout/module_user_transfer_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <include
-            android:id="@+id/zpsdk_user_info"
-            layout="@layout/module_user_transfer_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 </LinearLayout>

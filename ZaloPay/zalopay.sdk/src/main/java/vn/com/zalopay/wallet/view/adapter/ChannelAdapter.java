@@ -43,6 +43,11 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
         mPaymentInfoHelper = paymentInfoHelper;
     }
 
+    public void setDataSet(List<PaymentChannel> pChannelList){
+        mChannelList = pChannelList;
+        notifyDataSetChanged();
+    }
+
     protected String getChannelSubTitle(PaymentChannel pChannel) {
         String mess = null;
         if (!pChannel.isAllowByAmount()) {
@@ -136,7 +141,6 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ChannelV
                 feeDescription = GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level);
                 holder.nextIconImageView.setVisibility(View.GONE);
             }
-
             if (!TextUtils.isEmpty(feeDescription) && !feeDescription.equals(GlobalData.getStringResource(RS.string.zpw_string_fee_free))
                     && !feeDescription.equals(GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level))) {
                 feeDescription = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), feeDescription);

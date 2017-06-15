@@ -99,6 +99,7 @@ import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
+import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
@@ -106,6 +107,8 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -234,9 +237,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     return;
                 }
                 //user in gateway screen
-                if (activity.get() instanceof PaymentGatewayActivity) {
+                /*if (activity.get() instanceof PaymentGatewayActivity) {
                     ((PaymentGatewayActivity) activity.get()).showWarningDialog(BasePaymentActivity.this::finish, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-                }
+                }*/
             } catch (Exception ex) {
                 ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
                 if (getAdapter() != null) {
@@ -437,15 +440,16 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
         Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
         if (result.success) {
-            initializeResource();
+            SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
+            mBus.post(message);
         } else {
             SdkResourceInitMessage message = new SdkResourceInitMessage(result.success, result.message);
             mBus.post(message);
         }
     }
 
-    public void initializeResource() {
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnInitialResourceCompleteEvent(SdkStartInitResourceMessage pMessage) {
         if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
             Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
             return;
@@ -652,7 +656,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         super.onDestroy();
         synchronized (mActivityStack) {
             mActivityStack.remove(this);
-            if (getCurrentActivityCount() == 0) {
+            if (getCurrentActivityCount() == 0 && BaseActivity.getActivityCount() == 0) {
                 if (GlobalData.analyticsTrackerWrapper != null) {
                     GlobalData.analyticsTrackerWrapper.trackUserCancel();
                 }
@@ -916,10 +920,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             return;
         }
         if (appInfo != null && !TextUtils.isEmpty(appInfo.appname)) {
-            setText(R.id.zalosdk_bill_info_ctl, appInfo.appname);
-            setVisible(R.id.zalosdk_bill_info_ctl, true);
+            setText(R.id.appname_txt, appInfo.appname);
+            setVisible(R.id.appname_txt, true);
         } else {
-            setVisible(R.id.zalosdk_bill_info_ctl, false);
+            setVisible(R.id.appname_txt, false);
         }
     }
 
@@ -1053,11 +1057,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             AbstractOrder order = mPaymentInfoHelper.getOrder();
             if (order != null && order.amount > 0) {
                 String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount));
-                setText(R.id.payment_method_amount, txtAmount);
-                setText(R.id.payment_currency_label, GlobalData.getStringResource(RS.string.zpw_string_payment_currency_label));
+                setText(R.id.amount_txt, txtAmount);
+                setText(R.id.currency_unit_txt, GlobalData.getStringResource(RS.string.zpw_string_payment_currency_label));
             } else {
-                setVisible(R.id.payment_method_amount, false);
-                setVisible(R.id.payment_currency_label, false);
+                setVisible(R.id.amount_txt, false);
+                setVisible(R.id.currency_unit_txt, false);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -1370,27 +1374,27 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         AbstractOrder order = mPaymentInfoHelper.getOrder();
         //zalo name
         if (!TextUtils.isEmpty(userInfo.zalo_name))
-            setText(R.id.zpw_wallet_transfer_user, userInfo.zalo_name);
+            setText(R.id.receiver_zaloname_txt, userInfo.zalo_name);
         else
-            setVisible(R.id.tranfer_user_name_relative_wrapper, false);
+            setVisible(R.id.receiver_zaloname_relativelayout, false);
 
         //zalopay name
         if (!TextUtils.isEmpty(userInfo.zalopay_name))
-            setText(R.id.zpw_zalopay_name_textview, userInfo.zalopay_name);
+            setText(R.id.receiver_zalopayname_txt, userInfo.zalopay_name);
         else
-            setVisible(R.id.zalopay_name_relative_wrapper, false);
+            setVisible(R.id.receiver_zalopayname_relativelayout, false);
 
         //description
         if (!TextUtils.isEmpty(order.description)) {
-            setVisible(R.id.zpw_wallet_transfer_description, true);
-            setText(R.id.zpw_wallet_transfer_description, order.description);
+            setVisible(R.id.transfer_description_txt, true);
+            setText(R.id.transfer_description_txt, order.description);
         } else
-            setVisible(R.id.zpw_wallet_transfer_description, false);
+            setVisible(R.id.transfer_description_txt, false);
 
         //amount
         if (order.amount > 0) {
             String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount));
-            setText(R.id.zpw_wallet_transfer_amount, txtAmount);
+            setText(R.id.transfer_amount_txt, txtAmount);
         }
     }
 
@@ -1421,26 +1425,26 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
             AbstractOrder order = mPaymentInfoHelper.getOrder();
             if (pShow && order.fee > 0) {
-                setVisible(R.id.zpw_wallet_transfer_layout_price, true);
-                setVisible(R.id.zpw_wallet_transfer_layout_payamont, true);
+                setVisible(R.id.transfer_amount_txt, true);
+                setVisible(R.id.transfer_fee_relativelayout, true);
 
                 if (pChannel != null) {
                     String txtprice = StringUtil.formatVnCurrence(String.valueOf(order.fee));
-                    setText(R.id.zpw_wallet_transfer_price, txtprice);
+                    setText(R.id.transfer_fee_txt, txtprice);
                 }
 
                 try {
                     if (order.amount_total > 0) {
                         String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount_total));
-                        setText(R.id.zpw_wallet_transfer_payamount, txtAmount);
+                        setText(R.id.transfer_amounttotal_txt, txtAmount);
 
                     }
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
             } else {
-                setVisible(R.id.zpw_wallet_transfer_layout_price, false);
-                setVisible(R.id.zpw_wallet_transfer_layout_payamont, false);
+                setVisible(R.id.transfer_amount_txt, false);
+                setVisible(R.id.transfer_fee_relativelayout, false);
             }
         } else if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             visibleTranferWalletInfo(false);
@@ -1453,9 +1457,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * show header text
      */
     protected void showDisplayInfo() {
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            setVisible(R.id.app_info_linerlayout, false);
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
+       if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             visibleTranferWalletInfo(true);
             visibleAppInfo(false);
             showUserInfoWalletTransfer();
@@ -1874,7 +1876,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void showSelectionBankAccountDialog() {
-        MapListSelectionActivity.setCloseDialogListener(mCloseDialog);
         Intent intent = new Intent(getApplicationContext(), MapListSelectionActivity.class);
         intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PVCB);
         intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());

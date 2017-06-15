@@ -40,6 +40,9 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_pay_method_title = "sdk_pay_method_title";
+        public static final String sdk_tranfer_method_title = "sdk_tranfer_method_title";
+
         public static final String zpw_string_vcb_account_notfound_in_server = "zpw_string_vcb_account_notfound_in_server";
 
         public static final String sdk_load_generic_error_message = "sdk_load_generic_error_message";
@@ -441,6 +444,7 @@ public class RS {
         public static final String ic_checked = "ic_checked.png";
         public static final String ic_next = "ic_next.png";
         public static final String ic_bank_support_help = "ic_bank_support_help.png";
+        public static final String ic_select = "ic_select.png";
 
     }
 }

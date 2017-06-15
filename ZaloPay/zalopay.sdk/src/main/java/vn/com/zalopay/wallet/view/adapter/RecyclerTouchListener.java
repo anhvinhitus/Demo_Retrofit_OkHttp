@@ -22,9 +22,12 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
             @Override
             public void onLongPress(MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                SDKApplication.getApplicationComponent()
-                        .eventBus()
-                        .post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
+                if (child != null) {
+                    int position = recyclerView.getChildLayoutPosition(child);
+                    SDKApplication.getApplicationComponent()
+                            .eventBus()
+                            .post(new SdkSelectedChannelMessage(position));
+                }
             }
         });
     }
@@ -33,9 +36,10 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
     public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
         View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
         if (child != null && gestureDetector.onTouchEvent(e)) {
+            int position = recyclerView.getChildLayoutPosition(child);
             SDKApplication.getApplicationComponent()
                     .eventBus()
-                    .post(new SdkSelectedChannelMessage(recyclerView.getChildPosition(child)));
+                    .post(new SdkSelectedChannelMessage(position));
         }
         return false;
     }

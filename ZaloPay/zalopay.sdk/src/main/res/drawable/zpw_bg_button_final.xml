@@ -6,4 +6,10 @@
             <corners android:radius="@dimen/indicator_button_border" />
         </shape>
     </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/green_color_gradient" />
+            <corners android:radius="@dimen/indicator_button_border" />
+        </shape>
+    </item>
 </selector>

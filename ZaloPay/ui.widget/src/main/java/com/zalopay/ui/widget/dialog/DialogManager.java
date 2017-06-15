@@ -20,7 +20,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 import java.lang.ref.WeakReference;
 
 
-
 /***
  * dialog wrapper class
  */
@@ -139,7 +138,7 @@ public class DialogManager {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    Log.e("showProcessDialog", "showProcessDialog"+ e);
+                                    Log.e("showProcessDialog", "showProcessDialog" + e);
                                 }
                             }
                         }
@@ -150,7 +149,7 @@ public class DialogManager {
                 Log.d("showProcessDialog", "Started a processing dialog");
             }
         } catch (Exception e) {
-            Log.e("showProcessDialog","showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -187,13 +186,9 @@ public class DialogManager {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
                 mLastShowProcessDialog = 0;
-
-                Log.d("showProcessDialog", "Dismissed a processing dialog");
-
+                Log.d("showProcessDialog", "closed process dialog");
             }
-            Log.d("showProcessDialog", " Call Dismissed but==" + mProgressDialog);
         } catch (Exception e) {
-            Log.e("showProcessDialog", String.valueOf(e));
         }
     }
 
@@ -266,7 +261,7 @@ public class DialogManager {
             mAlertDialog.show();
 
         } catch (Exception e) {
-            Log.d("showProcessDialog","showProcessDialog"+ e);
+            Log.d("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -339,7 +334,7 @@ public class DialogManager {
             mAlertDialog.show();
 
         } catch (Exception e) {
-            Log.d("showProcessDialog", "showProcessDialog"+ e);
+            Log.d("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -407,7 +402,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog", "showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -476,7 +471,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog", "showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -547,7 +542,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog", "showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -598,7 +593,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog","showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -665,7 +660,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog", "showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -752,7 +747,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showProcessDialog", "showProcessDialog"+ e);
+            Log.e("showProcessDialog", "showProcessDialog" + e);
         }
     }
 
@@ -817,7 +812,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showSweetDialogRetry", "showProcessDialog"+ e);
+            Log.e("showSweetDialogRetry", "showProcessDialog" + e);
         }
     }
 
@@ -871,7 +866,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showDialogCustomView", "showProcessDialog"+ e);
+            Log.e("showDialogCustomView", "showProcessDialog" + e);
         }
     }
 
@@ -920,7 +915,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showDialogCustomView", "showProcessDialog"+ e);
+            Log.e("showDialogCustomView", "showProcessDialog" + e);
         }
     }
 
@@ -987,10 +982,9 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showDialogCustomView", "showProcessDialog"+ e);
+            Log.e("showDialogCustomView", "showProcessDialog" + e);
         }
     }
-
 
 
     /**
@@ -1042,12 +1036,11 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showDialogCustomView", "showProcessDialog"+ e);
+            Log.e("showDialogCustomView", "showProcessDialog" + e);
         }
     }
 
     /**
-     *
      * @param pActivity
      * @param pTitle
      * @param pContent
@@ -1093,7 +1086,7 @@ public class DialogManager {
                 }
             }).show();
         } catch (Exception e) {
-            Log.e("showDialogCustomView", "showProcessDialog"+ e);
+            Log.e("showDialogCustomView", "showProcessDialog" + e);
         }
     }
 }

@@ -3,10 +3,11 @@ package vn.com.zalopay.wallet.business.channel.injector;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import rx.subjects.ReplaySubject;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
@@ -26,17 +27,16 @@ import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public abstract class BaseChannelInjector {
     public static final int MIN_VALUE_CHANNEL = 1000000000;
     public static final int MAX_VALUE_CHANNEL = -1;
-
-    protected List<PaymentChannel> mChannelList = new ArrayList<>();
+    public ReplaySubject<PaymentChannel> source = ReplaySubject.create();
     protected List<String> pmcConfigList = new ArrayList<>();
     protected PaymentInfoHelper mPaymentInfoHelper;
-    private double mMinValue = MIN_VALUE_CHANNEL, mMaxValue = MAX_VALUE_CHANNEL;
+    private double mMinValue = MIN_VALUE_CHANNEL,
+            mMaxValue = MAX_VALUE_CHANNEL;
 
     public BaseChannelInjector(PaymentInfoHelper paymentInfoHelper) {
         mPaymentInfoHelper = paymentInfoHelper;
@@ -47,16 +47,32 @@ public abstract class BaseChannelInjector {
      * @return
      */
     public static BaseChannelInjector createChannelInjector(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.isMoneyTranferTrans()) {
-            return new TranferChannelInjector(paymentInfoHelper);
-        } else if (paymentInfoHelper.isWithDrawTrans()) {
+        if (paymentInfoHelper.isWithDrawTrans()) {
             return new WithDrawChannelInjector(paymentInfoHelper);
         } else {
             return new PaymentChannelInjector(paymentInfoHelper);
         }
     }
 
-    protected abstract void detectChannel(ZPWOnGetChannelListener pListener) throws Exception;
+    /***
+     * get min/max for each channel.
+     * use for alert if user input amount out of range support
+     *
+     * @return
+     */
+    public String getAlertAmount(long amount) {
+        String strAlert = "";
+        if (hasMinValueChannel() && amount < getMinValueChannel()) {
+            strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_min_amount_input),
+                    StringUtil.formatVnCurrence(String.valueOf(getMinValueChannel())));
+        } else if (hasMaxValueChannel() && amount > getMaxValueChannel()) {
+            strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_max_amount_input),
+                    StringUtil.formatVnCurrence(String.valueOf(getMaxValueChannel())));
+        }
+        return strAlert;
+    }
+
+    protected abstract void detectChannel() throws Exception;
 
     /***
      * get channel from pmc list
@@ -85,31 +101,10 @@ public abstract class BaseChannelInjector {
                 //get icon
                 ChannelHelper.inflatChannelIcon(channel, null);
                 findValue(channel); //get min/max amount
-                addChannelToList(channel);
+                send(channel);
             } catch (Exception e) {
                 Log.e(this, e);
             }
-        }
-    }
-
-    /***
-     * sort channel list
-     * disable channel will be the last of list
-     */
-    protected void sortChannels() {
-        if (mChannelList == null || mChannelList.size() <= 1) {
-            return;
-        }
-        ArrayList<PaymentChannel> tempArr = new ArrayList<>();
-        for (Iterator<PaymentChannel> iterator = mChannelList.iterator(); iterator.hasNext(); ) {
-            PaymentChannel channel = iterator.next();
-            if (!channel.isEnable() || !channel.isAllowByAmount() || channel.isMaintenance()) {
-                tempArr.add(channel.clone());
-                iterator.remove();
-            }
-        }
-        if (tempArr.size() > 0) {
-            mChannelList.addAll(tempArr);
         }
     }
 
@@ -170,11 +165,7 @@ public abstract class BaseChannelInjector {
                     if (channel.isEnable()) {
                         channel.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
                     }
-                    //add channel to list
-                    if (!mChannelList.contains(channel)) {
-                        mChannelList.add(channel);
-                    }
-
+                    send(channel);
                 }
             }
 
@@ -280,11 +271,7 @@ public abstract class BaseChannelInjector {
                     if (!CreditCardCheck.getInstance().isDetected() && !BankCardCheck.getInstance().isDetected()) {
                         channel.pmcname = GlobalData.getStringResource(RS.string.sdk_card_default_label) + mapCard.last4cardno;
                     }
-                    //add channel to list
-                    if (!mChannelList.contains(channel)) {
-                        mChannelList.add(channel);
-                    }
-
+                    send(channel);
                 }
             }
         } catch (Exception ex) {
@@ -292,17 +279,34 @@ public abstract class BaseChannelInjector {
         }
     }
 
-    protected void addChannelToList(PaymentChannel pChannel) {
+    protected void send(PaymentChannel pChannel) {
         if (pChannel != null) {
-            //sometimes network not stable, so 2 channels same in listview, we must exclude it if it existed
-            if (mChannelList.contains(pChannel)) {
-                return;
+            if (this instanceof WithDrawChannelInjector) {
+                processWithDrawCase(pChannel);
             }
-            if (pChannel.isEnable() && pChannel.isZaloPayChannel()) {
-                //add channel to head
-                mChannelList.add(0, pChannel);
-            } else
-                mChannelList.add(pChannel);
+            //sometimes network not stable, so 2 channels same in listview, we must exclude it if it existed
+            source.onNext(pChannel);
+        }
+    }
+
+    private void processWithDrawCase(PaymentChannel pChannel) {
+        BankConfig bankConfig = SDKApplication.getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(pChannel.bankcode);
+        if (bankConfig == null) {
+            return;
+        }
+        if (!bankConfig.isWithDrawAllow()) {
+            pChannel.setStatus(PaymentChannelStatus.DISABLE);
+        } else if (bankConfig.isBankMaintenence(BankFunctionCode.WITHDRAW)) {
+            pChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
+        }
+
+        //check fee + amount <= balance
+        long balance = mPaymentInfoHelper.getBalance();
+        double amount_total = mPaymentInfoHelper.getAmount() + pChannel.totalfee;
+        if (balance < amount_total) {
+            pChannel.setAllowByAmountAndFee(false);
         }
     }
 
@@ -332,8 +336,7 @@ public abstract class BaseChannelInjector {
         if (pChannel == null) {
             return;
         }
-        if (pmcConfigList == null || (pmcConfigList != null &&
-                !pmcConfigList.contains(pChannel.getPmcKey(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), pChannel.pmcid)))) {
+        if (pmcConfigList == null || !pmcConfigList.contains(pChannel.getPmcKey(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype(), pChannel.pmcid))) {
             pChannel.setStatus(PaymentChannelStatus.DISABLE);
         }
     }
@@ -354,72 +357,15 @@ public abstract class BaseChannelInjector {
             mMaxValue = activeChannel.maxvalue;
     }
 
-    public void getChannels(ZPWOnGetChannelListener pListener) throws Exception {
+    public void getChannels() throws Exception {
         try {
             pmcConfigList = SDKApplication.getApplicationComponent()
                     .appInfoInteractor()
                     .getPmcTranstypeKeyList(mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getTranstype());
-            detectChannel(pListener);
+            detectChannel();
         } catch (Exception ex) {
             throw ex;
         }
-    }
-
-    /***
-     * remove channels out list
-     * keep some channel to force channel
-     *
-     * @param pChannels
-     */
-    public void filterForceChannel(int[] pChannels) {
-        for (Iterator<PaymentChannel> iterator = mChannelList.iterator(); iterator.hasNext(); ) {
-            PaymentChannel channelView = iterator.next();
-
-            boolean isExist = false;
-
-            for (int i = 0; i < pChannels.length; i++) {
-                if (pChannels[i] == channelView.pmcid) {
-                    isExist = true;
-                    break;
-                }
-            }
-            //remove it
-            if (!isExist) {
-                Log.d("filterForceChannel", "remove channel by force", channelView);
-                iterator.remove();
-            }
-
-        }
-    }
-
-    public List<PaymentChannel> getChannelList() {
-        return mChannelList;
-    }
-
-    public boolean isChannelEmpty() {
-        return mChannelList == null || mChannelList.size() <= 0;
-    }
-
-    public boolean isChannelUnique() {
-        return mChannelList != null && mChannelList.size() <= 1;
-    }
-
-    public PaymentChannel getFirstChannel() {
-        if (mChannelList != null && mChannelList.size() >= 1)
-            return mChannelList.get(0);
-
-        return null;
-    }
-
-    public PaymentChannel getChannelAtPosition(int pPosition) {
-        try {
-            if (mChannelList != null)
-                return mChannelList.get(pPosition);
-
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return null;
     }
 
     public double getMinValueChannel() {

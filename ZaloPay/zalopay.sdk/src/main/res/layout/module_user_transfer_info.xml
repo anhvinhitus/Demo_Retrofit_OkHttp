@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/tranfer_user_name_relative_wrapper"
+        android:id="@+id/receiver_zaloname_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -25,7 +25,7 @@
             android:textSize="@dimen/zpw_text_size_medium" />
 
         <TextView
-            android:id="@+id/zpw_wallet_transfer_user"
+            android:id="@+id/receiver_zaloname_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/zalopay_name_relative_wrapper"
+        android:id="@+id/receiver_zalopayname_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -58,7 +58,7 @@
             android:textSize="@dimen/zpw_text_size_medium" />
 
         <TextView
-            android:id="@+id/zpw_zalopay_name_textview"
+            android:id="@+id/receiver_zalopayname_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -70,7 +70,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/zpw_wallet_transfer_layout_price"
+        android:id="@+id/transfer_fee_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -97,7 +97,7 @@
             android:layout_alignParentTop="true">
 
             <TextView
-                android:id="@+id/zpw_wallet_transfer_price"
+                android:id="@+id/transfer_fee_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -118,7 +118,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/zpw_wallet_transfer_layout_payamont"
+        android:id="@+id/transfer_amounttotal_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -145,7 +145,7 @@
             android:layout_alignParentRight="true">
 
             <TextView
-                android:id="@+id/zpw_wallet_transfer_payamount"
+                android:id="@+id/transfer_amounttotal_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"

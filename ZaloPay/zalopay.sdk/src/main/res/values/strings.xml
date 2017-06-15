@@ -311,11 +311,11 @@
 
     <string name="zpw_string_alert_loading_bank">Kiểm tra thông tin ngân hàng</string>
 
-    <string name="zpw_string_title_payment_gateway">CHỌN PHƯƠNG THỨC THANH TOÁN</string>
+    <string name="zpw_string_title_payment_gateway">PHƯƠNG THỨC THANH TOÁN KHÁC</string>
 
-    <string name="zpw_string_title_payment_gateway_tranfer">CHỌN NGUỒN TIỀN</string>
+    <string name="zpw_string_title_payment_gateway_tranfer">PHƯƠNG THỨC CHUYỂN TIỀN KHÁC</string>
 
-    <string name="zpw_string_title_payment_gateway_topup">CHỌN NGUỒN TIỀN</string>
+    <string name="zpw_string_title_payment_gateway_topup">CHỌN NGUỒN TIỀN KHÁC</string>
 
     <string name="zpw_string_title_payment_gateway_withdraw">CHỌN THẺ NHẬN TIỀN</string>
 
@@ -323,6 +323,9 @@
     <string name="zpw_string_title_payment_gateway_confirm_topup">NGUỒN TIỀN</string>
     <string name="zpw_string_title_payment_gateway_confirm_tranfer">NGUỒN TIỀN</string>
     <string name="zpw_string_title_payment_gateway_confirm_withdraw">THẺ NHẬN TIỀN</string>
+
+    <string name="sdk_pay_method_title">PHƯƠNG THỨC THANH TOÁN KHÁC</string>
+    <string name="sdk_tranfer_method_title">PHƯƠNG THỨC CHUYỂN TIỀN KHÁC</string>
 
     <string name="zpw_string_format_balance">(số dư %s VND)</string>
 
@@ -538,4 +541,6 @@
 
     <string name="sdk_load_appinfo_error_message">Không tải được thông tin ứng dụng. Vui lòng thử lại!</string>
     <string name="sdk_load_generic_error_message">Không tải được thông tin. Vui lòng thử lại!</string>
+
+    <string name="sdk_button_confirm_txt">Xác Nhận Thanh Toán</string>
 </resources>

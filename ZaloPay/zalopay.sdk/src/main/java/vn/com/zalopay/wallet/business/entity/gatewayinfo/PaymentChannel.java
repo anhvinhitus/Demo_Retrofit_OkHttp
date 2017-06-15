@@ -7,6 +7,10 @@ public class PaymentChannel extends MiniPmcTransType {
     public String channel_next_icon;
     public String l4no;
     public String f6no;
+    public boolean select = false;//status select on list view
+
+    public PaymentChannel() {
+    }
 
     public PaymentChannel(MiniPmcTransType channel) {
         super(channel);
@@ -19,6 +23,10 @@ public class PaymentChannel extends MiniPmcTransType {
         paymentChannel.l4no = this.l4no;
         paymentChannel.f6no = this.f6no;
         return paymentChannel;
+    }
+
+    public boolean isMapValid() {
+        return !TextUtils.isEmpty(f6no) && !TextUtils.isEmpty(l4no);
     }
 
     @Override

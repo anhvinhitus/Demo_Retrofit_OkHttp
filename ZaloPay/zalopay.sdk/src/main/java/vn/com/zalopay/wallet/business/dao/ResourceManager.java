@@ -217,6 +217,14 @@ public class ResourceManager extends SingletonBase {
         return bitmap;
     }
 
+    public static String getAbsoluteImagePath(String pImageName){
+        try {
+            return String.format("file://%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
+        } catch (Exception e) {
+            Log.e("getAbsolutePath",e);
+        }
+        return null;
+    }
     /***
      * load image into SimpleDraweeView
      * use Fresco
@@ -225,8 +233,10 @@ public class ResourceManager extends SingletonBase {
      */
     public static void loadImageIntoView(View pView, String pImageName) {
         try {
-            String pFilePath = String.format("file://%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
-            ((SimpleDraweeView)pView).setImageURI(pFilePath);
+            String pFilePath = getAbsoluteImagePath(pImageName);
+            if(!TextUtils.isEmpty(pFilePath)){
+                ((SimpleDraweeView)pView).setImageURI(pFilePath);
+            }
         } catch (Exception e) {
             Log.d("loadImageIntoView", e);
         }

@@ -3,7 +3,9 @@ package vn.com.zalopay.wallet.paymentinfo;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -219,5 +221,59 @@ public class PaymentInfoHelper extends SingletonBase {
         } catch (Exception e) {
             Log.e("updateTransactionResult", e);
         }
+    }
+
+    public String getPaymentMethodTitleByTrans() {
+        String title = GlobalData.getStringResource(RS.string.sdk_pay_method_title);
+        if (isMoneyTranferTrans()) {
+            title = GlobalData.getStringResource(RS.string.sdk_tranfer_method_title);
+        }
+        return title;
+    }
+
+    public String getTitleByTrans() {
+        String title = GlobalData.getStringResource(RS.string.walletsdk_string_bar_title);
+        if (isTopupTrans()) {
+            title = GlobalData.getStringResource(RS.string.zpw_string_pay_title);
+        } else if (isMoneyTranferTrans()) {
+            title = GlobalData.getStringResource(RS.string.zpw_string_tranfer_title);
+        } else if (isWithDrawTrans()) {
+            title = GlobalData.getStringResource(RS.string.zpw_string_withdraw_title);
+        }
+        return title;
+    }
+
+    /***
+     * user level 1 can not tranfer money.
+     * user level 1 can not withdraw.
+     */
+    public boolean userLevelValid() {
+        boolean userLevelValid = true;
+        try {
+            int user_level = getLevel();
+            if (isMoneyTranferTrans() && user_level < BuildConfig.level_allow_use_zalopay) {
+                userLevelValid = false;
+            } else if (isWithDrawTrans() && user_level < BuildConfig.level_allow_withdraw) {
+                userLevelValid = false;
+            } else if ((payByCardMap() || payByBankAccountMap()) && user_level < BuildConfig.level_allow_cardmap) {
+                userLevelValid = false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return userLevelValid;
+    }
+
+    public boolean shouldIgnore(int pChannelId){
+        int[] channels = getForceChannels();
+        if(channels == null || channels.length <= 0){
+            return false;
+        }
+        for (int i=0;i<channels.length;i++){
+            if(channels[i] == pChannelId){
+                return false;
+            }
+        }
+        return true;
     }
 }

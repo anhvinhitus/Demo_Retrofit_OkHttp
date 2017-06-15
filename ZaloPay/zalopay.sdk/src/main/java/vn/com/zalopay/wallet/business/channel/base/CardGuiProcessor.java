@@ -957,7 +957,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                              getAdapter().getActivity().recycleActivity();
                                                          }
                                                      }, pMessage,
-                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
+                GlobalData.getStringResource(RS.string.dialog_upgrade_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
     }
 
     protected void showWarningBankAccount() {

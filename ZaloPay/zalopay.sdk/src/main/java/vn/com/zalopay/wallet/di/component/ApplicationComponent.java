@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
 @Singleton
 @Component(modules = {ApplicationModule.class,
@@ -34,6 +35,8 @@ import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 public interface ApplicationComponent {
 
     void inject(InjectionWrapper pInjectionWrapper);
+
+    void inject(ChannelListPresenter channelListPresenter);
 
     Application application();
 
