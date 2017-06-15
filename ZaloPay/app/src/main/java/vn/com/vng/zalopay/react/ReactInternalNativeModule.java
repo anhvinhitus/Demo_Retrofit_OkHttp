@@ -1,11 +1,8 @@
 package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.view.View;
-import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -35,11 +32,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
@@ -52,7 +47,6 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.RequestSubscriber;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
@@ -395,17 +389,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         writableMap.putMap("query", queries);
 
         return writableMap;
-    }
-
-    @ReactMethod
-    public void navigateIntro(String title) {
-        Timber.d("navigateIntro : %s", title);
-
-        if (getCurrentActivity() == null) {
-            return;
-        }
-
-        navigator.startIntroAppActivity(getCurrentActivity(), false, title);
     }
 
     private class PayOrderSubscriber extends DefaultSubscriber<NotificationData> {

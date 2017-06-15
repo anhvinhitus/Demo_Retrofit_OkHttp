@@ -35,12 +35,9 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
             Timber.i("go to Home Screen");
             mZaloSdkApi.getProfile();
             mView.gotoHomeScreen();
-        } else if (IntroAppUtils.isShowedIntro()) {
+        } else  {
             Timber.d("gotoLoginScreen");
             mView.gotoLoginScreen();
-        } else {
-            Timber.d("gotoOnBoardingScreen");
-            mView.gotoOnBoardingScreen();
         }
     }
 }

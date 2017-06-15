@@ -62,7 +62,6 @@ import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
-import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
@@ -665,16 +664,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startIntroAppActivity(Context context) {
-        startIntroAppActivity(context, true, "");
-    }
-
-    public void startIntroAppActivity(Context context, boolean startup, String title) {
-        Intent intent = new Intent(context, IntroAppActivity.class);
-        intent.putExtra("startup", startup);
-        intent.putExtra("title", title);
-        context.startActivity(intent);
-    }
 
     public void startWebViewActivity(Context context, String url) {
         Intent intent = new Intent(context, WebViewActivity.class);

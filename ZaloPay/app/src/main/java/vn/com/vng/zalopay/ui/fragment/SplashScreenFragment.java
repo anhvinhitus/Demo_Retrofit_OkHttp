@@ -6,7 +6,6 @@ import android.view.View;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.SplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
@@ -90,12 +89,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void gotoLoginScreen() {
         navigator.startLoginActivity(getContext());
-        getActivity().finish();
-    }
-
-    @Override
-    public void gotoOnBoardingScreen() {
-        navigator.startIntroAppActivity(getContext());
         getActivity().finish();
     }
 }

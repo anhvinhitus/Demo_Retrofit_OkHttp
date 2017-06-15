@@ -12,6 +12,4 @@ public interface ISplashScreenView {
     void gotoHomeScreen();
 
     void gotoLoginScreen();
-
-    void gotoOnBoardingScreen();
 }

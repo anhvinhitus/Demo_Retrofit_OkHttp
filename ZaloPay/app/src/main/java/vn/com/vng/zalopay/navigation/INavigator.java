@@ -51,5 +51,4 @@ public interface INavigator {
 
     void startWebAppActivity(Context context, String url);
 
-    void startIntroAppActivity(Context context, boolean startup, String title);
 }

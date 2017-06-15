@@ -112,7 +112,7 @@
     <string name="link_account_bank_support_hint">Để liên kết thành công TK Vietcombank và TK Zalo Pay phải sử dụng cùng 1 số điện thoại và tối thiểu 50.000 VND trong VCB</string>
     <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải là %s</string>
     <string name="link_account_empty_bank_support_balance_require_hint"><![CDATA[Để thanh toán thành công, số dư tối thiểu trong TK Vietcombank là <b>50.000 VND</b>]]></string>
-    
+
     <string name="txt_home_bank">Ngân Hàng</string>
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_link_account">Liên Kết Tài Khoản</string>
@@ -208,19 +208,6 @@
 
     <string name="describe_request_support_count">Mô tả (%s/64) (bắt buộc)</string>
     <string name="describe_request_support">Nhập thông tin cần hỗ trợ (bắt buộc)</string>
-
-    <!-- Intro App Start-->
-    <string name="intro.app.title.step1">ĐĂNG NHẬP VỚI ZALO</string>
-    <string name="intro.app.content.step1">Không cần đăng ký mới\n Đăng nhập dễ dàng với tài khoản Zalo.</string>
-    <string name="intro.app.title.step2">TỰ ĐẶT ZALO PAY ID</string>
-    <string name="intro.app.content.step2">Zalo Pay ID dùng để chuyển khoản\n hay nhận tiền giống như tài khoản ngân hàng.</string>
-    <string name="intro.app.title.step3">NHIỀU DỊCH VỤ TIỆN ÍCH</string>
-    <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại&#8230;</string>
-    <string name="intro.app.title.step4">LÌ XÌ</string>
-    <string name="intro.app.content.step4">Lì xì cho cả nhóm hoặc cá nhân\n Tăng niềm vui bằng cách lì xì số tiền ngẫu nhiên\n hay bằng nhau.</string>
-    <string name="intro.app.title.step5">THANH TOÁN TRONG 2 GIÂY</string>
-    <string name="intro.app.content.step5">Giao dịch siêu nhanh, ổn định,\n thành công cao.</string>
-    <!-- Intro App END-->
 
     <string name="my_balance">Số dư của tôi <font size='12'>(VND)</font></string>
     <string name="account_name">Zalo Pay ID</string>
@@ -363,7 +350,7 @@
     <string name="confirm.you.want.to.use.your.fingerprint">Bạn muốn sử dụng vân tay thay vì nhập mật khẩu thanh toán?</string>
     <string name="do.not.ask.again.this.hint">Không hỏi lại gợi ý này</string>
     <string name="other.account">khác</string>
-	<string name="you.having.a.transaction.in.process">Bạn đang có một giao dịch đang trong quá trình thanh toán. Vui lòng kết thúc thanh toán cho giao dịch đó và thử lại</string>
+    <string name="you.having.a.transaction.in.process">Bạn đang có một giao dịch đang trong quá trình thanh toán. Vui lòng kết thúc thanh toán cho giao dịch đó và thử lại</string>
     <string name="confirm_link_card_to_continue_pay"><![CDATA[Bạn đã cập nhật Mật khẩu thanh toán thành công. Bạn có muốn <b>Liên kết tài khoản ngân hàng</b> để tiếp tục giao dịch trước?<br><br><b>Bước 1:</b> <u>Cập nhật Mật khẩu thanh toán</u>.<br><b>Bước 2:</b> Liên kết tài khoản ngân hàng.]]></string>
     <string name="confirm.continue.pay.after.link.account"><![CDATA[Bạn đã <b>Liên kết tài khoản ngân hàng</b> thành công. Bạn có muốn tiếp tục giao dịch trước?]]></string>
     <string name="confirm.continue.pay.after.link.card"><![CDATA[Bạn đã <b>Liên kết thẻ ngân hàng</b> thành công. Bạn có muốn tiếp tục giao dịch trước?]]></string>

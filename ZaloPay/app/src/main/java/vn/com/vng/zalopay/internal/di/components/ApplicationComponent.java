@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.cache.global.GoogleAnalytics;
 import vn.com.vng.zalopay.data.ga.AnalyticsStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
@@ -41,7 +40,6 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.share.IntentHandlerActivity;
 import vn.com.vng.zalopay.tracker.GoogleReporter;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
-import vn.com.vng.zalopay.ui.fragment.IntroAppFragment;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
@@ -113,8 +111,6 @@ public interface ApplicationComponent {
     void inject(DownloadService service);
 
     void inject(InvitationCodeFragment f);
-
-    void inject(IntroAppFragment f);
 
     void inject(ExternalCallSplashScreenActivity a);
 
