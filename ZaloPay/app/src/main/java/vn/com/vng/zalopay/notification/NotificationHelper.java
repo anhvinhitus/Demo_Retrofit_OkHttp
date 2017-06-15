@@ -658,7 +658,9 @@ public class NotificationHelper {
             case NotificationType.UNLINK_ACCOUNT:
                 //Balance & transaction not change
                 return false;
-
+            case NotificationType.PROMOTION:
+                //need reload balance and transaction history on promotion
+                return true;
             default:
                 return true;
         }
