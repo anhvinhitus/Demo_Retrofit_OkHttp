@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.appresource;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.greenrobot.eventbus.EventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
@@ -74,7 +75,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 new OkHttpClient(),
                 true,
                 "2.4.0",
-                Arrays.asList(6L), appResourceList, excludeAppResourceList);
+                Arrays.asList(6L), appResourceList, excludeAppResourceList, EventBus.getDefault());
     }
 
     private AppResourceEntity createAppResource(int index) {
