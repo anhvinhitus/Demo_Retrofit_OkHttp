@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.bottomsheet;
+package com.zalopay.ui.widget.password.bottomsheet;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,29 +10,29 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.R;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
-import com.zalopay.ui.widget.pinlayout.encryption.Encryptor;
-import com.zalopay.ui.widget.pinlayout.enums.KeyboardButtonEnum;
-import com.zalopay.ui.widget.pinlayout.indicator.LoadingIndicatorView;
-import com.zalopay.ui.widget.pinlayout.interfaces.IBuilder;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFSetDataToView;
-import com.zalopay.ui.widget.pinlayout.interfaces.KeyboardButtonClickedListener;
-import com.zalopay.ui.widget.pinlayout.view.KeyboardView;
-import com.zalopay.ui.widget.pinlayout.view.PinCodeRoundView;
+import com.zalopay.ui.widget.password.encryption.Encryptor;
+import com.zalopay.ui.widget.password.enums.KeyboardButtonEnum;
+import com.zalopay.ui.widget.password.indicator.LoadingIndicatorView;
+import com.zalopay.ui.widget.password.interfaces.IBuilder;
+import com.zalopay.ui.widget.password.interfaces.ISetDataToView;
+import com.zalopay.ui.widget.password.interfaces.KeyboardButtonClickedListener;
+import com.zalopay.ui.widget.password.view.KeyboardView;
+import com.zalopay.ui.widget.password.view.PassCodeRoundView;
 
-public class PinViewRender extends PinRender implements KeyboardButtonClickedListener, View.OnClickListener {
+public class PasswordViewRender extends PasswordRender implements KeyboardButtonClickedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = "PinViewRender";
     private static final int DEFAULT_PIN_LENGTH = 6;
 
     protected TextView mStepTextView;
-    protected PinCodeRoundView mPinCodeRoundView;
+    protected PassCodeRoundView mPinCodeRoundView;
     protected KeyboardView mKeyboardView;
     protected ImageView mCancelImageView;
     protected TextView mTextMessage;
@@ -46,14 +46,13 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
     private View mRootView;
     private Context mContext;
     private CheckBox mCheckBox;
-    private LinearLayout mLayoutCheckBox;
     private LoadingIndicatorView mLoadingIndicatorView;
-    IFSetDataToView mIFIfSetDataToView = new IFSetDataToView() {
+    ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
         public void setErrorMessage(Activity pActivity, String pError) {
 
             if (mLoadingIndicatorView != null && mTextMessage != null) {
-                mLoadingIndicatorView.setVisibility(View.GONE);
+                mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                 mTextMessage.setVisibility(View.VISIBLE);
             }
             onPinCodeError(pActivity);
@@ -78,7 +77,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
 
         @Override
         public void clearData() {
-            mTextMessage.setText(mContext.getText(R.string.pin_code_step_time));
             mBuilder.showLoadding(false);
 
         }
@@ -89,11 +87,11 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
             if (pShow) {
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
                     mLoadingIndicatorView.setVisibility(View.VISIBLE);
-                    mTextMessage.setVisibility(View.GONE);
+                    mTextMessage.setVisibility(View.INVISIBLE);
                 }
             } else {
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
-                    mLoadingIndicatorView.setVisibility(View.GONE);
+                    mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                     mTextMessage.setVisibility(View.VISIBLE);
                 }
             }
@@ -102,12 +100,12 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         }
     };
 
-    public PinViewRender(IBuilder pBuilder) {
+    public PasswordViewRender(IBuilder pBuilder) {
         super(pBuilder);
     }
 
     public static IBuilder getBuilder() {
-        return new PinBuilder() {
+        return new PasswordBuilder() {
             @Override
             public UIBottomSheetDialog.IRender build() {
                 return super.build();
@@ -124,7 +122,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         View view = mBuilder.getView();
 
         if (view == null) {
-            Log.d(getClass().getSimpleName(), "view == null");
+            Log.d(TAG, "view == null");
             return;
         }
         initLayout(view, pContext);
@@ -138,26 +136,24 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
 
         mPinCode = "";
         mStepTextView = (TextView) pWView.findViewById(R.id.pin_code_step_textview);
-        mPinCodeRoundView = (PinCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
+        mPinCodeRoundView = (PassCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
         mPinCodeRoundView.setPinLength(this.getPinLength());
         mKeyboardView = (KeyboardView) pWView.findViewById(R.id.pin_code_keyboard_view);
         mCancelImageView = (ImageView) pWView.findViewById(R.id.cancel_action);
         mCancelImageView.setBackgroundResource(backgroundResource);
-        mTextMessage = (TextView) pWView.findViewById(R.id.text_time);
+        mTextMessage = (TextView) pWView.findViewById(R.id.text_error);
         mRootView = pWView.findViewById(R.id.layout_root_view);
         mTextContent = (TextView) pWView.findViewById(R.id.text_content);
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
-        mCheckBox = (CheckBox) pWView.findViewById(R.id.checkBox);
-        mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
+        mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
 
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
         mTextContent.setText(mBuilder.getTextContent());
-        mBuilder.getCallBackToView(mIFIfSetDataToView);
-        mLayoutCheckBox.setOnClickListener(this);
-
+        mBuilder.getCallBackToView(mISetDataToView);
+        mCheckBox.setOnCheckedChangeListener(this);
         String image_path = mBuilder.getLogoPath();
         if (!TextUtils.isEmpty(image_path)) {
             mLogo.setImageURI(image_path);
@@ -194,7 +190,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
      * @return the number of digits in the PIN
      */
     public int getPinLength() {
-        return PinViewRender.DEFAULT_PIN_LENGTH;
+        return PasswordViewRender.DEFAULT_PIN_LENGTH;
     }
 
     public void setPinCode(String pinCode) {
@@ -208,14 +204,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         if (v.getId() == R.id.cancel_action || v.getId() == R.id.layout_root_view) {
             closePinView();
         }
-        if (v.getId() == R.id.layout_checkbox) {
-            if (mCheckBox.isChecked()) {
-                mCheckBox.setChecked(false);
-            } else {
-                mCheckBox.setChecked(true);
-            }
-            mBuilder.getIFPinCallBack().onCheckedFingerPrint(mCheckBox.isChecked());
-        }
+
     }
 
     @Override
@@ -244,7 +233,8 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
 
     public void closePinView() {
         mBuilder.getIFControl().clickCancel();
-
+        mPinCode = "";
+        mPinCodeRoundView.refresh(mPinCode.length());
     }
 
     /**
@@ -273,7 +263,7 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
         mBuilder.showLoadding(true);
         isSuccess = true;
         mBuilder.getIFPinCallBack().onComplete(Encryptor.sha256(mPinCode));
-        Log.e(TAG, "onPinSuccess!" + attempts);
+        Log.d(TAG, "onPinSuccessd()" + attempts);
     }
 
     /**
@@ -281,7 +271,6 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
      */
     public void onPinCodeError(final Activity pActivity) {
         isSuccess = false;
-        onPinFailure(mAttempts++);
         Thread thread = new Thread() {
             public void run() {
                 mPinCode = "";
@@ -311,7 +300,13 @@ public class PinViewRender extends PinRender implements KeyboardButtonClickedLis
      * @param attempts the number of attempts the user has used
      */
     public void onPinFailure(int attempts) {
-        Log.e(TAG, "onPinFailure" + attempts);
         mBuilder.getIFPinCallBack().onError("onPinFailure");
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton checkBoxView, boolean isChecked) {
+        if (checkBoxView.getId() == R.id.checkbox_fingerprint) {
+            mBuilder.getIFPinCallBack().onCheckedFingerPrint(isChecked);
+        }
     }
 }

@@ -1,37 +1,37 @@
-package com.zalopay.ui.widget.pinlayout.bottomsheet;
+package com.zalopay.ui.widget.password.bottomsheet;
 
 
 import android.app.Activity;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
-import com.zalopay.ui.widget.pinlayout.interfaces.IBuilder;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFControl;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFSetDataToView;
+import com.zalopay.ui.widget.password.interfaces.IBuilder;
+import com.zalopay.ui.widget.password.interfaces.IControl;
+import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
+import com.zalopay.ui.widget.password.interfaces.ISetDataToView;
 
-public abstract class PinBuilder implements IBuilder {
-    protected IFPinCallBack mIfPinCallBack;
+public abstract class PasswordBuilder implements IBuilder {
+    protected IPinCallBack mIPinCallBack;
     protected View mView;
     protected Activity mActivity;
     protected String mIdLogo;
     protected String mTextContent;
-    protected IFSetDataToView mIFSetDataToView;
-    protected IFControl mControl;
+    protected ISetDataToView mISetDataToView;
+    protected IControl mControl;
 
     public UIBottomSheetDialog.IRender build() {
-        return new PinViewRender(this);
+        return new PasswordViewRender(this);
     }
 
     @Override
-    public IBuilder setIFPinCallBack(IFPinCallBack pinListener) {
-        mIfPinCallBack = pinListener;
+    public IBuilder setIFPinCallBack(IPinCallBack pinListener) {
+        mIPinCallBack = pinListener;
         return this;
     }
 
     @Override
-    public IFPinCallBack getIFPinCallBack() {
-        return mIfPinCallBack;
+    public IPinCallBack getIFPinCallBack() {
+        return mIPinCallBack;
     }
 
     @Override
@@ -47,27 +47,27 @@ public abstract class PinBuilder implements IBuilder {
 
     @Override
     public void release() {
-        mIfPinCallBack = null;
+        mIPinCallBack = null;
         mView = null;
     }
 
     @Override
     public IBuilder setErrorMessage(Activity pActivity, String pMessage) {
         mActivity = pActivity;
-        mIFSetDataToView.setErrorMessage(pActivity, pMessage);
+        mISetDataToView.setErrorMessage(pActivity, pMessage);
         return this;
     }
 
     @Override
-    public void getCallBackToView(IFSetDataToView pIFDataToView) {
-        mIFSetDataToView = pIFDataToView;
+    public void getCallBackToView(ISetDataToView pIFDataToView) {
+        mISetDataToView = pIFDataToView;
 
     }
 
     @Override
     public IBuilder clearText() {
-        if (mIFSetDataToView != null) {
-            mIFSetDataToView.clearData();
+        if (mISetDataToView != null) {
+            mISetDataToView.clearData();
         }
         return this;
     }
@@ -86,8 +86,8 @@ public abstract class PinBuilder implements IBuilder {
 
     @Override
     public IBuilder showLoadding(boolean pShow) {
-        if (mIFSetDataToView != null) {
-            mIFSetDataToView.showLoading(pShow);
+        if (mISetDataToView != null) {
+            mISetDataToView.showLoading(pShow);
         }
         return this;
     }
@@ -104,13 +104,13 @@ public abstract class PinBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setIFControl(IFControl control) {
+    public IBuilder setIFControl(IControl control) {
         mControl = control;
         return this;
     }
 
     @Override
-    public IFControl getIFControl() {
+    public IControl getIFControl() {
         return mControl;
     }
 }

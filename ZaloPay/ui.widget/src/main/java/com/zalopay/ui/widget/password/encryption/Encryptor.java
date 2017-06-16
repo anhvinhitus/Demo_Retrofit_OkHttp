@@ -1,8 +1,8 @@
-package com.zalopay.ui.widget.pinlayout.encryption;
+package com.zalopay.ui.widget.password.encryption;
 
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.pinlayout.enums.Algorithm;
+import com.zalopay.ui.widget.password.enums.Algorithm;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

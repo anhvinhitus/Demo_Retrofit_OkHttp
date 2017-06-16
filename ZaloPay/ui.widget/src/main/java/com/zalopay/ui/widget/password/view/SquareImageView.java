@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.view;
+package com.zalopay.ui.widget.password.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

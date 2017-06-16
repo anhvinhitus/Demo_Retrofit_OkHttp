@@ -1,6 +1,6 @@
-package com.zalopay.ui.widget.pinlayout.interfaces;
+package com.zalopay.ui.widget.password.interfaces;
 
-import com.zalopay.ui.widget.pinlayout.enums.KeyboardButtonEnum;
+import com.zalopay.ui.widget.password.enums.KeyboardButtonEnum;
 
 public interface KeyboardButtonClickedListener {
 

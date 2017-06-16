@@ -1,15 +1,16 @@
-package com.zalopay.ui.widget.pinlayout.managers;
+package com.zalopay.ui.widget.password.managers;
 
 import android.app.Activity;
+import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
-import com.zalopay.ui.widget.pinlayout.bottomsheet.PinViewRender;
-import com.zalopay.ui.widget.pinlayout.interfaces.IBuilder;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFControl;
-import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
+import com.zalopay.ui.widget.password.bottomsheet.PasswordViewRender;
+import com.zalopay.ui.widget.password.interfaces.IBuilder;
+import com.zalopay.ui.widget.password.interfaces.IControl;
+import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 
 import java.lang.ref.WeakReference;
 
@@ -17,32 +18,27 @@ import java.lang.ref.WeakReference;
  * Created by lytm on 23/05/2017.
  */
 
-public class PinManager {
-    private WeakReference<IFPinCallBack> mIPinCloseCallBack;
+public class PasswordManager {
+    private static final String TAG = PasswordManager.class.getSimpleName();
+    private WeakReference<IPinCallBack> mIPinCallBack;
     private WeakReference<Activity> mActivity;
     private IBuilder mIBuilder;
     private UIBottomSheetDialog mUiBottomSheetDialog;
-    private IFControl Control = new IFControl() {
-        @Override
-        public void clickCancel() {
-            closePinView();
-        }
-    };
 
     /**
      * @param pActivity
      * @param pTitle
      * @param pLogoPath
-     * @param pIPinCloseCallBack
+     * @param pIPinCallBack
      */
-    public PinManager(Activity pActivity, String pTitle, String pLogoPath, IFPinCallBack pIPinCloseCallBack) {
-        mIPinCloseCallBack = new WeakReference<>(pIPinCloseCallBack);
+    public PasswordManager(Activity pActivity, String pTitle, String pLogoPath, IPinCallBack pIPinCallBack) {
+        mIPinCallBack = new WeakReference<>(pIPinCallBack);
         mActivity = new WeakReference<>(pActivity);
         View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
-        mIBuilder = PinViewRender.getBuilder()
+        mIBuilder = PasswordViewRender.getBuilder()
                 .setView(contentView)
-                .setIFPinCallBack(mIPinCloseCallBack.get())
-                .setIFControl(Control)
+                .setIFPinCallBack(mIPinCallBack.get())
+                .setIFControl(mControl)
                 .setTitle(pTitle)
                 .setLogoPath(pLogoPath);
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
@@ -55,26 +51,27 @@ public class PinManager {
     }
 
     public void showPinView() {
-        if (mUiBottomSheetDialog != null && !isShowingPin()) {
+        if (mUiBottomSheetDialog != null && !isShowing()) {
             mUiBottomSheetDialog.show();
+            mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+
         }
     }
 
-    public boolean isShowingPin() {
+    public boolean isShowing() {
         return mUiBottomSheetDialog.isShowing();
     }
 
     public void closePinView() {
-        if (mUiBottomSheetDialog != null && isShowingPin() && mIBuilder != null) {
+        if (mUiBottomSheetDialog != null && isShowing() && mIBuilder != null) {
             mIBuilder.showLoadding(false);
             mIBuilder.clearText();
-            mIBuilder.getIFPinCallBack().onCancel();
             mUiBottomSheetDialog.dismiss();
         }
-        /*mActivity = null;
-        mIPinCloseCallBack = null;
+        mActivity = null;
+        mIPinCallBack = null;
         mIBuilder = null;
-        mUiBottomSheetDialog = null;*/
+        mUiBottomSheetDialog = null;
     }
 
     /**
@@ -95,4 +92,30 @@ public class PinManager {
         mIBuilder.setTitle(pTitle);
         mIBuilder.setLogoPath(pLogoPath);
     }
+
+    public void showLoading(boolean pShowing) {
+        if (mIBuilder == null) {
+            Log.e(TAG, "==mIBuilder== null");
+            return;
+        }
+        mIBuilder.showLoadding(pShowing);
+    }
+
+
+    private IControl mControl = new IControl() {
+        @Override
+        public void clickCancel() {
+            if (mIBuilder == null) {
+                Log.e(TAG, "==mIBuilder== null");
+                return;
+            }
+            if (mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing()) {
+                mIBuilder.showLoadding(false);
+                mIBuilder.clearText();
+                mIBuilder.getIFPinCallBack().onCancel();
+                mUiBottomSheetDialog.dismiss();
+            }
+
+        }
+    };
 }

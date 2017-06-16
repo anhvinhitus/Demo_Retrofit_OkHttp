@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.indicator;
+package com.zalopay.ui.widget.password.indicator;
 
 import android.annotation.TargetApi;
 import android.content.Context;

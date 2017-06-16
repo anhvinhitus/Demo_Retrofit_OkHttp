@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.enums;
+package com.zalopay.ui.widget.password.enums;
 
 /**
  * Created by stoyan and oliviergoutay on 1/13/15.

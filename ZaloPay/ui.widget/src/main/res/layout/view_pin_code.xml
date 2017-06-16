@@ -73,7 +73,7 @@
             </LinearLayout>
 
 
-            <com.zalopay.ui.widget.pinlayout.view.PinCodeRoundView
+            <com.zalopay.ui.widget.password.view.PassCodeRoundView
                 android:id="@+id/pin_code_round_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,18 +88,17 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/text_time"
+                    android:id="@+id/text_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:text="@string/pin_code_step_time"
                     android:textColor="@color/dark_grey_color"
                     android:textSize="@dimen/pin_time_step_text_size"
                     android:textStyle="italic" />
 
-                <com.zalopay.ui.widget.pinlayout.indicator.LoadingIndicatorView
+                <com.zalopay.ui.widget.password.indicator.LoadingIndicatorView
                     android:id="@+id/indicatorView_pin"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
@@ -117,7 +116,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
-                    android:id="@+id/checkBox"
+                    android:id="@+id/checkbox_fingerprint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -139,7 +138,7 @@
                 android:background="@color/light_gray_bar"
                 android:orientation="horizontal" />
 
-            <com.zalopay.ui.widget.pinlayout.view.KeyboardView
+            <com.zalopay.ui.widget.password.view.KeyboardView
                 android:id="@+id/pin_code_keyboard_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

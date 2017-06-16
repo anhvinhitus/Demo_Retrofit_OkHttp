@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.view;
+package com.zalopay.ui.widget.password.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,11 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * @author stoyan and oliviergoutay
- * @version 1/13/15
- */
-public class PinCodeRoundView extends RelativeLayout {
+public class PassCodeRoundView extends RelativeLayout {
 
     private Context mContext;
     private List<ImageView> mRoundViews;
@@ -28,15 +24,15 @@ public class PinCodeRoundView extends RelativeLayout {
     private Drawable mFullDotDrawableId;
     private ViewGroup mRoundContainer;
 
-    public PinCodeRoundView(Context context) {
+    public PassCodeRoundView(Context context) {
         this(context, null);
     }
 
-    public PinCodeRoundView(Context context, AttributeSet attrs) {
+    public PassCodeRoundView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PinCodeRoundView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PassCodeRoundView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         this.mContext = context;
@@ -58,7 +54,7 @@ public class PinCodeRoundView extends RelativeLayout {
             }
 
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            PinCodeRoundView view = (PinCodeRoundView) inflater.inflate(R.layout.view_round_pin_code, this);
+            PassCodeRoundView view = (PassCodeRoundView) inflater.inflate(R.layout.view_round_pin_code, this);
             mRoundContainer = (ViewGroup) view.findViewById(R.id.round_container);
 
             mRoundViews = new ArrayList<>();

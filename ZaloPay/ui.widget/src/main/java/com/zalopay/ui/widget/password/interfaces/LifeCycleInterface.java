@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.interfaces;
+package com.zalopay.ui.widget.password.interfaces;
 
 import android.app.Activity;
 

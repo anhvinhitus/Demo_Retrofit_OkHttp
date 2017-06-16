@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.interfaces;
+package com.zalopay.ui.widget.password.interfaces;
 
 import android.app.Activity;
 import android.view.View;
@@ -7,9 +7,9 @@ import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 public interface IBuilder {
 
-    IBuilder setIFPinCallBack(IFPinCallBack pinListener);
+    IBuilder setIFPinCallBack(IPinCallBack pinListener);
 
-    IFPinCallBack getIFPinCallBack();
+    IPinCallBack getIFPinCallBack();
 
     View getView();
 
@@ -29,13 +29,13 @@ public interface IBuilder {
 
     IBuilder showLoadding(boolean pShow);
 
-    void getCallBackToView(IFSetDataToView pIfError);
+    void getCallBackToView(ISetDataToView pIfError);
 
     UIBottomSheetDialog.IRender build();
 
-    IBuilder setIFControl(IFControl control);
+    IBuilder setIFControl(IControl control);
 
-    IFControl getIFControl();
+    IControl getIFControl();
 
     void release();
 }

@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.pinlayout.view;
+package com.zalopay.ui.widget.password.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.R;
-import com.zalopay.ui.widget.pinlayout.interfaces.KeyboardButtonClickedListener;
+import com.zalopay.ui.widget.password.interfaces.KeyboardButtonClickedListener;
 
 public class KeyboardButtonView extends RelativeLayout implements View.OnClickListener {
 
