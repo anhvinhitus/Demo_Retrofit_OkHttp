@@ -188,7 +188,7 @@ public class AdapterBankCard extends AdapterBase {
         try {
             super.onEvent(pEventType, pAdditionParams);
             if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
-                //check result authen, otp code is 17: wrong otp, other code terminate
+                //check result authen, otp code is 17: wrong otp, other code callback
                 if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 }

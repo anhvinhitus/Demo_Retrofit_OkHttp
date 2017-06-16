@@ -429,14 +429,10 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (getAdapter().getActivity() != null) {
             getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, true);
             getAdapter().getActivity().visibleCardViewNavigateButton(true);
-
             getAdapter().getActivity().visibleSubmitButton(false);
             getAdapter().getActivity().enableSubmitBtn(false);
-
             visualOtpToken(false);
-
             getAdapter().setCanEditCardInfo(false);
-
             try {
                 SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
             } catch (Exception e) {

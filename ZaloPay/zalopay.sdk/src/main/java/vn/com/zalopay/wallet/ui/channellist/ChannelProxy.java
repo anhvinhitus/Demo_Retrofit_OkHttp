@@ -1,20 +1,18 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.design.widget.BottomSheetBehavior;
+import android.text.TextUtils;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
 import com.zalopay.ui.widget.pinlayout.managers.PinManager;
 
 import java.lang.ref.WeakReference;
 
 import rx.functions.Action1;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -24,49 +22,36 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.fingerprint.FPError;
+import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
+import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
+
+import static vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter.REQUEST_CODE;
 
 /***
  * pre check before start payment channel
  */
 public class ChannelProxy extends SingletonBase {
     private static ChannelProxy _object;
+    protected DialogFragment mFingerPrintDialog = null;
+    private ChannelPreValidation mChannelPreValidation;
     private PinManager mPassword;
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
-    private ZPWOnEventConfirmDialogListener mUpdateLevelListener = new ZPWOnEventConfirmDialogListener() {
-        @Override
-        public void onCancelEvent() {
-            mChannelListPresenter.get().exitHasOneChannel();
-        }
-
-        @Override
-        public void onOKevent() {
-            if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserInfo().zalopay_userid, CardType.PVCB)) {
-                mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
-            } else {
-                mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-            }
-            getView().callbackThenterminate();
-        }
-    };
-    private IFPinCallBack mIFIfPinCallBack = new IFPinCallBack() {
+    private IFPinCallBack mPasswordCallback = new IFPinCallBack() {
         @Override
         public void onError(String pError) {
-
+            Log.e(this, pError);
         }
 
         @Override
@@ -76,11 +61,47 @@ public class ChannelProxy extends SingletonBase {
 
         @Override
         public void onCancel() {
-
+            Log.d(this, "user canceled password");
         }
 
         @Override
         public void onComplete(String pHashPin) {
+            Log.d(this, "password", pHashPin);
+            if (!TextUtils.isEmpty(pHashPin)) {
+                Log.d(this, "start submit trans pw", pHashPin);
+            } else {
+                Log.e(this, "empty password");
+            }
+        }
+    };
+    private final IFPCallback mFingerPrintCallback = new IFPCallback() {
+        @Override
+        public void onError(FPError pError) {
+            dismissFingerPrintDialog();
+            try {
+                getView().showInfoDialog(GlobalData.getStringResource(RS.string.zpw_error_authen_pin));
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
+        }
+
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onComplete(String pHashPin) {
+            dismissFingerPrintDialog();
+            //user don't setting use fingerprint for payment
+            if (TextUtils.isEmpty(pHashPin)) {
+                Activity activity = BaseActivity.getCurrentActivity();
+                if (activity != null && !activity.isFinishing()) {
+                    showPassword(activity);
+                }
+            } else {
+                //submit password
+                Log.d(this, "start submit trans pw", pHashPin);
+            }
         }
     };
     private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
@@ -88,9 +109,13 @@ public class ChannelProxy extends SingletonBase {
         public void call(BankConfigResponse bankConfigResponse) {
             String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
             if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
-                startChannel();
+                startFlow();
             }
-            getView().hideLoading();
+            try {
+                getView().hideLoading();
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
         }
     };
 
@@ -106,17 +131,13 @@ public class ChannelProxy extends SingletonBase {
         return ChannelProxy._object;
     }
 
-    public PaymentChannel getChannel() {
-        return mChannel;
-    }
-
     public ChannelProxy setChannel(PaymentChannel pChannel) {
         mChannel = pChannel;
         return this;
     }
 
-    public ChannelListFragment getView() {
-        return mChannelListPresenter.get() != null ? mChannelListPresenter.get().getViewOrThrow() : null;
+    public ChannelListFragment getView() throws Exception {
+        return mChannelListPresenter.get().getViewOrThrow();
     }
 
     public ChannelProxy setChannelListPresenter(ChannelListPresenter presenter) {
@@ -133,102 +154,23 @@ public class ChannelProxy extends SingletonBase {
         return this;
     }
 
-    public boolean validateChannel(PaymentChannel channel) {
-        //channel is maintenance
-        if (channel.isMaintenance()) {
-            if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
-                GlobalData.getPayBankFunction(channel);
-            }
-            int bankFunction = GlobalData.getCurrentBankFunction();
-            BankConfig bankConfig = mBankInteractor.getBankConfig(channel.bankcode);
-            if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-                getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
-                return false;
-            }
+    public boolean validate(PaymentChannel channel) {
+        if (mChannelPreValidation == null) {
+            mChannelPreValidation = new ChannelPreValidation(mPaymentInfoHelper, mBankInteractor, mChannelListPresenter.get());
         }
-        if (!channel.isEnable() || !channel.isAllowByAmount() || !channel.isAllowByAmountAndFee()) {
-            Log.d(this, "select channel not support", channel);
-            return false;
+        try {
+            return mChannelPreValidation.validate(channel);
+        } catch (Exception e) {
+            Log.d(this, e);
         }
-        //check level for payment
-        if (!mPaymentInfoHelper.userLevelValid()) {
-            getView().showUpdateLevelDialog(
-                    GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update),
-                    getBtnCloseText(), mUpdateLevelListener);
-            return false;
-        }
-        //check bank future
-        if (!channel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
-            if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-                BankConfig bankConfig = mBankInteractor.getBankConfig(channel.bankcode);
-                if (bankConfig != null) {
-                    String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                    pMessage = String.format(pMessage, bankConfig.getShortBankName());
-                    showSupportBankVersionDialog(pMessage);
-                }
-                return false;
-            } else if (!channel.isAtmChannel()) {
-                String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                showSupportBankVersionDialog(String.format(message, channel.pmcname));
-                return false;
-            }
-        }
-
-        //withdraw
-        if (mPaymentInfoHelper.isWithDrawTrans()) {
-            return true;
-        }
-
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        int transtype = mPaymentInfoHelper.getTranstype();
-        String warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update);
-        //validate in map table
-        int iCheck = userInfo.getPermissionByChannelMap(channel.pmcid, transtype);
-        if (iCheck == Constants.LEVELMAP_INVALID) {
-            getView().showError(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-            return false;
-        }
-        if (iCheck == Constants.LEVELMAP_BAN && getChannel().isBankAccountMap()) {
-            warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount);
-        } else if (iCheck == Constants.LEVELMAP_BAN && getChannel().isBankAccount()) {
-            warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_linkaccount_before_payment);
-        }
-
-        if (iCheck == Constants.LEVELMAP_BAN) {
-            getView().showUpdateLevelDialog(warningLevel, getBtnCloseText(), mUpdateLevelListener);
-            return false;
-        }
-
-        /***
-         * user selected bank account channel
-         * if user have no linked bank accoount, redirect him to link bank account page
-         * if user have some link bank account, he need to select one to continue to payment
-         */
-        if (channel != null && channel.isBankAccount() && !channel.isBankAccountMap) {
-            //use don't have vietcombank link
-            if (!BankAccountHelper.hasBankAccountOnCache(userInfo.zalopay_userid, CardType.PVCB)) {
-                //callback bankcode to app , app will direct user to link bank account to right that bank
-                BankAccount dBankAccount = new BankAccount();
-                dBankAccount.bankcode = CardType.PVCB;
-                mPaymentInfoHelper.setMapBank(dBankAccount);
-                mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-                getView().callbackThenterminate();
-            }
-            //use has an bank account list
-            else {
-                getView().showSelectionBankAccountDialog();
-            }
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /***
      * start payment channel
      */
-    public void start() {
+    public void start() throws Exception {
         Log.d(this, "start payment channel", mChannel);
-
         Activity activity = BaseActivity.getCurrentActivity();
         if (!(activity instanceof BaseActivity)) {
             Log.e(this, "channel list activity is not valid");
@@ -241,29 +183,20 @@ public class ChannelProxy extends SingletonBase {
             mapBank.setFirstNumber(mChannel.f6no);
             mapBank.bankcode = mChannel.bankcode;
             mPaymentInfoHelper.paymentInfo.setMapBank(mapBank);
-            AdapterBase.existedMapCard = true;
         } else {
             mPaymentInfoHelper.paymentInfo.setMapBank(null);
-            AdapterBase.existedMapCard = false;
         }
         mPaymentInfoHelper.getOrder().populateFee(mChannel);
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-            mChannelListPresenter.get().loadBankList(bankListSubscriber, mChannelListPresenter.get().mBankListException);
-        }else{
-            startChannel();
+            if (mChannelListPresenter.get() != null) {
+                mChannelListPresenter.get().loadBankList(bankListSubscriber, mChannelListPresenter.get().mBankListException);
+            }
+        } else {
+            startFlow();
         }
     }
 
-    private void showSupportBankVersionDialog(String pMessage) {
-        getView().showSupportBankVersionDialog(pMessage);
-    }
-
-    /**
-     * Bank Maintenance
-     *
-     * @return
-     */
     private boolean isBankMaintenance(String pBankCode) {
         if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
             GlobalData.getBankFunctionPay(mPaymentInfoHelper);
@@ -272,51 +205,90 @@ public class ChannelProxy extends SingletonBase {
         int bankFunction = GlobalData.getCurrentBankFunction();
         BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
         if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-            getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
-            return true;
+            try {
+                getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
+                return true;
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
         }
         return false;
     }
 
-    /**
-     * Check bank support
-     *
-     * @return
-     */
     private boolean isBankSupport(String pBankCode) {
         BankConfig bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(pBankCode);
         if (bankConfig == null || !bankConfig.isActive()) {
             String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
-            getView().showInfoDialog(message);
+            try {
+                getView().showInfoDialog(message);
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
             return false;
         }
         return true;
     }
 
-    private String getBtnCloseText() {
-        String closeButtonText = GlobalData.getStringResource(RS.string.dialog_choose_again_button);
-        if (PaymentGatewayActivity.isUniqueChannel()) {
-            closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
+    private void startFlow() {
+        Activity activity = BaseActivity.getCurrentActivity();
+        if (activity == null || activity.isFinishing()) {
+            return;
         }
-        return closeButtonText;
-    }
-
-    private void startChannel() {
         //password flow
         if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
-            String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
-            mPassword = new PinManager(getView().getActivity(), mChannel.pmcname, logo_path, mIFIfPinCallBack);
-            mPassword.showPinView();
-            mPassword.setState(BottomSheetBehavior.STATE_EXPANDED);
+            if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
+                startPasswordFlow(activity);
+            } else {
+                //
+            }
             return;
         }
         //input flow
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-        intent.putExtra(PaymentChannelActivity.PMC_CONFIG_EXTRA, mChannel);
+        intent.putExtra(PaymentChannelActivity.PMC_CONFIG, mChannel);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        Activity activity = getView().getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            activity.startActivity(intent);
+        try {
+            getView().startActivityForResult(intent, REQUEST_CODE);
+        } catch (Exception e) {
+            Log.d(this,e);
+        }
+    }
+
+    private void startPasswordFlow(Activity pActivity) {
+        try {
+            if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
+                showFingerPrint(pActivity);
+            } else {
+                showPassword(pActivity);
+            }
+        } catch (Exception ex) {
+            showPassword(pActivity);
+            Log.e(this, ex);
+        }
+    }
+
+    private void showPassword(Activity pActivity) {
+        String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
+        mPassword = new PinManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+        mPassword.showPinView();
+        mPassword.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private void showFingerPrint(Activity pActivity) throws Exception {
+        mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
+        if (mFingerPrintDialog != null) {
+            mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
+        } else {
+            startPasswordFlow(pActivity);
+            Log.d(this, "use password instend of use fingerprint");
+        }
+    }
+
+    private void dismissFingerPrintDialog() {
+        if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
+            mFingerPrintDialog.dismiss();
+            mFingerPrintDialog = null;
+            Log.d(this, "dissmis dialog fingerprint");
         }
     }
 }

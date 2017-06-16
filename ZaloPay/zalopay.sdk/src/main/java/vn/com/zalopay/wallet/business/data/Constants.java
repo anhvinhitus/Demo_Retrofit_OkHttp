@@ -78,6 +78,8 @@ public class Constants {
     public static final int REQUIRE_OTP = 2;
     public static final int RECEIVER_ORIGIN = -888;
     public static final int API_ORIGIN = -999;
+    public static final String SHOW_DIALOG = "show";
+    public static final String MESSAGE = "mess";
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;
@@ -89,9 +91,4 @@ public class Constants {
     public static int UNDEFINE = 9;
     public static int NULL_ERRORCODE = -747;
     public static String TRUE = "true";
-
-    public static class NOTIFY_TYPE {
-        public final static int LINKACC = 116;
-        public final static int UNLINKACC = 115;
-    }
 }

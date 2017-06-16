@@ -108,7 +108,6 @@ import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -318,18 +317,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return 0;
     }
 
-    public static BasePaymentActivity getPaymentGatewayActivity() {
-        if (mActivityStack == null || mActivityStack.size() <= 0) {
-            return null;
-        }
-        for (BasePaymentActivity activity : mActivityStack) {
-            if (activity instanceof PaymentGatewayActivity) {
-                return activity;
-            }
-        }
-        return null;
-    }
-
     public static BasePaymentActivity getPaymentChannelActivity() {
         if (mActivityStack == null || mActivityStack.size() <= 0) {
             return null;
@@ -477,7 +464,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } else {
             Log.d("support_button", "IFeedBack == null");
         }
-
         feedBackCollector.showDialog(this);
     }
 
@@ -493,7 +479,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public abstract void paymentInfoReady();
 
-    public abstract void recycleActivity();
+    public abstract void callBackThenTerminate();
 
     protected abstract void actionIfPreventApp();
 
@@ -537,7 +523,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         showProgress(false, null);
         //just exit without show dialog.
         if (!pIsShowDialog) {
-            recycleActivity();
+            callBackThenTerminate();
             return;
         }
         //continue to show dialog and quit.
@@ -546,7 +532,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
 
-        showWarningDialog(this::recycleActivity, message);
+        showWarningDialog(this::callBackThenTerminate, message);
     }
 
     public void showDialogWarningLinkCardAndResetCardNumber() {
@@ -1404,7 +1390,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private void showDialogUserInfo() {
         showErrorDialog(() -> {
             mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
-            recycleActivity();
+            callBackThenTerminate();
         }, GlobalData.getStringResource(RS.string.zpw_string_alert_userinfo_invalid));
     }
 

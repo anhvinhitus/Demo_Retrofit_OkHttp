@@ -2,18 +2,14 @@ package vn.com.zalopay.wallet.business.data;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
@@ -25,9 +21,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
-import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
@@ -43,63 +37,29 @@ public class GlobalData {
     public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
     @TransactionType
     public static int mTranstype;
-    //callback to merchant after sdk retry load gateway info
-    protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
     private static String mTransactionPin = null;
-    private static WeakReference<IChannelActivityCallBack> mChannelActivityCallBack;
-
-    public static void setMerchantCallBack(ZPWGatewayInfoCallback pMerchantCallBack) {
-        GlobalData.mMerchantCallBack = new WeakReference<>(pMerchantCallBack);
-    }
-
-    public static IChannelActivityCallBack getChannelActivityCallBack() {
-        if (mChannelActivityCallBack != null) {
-            return mChannelActivityCallBack.get();
-        }
-        return null;
-    }
-
-    public static void setChannelActivityCallBack(IChannelActivityCallBack mChannelActivityCallBack) {
-        GlobalData.mChannelActivityCallBack = new WeakReference<>(mChannelActivityCallBack);
-    }
 
     /***
      * prevent cross call pay
      */
     private static boolean isAccessRight() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-
         boolean isRightAccess = false;
-
         if (stackTraceElements.length >= 5) {
             if (stackTraceElements[4].getClassName().equals(SDKPayment.class.getName()) && stackTraceElements[4].getMethodName().equals("pay")) {
                 isRightAccess = true;
             }
         }
-
         return isRightAccess;
     }
 
     public static boolean isUserInSDK() {
         return BasePaymentActivity.getCurrentActivityCount() > 0;
     }
-
-    public static boolean isNewUser(String zalopay_userid) {
-        String userID;
-        try {
-            userID = SharedPreferencesManager.getInstance().getCurrentUserID();
-        } catch (Exception e) {
-            Log.e("isNewUser", e);
-            return true;
-        }
-        return TextUtils.isEmpty(userID) || !userID.equals(zalopay_userid);
-    }
-
-    //region is channel
 
     public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
         boolean isTransactionHasInputCard = !paymentInfoHelper.payByCardMap() && !paymentInfoHelper.payByBankAccountMap() && !paymentInfoHelper.isWithDrawTrans();
@@ -110,7 +70,6 @@ public class GlobalData {
         }
         return isTransactionHasInputCard && isChannelHasInputCard;
     }
-    //endregion
 
     public static String getOfflineMessage(PaymentInfoHelper paymentInfoHelper) {
         if (paymentInfoHelper.bankAccountLink()) {
@@ -138,21 +97,6 @@ public class GlobalData {
             paymentInfoHelper.setResult(PaymentStatus.DISCONNECT);
         }
         return isOffNetworking;
-    }
-
-    /***
-     * is this app configured by backend.
-     */
-    public static boolean isAllowApplication(long appID) {
-        try {
-            AppInfo currentApp = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appID)), AppInfo.class);
-
-            return (currentApp != null && currentApp.isAllow());
-
-        } catch (Exception e) {
-            Log.e("isAllowApplication", e);
-        }
-        return false;
     }
 
     /***
@@ -232,7 +176,6 @@ public class GlobalData {
         GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
         GlobalData.mTransactionPin = null;
-        AdapterBase.existedMapCard = false;
         GlobalData.mTranstype = pTranstype;
     }
 

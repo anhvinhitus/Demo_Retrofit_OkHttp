@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.wallet.exception.InvalidStateException;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -31,10 +32,10 @@ public abstract class AbstractPresenter<T> implements IPresenter<T> {
     }
 
     @NonNull
-    public T getViewOrThrow() {
+    public T getViewOrThrow() throws Exception {
         final T view = getView();
         if (view == null) {
-            throw new IllegalStateException("view not attached");
+            throw new InvalidStateException("view not attached");
         }
         return view;
     }

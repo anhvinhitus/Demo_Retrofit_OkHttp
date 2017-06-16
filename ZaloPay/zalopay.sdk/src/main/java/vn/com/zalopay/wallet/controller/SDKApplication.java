@@ -33,11 +33,6 @@ public class SDKApplication extends Application {
         return mApplicationComponent;
     }
 
-    //use for mock testing purpose
-    public static void setApplicationComponent(ApplicationComponent mApplicationComponent) {
-        SDKApplication.mApplicationComponent = mApplicationComponent;
-    }
-
     public static void initialize(Application pApplication, SDKConfiguration pConfig) {
         mApplicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(pApplication))

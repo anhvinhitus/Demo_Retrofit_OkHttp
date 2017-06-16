@@ -5,9 +5,13 @@ import android.content.Context;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 
 /**
  * Created by chucvv on 6/13/17.
@@ -44,5 +48,19 @@ public class TransactionHelper {
                 break;
         }
         return appName;
+    }
+
+    public static boolean needUserPasswordPayment(MiniPmcTransType pChannel, AbstractOrder pOrder) {
+        Log.d("needUserPasswordPayment", "start check require for using password", pChannel);
+        if (pChannel == null || pOrder == null) {
+            return false;
+        }
+        int transAuthenType = TransAuthenType.PIN;
+        if (pChannel.isNeedToCheckTransactionAmount() && pOrder.amount_total > pChannel.amountrequireotp) {
+            transAuthenType = pChannel.overamounttype;
+        } else if (pChannel.isNeedToCheckTransactionAmount() && pOrder.amount_total < pChannel.amountrequireotp) {
+            transAuthenType = pChannel.inamounttype;
+        }
+        return transAuthenType == TransAuthenType.PIN || transAuthenType == TransAuthenType.BOTH;
     }
 }

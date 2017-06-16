@@ -35,21 +35,21 @@ public class SDKTransactionAdapter extends SingletonBase {
 
     public void startTransaction() throws Exception {
         if (mSDKTransaction == null || mAdapter.get() == null) {
-            throw new Exception("mSDKTransaction null or adpater null");
+            throw new Exception("mSDKTransaction null or adapter null");
         }
         mSDKTransaction.doSubmit(mAdapter.get());
     }
 
     public void getTransactionStatus(String pZmpTransID, boolean pCheckData, String pMessage) throws Exception {
         if (mSDKTransaction == null || mAdapter.get() == null) {
-            throw new Exception("mSDKTransaction null or adpater null");
+            throw new Exception("mSDKTransaction null or adapter null");
         }
         mSDKTransaction.getStatus(mAdapter.get(), pZmpTransID, pCheckData, pMessage);
     }
 
     public void authenPayer(String pTransID, String authenType, String authenValue) throws Exception {
         if (mSDKTransaction == null || mAdapter.get() == null) {
-            throw new Exception("mSDKTransaction null or adpater null");
+            throw new Exception("mSDKTransaction null or adapter null");
         }
         mSDKTransaction.authenPayer(mAdapter.get(), pTransID, authenType, authenValue);
     }

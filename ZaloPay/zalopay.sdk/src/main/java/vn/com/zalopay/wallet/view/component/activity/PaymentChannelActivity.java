@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -19,7 +21,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
-import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -40,9 +41,12 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
-    public static final String PMC_CONFIG_EXTRA = "pmc_config";
+    public static final String PMC_CONFIG = "config";
     protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
@@ -52,7 +56,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private ActivityRendering mActivityRender;
     private MiniPmcTransType mMiniPmcTransType;
     private View.OnClickListener mOnClickExitListener = v -> {
-        Log.d(this, "on exit");
         //get status again if user back when payment in bank's site
         if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
                 (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
@@ -68,30 +71,43 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         if (getAdapter() != null && getAdapter().isZaloPayFlow() && getAdapter().isBalanceErrorPharse()) {
-             mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-            if (GlobalData.getChannelActivityCallBack() != null) {
-                GlobalData.getChannelActivityCallBack().onBackAction();
-            }
-            finish();
+            mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+            setCallBack(Activity.RESULT_OK);
             return;
         }
         if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
             if (getAdapter().isTransactionSuccess()) {
                 mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-                recycleActivity();
             } else if (getAdapter().isTransactionFail()) {
                 mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-                recycleActivity();
-            } else if (GlobalData.getChannelActivityCallBack() != null) {
-                GlobalData.getChannelActivityCallBack().onBackAction();
-                finish();
-            } else {
-                recycleActivity();
             }
+            callBackThenTerminate();
         } else {
             confirmQuitPayment();
         }
     };
+
+    public void setCallBack(Intent pIntent) {
+        Log.d(this, "setCallBack", pIntent);
+        Activity activity = BaseActivity.getCurrentActivity();
+        if (activity instanceof ChannelListActivity) {
+            setResult(Activity.RESULT_CANCELED, pIntent);
+        } else if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onComplete();
+        }
+        finish();
+    }
+
+    private void setCallBack(int pResultCode) {
+        Log.d(this, "setCallBack", pResultCode);
+        Activity activity = BaseActivity.getCurrentActivity();
+        if (activity instanceof ChannelListActivity) {
+            setResult(pResultCode, new Intent());
+        } else if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onComplete();
+        }
+        finish();
+    }
 
     public PaymentPassword getPaymentPassword() {
         return mPaymentPassword;
@@ -123,12 +139,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
      */
     protected void initTimer() {
         int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
-        //convert it to milisecond
         iTimeToLiveTrans *= 60 * 1000;
         mTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
             public void onTick(long millisUntilFinished) {
                 mTimerRunning = true;
-                //Log.d(this,"Timer is onTick "+millisUntilFinished);
             }
 
             public void onFinish() {
@@ -191,7 +205,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
         }
         if (pForceUpdate) {
-            recycleActivity();
+            callBackThenTerminate();
         }
     }
 
@@ -237,7 +251,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (getIntent().getExtras() != null) {
-            mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG_EXTRA);
+            mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG);
         }
         Log.d(this, "start payment channel", mMiniPmcTransType);
         if (mMiniPmcTransType == null) {
@@ -274,8 +288,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         Log.d(this, "onStart");
         updateFontCardNumber();
-        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() || mPaymentInfoHelper.payByCardMap()
-                || mPaymentInfoHelper.payByBankAccountMap()))) {
+        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() ||
+                mPaymentInfoHelper.payByCardMap() ||
+                mPaymentInfoHelper.payByBankAccountMap()))) {
             try {
                 setConfirmTitle();
                 getAdapter().moveToConfirmScreen(mMiniPmcTransType);
@@ -664,7 +679,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 case 0:
                     break;
                 case 1:
-                    recycleActivity();
+                    callBackThenTerminate();
                     break;
                 case 2:
                     getAdapter().onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
@@ -710,21 +725,22 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
             @Override
             public void onOKevent() {
-                recycleActivity();
+                callBackThenTerminate();
             }
         }, message, GlobalData.getStringResource(RS.string.dialog_co_button), GlobalData.getStringResource(RS.string.dialog_khong_button));
 
     }
 
     @Override
-    public void recycleActivity() {
+    public void callBackThenTerminate() {
         Log.d(this, "recycle activity");
-        if (GlobalData.getChannelActivityCallBack() != null) {
-            GlobalData.getChannelActivityCallBack().onExitAction();
+        Activity activity = BaseActivity.getCurrentActivity();
+        if (activity instanceof ChannelListActivity) {
+            setCallBack(Activity.RESULT_OK);
         } else if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
+            finish();
         }
-        finish();
     }
 
     @Override

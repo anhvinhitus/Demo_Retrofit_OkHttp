@@ -62,7 +62,7 @@ public class PaymentInfoHelper extends SingletonBase {
         return null;
     }
 
-    public int[] getForceChannels() {
+    private int[] getForceChannels() {
         return paymentInfo != null ? paymentInfo.getForceChannels() : new int[0];
     }
 
@@ -132,7 +132,7 @@ public class PaymentInfoHelper extends SingletonBase {
         return null;
     }
 
-    public LinkAccInfo getLinkAccountInfo() {
+    private LinkAccInfo getLinkAccountInfo() {
         return paymentInfo != null ? paymentInfo.getLinkAccoutInfo() : null;
     }
 
@@ -264,16 +264,17 @@ public class PaymentInfoHelper extends SingletonBase {
         return userLevelValid;
     }
 
-    public boolean shouldIgnore(int pChannelId){
+    public boolean shouldIgnore(int pChannelId) {
         int[] channels = getForceChannels();
-        if(channels == null || channels.length <= 0){
+        if (channels == null || channels.length <= 0) {
             return false;
         }
-        for (int i=0;i<channels.length;i++){
-            if(channels[i] == pChannelId){
+        for (int channel : channels) {
+            if (channel == pChannelId) {
                 return false;
             }
         }
         return true;
     }
+
 }

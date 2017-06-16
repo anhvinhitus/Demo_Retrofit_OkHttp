@@ -22,7 +22,6 @@ import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
 public class ActivityRendering {
-
     private ResourceManager mResourceManager = null;
     private BasePaymentActivity mOwnerActivity = null;
 
@@ -32,9 +31,9 @@ public class ActivityRendering {
     }
 
     public void render() {
-        if (mResourceManager == null)
+        if (mResourceManager == null) {
             return;
-
+        }
         render(mResourceManager.getStaticView(), mResourceManager.getDynamicView());
     }
 

@@ -73,6 +73,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_channellist;
     }
@@ -158,14 +164,14 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void callbackThenterminate() {
         if (mPresenter != null) {
-            mPresenter.terminate();
+            mPresenter.callback();
         }
         terminate();
     }
 
     @Override
     public void renderDynamicItemDetail(List<NameValuePair> nameValuePairList) {
-        if(nameValuePairList == null){
+        if (nameValuePairList == null) {
             return;
         }
         for (int i = 0; i < nameValuePairList.size(); i++) {

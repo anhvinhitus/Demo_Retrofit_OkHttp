@@ -20,9 +20,8 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
-import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
+import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
@@ -32,7 +31,7 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     public static final String CARDNUMBER_EXTRA = "cardnumber";
     public static final String NOTICE_CONTENT_EXTRA = "content";
     protected static WeakReference<ZPWOnCloseDialogListener> mCloseDialog;
-    protected ChannelAdapter mChannelAdapter;
+    //protected ChannelAdapter mChannelAdapter;
     protected String mCloseButtonText = null;
     protected String mBankCode = null;
     protected String mCardNumber = null;
@@ -57,12 +56,12 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     }
 
     protected void initializeChannelRecycleView(List<PaymentChannel> pChannelList) {
-        mChannelAdapter = new ChannelAdapter(getApplicationContext(), pChannelList, R.layout.channel_item_recyclerview, null);
+        //mChannelAdapter = new ChannelAdapter(getApplicationContext(), pChannelList, R.layout.channel_item_recyclerview, null);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mChannelRecyclerView.setHasFixedSize(true);
         mChannelRecyclerView.setLayoutManager(mLayoutManager);
         mChannelRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mChannelRecyclerView.setAdapter(mChannelAdapter);
+        //mChannelRecyclerView.setAdapter(mChannelAdapter);
         mChannelRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mChannelRecyclerView));
     }
 
@@ -70,9 +69,9 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         return MapListSelectionActivity.mCloseDialog.get();
     }
 
-    protected PaymentGatewayActivity getGatewayActivity() {
+    /*protected PaymentGatewayActivity getGatewayActivity() {
         return (PaymentGatewayActivity) mGatewayActivity.get();
-    }
+    }*/
 
     protected IMoveToChannel getMoveToChannelListener() {
         return mMoveToChannelListener.get();
@@ -89,10 +88,6 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (mChannelAdapter != null) {
-            mChannelAdapter = null;
-        }
         mGatewayActivity = null;
         mBankCode = null;
         mCloseButtonText = null;
@@ -117,11 +112,11 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
     @Override
     public void initViews() {
-        this.mGatewayActivity = new WeakReference<>(BasePaymentActivity.getPaymentGatewayActivity());
+        //this.mGatewayActivity = new WeakReference<>(BasePaymentActivity.getPaymentGatewayActivity());
 
-        if (getGatewayActivity() != null) {
+        /*if (getGatewayActivity() != null) {
             this.mMoveToChannelListener = new WeakReference<>(getGatewayActivity().getMoveToChannelListener());
-        }
+        }*/
 
         this.mChannelRecyclerView = (RecyclerView) findViewById(R.id.channel_recycler_view);
         this.mContentTextView = (TextView) findViewById(R.id.contentTextView);
@@ -165,14 +160,14 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
     protected List<PaymentChannel> createChannels() {
         mChannelList.clear();
-        if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
+        /*if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
             List<PaymentChannel> channelList = getGatewayActivity().getChannelList();
             for (PaymentChannel channel : channelList) {
                 if (channel.isMapCardChannel() && !TextUtils.isEmpty(channel.bankcode) && channel.bankcode.equals(mBankCode)) {
                     mChannelList.add(channel.clone());
                 }
             }
-        }
+        }*/
         return mChannelList;
     }
 

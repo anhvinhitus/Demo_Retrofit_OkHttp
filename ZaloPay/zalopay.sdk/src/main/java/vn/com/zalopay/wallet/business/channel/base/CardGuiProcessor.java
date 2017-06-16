@@ -929,7 +929,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     } else {
                         mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
                     }
-                    getAdapter().getActivity().recycleActivity();
+                    getAdapter().getActivity().callBackThenTerminate();
                 }
             });
         }
@@ -954,7 +954,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                          @Override
                                                          public void onOKevent() {
                                                              PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
-                                                             getAdapter().getActivity().recycleActivity();
+                                                             getAdapter().getActivity().callBackThenTerminate();
                                                          }
                                                      }, pMessage,
                 GlobalData.getStringResource(RS.string.dialog_upgrade_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
@@ -975,7 +975,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
                                                                  mPaymentInfoHelper.setMapBank(dBankAccount);
                                                                  mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT);
-                                                                 getAdapter().getActivity().recycleActivity();
+                                                                 getAdapter().getActivity().callBackThenTerminate();
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
                     GlobalData.getStringResource(RS.string.dialog_linkaccount_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
@@ -993,7 +993,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
                                                                  mPaymentInfoHelper.setMapBank(dBankAccount);
                                                                  mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-                                                                 getAdapter().getActivity().recycleActivity();
+                                                                 getAdapter().getActivity().callBackThenTerminate();
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkcard_before_payment),
                     GlobalData.getStringResource(RS.string.dialog_linkaccount_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
@@ -1329,7 +1329,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public boolean preventNextIfLinkCardExisted() {
         try {
-            return getAdapter().isExistedCardNumberOnCache();
+            return getAdapter().existPaymentCardOnCache();
         } catch (Exception e) {
             Log.e(this, e);
             return false;

@@ -2,9 +2,11 @@ package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -33,7 +35,7 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
 
     @Override
     public int getLayoutId() {
-        return R.layout.channel_item;
+        return R.layout.zalopay_channel_item;
     }
 
     @Override
@@ -53,11 +55,22 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
         }
         fee_desc = formatFeeDesc(fee_desc);
         holder.fee_textview.setText(fee_desc);
+
+        boolean hasBalance = userInfo.balance > 0;
+        if (hasBalance) {
+            holder.balance_textview.setText(StringUtil.formatVnCurrence(String.valueOf(userInfo.balance)));
+        }
+        holder.balance_linearlayout.setVisibility(hasBalance ? View.VISIBLE : View.GONE);
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {
+        TextView balance_textview;
+        View balance_linearlayout;
+
         public ViewHolder(View view) {
             super(view);
+            balance_textview = (TextView) view.findViewById(R.id.balance_textview);
+            balance_linearlayout = view.findViewById(R.id.balance_linearlayout);
         }
     }
 }

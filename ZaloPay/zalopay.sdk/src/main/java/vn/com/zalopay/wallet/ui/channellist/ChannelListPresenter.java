@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +31,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -54,13 +56,14 @@ import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 
 /**
  * Created by chucvv on 6/12/17.
  */
 
 public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment> {
-
+    public static final int REQUEST_CODE = 1000;
     @Inject
     public EventBus mBus;
     @Inject
@@ -73,7 +76,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         if (TextUtils.isEmpty(message)) {
             message = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
         }
-        getViewOrThrow().showError(message);
+        try {
+            getViewOrThrow().showError(message);
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     };
     protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
@@ -84,37 +91,44 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private Action1<AppInfo> appInfoSubscriber = new Action1<AppInfo>() {
         @Override
         public void call(AppInfo appInfo) {
-            Log.d(this, "load app info success", appInfo);
-            if (appInfo == null || !appInfo.isAllow()) {
-                getViewOrThrow().showAppInfoNotFoundDialog();
-                return;
+            try {
+                Log.d(this, "load app info success", appInfo);
+                if (appInfo == null || !appInfo.isAllow()) {
+                    getViewOrThrow().showAppInfoNotFoundDialog();
+                    return;
+                }
+                String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+                if (TextUtils.isEmpty(appName)) {
+                    appName = appInfo.appname;
+                }
+                getViewOrThrow().renderAppInfo(appName);
+                loadStaticReload();
+            } catch (Exception e) {
+                Log.d(this, e);
             }
-            String appName = TransactionHelper.getAppNameByTranstype(getViewOrThrow().getContext(), mPaymentInfoHelper.getTranstype());
-            if (TextUtils.isEmpty(appName)) {
-                appName = appInfo.appname;
-            }
-            getViewOrThrow().renderAppInfo(appName);
-            loadStaticReload();
         }
     };
     private Action1<Throwable> appInfoException = throwable -> {
         Log.d(this, "load app info on error", throwable);
-        getViewOrThrow().hideLoading();
-        //update payment status depend on api code from server
-        if (throwable instanceof RequestException) {
-            RequestException requestException = (RequestException) throwable;
-            mPaymentInfoHelper.updateTransactionResult(requestException.code);
-        }
-
-        String message = TransactionHelper.getMessage(throwable);
-        if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.sdk_load_appinfo_error_message);
-        }
-        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
-        if (showDialog) {
-            getViewOrThrow().showError(message);
-        } else {
-            getViewOrThrow().callbackThenterminate();
+        try {
+            getViewOrThrow().hideLoading();
+            //update payment status depend on api code from server
+            if (throwable instanceof RequestException) {
+                RequestException requestException = (RequestException) throwable;
+                mPaymentInfoHelper.updateTransactionResult(requestException.code);
+            }
+            String message = TransactionHelper.getMessage(throwable);
+            if (TextUtils.isEmpty(message)) {
+                message = GlobalData.getStringResource(RS.string.sdk_load_appinfo_error_message);
+            }
+            boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+            if (showDialog) {
+                getViewOrThrow().showError(message);
+            } else {
+                getViewOrThrow().callbackThenterminate();
+            }
+        } catch (Exception e) {
+            Log.d(this, e);
         }
     };
     private boolean setInputMethodTitle = false;
@@ -122,6 +136,35 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public ChannelListPresenter() {
         SDKApplication.getApplicationComponent().inject(this);
         Log.d(this, "call constructor ChannelListPresenter");
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            Log.d(this, "onActivityResult resultCode", resultCode);
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    callback();
+                    try {
+                        getViewOrThrow().terminate();
+                    } catch (Exception e) {
+                        Log.d(this, e);
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    if (data != null) {
+                        boolean showDialog = data.getBooleanExtra(Constants.SHOW_DIALOG, false);
+                        String message = data.getStringExtra(Constants.MESSAGE);
+                        if (showDialog && !TextUtils.isEmpty(message)) {
+                            try {
+                                getViewOrThrow().showInfoDialog(message);
+                            } catch (Exception e) {
+                                Log.d(this, e);
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
@@ -167,36 +210,41 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             Log.d(this, "channel is null");
             return;
         }
-        //check networking
-        Activity activity = getViewOrThrow().getActivity();
-        if (activity != null && !ConnectionUtil.isOnline(activity)) {
-            getViewOrThrow().showOpenSettingNetwokingDialog(null);
-            return;
-        }
-        if (!mChannelProxy.validateChannel(pChannel)) {
-            return;
-        }
-        setSelectChannel(pPosition);
-        mChannelAdapter.notifyBinderItemChanged(pPosition);
-        //update fee
-        if (pChannel.hasFee()) {
-            double fee = pChannel.totalfee;
-            double total_amount = mPaymentInfoHelper.getAmount() + fee;
-            getViewOrThrow().renderOrderFee(total_amount, fee);
-        }
-
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+        try {
+            //check networking
+            Activity activity = BaseActivity.getCurrentActivity();
+            if (activity != null && !ConnectionUtil.isOnline(activity)) {
+                getViewOrThrow().showOpenSettingNetwokingDialog(null);
+                return;
+            }
+            if (!mChannelProxy.validate(pChannel)) {
+                return;
+            }
+            setSelectChannel(pPosition);
+            mChannelAdapter.notifyBinderItemChanged(pPosition);
+            //update fee
+            if (pChannel.hasFee()) {
+                double fee = pChannel.totalfee;
+                double total_amount = mPaymentInfoHelper.getAmount() + fee;
+                getViewOrThrow().renderOrderFee(total_amount, fee);
+            }
+            if (GlobalData.analyticsTrackerWrapper != null) {
+                GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+            }
+        } catch (Exception e) {
+            Log.d(this, e);
         }
     }
 
     private void setSelectChannel(int pPosition) {
-        if (mChannelList != null && mChannelList.size() > 0) {
+        if (mChannelList != null && mChannelList.size() > 0 && pPosition >= 0) {
             //reset the previous one
             try {
-                Object object = mChannelList.get(mPreviousPosition);
-                if (object instanceof PaymentChannel) {
-                    ((PaymentChannel) object).select = false;
+                if (mPreviousPosition >= 0) {
+                    Object object = mChannelList.get(mPreviousPosition);
+                    if (object instanceof PaymentChannel) {
+                        ((PaymentChannel) object).select = false;
+                    }
                 }
             } catch (Exception e) {
                 Log.e(this, e);
@@ -227,23 +275,27 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     private void paymentInfoReady() {
-        getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans());
-        getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
-        renderItemDetail();
-        //init channel proxy
-        mChannelProxy = ChannelProxy.get()
-                .setChannelListPresenter(this)
-                .setPaymentInfo(mPaymentInfoHelper);
-        //validate user level
-        if (!mPaymentInfoHelper.userLevelValid()) {
-            getViewOrThrow().showForceUpdateLevelDialog();
-            return;
+        try {
+            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans());
+            getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
+            renderItemDetail();
+            //init channel proxy
+            mChannelProxy = ChannelProxy.get()
+                    .setChannelListPresenter(this)
+                    .setPaymentInfo(mPaymentInfoHelper);
+            //validate user level
+            if (!mPaymentInfoHelper.userLevelValid()) {
+                getViewOrThrow().showForceUpdateLevelDialog();
+                return;
+            }
+            //check app info whether this transaction is allowed or not
+            loadAppInfo();
+        } catch (Exception e) {
+            Log.d(this, e);
         }
-        //check app info whether this transaction is allowed or not
-        loadAppInfo();
     }
 
-    private void renderItemDetail() {
+    private void renderItemDetail() throws Exception {
         if (TextUtils.isEmpty(mPaymentInfoHelper.getOrder().item)) {
             Log.d(this, "item is empty - skip render item detail");
             return;
@@ -269,8 +321,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private void send(PaymentChannel pChannel) {
         ChannelListAdapter.ItemType itemType;
         if (pChannel.isZaloPayChannel()) {
-            pChannel.select = true;
-            mPreviousPosition = 0;
             itemType = ChannelListAdapter.ItemType.ZALOPAY;
         } else if (pChannel.isMapCardChannel() || pChannel.isBankAccountMap()) {
             itemType = ChannelListAdapter.ItemType.MAP;
@@ -298,17 +348,42 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
              * need remind user go to link card to can withdraw
              */
             if (mPaymentInfoHelper.isWithDrawTrans()) {
-                getViewOrThrow().showWarningLinkCardBeforeWithdraw();
+
+                try {
+                    getViewOrThrow().showWarningLinkCardBeforeWithdraw();
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
             } else {
                 String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
                 if (TextUtils.isEmpty(alertMessage)) {
                     alertMessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
                 }
-                getViewOrThrow().showError(alertMessage);
+                try {
+                    getViewOrThrow().showError(alertMessage);
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
             }
         }
-        //release it
+        makeDefaultSelection();
         mChannelLoader = null;
+    }
+
+    /***
+     * make default select channel
+     */
+    private void makeDefaultSelection() {
+        for (int i = 0; i < mChannelList.size(); i++) {
+            Object object = mChannelList.get(i);
+            if (object instanceof PaymentChannel) {
+                PaymentChannel paymentChannel = (PaymentChannel) object;
+                if (paymentChannel.isEnable()) {
+                    setSelectChannel(i);
+                    break;
+                }
+            }
+        }
     }
 
     private Observer<PaymentChannel> getChannelObserver() {
@@ -317,13 +392,21 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             public void onCompleted() {
                 Log.d(this, "load channels on complete");
                 doCompleteLoadChannel();
-                getViewOrThrow().hideLoading();
+                try {
+                    getViewOrThrow().hideLoading();
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d(this, "load channel on error", e);
-                getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
+                try {
+                    getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
+                } catch (Exception e1) {
+                    Log.d(this, e);
+                }
             }
 
             @Override
@@ -341,7 +424,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     /***
      * prepare show channel and show header.
      */
-    private synchronized void loadChannels() {
+    private synchronized void loadChannels() throws Exception {
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
             Log.d(this, "preparing channels");
@@ -361,12 +444,16 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     }
 
-    private void readyForPayment() {
+    private void readyForPayment() throws Exception {
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         loadBankList(new Action1<BankConfigResponse>() {
             @Override
             public void call(BankConfigResponse bankConfigResponse) {
-                loadChannels();
+                try {
+                    loadChannels();
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
                 Log.d(this, "load bank list finish");
             }
         }, mBankListException);
@@ -383,12 +470,16 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     public boolean isUniqueChannel() {
-        return mChannelList != null || mChannelList.size() <= 0;
+        return mChannelList == null || mChannelList.size() <= 0;
     }
 
     public void exitHasOneChannel() {
         if (isUniqueChannel()) {
-            getViewOrThrow().callbackThenterminate();
+            try {
+                getViewOrThrow().callbackThenterminate();
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
         }
     }
 
@@ -404,7 +495,13 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         Subscription subscription = mAppInfoInteractor.loadAppInfo(appId, new int[]{transtype},
                 userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info)))
+                .doOnSubscribe(() -> {
+                    try {
+                        getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
+                    } catch (Exception e) {
+                        Log.d(this, e);
+                    }
+                })
                 .subscribe(appInfoSubscriber, appInfoException);
         addSubscription(subscription);
         if (GlobalData.analyticsTrackerWrapper != null) {
@@ -412,7 +509,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    private void loadStaticReload() {
+    private void loadStaticReload() throws Exception {
         try {
             Log.d(this, "check static resource start");
             PlatformInfoLoader.getInstance(mPaymentInfoHelper.getUserInfo()).checkPlatformInfo();
@@ -422,8 +519,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    public void terminate() {
-        Log.d(this, "terminate presenter");
+    public void callback() {
+        Log.d(this, "callback presenter");
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
         }
@@ -431,18 +528,26 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
         mPaymentInfoHelper.setResult(pStatus);
-        terminate();
+        callback();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInvalidDataEvent(SdkInvalidDataMessage eventMessge) {
         mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
-        getViewOrThrow().showError(eventMessge.message);
+        try {
+            getViewOrThrow().showError(eventMessge.message);
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTaskInProcessEvent(SdkLoadingTaskMessage pMessage) {
-        getViewOrThrow().showLoading(pMessage.message);
+        try {
+            getViewOrThrow().showLoading(pMessage.message);
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -455,8 +560,18 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     .linkInteractor()
                     .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aBoolean -> readyForPayment(), throwable -> {
-                        getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
+                    .subscribe(aBoolean -> {
+                        try {
+                            readyForPayment();
+                        } catch (Exception e) {
+                            Log.d(this, e);
+                        }
+                    }, throwable -> {
+                        try {
+                            getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
+                        } catch (Exception e) {
+                            Log.d(this, e);
+                        }
                         Log.e("load card and bank account error", throwable.getMessage());
                     });
             addSubscription(subscription);
@@ -480,14 +595,22 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             }
             boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
             if (showDialog) {
-                getViewOrThrow().showError(message);
+                try {
+                    getViewOrThrow().showError(message);
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
             } else {
-                getViewOrThrow().callbackThenterminate();
+                try {
+                    getViewOrThrow().callbackThenterminate();
+                } catch (Exception e) {
+                    Log.d(this, e);
+                }
             }
         }
     }
 
-    private void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
+    private void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) throws Exception {
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
         }
@@ -499,7 +622,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUpVersionEvent(SdkUpVersionMessage pMessage) {
         Log.d(this, "OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
-        notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
+        try {
+            notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
