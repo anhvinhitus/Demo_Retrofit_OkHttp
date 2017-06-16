@@ -37,7 +37,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected ImageView mCancelImageView;
     protected TextView mTextMessage;
     protected int mType = 1;
-    protected int mAttempts = 1;
     protected String mPinCode;
     protected SimpleDraweeView mLogo;
     protected TextView mTextContent;
@@ -235,6 +234,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mBuilder.getIFControl().clickCancel();
         mPinCode = "";
         mPinCodeRoundView.refresh(mPinCode.length());
+        isSuccess = false;
     }
 
     /**
@@ -251,19 +251,15 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     protected void onPinCodeSuccess() {
-        onPinSuccess(mAttempts);
-        mAttempts = 1;
+        onPinSuccess();
     }
 
-    public void onPinSuccess(int attempts) {
-
+    public void onPinSuccess() {
         if (isSuccess) {
             return;
         }
-        mBuilder.showLoadding(true);
         isSuccess = true;
         mBuilder.getIFPinCallBack().onComplete(Encryptor.sha256(mPinCode));
-        Log.d(TAG, "onPinSuccessd()" + attempts);
     }
 
     /**
