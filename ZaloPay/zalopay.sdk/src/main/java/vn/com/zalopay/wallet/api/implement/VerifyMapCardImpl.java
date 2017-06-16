@@ -5,12 +5,12 @@ import java.util.Map;
 import rx.Observable;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.api.IData;
+import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 
 public class VerifyMapCardImpl implements IRequest<StatusResponse> {
     @Override
-    public Observable<StatusResponse> getRequest(IData pIData, Map<String, String> pParams) {
+    public Observable<StatusResponse> getRequest(ITransService pIData, Map<String, String> pParams) {
         return pIData.verfiyCardMap(pParams.get(ConstantParams.USER_ID),
                 pParams.get(ConstantParams.ACCESS_TOKEN),
                 pParams.get(ConstantParams.ZALO_ID),

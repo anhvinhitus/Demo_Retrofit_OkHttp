@@ -57,7 +57,7 @@ import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.api.DataRepository;
+import vn.com.zalopay.wallet.api.ServiceManager;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
@@ -811,7 +811,7 @@ public abstract class AdapterBase {
         try {
             String transId = String.valueOf(pAdditionParams[1]);
             if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                DataRepository.shareInstance().cancelRequest();//cancel current request
+                ServiceManager.shareInstance().cancelRequest();//cancel current request
                 GetStatus.cancelRetryTimer();//cancel timer retry get status
                 DialogManager.closeAllDialog();//close dialog
                 if (mResponseStatus != null) {

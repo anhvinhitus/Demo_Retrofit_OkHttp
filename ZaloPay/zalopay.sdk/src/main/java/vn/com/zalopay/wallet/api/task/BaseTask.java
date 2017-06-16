@@ -8,7 +8,7 @@ import java.util.Map;
 
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.api.DataRepository;
+import vn.com.zalopay.wallet.api.ServiceManager;
 
 public abstract class BaseTask<T> extends SingletonBase {
     public UserInfo mUserInfo;
@@ -48,11 +48,11 @@ public abstract class BaseTask<T> extends SingletonBase {
         return mDataParams;
     }
 
-    protected DataRepository shareDataRepository() {
-        return DataRepository.shareInstance();
+    protected ServiceManager shareDataRepository() {
+        return ServiceManager.shareInstance();
     }
 
-    protected DataRepository newDataRepository() {
-        return DataRepository.newInstance();
+    protected ServiceManager newDataRepository() {
+        return ServiceManager.newInstance();
     }
 }

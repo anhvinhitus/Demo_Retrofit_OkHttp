@@ -285,8 +285,8 @@ public class ChannelProxy extends SingletonBase {
         if (mFingerPrintDialog != null) {
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
         } else {
-            startPasswordFlow(pActivity);
-            Log.d(this, "use password instead of use fingerprint");
+            showPassword(pActivity);
+            Log.d(this, "use password instead of fingerprint");
         }
     }
 

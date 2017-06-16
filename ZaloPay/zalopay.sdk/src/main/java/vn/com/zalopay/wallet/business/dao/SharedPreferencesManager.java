@@ -276,20 +276,20 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zpw_current_user_id), pValue);
     }
 
-    public String getChecksumSDKversion() {
-        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_ver));
+    public String getAppVersion() {
+        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_app_ver));
     }
 
-    public boolean setChecksumSDKversion(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_ver), pValue);
+    public boolean setAppVersion(String pValue) {
+        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_app_ver), pValue);
     }
 
-    public String getChecksumSDK() {
-        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_checksum));
+    public String getPlatformInfoCheckSum() {
+        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_platform_checksum));
     }
 
-    public boolean setChecksumSDK(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_checksum), pValue);
+    public boolean setPlatformInfoCheckSum(String pValue) {
+        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_platform_checksum), pValue);
     }
 
     public String getBankAccountCheckSum() {

@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.behavior.gateway;
 
 import android.text.TextUtils;
 
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -13,7 +14,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.api.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 public class PlatformInfoLoader extends SingletonBase {
     private static PlatformInfoLoader _object;
     protected UserInfo mUserInfo;
-    protected IPlatformInfo platformInteractor;
+    protected IPlatformInfo mPlatformInteractor;
     private Observer<PlatformInfoCallback> platformInfoSubscriber = new Observer<PlatformInfoCallback>() {
         @Override
         public void onCompleted() {
@@ -74,7 +74,7 @@ public class PlatformInfoLoader extends SingletonBase {
     public PlatformInfoLoader(UserInfo pUserInfo) {
         super();
         mUserInfo = pUserInfo;
-        platformInteractor = SDKApplication.getApplicationComponent().platformInfoInteractor();
+        mPlatformInteractor = SDKApplication.getApplicationComponent().platformInfoInteractor();
     }
 
     public synchronized static PlatformInfoLoader getInstance(UserInfo pUserInfo) {
@@ -94,12 +94,12 @@ public class PlatformInfoLoader extends SingletonBase {
      */
     public boolean needGetPlatformInfo(String pUserId) throws Exception {
         long currentTime = System.currentTimeMillis();
-        long expiredTime = platformInteractor.getExpireTime();
-        String checksumSDKV = platformInteractor.getCheckSum();
-        String userId = platformInteractor.getUserId();
+        long expiredTime = mPlatformInteractor.getExpireTime();
+        String checksumSDKV = mPlatformInteractor.getCheckSum();
+        String userId = mPlatformInteractor.getUserId();
         boolean isNewUser = TextUtils.isEmpty(pUserId) || !pUserId.equals(userId);
         return currentTime > expiredTime || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) ||
-                !platformInteractor.isValidConfig() || isNewUser;
+                !mPlatformInteractor.isValidConfig() || isNewUser;
     }
 
     public void checkPlatformInfo() throws Exception {
@@ -118,7 +118,7 @@ public class PlatformInfoLoader extends SingletonBase {
                 Log.e(this, e);
                 throw e;
             }
-        } else if (!platformInteractor.isValidConfig()) {
+        } else if (!mPlatformInteractor.isValidConfig()) {
             try {
                 Log.d(this, "resource not found - start retry load plaform info");
                 retryLoadInfo();
@@ -146,8 +146,8 @@ public class PlatformInfoLoader extends SingletonBase {
      * now need to retry to download again.
      */
     private void retryLoadInfo() throws Exception {
-        String resourceVersion = platformInteractor.getResourceVersion();
-        String resourceDownloadUrl = platformInteractor.getResourceDownloadUrl();
+        String resourceVersion = mPlatformInteractor.getResourceVersion();
+        String resourceDownloadUrl = mPlatformInteractor.getResourceDownloadUrl();
         if (!TextUtils.isEmpty(resourceDownloadUrl) && !TextUtils.isEmpty(resourceVersion)) {
             downloadResource(resourceDownloadUrl, resourceVersion);
         } else {
@@ -155,17 +155,18 @@ public class PlatformInfoLoader extends SingletonBase {
         }
     }
 
-    private void downloadResource(String pUrl, String pResourceVersion) {
-        DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pUrl, pResourceVersion);
-        downloadResourceTask.makeRequest();
+    private Subscription downloadResource(String pUrl, String pResourceVersion) {
         Log.d(this, "starting retry download resource " + pUrl);
+        return mPlatformInteractor.getSDKResource(pUrl, pResourceVersion)
+                .subscribe(aBoolean -> Log.d(this, "download resource on complete"),
+                        throwable -> Log.d(this, "download resource on error", throwable));
     }
 
     private Subscription loadPlatformInfo(boolean pForceReload, boolean downloadResource) {
         Log.d(this, "need to retry load platforminfo again force " + pForceReload);
         long currentTime = System.currentTimeMillis();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        return platformInteractor
+        return mPlatformInteractor
                 .loadPlatformInfo(mUserInfo.zalopay_userid, mUserInfo.accesstoken, pForceReload, downloadResource, currentTime, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(platformInfoSubscriber);

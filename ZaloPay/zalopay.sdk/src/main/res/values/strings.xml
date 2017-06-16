@@ -126,10 +126,10 @@
     <string name="zingpaysdk_conf_gwinfo_enable_deposite">gwinfo_enable_deposite</string>
     <string name="zingpaysdk_conf_gwinfo_banner_list">gwinfo_banner_list</string>
     <string name="zingpaysdk_conf_gwinfo_approve_inside_app">gwinfo_approve_inside_app</string>
-    <string name="zingpaysdk_conf_gwinfo_sdk_checksum">checksum_sdk</string>
+    <string name="zingpaysdk_conf_gwinfo_platform_checksum">gwinfo_plaforminfo_checksum</string>
     <string name="zingpaysdk_conf_gwinfo_cardinfo_checksum">checksum_cardinfo</string>
     <string name="zingpaysdk_conf_gwinfo_bankaccount_checksum">checksum_bankaccount</string>
-    <string name="zingpaysdk_conf_gwinfo_sdk_ver">checksum_sdk_ver</string>
+    <string name="zingpaysdk_conf_gwinfo_app_ver">app_ver</string>
     <string name="zpw_current_user_id">current_user_id</string>
     <string name="zingpaysdk_conf_gwinfo_unzip_path">unzip_path</string>
     <string name="zingpaysdk_conf_gwinfo_res_ver">resource_version</string>

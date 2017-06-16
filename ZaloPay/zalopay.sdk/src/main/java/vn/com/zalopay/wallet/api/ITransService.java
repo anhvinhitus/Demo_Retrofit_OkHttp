@@ -3,14 +3,10 @@ package vn.com.zalopay.wallet.api;
 
 import java.util.Map;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
-import retrofit2.http.Streaming;
-import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -20,7 +16,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 
-public interface IData {
+public interface ITransService {
     /**
      * get transaction status
      *
@@ -40,16 +36,6 @@ public interface IData {
     @GET(Constants.URL_CHECK_SUBMIT_ORDER_STATUS)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT)
     Observable<StatusResponse> checkOrderStatusFailSubmit(@QueryMap Map<String, String> params);
-
-    /**
-     * get resource file
-     *
-     * @param url
-     * @return
-     */
-    @GET
-    @Streaming
-    Call<ResponseBody> getFile(@Url String url);
 
     /**
      * Api ATM Authen

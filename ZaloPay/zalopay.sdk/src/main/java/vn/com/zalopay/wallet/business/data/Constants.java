@@ -32,11 +32,6 @@ public class Constants {
     public static final String BITMAP_EXTENSION = ".png";
     public static final String SUPPORT_INTRO_ACTION_FEEDBACK = "vn.com.vng.zalopay.action.FEEDBACK";
     public static final String SUPPORT_INTRO_ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
-    public static final String SCREENSHOT = "screenshot";
-    public static final String TRANSACTIONID = "transactionid";
-    public static final String CATEGORY = "category";
-    public static final String DESCRIPTION = "description";
-    public static final String ERRORCODE = "errorcode";
     public static final int TIMES_DELAY_TO_GET_NOTIFY = 5000;//ms
     public static final int MAX_INTERVAL_OF_RETRY = 30000;//ms
     public static final int SLEEPING_INTERVAL_OF_RETRY = 1000;//ms

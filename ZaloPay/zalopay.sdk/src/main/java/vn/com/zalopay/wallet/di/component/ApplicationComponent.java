@@ -7,8 +7,10 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import vn.com.zalopay.wallet.api.IDownloadService;
+import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
-import vn.com.zalopay.wallet.api.InjectionWrapper;
+import vn.com.zalopay.wallet.di.module.ApiServiceModule;
 import vn.com.zalopay.wallet.di.module.AppInfoRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.BankAccountRepositoryModule;
@@ -26,6 +28,7 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 @Singleton
 @Component(modules = {ApplicationModule.class,
         ConfigurationModule.class,
+        ApiServiceModule.class,
         AppInfoRepositoryModule.class,
         BankListRepositoryModule.class,
         CardRepositoryModule.class,
@@ -33,8 +36,6 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
         PlatformInfoRepositoryModule.class,
         InteractorModule.class})
 public interface ApplicationComponent {
-
-    void inject(InjectionWrapper pInjectionWrapper);
 
     void inject(ChannelListPresenter channelListPresenter);
 
@@ -51,4 +52,8 @@ public interface ApplicationComponent {
     IAppInfo appInfoInteractor();
 
     ILink linkInteractor();
+
+    ITransService transService();
+
+    IDownloadService downloadService();
 }

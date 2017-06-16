@@ -25,7 +25,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     private boolean isUpdatePlatformInfoOnCache(String pPlatformInfoCheckSum) {
-        String checksumOnCache = getChecksumSDK();
+        String checksumOnCache = getPlatformInfoCheckSum();
         return (!TextUtils.isEmpty(checksumOnCache) && !checksumOnCache.equals(pPlatformInfoCheckSum));
     }
 
@@ -70,7 +70,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             Log.d(this, "save ismaintainwithdraw to cache", maintenance);
             // need to update cache data if chechsum is changed.
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
-                mSharedPreferences.setChecksumSDK(pResponse.platforminfochecksum);
+                mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
                 mSharedPreferences.setCurrentUserID(userId);
                 //banner list for merchant
                 if (pResponse.bannerresources != null) {
@@ -124,10 +124,10 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
-    public String getChecksumSDK() {
+    public String getPlatformInfoCheckSum() {
         String checksum = null;
         try {
-            checksum = mSharedPreferences.getChecksumSDK();
+            checksum = mSharedPreferences.getPlatformInfoCheckSum();
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -135,14 +135,19 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
-    public String getChecksumSDKVersion() {
-        String checksum = null;
+    public String getAppVersion() {
+        String appVer = null;
         try {
-            checksum = mSharedPreferences.getChecksumSDKversion();
+            appVer = mSharedPreferences.getAppVersion();
         } catch (Exception e) {
             Log.e(this, e);
         }
-        return checksum;
+        return appVer;
+    }
+
+    @Override
+    public void setAppVersion(String pAppVersion) {
+        mSharedPreferences.setAppVersion(pAppVersion);
     }
 
     @Override
@@ -154,6 +159,11 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             Log.e(this, e);
         }
         return unzipPath;
+    }
+
+    @Override
+    public void setUnzipPath(String pUnzipPath) {
+        mSharedPreferences.setUnzipPath(pUnzipPath);
     }
 
     @Override

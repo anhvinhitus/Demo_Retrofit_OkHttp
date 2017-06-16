@@ -9,7 +9,7 @@ import java.util.Set;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.api.DataRepository;
+import vn.com.zalopay.wallet.api.ServiceManager;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -48,7 +48,7 @@ public class SingletonLifeCircleManager {
     }
 
     public static synchronized void disposeDataRepository() {
-        dispose(DataRepository.class);
+        dispose(ServiceManager.class);
     }
 
     /**

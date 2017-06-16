@@ -4,12 +4,12 @@ import java.util.Map;
 
 import rx.Observable;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.api.IData;
+import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 
 public class CheckOrderStatusFailSubmitImpl implements IRequest<StatusResponse> {
     @Override
-    public Observable<StatusResponse> getRequest(IData pIData, Map<String, String> pParams) {
+    public Observable<StatusResponse> getRequest(ITransService pIData, Map<String, String> pParams) {
         return pIData.checkOrderStatusFailSubmit(pParams);
     }
 }

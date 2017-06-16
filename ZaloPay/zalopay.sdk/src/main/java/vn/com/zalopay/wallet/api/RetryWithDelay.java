@@ -6,9 +6,9 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class RetryWithDelay implements Func1<Observable<? extends Throwable>, Observable<?>> {
-    protected final int maxRetries;
-    protected final long retryDelayMillis;
-    protected int retryCount;
+    private final int maxRetries;
+    private final long retryDelayMillis;
+    private int retryCount;
 
     public RetryWithDelay(final int maxRetries, final long retryDelayMillis) {
         this.maxRetries = maxRetries;

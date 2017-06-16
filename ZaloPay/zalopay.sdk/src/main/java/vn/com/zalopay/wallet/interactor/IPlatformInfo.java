@@ -27,6 +27,8 @@ public interface IPlatformInfo {
 
     boolean isValidConfig();
 
+    Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion);
+
     /***
      * Platform info expire time,unix time to exprired time (in milisecond)
      * After this expire time, client need hit to server again

@@ -23,9 +23,9 @@ public class PlatformInfoStore {
 
         long getExpireTimeDuration();
 
-        String getChecksumSDK();
+        String getPlatformInfoCheckSum();
 
-        String getChecksumSDKVersion();
+        String getAppVersion();
 
         String getResourceVersion();
 
@@ -37,11 +37,15 @@ public class PlatformInfoStore {
 
         String getBankAccountCheckSum();
 
+        void setBankAccountCheckSum(String checkSum);
+
         String getUnzipPath();
 
-        String getResourceDownloadUrl();
+        void setUnzipPath(String pUnzipPath);
 
-        void setBankAccountCheckSum(String checkSum);
+        void setAppVersion(String pAppVersion);
+
+        String getResourceDownloadUrl();
 
         void setResourceDownloadUrl(String resourceDownloadUrl);
 

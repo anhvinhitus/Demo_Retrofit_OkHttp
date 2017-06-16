@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.interactor;
 
+import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -18,12 +19,13 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.api.task.DownloadResourceTask;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
@@ -41,9 +43,13 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         this.repository = repository;
     }
 
+    public PlatformInfoStore.LocalStorage getLocalStorage() {
+        return repository.getLocalStorage();
+    }
+
     @Override
     public boolean isNewVersion(String appVersion) {
-        String checksumSDKV = repository.getLocalStorage().getChecksumSDKVersion();
+        String checksumSDKV = repository.getLocalStorage().getAppVersion();
         return !TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV);
     }
 
@@ -85,8 +91,8 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
         //build params
         Log.d(this, "===prepare param to get platform info from server===");
-        String checksum = repository.getLocalStorage().getChecksumSDK();
-        String checksumSDKV = repository.getLocalStorage().getChecksumSDKVersion();
+        String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
+        String checksumSDKV = repository.getLocalStorage().getAppVersion();
         String resrcVer = repository.getLocalStorage().getResourceVersion();
         //is this new user ?
         boolean isNewUser = isNewUser(userId);
@@ -137,27 +143,39 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 .first(platformInfoCallback -> platformInfoCallback != null && (platformInfoCallback.expire_time > currentTime));
     }
 
+    @Override
+    public Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion) {
+        Log.d(this, "start download sdk resource " + pUrl);
+        Context context = GlobalData.getAppContext();
+        IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
+        ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(),
+                pUrl, pResourceVersion);
+        return downloadResourceTask
+                .getResource();
+    }
+
     private Action1<PlatformInfoResponse> downloadResource(boolean shouldDownloadResource) {
         return new Action1<PlatformInfoResponse>() {
             @Override
             public void call(PlatformInfoResponse pResponse) {
-                /*
-                  need to download new resource if
-                  1.server return isupdateresource = true;
-                  2.resource version on cached client and resource version server return is different.This case user no need to update app.
+                /**
+                 need to download new resource if
+                 1.server return isupdateresource = true;
+                 2.resource version on cached client and resource version server return is different.This case user no need to update app.
                  */
                 String resrcVer = repository.getLocalStorage().getResourceVersion();
                 if (shouldDownloadResource && pResponse.resource != null && (pResponse.isupdateresource ||
                         (!TextUtils.isEmpty(resrcVer) && !resrcVer.equals(pResponse.resource.rsversion)))) {
                     repository.getLocalStorage().setResourceVersion(pResponse.resource.rsversion);
                     repository.getLocalStorage().setResourceDownloadUrl(pResponse.resource.rsurl);
-                    Log.d(this, "start download sdk resource " + pResponse.resource.rsurl);
-                    DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pResponse.resource.rsurl, pResponse.resource.rsversion);
-                    downloadResourceTask.makeRequest();
+                    getSDKResource(pResponse.resource.rsurl, pResponse.resource.rsversion)
+                            .subscribe(aBoolean -> Log.d(this, "download resource on complete"),
+                                    throwable -> Log.d(this, "download resource on error", throwable));
                 }
             }
         };
     }
+
 
     private Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>> mapResult(String appVersion) {
         return platformInfoResponse -> {
@@ -205,7 +223,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     @Override
     public String getCheckSum() {
-        return repository.getLocalStorage().getChecksumSDKVersion();
+        return repository.getLocalStorage().getAppVersion();
     }
 
     @Override
