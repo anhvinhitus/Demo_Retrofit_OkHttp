@@ -42,19 +42,13 @@ public class PasswordManager {
                 .setTitle(pTitle)
                 .setLogoPath(pLogoPath);
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
-    }
-
-    public void setState(int pState) {
-        if (mUiBottomSheetDialog != null) {
-            mUiBottomSheetDialog.setState(pState);
-        }
+        mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
     }
 
     public void showPinView() {
         if (mUiBottomSheetDialog != null && !isShowing()) {
             mUiBottomSheetDialog.show();
             mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
-
         }
     }
 
@@ -113,7 +107,7 @@ public class PasswordManager {
                 mIBuilder.showLoadding(false);
                 mIBuilder.clearText();
                 mIBuilder.getIFPinCallBack().onCancel();
-                mUiBottomSheetDialog.dismiss();
+                mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
 
         }

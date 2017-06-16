@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/layout_spview_animation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/broder_background_white"
         android:clickable="true"
         android:gravity="center_horizontal"

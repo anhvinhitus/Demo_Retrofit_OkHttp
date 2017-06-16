@@ -132,7 +132,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = pContext.obtainStyledAttributes(attrs);
         backgroundResource = typedArray.getResourceId(0, 0);
-
         mPinCode = "";
         mStepTextView = (TextView) pWView.findViewById(R.id.pin_code_step_textview);
         mPinCodeRoundView = (PassCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
@@ -200,7 +199,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.cancel_action || v.getId() == R.id.layout_root_view) {
+        if (v.getId() == R.id.cancel_action ) {
             closePinView();
         }
 
