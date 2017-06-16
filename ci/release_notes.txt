@@ -1,4 +1,14 @@
-Zalo Pay (Sandbox v2.14.0 - build 270) - Released on 2017-06-15 09:51
-+ [Withdraw] Bỏ check điều kiện user profile level by vo van chuc (#2df7a0c)
-+ [APP] add EventBus in AppResoureRepositoryTest by lytm (#d315cc0)
-+ [react-native] update internal resource by phucpv (#4a07e12)
+Zalo Pay (Sandbox v2.14.0 - build 271) - Released on 2017-06-16 09:05
++ [SDK] Implement task#534 by vo van chuc (#34c648a)
++ [SDK] Implement task#534 by vo van chuc (#8abbafc)
++ [PIN] Remove SmoothCheckBox by lytm (#cb9ba10)
++ [Promotion] Add view swipe to refresh web view by datnt10 (#0e28b06)
++ [Promotion] Reload balance + transaction history on promotion notification by vo van chuc (#a6e587f)
++ [Promotion] Edit click internal app behavior by datnt10 (#5c531a6)
++ [Transaction] Task#561: Thanh toán xong ko update danh sách lịch sử giao dịch by khattn (#960e385)
++ [PIN] add event cancel in PinManager by lytm (#08d497e)
++ [SDK] Implement task#534 by vo van chuc (#80480f8)
++ [Transaction History] Fix check out of data by khattn (#3924bf9)
++ [APP] Remove intro app in native task#551 by lytm (#830e1af)
++ [APP] Remove intro app by lytm (#ca8ea5d)
++ [SDK] Implement task#534 by vo van chuc (#ccbad3c)
