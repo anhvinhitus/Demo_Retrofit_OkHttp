@@ -164,6 +164,10 @@ public class MiniPmcTransType implements Parcelable {
         return status == PaymentChannelStatus.ENABLE;
     }
 
+    public boolean meetPaymentCondition() {
+        return isEnable() && isAllowByAmount() && !isMaintenance() && isAllowByAmountAndFee();
+    }
+
     public boolean isDisable() {
         return status == PaymentChannelStatus.DISABLE;
     }

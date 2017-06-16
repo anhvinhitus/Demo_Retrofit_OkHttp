@@ -220,8 +220,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (!mChannelProxy.validate(pChannel)) {
                 return;
             }
-            setSelectChannel(pPosition);
-            mChannelAdapter.notifyBinderItemChanged(pPosition);
+            selectChannel(pPosition);
             //update fee
             if (pChannel.hasFee()) {
                 double fee = pChannel.totalfee;
@@ -236,7 +235,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    private void setSelectChannel(int pPosition) {
+    private void selectChannel(int pPosition) {
+        boolean hasUpdate = false;
         if (mChannelList != null && mChannelList.size() > 0 && pPosition >= 0) {
             //reset the previous one
             try {
@@ -244,6 +244,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     Object object = mChannelList.get(mPreviousPosition);
                     if (object instanceof PaymentChannel) {
                         ((PaymentChannel) object).select = false;
+                        hasUpdate = true;
                     }
                 }
             } catch (Exception e) {
@@ -253,11 +254,20 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                 Object object = mChannelList.get(pPosition);
                 if (object instanceof PaymentChannel) {
                     ((PaymentChannel) object).select = true;
+                    hasUpdate = true;
                 }
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            mPreviousPosition = pPosition;//save to the previous position
+        }
+        if(hasUpdate){
+            try {
+                mPreviousPosition = pPosition;//save to the previous position
+                mChannelAdapter.notifyBinderItemChanged(pPosition);
+                getViewOrThrow().enableConfirmButton(true);
+            } catch (Exception e) {
+                Log.e(this,e);
+            }
         }
     }
 
@@ -311,7 +321,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         } catch (Exception e) {
             Log.d(this, e);
         }
-
        /* List<NameValuePair> expected = new ArrayList<>();
         expected.add(new NameValuePair("Nhà mạng", "Viettel"));
         expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
@@ -379,8 +388,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             Object object = mChannelList.get(i);
             if (object instanceof PaymentChannel) {
                 PaymentChannel paymentChannel = (PaymentChannel) object;
-                if (paymentChannel.isEnable()) {
-                    setSelectChannel(i);
+                if (paymentChannel.meetPaymentCondition()) {
+                    Log.d(this,"make default select channel", paymentChannel);
+                    selectChannel(i);
                     break;
                 }
             }

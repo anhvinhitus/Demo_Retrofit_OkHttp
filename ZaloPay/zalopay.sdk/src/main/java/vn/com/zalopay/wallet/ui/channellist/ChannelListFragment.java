@@ -162,6 +162,11 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
+    public void enableConfirmButton(boolean pEnable) {
+        confirm_button.setEnabled(pEnable);
+    }
+
+    @Override
     public void callbackThenterminate() {
         if (mPresenter != null) {
             mPresenter.callback();
@@ -253,9 +258,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void onBindingChannel(ChannelListAdapter pChannelAdapter) {
         channel_list_recycler.setAdapter(pChannelAdapter);
-        if (!confirm_button.isEnabled()) {
-            confirm_button.setEnabled(true);
-        }
     }
 
     @Override

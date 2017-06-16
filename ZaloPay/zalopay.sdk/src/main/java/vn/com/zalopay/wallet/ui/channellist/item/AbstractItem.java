@@ -143,7 +143,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         holder.name_textview.setText(channel.pmcname);
         holder.select_imageview.setVisibility(channel.select ? View.VISIBLE : View.INVISIBLE);
         //show not support channel
-        if (!channel.isEnable() || !channel.isAllowByAmount() || channel.isMaintenance() || !channel.isAllowByAmountAndFee()) {
+        if (!channel.meetPaymentCondition()) {
             String desc = getChannelSubTitle(channel);
             holder.fee_textview.setText(Html.fromHtml(desc));
             holder.name_textview.setTextColor(mContext.getResources().getColor(R.color.text_color));
