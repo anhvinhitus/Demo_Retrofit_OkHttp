@@ -48,7 +48,7 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 public class PaymentChannelActivity extends BasePaymentActivity {
     public static final String PMC_CONFIG = "config";
     protected PaymentPassword mPaymentPassword;
-    protected CountDownTimer mTimer;
+    protected CountDownTimer mExpireTransTimer;
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
     private boolean mIsStart = false;
@@ -78,10 +78,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
             if (getAdapter().isTransactionSuccess()) {
                 mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+                callBackThenTerminate();
             } else if (getAdapter().isTransactionFail()) {
                 mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+                callBackThenTerminate();
+            }else{
+                setCallBack(Activity.RESULT_CANCELED);
             }
-            callBackThenTerminate();
         } else {
             confirmQuitPayment();
         }
@@ -140,7 +143,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected void initTimer() {
         int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
         iTimeToLiveTrans *= 60 * 1000;
-        mTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
+        mExpireTransTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
             public void onTick(long millisUntilFinished) {
                 mTimerRunning = true;
             }
@@ -540,15 +543,15 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void startTransactionExpiredTimer() {
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.start();
+        if (mExpireTransTimer != null) {
+            mExpireTransTimer.cancel();
+            mExpireTransTimer.start();
         }
     }
 
     public void cancelTransactionExpiredTimer() {
-        if (mTimer != null) {
-            mTimer.cancel();
+        if (mExpireTransTimer != null) {
+            mExpireTransTimer.cancel();
         }
     }
 

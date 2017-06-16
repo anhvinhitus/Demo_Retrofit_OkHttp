@@ -2,8 +2,8 @@ package vn.com.zalopay.wallet.business.transaction.behavior.authenpayer;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IAuthenPayer;
-import vn.com.zalopay.wallet.datasource.task.AuthenPayerTask;
-import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.api.task.AuthenPayerTask;
+import vn.com.zalopay.wallet.api.task.BaseTask;
 
 public class CAuthenPayer implements IAuthenPayer {
     @Override

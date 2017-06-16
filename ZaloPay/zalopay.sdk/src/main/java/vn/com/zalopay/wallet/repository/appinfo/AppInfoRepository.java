@@ -4,7 +4,7 @@ import rx.Observable;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
-import vn.com.zalopay.wallet.datasource.RetryWithDelay;
+import vn.com.zalopay.wallet.api.RetryWithDelay;
 
 /**
  * Created by chucvv on 6/7/17.

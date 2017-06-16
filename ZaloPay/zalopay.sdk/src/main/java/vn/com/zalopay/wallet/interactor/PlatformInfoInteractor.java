@@ -23,7 +23,7 @@ import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
+import vn.com.zalopay.wallet.api.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 

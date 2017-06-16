@@ -121,7 +121,6 @@ public class ChannelProxy extends SingletonBase {
 
     public ChannelProxy() {
         super();
-        mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
     }
 
     public static ChannelProxy get() {
@@ -129,6 +128,11 @@ public class ChannelProxy extends SingletonBase {
             ChannelProxy._object = new ChannelProxy();
         }
         return ChannelProxy._object;
+    }
+
+    public ChannelProxy setBankInteractor(IBank pBankInteractor) {
+        mBankInteractor = pBankInteractor;
+        return this;
     }
 
     public ChannelProxy setChannel(PaymentChannel pChannel) {
@@ -250,7 +254,7 @@ public class ChannelProxy extends SingletonBase {
         try {
             getView().startActivityForResult(intent, REQUEST_CODE);
         } catch (Exception e) {
-            Log.d(this,e);
+            Log.d(this, e);
         }
     }
 
@@ -269,7 +273,11 @@ public class ChannelProxy extends SingletonBase {
 
     private void showPassword(Activity pActivity) {
         String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
-        mPassword = new PinManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+        if (mPassword == null) {
+            mPassword = new PinManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+        } else {
+            mPassword.setContent(mChannel.pmcname, logo_path);
+        }
         mPassword.showPinView();
         mPassword.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -280,7 +288,7 @@ public class ChannelProxy extends SingletonBase {
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
         } else {
             startPasswordFlow(pActivity);
-            Log.d(this, "use password instend of use fingerprint");
+            Log.d(this, "use password instead of use fingerprint");
         }
     }
 
@@ -288,7 +296,7 @@ public class ChannelProxy extends SingletonBase {
         if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
             mFingerPrintDialog.dismiss();
             mFingerPrintDialog = null;
-            Log.d(this, "dissmis dialog fingerprint");
+            Log.d(this, "dismiss dialog fingerprint");
         }
     }
 }

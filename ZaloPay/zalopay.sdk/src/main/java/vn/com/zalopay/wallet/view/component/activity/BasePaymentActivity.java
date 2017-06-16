@@ -94,7 +94,7 @@ import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;

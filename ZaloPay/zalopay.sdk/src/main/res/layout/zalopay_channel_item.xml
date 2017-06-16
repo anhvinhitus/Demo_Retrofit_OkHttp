@@ -36,8 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
-        android:layout_toRightOf="@+id/icon_imageview"
         android:layout_toLeftOf="@+id/balance_linearlayout"
+        android:layout_toRightOf="@+id/icon_imageview"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
@@ -65,31 +65,32 @@
         android:id="@+id/balance_linearlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right"
-        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right">
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+        android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right">
+
         <TextView
             android:id="@+id/balance_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:ellipsize="end"
+            android:gravity="bottom"
             android:maxLines="1"
             android:textColor="@color/text_color_grey"
-            android:textStyle="bold"
-            android:gravity="bottom"
-            android:layout_gravity="bottom"
-            android:textSize="@dimen/zpw_text_size_medium" />
+            android:textSize="@dimen/zpw_text_size_medium"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/balance_unit_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color_grey"
-            android:text="@string/vnd"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="3dp"
             android:gravity="bottom"
-            android:layout_gravity="bottom"
+            android:text="@string/vnd"
+            android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium_small" />
     </LinearLayout>
 

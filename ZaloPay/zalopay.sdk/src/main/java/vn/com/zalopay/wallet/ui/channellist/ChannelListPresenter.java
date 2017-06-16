@@ -282,7 +282,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             //init channel proxy
             mChannelProxy = ChannelProxy.get()
                     .setChannelListPresenter(this)
-                    .setPaymentInfo(mPaymentInfoHelper);
+                    .setPaymentInfo(mPaymentInfoHelper)
+                    .setBankInteractor(mBankInteractor);
             //validate user level
             if (!mPaymentInfoHelper.userLevelValid()) {
                 getViewOrThrow().showForceUpdateLevelDialog();

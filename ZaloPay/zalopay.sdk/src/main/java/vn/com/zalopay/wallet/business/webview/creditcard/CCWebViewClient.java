@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;

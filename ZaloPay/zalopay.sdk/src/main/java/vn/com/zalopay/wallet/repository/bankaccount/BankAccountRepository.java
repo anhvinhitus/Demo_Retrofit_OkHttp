@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.repository.bankaccount;
 import rx.Observable;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
-import vn.com.zalopay.wallet.datasource.RetryWithDelay;
+import vn.com.zalopay.wallet.api.RetryWithDelay;
 
 /**
  * Created by chucvv on 6/7/17.

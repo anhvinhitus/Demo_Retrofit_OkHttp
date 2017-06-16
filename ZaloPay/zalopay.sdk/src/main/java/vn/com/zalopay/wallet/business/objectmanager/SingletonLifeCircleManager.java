@@ -9,7 +9,7 @@ import java.util.Set;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.datasource.DataRepository;
+import vn.com.zalopay.wallet.api.DataRepository;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**

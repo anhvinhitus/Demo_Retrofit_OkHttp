@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
+import vn.com.zalopay.wallet.api.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;

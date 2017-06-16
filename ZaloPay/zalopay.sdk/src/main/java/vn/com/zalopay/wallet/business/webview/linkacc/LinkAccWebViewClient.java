@@ -29,7 +29,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.utility.GsonUtils;
 

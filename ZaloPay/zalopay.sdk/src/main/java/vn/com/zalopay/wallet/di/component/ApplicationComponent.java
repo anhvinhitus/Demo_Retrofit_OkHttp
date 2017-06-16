@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
-import vn.com.zalopay.wallet.datasource.InjectionWrapper;
+import vn.com.zalopay.wallet.api.InjectionWrapper;
 import vn.com.zalopay.wallet.di.module.AppInfoRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.BankAccountRepositoryModule;

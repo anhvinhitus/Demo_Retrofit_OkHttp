@@ -12,8 +12,5 @@ public interface IFPinCallBack {
 
     void onCancel();
 
-
     void onComplete(String pHashPin);
-
-
 }

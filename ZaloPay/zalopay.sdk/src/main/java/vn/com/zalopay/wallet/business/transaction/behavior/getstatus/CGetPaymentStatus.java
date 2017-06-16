@@ -2,8 +2,8 @@ package vn.com.zalopay.wallet.business.transaction.behavior.getstatus;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IGetTransactionStatus;
-import vn.com.zalopay.wallet.datasource.task.BaseTask;
-import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
+import vn.com.zalopay.wallet.api.task.BaseTask;
+import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 
 public class CGetPaymentStatus implements IGetTransactionStatus {
     @Override

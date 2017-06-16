@@ -1,8 +1,8 @@
 package com.zalopay.ui.widget.pinlayout.managers;
 
 import android.app.Activity;
-import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
@@ -22,14 +22,20 @@ public class PinManager {
     private WeakReference<Activity> mActivity;
     private IBuilder mIBuilder;
     private UIBottomSheetDialog mUiBottomSheetDialog;
+    private IFControl Control = new IFControl() {
+        @Override
+        public void clickCancel() {
+            closePinView();
+        }
+    };
 
     /**
      * @param pActivity
      * @param pTitle
-     * @param pIdImage
+     * @param pLogoPath
      * @param pIPinCloseCallBack
      */
-    public PinManager(Activity pActivity, String pTitle, String pIdImage, IFPinCallBack pIPinCloseCallBack) {
+    public PinManager(Activity pActivity, String pTitle, String pLogoPath, IFPinCallBack pIPinCloseCallBack) {
         mIPinCloseCallBack = new WeakReference<>(pIPinCloseCallBack);
         mActivity = new WeakReference<>(pActivity);
         View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
@@ -38,7 +44,7 @@ public class PinManager {
                 .setIFPinCallBack(mIPinCloseCallBack.get())
                 .setIFControl(Control)
                 .setTitle(pTitle)
-                .setLogoPath(pIdImage);
+                .setLogoPath(pLogoPath);
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
     }
 
@@ -65,10 +71,10 @@ public class PinManager {
             mIBuilder.getIFPinCallBack().onCancel();
             mUiBottomSheetDialog.dismiss();
         }
-        mActivity = null;
+        /*mActivity = null;
         mIPinCloseCallBack = null;
         mIBuilder = null;
-        mUiBottomSheetDialog = null;
+        mUiBottomSheetDialog = null;*/
     }
 
     /**
@@ -81,21 +87,12 @@ public class PinManager {
         }
     }
 
-    /**
-     * @param pIdLogo
-     * @param pContent
-     */
-    public void setContent(String pIdLogo, String pContent) {
-        if (!TextUtils.isEmpty(pContent) && mIBuilder != null) {
-            mIBuilder.setLogoPath(pIdLogo);
-            mIBuilder.setTitle(pContent);
+    public void setContent(String pTitle, String pLogoPath) {
+        if (mIBuilder == null) {
+            Log.e("setContent", "mBuilder is null");
+            return;
         }
+        mIBuilder.setTitle(pTitle);
+        mIBuilder.setLogoPath(pLogoPath);
     }
-
-    private IFControl Control = new IFControl() {
-        @Override
-        public void clickCancel() {
-            closePinView();
-        }
-    };
 }
