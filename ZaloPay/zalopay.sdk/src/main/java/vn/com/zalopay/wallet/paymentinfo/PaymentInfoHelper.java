@@ -2,11 +2,13 @@ package vn.com.zalopay.wallet.paymentinfo;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
@@ -275,6 +277,17 @@ public class PaymentInfoHelper extends SingletonBase {
             }
         }
         return true;
+    }
+
+    public String getChargeInfo(DPaymentCard paymentCard) {
+        BaseMap mapBank = getMapBank();
+        if (mapBank != null && mapBank.isValid()) {
+            return GsonUtils.toJsonString(mapBank);
+        } else if (paymentCard != null && paymentCard.isValid()) {
+            return GsonUtils.toJsonString(paymentCard);
+        } else {
+            return null;
+        }
     }
 
 }

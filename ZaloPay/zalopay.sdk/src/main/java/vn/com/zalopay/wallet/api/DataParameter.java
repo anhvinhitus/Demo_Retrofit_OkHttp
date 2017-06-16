@@ -10,19 +10,16 @@ import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class DataParameter {
     /**
@@ -150,43 +147,13 @@ public class DataParameter {
         params.put(ConstantParams.CARDINFO, GsonUtils.toJsonString(pAdapter.getCard()));
     }
 
-    /***
-     *
-     * @param pAdapter
-     * @param params
-     * @throws Exception
-     */
-    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, Map<String, String> params) throws Exception {
-        if (pAdapter == null) {
-            return false;
-        }
-        PaymentInfoHelper paymentInfoHelper = pAdapter.getPaymentInfoHelper();
-        if (paymentInfoHelper == null) {
-            return false;
-        }
-        AbstractOrder order = paymentInfoHelper.getOrder();
-        long appId = paymentInfoHelper.getAppId();
-        UserInfo userInfo = paymentInfoHelper.getUserInfo();
-        PaymentLocation location = paymentInfoHelper.getLocation();
-        int transtype = paymentInfoHelper.getTranstype();
+    public static boolean prepareSubmitTransactionParams(int channelId, long appId, String charge_info, String hashPassword, AbstractOrder order, UserInfo userInfo,
+                                                         PaymentLocation location, @TransactionType int transtype,
+                                                         Map<String, String> params) {
 
-        if (pAdapter != null) {
-            params.put(ConstantParams.PMC_ID, String.valueOf(pAdapter.getChannelID()));
-        }
-        BaseMap mapBank = paymentInfoHelper.getMapBank();
-        if (paymentInfoHelper.payByCardMap() && mapBank.isValid()) {
-            DMappedCreditCard mapCard = new DMappedCreditCard((MapCard) mapBank);
-            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapCard));
-        } else if (paymentInfoHelper.payByBankAccountMap() && mapBank.isValid()) {
-            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapBank));
-        } else if (pAdapter.isCardFlow()) {
-            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(pAdapter.getCard()));
-        } else {
-            params.put(ConstantParams.CHARGE_INFO, "");
-        }
-        if (!TextUtils.isEmpty(GlobalData.getTransactionPin())) {
-            params.put(ConstantParams.PIN, GlobalData.getTransactionPin());
-        }
+        params.put(ConstantParams.PMC_ID, String.valueOf(channelId));
+        params.put(ConstantParams.CHARGE_INFO, !TextUtils.isEmpty(charge_info) ? charge_info : "");
+        params.put(ConstantParams.PIN, !TextUtils.isEmpty(hashPassword) ? hashPassword : "");
         params.put(ConstantParams.TRANS_TYPE, String.valueOf(transtype));
         params.put(ConstantParams.ACCESS_TOKEN, userInfo.accesstoken);
         params.put(ConstantParams.USER_ID, userInfo.zalopay_userid);
@@ -199,6 +166,7 @@ public class DataParameter {
         }
         params.put(ConstantParams.LATTITUDE, String.valueOf(lat));
         params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
+
         params.put(ConstantParams.ORDER_SOURCE, String.valueOf(order.ordersource));
 
         params.put(ConstantParams.APP_ID, String.valueOf(appId));

@@ -63,10 +63,13 @@ public class DPaymentCard {
 
     public String getCardKey() {
         if (TextUtils.isEmpty(cardnumber) || cardnumber.length() < 6) {
-            Log.d(this, "===getKey()=NULL");
             return null;
         }
 
         return cardnumber.substring(0, 6) + cardnumber.substring(cardnumber.length() - 4);
+    }
+
+    public boolean isValid(){
+        return !TextUtils.isEmpty(bankcode) && !TextUtils.isEmpty(cardnumber);
     }
 }

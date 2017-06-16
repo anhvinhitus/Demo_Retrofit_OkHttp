@@ -25,6 +25,13 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.ServiceManager;
+import vn.com.zalopay.wallet.api.task.BaseTask;
+import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
+import vn.com.zalopay.wallet.api.task.SendLogTask;
+import vn.com.zalopay.wallet.api.task.TrustSDKReportTask;
+import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
@@ -52,18 +59,11 @@ import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
-import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
+import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.api.ServiceManager;
-import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
-import vn.com.zalopay.wallet.api.task.SendLogTask;
-import vn.com.zalopay.wallet.api.task.TrustSDKReportTask;
-import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
@@ -150,8 +150,20 @@ public abstract class AdapterBase {
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
+        mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
+        onClickSubmission();
+    };
+    private SDKTransactionAdapter mTransactionAdapter;
     //prevent click duplicate
     private boolean mMoreClick = true;
+    private final View.OnClickListener okClickListener = v -> {
+        if (mMoreClick) {
+            mMoreClick = false;
+            AdapterBase.this.onClickSubmission();
+            new Handler().postDelayed(() -> mMoreClick = true, 3000);
+        }
+    };
     private String olderPassword = null;
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -183,17 +195,6 @@ public abstract class AdapterBase {
             olderPassword = pHashPin;
             GlobalData.setTransactionPin(pHashPin);
             startSubmitTransaction();
-        }
-    };
-    private final View.OnClickListener onUpdateInfoClickListener = v -> {
-        mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
-        onClickSubmission();
-    };
-    private final View.OnClickListener okClickListener = v -> {
-        if (mMoreClick) {
-            mMoreClick = false;
-            AdapterBase.this.onClickSubmission();
-            new Handler().postDelayed(() -> mMoreClick = true, 3000);
         }
     };
     private Action1<Throwable> loadCardException = throwable -> {
@@ -234,6 +235,7 @@ public abstract class AdapterBase {
         mMiniPmcTransType = pMiniPmcTransType;
         mCard = new DPaymentCard();
         mPaymentInfoHelper = paymentInfoHelper;
+        mTransactionAdapter = SDKTransactionAdapter.shared().setAdapter(this);
     }
 
     public PaymentInfoHelper getPaymentInfoHelper() {
@@ -313,11 +315,6 @@ public abstract class AdapterBase {
 
     public String getLayoutID() {
         return mLayoutId;
-    }
-
-    public String getChannelName() {
-        MiniPmcTransType miniPmcTransType = getConfig();
-        return miniPmcTransType != null ? miniPmcTransType.pmcname : getClass().getSimpleName();
     }
 
     public boolean isRequirePinPharse() {
@@ -442,7 +439,7 @@ public abstract class AdapterBase {
         if (mOwnerActivity != null && mOwnerActivity.get() != null) {
             return mOwnerActivity.get();
         } else {
-            Log.d(this, "mOwnerActivity is null");
+            Log.d(this, "activity is null - terminate transaction");
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             return null;
         }
@@ -462,9 +459,7 @@ public abstract class AdapterBase {
         BasePaymentActivity.resetAttributeCascade(false);
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
         try {
-            SDKTransactionAdapter.shared()
-                    .setAdapter(this)
-                    .startTransaction();
+            mTransactionAdapter.startTransaction();
         } catch (Exception e) {
             Log.e(this, e);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
@@ -575,7 +570,6 @@ public abstract class AdapterBase {
                 //ending timer loading site
                 mOtpEndTime = System.currentTimeMillis();
                 mCaptchaEndTime = System.currentTimeMillis();
-
                 getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
             }
             //callback load site error from webview
@@ -770,7 +764,6 @@ public abstract class AdapterBase {
         if (mResponseStatus != null) {
             mTransactionID = mResponseStatus.zptransid;
         }
-
         if (isOrderProcessing()) {
             if (mPaymentInfoHelper.payByCardMap()) {
                 detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
@@ -1175,9 +1168,7 @@ public abstract class AdapterBase {
     protected void getTransactionStatus(String pTransID, boolean pCheckData, String pMessage) {
         mIsExitWithoutConfirm = false;
         getActivity().processingOrder = true;
-
         isCheckDataInStatus = pCheckData;
-
         getStatusStrategy(pTransID, pCheckData, pMessage);
     }
 
@@ -1189,10 +1180,9 @@ public abstract class AdapterBase {
      * @param pMessage
      */
     private void getStatusStrategy(String pTransID, boolean pCheckData, String pMessage) {
-        showProgressBar(true, TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
-
         try {
-            SDKTransactionAdapter.shared().getTransactionStatus(pTransID, pCheckData, pMessage);
+            showProgressBar(true, TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
+            mTransactionAdapter.getTransactionStatus(pTransID, pCheckData, pMessage);
         } catch (Exception e) {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
             Log.e(this, e);
@@ -1695,10 +1685,9 @@ public abstract class AdapterBase {
         showProgressBar(false, null);
 
         if (isFinalScreen()) {
-            Log.d(this, "===askToRetryGetStatus===in final screen");
+            Log.d(this, "user in fail screen - skip retry get status");
             return;
         }
-
         String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);
         getActivity().showRetryDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
@@ -1720,10 +1709,9 @@ public abstract class AdapterBase {
                  * if bank not by pass opt, need to check data to determinate 3ds or api.
                  */
                 try {
-                    SDKTransactionAdapter.shared().getTransactionStatus(pZmpTransID, isCheckDataInStatus, null);
+                    mTransactionAdapter.getTransactionStatus(pZmpTransID, isCheckDataInStatus, null);
                 } catch (Exception e) {
                     Log.e(this, e);
-
                     terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
                 }
             }
@@ -1936,28 +1924,25 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportError(int pErrorCode, String pMessage) throws Exception {
-        String bankCode = null;
         try {
             if (getGuiProcessor() != null) {
-                bankCode = getGuiProcessor().getDetectedBankCode();
+                String bankCode = getGuiProcessor().getDetectedBankCode();
+                SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
             }
         } catch (Exception ex) {
             Log.d(this, ex);
         }
-        SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
     }
 
-
     public void sdkReportError(int pErrorCode) throws Exception {
-        String bankCode = null;
         try {
             if (getGuiProcessor() != null) {
-                bankCode = getGuiProcessor().getDetectedBankCode();
+                String bankCode = getGuiProcessor().getDetectedBankCode();
+                SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
             Log.d(this, ex);
         }
-        SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
     }
 
     /***
@@ -1966,28 +1951,21 @@ public abstract class AdapterBase {
      * @throws Exception
      */
     public void sdkTrustReportError(int pErrorCode) throws Exception {
-        String bankCode = null;
         try {
             if (getGuiProcessor() != null) {
-                bankCode = getGuiProcessor().getDetectedBankCode();
+                String bankCode = getGuiProcessor().getDetectedBankCode();
+                TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
             Log.d(this, ex);
         }
-        TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
     }
 
-    protected DialogFragment getDialogFingerPrint() {
-        return mFingerPrintDialog;
-    }
-
-    protected void dismissDialogFingerPrint() {
-        if (getDialogFingerPrint() != null && !getDialogFingerPrint().isDetached()) {
-            getDialogFingerPrint().dismiss();
+    private void dismissDialogFingerPrint() {
+        if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
+            mFingerPrintDialog.dismiss();
             mFingerPrintDialog = null;
-            Log.d(this, "dissmis dialog fingerprint");
-        } else {
-            Log.d(this, "===dismissDialogFingerPrint===getDialogFingerPrint()=NULL");
+            Log.d(this, "dismiss dialog fingerprint");
         }
     }
 }

@@ -1,11 +1,11 @@
-package vn.com.zalopay.wallet.business.transaction.behavior.base;
+package vn.com.zalopay.wallet.transaction.behavior.base;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IAuthenPayer;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IDoSubmit;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IGetTransactionStatus;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.ISDKTransaction;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.IAuthenPayer;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.IDoSubmit;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.IGetTransactionStatus;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.ISDKTransaction;
 
 public abstract class BasePaymentTransaction extends SingletonBase implements ISDKTransaction {
     protected IDoSubmit mDoSubmit;

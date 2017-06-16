@@ -1,9 +1,9 @@
-package vn.com.zalopay.wallet.business.transaction;
+package vn.com.zalopay.wallet.transaction;
 
-import vn.com.zalopay.wallet.business.transaction.behavior.authenpayer.CAuthenPayerMapCard;
-import vn.com.zalopay.wallet.business.transaction.behavior.base.BasePaymentTransaction;
-import vn.com.zalopay.wallet.business.transaction.behavior.getstatus.CGetMapCardStatus;
-import vn.com.zalopay.wallet.business.transaction.behavior.submitorder.CVerifyCardMap;
+import vn.com.zalopay.wallet.transaction.behavior.authenpayer.CAuthenPayerMapCard;
+import vn.com.zalopay.wallet.transaction.behavior.base.BasePaymentTransaction;
+import vn.com.zalopay.wallet.transaction.behavior.getstatus.CGetMapCardStatus;
+import vn.com.zalopay.wallet.transaction.behavior.submitorder.CVerifyCardMap;
 
 
 public class SDKMapCard extends BasePaymentTransaction {

@@ -10,13 +10,16 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
 
+import rx.Subscription;
 import rx.functions.Action1;
+import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -26,10 +29,13 @@ import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.OrderStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.transaction.TransactionProcessor;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -46,7 +52,36 @@ public class ChannelProxy extends SingletonBase {
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
+    private TransactionProcessor mTransactionProcessor;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        processOrderResponse(statusResponse);
+    };
+    private Action1<Throwable> submitOrderException = throwable -> {
+        Log.d(this, "submit order on error", throwable);
+        mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
+    };
+
+    private void processOrderResponse(StatusResponse pResponse){
+        if(pResponse == null){
+            mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
+        }else{
+            @OrderStatus int status = TransactionHelper.submitTransStatus(pResponse);
+            switch (status){
+                case OrderStatus.SUCCESS:
+                    mPassword.closePinView();
+                    break;
+                case OrderStatus.PROCESSING:
+                    mPassword.closePinView();
+                    break;
+                case OrderStatus.FAILURE:
+                case OrderStatus.INVALID_PASSWORD:
+                    mPassword.setErrorMessage(pResponse.returnmessage);
+                    break;
+            }
+        }
+    }
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
@@ -68,6 +103,7 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, "password", pHashPin);
             if (!TextUtils.isEmpty(pHashPin)) {
                 Log.d(this, "start submit trans pw", pHashPin);
+                submitOrder(pHashPin);
             } else {
                 Log.e(this, "empty password");
             }
@@ -89,17 +125,18 @@ public class ChannelProxy extends SingletonBase {
         }
 
         @Override
-        public void onComplete(String pHashPin) {
+        public void onComplete(String pHashPassword) {
             dismissFingerPrintDialog();
             //user don't setting use fingerprint for payment
-            if (TextUtils.isEmpty(pHashPin)) {
+            if (TextUtils.isEmpty(pHashPassword)) {
                 Activity activity = BaseActivity.getCurrentActivity();
                 if (activity != null && !activity.isFinishing()) {
                     showPassword(activity);
                 }
             } else {
                 //submit password
-                Log.d(this, "start submit trans pw", pHashPin);
+                Log.d(this, "start submit trans pw", pHashPassword);
+                submitOrder(pHashPassword);
             }
         }
     };
@@ -167,6 +204,19 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, e);
         }
         return false;
+    }
+
+    private Subscription submitOrder(String pHashPassword) {
+        String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
+        return getTransProcessor()
+                .setChannelId(mChannel.pmcid)
+                .setOrder(mPaymentInfoHelper.getOrder())
+                .setPassword(pHashPassword)
+                .setChargeInfo(chargeInfo)
+                .getObserver()
+                .compose(SchedulerHelper.applySchedulers())
+                .doOnNext(statusResponse -> mPassword.showLoading(true))
+                .subscribe(submitOrderSubscriber, submitOrderException);
     }
 
     /***
@@ -253,7 +303,7 @@ public class ChannelProxy extends SingletonBase {
         try {
             getView().startActivityForResult(intent, REQUEST_CODE);
         } catch (Exception e) {
-            Log.d(this, e);
+            Log.e(this, e);
         }
     }
 
@@ -271,13 +321,7 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void showPassword(Activity pActivity) {
-        String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
-        if (mPassword == null) {
-            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
-        } else {
-            mPassword.setContent(mChannel.pmcname, logo_path);
-        }
-        mPassword.showPinView();
+        getPasswordManager(pActivity).showPinView();
     }
 
     private void showFingerPrint(Activity pActivity) throws Exception {
@@ -296,5 +340,25 @@ public class ChannelProxy extends SingletonBase {
             mFingerPrintDialog = null;
             Log.d(this, "dismiss dialog fingerprint");
         }
+    }
+
+    private PasswordManager getPasswordManager(Activity pActivity) {
+        String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
+        if (mPassword == null) {
+            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+        } else {
+            mPassword.setContent(mChannel.pmcname, logo_path);
+        }
+        return mPassword;
+    }
+
+    private TransactionProcessor getTransProcessor() {
+        if (mTransactionProcessor == null) {
+            ITransService transService = SDKApplication.getApplicationComponent().transService();
+            mTransactionProcessor = new TransactionProcessor(transService,
+                    getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(),
+                    getPaymentInfoHelper().getLocation(), getPaymentInfoHelper().getTranstype());
+        }
+        return mTransactionProcessor;
     }
 }

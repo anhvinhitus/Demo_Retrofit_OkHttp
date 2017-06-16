@@ -1,11 +1,11 @@
-package vn.com.zalopay.wallet.business.transaction.behavior.getstatus;
+package vn.com.zalopay.wallet.transaction.behavior.getstatus;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.IGetTransactionStatus;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.IGetTransactionStatus;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 
-public class CGetPaymentStatus implements IGetTransactionStatus {
+public class CGetMapCardStatus implements IGetTransactionStatus {
     @Override
     public void getStatus(AdapterBase pAdapter, String pZmpTransID, boolean pCheckData, String pMessage) {
         BaseTask getStatusTask = new GetStatus(pAdapter, pZmpTransID, pCheckData, pMessage);

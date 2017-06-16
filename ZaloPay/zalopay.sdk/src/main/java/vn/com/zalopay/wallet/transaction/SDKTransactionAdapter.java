@@ -1,10 +1,10 @@
-package vn.com.zalopay.wallet.business.transaction;
+package vn.com.zalopay.wallet.transaction;
 
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.business.transaction.behavior.interfaces.ISDKTransaction;
+import vn.com.zalopay.wallet.transaction.behavior.interfaces.ISDKTransaction;
 
 
 public class SDKTransactionAdapter extends SingletonBase {

@@ -1,10 +1,10 @@
-package vn.com.zalopay.wallet.business.transaction;
+package vn.com.zalopay.wallet.transaction;
 
 
-import vn.com.zalopay.wallet.business.transaction.behavior.authenpayer.CAuthenPayer;
-import vn.com.zalopay.wallet.business.transaction.behavior.base.BasePaymentTransaction;
-import vn.com.zalopay.wallet.business.transaction.behavior.getstatus.CGetPaymentStatus;
-import vn.com.zalopay.wallet.business.transaction.behavior.submitorder.CSubmitOrder;
+import vn.com.zalopay.wallet.transaction.behavior.authenpayer.CAuthenPayer;
+import vn.com.zalopay.wallet.transaction.behavior.base.BasePaymentTransaction;
+import vn.com.zalopay.wallet.transaction.behavior.getstatus.CGetPaymentStatus;
+import vn.com.zalopay.wallet.transaction.behavior.submitorder.CSubmitOrder;
 
 public class SDKPayment extends BasePaymentTransaction {
     private static SDKPayment _object;
