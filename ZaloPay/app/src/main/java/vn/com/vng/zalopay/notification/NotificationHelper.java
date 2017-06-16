@@ -283,7 +283,11 @@ public class NotificationHelper {
     }
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
-        if (needReloadBalanceAndTransaction(notify)) {
+        if (notify == null) {
+            Log.d(this, "notification is null - skip update trans and balance");
+            return;
+        }
+        if (NotificationType.needReloadBalanceAndTransaction((int) notify.notificationtype)) {
             Timber.d("Receive notification type [%s] -> Reload transaction & balance.",
                     notify.notificationtype);
             this.updateTransactionHistorySuccess();
@@ -583,7 +587,7 @@ public class NotificationHelper {
         mUserConfig.removeFingerprint();
     }
 
-    private boolean needReloadBalanceAndTransaction(NotificationData notify) {
+    /*private boolean needReloadBalanceAndTransaction(NotificationData notify) {
         if (notify == null) {
             return false;
         }
@@ -664,7 +668,7 @@ public class NotificationHelper {
             default:
                 return true;
         }
-    }
+    }*/
 
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
 
