@@ -150,8 +150,9 @@
     <dimen name="activity_pin_code_padding">20dp</dimen>
     <dimen name="activity_pin_code_padding_bottom">10dp</dimen>
     <dimen name="pin_code_logo_margin">30dp</dimen>
+    <dimen name="pin_error_height">25dp</dimen>
     <dimen name="pin_code_round_top_margin">10dp</dimen>
-    <dimen name="btn_cancel_round_padding">10dp</dimen>
+    <dimen name="btn_cancel_round_padding">5dp</dimen>
     <dimen name="line_width">0.5dp</dimen>
     <dimen name="size_dot">18dp</dimen>
     <dimen name="channel_image_size">60dp</dimen>

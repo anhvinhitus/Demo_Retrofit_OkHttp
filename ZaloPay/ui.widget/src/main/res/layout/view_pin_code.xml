@@ -4,8 +4,7 @@
     android:id="@+id/layout_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    android:orientation="vertical">
+    android:gravity="bottom">
 
     <RelativeLayout
         android:id="@+id/layout_spview_animation"
@@ -16,7 +15,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="1dp">
-
 
         <ImageView
             android:id="@+id/cancel_action"
@@ -77,13 +75,12 @@
                 android:id="@+id/pin_code_round_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_content"
-                android:layout_marginBottom="@dimen/pin_code_elements_margin" />
+                android:layout_below="@+id/layout_content" />
 
             <RelativeLayout
                 android:id="@+id/layout_message"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/pin_error_height"
                 android:layout_below="@+id/pin_code_round_view"
                 android:gravity="center">
 
@@ -92,18 +89,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+                    android:maxLines="1"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:textColor="@color/dark_grey_color"
                     android:textSize="@dimen/pin_time_step_text_size"
-                    android:textStyle="italic" />
+                    android:textStyle="italic"
+                    android:visibility="invisible" />
 
                 <com.zalopay.ui.widget.password.indicator.LoadingIndicatorView
                     android:id="@+id/indicatorView_pin"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="@dimen/pin_error_height"
                     android:layout_centerHorizontal="true"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:indicator_color="@color/blue_gray" />
             </RelativeLayout>
 
@@ -121,12 +120,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="5dp"
+                    android:checked="true"
                     android:text="@string/pin_code_step_fingerprint_check"
                     android:textColor="@color/c.text.title"
                     android:textSize="14sp"
                     android:textStyle="normal"
-                    android:theme="@style/CheckBox"/>
+                    android:theme="@style/CheckBox" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/pin_code_gray_bar"
                 android:layout_width="match_parent"

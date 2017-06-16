@@ -7,11 +7,13 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -45,6 +47,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private View mRootView;
     private Context mContext;
     private CheckBox mCheckBox;
+    private LinearLayout mMaskLayout;
     private LoadingIndicatorView mLoadingIndicatorView;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
@@ -87,11 +90,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
                     mLoadingIndicatorView.setVisibility(View.VISIBLE);
                     mTextMessage.setVisibility(View.INVISIBLE);
+                    //disable(mMaskLayout, false);
                 }
             } else {
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
                     mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                     mTextMessage.setVisibility(View.VISIBLE);
+                    //disable(mMaskLayout, true);
                 }
             }
 
@@ -145,6 +150,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
+        mMaskLayout = (LinearLayout) pWView.findViewById(R.id.layout_root_view);
 
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
@@ -198,8 +204,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     @Override
     public void onClick(View v) {
-
-        if (v.getId() == R.id.cancel_action ) {
+        if (v.getId() == R.id.cancel_action) {
             closePinView();
         }
 
@@ -254,11 +259,12 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     public void onPinSuccess() {
+        Log.d(TAG, "==onPinSuccess==" + isSuccess);
         if (isSuccess) {
             return;
         }
-        isSuccess = true;
         mBuilder.getIFPinCallBack().onComplete(Encryptor.sha256(mPinCode));
+        isSuccess = true;
     }
 
     /**
@@ -266,7 +272,8 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
      */
     public void onPinCodeError(final Activity pActivity) {
         isSuccess = false;
-        Thread thread = new Thread() {
+        Runnable mRunnable = new Runnable() {
+            @Override
             public void run() {
                 mPinCode = "";
                 mPinCodeRoundView.refresh(mPinCode.length());
@@ -275,7 +282,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 mKeyboardView.startAnimation(animation);
             }
         };
-        pActivity.runOnUiThread(thread);
+        pActivity.runOnUiThread(mRunnable);
     }
 
     public void setErrorMessageToView(String pMessage) {
@@ -302,6 +309,21 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     public void onCheckedChanged(CompoundButton checkBoxView, boolean isChecked) {
         if (checkBoxView.getId() == R.id.checkbox_fingerprint) {
             mBuilder.getIFPinCallBack().onCheckedFingerPrint(isChecked);
+            Log.d(TAG, " ==onPinSuccess==" + isChecked);
         }
     }
+
+
+    private static void disable(ViewGroup layout, boolean pIsEnable) {
+        layout.setEnabled(pIsEnable);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                disable((ViewGroup) child, pIsEnable);
+            } else {
+                child.setClickable(pIsEnable);
+            }
+        }
+    }
+
 }

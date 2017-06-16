@@ -130,7 +130,7 @@
     <string name="pin_code_step_create">Create a %d-digit Pincode</string>
     <string name="pin_code_step_change">Enter your current %d-digit Pincode</string>
     <string name="pin_code_step_unlock">Nhập mật khẩu để thanh toán bằng</string>
-    <string name="pin_code_step_fingerprint_check">Kích hoạt vân tay các lần sau</string>
+    <string name="pin_code_step_fingerprint_check"> Kích hoạt vân tay các lần sau</string>
     <string name="pin_code_step_time">Mật khẩu sẽ có hiệu lực trong 5 phút</string>
     <string name="pin_code_fingerprint_text">Fingerprint</string>
     <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
