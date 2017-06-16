@@ -3,11 +3,10 @@ package vn.com.zalopay.wallet.ui.channellist;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.pinlayout.interfaces.IFPinCallBack;
-import com.zalopay.ui.widget.pinlayout.managers.PinManager;
+import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
+import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
 
@@ -43,12 +42,12 @@ public class ChannelProxy extends SingletonBase {
     private static ChannelProxy _object;
     protected DialogFragment mFingerPrintDialog = null;
     private ChannelPreValidation mChannelPreValidation;
-    private PinManager mPassword;
+    private PasswordManager mPassword;
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
-    private IFPinCallBack mPasswordCallback = new IFPinCallBack() {
+    private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
             Log.e(this, pError);
@@ -274,12 +273,11 @@ public class ChannelProxy extends SingletonBase {
     private void showPassword(Activity pActivity) {
         String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
         if (mPassword == null) {
-            mPassword = new PinManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
         } else {
             mPassword.setContent(mChannel.pmcname, logo_path);
         }
         mPassword.showPinView();
-        mPassword.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void showFingerPrint(Activity pActivity) throws Exception {
