@@ -1231,11 +1231,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             findViewById(R.id.zpw_textview_transaction_amount).setVisibility(View.GONE);
         }
         if (order != null) {
-            if (appInfo != null && appInfo.viewresulttype == 2) {
-                setVisible(R.id.zpw_textview_transaction_description, true);
-                setText(R.id.zpw_textview_transaction_description, appInfo.appname);
-            } else
-                setVisible(R.id.zpw_textview_transaction_description, false);
+            setVisible(R.id.zpw_textview_transaction_description, true);
+            setText(R.id.zpw_textview_transaction_description, appInfo.appname);
             //set time transaction
             long apptime = order.apptime;
             if (apptime > 0) {

@@ -57,10 +57,8 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setPlatformInfoExpriedTime(expiredTime);
             mSharedPreferences.setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
-            Log.d(this, "update platform info expire time", expiredTime);
             //enable/disable deposite
             mSharedPreferences.setEnableDeposite(pResponse.isenabledeposit);
-            Log.d(this, "save isenabledeposit to cache", pResponse.isenabledeposit);
             //set maintenance withdraw
             Maintenance maintenance = new Maintenance();
             maintenance.ismaintainwithdraw = pResponse.ismaintainwithdraw;
@@ -73,12 +71,12 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
                 mSharedPreferences.setCurrentUserID(userId);
                 //banner list for merchant
-                if (pResponse.bannerresources != null) {
+                /*if (pResponse.bannerresources != null) {
                     mSharedPreferences.setBannerList(GsonUtils.toJsonString(pResponse.bannerresources));
                 }
                 if (pResponse.approvedinsideappids != null) {
                     mSharedPreferences.setApproveInsideApps(GsonUtils.toJsonString(pResponse.approvedinsideappids));
-                }
+                }*/
             }
             /* MapCard mapCard = new MapCard();
                 mapCard.bankcode = CardType.PVTB;

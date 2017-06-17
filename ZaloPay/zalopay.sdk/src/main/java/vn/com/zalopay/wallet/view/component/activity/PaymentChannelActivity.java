@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -588,10 +589,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && getAdapter().isCCFlow() && pChannelID == BuildConfig.channel_credit_card)
             return;
         //prevent user move to next if input existed card in link card
-        if (getAdapter().getGuiProcessor() != null && getAdapter().getGuiProcessor().preventNextIfLinkCardExisted()) {
+        CardGuiProcessor cardGuiProcessor = getAdapter().getGuiProcessor();
+        if (cardGuiProcessor != null && cardGuiProcessor.preventNextIfLinkCardExisted()) {
             try {
-                getAdapter().getGuiProcessor().showHintError(getAdapter().getGuiProcessor().getCardNumberView(), getAdapter().getGuiProcessor()
-                        .warningCardExist());
+                cardGuiProcessor.showHintError(cardGuiProcessor.getCardNumberView(), cardGuiProcessor.warningCardExist());
                 return;
             } catch (Exception e) {
                 Log.e(this, e);
@@ -601,7 +602,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         if (getAdapter() != null) {
-            Log.d(this, "init adapter", getAdapter());
             setIsSwitching(true);
             initChannel();
             if (getAdapter().isCardFlow()) {

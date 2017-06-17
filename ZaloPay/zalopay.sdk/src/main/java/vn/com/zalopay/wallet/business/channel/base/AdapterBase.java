@@ -472,10 +472,6 @@ public abstract class AdapterBase {
         return mResponseStatus != null && mResponseStatus.isprocessing;
     }
 
-    protected boolean isOrderProcessing(StatusResponse pStatus) {
-        return pStatus != null && pStatus.isprocessing;
-    }
-
     @CallSuper
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         if (getActivity() != null && !getActivity().isFinishing()) {
@@ -1091,11 +1087,11 @@ public abstract class AdapterBase {
                 getActivity().updatePaymentStatus(pStatusResponse.returncode);
             }
             //order still need to continue processing
-            if (pStatusResponse != null && isOrderProcessing(pStatusResponse)) {
+            if (TransactionHelper.isOrderProcessing(pStatusResponse)) {
                 askToRetryGetStatus(pStatusResponse.zptransid);
             }
             //transaction is success
-            else if (pStatusResponse != null && !pStatusResponse.isprocessing && pStatusResponse.returncode == 1) {
+            else if (TransactionHelper.isTransactionSuccess(pStatusResponse)) {
                 showTransactionSuccessView();
             }
             //transaction is fail with message
@@ -1104,12 +1100,7 @@ public abstract class AdapterBase {
             }
             //response is null
             else {
-                try {
-                    showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
-                } catch (Exception e) {
-                    Log.e(this, e);
-                    terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-                }
+                showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
             }
         } catch (Exception e) {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));

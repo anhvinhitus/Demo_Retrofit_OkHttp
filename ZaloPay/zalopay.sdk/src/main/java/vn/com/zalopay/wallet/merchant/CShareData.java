@@ -38,7 +38,6 @@ import vn.zalopay.promotion.IPromotionResult;
  * class sharing data to app
  */
 public class CShareData extends SingletonBase {
-
     protected static CShareData _object;
     protected static DConfigFromServer mConfigFromServer;
 
@@ -293,40 +292,6 @@ public class CShareData extends SingletonBase {
 
         return true;
     }
-
-    /***
-     * return banner list for top menu on app
-     * @return
-     */
-    public List<Banner> getBannerList() {
-        try {
-            List<Banner> bannerList = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBannerList(), new TypeToken<List<Banner>>() {
-            }.getType());
-            return bannerList;
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return null;
-    }
-
-    /***
-     * app ids approved from server.
-     * app use this to show apps
-     *
-     * @return
-     */
-    public List<Integer> getApproveInsideApps() {
-        try {
-            List<Integer> appListID = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getApproveInsideApps(), new TypeToken<List<Integer>>() {
-            }.getType());
-
-            return appListID;
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return null;
-    }
-
     /***
      * support app detect type of visa card.
      * @param pCardNumber
