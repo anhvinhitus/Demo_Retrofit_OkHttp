@@ -43,7 +43,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         this.mContext = context;
         this.amount = amount;
         this.clazz = clasz;
-        this.bankLogoSize = (int) mContext.getResources().getDimension(R.dimen.sdk_ic_channal_size);
+        this.bankLogoSize = (int) mContext.getResources().getDimension(R.dimen.sdk_ic_channel_size);
         this.marginLeft = (int) mContext.getResources().getDimension(R.dimen.zpw_item_listview_padding_left_right);
     }
 

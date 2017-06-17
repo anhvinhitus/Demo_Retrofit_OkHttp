@@ -103,8 +103,8 @@
                     app:actualImageScaleType="centerInside"/>
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/zpw_payment_success_arow"
-                    android:layout_width="@dimen/sdk_ic_arơw_size"
+                    android:id="@+id/zpw_payment_success_arrow"
+                    android:layout_width="@dimen/sdk_ic_arrow_size"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/zpw_padding_15"

@@ -20,7 +20,7 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/icon_imageview"
-        android:layout_width="@dimen/sdk_ic_channal_size"
+        android:layout_width="@dimen/sdk_ic_channel_size"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
