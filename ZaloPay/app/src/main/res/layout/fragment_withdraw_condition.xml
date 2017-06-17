@@ -32,6 +32,8 @@
             android:gravity="center"
             android:text="@string/withdraw_condition_note"
             android:textSize="13sp"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
             android:textColor="@color/text_color_grey"/>
 
         <LinearLayout
@@ -52,8 +54,8 @@
             style="@style/Button.Default.New"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginLeft="@dimen/spacing.medium.t"
+            android:layout_marginRight="@dimen/spacing.medium.t"
             android:layout_marginTop="@dimen/spacing.large"
             android:orientation="horizontal">
 
