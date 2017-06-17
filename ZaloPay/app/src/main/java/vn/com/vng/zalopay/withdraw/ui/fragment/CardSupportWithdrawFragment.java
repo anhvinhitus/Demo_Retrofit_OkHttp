@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
  * create an instance of this fragment.
  */
 public class CardSupportWithdrawFragment extends BaseFragment {
-    private final static int COLUMN_COUNT = 2;
+    private final static int COLUMN_COUNT = 3;
 
     @BindView(R.id.bankRecyclerView)
     RecyclerView mRecyclerView;

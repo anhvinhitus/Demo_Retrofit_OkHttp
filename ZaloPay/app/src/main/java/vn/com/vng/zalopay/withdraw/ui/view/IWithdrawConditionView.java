@@ -11,16 +11,11 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 
 /**
  * Created by longlv on 11/08/2016.
- *
  */
 public interface IWithdrawConditionView extends ILoadDataView {
     Activity getActivity();
 
     void refreshListCardSupport(List<BankConfig> list);
-
-    void hideLinkCardNote();
-
-    void hideLinkAccountNote();
 
     void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener);
 }

@@ -26,6 +26,7 @@ public class BankConfig {
     public int supporttype = 1;
     public String loginbankurl;
     public List<BankFunction> functions = null;
+    public String bankLogo;
     @BankStatus
     public int status;
     public int displayorder = 0;// order sort in UI

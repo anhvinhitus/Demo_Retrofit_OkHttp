@@ -8,11 +8,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 
 /**
@@ -36,12 +35,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
                         mNavigator.startWithdrawActivityAndFinish(mView.getActivity());
                     }
                 } else {
-                    if (isValidLinkCard) {
-                        hideLinkCardNote();
-                    }
-                    if (isValidLinkAccount) {
-                        hideLinkAccountNote();
-                    }
                     refreshLinkCard(list);
                 }
             }
@@ -101,18 +94,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
             return;
         }
         mView.refreshListCardSupport(list);
-    }
-
-    private void hideLinkCardNote() {
-        if (mView != null) {
-            mView.hideLinkCardNote();
-        }
-    }
-
-    private void hideLinkAccountNote() {
-        if (mView != null) {
-            mView.hideLinkAccountNote();
-        }
     }
 
     private void hideLoading() {

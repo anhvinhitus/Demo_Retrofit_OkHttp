@@ -3,20 +3,16 @@ package vn.com.vng.zalopay.withdraw.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.CheckBox;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
@@ -35,24 +31,10 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Inject
     WithdrawConditionPresenter mPresenter;
 
-    @BindView(R.id.tvCardNote)
-    View tvCardNote;
-
-    @BindView(R.id.layoutLinkAccount)
-    View layoutLinkAccount;
-
-    @BindView(R.id.tvAccountNote)
-    View tvAddAccount;
 
     CardSupportWithdrawFragment mCardSupportFragment;
-    AccountSupportWithdrawFragment mAccSupportWithdrawFragment;
 
-    @OnClick(R.id.tvAddCard)
-    public void onClickAddCard() {
-        navigator.startBankActivityFromWithdrawCondition(getContext());
-    }
-
-    @OnClick(R.id.tvAddAccount)
+    @OnClick(R.id.btn_link_card)
     public void onClickAddAccount() {
         navigator.startBankActivityFromWithdrawCondition(getContext());
     }
@@ -104,8 +86,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         mPresenter.attachView(this);
         mCardSupportFragment = (CardSupportWithdrawFragment)
                 getChildFragmentManager().findFragmentById(R.id.cardSupportWithdrawFragment);
-        mAccSupportWithdrawFragment = (AccountSupportWithdrawFragment)
-                getChildFragmentManager().findFragmentById(R.id.accSupportWithdrawFragment);
         showLoading();
     }
 
@@ -113,41 +93,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void refreshListCardSupport(List<BankConfig> list) {
         Timber.d("refresh CardSupportList[%s]", list);
         hideLoading();
-        List<BankConfig> listSupportLinkCard = new ArrayList<>();
-        List<BankConfig> listSupportLinkAccount = new ArrayList<>();
-        if (!Lists.isEmptyOrNull(list)) {
-            for (BankConfig bankConfig : list) {
-                if (bankConfig == null) {
-                    continue;
-                }
-                if (bankConfig.isBankAccount()) {
-                    listSupportLinkAccount.add(bankConfig);
-                } else {
-                    listSupportLinkCard.add(bankConfig);
-                }
-            }
-        }
         if (mCardSupportFragment != null) {
-            mCardSupportFragment.refreshCardSupportList(listSupportLinkCard);
+            mCardSupportFragment.refreshCardSupportList(list);
         }
-        if (Lists.isEmptyOrNull(listSupportLinkAccount)) {
-            layoutLinkAccount.setVisibility(View.GONE);
-        } else {
-            layoutLinkAccount.setVisibility(View.VISIBLE);
-            if (mAccSupportWithdrawFragment != null) {
-                mAccSupportWithdrawFragment.refreshAccountSupportList(listSupportLinkAccount);
-            }
-        }
-    }
-
-    @Override
-    public void hideLinkCardNote() {
-        tvCardNote.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void hideLinkAccountNote() {
-        tvAddAccount.setVisibility(View.GONE);
     }
 
     @Override

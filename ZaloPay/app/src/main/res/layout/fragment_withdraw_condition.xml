@@ -1,209 +1,70 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/ScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background"
-            android:orientation="vertical"
-            tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/search_result_emty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/background.note"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing.medium">
+            android:layout_marginTop="40dp"
+            android:drawablePadding="28dp"
+            android:drawableTop="@drawable/ico_dkrt"
+            android:text="@string/withdraw_miss_condition"
+            android:textSize="@dimen/font_size_xlarge" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.zalopay.ui.widget.IconFontTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/withdraw_miss_condition"
-                    android:textColor="@color/txt_item_main"
-                    android:textSize="@dimen/textsize.text.main"
-                    android:textStyle="bold"
-                    app:iconLeftName="@string/linkaccount_info"
-                    app:iconLeftSize="@dimen/font_size_icon_in_text_large"
-                    app:iconLeftColor="@color/colorPrimary"
-                    app:iconLeftPadding="@dimen/spacing.small"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/spacing.tiny"
-                android:text="@string/withdraw_condition_note"
-                android:textColor="@color/txt_item_main"
-                android:textSize="13sp"/>
-        </LinearLayout>
-
-        <View
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/TextView.Group.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.large.t"
-                android:text="@string/txt_home_link_card"
-                android:textAllCaps="true"/>
-
-            <LinearLayout
-                android:id="@+id/tvAddCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.large.t">
-
-                <com.zalopay.ui.widget.IconFontTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add"
-                    android:textColor="@color/colorPrimary"
-                    app:iconLeftName="@string/linkaccount_add"
-                    app:iconLeftSize="@dimen/font_size_icon_in_text"
-                    app:iconLeftColor="@color/colorPrimary"
-                    app:iconLeftPadding="@dimen/spacing.small.t"/>
-            </LinearLayout>
-        </FrameLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing.large"
+            android:gravity="center"
+            android:text="@string/withdraw_condition_note"
+            android:textSize="13sp"
+            android:textColor="@color/text_color_grey"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/transparent"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvCardNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginRight="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.medium.t"
-                android:text="@string/withdraw_condition_card_note"
-                android:textSize="13sp"/>
 
             <fragment
                 android:id="@+id/cardSupportWithdrawFragment"
                 android:name="vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-
         <LinearLayout
-            android:id="@+id/layoutLinkAccount"
+            android:id="@+id/btn_link_card"
+            style="@style/Button.Default.New"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="@dimen/button.height"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="@dimen/spacing.large"
+            android:orientation="horizontal">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    style="@style/TextView.Group.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing.small"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingTop="@dimen/spacing.large.t"
-                    android:text="@string/txt_home_link_account"
-                    android:textAllCaps="true"/>
-
-                <LinearLayout
-                    android:id="@+id/tvAddAccount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/spacing.small"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingRight="@dimen/spacing.medium"
-                    android:paddingTop="@dimen/spacing.large.t">
-
-                    <com.zalopay.ui.widget.IconFontTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add"
-                        android:textColor="@color/colorPrimary"
-                        app:iconLeftName="@string/linkaccount_add"
-                        app:iconLeftSize="@dimen/font_size_icon_in_text"
-                        app:iconLeftColor="@color/colorPrimary"
-                        app:iconLeftPadding="@dimen/spacing.small.t"/>
-                </LinearLayout>
-            </FrameLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:background="@color/separate"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.zalopay.ui.widget.IconFontTextView
+                style="@style/IconFontText.IconLeft"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvAccountNote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:layout_marginRight="@dimen/spacing.medium"
-                    android:layout_marginTop="@dimen/spacing.medium.t"
-                    android:text="@string/withdraw_condition_account_note"
-                    android:textSize="13sp"/>
-
-                <fragment
-                    android:id="@+id/accSupportWithdrawFragment"
-                    android:name="vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:background="@color/separate"/>
+                android:text="@string/link.card.now"
+                app:iconLeftName="@string/linkaccount_add" />
         </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>

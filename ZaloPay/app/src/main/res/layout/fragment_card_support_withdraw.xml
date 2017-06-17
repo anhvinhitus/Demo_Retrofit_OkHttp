@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical">
-    
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bankRecyclerView"
         style="@style/RecyclerView"
@@ -11,12 +11,7 @@
         android:layout_height="match_parent"
         android:fadingEdge="none"
         android:overScrollMode="never"
-        android:paddingTop="@dimen/spacing.medium.s"
         android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/separate"/>
+        android:paddingRight="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.medium.s" />
 </LinearLayout>

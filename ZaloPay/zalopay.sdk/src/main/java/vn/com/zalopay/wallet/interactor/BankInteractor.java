@@ -64,6 +64,7 @@ public class BankInteractor implements IBank {
                     for (int i = 0; i < arrayBankCode.length; i++) {
                         String bankCode = arrayBankCode[i];
                         BankConfig bankConfig = mBankListRepository.getLocalStorage().getBankConfig(bankCode);
+                        bankConfig.bankLogo = getBankLogo(bankCode);
                         if (bankConfig == null) {
                             continue;
                         }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 
 /**
  * Created by longlv on 12/02/16.
@@ -86,12 +88,9 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw,
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.checkBox)
-        CheckBox mCheckBox;
 
-        @BindView(R.id.txtBankName)
-        TextView mTxtBankName;
-
+         @BindView(R.id.imBankIcon)
+        SimpleDraweeView mImBankIcon;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -99,15 +98,13 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw,
 
         void bindView(BankSupportWithdraw card) {
             if (card == null || card.mBankConfig == null) {
-                mTxtBankName.setVisibility(View.INVISIBLE);
-                mCheckBox.setVisibility(View.INVISIBLE);
+                mImBankIcon.setVisibility(View.INVISIBLE);
                 return;
             } else {
-                mTxtBankName.setVisibility(View.VISIBLE);
-                mCheckBox.setVisibility(View.VISIBLE);
+                mImBankIcon.setVisibility(View.VISIBLE);
+
             }
-            mTxtBankName.setText(card.mBankConfig.name);
-            mCheckBox.setChecked(card.mIsMapped);
+            mImBankIcon.setImageBitmap(ResourceManager.getImage(card.mBankConfig.bankLogo));
         }
     }
 }
