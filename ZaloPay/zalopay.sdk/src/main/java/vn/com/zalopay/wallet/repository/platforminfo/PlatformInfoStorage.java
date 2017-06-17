@@ -26,7 +26,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
 
     private boolean isUpdatePlatformInfoOnCache(String pPlatformInfoCheckSum) {
         String checksumOnCache = getPlatformInfoCheckSum();
-        return (!TextUtils.isEmpty(checksumOnCache) && !checksumOnCache.equals(pPlatformInfoCheckSum));
+        return TextUtils.isEmpty(checksumOnCache) || (!TextUtils.isEmpty(checksumOnCache) && !checksumOnCache.equals(pPlatformInfoCheckSum));
     }
 
     @Override

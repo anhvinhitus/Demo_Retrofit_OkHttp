@@ -90,14 +90,14 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
         //build params
-        Log.d(this, "===prepare param to get platform info from server===");
+        Log.d(this, "prepare param to get platform info from server");
         String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
-        String checksumSDKV = repository.getLocalStorage().getAppVersion();
+        String appVersionCache = repository.getLocalStorage().getAppVersion();
         String resrcVer = repository.getLocalStorage().getResourceVersion();
         //is this new user ?
         boolean isNewUser = isNewUser(userId);
         //mForceReload :: refresh gateway info from app
-        if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV)) || !isValidConfig() || isNewUser || forceReload) {
+        if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(appVersionCache)) || !isValidConfig() || isNewUser || forceReload) {
             checksum = null;   //server will see this is new install, so return new resource to download
             resrcVer = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
@@ -106,7 +106,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         }
         String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
         String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
-
         //format data
         cardInfoCheckSum = cardInfoCheckSum != null ? cardInfoCheckSum : "";
         checksum = checksum != null ? checksum : "";
@@ -125,7 +124,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(GlobalData.getAppContext()));
         params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
         params.put(ConstantParams.RESOURCE_VERSION, resrcVer);
-        params.put(ConstantParams.APP_VERSION, appVersion);
+        params.put(ConstantParams.APP_VERSION, appVersionCache);
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
         params.put(ConstantParams.CARDINFO_CHECKSUM, cardInfoCheckSum);
