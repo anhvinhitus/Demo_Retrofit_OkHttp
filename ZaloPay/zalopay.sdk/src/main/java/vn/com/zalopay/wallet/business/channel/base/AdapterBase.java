@@ -1091,7 +1091,7 @@ public abstract class AdapterBase {
                 getActivity().updatePaymentStatus(pStatusResponse.returncode);
             }
             //order still need to continue processing
-            else if (pStatusResponse != null && isOrderProcessing(pStatusResponse)) {
+            if (pStatusResponse != null && isOrderProcessing(pStatusResponse)) {
                 askToRetryGetStatus(pStatusResponse.zptransid);
             }
             //transaction is success
