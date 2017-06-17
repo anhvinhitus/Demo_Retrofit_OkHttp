@@ -36,6 +36,11 @@ public class NotificationLinkCardFragment extends BaseFragment {
     @BindView(R.id.txtBankName)
     TextView mTxtBankName;
 
+    @OnClick(R.id.btnCancel)
+    public void onCLickCancel() {
+        this.getActivity().finish();
+    }
+
     @OnClick(R.id.btnManagerCard)
     public void onCLickManagerCard() {
         navigator.startLinkCardActivityAndFinish(getContext());

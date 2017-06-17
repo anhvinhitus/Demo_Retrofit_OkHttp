@@ -25,47 +25,39 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/loremipsum"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_tutorial_link_card"/>
+                android:src="@drawable/ic_tutorial_link_card" />
 
             <ImageView
                 android:id="@+id/imgBankIcon"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_marginLeft="28dp"
-                android:layout_marginTop="194dp"
-                android:contentDescription="@string/loremipsum"/>
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="160dp"
+                android:contentDescription="@string/loremipsum" />
 
             <TextView
                 android:id="@+id/txtBankName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="55dp"
-                android:layout_marginTop="194dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginTop="165dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:maxWidth="84dp"
+                android:maxWidth="50dp"
                 android:textColor="@color/txt_item_main"
-                android:textSize="9sp"
-                tools:text="@string/link_card_to_use_easily"/>
+                android:textSize="12sp"
+                tools:text="@string/link_card_to_use_easily" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="55dp"
-                android:layout_marginTop="206dp"
-                android:text="@string/free_fee"
-                android:textColor="@color/txt_item_sub"
-                android:textSize="6sp"/>
 
             <TextView
                 android:id="@+id/txtLastNumberOfCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="146dp"
-                android:layout_marginTop="148dp"
+                android:layout_marginLeft="160dp"
+                android:layout_marginTop="155dp"
                 android:textColor="@color/txt_item_main"
-                android:textSize="30sp"
-                tools:text="****6789"/>
+                android:textSize="32sp"
+                tools:text="****6789" />
         </FrameLayout>
 
         <LinearLayout
@@ -81,30 +73,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="@string/tutorial_link_card_note_1"/>
+                android:text="@string/tutorial_link_card_note_1" />
 
             <TextView
                 style="@style/TextView.Default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/tutorial_link_card_note_2"/>
+                android:text="@string/tutorial_link_card_note_2" />
 
             <TextView
                 style="@style/TextView.Default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/tutorial_link_card_note_3"/>
+                android:text="@string/tutorial_link_card_note_3" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnManagerCard"
-            style="@style/Button.Default.New"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/button.height"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginBottom="@dimen/button.margin.bottom"
-            android:text="@string/manager_card"/>
+            android:weightSum="3">
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Button.Default.New"
+                android:layout_width="match_parent"
+                android:background="@drawable/bg_btn_light_blue_border_selector"
+                android:layout_height="@dimen/button.height"
+                android:text="@string/txt_close"
+                android:textColor="@color/gray.2b2b2b"
+                android:layout_weight="2"/>
+            <Button
+                android:id="@+id/btnManagerCard"
+                style="@style/Button.Default.New"
+                android:layout_width="match_parent"
+                android:background="@drawable/bg_btn_skyblue_border_selector"
+                android:layout_height="@dimen/button.height"
+                android:text="@string/manager_card"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

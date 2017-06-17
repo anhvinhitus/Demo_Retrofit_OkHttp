@@ -108,7 +108,7 @@
     <string name="txt_confirm_remove_vcb_account">Bạn cần đăng nhập tài khoản Vietcombank để hủy liên kết</string>
     <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập số thẻ.</string>
-    <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
+    <string name="tutorial_link_card_note_3">Zalo Pay thực hiện theo Tiêu Chuẩn Bảo Mật PCI-DSS và không lưu thông tin thẻ của bạn.</string>
     <string name="link_account_bank_support_hint">Để liên kết thành công TK Vietcombank và TK Zalo Pay phải sử dụng cùng 1 số điện thoại và tối thiểu 50.000 VND trong VCB</string>
     <string name="link_account_empty_bank_support_phone_require_hint">Để liên kết thành công, số điện thoại đăng ký TK Vietcombank phải là %s</string>
     <string name="link_account_empty_bank_support_balance_require_hint"><![CDATA[Để thanh toán thành công, số dư tối thiểu trong TK Vietcombank là <b>50.000 VND</b>]]></string>
@@ -146,7 +146,7 @@
     <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
     <string name="pin.not.change">Mật khẩu thanh toán mới và cũ phải khác nhau</string>
 
-    <string name="manager_card">Quản lý thẻ</string>
+    <string name="manager_card">Xem Chi Tiết</string>
 
     <string name="personal">Cá nhân</string>
     <string name="user_info">Thông tin cá nhân</string>

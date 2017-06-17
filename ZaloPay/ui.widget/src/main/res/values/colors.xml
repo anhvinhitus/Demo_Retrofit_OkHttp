@@ -167,4 +167,8 @@
     <color name="background_zalopay_support">#60000000</color>
     <color name="background_buttom">#D1D5DB</color>
 
+    <color name="bg_btn_skyblue">#4abbff</color>
+    <color name="bg_btn_skyblue_selected">#804abbff</color>
+    <color name="bg_btn_light_blue">#e5f5ff</color>
+    <color name="bg_btn_light_blue_select">#80e5f5ff</color>
 </resources>
