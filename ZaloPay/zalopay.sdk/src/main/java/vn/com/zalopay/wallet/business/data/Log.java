@@ -3,8 +3,8 @@ package vn.com.zalopay.wallet.business.data;
 import android.text.TextUtils;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /***
  * log class
@@ -80,6 +80,11 @@ public class Log {
             Timber.tag((pObject != null) ? pObject.getClass().getSimpleName() : TAG).d("%s %s", pMessage, GsonUtils.toJsonString(pObjectToLog));
         }
     }
+
+    public static void e(Object pObject, String pMessage, Object pObjectToLog) {
+        Timber.tag((pObject != null) ? pObject.getClass().getSimpleName() : TAG).e("%s %s", pMessage, GsonUtils.toJsonString(pObjectToLog));
+    }
+
 
     public static void d(Object pObject, Object pObjectToLog) {
         if (IS_LOG_ENABLE) {

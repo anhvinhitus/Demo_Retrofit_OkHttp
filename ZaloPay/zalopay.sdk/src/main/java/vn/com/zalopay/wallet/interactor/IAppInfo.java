@@ -16,7 +16,7 @@ public interface IAppInfo {
 
     MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
 
-    Observable<AppInfo> get(long appid);
+    AppInfo get(long appid);
 
     List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
 

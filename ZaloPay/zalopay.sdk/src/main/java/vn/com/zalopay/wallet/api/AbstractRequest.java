@@ -6,6 +6,7 @@ import android.util.ArrayMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Observable;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 
 /**
@@ -14,6 +15,10 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 
 public abstract class AbstractRequest<T extends BaseResponse> implements IRequest<T> {
     protected ITransService mTransService;
+    protected boolean running = false;
+    protected Observable.Transformer<T, T> applyState = observable -> observable
+            .doOnSubscribe(() -> running = true)
+            .doOnCompleted(() -> running = false);
 
     public AbstractRequest(ITransService transService) {
         mTransService = transService;
@@ -30,5 +35,10 @@ public abstract class AbstractRequest<T extends BaseResponse> implements IReques
         } else {
             return new HashMap<>();
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return running;
     }
 }

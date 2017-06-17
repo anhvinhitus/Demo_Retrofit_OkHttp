@@ -37,12 +37,16 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
+import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
+import static vn.com.zalopay.wallet.constants.Constants.API;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 
@@ -705,5 +709,26 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
         Log.d(this, "on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnNetworkEvent(SdkNetworkEvent networkEvent) {
+        //user sitting in the result screen
+        if (getCurrentActivity() instanceof PaymentChannelActivity && ((PaymentChannelActivity) getCurrentActivity()).getAdapter().isFinalScreen()) {
+            Log.d(this, "onNetworkMessageEvent user is on fail screen...");
+            return;
+        }
+        //come from api request fail with handshake
+        if (networkEvent.origin == API) {
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_not_stable),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG, mOnCloseSnackBarListener);
+            Log.d(this, "networking is not stable");
+        } else if (!networkEvent.online) {
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking),
+                    TSnackbar.LENGTH_INDEFINITE, !networkEvent.online ? mOnCloseSnackBarListener : null);
+        } else {
+            PaymentSnackBar.getInstance().dismiss();
+        }
     }
 }

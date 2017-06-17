@@ -23,6 +23,8 @@ public class AppInfoStore {
 
         Observable<AppInfo> get(long appid);
 
+        AppInfo getSync(long appId);
+
         long getExpireTime(long appid);
 
         void setExpireTime(long appId, long expireTime);

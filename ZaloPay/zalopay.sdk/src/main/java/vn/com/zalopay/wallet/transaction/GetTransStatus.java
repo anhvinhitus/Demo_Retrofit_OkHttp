@@ -1,12 +1,9 @@
 package vn.com.zalopay.wallet.transaction;
 
-import android.support.annotation.NonNull;
-
 import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -28,9 +25,20 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
     private String mTransId;
     private int retryCount = 0;
 
-    private Func1<StatusResponse, Boolean> shouldStop = pResponse -> shouldStop(pResponse);
+    private Func1<StatusResponse, Boolean> shouldStop = pResponse -> {
+        boolean stop = shouldStop(pResponse);
+        running = !stop;
+        return stop;
+    };
 
-    private boolean shouldStop(StatusResponse pResponse){
+    public GetTransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
+        super(transService);
+        this.mAppId = appId;
+        this.mUserInfo = userInfo;
+        this.mTransId = transId;
+    }
+
+    private boolean shouldStop(StatusResponse pResponse) {
         if (pResponse == null) {
             return false;
         }
@@ -39,13 +47,6 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
         }
         retryCount++;
         return !pResponse.isprocessing;
-    }
-
-    public GetTransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
-        super(transService);
-        this.mAppId = appId;
-        this.mUserInfo = userInfo;
-        this.mTransId = transId;
     }
 
     @Override
@@ -58,24 +59,17 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
     public Observable<StatusResponse> getStatus(Map<String, String> params) {
         final long intervalRetry = GlobalData.isZalopayChannel(mAppId) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
         return mTransService.getStatus(params)
+                .doOnSubscribe(() -> running = true)
+                /*.map(statusResponse -> {
+                    statusResponse.isprocessing = true; //for testing
+                    return statusResponse;
+                })*/
                 .repeatWhen(o -> o.flatMap(v -> Observable.timer(intervalRetry, MILLISECONDS)))
                 .takeUntil(shouldStop);
     }
 
-   /* public Observable<StatusResponse> createObservable(Map<String, String> params, StatusResponse response) {
-        final long intervalRetry = GlobalData.isZalopayChannel(mAppId) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
-        return shouldStop(response)
-                ? Observable.empty() : mTransService.getStatus(params)
-                .delaySubscription(intervalRetry, MILLISECONDS)
-                .concatMap(response1 -> createObservable(params, response1)
-                        .startWith(response1)
-                        .takeUntil(shouldStop)
-                );
-    }*/
-
     @Override
     public Observable<StatusResponse> getObserver() {
-        //return createObservable(buildParams(), null);
         return getStatus(buildParams());
     }
 }

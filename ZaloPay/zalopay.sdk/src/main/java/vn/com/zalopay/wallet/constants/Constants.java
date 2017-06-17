@@ -75,8 +75,8 @@ public class Constants {
     public static final int INPUT_INVALID = -1;
     public static final int REQUIRE_PIN = 1;
     public static final int REQUIRE_OTP = 2;
-    public static final int RECEIVER_ORIGIN = -888;
-    public static final int API_ORIGIN = -999;
+    public static final int RECEIVER = -888;
+    public static final int API = -999;
     public static final String SHOW_DIALOG = "show";
     public static final String MESSAGE = "mess";
     public static int PAYMENT_INIT = 1;

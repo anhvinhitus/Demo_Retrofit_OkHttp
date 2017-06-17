@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkInvalidDataMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
+import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
@@ -54,9 +55,12 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -132,6 +136,16 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     };
     private boolean setInputMethodTitle = false;
+    private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
+        @Override
+        public void onClose() {
+            try {
+                getViewOrThrow().showOpenSettingNetwokingDialog(null);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+    };
 
     public ChannelListPresenter() {
         SDKApplication.getApplicationComponent().inject(this);
@@ -160,7 +174,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                             } catch (Exception e) {
                                 Log.d(this, e);
                             }
-                        }else{
+                        } else {
                             exitHasOneChannel();
                         }
                     }
@@ -181,6 +195,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     @Override
     public void onResume() {
+        if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            PaymentSnackBar.getInstance().dismiss();
+        } else {
+            showNetworkOfflineSnackBar();
+        }
     }
 
     @Override
@@ -678,5 +697,26 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     Log.d("init resource fail", throwable);
                 });
         addSubscription(subscription);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnNetworkEvent(SdkNetworkEvent networkEvent) {
+        Log.d(this, "networking is changed ", networkEvent.online);
+        if (!networkEvent.online) {
+            showNetworkOfflineSnackBar();
+        } else {
+            PaymentSnackBar.getInstance().dismiss();
+        }
+    }
+
+    private void showNetworkOfflineSnackBar() {
+        try {
+            getViewOrThrow().showSnackBar(
+                    GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking),
+                    TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 }

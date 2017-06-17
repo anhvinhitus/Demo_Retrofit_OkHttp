@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.zalopay;
 
-import android.text.TextUtils;
-
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -39,7 +37,6 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     public void moveToConfirmScreen() {
-        //getActivity().renderByResource();
         setBalanceView(getConfig());
         getActivity().showConfirmView(true, true, getConfig());
         getActivity().setToolBarTitle();

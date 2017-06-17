@@ -119,7 +119,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     public Observable<AppInfo> get(long appId) {
         return Observable.defer(() -> {
             try {
-                AppInfo appInfo = GsonUtils.fromJsonString(mSharedPreferences.getAppById(String.valueOf(appId)), AppInfo.class);
+                AppInfo appInfo = getSync(appId);
                 if (appInfo != null) {
                     appInfo.expriretime = getExpireTime(appId);
                     Log.d(this, "load app info from cache", appInfo);
@@ -131,6 +131,11 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 return Observable.error(e);
             }
         });
+    }
+
+    @Override
+    public AppInfo getSync(long appId) {
+        return GsonUtils.fromJsonString(mSharedPreferences.getAppById(String.valueOf(appId)), AppInfo.class);
     }
 
     @Override

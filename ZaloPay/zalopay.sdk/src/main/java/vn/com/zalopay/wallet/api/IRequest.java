@@ -12,4 +12,5 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 public interface IRequest<T extends BaseResponse> {
     Map<String, String> buildParams();
     Observable<T> getObserver();
+    boolean isRunning();
 }

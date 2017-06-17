@@ -55,7 +55,7 @@
 
     <string name="zpw_string_load_website_timeout_message">Dữ liệu chưa tải xong, vui lòng kiểm tra lại kết nối mạng!</string>
 
-    <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý.\nBạn có muốn thử lại?</string>
+    <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý.\nBạn có muốn tiếp tục kiểm tra trạng thái giao dịch?</string>
     <string name="zingpaysdk_alert_error_networking_ask_to_retry">Không thể kết nối tới Zalo Pay, vui lòng kiểm tra kết nối mạng.\nBạn có muốn thử lại?</string>
 
     <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch!</string>

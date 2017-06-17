@@ -43,8 +43,8 @@ public class AppInfoInteractor implements IAppInfo {
     }
 
     @Override
-    public Observable<AppInfo> get(long appid) {
-        return this.mAppInfoRepository.getLocalStorage().get(appid);
+    public AppInfo get(long appid) {
+        return this.mAppInfoRepository.getLocalStorage().getSync(appid);
     }
 
     /***

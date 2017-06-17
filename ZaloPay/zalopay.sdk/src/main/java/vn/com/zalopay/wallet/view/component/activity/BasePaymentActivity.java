@@ -66,7 +66,6 @@ import vn.com.zalopay.utility.PermissionUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.utility.StringUtil;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
@@ -97,7 +96,6 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
-import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
@@ -121,7 +119,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private static Stack<BasePaymentActivity> mActivityStack = new Stack<>();//stack to keep activity
     public final String TAG = getClass().getSimpleName();
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
-    public AppInfo appInfo;
     public boolean mIsBackClick = true;
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
@@ -232,12 +229,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                                         .showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)),
                                 GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));//show dialog and move to fail screen
                     }
-                    return;
                 }
-                //user in gateway screen
-                /*if (activity.get() instanceof PaymentGatewayActivity) {
-                    ((PaymentGatewayActivity) activity.get()).showWarningDialog(BasePaymentActivity.this::finish, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-                }*/
             } catch (Exception ex) {
                 ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
                 if (getAdapter() != null) {
@@ -261,7 +253,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
     //close snackbar networking alert listener
-    private onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
+    protected onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
     private View.OnClickListener mSupportButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -272,17 +264,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     Intent intent = new Intent();
                     intent.setAction(Constants.SUPPORT_INTRO_ACTION_SUPPORT_CENTER);
                     startActivity(intent);
-
                 } else if (i == R.id.support_button) {
-                    Log.d("OnClickListener", "support_button");
-
                     startSupportScreen();
-
-                } else if (i == R.id.zpw_pay_support_buttom_view) {
-                    Log.d("OnClickListener", "zpw_pay_support_buttom_view");
-
-                } else if (i == R.id.cancel_button) {
-                    Log.d("OnClickListener", "cancel_button");
                 }
                 closeSupportView();
             } catch (Exception ex) {
@@ -496,17 +479,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return isAllowLinkCardCC;
     }
 
-    protected void onReturnCancel(final String pMessage) {
-        showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
-        showWarningDialog(() -> {
-            GlobalData.updateResultNetworkingError(mPaymentInfoHelper, pMessage);
-            if (GlobalData.getPaymentListener() != null) {
-                GlobalData.getPaymentListener().onComplete();
-            }
-            finish();
-        }, pMessage);
-    }
-
     public void onExit(String pMessage, boolean pShowDialog) {
         showProgress(false, null);
         //just exit without show dialog.
@@ -616,7 +588,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
                     GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         }
-
     }
 
     @Override
@@ -674,8 +645,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             return;
                         }
                         try {
-                            appInfo = pAppInfo;
-                            showApplicationInfo(appInfo);
+                            showApplicationInfo(pAppInfo);
                         } catch (Exception e) {
                             Log.d(this, e);
                         }
@@ -1252,7 +1222,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         animationImageViewSuccess();
     }
 
-    public void showPaymentSpecialSuccessContent(String pTransID) {
+    public void showPaymentSpecialSuccessContent(AppInfo appInfo, String pTransID) {
         setText(R.id.zpw_textview_transaction_id, pTransID);
         AbstractOrder order = mPaymentInfoHelper.getOrder();
         if (order != null && order.amount_total >= 0) {
@@ -1843,64 +1813,27 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (pEditext == null) {
             return;
         }
-
         if (pEditext instanceof VPaymentEditText && ((VPaymentEditText) pEditext).getTextInputLayout() instanceof TextInputLayout) {
             try {
                 TextInputLayout textInputLayout = ((VPaymentEditText) pEditext).getTextInputLayout();
-
                 int color = pContext.getResources().getColor(R.color.holo_red_light);
-
                 Field fDefaultTextColor = TextInputLayout.class.getDeclaredField("mDefaultTextColor");
                 fDefaultTextColor.setAccessible(true);
                 fDefaultTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
-
                 Field fFocusedTextColor = TextInputLayout.class.getDeclaredField("mFocusedTextColor");
                 fFocusedTextColor.setAccessible(true);
                 fFocusedTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
-
                 int paddingLeft = pEditext.getPaddingLeft();
                 int paddingTop = pEditext.getPaddingTop();
                 int paddingRight = pEditext.getPaddingRight();
                 int paddingBottom = pEditext.getPaddingBottom();
-
                 pEditext.setBackground(pContext.getResources().getDrawable(R.drawable.txt_bottom_error_style));
-
                 //restore padding
                 pEditext.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-
                 textInputLayout.refreshDrawableState();
-
                 textInputLayout.setHint(pError);
-
             } catch (Exception ignored) {
             }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnNetworkEvent(SdkNetworkEventMessage pNetworkEventMessage) {
-        //user sitting in the result screen
-        if (getCurrentActivity() instanceof PaymentChannelActivity && ((PaymentChannelActivity) getCurrentActivity()).getAdapter().isFinalScreen()) {
-            Log.d(this, "onNetworkMessageEvent user is on fail screen...");
-            return;
-        }
-        //come from api request fail with handshake
-        if (pNetworkEventMessage.origin == Constants.API_ORIGIN) {
-            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_not_stable),
-                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG, mOnCloseSnackBarListener);
-
-            Log.d(this, "networking is not stable");
-        }
-        //networking indeed offline
-        else if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            Log.d(this, "networking is off");
-            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
-                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
-        }
-        //networking online again
-        else {
-            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_online), null, TSnackbar.LENGTH_SHORT, null);
-            Log.d(this, "networking is online again");
         }
     }
 }

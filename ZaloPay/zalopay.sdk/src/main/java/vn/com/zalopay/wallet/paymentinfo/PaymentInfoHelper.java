@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.paymentinfo;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -19,6 +20,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;
@@ -216,7 +218,7 @@ public class PaymentInfoHelper extends SingletonBase {
             } else if (PaymentStatusHelper.isServerInMaintenance(pReturnCode)) {
                 setResult(PaymentStatus.SERVICE_MAINTENANCE);
             } else if (!TextUtils.isEmpty(mErrorArray.get(pReturnCode))) {
-                    setResult(PaymentStatus.INVALID_DATA);
+                setResult(PaymentStatus.INVALID_DATA);
             }
         } catch (Exception e) {
             Log.e("updateTransactionResult", e);
@@ -286,6 +288,24 @@ public class PaymentInfoHelper extends SingletonBase {
         } else {
             return null;
         }
+    }
+
+    public boolean updateResultNetworkingError(String pMessage) {
+        boolean isOffNetworking;
+        try {
+            isOffNetworking = !ConnectionUtil.isOnline(BasePaymentActivity.getCurrentActivity());
+        } catch (Exception ex) {
+            Log.e("updateResultNetworkingError", ex);
+            isOffNetworking = false;
+        }
+        if (isOffNetworking &&
+                (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account)))) {
+            setResult(PaymentStatus.DISCONNECT);
+        }
+        return isOffNetworking;
     }
 
 }

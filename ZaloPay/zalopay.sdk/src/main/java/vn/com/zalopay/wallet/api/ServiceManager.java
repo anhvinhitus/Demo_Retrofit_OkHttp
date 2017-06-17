@@ -16,8 +16,10 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
+import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+
+import static vn.com.zalopay.wallet.constants.Constants.API;
 
 public class ServiceManager<T extends BaseResponse> extends SingletonBase {
     private static ServiceManager _object;
@@ -88,8 +90,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
 
     private boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
-            SdkNetworkEventMessage networkEventMessage = new SdkNetworkEventMessage();
-            networkEventMessage.origin = Constants.API_ORIGIN;
+            SdkNetworkEvent networkEventMessage = new SdkNetworkEvent(API, false);
             SDKApplication.getApplicationComponent().eventBus().post(networkEventMessage);
             return true;
         }

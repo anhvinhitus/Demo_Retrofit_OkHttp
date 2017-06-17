@@ -5,7 +5,6 @@ import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -16,7 +15,6 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
@@ -77,24 +75,6 @@ public class GlobalData {
         } else {
             return GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction);
         }
-    }
-
-    public static boolean updateResultNetworkingError(PaymentInfoHelper paymentInfoHelper, String pMessage) {
-        boolean isOffNetworking;
-        try {
-            isOffNetworking = !ConnectionUtil.isOnline(BasePaymentActivity.getCurrentActivity());
-        } catch (Exception ex) {
-            Log.e("updateResultNetworkingError", ex);
-            isOffNetworking = false;
-        }
-        if (isOffNetworking &&
-                (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account)))) {
-            paymentInfoHelper.setResult(PaymentStatus.DISCONNECT);
-        }
-        return isOffNetworking;
     }
 
     /***
@@ -215,7 +195,8 @@ public class GlobalData {
     }
 
     public static String getTransProcessingMessage(@TransactionType int pTranstype) {
-        return pTranstype == TransactionType.LINK ? RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
+        return pTranstype == TransactionType.LINK ?
+                RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
     }
 
     public static String getStringResource(String pResourceID) {

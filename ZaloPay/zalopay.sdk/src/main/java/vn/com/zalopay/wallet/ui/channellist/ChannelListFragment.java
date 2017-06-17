@@ -31,11 +31,13 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
+import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
+import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -61,6 +63,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private TextView order_fee_txt;
     private LinearLayout item_detail_linearlayout;
     private Button confirm_button;
+    private View view_top_linearlayout;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -86,6 +89,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onViewBound(View view) {
         super.onViewBound(view);
+        view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_linearlayout);
@@ -366,5 +370,26 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         Intent intent = new Intent(getContext(), MapListSelectionActivity.class);
         intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PVCB);
         startActivity(intent);
+    }
+
+    @Override
+    public void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener) {
+        DialogManager.showSweetDialogRetry(getActivity(), pMessage, pListener);
+    }
+
+    @Override
+    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
+        PaymentSnackBar.getInstance().dismiss();
+        try {
+            PaymentSnackBar.getInstance().setRootView(view_top_linearlayout)
+                    .setBgColor(GlobalData.getAppContext().getResources().getColor(R.color.yellow_bg_popup_error))
+                    .setMessage(pMessage)
+                    .setActionMessage(pActionMessage)
+                    .setDuration(pDuration)
+                    .setOnCloseListener(pOnCloseListener)
+                    .show();
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     }
 }

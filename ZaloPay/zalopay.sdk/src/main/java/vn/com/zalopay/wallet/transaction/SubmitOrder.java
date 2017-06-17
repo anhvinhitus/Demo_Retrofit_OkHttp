@@ -80,6 +80,7 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
 
     @Override
     public Observable<StatusResponse> getObserver() {
-        return submitTrans(buildParams());
+        return submitTrans(buildParams())
+                .compose(applyState);
     }
 }

@@ -8,6 +8,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderStatus;
@@ -16,6 +17,12 @@ import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
 
 /**
  * Created by chucvv on 6/13/17.
@@ -109,8 +116,42 @@ public class TransactionHelper {
                 return Constants.PAGE_BALANCE_ERROR;
             case PaymentStatus.FAILURE:
                 return Constants.PAGE_FAIL;
+            case PaymentStatus.PROCESSING:
+                return Constants.PAGE_FAIL_PROCESSING;
             default:
                 return null;
         }
+    }
+
+    public static boolean isTransFail(String pPageName) {
+        switch (pPageName) {
+            case PAGE_FAIL:
+            case PAGE_FAIL_NETWORKING:
+            case PAGE_FAIL_PROCESSING:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static String getPageSuccessByAppType(AppInfo appInfo) {
+        if (appInfo == null) {
+            return PAGE_SUCCESS;
+        }
+        switch (appInfo.viewresulttype) {
+            case 2:
+                return PAGE_SUCCESS_SPECIAL;
+            default:
+                return PAGE_SUCCESS;
+        }
+    }
+
+    public static boolean isTransNetworkError(String pMessage) {
+        return pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account));
     }
 }

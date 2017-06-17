@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
@@ -85,12 +84,12 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
+import static vn.com.zalopay.wallet.helper.TransactionHelper.isTransNetworkError;
 
 public abstract class AdapterBase {
     protected final DPaymentCard mCard;
     protected WeakReference<PaymentChannelActivity> mOwnerActivity = null;
     protected CardGuiProcessor mGuiProcessor = null;
-    protected DialogFragment mFingerPrintDialog = null;
     protected StatusResponse mResponseStatus;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
@@ -185,9 +184,8 @@ public abstract class AdapterBase {
         mResponseStatus = statusResponse;
         if (mResponseStatus != null) {
             mTransactionID = mResponseStatus.zptransid;
-            getActivity().mIsBackClick = false;
+            mPageName = TransactionHelper.getPageName(paymentInfoHelper.getStatus());
         }
-        mPageName = TransactionHelper.getPageName(paymentInfoHelper.getStatus());
         if (TextUtils.isEmpty(mPageName)) {
             mPageName = getDefaultPageName();
         }
@@ -234,12 +232,13 @@ public abstract class AdapterBase {
         if (scrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
         }
-        if (Constants.PAGE_SUCCESS.equals(mPageName)) {
+        if (isTransactionSuccess()) {
             showTransactionSuccessView();
-        } else if (Constants.PAGE_FAIL.equals(mPageName)) {
+        } else if(hasTransId()){
+            Log.d(this, "start page name", mPageName);
             showTransactionFailView(mResponseStatus.returnmessage);
         }
-        Log.d(this,"start adapter with page name", mPageName);
+        Log.d(this, "start adapter with page name", mPageName);
     }
 
     public abstract void onProcessPhrase() throws Exception;
@@ -305,13 +304,11 @@ public abstract class AdapterBase {
     }
 
     public void onFinish() {
-        Log.d(this, "onFinish");
+        Log.d(this, "onFinish - release gui processor - release pmc config");
         if (getGuiProcessor() != null) {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
-        Log.d(this, "start dismiss dialog fingerprint - release pmc config");
-        dismissDialogFingerPrint();
         mMiniPmcTransType = null;
     }
 
@@ -603,30 +600,24 @@ public abstract class AdapterBase {
             //get status after submit order or authen payer
             else if (pEventType == EEventType.ON_GET_STATUS_COMPLETE) {
                 releaseClickSubmit();
-
                 getActivity().visibleCardViewNavigateButton(false);
                 getActivity().visibleSubmitButton(true);
-
                 //error
                 if (mResponseStatus == null) {
                     showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
                     return pAdditionParams;
                 }
-
                 //retry otp
                 if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
                     processWrongOtp();
                     return pAdditionParams;
                 }
-
                 if (mResponseStatus.isprocessing && !TextUtils.isEmpty(mResponseStatus.data)) {
                     SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
-
                     if (dataResponse == null) {
                         showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
                         return pAdditionParams;
                     }
-
                     //flow 3ds (atm + cc)
                     if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
                         //no link for parsing
@@ -945,8 +936,7 @@ public abstract class AdapterBase {
     }
 
     public boolean isTransactionFail() {
-        return getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING)
-                || getPageName().equals(PAGE_FAIL_PROCESSING);
+        return TransactionHelper.isTransFail(getPageName());
     }
 
     public boolean isTransactionSuccess() {
@@ -1215,19 +1205,6 @@ public abstract class AdapterBase {
         getActivity().setText(R.id.zpw_payment_fail_textview, strMessage);
     }
 
-    /***
-     * have 2 type of success pay
-     * each type have each type of interface
-     */
-    protected void getSuccessPageType() {
-        AppInfo appInfo = getActivity().appInfo;
-        if (appInfo != null && appInfo.viewresulttype == 2) {
-            mPageName = PAGE_SUCCESS_SPECIAL;
-        } else {
-            mPageName = PAGE_SUCCESS;
-        }
-    }
-
     protected boolean processSaveCardOnResult() {
         if (isCardFlowWeb()) {
             sendLogTransaction();
@@ -1270,6 +1247,12 @@ public abstract class AdapterBase {
         return false;
     }
 
+    private AppInfo getAppInfoCache(long appId) {
+        return SDKApplication.getApplicationComponent()
+                .appInfoInteractor()
+                .get(appId);
+    }
+
     /***
      * show success view base
      */
@@ -1278,8 +1261,6 @@ public abstract class AdapterBase {
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().cancelTransactionExpiredTimer();
         }
-        //dismiss fingerprint dialog if still there
-        dismissDialogFingerPrint();
         //hide webview
         if (isCardFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
@@ -1292,9 +1273,6 @@ public abstract class AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
-
-        getSuccessPageType();
-
         //if this is redpacket,then close sdk and callback to app
         if (processResultForRedPackage()) {
             return;
@@ -1303,13 +1281,13 @@ public abstract class AdapterBase {
         showDialogOnChannelList = false;
         mIsExitWithoutConfirm = true;
 
+        AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
+        mPageName = TransactionHelper.getPageSuccessByAppType(appInfo);
+
         getActivity().setMarginSubmitButtonTop(true);
         getActivity().renderByResource();
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_title_header_pay_result));
         getActivity().enableSubmitBtn(true);
-
-        //dismiss snackbar networking
-        PaymentSnackBar.getInstance().dismiss();
 
         if (isPaymentSuccess()) {
             try {
@@ -1317,11 +1295,12 @@ public abstract class AdapterBase {
             } catch (Exception e) {
                 Log.e(this, e);
             }
-
             setSuccessLabel();
         } else if (isPaymentSpecialSuccess()) {
-            getActivity().showPaymentSpecialSuccessContent(mTransactionID);
+            getActivity().showPaymentSpecialSuccessContent(appInfo, mTransactionID);
         }
+        //dismiss snackbar networking
+        PaymentSnackBar.getInstance().dismiss();
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         processSaveCardOnResult();
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
@@ -1342,15 +1321,6 @@ public abstract class AdapterBase {
         }
     }
 
-    public boolean isTransactionErrorNetworking(String pMessage) {
-        return pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account));
-    }
-
     public boolean isTransactionProcessing(String pMessage) {
         return pMessage.equalsIgnoreCase(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
                 || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
@@ -1364,12 +1334,13 @@ public abstract class AdapterBase {
         if (preventRetryLoadMapCardList) {
             return;
         }
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onPreComplete(false, mTransactionID, mPaymentInfoHelper.getAppTransId());
+        }
         //stop timer
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().cancelTransactionExpiredTimer();
         }
-        //dismiss fingerprint dialog if still there
-        dismissDialogFingerPrint();
         //hide webview
         if (isCardFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
@@ -1378,51 +1349,36 @@ public abstract class AdapterBase {
         if (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
         }
-        //notify to app to do some background task
-        try {
-            if (GlobalData.getPaymentListener() != null)
-                GlobalData.getPaymentListener().onPreComplete(false, mTransactionID, mPaymentInfoHelper.getAppTransId());
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
 
-        //keep error code TOKEN_EXPIRE to app known
+        if (isTransactionProcessing(pMessage)) {
+            mPageName = PAGE_FAIL_PROCESSING;
+        } else if (isTransNetworkError(pMessage)) {
+            mPageName = PAGE_FAIL_NETWORKING;
+            //update payment status to no internet to app know
+            mPaymentInfoHelper.updateResultNetworkingError(pMessage);
+        } else {
+            mPageName = PAGE_FAIL;
+        }
+        //reset result to fail
         int status = mPaymentInfoHelper.getStatus();
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
             mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
         }
 
-        if (isTransactionProcessing(pMessage)) {
-            mPageName = PAGE_FAIL_PROCESSING;
-        } else if (isTransactionErrorNetworking(pMessage)) {
-            mPageName = PAGE_FAIL_NETWORKING;
-
-            //update payment status to no internet to app know
-            GlobalData.updateResultNetworkingError(mPaymentInfoHelper, pMessage);
-        } else {
-            mPageName = PAGE_FAIL;
-        }
-
         showDialogOnChannelList = false;
         mIsExitWithoutConfirm = true;
         getActivity().setMarginSubmitButtonTop(true);
-
         getActivity().renderByResource();
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_title_header_pay_result));
         getActivity().enableSubmitBtn(true);
-
         setFailLabel();
-
         PaymentSnackBar.getInstance().dismiss();
-
         setContentForFailScreen(pMessage);
-
         //send log captcha,otp
         if (isCardFlowWeb()) {
             sendLogTransaction();
         }
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
-
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())
                 && needReloadCardMapAfterPayment()
                 && needToReloadMapCardListOnTransactionFail(pMessage)
@@ -1430,13 +1386,13 @@ public abstract class AdapterBase {
             preventRetryLoadMapCardList = true;
             reloadMapCard(false);
         }
-        showProgressBar(false, null);
         //send log
         try {
             sdkReportErrorOnTransactionFail();
         } catch (Exception e) {
             Log.e(this, e);
         }
+        showProgressBar(false, null);
         //tracking translogid on fail event
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
@@ -1491,7 +1447,6 @@ public abstract class AdapterBase {
      */
     protected void askToRetryGetStatus(final String pZmpTransID) {
         showProgressBar(false, null);
-
         if (isFinalScreen()) {
             Log.d(this, "user in fail screen - skip retry get status");
             return;
@@ -1500,13 +1455,7 @@ public abstract class AdapterBase {
         getActivity().showRetryDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                try {
-                    showTransactionFailView(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
-                } catch (Exception e) {
-                    Log.e(this, e);
-
-                    terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-                }
+                showTransactionFailView(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
             }
 
             @Override
@@ -1588,7 +1537,7 @@ public abstract class AdapterBase {
      * @return
      */
     protected boolean needToReloadMapCardListOnTransactionFail(String pMessage) {
-        return isTransactionProcessing(pMessage) || isTransactionErrorNetworking(pMessage);
+        return isTransactionProcessing(pMessage) || isTransNetworkError(pMessage);
     }
 
     protected boolean needReloadCardMapAfterPayment() {
@@ -1731,14 +1680,6 @@ public abstract class AdapterBase {
             }
         } catch (Exception ex) {
             Log.d(this, ex);
-        }
-    }
-
-    private void dismissDialogFingerPrint() {
-        if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
-            mFingerPrintDialog.dismiss();
-            mFingerPrintDialog = null;
-            Log.d(this, "dismiss dialog fingerprint");
         }
     }
 }
