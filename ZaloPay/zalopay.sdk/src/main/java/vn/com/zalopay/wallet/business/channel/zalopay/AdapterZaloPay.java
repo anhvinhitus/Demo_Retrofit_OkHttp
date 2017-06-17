@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.zalopay;
 
+import android.text.TextUtils;
+
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -20,7 +22,7 @@ public class AdapterZaloPay extends AdapterBase {
     @Override
     public void init() throws Exception {
         super.init();
-        if (mPageName.equals(Constants.PAGE_BALANCE_ERROR)) {
+        if (Constants.PAGE_BALANCE_ERROR.equals(mPageName)) {
             showFee();
             moveToConfirmScreen();
         }

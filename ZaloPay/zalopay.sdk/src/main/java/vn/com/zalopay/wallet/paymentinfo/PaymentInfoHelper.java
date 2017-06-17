@@ -215,10 +215,8 @@ public class PaymentInfoHelper extends SingletonBase {
                 setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
             } else if (PaymentStatusHelper.isServerInMaintenance(pReturnCode)) {
                 setResult(PaymentStatus.SERVICE_MAINTENANCE);
-            } else {
-                if (!TextUtils.isEmpty(mErrorArray.get(pReturnCode))) {
+            } else if (!TextUtils.isEmpty(mErrorArray.get(pReturnCode))) {
                     setResult(PaymentStatus.INVALID_DATA);
-                }
             }
         } catch (Exception e) {
             Log.e("updateTransactionResult", e);

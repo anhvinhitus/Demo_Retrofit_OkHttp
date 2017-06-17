@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -37,7 +38,8 @@ import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.transaction.TransactionProcessor;
+import vn.com.zalopay.wallet.transaction.GetTransStatus;
+import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -56,14 +58,23 @@ public class ChannelProxy extends SingletonBase {
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
-    private TransactionProcessor mTransactionProcessor;
+    private IRequest mRequestApi;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
+    private String mTransId;
     private String fpPassword;//password from fingerprint
     private String inputPassword;//password input on popup
+    private boolean transStatusStart = false;
     private Action1<Throwable> submitOrderException = throwable -> {
         Log.d(this, "submit order on error", throwable);
-        mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
+        mPassword.setErrorMessage(GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
+    };
+    private Action1<Throwable> transStatusException = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            Log.d(this, "transtatus on error", throwable);
+            mPassword.setErrorMessage(GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
+        }
     };
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
@@ -98,10 +109,19 @@ public class ChannelProxy extends SingletonBase {
             }
         }
     };
+    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            Log.d(this, "get transtatus on complete", statusResponse);
+            processStatus(statusResponse);
+        }
+    };
     private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
         Log.d(this, "submit order on complete", statusResponse);
-        mStatusResponse = statusResponse;
-        processOrderResponse(mStatusResponse);
+        if (statusResponse != null) {
+            mTransId = statusResponse.zptransid;
+        }
+        processStatus(statusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -173,31 +193,77 @@ public class ChannelProxy extends SingletonBase {
         }
     }
 
-    private void processOrderResponse(StatusResponse pResponse) {
+    private void askToRetryGetStatus() {
+        String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);
+        /*getActivity().showRetryDialog(new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+                try {
+                    showTransactionFailView(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
+                } catch (Exception e) {
+                    Log.e(this, e);
+                    terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+                }
+            }
+
+            @Override
+            public void onOKevent() {
+                showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                *//***
+         * if bank bypass opt, no need to check data when get status
+         * if bank not by pass opt, need to check data to determinate 3ds or api.
+         *//*
+                try {
+                    mTransactionAdapter.getTransactionStatus(pZmpTransID, isCheckDataInStatus, null);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                    terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+                }
+            }
+        }, message);*/
+    }
+
+    private void processStatus(StatusResponse pResponse) {
         if (pResponse == null) {
             mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
         } else {
-            @OrderStatus int status = TransactionHelper.submitTransStatus(pResponse);
+            mStatusResponse = pResponse;
+            if (TextUtils.isEmpty(mTransId)) {
+                mTransId = mStatusResponse.zptransid;
+            }
+            @OrderStatus int status = TransactionHelper.submitTransStatus(mStatusResponse);
             switch (status) {
                 case OrderStatus.SUCCESS:
                     mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
                     updatePasswordOnSuccess();
                     closePassword();
                     startChannelActivity();
+                    break;
                 case OrderStatus.PROCESSING:
                     mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
-                    closePassword();
                     //continue get status
+                    if (transStatusStart) {
+                        askToRetryGetStatus();
+                    } else {
+                        try {
+                            Subscription subscription = transStatus();
+                            getPresenter().addSubscription(subscription);
+                        } catch (Exception e) {
+                            Log.e(this, e);
+                        }
+                        transStatusStart = true;
+                    }
                     break;
                 case OrderStatus.FAILURE:
                     mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+                    mPaymentInfoHelper.updateTransactionResult(mStatusResponse.returncode);
                     closePassword();
                     startChannelActivity();
                     break;
                 case OrderStatus.INVALID_PASSWORD:
                     if (mPassword != null) {
                         //user using poup , not fingerprint
-                        mPassword.setErrorMessage(pResponse.returnmessage);
+                        mPassword.setErrorMessage(mStatusResponse.returnmessage);
                     }
                     Activity activity = BaseActivity.getCurrentActivity();
                     if (activity == null || activity.isFinishing()) {
@@ -267,16 +333,25 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private Subscription submitOrder(String pHashPassword) {
+        Log.d(this, "start submit order");
         String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
-        return getTransProcessor()
-                .setChannelId(mChannel.pmcid)
-                .setOrder(mPaymentInfoHelper.getOrder())
-                .setPassword(pHashPassword)
-                .setChargeInfo(chargeInfo)
+        mRequestApi = getSubmitTransRequest();
+        return ((SubmitOrder) mRequestApi).channelId(mChannel.pmcid)
+                .order(mPaymentInfoHelper.getOrder())
+                .password(pHashPassword)
+                .chargeInfo(chargeInfo)
                 .getObserver()
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnNext(statusResponse -> mPassword.showLoading(true))
                 .subscribe(submitOrderSubscriber, submitOrderException);
+    }
+
+    private Subscription transStatus() {
+        Log.d(this, "start check order status");
+        mRequestApi = getTransStatusRequest();
+        return ((GetTransStatus) mRequestApi).getObserver()
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(transStatusSubscriber, transStatusException);
     }
 
     /***
@@ -351,7 +426,13 @@ public class ChannelProxy extends SingletonBase {
             if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
                 startPasswordFlow(activity);
             } else {
-                //
+                //submit order without password
+                try {
+                    Subscription subscription = submitOrder("");
+                    getPresenter().addSubscription(subscription);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             }
         } else {
             startChannelActivity();
@@ -363,6 +444,11 @@ public class ChannelProxy extends SingletonBase {
         //input flow
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
         if (mStatusResponse != null) {
+            /***
+             * re-assign trans id again because of some case
+             * trans id = null when get status
+             */
+            mStatusResponse.zptransid = mTransId;
             intent.putExtra(STATUS_RESPONSE, mStatusResponse);
         }
         intent.putExtra(PMC_CONFIG, mChannel);
@@ -419,13 +505,16 @@ public class ChannelProxy extends SingletonBase {
         return mPassword;
     }
 
-    private TransactionProcessor getTransProcessor() {
-        if (mTransactionProcessor == null) {
-            ITransService transService = SDKApplication.getApplicationComponent().transService();
-            mTransactionProcessor = new TransactionProcessor(transService,
-                    getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(),
-                    getPaymentInfoHelper().getLocation(), getPaymentInfoHelper().getTranstype());
-        }
-        return mTransactionProcessor;
+    private IRequest getSubmitTransRequest() {
+        ITransService transService = SDKApplication.getApplicationComponent().transService();
+        return new SubmitOrder(transService,
+                getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(),
+                getPaymentInfoHelper().getLocation(), getPaymentInfoHelper().getTranstype());
+    }
+
+    private IRequest getTransStatusRequest() {
+        ITransService transService = SDKApplication.getApplicationComponent().transService();
+        return new GetTransStatus(transService,
+                getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(), mTransId);
     }
 }

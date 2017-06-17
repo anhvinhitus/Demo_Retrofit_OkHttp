@@ -35,10 +35,9 @@ public class AdapterCreditCard extends AdapterBase {
     public void init() throws Exception {
         super.init();
         this.mGuiProcessor = new CreditCardGuiProcessor(this);
-        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
-            getGuiProcessor().initPager();
+        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
+            this.mGuiProcessor.initPager();
         }
-
         if (mPaymentInfoHelper.isCardLinkTrans()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
@@ -47,7 +46,7 @@ public class AdapterCreditCard extends AdapterBase {
 
     }
 
-    protected int getDefaultChannelId() {
+    private int getDefaultChannelId() {
         return BuildConfig.channel_credit_card;
     }
 

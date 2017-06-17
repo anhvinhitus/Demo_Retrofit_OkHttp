@@ -102,7 +102,7 @@ public class DataParameter {
      * @param params
      * @param pTransID
      */
-    public static void prepareGetStatusParams(String pAppId, UserInfo pUserInfo, Map<String, String> params, String pTransID) throws Exception {
+    public static void prepareGetStatusParams(String pAppId, UserInfo pUserInfo, Map<String, String> params, String pTransID) {
         putBase(params);
         params.put(ConstantParams.APP_ID, pAppId);
         params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);

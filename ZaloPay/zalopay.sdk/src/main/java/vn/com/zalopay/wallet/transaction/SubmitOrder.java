@@ -1,18 +1,15 @@
 package vn.com.zalopay.wallet.transaction;
 
-import android.os.Build;
-import android.util.ArrayMap;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
+import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 
@@ -20,8 +17,7 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
  * Created by chucvv on 6/16/17.
  */
 
-public class TransactionProcessor {
-    private ITransService mTransService;
+public class SubmitOrder extends AbstractRequest<StatusResponse> {
     private long mAppId;
     private int mChannelId;
     private UserInfo mUserInfo;
@@ -33,7 +29,8 @@ public class TransactionProcessor {
     private String mChargeInfo;
     private String mHashPassword;
 
-    public TransactionProcessor(ITransService pTransService, long pAppId, UserInfo pUserInfo, PaymentLocation pLocation, @TransactionType int pTranstype) {
+    public SubmitOrder(ITransService pTransService, long pAppId, UserInfo pUserInfo, PaymentLocation pLocation, @TransactionType int pTranstype) {
+        super(pTransService);
         this.mTransService = pTransService;
         this.mAppId = pAppId;
         this.mUserInfo = pUserInfo;
@@ -41,39 +38,35 @@ public class TransactionProcessor {
         this.mTranstype = pTranstype;
     }
 
-    public TransactionProcessor setOrder(AbstractOrder pOrder) {
+    public SubmitOrder order(AbstractOrder pOrder) {
         this.mOrder = pOrder;
         return this;
     }
 
-    public TransactionProcessor setChargeInfo(String pChargeInfo) {
+    public SubmitOrder chargeInfo(String pChargeInfo) {
         this.mChargeInfo = pChargeInfo;
         return this;
     }
 
-    public TransactionProcessor setChannelId(int pChannelId) {
+    public SubmitOrder channelId(int pChannelId) {
         this.mChannelId = pChannelId;
         return this;
     }
 
-    public TransactionProcessor setPassword(String pHashPassword) {
+    public SubmitOrder password(String pHashPassword) {
         this.mHashPassword = pHashPassword;
         return this;
     }
 
-    private Map<String, String> buildParams() {
-        Map<String, String> paramsApi;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            paramsApi = new ArrayMap<>();
-        } else {
-            paramsApi = new HashMap<>();
-        }
+    @Override
+    public Map<String, String> buildParams() {
+        Map<String, String> paramsApi = getMapTable();
         DataParameter.prepareSubmitTransactionParams(mChannelId, mAppId, mChargeInfo, mHashPassword,
                 mOrder, mUserInfo, mLocation, mTranstype, paramsApi);
         return paramsApi;
     }
 
-    private Observable<StatusResponse> observerSubmitTrans(Map<String, String> pParams) {
+    private Observable<StatusResponse> submitTrans(Map<String, String> pParams) {
         return mTransService.submitOrder(
                 pParams.get(ConstantParams.APP_ID), pParams.get(ConstantParams.ZALO_ID), pParams.get(ConstantParams.APP_TRANS_ID), pParams.get(ConstantParams.APP_USER),
                 pParams.get(ConstantParams.APP_TIME), pParams.get(ConstantParams.ITEM), pParams.get(ConstantParams.DESCRIPTION), pParams.get(ConstantParams.EMBED_DATA),
@@ -85,8 +78,8 @@ public class TransactionProcessor {
 
     }
 
+    @Override
     public Observable<StatusResponse> getObserver() {
-        Map<String, String> pParams = buildParams();
-        return observerSubmitTrans(pParams);
+        return submitTrans(buildParams());
     }
 }

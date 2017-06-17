@@ -89,7 +89,7 @@ public class PasswordManager {
 
     public void showLoading(boolean pShowing) {
         if (mIBuilder == null) {
-            Log.e(TAG, "==mIBuilder== null");
+            Log.e(TAG, "mBuilder is null");
             return;
         }
         mIBuilder.showLoadding(pShowing);
@@ -100,7 +100,7 @@ public class PasswordManager {
         @Override
         public void clickCancel() {
             if (mIBuilder == null) {
-                Log.e(TAG, "==mIBuilder== null");
+                Log.e(TAG, "mBuilder is null");
                 return;
             }
             if (mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing()) {

@@ -42,6 +42,8 @@ public class Constants {
     public static final int API_PLATFORM_TIMEOUT = 30000;//ms
     public static final int API_MAX_RETRY = 3;
     public static final int API_DELAY_RETRY = 500;//ms
+    public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
+    public static final int TRANS_STATUS_MAX_RETRY = 30;
     public static final int PLATFORM_RETRY_INTERVAL = 7000;//ms.
     public static final int PLATFORM_MAX_RETRY = 10;
     public static final int DOWNLOAD_RESOURCE_RETRY_INTERVAL = 10000;//ms.

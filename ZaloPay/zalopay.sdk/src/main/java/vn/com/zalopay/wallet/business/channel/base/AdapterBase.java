@@ -234,11 +234,12 @@ public abstract class AdapterBase {
         if (scrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
         }
-        if (mPageName.equals(Constants.PAGE_SUCCESS)) {
+        if (Constants.PAGE_SUCCESS.equals(mPageName)) {
             showTransactionSuccessView();
-        } else if (mPageName.equals(Constants.PAGE_FAIL)) {
+        } else if (Constants.PAGE_FAIL.equals(mPageName)) {
             showTransactionFailView(mResponseStatus.returnmessage);
         }
+        Log.d(this,"start adapter with page name", mPageName);
     }
 
     public abstract void onProcessPhrase() throws Exception;
