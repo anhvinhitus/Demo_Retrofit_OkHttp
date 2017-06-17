@@ -12,7 +12,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;

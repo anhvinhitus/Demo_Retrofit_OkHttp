@@ -15,7 +15,7 @@ import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;

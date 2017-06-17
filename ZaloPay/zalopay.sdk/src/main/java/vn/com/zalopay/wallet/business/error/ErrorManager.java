@@ -73,7 +73,7 @@ public class ErrorManager {
                 || status == PaymentStatus.SUCCESS
                 || status == PaymentStatus.TOKEN_EXPIRE
                 || status == PaymentStatus.USER_LOCK
-                || status == PaymentStatus.MONEY_NOT_ENOUGH
+                || status == PaymentStatus.ERROR_BALANCE
                 || status == PaymentStatus.INVALID_DATA
                 || status == PaymentStatus.SERVICE_MAINTENANCE;
     }

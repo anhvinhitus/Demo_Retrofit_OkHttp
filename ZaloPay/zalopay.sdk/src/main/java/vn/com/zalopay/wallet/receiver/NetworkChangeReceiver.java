@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.business.data.Log;

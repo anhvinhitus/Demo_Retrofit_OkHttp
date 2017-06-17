@@ -28,7 +28,7 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_CLOSE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.FAILURE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.INVALID_DATA;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_LOCK;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.MONEY_NOT_ENOUGH;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ERROR_BALANCE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINK_ACCOUNT;
@@ -101,7 +101,7 @@ class WalletListener implements ZPPaymentListener {
 
                     paymentIsCompleted = false; // will continue after update profile
                     break;
-                case MONEY_NOT_ENOUGH:
+                case ERROR_BALANCE:
                     if (mPaymentWrapper.mRedirectListener == null) {
                         mPaymentWrapper.startDepositForResult();
                     } else {

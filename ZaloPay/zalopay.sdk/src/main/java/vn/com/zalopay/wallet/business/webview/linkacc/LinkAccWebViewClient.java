@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -33,10 +33,11 @@ import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.utility.GsonUtils;
 
-import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.PAGE_VCB_CONFIRM_LINK;
-import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_COMPLETE_PAGE;
-import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_PAGE;
-import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_UNREGISTER_COMPLETE_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_REFRESH_CAPTCHA;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_COMPLETE_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_COMPLETE_PAGE;
 
 /**
  * @author SinhTT
@@ -320,7 +321,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
                 // break loop for
                 break;
-            } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(AdapterLinkAcc.VCB_REFRESH_CAPTCHA)) {
+            } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(VCB_REFRESH_CAPTCHA)) {
                 Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;

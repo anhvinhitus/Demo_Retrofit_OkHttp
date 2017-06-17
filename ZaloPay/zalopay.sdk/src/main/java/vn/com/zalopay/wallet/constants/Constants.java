@@ -1,8 +1,10 @@
-package vn.com.zalopay.wallet.business.data;
+package vn.com.zalopay.wallet.constants;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import vn.com.zalopay.wallet.business.data.RS;
 
 public class Constants {
     public static final int VCB_MAX_RETRY_GET_NUMBERPHONE = 3;
@@ -86,4 +88,35 @@ public class Constants {
     public static int UNDEFINE = 9;
     public static int NULL_ERRORCODE = -747;
     public static String TRUE = "true";
+
+    public static final String PAGE_SUCCESS = RS.layout.screen__success;
+    public static final String PAGE_SUCCESS_SPECIAL = RS.layout.screen__success__special;
+    public static final String PAGE_FAIL = RS.layout.screen__fail;
+    public static final String PAGE_FAIL_NETWORKING = RS.layout.screen__fail_networking;
+    public static final String PAGE_FAIL_PROCESSING = RS.layout.screen__fail_processing;
+    public static final String PAGE_BALANCE_ERROR = RS.layout.screen__zalopay__balance_error;
+    public static final String SCREEN_CC = RS.layout.screen__card;
+    public static final String SCREEN_ATM = RS.layout.screen__card;
+    public static final String PAGE_AUTHEN = RS.layout.screen__local__card__authen;
+    public static final String PAGE_COVER_BANK_AUTHEN = RS.layout.screen__cover__bank__authen;
+    public static final String PAGE_SELECTION_ACCOUNT_BANK = RS.layout.screen_selection_account_list;
+
+    public static final String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
+    public static final String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
+    public static final String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
+    public static final String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
+    public static final String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
+    public static final String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
+    public static final String SCREEN_LINK_ACC = RS.layout.screen__link__acc;
+    public static final String PAGE_VCB_LOGIN = RS.layout.screen__vcb__login;
+    public static final String PAGE_VCB_CONFIRM_LINK = RS.layout.screen__vcb__confirm_link;
+    public static final String PAGE_VCB_OTP = RS.layout.screen_vcb_otp;
+    public static final String PAGE_VCB_CONFIRM_UNLINK = RS.layout.screen__vcb__confirm_unlink;
+    public static final String PAGE_LINKACC_SUCCESS = RS.layout.screen__linkacc__success;
+    public static final String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
+    public static final String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
+    public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
+
+    public static final String PMC_CONFIG = "config";
+    public static final String STATUS_RESPONSE = "status";
 }

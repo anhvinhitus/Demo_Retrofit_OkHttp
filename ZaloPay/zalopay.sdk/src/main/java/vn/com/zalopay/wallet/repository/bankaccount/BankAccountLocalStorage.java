@@ -6,7 +6,7 @@ import java.util.List;
 
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;

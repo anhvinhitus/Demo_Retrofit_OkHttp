@@ -32,6 +32,8 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
+
 /***
  * payment controller class
  */
@@ -230,7 +232,7 @@ public class SDKPayment {
                     .appInfoInteractor()
                     .getPmcTranstype(BuildConfig.ZALOAPP_ID, transtype, paymentInfoHelper.isBankAccountTrans(), null);
             if (pmcTransType != null) {
-                intent.putExtra(PaymentChannelActivity.PMC_CONFIG, pmcTransType);
+                intent.putExtra(PMC_CONFIG, pmcTransType);
             }
         } else {
             //intent = new Intent(pOwner, PaymentGatewayActivity.class);

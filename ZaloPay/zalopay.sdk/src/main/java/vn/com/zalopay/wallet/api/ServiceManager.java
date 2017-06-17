@@ -10,7 +10,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;

@@ -541,7 +541,7 @@ public class PaymentWrapper {
     boolean shouldClearPendingOrder(@PaymentStatus int resultStatus) {
 
         switch (resultStatus) {
-            case PaymentStatus.MONEY_NOT_ENOUGH:
+            case PaymentStatus.ERROR_BALANCE:
                 return false;
             case PaymentStatus.LEVEL_UPGRADE_PASSWORD:
                 return false;

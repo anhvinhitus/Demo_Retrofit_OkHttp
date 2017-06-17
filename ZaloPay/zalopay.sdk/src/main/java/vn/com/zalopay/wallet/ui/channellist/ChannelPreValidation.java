@@ -5,7 +5,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;

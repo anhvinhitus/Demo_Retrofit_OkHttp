@@ -17,37 +17,36 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
-import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
-import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
 
+import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
+import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
+
 public class PaymentChannelActivity extends BasePaymentActivity {
-    public static final String PMC_CONFIG = "config";
-    protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mExpireTransTimer;
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
@@ -55,6 +54,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
     private MiniPmcTransType mMiniPmcTransType;
+    private StatusResponse mStatusResponse;
+    /***
+     * back pressed
+     */
     private View.OnClickListener mOnClickExitListener = v -> {
         //get status again if user back when payment in bank's site
         if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
@@ -66,13 +69,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).goBackInputCard();
             return;
         }
-        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
-            getAdapter().confirmExitTransWithoutPin();
-            return;
-        }
         if (getAdapter() != null && getAdapter().isZaloPayFlow() && getAdapter().isBalanceErrorPharse()) {
             mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-            setCallBack(Activity.RESULT_OK);
+            setCallBack(Activity.RESULT_CANCELED);
             return;
         }
         if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
@@ -82,7 +81,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             } else if (getAdapter().isTransactionFail()) {
                 mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
                 callBackThenTerminate();
-            }else{
+            } else {
                 setCallBack(Activity.RESULT_CANCELED);
             }
         } else {
@@ -91,7 +90,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     };
 
     public void setCallBack(Intent pIntent) {
-        Log.d(this, "setCallBack", pIntent);
         Activity activity = BaseActivity.getCurrentActivity();
         if (activity instanceof ChannelListActivity) {
             setResult(Activity.RESULT_CANCELED, pIntent);
@@ -102,7 +100,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     private void setCallBack(int pResultCode) {
-        Log.d(this, "setCallBack", pResultCode);
         Activity activity = BaseActivity.getCurrentActivity();
         if (activity instanceof ChannelListActivity) {
             setResult(pResultCode, new Intent());
@@ -112,11 +109,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         finish();
     }
 
-    public PaymentPassword getPaymentPassword() {
-        return mPaymentPassword;
-    }
-
-    protected void fillCardNumberFromCache() {
+    private void fillCardNumberFromCache() {
         String pCardNumber = null;
         try {
             pCardNumber = SharedPreferencesManager.getInstance().pickCachedCardNumber();
@@ -161,7 +154,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void startPayment() {
-        mAdapter = AdapterFactory.produce(this, mMiniPmcTransType, mPaymentInfoHelper);
+        mAdapter = AdapterFactory.produce(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -251,10 +244,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (getIntent().getExtras() != null) {
             mMiniPmcTransType = getIntent().getExtras().getParcelable(PMC_CONFIG);
+            mStatusResponse = getIntent().getExtras().getParcelable(STATUS_RESPONSE);
         }
         Log.d(this, "start payment channel", mMiniPmcTransType);
         if (mMiniPmcTransType == null) {
@@ -277,7 +270,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         //user is summiting order
         if (processingOrder) {
-            Log.d(this, "can not back,order still request api");
+            Log.d(this, "can not back, order still request api");
             return;
         }
         mOnClickExitListener.onClick(null);
@@ -296,9 +289,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 mPaymentInfoHelper.payByBankAccountMap()))) {
             try {
                 setConfirmTitle();
-                getAdapter().moveToConfirmScreen(mMiniPmcTransType);
                 mIsStart = true;
-                Log.d(this, "moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -314,7 +305,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
-                return;
             }
         }
         //this is link card channel and the first call.
@@ -343,7 +333,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
-                return;
             }
         }
     }
@@ -351,14 +340,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(this, "onResume");
-        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
-            showKeyBoardForPin();
-        }
         showKeyBoardOnFocusingViewAgain();
+        Log.d(this, "onResume");
     }
 
-    protected void showKeyBoardOnFocusingViewAgain() {
+    private void showKeyBoardOnFocusingViewAgain() {
         //focus on editting view again after user resume
         if (getAdapter() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
             //auto show keyboard
@@ -388,18 +374,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         showKeyBoardOnFocusingViewAgain();
     }
 
-    public void showKeyBoardForPin() {
-        if (mPaymentPassword != null) {
-            mPaymentPassword.showSoftKeyBoard();
-        }
-    }
-
-    public void resetPin() {
-        if (mPaymentPassword != null) {
-            mPaymentPassword.reset();
-        }
-    }
-
     public void renderActivity() {
         String layoutResID = getAdapter().getLayoutID();
         if (TextUtils.isEmpty(layoutResID)) {
@@ -415,12 +389,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
         setMarginSubmitButtonTop(false);
-        //resize pin layout if this is phone
-        if (!SdkUtils.isTablet(getApplicationContext())) {
-            resizeGridPasswordView();
-        }
-        if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper))
+        if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             renderByResource();
+        }
         setListener();
         getAdapter().setListener();
         //hide header if this is link card.
@@ -442,10 +413,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     public void renderByResource() {
         try {
             renderByResource(null, null);
-
         } catch (Exception e) {
             Log.e(this, e);
-
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
     }
@@ -453,31 +422,22 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     public void renderByResource(DStaticViewGroup pAdditionStaticViewGroup, DDynamicViewGroup pAdditionDynamicViewGroup) {
         try {
             long time = System.currentTimeMillis();
-
             String pageName = getAdapter().getPageName();
-
             ResourceManager resourceManager = ResourceManager.getInstance(pageName);
-
             if (resourceManager != null) {
                 mActivityRender = resourceManager.produceRendering(this);
-
                 if (getActivityRender() != null) {
                     getActivityRender().render();
                     getActivityRender().render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
                 } else {
-                    Log.d(this, "PaymentChannelActivity.render acctivityRendering=null");
+                    Log.d(this, "PaymentChannelActivity.render activityRendering is null");
                 }
             } else {
-                Log.d(this, "PaymentChannelActivity.render resourceManager=null");
+                Log.d(this, "PaymentChannelActivity.render resourceManager is null");
             }
-
-            //enableSubmitBtn(false);
-            Log.d(this, "++++ PaymentChannelActivity.renderByResource: Total time: " + (System.currentTimeMillis() - time));
-
-
+            Log.d(this, "PaymentChannelActivity.renderByResource: Total time:" + (System.currentTimeMillis() - time));
         } catch (Exception e) {
             Log.e(this, e);
-
             onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);
         }
     }
@@ -491,8 +451,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void enableSubmitBtn(boolean pIsEnabled) {
-        Log.d(this, "===enableSubmitBtn===" + pIsEnabled);
-
+        Log.d(this, "enable button submit " + pIsEnabled);
         setEnableButton(findViewById(R.id.zpsdk_btn_submit), pIsEnabled);
     }
 
@@ -505,16 +464,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void setEnableButton(View pButtonView, boolean pIsEnabled) {
-
         if (pButtonView == null)
             return;
-
         pButtonView.setEnabled(pIsEnabled);
-
         if (getAdapter() != null && !getAdapter().isFinalScreen()) {
             pButtonView.setVisibility(View.VISIBLE);
         }
-
         if (pIsEnabled) {
             if (getAdapter() != null && getAdapter().isFinalStep())
                 pButtonView.setBackgroundResource(RS.getDrawable(RS.drawable.zpw_bg_button_final));
@@ -527,7 +482,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     public void setConfirmTitle() {
         String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_pay);
-
         if (mPaymentInfoHelper.isTopupTrans()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_topup);
         } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
@@ -563,7 +517,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (buttonWrapper != null) {
             ViewTreeObserver vto = buttonWrapper.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
                 @Override
                 public void onGlobalLayout() {
                     ViewTreeObserver obs = buttonWrapper.getViewTreeObserver();
@@ -585,18 +538,16 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 getAdapter().onFinish();
                 mAdapter = null;
             }
-            AbstractOrder order = mPaymentInfoHelper.getOrder();
-            UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             int transtype = TransactionType.LINK;
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
                     getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, transtype, pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType != null) {
-                mAdapter = AdapterFactory.produceChannelByPmc(this, miniPmcTransType, mPaymentInfoHelper);
+                mAdapter = AdapterFactory.produceChannelByPmc(this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
                 return true;
             }
         } catch (Exception e) {
             Log.e(this, e);
-            onExit(e != null ? e.getMessage() : GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
         }
         return false;
     }
@@ -628,16 +579,15 @@ public class PaymentChannelActivity extends BasePaymentActivity {
      * @param pCardNumber
      */
     public synchronized void switchChannel(int pChannelID, final String pCardNumber) {
-
         if (getAdapter() != null && getAdapter().isATMFlow() && pChannelID == BuildConfig.channel_atm)
             return;
         if (getAdapter() != null && getAdapter().isCCFlow() && pChannelID == BuildConfig.channel_credit_card)
             return;
-
         //prevent user move to next if input existed card in link card
         if (getAdapter().getGuiProcessor() != null && getAdapter().getGuiProcessor().preventNextIfLinkCardExisted()) {
             try {
-                getAdapter().getGuiProcessor().showHintError(getAdapter().getGuiProcessor().getCardNumberView(), getAdapter().getGuiProcessor().warningCardExist());
+                getAdapter().getGuiProcessor().showHintError(getAdapter().getGuiProcessor().getCardNumberView(), getAdapter().getGuiProcessor()
+                        .warningCardExist());
                 return;
             } catch (Exception e) {
                 Log.e(this, e);
@@ -646,34 +596,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (!createChannelAdapter(pChannelID)) {
             return;
         }
-
         if (getAdapter() != null) {
-            Log.d(this, "===preparing to init new adapter===" + getAdapter());
-
+            Log.d(this, "init adapter", getAdapter());
             setIsSwitching(true);
-
             initChannel();
-
-            if (getAdapter().isCardFlow())
+            if (getAdapter().isCardFlow()) {
                 getAdapter().getGuiProcessor().setCardInfo(pCardNumber);
+            }
         }
-    }
-
-    public void configureRequirePinPage() {
-
-        if (mPaymentPassword == null) {
-            mPaymentPassword = new PaymentPassword(findViewById(R.id.zpw_gridview_pin), findViewById(R.id.zpw_txt_PinError), findViewById(R.id.zpw_switchvisible_textview));
-        } else {
-            mPaymentPassword.reset();
-        }
-
-        mPaymentPassword.setOnEnterPinListener(() -> {
-            if (getAdapter() != null)
-                getAdapter().onClickSubmission();
-        });
-
-        mPaymentPassword.showSoftKeyBoard();
-
     }
 
     protected void confirmQuitOrGetStatus() {

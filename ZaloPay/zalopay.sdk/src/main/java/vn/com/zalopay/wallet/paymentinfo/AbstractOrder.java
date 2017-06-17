@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.paymentinfo;
 
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
 
 /**
  * Created by chucvv on 6/5/17.

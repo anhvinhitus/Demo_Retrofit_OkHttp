@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.holder.ZPWItemBankHolder;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;

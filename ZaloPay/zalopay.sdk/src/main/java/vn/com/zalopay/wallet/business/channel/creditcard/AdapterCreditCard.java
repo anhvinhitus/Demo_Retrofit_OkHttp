@@ -3,19 +3,26 @@ package vn.com.zalopay.wallet.business.channel.creditcard;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
+
 public class AdapterCreditCard extends AdapterBase {
-    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
+    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+                             PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         mLayoutId = SCREEN_CC;
-        mPageCode = (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) ? PAGE_CONFIRM : SCREEN_CC;
         GlobalData.cardChannelType = CardChannel.CREDIT;
+    }
+
+    @Override
+    public String getDefaultPageName() {
+        return SCREEN_CC;
     }
 
     @Override
@@ -26,6 +33,7 @@ public class AdapterCreditCard extends AdapterBase {
 
     @Override
     public void init() throws Exception {
+        super.init();
         this.mGuiProcessor = new CreditCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
@@ -53,16 +61,6 @@ public class AdapterCreditCard extends AdapterBase {
     public boolean isInputStep() {
         return getPageName().equals(SCREEN_CC) || super.isInputStep();
 
-    }
-
-    @Override
-    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
-        try {
-            super.moveToConfirmScreen(pMiniPmcTransType);
-            showConfrimScreenForCardChannel(pMiniPmcTransType);
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
     }
 
     @Override

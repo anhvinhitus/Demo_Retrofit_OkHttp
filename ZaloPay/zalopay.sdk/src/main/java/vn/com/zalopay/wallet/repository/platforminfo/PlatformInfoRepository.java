@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
-import vn.com.zalopay.wallet.business.data.ConstantParams;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.ConstantParams;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
 

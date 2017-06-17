@@ -4,13 +4,14 @@ import android.content.Context;
 
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderStatus;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -72,11 +73,13 @@ public class TransactionHelper {
      *
      * @param pStatusResponse data response
      */
-    public static @OrderStatus int submitTransStatus(StatusResponse pStatusResponse) {
-        if (pStatusResponse != null && pStatusResponse.returncode < 0) {
-            return OrderStatus.FAILURE;
-        } else if (pStatusResponse.returncode == Constants.PIN_WRONG_RETURN_CODE) {
+    public static
+    @OrderStatus
+    int submitTransStatus(StatusResponse pStatusResponse) {
+        if (pStatusResponse != null && pStatusResponse.returncode == Constants.PIN_WRONG_RETURN_CODE) {
             return OrderStatus.INVALID_PASSWORD;
+        } else if (pStatusResponse != null && pStatusResponse.returncode < 0) {
+            return OrderStatus.FAILURE;
         }
         //transaction is success
         else if (isTransactionSuccess(pStatusResponse)) {
@@ -96,5 +99,18 @@ public class TransactionHelper {
 
     public static boolean isTransactionSuccess(StatusResponse pResponse) {
         return pResponse != null && !pResponse.isprocessing && pResponse.returncode == 1;
+    }
+
+    public static String getPageName(@PaymentStatus int status) {
+        switch (status) {
+            case PaymentStatus.SUCCESS:
+                return Constants.PAGE_SUCCESS;
+            case PaymentStatus.ERROR_BALANCE:
+                return Constants.PAGE_BALANCE_ERROR;
+            case PaymentStatus.FAILURE:
+                return Constants.PAGE_FAIL;
+            default:
+                return null;
+        }
     }
 }

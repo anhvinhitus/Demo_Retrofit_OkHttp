@@ -208,7 +208,7 @@ public class PaymentInfoHelper extends SingletonBase {
                 setResult(PaymentStatus.USER_LOCK);
             }
             if (PaymentStatusHelper.isNeedToChargeMoreMoney(pReturnCode)) {
-                setResult(PaymentStatus.MONEY_NOT_ENOUGH);
+                setResult(PaymentStatus.ERROR_BALANCE);
             } else if (PaymentStatusHelper.isTransactionProcessing(pReturnCode)) {
                 setResult(PaymentStatus.PROCESSING);
             } else if (PaymentStatusHelper.isNeedToUpgradeLevelUser(pReturnCode)) {

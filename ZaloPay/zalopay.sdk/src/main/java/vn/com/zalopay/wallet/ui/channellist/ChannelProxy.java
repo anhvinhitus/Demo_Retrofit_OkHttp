@@ -30,7 +30,9 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.OrderStatus;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.exception.InvalidStateException;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
@@ -39,6 +41,8 @@ import vn.com.zalopay.wallet.transaction.TransactionProcessor;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
+import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 import static vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter.REQUEST_CODE;
 
 /***
@@ -46,7 +50,7 @@ import static vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter.REQUEST_
  */
 public class ChannelProxy extends SingletonBase {
     private static ChannelProxy _object;
-    protected DialogFragment mFingerPrintDialog = null;
+    private DialogFragment mFingerPrintDialog = null;
     private ChannelPreValidation mChannelPreValidation;
     private PasswordManager mPassword;
     private PaymentChannel mChannel;
@@ -54,34 +58,13 @@ public class ChannelProxy extends SingletonBase {
     private IBank mBankInteractor;
     private TransactionProcessor mTransactionProcessor;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
-        Log.d(this, "submit order on complete", statusResponse);
-        processOrderResponse(statusResponse);
-    };
+    private StatusResponse mStatusResponse;
+    private String fpPassword;//password from fingerprint
+    private String inputPassword;//password input on popup
     private Action1<Throwable> submitOrderException = throwable -> {
         Log.d(this, "submit order on error", throwable);
         mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
     };
-
-    private void processOrderResponse(StatusResponse pResponse){
-        if(pResponse == null){
-            mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
-        }else{
-            @OrderStatus int status = TransactionHelper.submitTransStatus(pResponse);
-            switch (status){
-                case OrderStatus.SUCCESS:
-                    mPassword.closePinView();
-                    break;
-                case OrderStatus.PROCESSING:
-                    mPassword.closePinView();
-                    break;
-                case OrderStatus.FAILURE:
-                case OrderStatus.INVALID_PASSWORD:
-                    mPassword.setErrorMessage(pResponse.returnmessage);
-                    break;
-            }
-        }
-    }
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
@@ -99,15 +82,26 @@ public class ChannelProxy extends SingletonBase {
         }
 
         @Override
-        public void onComplete(String pHashPin) {
-            Log.d(this, "password", pHashPin);
-            if (!TextUtils.isEmpty(pHashPin)) {
-                Log.d(this, "start submit trans pw", pHashPin);
-                submitOrder(pHashPin);
+        public void onComplete(String pHashPassword) {
+            Log.d(this, "password", pHashPassword);
+            if (!TextUtils.isEmpty(pHashPassword)) {
+                Log.d(this, "start submit trans pw", pHashPassword);
+                try {
+                    inputPassword = pHashPassword;
+                    Subscription subscription = submitOrder(pHashPassword);
+                    getPresenter().addSubscription(subscription);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             } else {
                 Log.e(this, "empty password");
             }
         }
+    };
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        mStatusResponse = statusResponse;
+        processOrderResponse(mStatusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -136,7 +130,13 @@ public class ChannelProxy extends SingletonBase {
             } else {
                 //submit password
                 Log.d(this, "start submit trans pw", pHashPassword);
-                submitOrder(pHashPassword);
+                try {
+                    fpPassword = pHashPassword;
+                    Subscription subscription = submitOrder(pHashPassword);
+                    getPresenter().addSubscription(subscription);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             }
         }
     };
@@ -166,6 +166,59 @@ public class ChannelProxy extends SingletonBase {
         return ChannelProxy._object;
     }
 
+    private void closePassword() {
+        if (mPassword != null) {
+            mPassword.closePinView();
+            mPassword = null;
+        }
+    }
+
+    private void processOrderResponse(StatusResponse pResponse) {
+        if (pResponse == null) {
+            mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
+        } else {
+            @OrderStatus int status = TransactionHelper.submitTransStatus(pResponse);
+            switch (status) {
+                case OrderStatus.SUCCESS:
+                    mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+                    updatePasswordOnSuccess();
+                    closePassword();
+                    startChannelActivity();
+                case OrderStatus.PROCESSING:
+                    mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
+                    closePassword();
+                    //continue get status
+                    break;
+                case OrderStatus.FAILURE:
+                    mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+                    closePassword();
+                    startChannelActivity();
+                    break;
+                case OrderStatus.INVALID_PASSWORD:
+                    if (mPassword != null) {
+                        //user using poup , not fingerprint
+                        mPassword.setErrorMessage(pResponse.returnmessage);
+                    }
+                    Activity activity = BaseActivity.getCurrentActivity();
+                    if (activity == null || activity.isFinishing()) {
+                        return;
+                    }
+                    getPasswordManager(activity).showPinView();//show again if user using fingerprint
+                    break;
+            }
+        }
+    }
+
+    private void updatePasswordOnSuccess() {
+        if (!TextUtils.isEmpty(fpPassword) && !TextUtils.isEmpty(inputPassword) && !fpPassword.equals(inputPassword)) {
+            try {
+                PaymentFingerPrint.shared().updatePassword(fpPassword, inputPassword);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+    }
+
     public ChannelProxy setBankInteractor(IBank pBankInteractor) {
         mBankInteractor = pBankInteractor;
         return this;
@@ -178,6 +231,13 @@ public class ChannelProxy extends SingletonBase {
 
     public ChannelListFragment getView() throws Exception {
         return mChannelListPresenter.get().getViewOrThrow();
+    }
+
+    public ChannelListPresenter getPresenter() throws Exception {
+        if (mChannelListPresenter == null || mChannelListPresenter.get() == null) {
+            throw new InvalidStateException("invalid presenter state");
+        }
+        return mChannelListPresenter.get();
     }
 
     public ChannelProxy setChannelListPresenter(ChannelListPresenter presenter) {
@@ -195,10 +255,10 @@ public class ChannelProxy extends SingletonBase {
     }
 
     public boolean validate(PaymentChannel channel) {
-        if (mChannelPreValidation == null) {
-            mChannelPreValidation = new ChannelPreValidation(mPaymentInfoHelper, mBankInteractor, mChannelListPresenter.get());
-        }
         try {
+            if (mChannelPreValidation == null) {
+                mChannelPreValidation = new ChannelPreValidation(mPaymentInfoHelper, mBankInteractor, getPresenter());
+            }
             return mChannelPreValidation.validate(channel);
         } catch (Exception e) {
             Log.d(this, e);
@@ -242,9 +302,8 @@ public class ChannelProxy extends SingletonBase {
         mPaymentInfoHelper.getOrder().populateFee(mChannel);
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-            if (mChannelListPresenter.get() != null) {
-                mChannelListPresenter.get().loadBankList(bankListSubscriber, mChannelListPresenter.get().mBankListException);
-            }
+            ChannelListPresenter presenter = getPresenter();
+            presenter.loadBankList(bankListSubscriber, presenter.mBankListException);
         } else {
             startFlow();
         }
@@ -294,11 +353,19 @@ public class ChannelProxy extends SingletonBase {
             } else {
                 //
             }
-            return;
+        } else {
+            startChannelActivity();
         }
+
+    }
+
+    private void startChannelActivity() {
         //input flow
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-        intent.putExtra(PaymentChannelActivity.PMC_CONFIG, mChannel);
+        if (mStatusResponse != null) {
+            intent.putExtra(STATUS_RESPONSE, mStatusResponse);
+        }
+        intent.putExtra(PMC_CONFIG, mChannel);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         try {
             getView().startActivityForResult(intent, REQUEST_CODE);

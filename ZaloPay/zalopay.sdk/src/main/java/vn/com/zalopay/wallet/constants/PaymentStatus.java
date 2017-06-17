@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @IntDef({PaymentStatus.PROCESSING, PaymentStatus.SUCCESS, PaymentStatus.FAILURE,
-        PaymentStatus.MONEY_NOT_ENOUGH, PaymentStatus.TOKEN_EXPIRE, PaymentStatus.INVALID_DATA,
+        PaymentStatus.ERROR_BALANCE, PaymentStatus.TOKEN_EXPIRE, PaymentStatus.INVALID_DATA,
         PaymentStatus.USER_CLOSE, PaymentStatus.USER_LOCK, PaymentStatus.LEVEL_UPGRADE_PASSWORD,
         PaymentStatus.DISCONNECT, PaymentStatus.SERVICE_MAINTENANCE,
         PaymentStatus.UPVERSION, PaymentStatus.DIRECT_LINKCARD, PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT,
@@ -17,7 +17,7 @@ public @interface PaymentStatus {
     int PROCESSING = 0; //order is processing
     int SUCCESS = 1;// transaction is success
     int FAILURE = -1; // transaction is fail
-    int MONEY_NOT_ENOUGH = -2; // user's wallet not enough money for payment, app redirect user to cash in
+    int ERROR_BALANCE = -2; // user's wallet not enough money for payment, app redirect user to cash in
     int TOKEN_EXPIRE = -3; // expire token, maybe user login on many devices, app force user to logout
     int INVALID_DATA = -4; // order info is invalid
     int USER_CLOSE = -5; // user close transaction

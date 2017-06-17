@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;

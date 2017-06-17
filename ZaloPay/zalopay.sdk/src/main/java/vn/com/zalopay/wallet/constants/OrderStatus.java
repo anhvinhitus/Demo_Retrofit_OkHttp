@@ -12,4 +12,5 @@ public @interface OrderStatus {
     int SUCCESS = 1;// transaction is success
     int FAILURE = -1; // transaction is fail
     int INVALID_PASSWORD = -117;
+    int ERROR_BALANCE = -2;
 }

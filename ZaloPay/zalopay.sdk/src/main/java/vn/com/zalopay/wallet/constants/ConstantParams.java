@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.data;
+package vn.com.zalopay.wallet.constants;
 
 public class ConstantParams {
     public static final String USER_ID = "userid";
@@ -44,16 +44,11 @@ public class ConstantParams {
     public static final String CHARGE_INFO = "chargeinfo";
     public static final String PIN = "pin";
     public static final String TRANS_TYPE = "transtype";
-    public static final String CHECKSUM = "checksum";
     public static final String DS_SCREEN_TYPE = "dscreentype";
     public static final String PLATFORM_IN_FOCHECKSUM = "platforminfochecksum";
     public static final String RESOURCE_VERSION = "resourceversion";
     public static final String BANK_ACCOUNT_INFO = "bankaccountinfo";
     public static final String LONGITUDE = "longitude";
     public static final String LATTITUDE = "latitude";
-    public static final String URL_RESOURCE = "url_resource";
-    public static final String TRANSTYPECHECKSUMS = "transtypechecksums";
-    public static final String TRANSTYPE = "transtypes";
-    public static final String APPINFO_CHECKSUM = "appinfochecksum";
     public static final String ORDER_SOURCE = "ordersource";
 }

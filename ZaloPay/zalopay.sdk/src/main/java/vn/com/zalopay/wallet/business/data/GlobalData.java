@@ -8,7 +8,6 @@ import java.lang.ref.WeakReference;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
@@ -41,7 +40,6 @@ public class GlobalData {
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
-    private static String mTransactionPin = null;
 
     /***
      * prevent cross call pay
@@ -175,7 +173,6 @@ public class GlobalData {
         }
         GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
-        GlobalData.mTransactionPin = null;
         GlobalData.mTranstype = pTranstype;
     }
 
@@ -211,14 +208,6 @@ public class GlobalData {
             return mMerchantActivity.get();
         }
         return null;
-    }
-
-    public static String getTransactionPin() {
-        return mTransactionPin;
-    }
-
-    public static void setTransactionPin(String mTransactionPin) {
-        GlobalData.mTransactionPin = mTransactionPin;
     }
 
     public static ZPPaymentListener getPaymentListener() {

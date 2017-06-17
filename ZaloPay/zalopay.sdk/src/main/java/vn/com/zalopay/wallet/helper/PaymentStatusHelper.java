@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.helper;
 
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.constants.PaymentActionStatus;

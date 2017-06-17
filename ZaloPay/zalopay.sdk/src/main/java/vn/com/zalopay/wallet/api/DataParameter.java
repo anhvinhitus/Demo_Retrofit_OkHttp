@@ -12,7 +12,7 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.ConstantParams;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;

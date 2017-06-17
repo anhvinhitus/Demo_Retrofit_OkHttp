@@ -21,7 +21,7 @@ import vn.com.zalopay.utility.DimensionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.ConstantParams;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;

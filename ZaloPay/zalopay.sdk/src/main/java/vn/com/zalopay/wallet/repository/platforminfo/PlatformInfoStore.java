@@ -7,7 +7,7 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 

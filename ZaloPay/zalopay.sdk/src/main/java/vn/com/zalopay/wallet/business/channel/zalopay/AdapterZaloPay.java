@@ -1,34 +1,29 @@
 package vn.com.zalopay.wallet.business.channel.zalopay;
 
-import android.text.TextUtils;
-
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterZaloPay extends AdapterBase {
-    public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
+    public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+                          PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         mLayoutId = RS.layout.screen__zalopay;
-        checkBalanceAndSetPage();
-    }
-
-    private void checkBalanceAndSetPage() {
-        long user_balance = mPaymentInfoHelper.getBalance();
-        double amount_total = mPaymentInfoHelper.getAmountTotal();
-        mPageCode = user_balance >= amount_total ? PAGE_CONFIRM : PAGE_BALANCE_ERROR;
     }
 
     @Override
     public void init() throws Exception {
-        getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zingpaysdk_pmc_name_zalopay));
-        showFee();
+        super.init();
+        if (mPageName.equals(Constants.PAGE_BALANCE_ERROR)) {
+            showFee();
+            moveToConfirmScreen();
+        }
     }
 
     protected int getDefaultChannelId() {
@@ -41,48 +36,26 @@ public class AdapterZaloPay extends AdapterBase {
         return channelId != -1 ? channelId : getDefaultChannelId();
     }
 
-    @Override
-    public boolean isFinalStep() {
-        return mPageCode.equals(PAGE_CONFIRM);
-    }
-
-    @Override
-    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
-
-        try {
-            super.moveToConfirmScreen(pMiniPmcTransType);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-
-        checkBalanceAndSetPage();
-
-        getActivity().renderByResource();
-
+    public void moveToConfirmScreen() {
+        //getActivity().renderByResource();
         setBalanceView(getConfig());
-
         getActivity().showConfirmView(true, true, getConfig());
-
         getActivity().setToolBarTitle();
-
         getActivity().enableSubmitBtn(true);
-
     }
 
     /***
      * if this is redpackage,then close sdk
-     *
      * @return
      */
     @Override
     public boolean processResultForRedPackage() {
         long appId = mPaymentInfoHelper.getAppId();
-        if (GlobalData.isRedPacketChannel(appId)) {
+        boolean isReqPackage = GlobalData.isRedPacketChannel(appId);
+        if (isReqPackage) {
             onClickSubmission();
-            return true;
         }
-
-        return false;
+        return isReqPackage;
     }
 
     public void setBalanceView(MiniPmcTransType pConfig) {
@@ -92,20 +65,8 @@ public class AdapterZaloPay extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        if (isRequirePinPharse()) {
-            if (!TextUtils.isEmpty(GlobalData.getTransactionPin()))
-                startSubmitTransaction();
-
-            return;
-        }
-
         if (isBalanceErrorPharse()) {
-            mPaymentInfoHelper.setResult(PaymentStatus.MONEY_NOT_ENOUGH);
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_not_enough_money_wallet), false);
-            return;
+            getActivity().callBackThenTerminate();
         }
-
-        startSubmitTransaction();
-
     }
 }

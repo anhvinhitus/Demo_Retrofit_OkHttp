@@ -33,7 +33,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -64,30 +64,31 @@ import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_PASSWORD;
 import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_USERNAME;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_CAPTCHA;
 import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PASSWORD;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_FAIL;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_UNLINKACC_FAIL;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_UNLINKACC_SUCCESS;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_UNLINK;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_LOGIN;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_OTP;
+import static vn.com.zalopay.wallet.constants.Constants.SCREEN_LINK_ACC;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_LOGIN_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_COMPLETE_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_COMPLETE_PAGE;
+import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_PAGE;
 
 /**
  * Created by SinhTT on 14/11/2016.
  */
 
 public class AdapterLinkAcc extends AdapterBase {
-
-    public static final String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
-    public static final String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
-    public static final String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
-    public static final String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
-    public static final String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
-    public static final String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
-
-    public static final String SCREEN_LINK_ACC = RS.layout.screen__link__acc;
-
-    public static final String PAGE_VCB_LOGIN = RS.layout.screen__vcb__login;
-    public static final String PAGE_VCB_CONFIRM_LINK = RS.layout.screen__vcb__confirm_link;
-    public static final String PAGE_VCB_OTP = RS.layout.screen_vcb_otp;
-    public static final String PAGE_VCB_CONFIRM_UNLINK = RS.layout.screen__vcb__confirm_unlink;
-    public static final String PAGE_LINKACC_SUCCESS = RS.layout.screen__linkacc__success;
-    public static final String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
-    public static final String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
-    public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
     private final Handler mHandler = new Handler();
     public String mUrlReload;
     public boolean mIsLoadingCaptcha = false;
@@ -198,9 +199,13 @@ public class AdapterLinkAcc extends AdapterBase {
     };
 
     public AdapterLinkAcc(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, null);
         mLayoutId = SCREEN_LINK_ACC;
-        mPageCode = SCREEN_LINK_ACC;
+    }
+
+    @Override
+    public String getDefaultPageName() {
+        return SCREEN_LINK_ACC;
     }
 
     private void loadBankAccountSuccess() {
@@ -299,7 +304,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        Log.d(this, "on process phase " + mPageCode);
+        Log.d(this, "on process phase " + mPageName);
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             getActivity().askToOpenSettingNetwoking();
             Log.d(this, "networking is offline, stop processing click event");
@@ -307,7 +312,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
-            Log.d(this, "hit " + mPageCode);
+            Log.d(this, "hit " + mPageName);
         }
 
 
@@ -324,16 +329,16 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public boolean isLoginStep() {
-        return mPageCode.equals(PAGE_VCB_LOGIN);
+        return mPageName.equals(PAGE_VCB_LOGIN);
     }
 
     public boolean isConfirmStep() {
-        return mPageCode.equals(PAGE_VCB_CONFIRM_LINK) || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK);
+        return mPageName.equals(PAGE_VCB_CONFIRM_LINK) || mPageName.equals(PAGE_VCB_CONFIRM_UNLINK);
     }
 
     @Override
     public boolean isOtpStep() {
-        return mPageCode.equals(PAGE_VCB_OTP);
+        return mPageName.equals(PAGE_VCB_OTP);
     }
 
     public void forceVirtualKeyboard() {
@@ -379,7 +384,7 @@ public class AdapterLinkAcc extends AdapterBase {
      */
     private void linkAccSuccess() {
         // set pageCode
-        mPageCode = PAGE_LINKACC_SUCCESS;
+        mPageName = PAGE_LINKACC_SUCCESS;
         getActivity().renderByResource();
         try {
             getActivity().showPaymentSuccessContent(mTransactionID);
@@ -413,7 +418,7 @@ public class AdapterLinkAcc extends AdapterBase {
      * @param pMessage
      */
     private void linkAccFail(String pMessage, String pTransID) {
-        mPageCode = PAGE_LINKACC_FAIL;
+        mPageName = PAGE_LINKACC_FAIL;
         mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
         getActivity().showFailView(pMessage, pTransID);
@@ -433,7 +438,7 @@ public class AdapterLinkAcc extends AdapterBase {
      * unlink Account Success
      */
     private void unlinkAccSuccess() {
-        mPageCode = PAGE_UNLINKACC_SUCCESS;
+        mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
         try {
@@ -461,7 +466,7 @@ public class AdapterLinkAcc extends AdapterBase {
      * @param pMessage
      */
     private void unlinkAccFail(String pMessage, String pTransID) {
-        mPageCode = PAGE_UNLINKACC_FAIL;
+        mPageName = PAGE_UNLINKACC_FAIL;
         // rendering by resource
         getActivity().renderByResource();
         getActivity().showFailView(pMessage, pTransID);
@@ -664,7 +669,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
-                mPageCode = PAGE_VCB_LOGIN;
+                mPageName = PAGE_VCB_LOGIN;
 
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -739,7 +744,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 hideLoadingDialog();
-                mPageCode = PAGE_VCB_CONFIRM_LINK;
+                mPageName = PAGE_VCB_CONFIRM_LINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -819,7 +824,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 // set message
                 if (!TextUtils.isEmpty(response.messageOTP)) {
                     // code here confirm success. get messageResult.
-                    mPageCode = PAGE_VCB_OTP;
+                    mPageName = PAGE_VCB_OTP;
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().requestFocus();
                     // submit MapAccount for webview VCB parse
                     if (!GlobalData.shouldNativeWebFlow()) {
@@ -905,7 +910,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 hideLoadingDialog();
-                mPageCode = PAGE_VCB_CONFIRM_UNLINK;
+                mPageName = PAGE_VCB_CONFIRM_UNLINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 

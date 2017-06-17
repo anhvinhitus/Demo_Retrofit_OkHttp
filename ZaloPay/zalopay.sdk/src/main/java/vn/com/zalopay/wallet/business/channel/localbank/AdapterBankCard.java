@@ -15,41 +15,51 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SELECTION_ACCOUNT_BANK;
+import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 
 public class AdapterBankCard extends AdapterBase {
     private PaymentWebViewClient mWebViewProcessor = null;
 
     private int numberRetryCaptcha = 0;
 
-    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper);
+    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
+        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         mLayoutId = SCREEN_ATM;
-        mPageCode = (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) ? PAGE_CONFIRM : SCREEN_ATM;
         GlobalData.cardChannelType = CardChannel.ATM;
     }
 
     @Override
+    public String getDefaultPageName() {
+        return SCREEN_ATM;
+    }
+
+    @Override
     public boolean needReloadPmcConfig(String pBankCode) {
-        return mMiniPmcTransType == null || (mMiniPmcTransType != null && !mMiniPmcTransType.bankcode.equals(pBankCode));
+        return mMiniPmcTransType == null || !mMiniPmcTransType.bankcode.equals(pBankCode);
     }
 
     @Override
@@ -69,6 +79,7 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public void init() throws Exception {
+        super.init();
         this.mGuiProcessor = new BankCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
@@ -247,11 +258,6 @@ public class AdapterBankCard extends AdapterBase {
                     return null;
                 }
                 DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];
-
-                //hide pin view
-                if (isRequirePinPharse()) {
-                    getActivity().visiblePinView(false);
-                }
                 if (isBidvBankPayment() && !continueProcessForBidvBank(response.message)) {
                     if (isCaptchaStep()) {
                         showTransactionFailView(response.message);
@@ -293,7 +299,7 @@ public class AdapterBankCard extends AdapterBase {
                     } else {
                         //SHOW SELECTION ACCOUNT LIST
 
-                        mPageCode = PAGE_SELECTION_ACCOUNT_BANK;
+                        mPageName = PAGE_SELECTION_ACCOUNT_BANK;
                         getActivity().renderByResource();
 
                         ((BankCardGuiProcessor) getGuiProcessor()).showAccountList(accountList);
@@ -306,10 +312,10 @@ public class AdapterBankCard extends AdapterBase {
 
                 // re-render from web bank
                 if (pAdditionParams.length > 1) {
-                    mPageCode = PAGE_COVER_BANK_AUTHEN;
+                    mPageName = PAGE_COVER_BANK_AUTHEN;
                     getActivity().renderByResource();
 
-                    mPageCode = (String) pAdditionParams[1];
+                    mPageName = (String) pAdditionParams[1];
 
                     getActivity().renderByResource(response.staticView, response.dynamicView);
                     getGuiProcessor().checkEnableSubmitButton();
@@ -419,32 +425,14 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-    public void moveToConfirmScreen(MiniPmcTransType pMiniPmcTransType) {
-        try {
-            super.moveToConfirmScreen(pMiniPmcTransType);
-
-            showConfrimScreenForCardChannel(pMiniPmcTransType);
-
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-
-    }
-
-    @Override
     public void onProcessPhrase() throws Exception {
         //authen payer atm
         if (isAuthenPayerPharse()) {
-
             showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
-
             getActivity().processingOrder = true;
-
             SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
-
             if (mOtpEndTime == 0)
                 mOtpBeginTime = System.currentTimeMillis();
-
             return;
         }
 
@@ -469,14 +457,11 @@ public class AdapterBankCard extends AdapterBase {
 
             return;
         }
-
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
             tranferPaymentCardToMapCard();
         }
-
         startSubmitTransaction();
-
     }
 
     @Override

@@ -15,7 +15,7 @@ import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;

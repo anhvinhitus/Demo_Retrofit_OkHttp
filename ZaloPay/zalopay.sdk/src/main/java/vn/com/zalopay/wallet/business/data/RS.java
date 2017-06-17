@@ -430,9 +430,6 @@ public class RS {
         public static final String screen__cover__bank__authen = "screen__cover__bank__authen";
 
         public static final String screen_selection_account_list = "zpsdk_atm_vcb_account_list";
-
-        public static final String screen__confirm = "screen__confirm";
-
     }
 
     public static final class drawable {

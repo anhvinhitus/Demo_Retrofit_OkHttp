@@ -68,13 +68,13 @@ import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.CFontManager;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -90,11 +90,11 @@ import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEventMessage;
@@ -115,12 +115,14 @@ import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
+
 public abstract class BasePaymentActivity extends FragmentActivity {
     private static Stack<BasePaymentActivity> mActivityStack = new Stack<>();//stack to keep activity
     public final String TAG = getClass().getSimpleName();
-    public boolean mIsBackClick = true;
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     public AppInfo appInfo;
+    public boolean mIsBackClick = true;
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
     //dialog asking open networking listener
@@ -134,9 +136,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         @Override
         public void onOpenSettingDialogClicked() {
-            if (getCurrentActivity() instanceof PaymentChannelActivity) {
-                ((PaymentChannelActivity) getCurrentActivity()).resetPin();
-            }
         }
     };
     protected EventBus mBus;
@@ -329,17 +328,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return null;
     }
 
-    public static void resetAttributeCascade(boolean... pAttr) {
-        try {
-            if (mActivityStack != null && mActivityStack.size() == 2) {
-                mActivityStack.get(0).mIsBackClick = pAttr[0];
-                mActivityStack.get(1).mIsBackClick = pAttr[0];
-            }
-        } catch (Exception e) {
-            Log.d("resetAttributeCascade", e);
-        }
-    }
-
     public void updatePaymentStatus(int code) {
         mPaymentInfoHelper.updateTransactionResult(code);
     }
@@ -519,10 +507,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }, pMessage);
     }
 
-    public void onExit(String pMessage, boolean pIsShowDialog) {
+    public void onExit(String pMessage, boolean pShowDialog) {
         showProgress(false, null);
         //just exit without show dialog.
-        if (!pIsShowDialog) {
+        if (!pShowDialog) {
             callBackThenTerminate();
             return;
         }
@@ -531,7 +519,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (TextUtils.isEmpty(message)) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
-
         showWarningDialog(this::callBackThenTerminate, message);
     }
 
@@ -599,11 +586,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void finish() {
         super.finish();
         if (mIsBackClick) {
-            //notify to app know that user click back on sdk.
-            int status = mPaymentInfoHelper.getStatus();
-            if (status == PaymentStatus.FAILURE) {
-                mPaymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-            }
             slideOutTransition();
         } else {
             fadeOutTransition();
@@ -1171,7 +1153,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setVisible(R.id.payment_description_label, false);
             }
         } else if (mPaymentInfoHelper.isBankAccountTrans()) { // show label for linkAcc
-            if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_SUCCESS)) {
+            if (getAdapter().getPageName().equals(PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setVisible(R.id.payment_description_label, true);
 
@@ -1384,16 +1366,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
-     * alert invalid data and quit payment
-     */
-    private void showDialogUserInfo() {
-        showErrorDialog(() -> {
-            mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
-            callBackThenTerminate();
-        }, GlobalData.getStringResource(RS.string.zpw_string_alert_userinfo_invalid));
-    }
-
     /**
      * show fee
      */
@@ -1443,7 +1415,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * show header text
      */
     protected void showDisplayInfo() {
-       if (mPaymentInfoHelper.isMoneyTranferTrans()) {
+        if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             visibleTranferWalletInfo(true);
             visibleAppInfo(false);
             showUserInfoWalletTransfer();
@@ -1468,24 +1440,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             growShrink.addAnimation(animationBounce);
 
             view.startAnimation(growShrink);
-        }
-    }
-
-    protected void resizeGridPasswordView() {
-        Log.d(this, "start resize password view");
-        final View passwordView = findViewById(R.id.zpw_gridview_pin);
-        if (passwordView != null) {
-            int width = SdkUtils.widthScreen(getCurrentActivity());
-            int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
-            int margin = (int) SdkUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
-            width = width - margin * 2;
-            int height = width / pinLength;
-            if (width == 0 || height == 0) {
-                return;
-            }
-            passwordView.getLayoutParams().height = height;
-            passwordView.getLayoutParams().width = width;
-            passwordView.requestLayout();
         }
     }
 
@@ -1535,27 +1489,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
             Log.d(this, "setMarginSubmitButtonTop  Tab");
         }
-    }
-
-    /***
-     * user level 1 can not tranfer money.
-     * user level 1 can not withdraw.
-     */
-    public boolean checkUserLevelValid() {
-        boolean userLevelValid = true;
-        try {
-            int user_level = mPaymentInfoHelper.getLevel();
-            if (mPaymentInfoHelper.isMoneyTranferTrans() && user_level < BuildConfig.level_allow_use_zalopay) {
-                userLevelValid = false;
-            } else if (mPaymentInfoHelper.isWithDrawTrans() && user_level < BuildConfig.level_allow_withdraw) {
-                userLevelValid = false;
-            } else if ((mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) && user_level < BuildConfig.level_allow_cardmap) {
-                userLevelValid = false;
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return userLevelValid;
     }
 
     /***
@@ -1663,26 +1596,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.e(this, e);
         }
         return false;
-    }
-
-    /**
-     * is bank support,
-     * is not support show dialog
-     *
-     * @return
-     */
-    public boolean showBankSupport(String pBankCode) {
-        try {
-            BankConfig bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(pBankCode);
-            if (bankConfig == null || !bankConfig.isActive()) {
-                String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
-                showInfoDialog(null, message);
-                return false;
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return true;
     }
 
     public void showConfirmDialogWithManyOption(String pMessage, ZPWOnSweetDialogListener pListener, String... pButtonList) {

@@ -56,7 +56,7 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
     }
 
     public void notifyBinderItemChanged(int position) {
-        notifyDataSetChanged();
+        notifyDataSetChanged();//need to optimize later
     }
 
 

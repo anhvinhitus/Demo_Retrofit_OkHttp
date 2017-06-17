@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -240,14 +240,6 @@ public class MiniPmcTransType implements Parcelable {
 
     protected void setAllowByAmount(boolean allowByAmount) {
         isAllowByAmount = allowByAmount;
-    }
-
-    /***
-     * status must be 0
-     * @return
-     */
-    public boolean isAllowByLevel() {
-        return isAllowByLevel;
     }
 
     public boolean isAllowByAmountAndFee() {

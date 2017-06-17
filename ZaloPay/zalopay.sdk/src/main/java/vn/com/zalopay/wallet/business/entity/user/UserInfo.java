@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.business.entity.user;
 import android.text.TextUtils;
 
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;

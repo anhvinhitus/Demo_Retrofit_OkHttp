@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.repository.appinfo;
 
 import rx.Observable;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.api.RetryWithDelay;

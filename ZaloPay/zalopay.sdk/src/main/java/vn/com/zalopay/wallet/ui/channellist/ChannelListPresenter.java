@@ -31,7 +31,6 @@ import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -40,6 +39,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -160,6 +160,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                             } catch (Exception e) {
                                 Log.d(this, e);
                             }
+                        }else{
+                            exitHasOneChannel();
                         }
                     }
                     break;
@@ -179,7 +181,13 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     @Override
     public void onResume() {
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mChannelAdapter = null;
+        mChannelList = null;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -260,13 +268,13 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                 Log.e(this, e);
             }
         }
-        if(hasUpdate){
+        if (hasUpdate) {
             try {
                 mPreviousPosition = pPosition;//save to the previous position
                 mChannelAdapter.notifyBinderItemChanged(pPosition);
                 getViewOrThrow().enableConfirmButton(true);
             } catch (Exception e) {
-                Log.e(this,e);
+                Log.e(this, e);
             }
         }
     }
@@ -389,7 +397,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (object instanceof PaymentChannel) {
                 PaymentChannel paymentChannel = (PaymentChannel) object;
                 if (paymentChannel.meetPaymentCondition()) {
-                    Log.d(this,"make default select channel", paymentChannel);
+                    Log.d(this, "make default select channel", paymentChannel);
                     selectChannel(i);
                     break;
                 }
