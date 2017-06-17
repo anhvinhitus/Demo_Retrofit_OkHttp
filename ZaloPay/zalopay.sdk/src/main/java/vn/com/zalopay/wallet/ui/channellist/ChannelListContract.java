@@ -18,6 +18,8 @@ public interface ChannelListContract extends IContract {
     interface IView extends IContract {
         void setTitle(String title);
 
+        void updateDefaultTitle();
+
         void enableConfirmButton(boolean pEnable);
 
         void renderAppInfo(String appName);
