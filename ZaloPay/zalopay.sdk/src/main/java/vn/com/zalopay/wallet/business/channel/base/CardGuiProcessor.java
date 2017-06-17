@@ -25,6 +25,8 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import rx.functions.Action0;
+import rx.functions.Action1;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -314,40 +316,31 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /***
      * detect card type listener
      */
-    protected OnDetectCardListener mOnDetectCardListener = new OnDetectCardListener() {
+    protected Action1<Boolean> mDetectCardSubscriber = new Action1<Boolean>() {
         @Override
-        public void onDetectCardComplete(boolean isDetected) {
-
-            Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected);
-
+        public void call(Boolean detected) {
+            Log.d(this, "card number " + getCardNumber() + " detected " + detected);
             if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                 return;
             }
-
-            if (TextUtils.isEmpty(getCardNumber()))
+            if (TextUtils.isEmpty(getCardNumber())) {
                 getAdapter().setNeedToSwitchChannel(false);
-
+            }
             if (!getAdapter().isNeedToSwitchChannel()) {
                 //workout prevent flicker when switch atm and cc
-                if (!isDetected && mPaymentInfoHelper.isCardLinkTrans()) {
+                if (!detected && mPaymentInfoHelper.isCardLinkTrans()) {
                     needToWarningNotSupportCard = false;
-
-                    Log.d(this, "needToWarningNotSupportCard=false");
                 }
-
                 setDetectedCard();
-
                 populateTextOnCardView();
-
                 //render view by bank type
-                if (isDetected && getAdapter().isATMFlow()) {
+                if (detected && getAdapter().isATMFlow()) {
                     showViewByBankType();
                 }
             }
             //continue detect if haven't detected card type yet
-            if (!isDetected && mPaymentInfoHelper.isCardLinkTrans()) {
+            if (!detected && mPaymentInfoHelper.isCardLinkTrans()) {
                 needToWarningNotSupportCard = true;
-                Log.d(this, "needToWarningNotSupportCard=true");
                 continueDetectCardForLinkCard();
             }
         }
@@ -821,15 +814,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void setDetectedCard() {
-
         try {
             if (isInputBankMaintenance()) {
                 return;
             }
-
             String bankName = getDetectedBankName();
             String bankCode = getDetectedBankCode();
-
             setCardNumberHint(bankName);
 
             if (!TextUtils.isEmpty(bankCode)) {
@@ -1479,13 +1469,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_BANK_ACCOUNT);
             }
         }
-
         int bankFunction = GlobalData.getCurrentBankFunction();
         String bankCode = null;
         if (isBankDetect) {
             bankCode = getBankCardFinder().getDetectBankCode();
         } else if (isCCDetect) {
             bankCode = getCreditCardFinder().getDetectBankCode();
+        }
+        if(TextUtils.isEmpty(bankCode)){
+            return false;
         }
         BankConfig bankConfig = SDKApplication
                 .getApplicationComponent()
@@ -1518,7 +1510,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             getViewPager().setCurrentItem(0);
                             getCardNumberView().setText(null);
                             SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
-
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -1582,8 +1573,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return mOnOtpCaptchFocusChangeListener;
     }
 
-    public OnDetectCardListener getOnDetectCardListener() {
-        return mOnDetectCardListener;
+    public Action1<Boolean> getOnDetectCardSubscriber() {
+        return mDetectCardSubscriber;
     }
 
     public ZPWOnCloseDialogListener getCloseDialogListener() {

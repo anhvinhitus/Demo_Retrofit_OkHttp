@@ -15,7 +15,6 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 public class BankCardCheck extends CardCheck {
     private static BankCardCheck _object;
     private Map<String, String> bankPrefix;
-
     public BankCardCheck() {
         super();
         this.mSelectBank = null;
@@ -72,12 +71,10 @@ public class BankCardCheck extends CardCheck {
             return false;
         }
         mTempCardNumber = pCardNumber;
-
         if (bankPrefix == null) {
             Log.d(this, "bank prefix is null");
             return false;
         }
-
         //get bank code in bank map
         String bankCode = null;
         for (int i = 3; i <= pCardNumber.length(); i++) {
@@ -86,29 +83,22 @@ public class BankCardCheck extends CardCheck {
                 break;
             }
         }
-
         if (TextUtils.isEmpty(bankCode)) {
             mSelectBank = null;
             return false;
         }
-
         try {
-            mSelectBank = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
+            mSelectBank = mBankInteractor.getBankConfig(bankCode);
             mCardNumber = pCardNumber;
-            if (mSelectBank != null && mSelectBank.isActive()) {
-                try {
-                    if (!TextUtils.isEmpty(mSelectBank.code)) {
-                        mOtpReceiverPatternList = ResourceManager.getInstance(null).getOtpReceiverPattern(bankCode);
-                        mIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectBank.code);
-                        Log.d(this, "rule to get otp", mOtpReceiverPatternList);
-                        Log.d(this, "rule to read card number", mIdentifier);
-                    }
-                } catch (Exception e) {
-                    Log.e(this, e);
+            if (mSelectBank != null) {
+                if (!TextUtils.isEmpty(mSelectBank.code)) {
+                    mOtpReceiverPatternList = ResourceManager.getInstance(null).getOtpReceiverPattern(bankCode);
+                    mIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectBank.code);
+                    Log.d(this, "rule to get otp", mOtpReceiverPatternList);
+                    Log.d(this, "rule to read card number", mIdentifier);
                 }
                 return true;
             }
-
         } catch (Exception e) {
             Log.e(this, e);
         }

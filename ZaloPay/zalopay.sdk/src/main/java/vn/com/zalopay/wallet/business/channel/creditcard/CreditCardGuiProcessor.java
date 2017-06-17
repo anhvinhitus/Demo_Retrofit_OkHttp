@@ -6,14 +6,15 @@ import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
 
+import rx.Subscription;
+import rx.functions.Action1;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.listener.OnDetectCardListener;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardFragmentAdapter;
@@ -55,27 +56,22 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     public void continueDetectCardForLinkCard() {
         Log.d(this, "card number=" + getCardNumber() + "===preparing to detect bank");
-
-        getBankCardFinder().detectOnAsync(getCardNumber(), new OnDetectCardListener() {
+        Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber(), new Action1<Boolean>() {
             @Override
-            public void onDetectCardComplete(boolean isDetected) {
-
-                getAdapter().setNeedToSwitchChannel(isDetected);
-
+            public void call(Boolean detected) {
+                getAdapter().setNeedToSwitchChannel(detected);
                 populateTextOnCardView();
-
-                if (isDetected) {
+                if (detected) {
                     setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
-
                     checkAutoMoveCardNumberFromBundle = true;
-
-                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " bank=" + getBankCardFinder().getBankName());
+                    Log.d(this, "card number=" + getCardNumber() + " detected=" + detected + " bank=" + getBankCardFinder().getBankName());
 
                 } else {
                     setDetectedCard();
                 }
             }
         });
+        getAdapter().getActivity().addSuscription(subscription);
     }
 
     @Override

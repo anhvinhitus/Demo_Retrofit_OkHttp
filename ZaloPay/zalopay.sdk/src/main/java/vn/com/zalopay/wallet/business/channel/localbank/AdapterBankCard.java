@@ -8,6 +8,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscription;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -96,7 +97,8 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getCreditCardFinder().reset();
-        getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardListener());
+        Subscription subscription = getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
+        getActivity().addSuscription(subscription);
     }
 
     public PaymentWebViewClient getWebViewProcessor() {

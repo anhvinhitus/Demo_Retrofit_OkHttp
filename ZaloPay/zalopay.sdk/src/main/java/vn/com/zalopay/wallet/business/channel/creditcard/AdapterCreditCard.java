@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.creditcard;
 
+import rx.Subscription;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -28,7 +29,10 @@ public class AdapterCreditCard extends AdapterBase {
     @Override
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getBankCardFinder().reset();
-        getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardListener());
+        Subscription subscription = getGuiProcessor()
+                .getCardFinder()
+                .detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
+        getActivity().addSuscription(subscription);
     }
 
     @Override

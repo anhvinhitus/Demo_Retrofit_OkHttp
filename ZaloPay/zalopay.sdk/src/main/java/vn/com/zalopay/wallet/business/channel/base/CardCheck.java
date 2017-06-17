@@ -9,6 +9,8 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -16,21 +18,24 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.SDKResource;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 
 public abstract class CardCheck extends SingletonBase {
     public String mCardNumber;
     public String mTempCardNumber;
-    protected OnDetectCardListener mDetectCardListener;
     protected List<DCardIdentifier> mCardIdentifier;
     protected DCardIdentifier mIdentifier;
     protected BankConfig mSelectBank;
     protected List<DOtpReceiverPattern> mOtpReceiverPatternList;
     protected boolean mValidLuhn; //check card number by Luhn formula
-    protected Subscription mSubscription;
+    protected IBank mBankInteractor;
 
     public CardCheck() {
         super();
@@ -38,6 +43,7 @@ public abstract class CardCheck extends SingletonBase {
         mIdentifier = null;
         mValidLuhn = true;
         mOtpReceiverPatternList = new ArrayList<>();
+        mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
     }
 
     public String getCardNumber() {
@@ -137,34 +143,16 @@ public abstract class CardCheck extends SingletonBase {
         return false;
     }
 
-    /***
-     * detect card type on other thread
-     * @param pCardNumber
-     * @param pListener
-     */
-    public void detectOnAsync(String pCardNumber, OnDetectCardListener pListener) {
-        this.mDetectCardListener = pListener;
-        Log.d(this, "detect card " + pCardNumber + " should run on new thread");
-        mSubscription = detectObservable(pCardNumber)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
+    public Subscription detectOnAsync(String pCardNumber, Action1<Boolean> detectCardSubscriber) {
+        return detectObservable(pCardNumber)
+                .doOnNext(aBoolean -> {
+                    Log.d(this, "start detect card number", pCardNumber);
+                })
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(detectCardSubscriber, new Action1<Throwable>() {
                     @Override
-                    public void onCompleted() {
-                        Log.d(this, "detect card number on complete");
-                        mSubscription.unsubscribe();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(this, "detect card number on thread error " + GsonUtils.toJsonString(e));
-                    }
-
-                    @Override
-                    public void onNext(Boolean detected) {
-                        if (mDetectCardListener != null) {
-                            mDetectCardListener.onDetectCardComplete(detected);
-                        }
+                    public void call(Throwable throwable) {
+                        Log.e(this, "detect card number on thread error", throwable);
                     }
                 });
     }
@@ -179,9 +167,12 @@ public abstract class CardCheck extends SingletonBase {
     }
 
     protected Observable<Boolean> detectObservable(String pCardNumber) {
-        return Observable.create(subscriber -> {
-            subscriber.onNext(detect(pCardNumber));
-            subscriber.onCompleted();
+        return Observable.defer(() -> {
+            try {
+                return Observable.just(detect(pCardNumber));
+            }catch (Exception e){
+                return Observable.error(e);
+            }
         });
     }
 

@@ -285,7 +285,6 @@ public class CShareData extends SingletonBase {
     public boolean isEnableDeposite() {
         try {
             return SharedPreferencesManager.getInstance().getEnableDeposite();
-
         } catch (Exception ex) {
             Log.e(this, ex);
         }

@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -21,7 +20,6 @@ public class CreditCardCheck extends CardCheck {
     private String mCardCode;
     private String mCardName;
     private boolean mIsValid;
-
 
     public CreditCardCheck() {
         super();
@@ -139,7 +137,7 @@ public class CreditCardCheck extends CardCheck {
         if (mIdentifier != null) {
             mCardCode = mIdentifier.code;
             mCardName = mIdentifier.name;
-            Log.d(this, "found card " + GsonUtils.toJsonString(mIdentifier));
+            Log.d(this, "found card", mIdentifier);
             matchCardLength(pCardNumber, mIdentifier);
         }
         return !TextUtils.isEmpty(mCardName);

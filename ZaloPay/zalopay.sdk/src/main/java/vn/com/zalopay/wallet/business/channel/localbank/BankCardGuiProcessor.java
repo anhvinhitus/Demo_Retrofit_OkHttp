@@ -20,6 +20,8 @@ import android.widget.RadioGroup;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import rx.Subscription;
+import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -27,13 +29,12 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
-import vn.com.zalopay.wallet.listener.OnDetectCardListener;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
@@ -201,28 +202,23 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     public void continueDetectCardForLinkCard() {
         Log.d(this, "card number=" + getCardNumber() + "===preparing to detect cc");
-
-        getCreditCardFinder().detectOnAsync(getCardNumber(), new OnDetectCardListener() {
+        Subscription subscription = getCreditCardFinder().detectOnAsync(getCardNumber(), new Action1<Boolean>() {
             @Override
-            public void onDetectCardComplete(final boolean isDetected) {
-                getAdapter().setNeedToSwitchChannel(isDetected);
-
+            public void call(Boolean detected) {
+                getAdapter().setNeedToSwitchChannel(detected);
                 populateTextOnCardView();
-
-                if (isDetected) {
+                if (detected) {
                     setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
-
                     checkAutoMoveCardNumberFromBundle = false;
-
                     getCardView().visibleCardDate();
-
-                    Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " cc=" + getBankCardFinder().getBankName());
+                    Log.d(this, "card number=" + getCardNumber() + " detected=" + detected + " cc=" + getBankCardFinder().getBankName());
                     isInputBankMaintenance();
                 } else {
                     setDetectedCard();
                 }
             }
         });
+        getAdapter().getActivity().addSuscription(subscription);
     }
 
     @Override
