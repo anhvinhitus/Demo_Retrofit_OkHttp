@@ -439,19 +439,15 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     public void showOtpTokenView() {
         getAdapter().getActivity().visibleInputCardView(false);
-        getAdapter().getActivity().visiblePinView(false);
         getAdapter().getActivity().visibleConfirmView(false);
         getAdapter().getActivity().visibleHeaderInfo();
-
         getAdapter().getActivity().setText(R.id.zpsdk_btn_submit, GlobalData.getStringResource(RS.string.zpw_button_submit_text));
-
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
         switch (mAuthenType) {
             case AuthenType.OTP:
                 mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
                 mTokenAuthenEditText.setVisibility(View.GONE);
                 mTextLayoutToken.setVisibility(View.GONE);
-
                 mOtpAuthenEditText.setVisibility(View.VISIBLE);
                 mTextLayoutOtp.setVisibility(View.VISIBLE);
                 showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);

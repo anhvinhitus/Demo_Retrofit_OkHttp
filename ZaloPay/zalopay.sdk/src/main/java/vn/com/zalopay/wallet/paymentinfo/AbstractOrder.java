@@ -25,7 +25,7 @@ public class AbstractOrder {
         if (pmcTransType != null) {
             fee = pmcTransType.totalfee;
             amount_total = amount + fee;
-            Log.d(this, "order fee " + fee);
+            Log.d(this, "calculate order fee ",fee);
         }
     }
 }

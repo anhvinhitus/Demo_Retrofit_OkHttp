@@ -627,13 +627,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     protected void confirmQuitPayment() {
         String message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit);
-
         if (mPaymentInfoHelper.isPayTrans()) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
         } else if (mPaymentInfoHelper.isBankAccountTrans()) {
             message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
         }
-
         showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -662,6 +660,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
             @Override
             public void onOKevent() {
+                mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
                 callBackThenTerminate();
             }
         }, message, GlobalData.getStringResource(RS.string.dialog_co_button), GlobalData.getStringResource(RS.string.dialog_khong_button));
@@ -670,7 +669,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     public void callBackThenTerminate() {
-        Log.d(this, "recycle activity");
+        Log.d(this, "call back result and end sdk - status ", mPaymentInfoHelper.getStatus() );
         Activity activity = BaseActivity.getCurrentActivity();
         if (activity instanceof ChannelListActivity) {
             setCallBack(Activity.RESULT_OK);

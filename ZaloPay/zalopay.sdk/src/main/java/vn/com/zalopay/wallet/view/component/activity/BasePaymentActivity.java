@@ -936,10 +936,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
-    public void visiblePinView(boolean pIsVisible) {
-        setVisible(R.id.zpsdk_pin_layout, pIsVisible);
-    }
-
     public void visibleConfirmView(boolean pIsVisible) {
         setVisible(R.id.zpw_confirm, pIsVisible);
     }
@@ -947,18 +943,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void setBarTitle(String pTitle) {
         setText(R.id.payment_method_name, pTitle);
         mTitleHeaderText = pTitle;
-    }
-
-    public void setTitle() {
-        String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway);
-        if (mPaymentInfoHelper.isTopupTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_topup);
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_tranfer);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_withdraw);
-        }
-        setText(R.id.title_payment_method, title);
     }
 
     public void visibleHeaderInfo() {

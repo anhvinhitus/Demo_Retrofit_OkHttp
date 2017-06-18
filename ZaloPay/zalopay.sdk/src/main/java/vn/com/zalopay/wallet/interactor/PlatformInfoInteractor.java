@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -21,10 +22,10 @@ import vn.com.zalopay.utility.DimensionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
@@ -90,7 +91,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
         //build params
-        Log.d(this, "prepare param to get platform info from server");
+        Log.d(this, "prepare param to get platform info from server - should download resurce", shouldDownloadResource);
         String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
         String appVersionCache = repository.getLocalStorage().getAppVersion();
         String resrcVer = repository.getLocalStorage().getResourceVersion();
@@ -102,7 +103,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             resrcVer = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
             repository.getLocalStorage().setBankAccountCheckSum(null);
-            Log.d(this, "checksum =null resrVer=null..reset card check sum, bank checksum");
+            Log.d(this, "checksum =null resrVer=null - reset card check sum, bank checksum");
         }
         String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
         String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
@@ -124,7 +125,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(GlobalData.getAppContext()));
         params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
         params.put(ConstantParams.RESOURCE_VERSION, resrcVer);
-        params.put(ConstantParams.APP_VERSION, appVersionCache);
+        params.put(ConstantParams.APP_VERSION, appVersion);
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
         params.put(ConstantParams.CARDINFO_CHECKSUM, cardInfoCheckSum);
@@ -144,11 +145,10 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     @Override
     public Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion) {
-        Log.d(this, "start download sdk resource " + pUrl);
+        Log.d(this, "start download sdk resource", pUrl);
         Context context = GlobalData.getAppContext();
         IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
-        ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(),
-                pUrl, pResourceVersion);
+        ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(), pUrl, pResourceVersion);
         return downloadResourceTask
                 .getResource();
     }
@@ -162,6 +162,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                  1.server return isupdateresource = true;
                  2.resource version on cached client and resource version server return is different.This case user no need to update app.
                  */
+                Log.d(this,"start download resource - should download ", shouldDownloadResource);
                 String resrcVer = repository.getLocalStorage().getResourceVersion();
                 if (shouldDownloadResource && pResponse.resource != null && (pResponse.isupdateresource ||
                         (!TextUtils.isEmpty(resrcVer) && !resrcVer.equals(pResponse.resource.rsversion)))) {

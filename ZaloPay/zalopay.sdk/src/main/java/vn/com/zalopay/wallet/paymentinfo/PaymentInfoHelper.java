@@ -308,4 +308,8 @@ public class PaymentInfoHelper extends SingletonBase {
         return isOffNetworking;
     }
 
+    public boolean balanceEnoughForPayment() {
+        return getBalance() >= getAmountTotal();
+    }
+
 }

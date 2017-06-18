@@ -103,14 +103,6 @@
             android:visibility="gone" />
 
         <include
-            android:id="@+id/zpsdk_pin_layout"
-            layout="@layout/module__require_pin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-        <include
             android:id="@+id/zpw_pay_support_buttom_view"
             layout="@layout/dialog_content"
             android:layout_width="match_parent"

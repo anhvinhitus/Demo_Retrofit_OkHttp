@@ -7,7 +7,9 @@ import rx.functions.Func0;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
@@ -57,6 +59,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setPlatformInfoExpriedTime(expiredTime);
             mSharedPreferences.setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
+            mSharedPreferences.setCurrentUserID(userId);
             //enable/disable deposite
             mSharedPreferences.setEnableDeposite(pResponse.isenabledeposit);
             //set maintenance withdraw
@@ -69,21 +72,13 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             // need to update cache data if chechsum is changed.
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
-                mSharedPreferences.setCurrentUserID(userId);
-                //banner list for merchant
-                /*if (pResponse.bannerresources != null) {
-                    mSharedPreferences.setBannerList(GsonUtils.toJsonString(pResponse.bannerresources));
-                }
-                if (pResponse.approvedinsideappids != null) {
-                    mSharedPreferences.setApproveInsideApps(GsonUtils.toJsonString(pResponse.approvedinsideappids));
-                }*/
             }
-            /* MapCard mapCard = new MapCard();
+             MapCard mapCard = new MapCard();
                 mapCard.bankcode = CardType.PVTB;
                 mapCard.cardname = "VO VAN CHUC";
                 mapCard.last4cardno = "8156";
                 mapCard.first6cardno = "970415";
-                pResponse.cardinfos.add(mapCard);*/
+                pResponse.cardinfos.add(mapCard);
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();
 //        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);

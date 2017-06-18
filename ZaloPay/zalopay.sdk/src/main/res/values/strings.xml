@@ -552,4 +552,6 @@
     <string name="sdk_tranfer_money_service">Chuyển tiền</string>
     <string name="sdk_topup_service">Nạp tiền</string>
 
+    <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Bạn có thể thực hiện lại giao dịch</string>
+
 </resources>

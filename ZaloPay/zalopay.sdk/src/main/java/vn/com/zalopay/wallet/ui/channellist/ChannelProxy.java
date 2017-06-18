@@ -70,7 +70,11 @@ public class ChannelProxy extends SingletonBase {
     private int retryTransStatusCount = 1;
     private Action1<Throwable> submitOrderException = throwable -> {
         Log.d(this, "submit order on error", throwable);
-        mPassword.setErrorMessage(GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
+        if(mStatusResponse == null){
+            mStatusResponse = new StatusResponse(-1, GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
+        }
+        mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+        moveToResultScreen();
     };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
@@ -102,7 +106,7 @@ public class ChannelProxy extends SingletonBase {
 
         @Override
         public void onComplete(String pHashPassword) {
-            if (mRequestApi != null && mRequestApi.isRunning()) {
+            if (preventSubmitOrder()) {
                 Log.d(this, "order is submit - skip");
                 return;
             }
@@ -119,9 +123,9 @@ public class ChannelProxy extends SingletonBase {
     private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
         @Override
         public void call(StatusResponse statusResponse) {
-            Log.d(this, "get transtatus on complete", statusResponse);
+            Log.d(this, "get tran status on complete", statusResponse);
             if (mRequestApi.isRunning()) {
-                Log.d(this, "get transtatus is running - skip process");
+                Log.d(this, "get tran status is running - skip process");
                 return;
             }
             processStatus(statusResponse);
@@ -152,6 +156,10 @@ public class ChannelProxy extends SingletonBase {
         @Override
         public void onComplete(String pHashPassword) {
             dismissFingerPrintDialog();
+            if (preventSubmitOrder()) {
+                Log.d(this, "order is submit - skip");
+                return;
+            }
             //user don't setting use fingerprint for payment
             if (TextUtils.isEmpty(pHashPassword)) {
                 Activity activity = BaseActivity.getCurrentActivity();
@@ -190,6 +198,18 @@ public class ChannelProxy extends SingletonBase {
             ChannelProxy._object = new ChannelProxy();
         }
         return ChannelProxy._object;
+    }
+
+    private boolean preventSubmitOrder(){
+        boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
+        if (isSubmitted) {
+            try {
+                getView().showInfoDialog(GlobalData.getStringResource(RS.string.sdk_warning_order_submit));
+            } catch (Exception e) {
+                Log.e(this,e);
+            }
+        }
+        return isSubmitted;
     }
 
     private void closePassword() {
@@ -463,8 +483,13 @@ public class ChannelProxy extends SingletonBase {
         if (activity == null || activity.isFinishing()) {
             return;
         }
+        //balance less than order amount
+        if(mChannel.isZaloPayChannel() && !mPaymentInfoHelper.balanceEnoughForPayment()){
+            mPaymentInfoHelper.setResult(PaymentStatus.ERROR_BALANCE);
+            startChannelActivity();
+        }
         //password flow
-        if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
+        else if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
             if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
                 startPasswordFlow(activity);
             } else {
@@ -472,9 +497,9 @@ public class ChannelProxy extends SingletonBase {
                 submitOrder("");
             }
         } else {
+            //input card info flow
             startChannelActivity();
         }
-
     }
 
     private void startChannelActivity() {
@@ -487,7 +512,7 @@ public class ChannelProxy extends SingletonBase {
              */
             mStatusResponse.zptransid = mTransId;
             intent.putExtra(STATUS_RESPONSE, mStatusResponse);
-            Log.d(this, "response", mStatusResponse);
+            Log.d(this, "start channel status response", mStatusResponse);
         }
         intent.putExtra(PMC_CONFIG, mChannel);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

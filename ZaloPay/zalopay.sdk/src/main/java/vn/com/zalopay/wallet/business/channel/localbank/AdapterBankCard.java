@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
@@ -84,6 +85,12 @@ public class AdapterBankCard extends AdapterBase {
         this.mGuiProcessor = new BankCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
+        }
+        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
+            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
+        }
+        if (mPaymentInfoHelper.payByCardMap()) {
+            detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
         showFee();
     }
@@ -437,7 +444,6 @@ public class AdapterBankCard extends AdapterBase {
                 mOtpBeginTime = System.currentTimeMillis();
             return;
         }
-
         //web flow
         if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
             if (!checkNetworkingAndShowRequest()) {
@@ -456,7 +462,6 @@ public class AdapterBankCard extends AdapterBase {
                 }
             }
             mWebViewProcessor.hit();
-
             return;
         }
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {

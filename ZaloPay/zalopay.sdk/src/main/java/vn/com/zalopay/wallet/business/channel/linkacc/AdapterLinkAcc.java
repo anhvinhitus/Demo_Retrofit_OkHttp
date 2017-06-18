@@ -229,10 +229,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)
                 || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_SUCCESS)
                 || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
-            mIsExitWithoutConfirm = true;
+            existTransWithoutConfirm = true;
         }
 
-        return mIsExitWithoutConfirm;
+        return existTransWithoutConfirm;
     }
 
     @Override
@@ -745,7 +745,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_LINK;
-                mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
+                existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 if (GlobalData.shouldNativeWebFlow()) {
@@ -911,7 +911,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_UNLINK;
-                mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
+                existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 if (GlobalData.shouldNativeWebFlow()) {

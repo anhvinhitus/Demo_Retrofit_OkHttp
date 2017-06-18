@@ -97,7 +97,7 @@ public abstract class AdapterBase {
     protected String mTransactionID;
     protected String mPageName;
     protected boolean mIsSuccess = false;
-    protected boolean mIsExitWithoutConfirm = true;
+    protected boolean existTransWithoutConfirm = true;
     //prevent duplicate many time
     protected boolean isAlreadyCheckStatusFailSubmit = false;
     //count of retry check status if submit order fail
@@ -185,6 +185,9 @@ public abstract class AdapterBase {
         if (mResponseStatus != null) {
             mTransactionID = mResponseStatus.zptransid;
             mPageName = TransactionHelper.getPageName(paymentInfoHelper.getStatus());
+            if(TransactionHelper.isSecurityFlow(mResponseStatus)){
+                mPageName = null;
+            }
         }
         if (TextUtils.isEmpty(mPageName)) {
             mPageName = getDefaultPageName();
@@ -232,13 +235,15 @@ public abstract class AdapterBase {
         if (scrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
         }
-        if (isTransactionSuccess()) {
-            showTransactionSuccessView();
-        } else if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
-            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
-        } else if (hasTransId()) {
-            Log.d(this, "start page name", mPageName);
-            showTransactionFailView(mResponseStatus.returnmessage);
+        //flow password payment
+        if(hasTransId()){
+            existTransWithoutConfirm = false;
+            if (isTransactionSuccess()) {
+                showTransactionSuccessView();
+            }
+            else if (!TransactionHelper.isSecurityFlow(mResponseStatus)) {
+                showTransactionFailView(mResponseStatus.returnmessage);
+            }
         }
         Log.d(this, "start adapter with page name", mPageName);
     }
@@ -453,7 +458,6 @@ public abstract class AdapterBase {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_alert_over_retry_otp));
             return;
         }
-
         showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
             //reset otp and show keyboard again
             if (isCardFlow()) {
@@ -612,10 +616,6 @@ public abstract class AdapterBase {
                 }
                 if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
                     SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
-                    if (dataResponse == null) {
-                        showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
-                        return pAdditionParams;
-                    }
                     //flow 3ds (atm + cc)
                     if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
                         //no link for parsing
@@ -983,10 +983,9 @@ public abstract class AdapterBase {
     public boolean exitWithoutConfirm() {
         if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_SUCCESS_SPECIAL)
                 || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)) {
-            mIsExitWithoutConfirm = true;
+            existTransWithoutConfirm = true;
         }
-
-        return mIsExitWithoutConfirm;
+        return existTransWithoutConfirm;
     }
 
     /***
@@ -1037,7 +1036,7 @@ public abstract class AdapterBase {
      * @param pMessage   message show on progressbar
      */
     protected void getTransactionStatus(String pTransID, boolean pCheckData, String pMessage) {
-        mIsExitWithoutConfirm = false;
+        existTransWithoutConfirm = false;
         getActivity().processingOrder = true;
         isCheckDataInStatus = pCheckData;
         getStatusStrategy(pTransID, pCheckData, pMessage);
@@ -1267,7 +1266,7 @@ public abstract class AdapterBase {
         }
 
         showDialogOnChannelList = false;
-        mIsExitWithoutConfirm = true;
+        existTransWithoutConfirm = true;
 
         AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
         mPageName = TransactionHelper.getPageSuccessByAppType(appInfo);
@@ -1354,7 +1353,7 @@ public abstract class AdapterBase {
         }
 
         showDialogOnChannelList = false;
-        mIsExitWithoutConfirm = true;
+        existTransWithoutConfirm = true;
         getActivity().setMarginSubmitButtonTop(true);
         getActivity().renderByResource();
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_title_header_pay_result));

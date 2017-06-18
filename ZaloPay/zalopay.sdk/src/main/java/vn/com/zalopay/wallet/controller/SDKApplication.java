@@ -6,17 +6,17 @@ import android.content.Context;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.api.task.BaseTask;
+import vn.com.zalopay.wallet.api.task.RemoveMapCardTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
-import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.api.task.RemoveMapCardTask;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
@@ -90,6 +90,7 @@ public class SDKApplication extends Application {
      */
     public synchronized static Subscription[] loadSDKData(UserInfo pUserInfo, String pAppVersion, Observer pObserver) {
         try {
+            Log.d("SDKApplication", "start load sdk payment data time", SdkUtils.convertDateTime(System.currentTimeMillis()));
             //prevent load gateway if user in sdk
             if (GlobalData.isUserInSDK() && pObserver != null) {
                 pObserver.onCompleted();
@@ -109,22 +110,20 @@ public class SDKApplication extends Application {
                     .subscribe(pObserver);
             //load bank list
             Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
-                    .subscribe(bankConfigResponse -> Timber.d("load bank list finish %s", bankConfigResponse),
-                            throwable -> Timber.d("load bank list on error %s", throwable));
+                    .subscribe(bankConfigResponse -> Log.d("load bank list finish", bankConfigResponse),
+                            throwable -> Log.d("load bank list on error", throwable));
             subscription[0] = subscription0;
             //load app zalopay with 4 transtype
             Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
                     new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
-                    .subscribe(appInfo -> Timber.d("load app info %s", appInfo),
-                            throwable -> Timber.d("load app info on error %s", throwable),
-                            () -> Timber.d("load app 1 completed"));
+                    .subscribe(appInfo -> Log.d("load app info", appInfo),
+                            throwable -> Log.d("load app info on error", throwable));
             subscription[1] = subscription1;
             //load app withdraw (appid = 2)
             Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAWAPP_ID,
                     new int[]{TransactionType.WITHDRAW}, userId, accessToken, pAppVersion, currentTime)
-                    .subscribe(appInfo -> Timber.d("load app info %s", appInfo),
-                            throwable -> Timber.e("load app info on error %s", throwable),
-                            () -> Timber.d("load app 2 completed"));
+                    .subscribe(appInfo -> Log.d("load app info", appInfo),
+                            throwable -> Log.d("load app info on error", throwable));
             subscription[2] = subscription2;
             return subscription;
         } catch (Exception e) {

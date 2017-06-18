@@ -40,6 +40,7 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_warning_order_submit = "sdk_warning_order_submit";
         public static final String sdk_pay_method_title = "sdk_pay_method_title";
         public static final String sdk_tranfer_method_title = "sdk_tranfer_method_title";
 

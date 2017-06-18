@@ -6,8 +6,10 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -47,7 +49,12 @@ public class AdapterCreditCard extends AdapterBase {
         } else {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name));
         }
-
+        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
+            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
+        }
+        if (mPaymentInfoHelper.payByCardMap()) {
+            detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
+        }
     }
 
     private int getDefaultChannelId() {

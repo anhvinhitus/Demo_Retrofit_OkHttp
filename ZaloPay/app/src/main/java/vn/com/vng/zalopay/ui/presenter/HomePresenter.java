@@ -103,7 +103,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private DefaultSubscriber<PlatformInfoCallback> platformInfoSubscriber = new DefaultSubscriber<PlatformInfoCallback>() {
         @Override
         public void onError(Throwable e) {
-            Timber.d("load platform info on result", e);
+            Timber.d("load platform info on error %s", e);
         }
 
         @Override
