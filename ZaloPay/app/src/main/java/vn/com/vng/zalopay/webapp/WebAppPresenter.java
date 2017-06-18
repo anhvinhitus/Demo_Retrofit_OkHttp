@@ -315,7 +315,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         object.activateSource = Constants.ActivateSource.FromWebApp_QRType2;
         object.transferMode = Constants.TransferMode.TransferToZaloPayID;
 
-        mNavigator.startActivityForResult(getFragment(), object, TRANSFER_MONEY_WEB_APP_REQUEST_CODE);
+        mNavigator.startTransferActivity(getFragment(), object, TRANSFER_MONEY_WEB_APP_REQUEST_CODE);
     }
 
     public WebBottomSheetDialogFragment createBottomSheetFragment() {

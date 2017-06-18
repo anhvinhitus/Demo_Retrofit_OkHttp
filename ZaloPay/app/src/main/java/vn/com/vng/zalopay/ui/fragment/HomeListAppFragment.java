@@ -208,7 +208,7 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
         AndroidUtils.setSpannedMessageToView(mTvInternetConnection,
                 message,
                 spannedMessage,
-                false, false, R.color.txt_check_internet,
+                false, false, ContextCompat.getColor(getContext(), R.color.txt_check_internet),
                 new ClickableSpanNoUnderline(ContextCompat.getColor(getContext(), R.color.txt_check_internet)) {
                     @Override
                     public void onClick(View widget) {

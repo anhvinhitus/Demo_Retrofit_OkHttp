@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
@@ -64,6 +65,7 @@ final class ZaloSdkTask {
                         try {
                             result.put("timeout", 1);
                         } catch (Exception ignore) {
+                            Timber.w("Get zalo profile timeout");
                         }
 
                         if (callback != null) {

@@ -191,7 +191,7 @@ public class TransferHomeFragment extends BaseFragment implements
         object.activateSource = Constants.ActivateSource.FromTransferActivity;
         object.transferMode = Constants.TransferMode.TransferToZaloPayID;
 
-        navigator.startActivityForResult(this, object, Constants.REQUEST_CODE_TRANSFER);
+        navigator.startTransferActivity(this, object, Constants.REQUEST_CODE_TRANSFER);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHOOSERECENTTRANSACTION);
     }
 

@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
@@ -83,12 +83,12 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Nullable
     @Override
-    public ZaloProfile transform(Cursor cursor) {
+    public ZPProfile transform(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return null;
         }
         try {
-            ZaloProfile zaloProfile = new ZaloProfile();
+            ZPProfile zaloProfile = new ZPProfile();
             zaloProfile.userId = cursor.getLong(ColumnIndex.ID);
             zaloProfile.userName = cursor.getString(ColumnIndex.USER_NAME);
             zaloProfile.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
@@ -141,10 +141,10 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<ZaloProfile>> findFriends(String s) {
+    public Observable<List<ZPProfile>> findFriends(String s) {
         return searchZaloFriend(s)
                 .map(cursor -> {
-                    List<ZaloProfile> ret = transformZaloFriend(cursor);
+                    List<ZPProfile> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
                         cursor.close();
                     }
@@ -153,21 +153,21 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<ZaloProfile>> getZaloFriendList() {
-        Observable<List<ZaloProfile>> observableFriendLocal = getFriendLocal()
+    public Observable<List<ZPProfile>> getZaloFriendList() {
+        Observable<List<ZPProfile>> observableFriendLocal = getFriendLocal()
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
 
-        Observable<List<ZaloProfile>> observableZaloApi = fetchZaloFriendFullInfo()
+        Observable<List<ZPProfile>> observableZaloApi = fetchZaloFriendFullInfo()
                 .flatMap(aBoolean -> getFriendLocal());
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
     }
 
-    private Observable<List<ZaloProfile>> getFriendLocal() {
+    private Observable<List<ZPProfile>> getFriendLocal() {
         return getZaloFriendsCursorLocal()
                 .map(cursor -> {
-                    List<ZaloProfile> ret = transformZaloFriend(cursor);
+                    List<ZPProfile> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
                         cursor.close();
                     }
@@ -177,15 +177,15 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Nullable
     @Override
-    public List<ZaloProfile> transformZaloFriend(Cursor cursor) {
+    public List<ZPProfile> transformZaloFriend(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return Collections.emptyList();
         }
-        List<ZaloProfile> ret = new ArrayList<>();
+        List<ZPProfile> ret = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                ZaloProfile zaloProfile = transform(cursor);
+                ZPProfile zaloProfile = transform(cursor);
                 if (zaloProfile == null) {
                     continue;
                 }

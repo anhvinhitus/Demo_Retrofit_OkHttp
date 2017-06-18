@@ -12,7 +12,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 
 /**
@@ -71,7 +71,7 @@ class DataMapper {
         return friendList;
     }
 
-    private static WritableMap transform(ZaloProfile friend) {
+    private static WritableMap transform(ZPProfile friend) {
         if (friend == null) {
             return null;
         }
@@ -94,8 +94,8 @@ class DataMapper {
 
         for (T item : list) {
             WritableMap map;
-            if (item instanceof ZaloProfile) {
-                map = transform((ZaloProfile) item);
+            if (item instanceof ZPProfile) {
+                map = transform((ZPProfile) item);
             } else if (item instanceof PackageStatus) {
                 map = transform((PackageStatus) item);
             } else {

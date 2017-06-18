@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.Person;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
@@ -101,15 +101,15 @@ public interface FriendStore {
 
         Observable<Cursor> searchZaloFriend(String s);
 
-        Observable<List<ZaloProfile>> findFriends(String s);
+        Observable<List<ZPProfile>> findFriends(String s);
 
         @Nullable
-        ZaloProfile transform(Cursor cursor);
+        ZPProfile transform(Cursor cursor);
 
         @Nullable
-        List<ZaloProfile> transformZaloFriend(Cursor cursor);
+        List<ZPProfile> transformZaloFriend(Cursor cursor);
 
-        Observable<List<ZaloProfile>> getZaloFriendList();
+        Observable<List<ZPProfile>> getZaloFriendList();
 
         Observable<Boolean> checkListZaloIdForClient();
 

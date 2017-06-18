@@ -5,7 +5,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.InsideApp;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 interface ISearchCategoryView extends ILoadDataView {
 
-    void setFindResult(List<InsideApp> apps, List<ZaloProfile> friends, String key);
+    void setFindResult(List<InsideApp> apps, List<ZPProfile> friends, String key);
 
     void showResultView(boolean noResultView, boolean resultView);
 

@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
@@ -95,7 +95,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     void startTransfer(Fragment fragment, Cursor cursor) {
-        ZaloProfile zaloProfile = mFriendRepository.transform(cursor);
+        ZPProfile zaloProfile = mFriendRepository.transform(cursor);
         if (zaloProfile == null) {
             return;
         }
@@ -106,13 +106,13 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
             object.transferMode = Constants.TransferMode.TransferToZaloFriend;
             object.activateSource = Constants.ActivateSource.FromTransferActivity;
 
-            mNavigator.startActivityForResult(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+            mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
         } else {
             showDialogNotUsingApp(zaloProfile);
         }
     }
 
-    private void showDialogNotUsingApp(ZaloProfile zaloProfile) {
+    private void showDialogNotUsingApp(ZPProfile zaloProfile) {
         if (mView != null) {
             String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloProfile.displayName, zaloProfile.displayName);
             DialogHelper.showNotificationDialog((Activity) mView.getContext(),

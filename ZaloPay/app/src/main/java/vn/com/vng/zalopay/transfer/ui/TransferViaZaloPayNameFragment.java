@@ -19,7 +19,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
-import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -120,7 +119,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
         Timber.d("Got profile for %s: %s", zaloPayName, person);
         TransferObject object = new TransferObject(person);
-        navigator.startActivityForResult(this, object, Constants.REQUEST_CODE_TRANSFER);
+        navigator.startTransferActivity(this, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     @Override

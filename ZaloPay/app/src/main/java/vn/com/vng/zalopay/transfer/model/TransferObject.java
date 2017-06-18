@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 /**
  * Created by hieuvm on 3/31/17.
@@ -57,7 +57,7 @@ public class TransferObject implements Parcelable {
     }
 
 
-    public TransferObject(ZaloProfile zalo) {
+    public TransferObject(ZPProfile zalo) {
         this.zaloId = zalo.userId;
         this.zalopayId = zalo.zaloPayId;
         this.zalopayName = zalo.zalopayname;

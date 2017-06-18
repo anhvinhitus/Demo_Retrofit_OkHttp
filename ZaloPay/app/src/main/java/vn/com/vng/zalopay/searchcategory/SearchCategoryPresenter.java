@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
@@ -145,12 +145,12 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         Subscription subscription = findAll(key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Pair<List<InsideApp>, List<ZaloProfile>>>() {
+                .subscribe(new DefaultSubscriber<Pair<List<InsideApp>, List<ZPProfile>>>() {
 
                     @Override
-                    public void onNext(Pair<List<InsideApp>, List<ZaloProfile>> pair) {
+                    public void onNext(Pair<List<InsideApp>, List<ZPProfile>> pair) {
                         List<InsideApp> appList = pair.first;
-                        List<ZaloProfile> friendList = pair.second;
+                        List<ZPProfile> friendList = pair.second;
                         if (appList != null && appList.size() != 0) {
                             Timber.d("search list app size [%s] friend size [%s]", appList.size(), friendList.size());
                             mView.setFindResult(appList, friendList, key);
@@ -171,9 +171,9 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     }
 
 
-    private Observable<Pair<List<InsideApp>, List<ZaloProfile>>> findAll(String key) {
+    private Observable<Pair<List<InsideApp>, List<ZPProfile>>> findAll(String key) {
         Observable<List<InsideApp>> observableFindApp = searchApp(key);
-        Observable<List<ZaloProfile>> observableFindFriend = mFriendRepository.findFriends(key);
+        Observable<List<ZPProfile>> observableFindFriend = mFriendRepository.findFriends(key);
         return Observable.zip(observableFindApp, observableFindFriend, Pair::create);
     }
 

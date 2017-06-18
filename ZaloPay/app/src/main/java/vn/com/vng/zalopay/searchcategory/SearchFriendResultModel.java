@@ -12,7 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.ZaloProfile;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 /**
  * Created by khattn on 3/27/17.
@@ -25,12 +25,12 @@ public class SearchFriendResultModel extends EpoxyModelWithHolder<SearchFriendRe
         void onFriendClick(SearchFriendResultModel app);
     }
 
-    private ZaloProfile friend;
+    private ZPProfile friend;
     private boolean isLastPos;
 
     private SearchFriendResultModel.OnItemClickListener itemClickListener;
 
-    SearchFriendResultModel(ZaloProfile friend, boolean isLastPos) {
+    SearchFriendResultModel(ZPProfile friend, boolean isLastPos) {
         this.friend = friend;
         this.isLastPos = isLastPos;
     }
@@ -84,7 +84,7 @@ public class SearchFriendResultModel extends EpoxyModelWithHolder<SearchFriendRe
         this.itemClickListener = listener;
     }
 
-    public ZaloProfile getFriend() {
+    public ZPProfile getFriend() {
         return friend;
     }
 
