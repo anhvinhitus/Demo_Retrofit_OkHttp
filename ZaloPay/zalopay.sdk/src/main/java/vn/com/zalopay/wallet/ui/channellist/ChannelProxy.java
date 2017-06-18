@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.constants.OrderStatus;
+import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
@@ -72,17 +72,6 @@ public class ChannelProxy extends SingletonBase {
         Log.d(this, "submit order on error", throwable);
         mPassword.setErrorMessage(GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
     };
-    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            Log.d(this, "get transtatus on complete", statusResponse);
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get transtatus is running - skip process");
-                return;
-            }
-            processStatus(statusResponse);
-        }
-    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -94,13 +83,6 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, "trans status on error", throwable);
         }
     };
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
-        Log.d(this, "submit order on complete", statusResponse);
-        if (statusResponse != null) {
-            mTransId = statusResponse.zptransid;
-        }
-        processStatus(statusResponse);
-    };
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
@@ -110,6 +92,7 @@ public class ChannelProxy extends SingletonBase {
         @Override
         public void onCheckedFingerPrint(boolean pChecked) {
             Log.d(this, "on changed check", pChecked);
+
         }
 
         @Override
@@ -119,6 +102,10 @@ public class ChannelProxy extends SingletonBase {
 
         @Override
         public void onComplete(String pHashPassword) {
+            if (mRequestApi != null && mRequestApi.isRunning()) {
+                Log.d(this, "order is submit - skip");
+                return;
+            }
             Log.d(this, "password", pHashPassword);
             if (!TextUtils.isEmpty(pHashPassword)) {
                 Log.d(this, "start submit trans pw", pHashPassword);
@@ -128,6 +115,24 @@ public class ChannelProxy extends SingletonBase {
                 Log.e(this, "empty password");
             }
         }
+    };
+    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            Log.d(this, "get transtatus on complete", statusResponse);
+            if (mRequestApi.isRunning()) {
+                Log.d(this, "get transtatus is running - skip process");
+                return;
+            }
+            processStatus(statusResponse);
+        }
+    };
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        if (statusResponse != null) {
+            mTransId = statusResponse.zptransid;
+        }
+        processStatus(statusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -210,6 +215,11 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void processStatus(StatusResponse pResponse) {
+        try {
+            getView().updateDefaultTitle();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
         if (pResponse == null) {
             mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
         } else {
@@ -217,14 +227,18 @@ public class ChannelProxy extends SingletonBase {
             if (TextUtils.isEmpty(mTransId)) {
                 mTransId = mStatusResponse.zptransid;
             }
-            @OrderStatus int status = TransactionHelper.submitTransStatus(mStatusResponse);
+            @PaymentState int status = TransactionHelper.paymentState(mStatusResponse);
             switch (status) {
-                case OrderStatus.SUCCESS:
+                case PaymentState.SUCCESS:
                     mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
                     updatePasswordOnSuccess();
                     moveToResultScreen();
                     break;
-                case OrderStatus.PROCESSING:
+                case PaymentState.SECURITY:
+                    closePassword();
+                    startChannelActivity();
+                    break;
+                case PaymentState.PROCESSING:
                     mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
                     //continue get trans status
                     if (transStatusStart && retryTransStatusCount < MAX_RETRY_GETSTATUS) {
@@ -241,12 +255,12 @@ public class ChannelProxy extends SingletonBase {
                         transStatusStart = true;
                     }
                     break;
-                case OrderStatus.FAILURE:
+                case PaymentState.FAILURE:
                     mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
                     mPaymentInfoHelper.updateTransactionResult(mStatusResponse.returncode);
                     moveToResultScreen();
                     break;
-                case OrderStatus.INVALID_PASSWORD:
+                case PaymentState.INVALID_PASSWORD:
                     if (mPassword != null) {
                         //user using poup , not fingerprint
                         mPassword.setErrorMessage(mStatusResponse.returnmessage);
@@ -342,10 +356,6 @@ public class ChannelProxy extends SingletonBase {
 
     private void submitOrder(String pHashPassword) {
         try {
-            if (mRequestApi != null && mRequestApi.isRunning()) {
-                Log.d(this, "order is submit - skip");
-                return;
-            }
             Log.d(this, "start submit order");
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
@@ -356,7 +366,14 @@ public class ChannelProxy extends SingletonBase {
                             .chargeInfo(chargeInfo)
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
-                            .doOnNext(statusResponse -> mPassword.showLoading(true))
+                            .doOnNext(statusResponse -> {
+                                try {
+                                    mPassword.showLoading(true);
+                                    getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
+                                } catch (Exception e) {
+                                    Log.e(this, e);
+                                }
+                            })
                             .subscribe(submitOrderSubscriber, submitOrderException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
@@ -369,6 +386,13 @@ public class ChannelProxy extends SingletonBase {
         mRequestApi = getTransStatusRequest();
         return ((GetTransStatus) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
+                .doOnNext(statusResponse -> {
+                    try {
+                        getView().setTitle(GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                })
                 .subscribe(transStatusSubscriber, transStatusException);
     }
 

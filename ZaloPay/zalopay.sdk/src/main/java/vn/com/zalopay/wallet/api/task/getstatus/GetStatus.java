@@ -7,17 +7,16 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
@@ -178,19 +177,9 @@ public class GetStatus extends BaseTask<StatusResponse> {
             return;
         }
         //flow 3ds
-        if (mIsNeedToCheckDataInResponse && !TextUtils.isEmpty(pResponse.data)) {
-            try {
-                SecurityResponse dataResponse = GsonUtils.fromJsonString(pResponse.data, SecurityResponse.class);
-                if (dataResponse != null && PaymentStatusHelper.is3DSResponse(dataResponse) || PaymentStatusHelper.isOtpResponse(dataResponse)) {
-                    cancelTimer();
-                    onPostResult(pResponse);
-                }
-            } catch (Exception ex) {
-                Log.e(this, ex);
-                cancelTimer();
-                onPostResult(createReponse(-1, null));
-            }
-
+        if (mIsNeedToCheckDataInResponse && TransactionHelper.isSecurityFlow(pResponse)) {
+            cancelTimer();
+            onPostResult(pResponse);
         }
         //continue get status  because order still is processing
         else if (pResponse.isprocessing) {

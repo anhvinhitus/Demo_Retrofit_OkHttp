@@ -1,15 +1,22 @@
 package vn.com.zalopay.wallet.transaction;
 
+import android.text.TextUtils;
+
 import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_DELAY_RETRY;
@@ -46,6 +53,9 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
             return true;
         }
         retryCount++;
+        if(TransactionHelper.isSecurityFlow(pResponse)){
+            return true;
+        }
         return !pResponse.isprocessing;
     }
 
@@ -60,10 +70,11 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
         final long intervalRetry = GlobalData.isZalopayChannel(mAppId) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
         return mTransService.getStatus(params)
                 .doOnSubscribe(() -> running = true)
-                /*.map(statusResponse -> {
+                .map(statusResponse -> {
                     statusResponse.isprocessing = true; //for testing
+                    statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;
-                })*/
+                })
                 .repeatWhen(o -> o.flatMap(v -> Observable.timer(intervalRetry, MILLISECONDS)))
                 .takeUntil(shouldStop);
     }

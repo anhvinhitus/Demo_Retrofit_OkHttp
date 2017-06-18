@@ -123,15 +123,15 @@ public class CShareData extends SingletonBase {
             Log.d(this, "notification coming from background, switching thread to main thread...");
             new Handler(Looper.getMainLooper()).post(() -> {
                 //this runs on the UI thread
-                sendNotifyTransactionFinishToAdapter(pObject);
+                sendNotifyTransactionFinishIntoSDK(pObject);
             });
         } else {
-            sendNotifyTransactionFinishToAdapter(pObject);
+            sendNotifyTransactionFinishIntoSDK(pObject);
         }
     }
 
     protected void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
-        Log.d(this, "send notify finish link/unlink bank account ", pObject);
+        Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
@@ -163,9 +163,9 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    protected void sendNotifyTransactionFinishToAdapter(Object... pObject) {
+    private void sendNotifyTransactionFinishIntoSDK(Object... pObject) {
         //user in sdk now.
-        Log.d(this, "send notify finish transaction", pObject);
+        Log.d(this, "start send notify finish transaction into sdk", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
@@ -175,7 +175,7 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    protected void sendNotifyPromotionEventToAdapter(Object... pObject) {
+    private void sendNotifyPromotionEventToAdapter(Object... pObject) {
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);

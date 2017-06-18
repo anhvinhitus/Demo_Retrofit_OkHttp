@@ -1,17 +1,20 @@
 package vn.com.zalopay.wallet.helper;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.constants.OrderStatus;
+import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -81,23 +84,35 @@ public class TransactionHelper {
      * @param pStatusResponse data response
      */
     public static
-    @OrderStatus
-    int submitTransStatus(StatusResponse pStatusResponse) {
+    @PaymentState
+    int paymentState(StatusResponse pStatusResponse) {
         if (pStatusResponse != null && pStatusResponse.returncode == Constants.PIN_WRONG_RETURN_CODE) {
-            return OrderStatus.INVALID_PASSWORD;
+            return PaymentState.INVALID_PASSWORD;
+        } else if (isSecurityFlow(pStatusResponse)) {
+            return PaymentState.SECURITY;
         } else if (pStatusResponse != null && pStatusResponse.returncode < 0) {
-            return OrderStatus.FAILURE;
+            return PaymentState.FAILURE;
         }
         //transaction is success
         else if (isTransactionSuccess(pStatusResponse)) {
-            return OrderStatus.SUCCESS;
+            return PaymentState.SUCCESS;
         }
         //order still need to continue processing
         else if (isOrderProcessing(pStatusResponse)) {
-            return OrderStatus.PROCESSING;
+            return PaymentState.PROCESSING;
         } else {
-            return OrderStatus.FAILURE;
+            return PaymentState.FAILURE;
         }
+    }
+
+    public static boolean isSecurityFlow(StatusResponse pResponse) {
+        if (pResponse != null && !TextUtils.isEmpty(pResponse.data)) {
+            SecurityResponse dataResponse = GsonUtils.fromJsonString(pResponse.data, SecurityResponse.class);
+            if (dataResponse != null && PaymentStatusHelper.is3DSResponse(dataResponse) || PaymentStatusHelper.isOtpResponse(dataResponse)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isOrderProcessing(StatusResponse pResponse) {

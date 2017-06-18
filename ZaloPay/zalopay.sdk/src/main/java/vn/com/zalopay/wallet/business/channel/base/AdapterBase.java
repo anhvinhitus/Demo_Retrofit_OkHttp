@@ -234,7 +234,9 @@ public abstract class AdapterBase {
         }
         if (isTransactionSuccess()) {
             showTransactionSuccessView();
-        } else if(hasTransId()){
+        } else if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
+            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
+        } else if (hasTransId()) {
             Log.d(this, "start page name", mPageName);
             showTransactionFailView(mResponseStatus.returnmessage);
         }
@@ -608,7 +610,7 @@ public abstract class AdapterBase {
                     processWrongOtp();
                     return pAdditionParams;
                 }
-                if (mResponseStatus.isprocessing && !TextUtils.isEmpty(mResponseStatus.data)) {
+                if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
                     SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
                     if (dataResponse == null) {
                         showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
@@ -640,27 +642,23 @@ public abstract class AdapterBase {
                                 mCaptchaBeginTime = System.currentTimeMillis();
                             } catch (Exception e) {
                                 showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
-                                sdkReportErrorOnPharse(Constants.STATUS_PHARSE, e != null ? e.getMessage() : GsonUtils.toJsonString(mResponseStatus));
+                                sdkReportErrorOnPharse(Constants.STATUS_PHARSE, e.getMessage());
                                 Log.e(this, e);
                             }
                         }
                     }
-                    //otp flow for atm
-                    else if (isATMFlow() && PaymentStatusHelper.isOtpResponse(dataResponse)) {
+                    //otp flow
+                    else if (PaymentStatusHelper.isOtpResponse(dataResponse)) {
                         mPageName = PAGE_AUTHEN;
                         ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
-
                         showProgressBar(false, null);
-
                         //request permission read/view sms on android 6.0+
                         if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
                             requestReadOtpPermission();
                         }
-
                         if (getActivity().getActivityRender() != null) {
                             getActivity().getActivityRender().renderKeyBoard();
                         }
-
                         //testing broadcast otp viettinbak
                         /*
                         new Handler().postDelayed(new Runnable() {
@@ -680,7 +678,6 @@ public abstract class AdapterBase {
 							}
 						},5000);
 						*/
-
                     } else {
                         showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_system));
                     }
