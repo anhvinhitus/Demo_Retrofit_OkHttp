@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <vn.com.vng.zalopay.passport.widget.CustomKeyboardView
+        android:id="@+id/keyboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/keyboard"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/header_onboarding"/>
+
+            <View
+                android:id="@+id/separate"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separate"/>
+
+            <include layout="@layout/layout_onboarding_body"/>
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

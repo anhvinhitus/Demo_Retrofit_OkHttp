@@ -1,46 +1,41 @@
-package vn.com.vng.zalopay.account.ui.activities;
+package vn.com.vng.zalopay.passport;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
+
+import butterknife.OnClick;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
-import javax.inject.Inject;
-
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
-import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
-import vn.com.vng.zalopay.ui.view.ILoginView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
+import javax.inject.Inject;
+
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
-    private SweetAlertDialog mErrorDialog;
-    private SweetAlertDialog mProgressDialog;
+    private SweetAlertDialog mErrorDialog = null;
+    private SweetAlertDialog mProgressDialog = null;
 
-    @Override
-    protected void setupActivityComponent() {
+    public void setupActivityComponent() {
         getAppComponent().inject(this);
     }
 
-    @Override
-    protected int getResLayoutId() {
+    public int getResLayoutId() {
         return R.layout.activity_login_zalo;
     }
 
-    @Override
     public BaseFragment getFragmentToHost() {
         return null;
     }
@@ -51,10 +46,9 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Inject
     GlobalEventHandlingService mGlobalEventService;
 
-    private boolean restarted;
+    private Boolean restarted = false;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Timber.d("onCreate taskid %s", getTaskId());
         restarted = savedInstanceState != null;
@@ -63,7 +57,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         handleIntent(getIntent());
     }
 
-    private void handleIntent(Intent data) {
+    public void handleIntent(Intent data) {
         if (data == null) {
             return;
         }
@@ -73,8 +67,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         loginPresenter.setCallingExternal(callFrom);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
+    public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
 
@@ -82,7 +75,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @OnClick(R.id.layoutLoginZalo)
-    public void onClickLogin(View v) {
+    public void onClickLogin() {
         if (AppVersionUtils.showDialogForceUpgradeApp(this)) {
             return;
         }
@@ -90,7 +83,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         ZPAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -102,13 +94,11 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         loginPresenter.resume();
     }
 
-    @Override
     public void onPause() {
         super.onPause();
         loginPresenter.pause();
     }
 
-    @Override
     public void onDestroy() {
         destroyErrorDialog();
         loginPresenter.destroy();
@@ -117,31 +107,26 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         super.onDestroy();
     }
 
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult requestCode %s resultCode %s", requestCode, resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         loginPresenter.onActivityResult(this, requestCode, resultCode, data);
     }
 
-    @Override
     public void gotoMainActivity() {
         navigator.startHomeActivity(this);
         finish();
     }
 
-    @Override
     public void gotoInvitationCode() {
         navigator.startInvitationCodeActivity(getContext());
         finish();
     }
 
-    @Override
     public void showLoading() {
         Timber.d("showLoading");
         if (mProgressDialog == null) {
@@ -157,50 +142,46 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         }
     }
 
-    @Override
     public void showError(String message) {
         Timber.d("showError message %s", message);
         if (mErrorDialog == null) {
             mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
                     .setConfirmText(getContext().getString(R.string.accept))
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.dismiss();
-                        }
-                    });
+                    .setConfirmClickListener(Dialog::dismiss);
         }
         mErrorDialog.setContentText(message);
         mErrorDialog.show();
     }
 
-    @Override
     public void showNetworkError() {
         DialogHelper.showNetworkErrorDialog(getActivity(), null);
     }
 
-    private void destroyErrorDialog() {
+    public void destroyErrorDialog() {
         if (mErrorDialog != null && mErrorDialog.isShowing()) {
             mErrorDialog.dismiss();
         }
         mErrorDialog = null;
     }
 
-    @Override
     public Context getContext() {
         return this;
     }
 
-    private void showMessageAtLogin() {
+    public void showMessageAtLogin() {
         GlobalEventHandlingService.Message message = mGlobalEventService.popMessageAtLogin();
+
         if (message == null) {
             return;
         }
 
         showCustomDialog(message.content,
                 getString(R.string.txt_close),
-                message.messageType,
-                null);
+                message.messageType, null);
     }
 
+    public void gotoOnboarding(ZaloProfile zaloProfile, String oauthcode) {
+        navigator.startInputPassword(this, zaloProfile, oauthcode);
+        finish();
+    }
 }

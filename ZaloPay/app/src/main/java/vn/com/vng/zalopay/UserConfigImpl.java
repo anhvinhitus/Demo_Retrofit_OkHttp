@@ -174,7 +174,7 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender) {
+    public void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender, String userName) {
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putLong(Constants.PREF_ZALO_ID, zaloId);
@@ -182,7 +182,6 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
         editor.putLong(Constants.PREF_USER_BIRTHDAY, birthData);
         editor.putInt(Constants.PREF_USER_GENDER, userGender);
-//        editor.putLong(Constants.PREF_USER_ID, zaloPayId);
         editor.apply();
 
         Timber.d("save UserInfo hasCurrentUser %s", hasCurrentUser());
@@ -195,27 +194,14 @@ public class UserConfigImpl implements UserConfig {
             currentUser.zaloId = zaloId;
         }
 
-        Timber.d("save EventBus post ");
-        eventBus.postSticky(new ZaloProfileInfoEvent(zaloId, displayName, avatar, birthData, userGender));
-    }
-
-
-    @Override
-    public void saveZaloUserInfo(JSONObject profile) {
-        Timber.i("Zalo User Info: %s", profile);
-        JSONObject json = profile.optJSONObject("result");
-
-        if (json == null) {
-            return;
+        if (TextUtils.isEmpty(displayName) && TextUtils.isEmpty(avatar)) {
+            Timber.d("profile change, ignore post ZaloProfileInfoEvent ");
+        } else {
+            Timber.d("profile change, post ZaloProfileInfoEvent ");
+            eventBus.postSticky(new ZaloProfileInfoEvent(zaloId, displayName, avatar, birthData, userGender));
         }
 
-        long zaloId = json.optLong("userId");
-        String displayName = json.optString("displayName");
-        String avatar = json.optString("largeAvatar");
-        long birthday = json.optLong("birthDate");
-        int userGender = json.optInt("userGender");
 
-        saveUserInfo(zaloId, avatar, displayName, birthday, userGender);
     }
 
     @Override

@@ -44,10 +44,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_zalo"
                     android:gravity="center"
-                    android:text="@string/login_with_zalo"
-                    android:drawableLeft="@drawable/ic_zalo"/>
+                    android:text="@string/login_with_zalo"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        style="@style/TextView.Item.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/login.bottom.description"
+        android:textSize="@dimen/textsize.tiny"/>
 </RelativeLayout>

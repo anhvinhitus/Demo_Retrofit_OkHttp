@@ -40,4 +40,5 @@
 
     <string name="bank.account.has.linked">Bạn đang liên kết với ngân hàng %s, bạn không thể liên kết tiếp với ngân hàng này</string>
     <string name="bank.account.has.linked.this.bank">Tài khoản của bạn đã liên kết với ngân hàng này</string>
+    <string name="get.zalo.profile.failure">Không lấy được thông tin zalo. Vui lòng thử lại</string>
 </resources>

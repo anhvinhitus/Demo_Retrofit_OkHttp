@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vn.com.vng.zalopay.passport.widget.CustomTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inputview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:clickable="false"
+    android:digits="1234567890"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:gravity="center"
+    android:hint=""
+    android:inputType="numberSigned"
+    android:maxLines="1"
+    android:scrollHorizontally="false"
+    android:scrollbars="none"
+    android:singleLine="true"
+    android:textCursorDrawable="@drawable/edt_cursor"
+    android:textSize="36sp"
+    tools:text="123456"/>

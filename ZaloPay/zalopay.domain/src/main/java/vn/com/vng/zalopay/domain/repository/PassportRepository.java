@@ -14,4 +14,9 @@ public interface PassportRepository {
     Observable<Boolean> logout();
 
     Observable<User> verifyCode(String code);
+
+    Observable<Boolean> registerPhoneNumber(long zaloid, String oauthcode, String paymentPassword, String phonenumber);
+
+    Observable<User> authenticatePhoneNumber(long zaloid, String oauthcode, String otp);
+
 }

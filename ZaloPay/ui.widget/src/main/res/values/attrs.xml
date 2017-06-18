@@ -472,4 +472,8 @@
         <attr name="lp_pin_forgot_dialog_negative" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="CustomPassCodeRoundView">
+        <attr name="lp_length_pin" format="integer" />
+    </declare-styleable>
+
 </resources>

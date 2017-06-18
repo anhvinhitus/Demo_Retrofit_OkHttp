@@ -170,9 +170,16 @@
         </activity-alias>
 
         <activity
-            android:name=".account.ui.activities.LoginZaloActivity"
+            android:name=".passport.LoginZaloActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar.FullScreen" />
+
+        <activity
+            android:name=".passport.OnboardingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".ui.activity.HomeActivity"

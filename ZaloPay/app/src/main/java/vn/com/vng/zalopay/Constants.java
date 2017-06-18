@@ -95,6 +95,9 @@ public interface Constants {
     int LINK_BANK_ACCOUNT_LINKED = 2;
     int LINK_BANK_CARD_ACCOUNT_LINKED = 3;
 
+    String ARGUMENT_KEY_ZALOPROFILE = "zaloprofile";
+    String ARGUMENT_KEY_OAUTHTOKEN = "oauthtoken";
+
     interface MoneyTransfer {
         int STAGE_PRETRANSFER = 1;
         int STAGE_TRANSFER_SUCCEEDED = 2;

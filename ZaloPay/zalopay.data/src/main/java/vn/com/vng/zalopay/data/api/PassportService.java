@@ -4,8 +4,10 @@ package vn.com.vng.zalopay.data.api;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
 import vn.com.vng.zalopay.data.api.response.VerifyInvitationCodeResponse;
@@ -20,8 +22,8 @@ public interface PassportService {
 
     @API_NAME(ZPEvents.API_UM_CREATEACCESSTOKEN)
     @FormUrlEncoded
-    @POST(Constants.UM_API.CREATEACCESSTOKEN)
-    Observable<LoginResponse> login(@Field("appid") long appid, @Field("loginuid") long zuid, @Field("oauthcode") String zAuthCode);
+    @POST(Constants.UM_API.LOGINVIAZALO)
+    Observable<LoginResponse> login(@Field("appid") long appid, @Field("zaloid") long zaloid, @Field("oauthcode") String oauthcode);
 
 
     @API_NAME(ZPEvents.API_UM_REMOVEACCESSTOKEN)
@@ -34,4 +36,13 @@ public interface PassportService {
     @FormUrlEncoded
     @POST(Constants.UM_API.VERIFYCODETEST)
     Observable<VerifyInvitationCodeResponse> verifyCode(@Field("userid") String uid, @Field("accesstoken") String accesstoken, @Field("codetest") String codetest);
+
+    @FormUrlEncoded
+    @POST(Constants.UM_API.REGISTERPHONENUMBER)
+    Observable<BaseResponse> registerPhoneNumber(@Query("zaloid") long zaloid, @Query("oauthcode") String oauthcode, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
+
+    @FormUrlEncoded
+    @POST(Constants.UM_API.AUTHENPHONENUMBER)
+    Observable<LoginResponse> authenticatePhoneNumber(@Query("zaloid") long zaloid, @Query("oauthcode") String oauthcode, @Field("otp") String otp);
+
 }

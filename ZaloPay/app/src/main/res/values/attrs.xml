@@ -5,29 +5,41 @@
     </declare-styleable>
 
     <declare-styleable name="PassCodeView">
-        <attr name="errorEnabled" format="boolean" />
-        <attr name="length" format="integer" />
-        <attr name="hint" format="string" />
-        <attr name="note" format="string" />
-        <attr name="paddingLeft" format="dimension" />
-        <attr name="paddingRight" format="dimension" />
+        <attr name="errorEnabled" format="boolean"/>
+        <attr name="length" format="integer"/>
+        <attr name="hint" format="string"/>
+        <attr name="note" format="string"/>
+        <attr name="paddingLeft" format="dimension"/>
+        <attr name="paddingRight" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="WaveView">
-        <attr name="rb_color" format="color" />
-        <attr name="rb_strokeWidth" format="dimension" />
-        <attr name="rb_radius" format="dimension" />
-        <attr name="rb_duration" format="integer" />
-        <attr name="rb_rippleAmount" format="integer" />
-        <attr name="rb_scale" format="float" />
+        <attr name="rb_color" format="color"/>
+        <attr name="rb_strokeWidth" format="dimension"/>
+        <attr name="rb_radius" format="dimension"/>
+        <attr name="rb_duration" format="integer"/>
+        <attr name="rb_rippleAmount" format="integer"/>
+        <attr name="rb_scale" format="float"/>
         <attr name="rb_type" format="enum">
-            <enum name="fillRipple" value="0" />
-            <enum name="strokeRipple" value="1" />
+            <enum name="fillRipple" value="0"/>
+            <enum name="strokeRipple" value="1"/>
         </attr>
     </declare-styleable>
     <declare-styleable name="MoneyEditText">
-        <attr name="min_money" format="integer" />
-        <attr name="max_money" format="integer" />
+        <attr name="min_money" format="integer"/>
+        <attr name="max_money" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="OnboardingView">
+        <attr name="onb_title" format="string"/>
+        <attr name="onb_subtitle" format="string"/>
+        <attr name="onb_descriptionInput" format="string"/>
+        <attr name="onb_showButton" format="boolean"/>
+        <attr name="onb_buttonText" format="string"/>
+        <attr name="onb_input_layout" format="reference"/>
+        <attr name="onb_showSecondButton" format="boolean"/>
+        <attr name="onb_secondButtonText" format="string"/>
+
     </declare-styleable>
 
 </resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@drawable/cover_large">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/ivAvatar"
+            style="@style/AvatarDraweeView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:roundingBorderColor="@color/leftmenu.avatar.bg"
+            />
+
+        <TextView
+            android:id="@+id/tvDisplayName"
+            style="@style/TextView.Item.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/personal_text_dark_grey"
+            android:textSize="16sp"
+            tools:text="Vu Manh Hieu"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.zalopay.ui.widget.IconFontTextView
+                android:id="@+id/tvGender"
+                style="@style/TextView.Item.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selector"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/txt_item_sub"
+                android:textSize="14sp"
+                app:iconLeftColor="@color/txt_item_sub"
+                app:iconLeftName="@string/profile_library"
+                app:iconLeftSize="@dimen/font_size_profile_icon"
+                tools:text="Nữ"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:text="•"
+                android:textColor="@color/txt_item_sub"/>
+
+            <com.zalopay.ui.widget.IconFontTextView
+                android:id="@+id/tvBirthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selector"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/txt_item_sub"
+                android:textSize="14sp"
+                app:iconLeftColor="@color/txt_item_sub"
+                app:iconLeftName="@string/profile_library"
+                app:iconLeftSize="@dimen/font_size_profile_icon"
+                tools:text="14/12/1989"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</FrameLayout>

@@ -171,4 +171,6 @@
     <color name="bg_btn_skyblue_selected">#804abbff</color>
     <color name="bg_btn_light_blue">#e5f5ff</color>
     <color name="bg_btn_light_blue_select">#80e5f5ff</color>
+
+     <color name="txt_item_sub">#727f8c</color>
 </resources>

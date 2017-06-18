@@ -31,7 +31,8 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.passport.OnboardingActivity;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
@@ -76,9 +77,14 @@ import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+
+import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
+import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
+import static vn.com.vng.zalopay.domain.model.User.MIN_PROFILE_LEVEL;
 
 /*
 * Navigator
@@ -86,7 +92,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 @Singleton
 public class Navigator implements INavigator {
 
-    private static final int MIN_PROFILE_LEVEL = 2;
     private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     private UserConfig mUserConfig;
@@ -151,6 +156,13 @@ public class Navigator implements INavigator {
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
         return intent;
+    }
+
+    public void startInputPassword(Context context, ZaloProfile zaloProfile, String oauthtoken) {
+        Intent intent = new Intent(context, OnboardingActivity.class);
+        intent.putExtra(ARGUMENT_KEY_ZALOPROFILE, zaloProfile);
+        intent.putExtra(ARGUMENT_KEY_OAUTHTOKEN, oauthtoken);
+        context.startActivity(intent);
     }
 
     public void startHomeActivity(Context context) {
@@ -528,7 +540,7 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    public void startActivityForResult(Fragment fragment, TransferObject object, int requestCode) {
+    public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtra("transfer", object);
         fragment.startActivityForResult(intent, requestCode);

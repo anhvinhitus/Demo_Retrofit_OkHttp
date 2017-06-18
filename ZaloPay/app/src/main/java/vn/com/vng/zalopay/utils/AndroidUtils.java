@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -1023,7 +1024,7 @@ public class AndroidUtils {
                                                String spannedMessage,
                                                boolean isUnderline,
                                                boolean isMessageBold,
-                                               int linkColor,
+                                               @ColorInt int linkColor,
                                                ClickableSpan clickableSpan) {
         if (tv != null) {
             // set spannable for text view
@@ -1128,7 +1129,7 @@ public class AndroidUtils {
         if (TextUtils.isEmpty(ua)) {
             ua = System.getProperty("http.agent");
         }
-        
+
         return ua;
     }
 }

@@ -2,9 +2,10 @@ package vn.com.vng.zalopay.domain.model;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 public final class User extends Person {
+
+    public static final int MIN_PROFILE_LEVEL = 2;
 
     public String accesstoken;
 

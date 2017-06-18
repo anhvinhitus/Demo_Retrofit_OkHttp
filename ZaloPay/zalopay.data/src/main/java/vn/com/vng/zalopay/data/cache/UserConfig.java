@@ -37,9 +37,7 @@ public interface UserConfig {
 
     long getZaloId();
 
-    void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
-
-    void saveZaloUserInfo(JSONObject json);
+    void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender, String userName);
 
     String getAvatar();
 

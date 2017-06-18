@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
@@ -58,9 +59,13 @@ final class ZaloSdkTask {
 
     private Subscription timeoutSubscription() {
         return Observable.timer(5, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onCompleted() {
+
+                        Timber.d("zalo-sdk task timeout [action %s]", action);
+
                         JSONObject result = new JSONObject();
                         try {
                             result.put("timeout", 1);
@@ -87,7 +92,6 @@ final class ZaloSdkTask {
             if (callback != null) {
                 callback.onResult(jsonObject);
             }
-
         }
     };
 }

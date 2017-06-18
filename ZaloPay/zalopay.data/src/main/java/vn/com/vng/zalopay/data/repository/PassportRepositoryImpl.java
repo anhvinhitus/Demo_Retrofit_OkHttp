@@ -68,4 +68,12 @@ public class PassportRepositoryImpl implements PassportRepository {
         return user;
     }
 
+    public Observable<Boolean> registerPhoneNumber(long zaloid, String oauthcode, String paymentPassword, String phonenumber) {
+        return passportFactory.registerPhoneNumber(zaloid, oauthcode, paymentPassword, phonenumber);
+    }
+
+    public Observable<User> authenticatePhoneNumber(long zaloid, String oauthcode, String otp) {
+        return passportFactory.authenticatePhoneNumber(zaloid, oauthcode, otp)
+                .map(this::saveUser);
+    }
 }

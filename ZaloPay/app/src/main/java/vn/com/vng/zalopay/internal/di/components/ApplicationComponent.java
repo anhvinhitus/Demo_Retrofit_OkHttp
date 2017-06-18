@@ -13,7 +13,8 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.passport.OnboardingFragment;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ga.AnalyticsStore;
@@ -115,4 +116,6 @@ public interface ApplicationComponent {
     void inject(ExternalCallSplashScreenActivity a);
 
     void inject(IntentHandlerActivity a);
+
+    void inject(OnboardingFragment f);
 }

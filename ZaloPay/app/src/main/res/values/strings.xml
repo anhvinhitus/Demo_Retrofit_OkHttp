@@ -406,11 +406,28 @@
 
     <string name="missing.image.pick">Vui lòng kiểm tra lại ứng dụng thư viện ảnh trên thiết bị của bạn</string>
     <string name="missing.image.capture">Vui lòng kiểm tra lại ứng dụng chụp ảnh trên thiết bị của bạn</string>
+    <string name="ip.title.create.password">Tạo mật khẩu thanh toán</string>
+    <string name="ip.desc.create.password">Để xác nhận giao dịch của bạn khi thanh toán</string>
+    <string name="input.password">Nhập mật khẩu</string>
+    <string name="re.input.password">Nhập lại mật khẩu</string>
+    <string name="password.not.match">Mật khẩu thanh toán không trùng khớp</string>
+    <string name="ip.title.confirm.password">Xác nhận mật khẩu thanh toán</string>
+    <string name="ip.desc.confirm.password">Vui lòng không chia sẻ mật khẩu với bất kỳ ai</string>
+    <string name="come.back">Quay Lại</string>
+    <string name="ip.title.input.phone">Số điện thoại di động</string>
+    <string name="ip.desc.input.phone">Đăng ký một lần và không thay đổi</string>
+    <string name="input.phone">Nhập số điện thoại</string>
+    <string name="ip.title.conform.otp">Xác nhận mã OTP</string>
+    <string name="ip.desc.format.conform.otp">Mã xác thực đã gửi đến SĐT %s</string>
+    <string name="resend.otp">Gửi lại mã xác thực</string>
+    <string name="input.otp">Nhập mã OTP</string>
+    <string name="login.bottom.description">Không cần đăng ký, đăng nhập nhanh hơn với Zalo</string>
 
     <string name="bank.link.account.vcb.exist">Quý khách đã liên kết với ngân hàng Vietcombank</string>
     <string name="bank.error.load.supportbank">Không tải được thông tin ngân hàng.\nVui lòng thử lại!</string>
     <string name="bank.maintenance.message">Đang bảo trì</string>
     <string name="bank.upversion.message">Nâng cấp phiên bản để sử dụng</string>
+    <string name="ip.desc.confirm.change.phone">Mã xác thực đang được gửi đến SĐT bạn đã nhập. Bạn chắc chắn muốn quay lại?</string>
 
 </resources>
 
