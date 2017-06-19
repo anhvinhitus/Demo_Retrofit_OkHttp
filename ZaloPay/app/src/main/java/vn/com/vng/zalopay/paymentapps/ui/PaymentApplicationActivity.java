@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.beefe.picker.PickerViewPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -258,6 +259,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactNativePermissionsPackage(),
+                new PickerViewPackage(),
                 new ReactIAPPackage(paymentService,
                         mUser, appId,
                         mNetworkServiceWithRetry,
