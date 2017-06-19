@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.passport;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -178,7 +179,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
         String phoneNumber = mInputPhoneView.getInputText();
         if (!TextUtils.isEmpty(phoneNumber)) {
-            Timber.d("onSaveInstanceState: %s", phoneNumber);
             outState.putString(ARGUMENT_PHONE_NUMBER, phoneNumber);
         }
     }
@@ -201,7 +201,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     private void restoreState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            Timber.d("saved Instance State is null");
             return;
         }
 
@@ -236,13 +235,13 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     }
 
     private class InputPasswordListener implements InputEnteredListener {
-        public void onPinEntered(String pinCode) {
+        public void onPinEntered(@NonNull String pinCode) {
             nextPage();
         }
     }
 
     private class ReInputPasswordListener implements InputEnteredListener {
-        public void onPinEntered(String pinCode) {
+        public void onPinEntered(@NonNull String pinCode) {
             if (pinCode.equals(mInputPwdView.getInputText())) {
                 nextPage();
             } else {
@@ -394,6 +393,15 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         showErrorDialog(msg);
     }
 
+    @Override
+    public void showIncorrectOtp(String msg) {
+        if (getCurrentPage() != INPUT_OTP) {
+            return;
+        }
+
+        mInputOtpView.setError(msg);
+    }
+
     public void setOtp(String otp) {
 
         if (getCurrentPage() != INPUT_OTP) {
@@ -406,7 +414,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     private void shouldShowBackButton() {
         int flipperPosition = getCurrentPage();
         boolean showButtonBack = flipperPosition == REINPUT_PASSWORD || flipperPosition == INPUT_OTP;
-        Timber.d("should show back button %s", showButtonBack);
         setDisplayHomeAsUpEnabled(showButtonBack);
     }
 
@@ -446,27 +453,10 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         }
 
         public void onTick(long millisUntilFinished) {
-            String msgFormat = "Gửi lại mã trong %s";
-            mInputOtpView.setTextSecondButton(String.format(msgFormat, formatTime(millisUntilFinished)));
+            String msgFormat = getString(R.string.resend_otp_count_down_format);
+            mInputOtpView.setTextSecondButton(String.format(msgFormat, TimeUtils.formatCountDownTime(millisUntilFinished)));
             mInputOtpView.setEnableSecondButton(false);
         }
 
-
-        private String formatTime(long millis) {
-            long seconds = millis / 1000;
-            long minutes = seconds / 60;
-
-            seconds = seconds % 60;
-            minutes = minutes % 60;
-
-            String sec = String.valueOf(seconds);
-            String min = String.valueOf(minutes);
-
-            if (seconds < 10) {
-                sec = "0" + seconds;
-            }
-
-            return min + ":" + sec;
-        }
     }
 }

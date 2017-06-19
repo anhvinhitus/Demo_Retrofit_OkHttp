@@ -19,7 +19,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -41,7 +43,7 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
     private Context mApplicationContext;
 
     @Inject
-    public OnboardingPresenter(PassportRepository passportRepository, EventBus eventBus, Context applicationContext) {
+    OnboardingPresenter(PassportRepository passportRepository, EventBus eventBus, Context applicationContext) {
         mPassportRepository = passportRepository;
         mEventBus = eventBus;
         mApplicationContext = applicationContext;
@@ -133,6 +135,7 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         AndroidApplication.instance().createUserComponent(user);
 
         if (mView != null) {
+            mView.showIncorrectOtp("");
             mView.gotoHomePage();
         }
     }
@@ -145,8 +148,18 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         }
 
         String msg = ErrorMessageFactory.create(mApplicationContext, e);
+        boolean incorrectOtp = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.INCORRECT_OTP;
+        showErrorView(incorrectOtp, msg);
+    }
 
-        if (mView != null) {
+    private void showErrorView(boolean isOtp, String msg) {
+        if (mView == null) {
+            return;
+        }
+
+        if (isOtp) {
+            mView.showIncorrectOtp(msg);
+        } else {
             mView.showError(msg);
         }
     }

@@ -26,4 +26,6 @@ interface IOnboardingView {
     void setOtp(String otp);
 
     void startOTPCountDown();
+
+    void showIncorrectOtp(String msg);
 }

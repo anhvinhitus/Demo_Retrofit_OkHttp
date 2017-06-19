@@ -80,8 +80,7 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
 
         Timber.d("resume has current user [%s]", mUserConfig.hasCurrentUser());
         UserComponent userComponent = ((AndroidApplication) mApplicationContext).getUserComponent();
-        if (mUserConfig.hasCurrentUser() && userComponent !=
-                null) {
+        if (mUserConfig.hasCurrentUser() && userComponent != null) {
             Timber.d("go to home screen ignore login screen");
             gotoHomeScreen();
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -138,9 +139,14 @@ abstract class OnboardingView extends LinearLayout {
         mSecondaryButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    public void setError(String msg, Boolean clear) {
+    public void setError(@Nullable String msg, Boolean clear) {
+        if (TextUtils.isEmpty(msg)) {
+            mDescInputView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        } else {
+            mDescInputView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+        }
+
         mDescInputView.setText(msg);
-        mDescInputView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
 
         if (!clear) {
             return;
