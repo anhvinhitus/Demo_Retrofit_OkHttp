@@ -29,8 +29,8 @@ import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.passport.widget.InputEnteredListener;
-import vn.com.vng.zalopay.passport.widget.OnboardingEdtView;
-import vn.com.vng.zalopay.passport.widget.OnboardingPwdView;
+import vn.com.vng.zalopay.passport.widget.OnboardingEditTextView;
+import vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.VNPhoneValidate;
@@ -95,16 +95,16 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     ViewFlipper mFlipperView;
 
     @BindView(R.id.flipper1)
-    OnboardingPwdView mInputPwdView;
+    OnboardingPasswordRoundView mInputPwdView;
 
     @BindView(R.id.flipper2)
-    OnboardingPwdView mReInputPwdView;
+    OnboardingPasswordRoundView mReInputPwdView;
 
     @BindView(R.id.flipper3)
-    OnboardingEdtView mInputPhoneView;
+    OnboardingEditTextView mInputPhoneView;
 
     @BindView(R.id.flipper4)
-    OnboardingEdtView mInputOtpView;
+    OnboardingEditTextView mInputOtpView;
 
     private CountDownTimer mCountDownTime = null;
 

@@ -20,13 +20,13 @@ import vn.com.vng.zalopay.data.util.Lists;
  * Created by hieuvm on 6/14/17.
  * *
  */
-public class OnboardingEdtView extends OnboardingView {
+public class OnboardingEditTextView extends OnboardingView {
 
-    public OnboardingEdtView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyle) {
+    public OnboardingEditTextView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public OnboardingEdtView(@NonNull Context context, @NonNull AttributeSet attrs) {
+    public OnboardingEditTextView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
     }
 

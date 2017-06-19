@@ -11,13 +11,13 @@ import vn.com.vng.zalopay.R;
  * Created by hieuvm on 6/14/17.
  * *
  */
-public class OnboardingPwdView extends OnboardingView {
+public class OnboardingPasswordRoundView extends OnboardingView {
 
-    public OnboardingPwdView(Context context, AttributeSet attrs, int defStyle) {
+    public OnboardingPasswordRoundView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public OnboardingPwdView(Context context, AttributeSet attrs) {
+    public OnboardingPasswordRoundView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/separate">
 
-    <vn.com.vng.zalopay.passport.widget.OnboardingPwdView
+    <vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView
         android:id="@+id/flipper1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
         app:onb_subtitle="@string/ip.desc.create.password"
         app:onb_title="@string/ip.title.create.password"/>
 
-    <vn.com.vng.zalopay.passport.widget.OnboardingPwdView
+    <vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView
         android:id="@+id/flipper2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +27,7 @@
         app:onb_subtitle="@string/ip.desc.confirm.password"
         app:onb_title="@string/ip.title.confirm.password"/>
 
-    <vn.com.vng.zalopay.passport.widget.OnboardingEdtView
+    <vn.com.vng.zalopay.passport.widget.OnboardingEditTextView
         android:id="@+id/flipper3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +38,7 @@
         app:onb_subtitle="@string/ip.desc.input.phone"
         app:onb_title="@string/ip.title.input.phone"/>
 
-    <vn.com.vng.zalopay.passport.widget.OnboardingEdtView
+    <vn.com.vng.zalopay.passport.widget.OnboardingEditTextView
         android:id="@+id/flipper4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
