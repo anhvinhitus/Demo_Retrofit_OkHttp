@@ -15,7 +15,7 @@ public interface IBuilder {
 
     String getLogoPath();
 
-    String getTextContent();
+    String getTitle();
 
     IBuilder setView(View pView);
 

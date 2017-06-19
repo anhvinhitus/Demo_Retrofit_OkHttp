@@ -2,6 +2,7 @@ package com.zalopay.ui.widget.password.bottomsheet;
 
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
@@ -15,7 +16,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected View mView;
     protected Activity mActivity;
     protected String mIdLogo;
-    protected String mTextContent;
+    protected String mTextTitle;
     protected ISetDataToView mISetDataToView;
     protected IControl mControl;
 
@@ -74,13 +75,19 @@ public abstract class PasswordBuilder implements IBuilder {
 
     @Override
     public IBuilder setTitle(String pTitle) {
-        mTextContent = pTitle;
+        mTextTitle = pTitle;
+        if (!TextUtils.isEmpty(pTitle) && mISetDataToView != null) {
+            mISetDataToView.setTitle(pTitle);
+        }
         return this;
     }
 
     @Override
     public IBuilder setLogoPath(String pIdImage) {
         mIdLogo = pIdImage;
+        if (!TextUtils.isEmpty(pIdImage) && mISetDataToView != null) {
+            mISetDataToView.setImage(pIdImage);
+        }
         return this;
     }
 
@@ -99,8 +106,8 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public String getTextContent() {
-        return mTextContent;
+    public String getTitle() {
+        return mTextTitle;
     }
 
     @Override

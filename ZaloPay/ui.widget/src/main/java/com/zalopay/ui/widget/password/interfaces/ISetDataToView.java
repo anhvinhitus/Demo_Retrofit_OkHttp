@@ -9,7 +9,7 @@ import android.app.Activity;
 public interface ISetDataToView {
     void setErrorMessage(Activity pActivity, String pError);
 
-    void setImage(int pIdImage);
+    void setImage(String pIdImage);
 
     void setTitle(String pTitle);
 

@@ -41,7 +41,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected int mType = 1;
     protected String mPinCode;
     protected SimpleDraweeView mLogo;
-    protected TextView mTextContent;
+    protected TextView mTextTitle;
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
@@ -62,18 +62,18 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
-        public void setImage(int pIdImage) {
+        public void setImage(String pIdImage) {
             //set Image here
             if (mLogo != null) {
-                mLogo.setImageResource(pIdImage);
+                mLogo.setImageURI(pIdImage);
             }
         }
 
         @Override
         public void setTitle(String pTitle) {
             //set title here
-            if (mTextContent != null) {
-                mTextContent.setText(pTitle);
+            if (mTextTitle != null) {
+                mTextTitle.setText(pTitle);
             }
         }
 
@@ -146,7 +146,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mCancelImageView.setBackgroundResource(backgroundResource);
         mTextMessage = (TextView) pWView.findViewById(R.id.text_error);
         mRootView = pWView.findViewById(R.id.layout_root_view);
-        mTextContent = (TextView) pWView.findViewById(R.id.text_content);
+        mTextTitle = (TextView) pWView.findViewById(R.id.text_content);
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
@@ -155,9 +155,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
-        mTextContent.setText(mBuilder.getTextContent());
         mBuilder.getCallBackToView(mISetDataToView);
         mCheckBox.setOnCheckedChangeListener(this);
+        
+        mTextTitle.setText(mBuilder.getTitle());
         String image_path = mBuilder.getLogoPath();
         if (!TextUtils.isEmpty(image_path)) {
             mLogo.setImageURI(image_path);
