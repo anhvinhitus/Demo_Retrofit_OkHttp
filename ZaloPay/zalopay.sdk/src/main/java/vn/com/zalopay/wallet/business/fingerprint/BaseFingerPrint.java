@@ -12,15 +12,6 @@ import vn.com.zalopay.wallet.business.data.Log;
 public abstract class BaseFingerPrint extends SingletonBase implements IPaymentFingerPrint {
     protected IPaymentFingerPrint mPaymentFingerPrint;
 
-    public static boolean isDeviceSupportFingerPrint() {
-        try {
-            return FingerprintUtils.isFingerPrintValid(GlobalData.getAppContext());
-        } catch (Exception ex) {
-            Log.e("isDeviceSupportFingerPrint", ex);
-        }
-        return false;
-    }
-
     public static boolean isAllowFingerPrintFeature() {
         return PaymentPermission.allowUseFingerPrint();
     }

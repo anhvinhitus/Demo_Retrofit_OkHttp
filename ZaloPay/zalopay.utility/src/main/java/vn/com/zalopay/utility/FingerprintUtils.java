@@ -6,8 +6,18 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 public class FingerprintUtils {
+    public static boolean deviceSupportFingerPrint(Context context) {
+        try {
+            return FingerprintUtils.isFingerPrintValid(context);
+        } catch (Exception ex) {
+            Log.e("isDeviceSupportFinger", ex.getMessage());
+        }
+        return false;
+    }
+
     public static boolean isFingerPrintValid(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             // TODO: code here to check fingerprint

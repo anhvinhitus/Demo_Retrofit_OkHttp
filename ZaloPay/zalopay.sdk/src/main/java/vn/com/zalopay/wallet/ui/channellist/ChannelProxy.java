@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import vn.com.zalopay.utility.FingerprintUtils;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -77,6 +78,17 @@ public class ChannelProxy extends SingletonBase {
         mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
         moveToResultScreen();
     };
+    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            Log.d(this, "get tran status on complete", statusResponse);
+            if (mRequestApi.isRunning()) {
+                Log.d(this, "get tran status is running - skip process");
+                return;
+            }
+            processStatus(statusResponse);
+        }
+    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -87,6 +99,13 @@ public class ChannelProxy extends SingletonBase {
             }
             Log.d(this, "trans status on error", throwable);
         }
+    };
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        if (statusResponse != null) {
+            mTransId = statusResponse.zptransid;
+        }
+        processStatus(statusResponse);
     };
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
@@ -120,24 +139,6 @@ public class ChannelProxy extends SingletonBase {
                 Log.e(this, "empty password");
             }
         }
-    };
-    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            Log.d(this, "get tran status on complete", statusResponse);
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get tran status is running - skip process");
-                return;
-            }
-            processStatus(statusResponse);
-        }
-    };
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
-        Log.d(this, "submit order on complete", statusResponse);
-        if (statusResponse != null) {
-            mTransId = statusResponse.zptransid;
-        }
-        processStatus(statusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -525,7 +526,7 @@ public class ChannelProxy extends SingletonBase {
 
     private void startPasswordFlow(Activity pActivity) {
         try {
-            if (PaymentFingerPrint.isDeviceSupportFingerPrint() && PaymentFingerPrint.isAllowFingerPrintFeature()) {
+            if (FingerprintUtils.deviceSupportFingerPrint(pActivity.getApplicationContext()) && PaymentFingerPrint.isAllowFingerPrintFeature()) {
                 showFingerPrint(pActivity);
             } else {
                 showPassword(pActivity);
@@ -561,7 +562,8 @@ public class ChannelProxy extends SingletonBase {
     private PasswordManager getPasswordManager(Activity pActivity) {
         String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
         if (mPassword == null) {
-            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, false, mPasswordCallback);
+            boolean supportFingerPrint = FingerprintUtils.deviceSupportFingerPrint(pActivity.getApplicationContext());
+            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, supportFingerPrint, mPasswordCallback);
         } else {
             mPassword.setContent(mChannel.pmcname, logo_path);
         }
