@@ -90,7 +90,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     protected void onViewBound(View view) {
         super.onViewBound(view);
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
-        channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);
         order_amount_txt = (TextView) view.findViewById(R.id.order_amount_total_txt);
@@ -102,6 +101,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         confirm_button = (Button) view.findViewById(R.id.confirm_button);
         confirm_button.setOnClickListener(mConfirmClick);
+
+        channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
+        setupRecyclerView();
     }
 
     @Override
@@ -116,7 +118,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     protected void setupRecyclerView() {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        channel_list_recycler.setHasFixedSize(true);
+        //channel_list_recycler.setHasFixedSize(true);
         channel_list_recycler.setLayoutManager(mLayoutManager);
         channel_list_recycler.setItemAnimator(new DefaultItemAnimator());
         channel_list_recycler.addOnItemTouchListener(new RecyclerTouchListener(getContext(), channel_list_recycler));
@@ -234,7 +236,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void onBindingChannel(ChannelListAdapter pChannelAdapter) {
-        setupRecyclerView();
         channel_list_recycler.setAdapter(pChannelAdapter);
     }
 

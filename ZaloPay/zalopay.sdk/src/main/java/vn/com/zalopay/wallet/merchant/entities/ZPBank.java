@@ -29,21 +29,9 @@ public class ZPBank implements Parcelable {
     @BankStatus
     public int bankStatus = BankStatus.ACTIVE;
     public String bankMessage;
+
     public ZPBank(String pCardCode) {
         this.bankCode = pCardCode;
-    }
-
-    public ZPBank(String pCardCode, String pCardLogoName, String pCardName) {
-        this.bankCode = pCardCode;
-        this.bankLogo = pCardLogoName;
-        this.bankName = pCardName;
-    }
-
-    public ZPBank(String pCardCode, String pCardLogoName, Boolean pIsBankAccount, String pCardName) {
-        this.bankCode = pCardCode;
-        this.bankLogo = pCardLogoName;
-        this.isBankAccount = pIsBankAccount;
-        this.bankName = pCardName;
     }
 
     protected ZPBank(Parcel in) {

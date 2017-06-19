@@ -786,7 +786,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void setImage(String pId, String pImageName) {
-        ResourceManager.loadImageIntoView(findViewById(getViewID(pId)), pImageName);
+        View view = findViewById(getViewID(pId));
+        if (view == null) {
+            Log.e(this, "view not found", pId);
+            return;
+        }
+        ResourceManager.loadImageIntoView(view, pImageName);
     }
 
     public View findViewById(String pName) {
@@ -984,7 +989,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
         order_fee_txt.setText(transFee);
         //render item detail dynamic
-        if(mPaymentInfoHelper.getOrder() != null){
+        if (mPaymentInfoHelper.getOrder() != null) {
             List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
             renderDynamicItemDetail(viewContainer, items);
         }
@@ -1006,9 +1011,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         boolean hasDesc = !TextUtils.isEmpty(desc);
         if (hasDesc) {
-            setText(R.id.order_description_txt, desc);
+            setText(R.id.description_txt, desc);
         }
-        setVisible(R.id.order_description_txt, hasDesc);
+        setVisible(R.id.description_txt, hasDesc);
         //show 2 user avatar in tranfer money
         if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             //prevent capture screen

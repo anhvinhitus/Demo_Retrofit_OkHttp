@@ -5,8 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import com.google.gson.reflect.TypeToken;
-
 import java.util.List;
 
 import rx.functions.Action1;
@@ -19,7 +17,6 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.Banner;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -29,6 +26,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -111,7 +109,7 @@ public class CShareData extends SingletonBase {
     /***
      * app push notify about finish transaction to workout for issue when
      * 1. user waiting for processing loading -> stop loading and show success screen
-     * 2. user in fail screen by networking or anhything -> reload to success screen
+     * 2. user in fail screen by networking -> reload to success screen
      * app can call this  in main thread or background thread so need to check for switch to main
      * thread
      * @param pObject
@@ -130,7 +128,7 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    protected void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
+    private void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
         Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
@@ -170,9 +168,36 @@ public class CShareData extends SingletonBase {
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
         } else {
-            //user quit sdk
-            Log.d(this, "user is not in sdk, skip process now...");
+            try {
+                SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
+                if (successTransEvent != null) {
+                    SDKApplication
+                            .getApplicationComponent()
+                            .eventBus()
+                            .post(successTransEvent);
+                    Log.d(this, "send event notification into event bus");
+                }
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
+    }
+
+    private SdkSuccessTransEvent getSuccessTransEvent(Object... pObject) throws Exception {
+        if (pObject == null) {
+            return null;
+        }
+        SdkSuccessTransEvent successTransEvent = new SdkSuccessTransEvent();
+        if (pObject.length >= 1) {
+            successTransEvent.notification_type = (long) pObject[0];
+        }
+        if (pObject.length >= 2) {
+            successTransEvent.transid = (long) pObject[1];
+        }
+        if (pObject.length >= 3) {
+            successTransEvent.trans_time = (long) pObject[2];
+        }
+        return successTransEvent;
     }
 
     private void sendNotifyPromotionEventToAdapter(Object... pObject) {
@@ -291,6 +316,7 @@ public class CShareData extends SingletonBase {
 
         return true;
     }
+
     /***
      * support app detect type of visa card.
      * @param pCardNumber

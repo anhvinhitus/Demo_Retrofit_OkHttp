@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;

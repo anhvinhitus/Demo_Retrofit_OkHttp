@@ -10,6 +10,8 @@ import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscription;
 import rx.functions.Action1;
@@ -23,6 +25,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -32,9 +35,11 @@ import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -63,6 +68,7 @@ public class ChannelProxy extends SingletonBase {
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
     private IRequest mRequestApi;
+    private Subscription mSubscription;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
     private String mTransId = "0";
@@ -78,17 +84,6 @@ public class ChannelProxy extends SingletonBase {
         mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
         moveToResultScreen();
     };
-    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            Log.d(this, "get tran status on complete", statusResponse);
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get tran status is running - skip process");
-                return;
-            }
-            processStatus(statusResponse);
-        }
-    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -99,13 +94,6 @@ public class ChannelProxy extends SingletonBase {
             }
             Log.d(this, "trans status on error", throwable);
         }
-    };
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
-        Log.d(this, "submit order on complete", statusResponse);
-        if (statusResponse != null) {
-            mTransId = statusResponse.zptransid;
-        }
-        processStatus(statusResponse);
     };
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
@@ -139,6 +127,24 @@ public class ChannelProxy extends SingletonBase {
                 Log.e(this, "empty password");
             }
         }
+    };
+    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            Log.d(this, "get tran status on complete", statusResponse);
+            if (mRequestApi.isRunning()) {
+                Log.d(this, "get tran status is running - skip process");
+                return;
+            }
+            processStatus(statusResponse);
+        }
+    };
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        if (statusResponse != null) {
+            mTransId = statusResponse.zptransid;
+        }
+        processStatus(statusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -297,7 +303,7 @@ public class ChannelProxy extends SingletonBase {
         }
     }
 
-    private void moveToResultScreen() {
+    private synchronized void moveToResultScreen() {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
@@ -310,8 +316,8 @@ public class ChannelProxy extends SingletonBase {
     private void getTransStatus() {
         try {
             mPassword.showLoading(true);
-            Subscription subscription = transStatus();
-            getPresenter().addSubscription(subscription);
+            mSubscription = transStatus();
+            getPresenter().addSubscription(mSubscription);
         } catch (Exception e) {
             Log.e(this, e);
             closePassword();
@@ -504,23 +510,27 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void startChannelActivity() {
-        //input flow
-        Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-        if (mStatusResponse != null) {
-            /***
-             * re-assign trans id again because of some case
-             * trans id = null when get status
-             */
-            mStatusResponse.zptransid = mTransId;
-            intent.putExtra(STATUS_RESPONSE, mStatusResponse);
-            Log.d(this, "start channel status response", mStatusResponse);
-        }
-        intent.putExtra(PMC_CONFIG, mChannel);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        Lock lock = new ReentrantLock();
         try {
+            lock.lock();
+            Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            if (mStatusResponse != null) {
+                /***
+                 * re-assign trans id again because of some case
+                 * trans id = null when get status
+                 */
+                mStatusResponse.zptransid = mTransId;
+                intent.putExtra(STATUS_RESPONSE, mStatusResponse);
+                Log.d(this, "start channel status response", mStatusResponse);
+            }
+            intent.putExtra(PMC_CONFIG, mChannel);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             getView().startActivityForResult(intent, REQUEST_CODE);
         } catch (Exception e) {
             Log.e(this, e);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -581,5 +591,49 @@ public class ChannelProxy extends SingletonBase {
         ITransService transService = SDKApplication.getApplicationComponent().transService();
         return new GetTransStatus(transService,
                 getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(), mTransId);
+    }
+
+    public void OnTransEvent(Object... pEventData) throws Exception {
+        Log.d(this, "on trans event", pEventData);
+        if (pEventData == null || pEventData.length < 2) {
+            Log.d(this, "trans event invalid");
+            return;
+        }
+        EEventType event_type = (EEventType) pEventData[0];
+        switch (event_type) {
+            case ON_NOTIFY_TRANSACTION_FINISH:
+                if (pEventData[1] instanceof SdkSuccessTransEvent) {
+                    processSuccessTransNotification((SdkSuccessTransEvent) pEventData[1]);
+                }
+                break;
+        }
+    }
+
+    private void processSuccessTransNotification(SdkSuccessTransEvent pEvent) {
+        if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(pEvent.notification_type)) {
+            Log.d(this, "notification type is not accepted for this kind of transaction", pEvent.notification_type);
+            return;
+        }
+        if (pEvent.transid != Long.parseLong(mTransId)) {
+            Log.d(this, "invalid trans id");
+            return;
+        }
+        //make sure api get trans status is running
+        if (mRequestApi instanceof GetTransStatus && mRequestApi.isRunning()) {
+            //cancel running request
+            if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+                mSubscription.unsubscribe();
+                Log.d(this, "cancel api trans status");
+            }
+            if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
+                mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
+                Log.d(this, "update transaction time from notification");
+            }
+            //mark trans as success
+            mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+            updatePasswordOnSuccess();
+            moveToResultScreen();
+            Log.d(this, "trans success from notification");
+        }
     }
 }

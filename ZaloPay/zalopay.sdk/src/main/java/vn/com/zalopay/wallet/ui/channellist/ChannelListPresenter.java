@@ -33,6 +33,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -48,6 +49,7 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
+import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
@@ -439,11 +441,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     private void updateButton() throws Exception {
         if (mPreviousPosition < 0) {
-            try {
-                getViewOrThrow().disableConfirmButton();
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+            getViewOrThrow().disableConfirmButton();
         } else {
             //update text by trans type
             PaymentChannel channel = getSelectChannel();
@@ -737,6 +735,17 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             showNetworkOfflineSnackBar();
         } else {
             PaymentSnackBar.getInstance().dismiss();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessTransEvent(SdkSuccessTransEvent event) {
+        if (mChannelProxy != null) {
+            try {
+                mChannelProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 

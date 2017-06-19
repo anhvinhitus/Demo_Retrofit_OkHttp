@@ -688,9 +688,7 @@ public abstract class AdapterBase {
                     }
                 }
             } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
-                if (handleEventNotifyTransactionFinish(pAdditionParams)) {
-                    return pAdditionParams;
-                }
+                handleEventNotifyTransactionFinish(pAdditionParams);
             } else if (pEventType == EEventType.ON_PROMOTION) {
                 if (handleEventPromotion(pAdditionParams)) {
                     return pAdditionParams;
@@ -699,7 +697,7 @@ public abstract class AdapterBase {
 
         } catch (Exception e) {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_process_error));
-            sdkReportErrorOnPharse(Constants.UNDEFINE, e != null ? e.getMessage() : GsonUtils.toJsonString(mResponseStatus));
+            sdkReportErrorOnPharse(Constants.UNDEFINE, e.getMessage());
             Log.e(this, e);
         }
 
@@ -722,30 +720,30 @@ public abstract class AdapterBase {
         }
     }
 
-    private boolean handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
+    private void handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
         Log.d(this, "processing result payment from notification");
         if (isTransactionSuccess()) {
             Log.d(this, "transaction is finish, skipping process notification");
-            return true;
+            return;
         }
         if (!isTransactionInProgress()) {
             Log.d(this, "transaction is ending, skipping process notification");
-            return true;
+            return;
         }
         if (pAdditionParams == null || pAdditionParams.length <= 0) {
             Log.d(this, "stopping processing result payment from notification because of empty pAdditionParams");
-            return true;
+            return;
         }
 
-        int notificationType = -1;
+        long notificationType = -1;
         try {
-            notificationType = Integer.parseInt(String.valueOf(pAdditionParams[0]));
+            notificationType = Long.parseLong(String.valueOf(pAdditionParams[0]));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
         if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
             Log.d(this, "notification type is not accepted for this kind of transaction");
-            return true;
+            return;
         }
         try {
             String transId = String.valueOf(pAdditionParams[1]);
@@ -777,7 +775,6 @@ public abstract class AdapterBase {
         } catch (Exception ex) {
             Log.e(this, ex);
         }
-        return false;
     }
 
     private boolean handleEventPromotion(Object[] pAdditionParams) {

@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginTop="@dimen/sdk_margin_top_icon"
+        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
         android:orientation="horizontal">
 
         <TextView
@@ -44,10 +44,12 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/order_description_txt"
+        android:id="@+id/description_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sdk_margin_top_bottom"
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
         android:gravity="center"
         android:textColor="@color/text_color_bold"
         android:textSize="@dimen/zpw_text_size_medium" />

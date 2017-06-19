@@ -135,24 +135,22 @@ public class ResourceManager extends SingletonBase {
 
         if (file.exists()) {
             InputStream inputStream = new FileInputStream(file);
-            if (inputStream != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                String line;
-                StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
 
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line);
-                    stringBuilder.append("\r\n");
-                }
-
-                bufferedReader.close();
-                inputStreamReader.close();
-                inputStream.close();
-
-                result = stringBuilder.toString();
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append("\r\n");
             }
+
+            bufferedReader.close();
+            inputStreamReader.close();
+            inputStream.close();
+
+            result = stringBuilder.toString();
         }
 
         result = result.trim();
@@ -234,11 +232,11 @@ public class ResourceManager extends SingletonBase {
     public static void loadImageIntoView(View pView, String pImageName) {
         try {
             String pFilePath = getAbsoluteImagePath(pImageName);
-            if(!TextUtils.isEmpty(pFilePath)){
+            if(!TextUtils.isEmpty(pFilePath) && pView != null){
                 ((SimpleDraweeView)pView).setImageURI(pFilePath);
             }
         } catch (Exception e) {
-            Log.d("loadImageIntoView", e);
+            Log.e("loadImageIntoView", e);
         }
     }
 
