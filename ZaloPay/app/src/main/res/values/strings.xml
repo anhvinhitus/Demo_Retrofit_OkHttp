@@ -62,7 +62,7 @@
     <string name="title.activity.zalopay.contact">Danh bạ</string>
     <string name="title.activity.change.pin">Tạo lại mật khẩu thanh toán</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
-    <string name="title.activity.withdraw.home">Số dư</string>
+    <string name="title.activity.withdraw.home">Số dư TK Zalo Pay</string>
     <string name="title.activity.withdraw">Rút tiền</string>
     <string name="title.activity.set.amount">Thiết lập số tiền</string>
     <string name="title.activity.update.account.name">Cập nhật Zalo Pay ID</string>
@@ -428,6 +428,10 @@
     <string name="bank.maintenance.message">Đang bảo trì</string>
     <string name="bank.upversion.message">Nâng cấp phiên bản để sử dụng</string>
     <string name="ip.desc.confirm.change.phone">Mã xác thực đang được gửi đến SĐT bạn đã nhập. Bạn chắc chắn muốn quay lại?</string>
+
+    <!-- Balance Management -->
+    <string name="balance_management_deposit_description">Từ ngân hàng đã liên kết vào TK Zalo Pay</string>
+    <string name="balance_management_withdraw_description">Từ TK Zalo Pay về ngân hàng đã liên kết</string>
 
 </resources>
 
