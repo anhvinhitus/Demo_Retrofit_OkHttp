@@ -107,10 +107,10 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
         if (t != null) {
             if (!NetworkHelper.isNetworkAvailable(mContext)) {
                 subscriber.onError(new NetworkConnectionException());
-                networkCode = -1009;
+                networkCode = NetworkErrorCode.NO_NETWORK_CONNECTION;
             } else {
                 subscriber.onError(t);
-                networkCode = -1010;
+                networkCode = NetworkErrorCode.EMPTY_RESPONSE;
             }
 
             Timber.w("Error [%s] on request: %s", t.getMessage(), string);
@@ -118,13 +118,13 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
 
             if (response == null) {
                 subscriber.onError(new HttpEmptyResponseException());
-                networkCode = -1010;
+                networkCode = NetworkErrorCode.EMPTY_RESPONSE;
             } else if (!response.isSuccessful()) {
                 subscriber.onError(new HttpException(response));
                 httpCode = response.code();
             }
 
-            Timber.w("Error with http_code [%s] on request: %s", response == null ? -1009 : response.code(), string);
+            Timber.w("Error with http_code [%s] on request: %s", response == null ? NetworkErrorCode.NO_NETWORK_CONNECTION : response.code(), string);
         }
 
         ZPAnalytics.trackAPIError(request.url().encodedPath().replaceFirst("/", ""), httpCode, 0, networkCode);
