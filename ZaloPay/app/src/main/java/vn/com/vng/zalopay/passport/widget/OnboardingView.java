@@ -61,11 +61,11 @@ abstract class OnboardingView extends LinearLayout {
     @BindView(R.id.tvDescInput)
     TextView mDescInputView;
 
-    @BindView(R.id.btnConfirm)
-    Button mConfirmBtnView;
+    @BindView(R.id.btnPrimary)
+    Button mPrimaryBtnView;
 
-    @BindView(R.id.btnSecond)
-    IconFontTextView mSecondBtnView;
+    @BindView(R.id.btnSecondary)
+    IconFontTextView mSecondaryButton;
 
     private void initialize(Context context, AttributeSet attrs) {
         setOrientation(VERTICAL);
@@ -94,14 +94,14 @@ abstract class OnboardingView extends LinearLayout {
         assign();
     }
 
-    @OnClick(R.id.btnConfirm)
+    @OnClick(R.id.btnPrimary)
     public void onClick(View v) {
         if (mClickListener != null) {
             mClickListener.onClick(v);
         }
     }
 
-    @OnClick(R.id.btnSecond)
+    @OnClick(R.id.btnSecondary)
     public void onSecondClick(View v) {
         if (mSecondClickListener != null) {
             mSecondClickListener.onClick(v);
@@ -111,11 +111,11 @@ abstract class OnboardingView extends LinearLayout {
     public void assign() {
         mTitleView.setText(mTitle);
         mSubTitleView.setText(mSubTitle);
-        mConfirmBtnView.setText(mButtonText);
+        mPrimaryBtnView.setText(mButtonText);
         mDescInputView.setText(mDescInput);
-        showButton(mShowButton);
-        showSecondButton(mShowSecButton);
-        mSecondBtnView.setText(mSecondButtonText);
+        showPrimaryButton(mShowButton);
+        showSecondaryButton(mShowSecButton);
+        mSecondaryButton.setText(mSecondButtonText);
     }
 
     public void setOnClick(View.OnClickListener listener) {
@@ -130,12 +130,12 @@ abstract class OnboardingView extends LinearLayout {
 
     abstract void setInputText(String text);
 
-    public void showButton(boolean visible) {
-        mConfirmBtnView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    public void showPrimaryButton(boolean visible) {
+        mPrimaryBtnView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    public void showSecondButton(boolean visible) {
-        mSecondBtnView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    public void showSecondaryButton(boolean visible) {
+        mSecondaryButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void setError(String msg, Boolean clear) {
@@ -164,7 +164,7 @@ abstract class OnboardingView extends LinearLayout {
 
     public void reset() {
         clearError();
-        showButton(mShowButton);
+        showPrimaryButton(mShowButton);
         setInputText("");
     }
 
@@ -173,10 +173,10 @@ abstract class OnboardingView extends LinearLayout {
     }
 
     public void setTextSecondButton(String text) {
-        mSecondBtnView.setText(text);
+        mSecondaryButton.setText(text);
     }
 
     public void setEnableSecondButton(Boolean enable) {
-        mSecondBtnView.setEnabled(enable);
+        mSecondaryButton.setEnabled(enable);
     }
 }

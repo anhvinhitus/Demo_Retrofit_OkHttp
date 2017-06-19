@@ -181,7 +181,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     public void gotoOnboarding(ZaloProfile zaloProfile, String oauthcode) {
-        navigator.startInputPassword(this, zaloProfile, oauthcode);
+        navigator.startOnboarding(this, zaloProfile, oauthcode);
         finish();
     }
 }

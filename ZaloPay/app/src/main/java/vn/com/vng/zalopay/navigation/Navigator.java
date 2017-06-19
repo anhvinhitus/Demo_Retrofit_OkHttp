@@ -158,7 +158,7 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startInputPassword(Context context, ZaloProfile zaloProfile, String oauthtoken) {
+    public void startOnboarding(Context context, ZaloProfile zaloProfile, String oauthtoken) {
         Intent intent = new Intent(context, OnboardingActivity.class);
         intent.putExtra(ARGUMENT_KEY_ZALOPROFILE, zaloProfile);
         intent.putExtra(ARGUMENT_KEY_OAUTHTOKEN, oauthtoken);

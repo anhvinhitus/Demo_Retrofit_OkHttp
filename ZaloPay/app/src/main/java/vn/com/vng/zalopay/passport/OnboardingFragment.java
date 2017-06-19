@@ -246,7 +246,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
             if (pinCode.equals(mInputPwdView.getInputText())) {
                 nextPage();
             } else {
-                //mReInputPwdView.showButton(true)
+                //mReInputPwdView.showPrimaryButton(true)
                 mReInputPwdView.setError(getString(R.string.password_not_match), true);
             }
         }
@@ -352,7 +352,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     private void onPhonePageActive(Boolean next) {
         if (next) {
             mReInputPwdView.clearError();
-            //mReInputPwdView.showButton(false)
+            //mReInputPwdView.showPrimaryButton(false)
         } else {
             mInputOtpView.setInputText("");
         }

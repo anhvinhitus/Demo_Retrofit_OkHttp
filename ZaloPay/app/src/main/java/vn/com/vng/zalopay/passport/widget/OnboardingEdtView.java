@@ -50,7 +50,7 @@ public class OnboardingEdtView extends OnboardingView {
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mConfirmBtnView.setEnabled(s.length() >= mLengthToActiveButton);
+            mPrimaryBtnView.setEnabled(s.length() >= mLengthToActiveButton);
         }
     }
 
@@ -69,7 +69,7 @@ public class OnboardingEdtView extends OnboardingView {
 
     public void setLengthToActiveButton(int length) {
         mLengthToActiveButton = length;
-        mConfirmBtnView.setEnabled(getInputText().length() >= mLengthToActiveButton);
+        mPrimaryBtnView.setEnabled(getInputText().length() >= mLengthToActiveButton);
     }
 
     public boolean validate() {
@@ -98,7 +98,7 @@ public class OnboardingEdtView extends OnboardingView {
 
     public void reset() {
         clearError();
-        showButton(mShowButton);
+        showPrimaryButton(mShowButton);
     }
 
     public void addValidator(ZPEditTextValidate validator) {
