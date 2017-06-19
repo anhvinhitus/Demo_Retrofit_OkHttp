@@ -76,7 +76,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         mEventBus.unregister(this);
     }
 
-    public void handleIntent(Intent intent) {
+    void handleIntent(Intent intent) {
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) {
             Timber.d("Launching with empty action");

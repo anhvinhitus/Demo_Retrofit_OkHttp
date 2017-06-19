@@ -9,7 +9,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
  */
 
 public class TrackApptransidHelper {
-    public static int transfrom(Constants.ActivateSource activateSource) {
+    public static int transform(Constants.ActivateSource activateSource) {
         switch (activateSource) {
             case FromTransferActivity:
                 return 0;
@@ -18,7 +18,7 @@ public class TrackApptransidHelper {
             case FromQRCodeType2:
                 return ZPPaymentSteps.OrderSource_QR;
             case FromZalo:
-                return ZPPaymentSteps.OrderSource_AppToApp;
+                return ZPPaymentSteps.OrderSource_Zalo;
             case FromWebApp_QRType2:
                 return ZPPaymentSteps.OrderSource_WebToApp;
         }
