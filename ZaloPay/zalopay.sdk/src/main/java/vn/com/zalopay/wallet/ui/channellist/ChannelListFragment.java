@@ -102,7 +102,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         confirm_button = (Button) view.findViewById(R.id.confirm_button);
         confirm_button.setOnClickListener(mConfirmClick);
-        setupRecyclerView();
     }
 
     @Override
@@ -240,6 +239,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void onBindingChannel(ChannelListAdapter pChannelAdapter) {
+        setupRecyclerView();
         channel_list_recycler.setAdapter(pChannelAdapter);
     }
 

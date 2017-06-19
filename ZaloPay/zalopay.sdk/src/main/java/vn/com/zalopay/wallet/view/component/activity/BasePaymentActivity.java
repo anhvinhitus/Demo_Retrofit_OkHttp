@@ -1010,8 +1010,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
         order_fee_txt.setText(transFee);
         //render item detail dynamic
-        List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
-        renderDynamicItemDetail(viewContainer, items);
+        if(mPaymentInfoHelper.getOrder() != null){
+            List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
+            renderDynamicItemDetail(viewContainer, items);
+        }
     }
 
     public void renderSuccess(String pTransID, AbstractOrder order, String appName) {

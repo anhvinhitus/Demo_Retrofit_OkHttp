@@ -47,7 +47,7 @@
 
     <ViewStub
         android:id="@+id/fail_trans_detail_stub"
-        android:inflatedId="@+id/fail_trans_detail_stub"
+        android:inflatedId="@+id/fail_trans_detail"
         android:layout="@layout/module__trans__detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
