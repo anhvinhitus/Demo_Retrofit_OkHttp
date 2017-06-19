@@ -27,6 +27,10 @@ public class PaymentConnectorCallFactory implements Call.Factory {
             return mOkHttpClient.newCall(request);
         }
 
+        if (!mConnectorService.isConnectionReady()) {
+            return mOkHttpClient.newCall(request);
+        }
+
         String apiName = Strings.joinWithDelimiter("/", request.url().pathSegments());
         if (ConfigUtil.containsApi(apiName)) {
             return new PaymentConnectorCall(mConnectorService, request);

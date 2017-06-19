@@ -267,4 +267,8 @@ public class PaymentConnectorService implements OnReceivedPushMessageListener {
         removeRequest(request);
         publishSubject.onNext(request.requestId);
     }
+
+    boolean isConnectionReady() {
+        return mPaymentService.isConnected();
+    }
 }
