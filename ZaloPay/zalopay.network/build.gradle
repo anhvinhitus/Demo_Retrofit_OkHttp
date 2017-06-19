@@ -4,11 +4,9 @@ buildscript {
     }
     dependencies {
         classpath "me.tatarka:gradle-retrolambda:${retrolambdaVersion}"
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 def cfg = rootProject.ext.configuration

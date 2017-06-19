@@ -127,7 +127,7 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
             Timber.w("Error with http_code [%s] on request: %s", response == null ? -1009 : response.code(), string);
         }
 
-        ZPAnalytics.trackAPIError(Utils.pathSegmentsToString(request.url().pathSegments()), httpCode, 0, networkCode);
+        ZPAnalytics.trackAPIError(request.url().encodedPath().replaceFirst("/", ""), httpCode, 0, networkCode);
     }
 
     private void logTiming(long duration, Request request) {
