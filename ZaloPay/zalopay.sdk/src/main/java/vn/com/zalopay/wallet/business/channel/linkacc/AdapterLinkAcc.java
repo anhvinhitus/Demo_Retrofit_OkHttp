@@ -70,7 +70,6 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_UNLINKACC_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_UNLINKACC_SUCCESS;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
@@ -225,8 +224,8 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public boolean exitWithoutConfirm() {
-        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_SUCCESS_SPECIAL)
-                || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)
+        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING)
+                || getPageName().equals(PAGE_FAIL_PROCESSING)
                 || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_SUCCESS)
                 || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
             existTransWithoutConfirm = true;

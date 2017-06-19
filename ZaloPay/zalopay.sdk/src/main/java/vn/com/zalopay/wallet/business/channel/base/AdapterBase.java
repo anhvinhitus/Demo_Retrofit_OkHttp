@@ -81,7 +81,6 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.isTransNetworkError;
@@ -445,8 +444,10 @@ public abstract class AdapterBase {
     public boolean isFinalStep() {
         return !getPageName().equals(SCREEN_ATM)
                 && !getPageName().equals(SCREEN_CC)
-                && !getPageName().equals(PAGE_SUCCESS) && !getPageName().equals(PAGE_SUCCESS_SPECIAL)
-                && !getPageName().equals(PAGE_FAIL) && !getPageName().equals(PAGE_FAIL_NETWORKING) && !getPageName().equals(PAGE_FAIL_PROCESSING);
+                && !getPageName().equals(PAGE_SUCCESS)
+                && !getPageName().equals(PAGE_FAIL)
+                && !getPageName().equals(PAGE_FAIL_NETWORKING)
+                && !getPageName().equals(PAGE_FAIL_PROCESSING);
     }
 
     protected void processWrongOtp() {
@@ -921,7 +922,6 @@ public abstract class AdapterBase {
      */
     public boolean isFinalScreen() {
         return getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_SUCCESS)
-                || getPageName().equals(PAGE_SUCCESS_SPECIAL)
                 || getPageName().equals(PAGE_FAIL_NETWORKING)
                 || getPageName().equals(PAGE_FAIL_PROCESSING);
     }
@@ -931,15 +931,11 @@ public abstract class AdapterBase {
     }
 
     public boolean isTransactionSuccess() {
-        return isPaymentSuccess() || isPaymentSpecialSuccess() || isLinkAccSuccess();
+        return isPaymentSuccess() || isLinkAccSuccess();
     }
 
     public boolean isPaymentSuccess() {
         return getPageName().equals(PAGE_SUCCESS);
-    }
-
-    public boolean isPaymentSpecialSuccess() {
-        return getPageName().equals(PAGE_SUCCESS_SPECIAL);
     }
 
     public boolean isLinkAccSuccess() {
@@ -975,8 +971,8 @@ public abstract class AdapterBase {
     }
 
     public boolean exitWithoutConfirm() {
-        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_SUCCESS_SPECIAL)
-                || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)) {
+        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_FAIL) ||
+                getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)) {
             existTransWithoutConfirm = true;
         }
         return existTransWithoutConfirm;
@@ -1230,25 +1226,19 @@ public abstract class AdapterBase {
         }
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
-
-        AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
-        mPageName = TransactionHelper.getPageSuccessByAppType(appInfo);
+        mPageName = PAGE_SUCCESS;
 
         getActivity().setMarginSubmitButtonTop(true);
         getActivity().renderByResource();
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_title_header_pay_result));
         getActivity().enableSubmitBtn(true);
 
-        if (isPaymentSuccess()) {
-            String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
-            if (TextUtils.isEmpty(appName)) {
-                appName = appInfo != null ? appInfo.appname : null;
-            }
-            getActivity().renderSuccess(mTransactionID, mPaymentInfoHelper.getOrder(), appName);
-        } else if (isPaymentSpecialSuccess()) {
-            getActivity().renderSuccessSpecial(appInfo, mTransactionID);
+        AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
+        String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+        if (TextUtils.isEmpty(appName)) {
+            appName = appInfo != null ? appInfo.appname : null;
         }
-        //dismiss snackbar networking
+        getActivity().renderSuccess(mTransactionID, mPaymentInfoHelper.getOrder(), appName);
         PaymentSnackBar.getInstance().dismiss();
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         processSaveCardOnResult();

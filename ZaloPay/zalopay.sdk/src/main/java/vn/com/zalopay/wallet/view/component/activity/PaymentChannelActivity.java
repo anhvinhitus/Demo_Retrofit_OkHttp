@@ -64,7 +64,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected CountDownTimer mExpireTransTimer;
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
-    private boolean mIsStart = false;
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
     private MiniPmcTransType mMiniPmcTransType;

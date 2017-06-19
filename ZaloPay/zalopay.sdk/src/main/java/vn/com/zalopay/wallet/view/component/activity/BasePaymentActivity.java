@@ -717,28 +717,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return view;
     }
 
-    private View setMarginLeft(int pID, int margin) {
-        View view = this.findViewById(pID);
-        if (view == null) {
-            return view;
-        }
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-        layoutParams.leftMargin = margin;
-        view.setLayoutParams(layoutParams);
-        return view;
-    }
-
-    private View setMarginBottom(int pID, int margin) {
-        View view = this.findViewById(pID);
-        if (view == null) {
-            return view;
-        }
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
-        layoutParams.bottomMargin = margin;
-        view.setLayoutParams(layoutParams);
-        return view;
-    }
-
     public void setOnClickListener(int pId, View.OnClickListener pListener) {
         View view = this.findViewById(pId);
         if (view == null) {
@@ -904,10 +882,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getAdapter().getActivity().visibleOrderInfo(true);
         }
-    }
-
-    public void animationImageViewSuccessSpecial() {
-        startAnimate(R.id.zpw_imageview_success_icon);
     }
 
     public void animSuccess() {
@@ -1109,29 +1083,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animFail();
         changeSubmitButtonBackground();
-    }
-
-    public void renderSuccessSpecial(AppInfo appInfo, String pTransID) {
-        setText(R.id.zpw_textview_transaction_id, pTransID);
-        AbstractOrder order = mPaymentInfoHelper.getOrder();
-        if (order != null && order.amount_total >= 0) {
-            setTextHtml(R.id.zpw_textview_transaction_amount, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-        } else {
-            findViewById(R.id.zpw_textview_transaction_amount).setVisibility(View.GONE);
-        }
-        if (order != null) {
-            setVisible(R.id.zpw_textview_transaction_description, true);
-            setText(R.id.zpw_textview_transaction_description, appInfo.appname);
-            //set time transaction
-            long apptime = order.apptime;
-            if (apptime > 0) {
-                setText(R.id.zpw_textview_transaction_time, SdkUtils.convertDateTime(apptime));
-            }
-        }
-        //re-margin title header.
-        setMarginLeft(R.id.payment_method_name, (int) getResources().getDimension(R.dimen.zpw_header_label_margin));
-        //animate icon
-        animationImageViewSuccessSpecial();
     }
 
     public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {

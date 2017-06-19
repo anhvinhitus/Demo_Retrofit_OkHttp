@@ -50,13 +50,6 @@
                         android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
 
                     <include
-                        android:id="@+id/zpsdk_pay_success_special"
-                        layout="@layout/module__pay__success__special"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
-
-                    <include
                         android:id="@+id/zpsdk_pay_fail"
                         layout="@layout/module__pay__fail"
                         android:layout_width="match_parent"

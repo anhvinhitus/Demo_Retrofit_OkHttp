@@ -411,8 +411,6 @@ public class RS {
 
         public static final String screen__success = "screen__success";
 
-        public static final String screen__success__special = "screen__success__special";
-
         public static final String screen__fail = "screen__fail";
 
         public static final String screen__fail_networking = "screen__fail_networking";

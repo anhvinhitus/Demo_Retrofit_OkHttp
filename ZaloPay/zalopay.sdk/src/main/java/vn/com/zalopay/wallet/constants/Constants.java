@@ -92,7 +92,6 @@ public class Constants {
     public static String TRUE = "true";
 
     public static final String PAGE_SUCCESS = RS.layout.screen__success;
-    public static final String PAGE_SUCCESS_SPECIAL = RS.layout.screen__success__special;
     public static final String PAGE_FAIL = RS.layout.screen__fail;
     public static final String PAGE_FAIL_NETWORKING = RS.layout.screen__fail_networking;
     public static final String PAGE_FAIL_PROCESSING = RS.layout.screen__fail_processing;

@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentState;
@@ -25,8 +24,6 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS_SPECIAL;
 
 /**
  * Created by chucvv on 6/13/17.
@@ -156,18 +153,6 @@ public class TransactionHelper {
                 return true;
             default:
                 return false;
-        }
-    }
-
-    public static String getPageSuccessByAppType(AppInfo appInfo) {
-        if (appInfo == null) {
-            return PAGE_SUCCESS;
-        }
-        switch (appInfo.viewresulttype) {
-            case 2:
-                return PAGE_SUCCESS_SPECIAL;
-            default:
-                return PAGE_SUCCESS;
         }
     }
 
