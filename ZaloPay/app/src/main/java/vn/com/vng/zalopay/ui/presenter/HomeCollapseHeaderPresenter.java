@@ -94,20 +94,6 @@ public class HomeCollapseHeaderPresenter extends AbstractPresenter<IHomeCollapse
         mSubscription.add(subscription);
     }
 
-    /*
-    * Event bus
-    * */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkChange(NetworkChangeEvent event) {
-        if (mView == null) {
-            return;
-        }
-        if (!event.isOnline) {
-            return;
-        }
-        fetchBalance();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(ChangeBalanceEvent event) {
         if (mView != null) {

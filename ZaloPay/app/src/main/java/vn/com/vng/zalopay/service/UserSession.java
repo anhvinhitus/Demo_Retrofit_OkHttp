@@ -46,7 +46,7 @@ public class UserSession {
     private final BalanceStore.Repository mBalanceRepository;
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private final FileLogStore.Repository mFileLogRepository;
-	private final ApptransidLogStore.Repository mApptransidLogRepository;
+    private final ApptransidLogStore.Repository mApptransidLogRepository;
 
     public static long mLastTimeCheckPassword = 0;
     public static String mHashPassword;
@@ -133,6 +133,11 @@ public class UserSession {
         }
 
         mNotifyService.start();
+
+        Subscription subscription = mBalanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

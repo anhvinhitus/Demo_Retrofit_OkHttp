@@ -53,33 +53,40 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         this.mNavigator = navigator;
     }
 
+    @Override
+    public void attachView(IBalanceManagementView iBalanceManagementView) {
+        super.attachView(iBalanceManagementView);
+        registerEvent();
+    }
+
+    @Override
+    public void detachView() {
+        unregisterEvent();
+        super.detachView();
+    }
+
     private void updateUserInfo() {
         mView.updateUserInfo(mUser);
     }
 
     @Override
     public void resume() {
-        registerEvent();
+        super.resume();
         mView.updateBalance(mBalanceRepository.currentBalance());
         updateBalance();
         updateUserInfo();
-    }
-
-    @Override
-    public void pause() {
-        unregisterEvent();
     }
 
     private void registerEvent() {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        //  BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
-        mEventBus.unregister(this);
-        // BusComponent.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
     }
 
     @Override
@@ -94,20 +101,6 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         if (mView != null) {
             mView.updateBalance(event.balance);
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onNetworkChange(NetworkChangeEvent event) {
-        if (event.isOnline) {
-            updateBalance();
-        }
-    }
-
-    private void updateBalance() {
-        Subscription subscription = mBalanceRepository.updateBalance()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
     }
 
     private boolean isMaintainWithdraw() {
@@ -136,46 +129,44 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         if (isMaintainWithdraw()) {
             return;
         }
-        if (!isValidProfile()) {
-            mNavigator.startWithdrawConditionActivity(mView.getContext());
-        } else {
-            validLinkCard(new IListenerValid() {
-                @Override
-                public void onSuccess(List<BankConfig> list,
-                                      boolean isValidLinkCard,
-                                      boolean isValidLinkAccount) {
-                    if (mView == null || mView.getContext() == null) {
-                        return;
-                    }
-                    if (isValidLinkCard || isValidLinkAccount) {
-                        mNavigator.startWithdrawActivity(mView.getContext());
-                    } else {
-                        mNavigator.startWithdrawConditionActivity(mView.getContext());
-                    }
+
+        validLinkCard(new IListenerValid() {
+            @Override
+            public void onSuccess(List<BankConfig> list,
+                                  boolean isValidLinkCard,
+                                  boolean isValidLinkAccount) {
+                if (mView == null || mView.getContext() == null) {
+                    return;
                 }
-
-                @Override
-                public void onError(String error) {
-                    if (mView == null || mView.getContext() == null) {
-                        return;
-                    }
-                    mView.showConfirmDialog(error,
-                            mView.getContext().getString(R.string.txt_retry),
-                            mView.getContext().getString(R.string.txt_close),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-
-                                }
-
-                                @Override
-                                public void onOKevent() {
-                                    startWithdrawActivity();
-                                }
-                            });
+                if (isValidLinkCard || isValidLinkAccount) {
+                    mNavigator.startWithdrawActivity(mView.getContext());
+                } else {
+                    mNavigator.startWithdrawConditionActivity(mView.getContext());
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onError(String error) {
+                if (mView == null || mView.getContext() == null) {
+                    return;
+                }
+                mView.showConfirmDialog(error,
+                        mView.getContext().getString(R.string.txt_retry),
+                        mView.getContext().getString(R.string.txt_close),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                startWithdrawActivity();
+                            }
+                        });
+            }
+        });
+
     }
 
     @Override
@@ -221,14 +212,11 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
                 });
     }
 
-  /*  private class ComponentSubscriber extends DefaultSubscriber<Object> {
-        @Override
-        public void onNext(Object event) {
-            if (event instanceof ChangeBalanceEvent) {
-                if (mView != null) {
-                    mView.updateBalance(((ChangeBalanceEvent) event).balance);
-                }
-            }
-        }
-    }*/
+    private void updateBalance() {
+        Subscription subscription = mBalanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
 }
