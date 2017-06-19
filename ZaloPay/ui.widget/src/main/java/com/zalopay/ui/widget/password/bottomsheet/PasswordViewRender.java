@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -291,17 +292,11 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
      */
     public void onPinCodeError(final Activity pActivity) {
         isSuccess = false;
-        Runnable mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mPinCode = "";
-                mPinCodeRoundView.refresh(mPinCode.length());
-                Animation animation = AnimationUtils.loadAnimation(
-                        pActivity, R.anim.shake);
-                mKeyboardView.startAnimation(animation);
-            }
-        };
-        pActivity.runOnUiThread(mRunnable);
+        mPinCode = "";
+        mPinCodeRoundView.refresh(mPinCode.length());
+        Vibrator v = (Vibrator) pActivity.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
     }
 
     public void setErrorMessageToView(String pMessage) {
