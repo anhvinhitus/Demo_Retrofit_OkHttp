@@ -488,11 +488,6 @@ public class ChannelProxy extends SingletonBase {
         if (activity == null || activity.isFinishing()) {
             return;
         }
-        //balance less than order amount
-        if (mChannel.isZaloPayChannel() && !mPaymentInfoHelper.balanceEnoughForPayment()) {
-            mPaymentInfoHelper.setResult(PaymentStatus.ERROR_BALANCE);
-            startChannelActivity();
-        }
         //password flow
         else if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
             if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {

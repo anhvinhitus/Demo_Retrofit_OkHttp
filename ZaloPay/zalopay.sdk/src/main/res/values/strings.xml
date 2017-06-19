@@ -560,5 +560,6 @@
     <string name="sdk_unlink_account_service">Hủy liên kết tài khoản</string>
 
     <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Bạn có thể thực hiện lại giao dịch</string>
+    <string name="sdk_warning_balance_error">Số dư không đủ</string>
 
 </resources>

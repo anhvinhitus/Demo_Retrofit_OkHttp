@@ -38,11 +38,7 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
 
     public List<PaymentChannel> getDataSet(ItemType pItemType) {
         AbstractItem abstractItem = getDataBinder(pItemType);
-        if (abstractItem != null) {
-            return abstractItem.getDataSet();
-        } else {
-            return null;
-        }
+        return abstractItem != null ? abstractItem.getDataSet() : null;
     }
 
     public boolean hasTitle() {

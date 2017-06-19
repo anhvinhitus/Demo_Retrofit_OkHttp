@@ -460,7 +460,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
             Log.d(this, "preparing channels");
-            mChannelAdapter = new ChannelListAdapter(getViewOrThrow().getContext(), mPaymentInfoHelper.getAmount(),
+            mChannelAdapter = new ChannelListAdapter(getViewOrThrow().getContext(), (long) mPaymentInfoHelper.getAmountTotal(),
                     mPaymentInfoHelper.getUserInfo(), mPaymentInfoHelper.getTranstype());
             getViewOrThrow().onBindingChannel(mChannelAdapter);
 

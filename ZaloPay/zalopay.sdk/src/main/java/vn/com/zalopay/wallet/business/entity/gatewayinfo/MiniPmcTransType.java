@@ -10,9 +10,7 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
@@ -60,9 +58,9 @@ public class MiniPmcTransType implements Parcelable {
      * 2. transaction amount not in range supported by channel
      * 3. withdraw need to check fee + amount <= balance
      */
-    private boolean isAllowByAmount = true;
-    private boolean isAllowByLevel = true;
-    private boolean isAllowByAmountAndFee = true;
+    private boolean allowPmcQuota = true;
+    private boolean allowLevel = true;
+    private boolean allowOrderAmount = true;
 
     public MiniPmcTransType() {
     }
@@ -83,8 +81,8 @@ public class MiniPmcTransType implements Parcelable {
         this.feerate = channel.feerate;
         this.totalfee = channel.totalfee;
         this.amountrequireotp = channel.amountrequireotp;
-        this.isAllowByAmount = channel.isAllowByAmount;
-        this.isAllowByLevel = channel.isAllowByLevel;
+        this.allowPmcQuota = channel.allowPmcQuota;
+        this.allowLevel = channel.allowLevel;
         this.isBankAccountMap = channel.isBankAccountMap;
         this.minappversion = channel.minappversion;
         this.inamounttype = channel.inamounttype;
@@ -107,9 +105,9 @@ public class MiniPmcTransType implements Parcelable {
         overamounttype = in.readInt();
         isBankAccountMap = in.readByte() != 0;
         minappversion = in.readString();
-        isAllowByAmount = in.readByte() != 0;
-        isAllowByLevel = in.readByte() != 0;
-        isAllowByAmountAndFee = in.readByte() != 0;
+        allowPmcQuota = in.readByte() != 0;
+        allowLevel = in.readByte() != 0;
+        allowOrderAmount = in.readByte() != 0;
     }
 
     public static String getPmcKey(long pAppId, @TransactionType int pTranstype, int pPmcId) {
@@ -165,7 +163,7 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public boolean meetPaymentCondition() {
-        return isEnable() && isAllowByAmount() && !isMaintenance() && isAllowByAmountAndFee();
+        return isEnable() && isAllowPmcQuota() && !isMaintenance() && isAllowOrderAmount();
     }
 
     public boolean isDisable() {
@@ -223,31 +221,27 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public void checkPmcOrderAmount(long pOrderAmount) {
-        setAllowByAmount(isAmountSupport((long) (pOrderAmount + totalfee)));
-    }
-
-    public String getDefaultPmcFee() {
-        return (isAtmChannel() && !isMapCardChannel()) ? GlobalData.getStringResource(RS.string.default_message_pmc_fee) : GlobalData.getStringResource(RS.string.zpw_string_fee_free);
+        setAllowPmcQuota(isAmountSupport((long) (pOrderAmount + totalfee)));
     }
 
     /***
      * status must be 0
      * @return
      */
-    public boolean isAllowByAmount() {
-        return isAllowByAmount;
+    public boolean isAllowPmcQuota() {
+        return allowPmcQuota;
     }
 
-    protected void setAllowByAmount(boolean allowByAmount) {
-        isAllowByAmount = allowByAmount;
+    protected void setAllowPmcQuota(boolean allowPmcQuota) {
+        this.allowPmcQuota = allowPmcQuota;
     }
 
-    public boolean isAllowByAmountAndFee() {
-        return isAllowByAmountAndFee;
+    public boolean isAllowOrderAmount() {
+        return allowOrderAmount;
     }
 
-    public void setAllowByAmountAndFee(boolean allowByAmountAndFee) {
-        isAllowByAmountAndFee = allowByAmountAndFee;
+    public void setAllowOrderAmount(boolean allowOrderAmount) {
+        this.allowOrderAmount = allowOrderAmount;
     }
 
     public boolean isMaintenance() {
@@ -301,8 +295,8 @@ public class MiniPmcTransType implements Parcelable {
         parcel.writeInt(overamounttype);
         parcel.writeByte((byte) (isBankAccountMap ? 1 : 0));
         parcel.writeString(minappversion);
-        parcel.writeByte((byte) (isAllowByAmount ? 1 : 0));
-        parcel.writeByte((byte) (isAllowByLevel ? 1 : 0));
-        parcel.writeByte((byte) (isAllowByAmountAndFee ? 1 : 0));
+        parcel.writeByte((byte) (allowPmcQuota ? 1 : 0));
+        parcel.writeByte((byte) (allowLevel ? 1 : 0));
+        parcel.writeByte((byte) (allowOrderAmount ? 1 : 0));
     }
 }

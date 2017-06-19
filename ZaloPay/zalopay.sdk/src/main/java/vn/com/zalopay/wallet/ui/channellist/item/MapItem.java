@@ -1,16 +1,14 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 
 /**
@@ -22,13 +20,14 @@ public class MapItem extends AbstractItem<MapItem.ViewHolder> {
     private int user_level = 1;
 
     public MapItem(Context context, long amount, int user_level, DataBindAdapter dataBindAdapter) {
-        super(context, amount, dataBindAdapter, ViewHolder.class);
+        super(context, amount, dataBindAdapter);
         this.user_level = user_level;
     }
 
     @Override
-    public int getLayoutId() {
-        return R.layout.channel_item;
+    public MapItem.ViewHolder onNewBindHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_item, parent, false);
+        return new MapItem.ViewHolder(view);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class MapItem extends AbstractItem<MapItem.ViewHolder> {
             fee_desc = mContext.getString(R.string.zpw_string_fee_upgrade_level);
         }
         fee_desc = formatFeeDesc(fee_desc);
-        holder.fee_textview.setText(fee_desc);
+        renderDesc(holder, fee_desc);
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {

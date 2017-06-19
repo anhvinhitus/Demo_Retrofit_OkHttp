@@ -77,7 +77,7 @@ public class ChannelPreValidation extends SingletonBase {
                 return false;
             }
         }
-        if (!mChannel.isEnable() || !mChannel.isAllowByAmount() || !mChannel.isAllowByAmountAndFee()) {
+        if (!mChannel.isEnable() || !mChannel.isAllowPmcQuota() || !mChannel.isAllowOrderAmount()) {
             Log.d(this, "select channel not support", mChannel);
             return false;
         }

@@ -1,10 +1,9 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,17 +13,14 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBinder;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.helper.RenderHelper;
 
 /**
  * Created by chucvv on 6/14/17.
@@ -34,24 +30,22 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     protected List<PaymentChannel> mDataSet = new ArrayList<>();
     protected long amount;
     protected Context mContext;
-    protected int bankLogoSize = 0;
-    protected int marginLeft = 0;
-    private Class<T> clazz;
+    private int bankLogoSize = 0;
+    private int marginLeft = 0;
 
-    public AbstractItem(Context context, long amount, DataBindAdapter dataBindAdapter, Class<T> clasz) {
+    public AbstractItem(Context context, long amount, DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
         this.mContext = context;
         this.amount = amount;
-        this.clazz = clasz;
         this.bankLogoSize = (int) mContext.getResources().getDimension(R.dimen.sdk_ic_channel_size);
         this.marginLeft = (int) mContext.getResources().getDimension(R.dimen.zpw_item_listview_padding_left_right);
     }
 
-    public abstract int getLayoutId();
+    public abstract T onNewBindHolder(ViewGroup parent);
 
     public abstract void onBindViewHolder(T holder, int position);
 
-    protected void adjustLine(View pLine) {
+    private void adjustLine(View pLine) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pLine.getLayoutParams();
         params.leftMargin = bankLogoSize * 2 + marginLeft * 2;
         pLine.requestLayout();
@@ -69,7 +63,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         if (!TextUtils.isEmpty(fee_desc)
                 && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_free))
                 && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_upgrade_level))) {
-            fee_desc = String.format(GlobalData.getStringResource(RS.string.zpw_string_fee_format), fee_desc);
+            fee_desc = String.format(mContext.getString(R.string.zpw_string_fee_format), fee_desc);
         }
         return fee_desc;
     }
@@ -95,27 +89,23 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
 
     @Override
     public T newViewHolder(ViewGroup parent) {
+        return onNewBindHolder(parent);
+    }
+    /* @Override
+    public T newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(), parent, false);
         try {
-            Constructor constructor = clazz.getConstructor(new Class[]{View.class});
-            try {
-                return (T) constructor.newInstance(view);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            Constructor constructor = clazz.getConstructor(View.class);
+            return (T) constructor.newInstance(view);
+        } catch (Exception e) {
+            Log.e(this, e);
         }
         return null;
-    }
+    }*/
 
-    protected String getChannelSubTitle(PaymentChannel pChannel) {
-        String mess = null;
-        if (!pChannel.isAllowByAmount()) {
+    private String getWarningDesc(PaymentChannel pChannel) {
+        String mess;
+        if (!pChannel.isAllowPmcQuota()) {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount);
             if ((amount + pChannel.totalfee) < pChannel.minvalue) {
                 mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount_small);
@@ -124,16 +114,38 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
             mess = mContext.getString(R.string.zpw_string_bank_maintenance);
         } else if (pChannel.isMaintenance()) {
             mess = mContext.getString(R.string.zpw_string_channel_maintenance);
-        } else if (!pChannel.isAllowByAmountAndFee()) {
+        } else if (pChannel.isZaloPayChannel() && !pChannel.isAllowOrderAmount()) {
+            mess = mContext.getString(R.string.sdk_warning_balance_error);
+        } else if (!pChannel.isAllowOrderAmount()) {
+            StringBuilder builder = new StringBuilder();
             if (pChannel.hasFee()) {
-                mess = String.format(mContext.getString(R.string.zpw_string_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee)));
+                builder.append(String.format(mContext.getString(R.string.zpw_string_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))));
             }
-            mess += ". " + mContext.getString(R.string.zpw_string_channel_not_allow_by_fee);
+            builder.append(".").append(mContext.getString(R.string.zpw_string_channel_not_allow_by_fee));
+            mess = builder.toString();
         } else {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow);
         }
-
         return mess;
+    }
+
+    private void renderWarningDesc(T holder, PaymentChannel channel) {
+        String desc = getWarningDesc(channel);
+        boolean zaloPay = this instanceof ZaloPayItem;
+        if (zaloPay) {
+            ZaloPayItem zaloPayItem = (ZaloPayItem) this;
+            zaloPayItem.renderBalanceError((ZaloPayItem.ViewHolder) holder, desc);
+        } else {
+            holder.fee_textview.setText(RenderHelper.getHtml(desc));
+        }
+        holder.name_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
+        holder.fee_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color_red_blur)));
+        holder.icon_imageview.setImageAlpha(100);
+        holder.fee_textview.setVisibility(!zaloPay ? View.VISIBLE : View.GONE);
+    }
+
+    protected void renderDesc(T holder, String desc) {
+        holder.fee_textview.setText(desc);
     }
 
     @Override
@@ -144,11 +156,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         holder.select_imageview.setVisibility(channel.select ? View.VISIBLE : View.INVISIBLE);
         //show not support channel
         if (!channel.meetPaymentCondition()) {
-            String desc = getChannelSubTitle(channel);
-            holder.fee_textview.setText(Html.fromHtml(desc));
-            holder.name_textview.setTextColor(mContext.getResources().getColor(R.color.text_color));
-            holder.fee_textview.setTextColor(mContext.getResources().getColor(R.color.text_color_red_blur));
-            holder.icon_imageview.setAlpha(100);
+            renderWarningDesc(holder, channel);
         } else {
             onBindViewHolder(holder, position);
         }

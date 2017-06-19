@@ -1,7 +1,10 @@
 package vn.com.zalopay.wallet.helper;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,14 @@ import vn.com.zalopay.wallet.R;
  */
 
 public class RenderHelper {
+    public static Spanned getHtml(String html) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+        } else {
+            return Html.fromHtml(html); // or for older api
+        }
+    }
+
     public static List<View> genDynamicItemDetail(Context context, List<NameValuePair> nameValuePairList) {
         if (nameValuePairList == null) {
             return null;
@@ -34,7 +45,7 @@ public class RenderHelper {
                 relativeLayout.setLayoutParams(params);
                 if (!TextUtils.isEmpty(nameValuePair.key)) {
                     TextView name_txt = new TextView(context);
-                    name_txt.setTextColor(ContextCompat.getColor(context,(R.color.text_color_grey)));
+                    name_txt.setTextColor(ContextCompat.getColor(context, (R.color.text_color_grey)));
                     name_txt.setText(nameValuePair.key);
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -45,7 +56,7 @@ public class RenderHelper {
                 }
                 if (!TextUtils.isEmpty(nameValuePair.value)) {
                     TextView value_txt = new TextView(context);
-                    value_txt.setTextColor(ContextCompat.getColor(context,(R.color.text_color_grey)));
+                    value_txt.setTextColor(ContextCompat.getColor(context, (R.color.text_color_grey)));
                     value_txt.setText(nameValuePair.value);
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);

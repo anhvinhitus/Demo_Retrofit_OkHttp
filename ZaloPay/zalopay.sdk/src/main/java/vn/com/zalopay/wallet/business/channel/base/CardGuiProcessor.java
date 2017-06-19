@@ -829,7 +829,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     miniPmcTransType.calculateFee(mPaymentInfoHelper.getAmount());
                     mPaymentInfoHelper.getOrder().populateFee(miniPmcTransType);
                     miniPmcTransType.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
-                    if (!miniPmcTransType.isAllowByAmount()) {
+                    if (!miniPmcTransType.isAllowPmcQuota()) {
                         CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
                         String invalidAmountMessage = GlobalData.getStringResource(RS.string.invalid_order_amount_bank);
                         double amount_total = mPaymentInfoHelper.getAmountTotal();

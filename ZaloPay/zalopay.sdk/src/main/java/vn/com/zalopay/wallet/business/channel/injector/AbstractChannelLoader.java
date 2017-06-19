@@ -95,7 +95,7 @@ public abstract class AbstractChannelLoader {
                 PaymentChannel channel = new PaymentChannel(activeChannel);
                 if (channel.isBankAccount()
                         && BankAccountHelper.hasBankAccountOnCache(mUserId, CardType.PVCB)) {
-                    continue;//user has linked vietcombank account , no need show bank account channel
+                    continue;//user has linked vietcom bank account , no need show bank account channel
                 }
                 if (channel.isEnable()) {
                     channel.calculateFee(mAmount);//calculate fee of this channel
@@ -105,6 +105,12 @@ public abstract class AbstractChannelLoader {
                 if (channel.isEnable() && ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
                         || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_BANK_ACCOUNT)))) {
                     channel.setStatus(PaymentChannelStatus.MAINTENANCE);
+                }
+                if(channel.isZaloPayChannel()){
+                    boolean balanceError = mBalance <= mAmount + channel.totalfee;
+                    if(balanceError){
+                        channel.setAllowOrderAmount(false);
+                    }
                 }
                 //get icon
                 ChannelHelper.inflatChannelIcon(channel, null);
@@ -313,7 +319,7 @@ public abstract class AbstractChannelLoader {
         //check fee + amount <= balance
         double amount_total = mAmount + pChannel.totalfee;
         if (mBalance < amount_total) {
-            pChannel.setAllowByAmountAndFee(false);
+            pChannel.setAllowOrderAmount(false);
         }
     }
 
@@ -350,7 +356,6 @@ public abstract class AbstractChannelLoader {
 
     /***
      * detect min/max value
-     *
      * @param activeChannel
      */
     public void findValue(MiniPmcTransType activeChannel) {
