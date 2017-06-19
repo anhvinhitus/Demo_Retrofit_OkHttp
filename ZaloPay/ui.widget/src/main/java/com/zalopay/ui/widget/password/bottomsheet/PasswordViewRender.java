@@ -49,6 +49,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private CheckBox mCheckBox;
     private LinearLayout mMaskLayout;
     private LoadingIndicatorView mLoadingIndicatorView;
+    private LinearLayout mLayoutCheckBox;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
         public void setErrorMessage(Activity pActivity, String pError) {
@@ -80,7 +81,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         @Override
         public void clearData() {
             mBuilder.showLoadding(false);
-
         }
 
         @Override
@@ -100,6 +100,12 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 }
             }
 
+
+        }
+
+        @Override
+        public void showFingerPrintCheckBox(boolean pShow) {
+            showFingerPrin(pShow);
 
         }
     };
@@ -151,21 +157,22 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
         mMaskLayout = (LinearLayout) pWView.findViewById(R.id.layout_root_view);
-
+        mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
         mBuilder.getCallBackToView(mISetDataToView);
         mCheckBox.setOnCheckedChangeListener(this);
-        
+
         mTextTitle.setText(mBuilder.getTitle());
         String image_path = mBuilder.getLogoPath();
+
         if (!TextUtils.isEmpty(image_path)) {
             mLogo.setImageURI(image_path);
         } else {
             mLogo.setVisibility(View.GONE);
         }
-
+        showFingerPrin(mBuilder.getFingerPrint());
         setStepText(pContext);
     }
 
@@ -173,6 +180,17 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mStepTextView.setText(getStepText(mType, pContext));
     }
 
+    private void showFingerPrin(boolean pShow) {
+        if (mLayoutCheckBox == null) {
+            return;
+        }
+        if (pShow) {
+            mLayoutCheckBox.setVisibility(View.VISIBLE);
+        } else {
+            mLayoutCheckBox.setVisibility(View.GONE);
+        }
+
+    }
     /**
      * Gets the {@link String} to be used in the {@link #mStepTextView} based on {@link #mType}
      *

@@ -29,6 +29,10 @@ public interface IBuilder {
 
     IBuilder showLoadding(boolean pShow);
 
+    IBuilder setFingerPrint(boolean pShow);
+
+    boolean getFingerPrint();
+
     void getCallBackToView(ISetDataToView pIfError);
 
     UIBottomSheetDialog.IRender build();

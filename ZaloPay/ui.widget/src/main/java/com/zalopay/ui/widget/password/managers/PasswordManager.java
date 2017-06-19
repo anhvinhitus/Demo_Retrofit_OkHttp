@@ -31,7 +31,7 @@ public class PasswordManager {
      * @param pLogoPath
      * @param pIPinCallBack
      */
-    public PasswordManager(Activity pActivity, String pTitle, String pLogoPath, IPinCallBack pIPinCallBack) {
+    public PasswordManager(Activity pActivity, String pTitle, String pLogoPath, boolean pFingerPrint,IPinCallBack pIPinCallBack) {
         mIPinCallBack = new WeakReference<>(pIPinCallBack);
         mActivity = new WeakReference<>(pActivity);
         View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
@@ -40,7 +40,8 @@ public class PasswordManager {
                 .setIFPinCallBack(mIPinCallBack.get())
                 .setIFControl(mControl)
                 .setTitle(pTitle)
-                .setLogoPath(pLogoPath);
+                .setLogoPath(pLogoPath)
+                .setFingerPrint(pFingerPrint);
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
         mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
     }
@@ -95,6 +96,15 @@ public class PasswordManager {
         mIBuilder.showLoadding(pShowing);
     }
 
+
+    public void showFingerPrintCheckBox(boolean pShowing)
+    {
+        if (mIBuilder == null) {
+            Log.e(TAG, "mBuilder is null");
+            return;
+        }
+        mIBuilder.setFingerPrint(pShowing);
+    }
 
     private IControl mControl = new IControl() {
         @Override

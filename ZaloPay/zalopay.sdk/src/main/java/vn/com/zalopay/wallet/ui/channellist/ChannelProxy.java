@@ -561,7 +561,7 @@ public class ChannelProxy extends SingletonBase {
     private PasswordManager getPasswordManager(Activity pActivity) {
         String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
         if (mPassword == null) {
-            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, mPasswordCallback);
+            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, false, mPasswordCallback);
         } else {
             mPassword.setContent(mChannel.pmcname, logo_path);
         }

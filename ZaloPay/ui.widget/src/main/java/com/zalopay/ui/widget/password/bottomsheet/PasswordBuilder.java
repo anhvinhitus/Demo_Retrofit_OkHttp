@@ -19,6 +19,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected String mTextTitle;
     protected ISetDataToView mISetDataToView;
     protected IControl mControl;
+    protected boolean mFingerPrint;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
@@ -119,5 +120,19 @@ public abstract class PasswordBuilder implements IBuilder {
     @Override
     public IControl getIFControl() {
         return mControl;
+    }
+
+    @Override
+    public IBuilder setFingerPrint(boolean pShow) {
+        if (mISetDataToView != null) {
+            mISetDataToView.showFingerPrintCheckBox(pShow);
+        }
+        mFingerPrint = pShow;
+        return this;
+    }
+
+    @Override
+    public boolean getFingerPrint() {
+        return mFingerPrint;
     }
 }
