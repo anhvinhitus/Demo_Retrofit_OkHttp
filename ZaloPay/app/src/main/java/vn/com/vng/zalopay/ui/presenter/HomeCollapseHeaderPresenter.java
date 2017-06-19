@@ -73,7 +73,7 @@ public class HomeCollapseHeaderPresenter extends AbstractPresenter<IHomeCollapse
     * Local functions
     * */
     public void initialize() {
-        fetchBalance();
+        getBalance();
     }
 
     private void fetchBalance() {
@@ -85,7 +85,7 @@ public class HomeCollapseHeaderPresenter extends AbstractPresenter<IHomeCollapse
         mSubscription.add(subscription);
     }
 
-    private void getBalanceLocal() {
+    private void getBalance() {
         Subscription subscription = mBalanceRepository.balanceLocal()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -101,13 +101,35 @@ public class HomeCollapseHeaderPresenter extends AbstractPresenter<IHomeCollapse
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (mView == null) {
+            return;
+        }
+
+        if (event.isOnline) {
+            getBalance();
+        }
+    }
+
+
     /*
     * Custom subscribers
     * */
     private class BalanceSubscriber extends DefaultSubscriber<Long> {
         @Override
         public void onNext(Long aLong) {
-            onGetBalanceSuccess(aLong);
+            if(aLong > 0) {
+                onGetBalanceSuccess(aLong);
+            } else {
+                fetchBalance();
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            super.onError(e);
+            fetchBalance();
         }
     }
 
