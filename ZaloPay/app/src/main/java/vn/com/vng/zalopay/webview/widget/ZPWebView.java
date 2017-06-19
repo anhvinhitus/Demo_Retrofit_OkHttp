@@ -14,6 +14,8 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.zalopay.ui.widget.util.AgentUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +47,7 @@ public class ZPWebView extends WebView {
         if (TextUtils.isEmpty(userAgent)) {
             return;
         }
-        String newUserAgent = getSettings().getUserAgentString() + " " + userAgent;
-        getSettings().setUserAgentString(newUserAgent);
+        getSettings().setUserAgentString(AgentUtil.getUserAgent(userAgent));
     }
 
     @SuppressWarnings("deprecation")
