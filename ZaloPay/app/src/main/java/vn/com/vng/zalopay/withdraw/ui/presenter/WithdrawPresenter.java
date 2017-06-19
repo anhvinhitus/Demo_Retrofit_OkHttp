@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -22,20 +23,20 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
-import vn.com.vng.zalopay.data.util.ConvertHelper;
-import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.UserInputException;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -48,12 +49,14 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
  * *
  */
 public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
+
     private static final int WITHDRAW_APP_ID = 2;
     private final BalanceStore.Repository mBalanceRepository;
     private final ZaloPayRepository mZaloPayRepository;
     private final Navigator mNavigator;
     private final User mUser;
     private final Context mContext;
+    private final EventBus mEventBus;
 
     private final List<Long> mDenominationMoney = Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
 
@@ -65,13 +68,14 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     @Inject
     WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
                       ZaloPayRepository zaloPayRepository,
-                      Navigator navigator, User user
+                      Navigator navigator, User user, EventBus eventBus
     ) {
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mNavigator = navigator;
         this.mContext = context;
         this.mUser = user;
+        this.mEventBus = eventBus;
 
         paymentWrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new PaymentResponseListener())
@@ -87,6 +91,28 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .build();
         paymentWrapper.initializeComponents();
         initLimitAmount();
+    }
+
+    @Override
+    public void attachView(IWithdrawView iWithdrawView) {
+        super.attachView(iWithdrawView);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+    }
+
+    @Override
+    public void detachView() {
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
+        super.detachView();
+    }
+
+    @Override
+    public void destroy() {
+        CShareDataWrapper.dispose();
+        super.destroy();
     }
 
     public void loadView() {
@@ -182,8 +208,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         mView.hideLoading();
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
-        } else if (e instanceof UserInputException) {
-            mView.showAmountError(ErrorMessageFactory.create(mContext, e));
         } else {
             Timber.e(e, "Server responses with error when client create withdraw order.");
             mView.showError(ErrorMessageFactory.create(mContext, e));

@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 
 
-public class WithdrawFragment extends BaseFragment implements IWithdrawView,WithdrawAdapter.OnClickDenominationListener {
+public class WithdrawFragment extends BaseFragment implements IWithdrawView, WithdrawAdapter.OnClickDenominationListener {
 
     private final static int SPAN_COUNT_APPLICATION = 2;
 
@@ -88,18 +88,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView,With
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.resume();
-    }
-
-    @Override
-    public void onPause() {
-        mPresenter.pause();
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
         mPresenter.detachView();
         super.onDestroyView();
@@ -108,7 +96,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView,With
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 
@@ -142,11 +129,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView,With
     @Override
     public Fragment getFragment() {
         return this;
-    }
-
-    @Override
-    public void showAmountError(String error) {
-
     }
 
     @Override

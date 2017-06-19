@@ -13,8 +13,6 @@ public interface IWithdrawView extends ILoadDataView {
 
     Fragment getFragment();
 
-    void showAmountError(String error);
-
     void setBalance(long balance);
 
     void addDenominationMoney(List<Long> val);
