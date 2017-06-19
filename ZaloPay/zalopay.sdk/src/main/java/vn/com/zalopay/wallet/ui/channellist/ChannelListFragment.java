@@ -170,11 +170,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void enableConfirmButton(boolean pEnable) {
-        confirm_button.setEnabled(pEnable);
-    }
-
-    @Override
     public void callbackThenterminate() {
         if (mPresenter != null) {
             mPresenter.callback();
@@ -370,5 +365,22 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         } catch (Exception e) {
             Log.d(this, e);
         }
+    }
+
+    @Override
+    public void enableConfirmButton(int buttonTextId, int bgResourceId) {
+        confirm_button.setEnabled(true);
+        if (buttonTextId != -1) {
+            confirm_button.setText(getString(buttonTextId));
+        }
+        if (bgResourceId != -1) {
+            confirm_button.setBackgroundResource(bgResourceId);
+        }
+    }
+
+    @Override
+    public void disableConfirmButton() {
+        confirm_button.setEnabled(false);
+        confirm_button.setBackgroundResource(R.drawable.bg_btn_silver_border);
     }
 }

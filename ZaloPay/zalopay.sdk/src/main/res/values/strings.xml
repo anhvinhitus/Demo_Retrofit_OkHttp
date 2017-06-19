@@ -544,7 +544,9 @@
     <string name="sdk_load_appinfo_error_message">Không tải được thông tin ứng dụng. Vui lòng thử lại!</string>
     <string name="sdk_load_generic_error_message">Không tải được thông tin. Vui lòng thử lại!</string>
 
-    <string name="sdk_button_confirm_txt">Xác Nhận Thanh Toán</string>
+    <string name="sdk_pay_button_confirm_txt">Xác Nhận Thanh Toán</string>
+    <string name="sdk_generic_button_confirm_txt">Xác Nhận Giao Dịch</string>
+    <string name="sdk_next_button_confirm_txt">Tiếp Tục</string>
 
     <string name="sdk_appname_title">Dịch vụ</string>
     <string name="sdk_order_fee_title">Phí giao dịch</string>

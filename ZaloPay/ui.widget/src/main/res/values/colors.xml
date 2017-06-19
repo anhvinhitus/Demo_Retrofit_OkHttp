@@ -139,8 +139,8 @@
     <color name="bg_btn_gray">#c7c7c7</color>
     <color name="bg_btn_blue">#008fe5</color>
     <color name="bg_btn_blue_selected">#004c7a</color>
-    <color name="bg_btn_green">#06be04</color>
-    <color name="bg_btn_green_selected">#9906be04</color>
+    <color name="bg_btn_green">#04BE04</color>
+    <color name="bg_btn_green_selected">#21D921</color>
     <!--COLOR DIALOG-->
     <color name="text_color_bold">#24272b</color>
     <color name="line">#e5e5e8</color>
@@ -171,6 +171,8 @@
     <color name="bg_btn_skyblue_selected">#804abbff</color>
     <color name="bg_btn_light_blue">#e5f5ff</color>
     <color name="bg_btn_light_blue_select">#80e5f5ff</color>
+    
+    <color name="bg_btn_silver">#C7CAD3</color>
 
      <color name="txt_item_sub">#727f8c</color>
 </resources>

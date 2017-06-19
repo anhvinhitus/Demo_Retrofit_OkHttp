@@ -50,6 +50,7 @@ import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
@@ -302,7 +303,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             try {
                 mPreviousPosition = pPosition;//save to the previous position
                 mChannelAdapter.notifyBinderItemChanged(pPosition);
-                getViewOrThrow().enableConfirmButton(true);
+                updateButton();
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -310,15 +311,28 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     public void startPayment() {
-        if (mPreviousPosition >= 0 && mChannelList != null && mChannelList.size() > 0) {
-            try {
-                Object object = mChannelList.get(mPreviousPosition);
-                if (object instanceof PaymentChannel) {
-                    mChannelProxy.setChannel((PaymentChannel) object).start();
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
+        try {
+            PaymentChannel channel = getSelectChannel();
+            if (channel != null) {
+                mChannelProxy.setChannel(channel).start();
             }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+    private PaymentChannel getSelectChannel() throws Exception {
+        if (mPreviousPosition < 0 || mChannelList == null || mChannelList.size() <= 0) {
+            throw new Exception("invalid channel list");
+        }
+        try {
+            Object object = mChannelList.get(mPreviousPosition);
+            if (!(object instanceof PaymentChannel)) {
+                throw new Exception("invalid select channel");
+            }
+            return (PaymentChannel) object;
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -414,6 +428,29 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     selectChannel(i);
                     break;
                 }
+            }
+        }
+        try {
+            updateButton();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+    private void updateButton() throws Exception {
+        if (mPreviousPosition < 0) {
+            try {
+                getViewOrThrow().disableConfirmButton();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        } else {
+            //update text by trans type
+            PaymentChannel channel = getSelectChannel();
+            if (channel != null) {
+                int btnTextId = ChannelHelper.btnConfirmText(channel, mPaymentInfoHelper.getTranstype());
+                int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
+                getViewOrThrow().enableConfirmButton(btnTextId, btnBgDrawableId);
             }
         }
     }

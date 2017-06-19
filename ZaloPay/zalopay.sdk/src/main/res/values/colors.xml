@@ -154,12 +154,4 @@
     <color name="background_zpw_update_level_inform_content">#EEF9FF</color>
     <color name="background_zpw_update_level_inform_content_border">#A2CBE7</color>
 
-    <color name="bg_btn_green_pressed">#21D921</color>
-    <color name="bg_btn_green">#04BE04</color>
-
-    <color name="bg_btn_skyblue">#4abbff</color>
-    <color name="bg_btn_skyblue_pressed">#804abbff</color>
-    <color name="bg_btn_light_blue">#e5f5ff</color>
-    <color name="bg_btn_light_blue_pressed">#80e5f5ff</color>
-
 </resources>

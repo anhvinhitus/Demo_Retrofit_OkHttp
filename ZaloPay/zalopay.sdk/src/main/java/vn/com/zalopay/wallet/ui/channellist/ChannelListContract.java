@@ -20,8 +20,6 @@ public interface ChannelListContract extends IContract {
 
         void updateDefaultTitle();
 
-        void enableConfirmButton(boolean pEnable);
-
         void renderAppInfo(String appName);
 
         void renderOrderInfo(AbstractOrder order);
@@ -49,5 +47,9 @@ public interface ChannelListContract extends IContract {
         void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener);
 
         void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener);
+
+        void enableConfirmButton(int buttonTextId, int bgResourceId);
+
+        void disableConfirmButton();
     }
 }

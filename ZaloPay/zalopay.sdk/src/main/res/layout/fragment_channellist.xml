@@ -42,9 +42,16 @@
 
     <Button
         android:id="@+id/confirm_button"
-        style="@style/ButtonPayment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_submit_button_height"
+        android:background="@drawable/bg_btn_green_border_selector"
         android:layout_alignParentBottom="true"
         android:enabled="false"
-        android:text="@string/sdk_button_confirm_txt" />
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/zpw_submit_button_text_size"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_margin="@dimen/padding_large"
+        android:gravity="center"
+        android:text="@string/sdk_pay_button_confirm_txt" />
 
 </RelativeLayout>
