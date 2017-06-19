@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
+        classpath "me.tatarka:gradle-retrolambda:${retrolambdaVersion}"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
