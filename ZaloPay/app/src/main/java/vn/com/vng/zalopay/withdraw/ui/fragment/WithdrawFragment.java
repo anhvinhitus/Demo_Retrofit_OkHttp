@@ -4,38 +4,50 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.MoneyEditText;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 
-/**
- * A simple {@link BaseFragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link WithdrawFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class WithdrawFragment extends BaseFragment implements IWithdrawView {
+
+public class WithdrawFragment extends BaseFragment implements IWithdrawView,WithdrawAdapter.OnClickDenominationListener {
+
+    private final static int SPAN_COUNT_APPLICATION = 2;
 
     public static WithdrawFragment newInstance() {
-        return new WithdrawFragment();
+
+        Bundle args = new Bundle();
+
+        WithdrawFragment fragment = new WithdrawFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    public WithdrawFragment() {
-    }
+    @BindView(R.id.listview)
+    RecyclerView listview;
+
+    @BindView(R.id.progressContainer)
+    View progressContainer;
 
     @Override
     protected void setupFragmentComponent() {
@@ -44,49 +56,35 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_withdraw;
+        return R.layout.fragment_recycleview;
     }
-
-    private long minWithdrawAmount;
-    private long maxWithdrawAmount;
 
     @Inject
     WithdrawPresenter mPresenter;
 
-    @BindView(R.id.tvResourceMoney)
-    TextView tvResourceMoney;
-
-    @BindView(R.id.edtAmount)
-    MoneyEditText mEdtMoneyView;
-
-    @BindView(R.id.btnContinue)
-    View mBtnContinueView;
+    WithdrawAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initLimitAmount();
-    }
-
-    private void initLimitAmount() {
-        try {
-            minWithdrawAmount = CShareDataWrapper.getMinWithDrawValue();
-            maxWithdrawAmount = CShareDataWrapper.getMaxWithDrawValue();
-        } catch (Exception e) {
-            Timber.w(e, "Get min/max withdraw from paymentSDK exception: [%s]", e.getMessage());
-        }
+        mAdapter = new WithdrawAdapter(this);
+        mAdapter.setSpanCount(SPAN_COUNT_APPLICATION);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        tvResourceMoney.setText(String.format(getResources().getString(R.string.title_min_money),
-                CurrencyUtil.formatCurrency(minWithdrawAmount, false)));
+        listview.setHasFixedSize(true);
+        HomeSpacingItemDecoration itemDecoration = new HomeSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false);
+        listview.addItemDecoration(itemDecoration);
 
-        mEdtMoneyView.setMinMaxMoney(minWithdrawAmount, maxWithdrawAmount);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
+        gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
+        listview.setLayoutManager(gridLayoutManager);
+        listview.setAdapter(mAdapter);
+        progressContainer.setVisibility(View.GONE);
 
-        mBtnContinueView.setEnabled(mEdtMoneyView.isValid());
     }
 
     @Override
@@ -103,7 +101,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void onDestroyView() {
-        mEdtMoneyView.clearValidators();
         mPresenter.detachView();
         super.onDestroyView();
     }
@@ -121,18 +118,10 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnTextChanged(value = R.id.edtAmount, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    public void onAmountChanged(CharSequence s) {
-        mBtnContinueView.setEnabled(mEdtMoneyView.isValid());
-    }
-
-    @OnClick(R.id.btnContinue)
-    public void setOnClickContinue() {
-        if (!mEdtMoneyView.validate()) {
-            return;
-        }
-
-        mPresenter.withdraw(mEdtMoneyView.getAmount());
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mPresenter.loadView();
     }
 
     @Override
@@ -157,8 +146,27 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void showAmountError(String error) {
-        if (mEdtMoneyView != null) {
-            mEdtMoneyView.setError(error);
-        }
+
+    }
+
+    @Override
+    public void setBalance(long balance) {
+        mAdapter.setBalance(balance);
+    }
+
+    @Override
+    public void addDenominationMoney(List<Long> val) {
+        mAdapter.insertItems(val);
+    }
+
+    @Override
+    public void finish(int result) {
+        getActivity().setResult(result);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onClickDenomination(long money) {
+        mPresenter.withdraw(money);
     }
 }

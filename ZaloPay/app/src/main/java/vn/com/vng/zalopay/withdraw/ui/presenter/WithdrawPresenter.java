@@ -4,6 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -15,6 +21,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.UserInputException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -30,6 +38,7 @@ import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -39,12 +48,17 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
  * *
  */
 public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
-    private final int WITHDRAW_APPID = 2;
+    private static final int WITHDRAW_APP_ID = 2;
     private final BalanceStore.Repository mBalanceRepository;
     private final ZaloPayRepository mZaloPayRepository;
     private final Navigator mNavigator;
     private final User mUser;
     private final Context mContext;
+
+    private final List<Long> mDenominationMoney = Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
+
+    private long minWithdrawAmount;
+    private long maxWithdrawAmount;
 
     private PaymentWrapper paymentWrapper;
 
@@ -72,11 +86,40 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 })
                 .build();
         paymentWrapper.initializeComponents();
+        initLimitAmount();
+    }
 
+    public void loadView() {
+        if (mView != null) {
+            mView.addDenominationMoney(mDenominationMoney);
+        }
+
+        getBalance();
+    }
+
+    private void getBalance() {
+        Subscription subscription = mBalanceRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (mView != null) {
+                            mView.setBalance(ConvertHelper.unboxValue(aLong, 0));
+                        }
+                    }
+                });
+
+        mSubscription.add(subscription);
+    }
+
+    private void initLimitAmount() {
+        minWithdrawAmount = CShareDataWrapper.getMinWithDrawValue();
+        maxWithdrawAmount = CShareDataWrapper.getMaxWithDrawValue();
     }
 
     public void withdraw(final long amount) {
-        if (amount <= 0 || mView == null) {
+        if (amount <= 0) {
             return;
         }
 
@@ -87,7 +130,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                         if (amount > balance) {
                             return Observable.error(new UserInputException(R.string.withdraw_exceed_balance));
                         } else {
-                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, TransactionType.WITHDRAW, mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
+                            return mZaloPayRepository.createwalletorder(WITHDRAW_APP_ID, amount, TransactionType.WITHDRAW, mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
                         }
                     }
                 })
@@ -99,11 +142,9 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (paymentWrapper == null || mView == null) {
-            return;
+        if (paymentWrapper != null) {
+            paymentWrapper.onActivityResult(requestCode, resultCode, data);
         }
-
-        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
@@ -154,8 +195,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             return;
         }
 
-        paymentWrapper.withdraw(mView.getActivity(), order);
-
+        paymentWrapper.withdraw((Activity) mView.getContext(), order);
         mView.hideLoading();
     }
 
@@ -175,21 +215,22 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             super.onResponseError(paymentError);
 
             if (paymentError == PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD) {
-                mNavigator.startLinkCardActivity(mView.getActivity());
+                mNavigator.startLinkCardActivity(mView.getContext());
             }
         }
 
         @Override
         public void onResponseSuccess(IBuilder builder) {
-            if (mView == null) {
-                return;
-            }
-
-            if (mView.getActivity() != null) {
-                mView.getActivity().setResult(Activity.RESULT_OK, null);
-                mView.getActivity().finish();
+            if (mView != null) {
+                mView.finish(Activity.RESULT_OK);
             }
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChange(ChangeBalanceEvent event) {
+        if (mView != null) {
+            mView.setBalance(event.balance);
+        }
+    }
 }
