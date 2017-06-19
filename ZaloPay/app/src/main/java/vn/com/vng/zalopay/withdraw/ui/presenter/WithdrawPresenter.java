@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,12 +117,23 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     public void loadView() {
-        if (mView != null) {
-            mView.addDenominationMoney(mDenominationMoney);
-        }
-
+        loadDenomination();
         getBalance();
     }
+
+    private void loadDenomination() {
+        List<Long> denominations = new ArrayList<>();
+        for (Long denomination : mDenominationMoney) {
+            if (denomination >= minWithdrawAmount && denomination <= maxWithdrawAmount) {
+                denominations.add(denomination);
+            }
+        }
+
+        if (mView != null) {
+            mView.addDenominationMoney(denominations);
+        }
+    }
+
 
     private void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
