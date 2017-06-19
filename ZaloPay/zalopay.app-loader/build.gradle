@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 def cfg = rootProject.ext.configuration
@@ -37,7 +36,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath "me.tatarka:gradle-retrolambda:${retrolambdaVersion}"
     }
 }
@@ -51,12 +49,10 @@ dependencies {
     def libs = rootProject.ext.libraries
     def tests = rootProject.ext.testingLibraries
 
-    compile libs.support_annotations
-    compile libs.dagger
-    apt libs.daggerCompiler
-    provided libs.javaxAnnotation
-
     testCompile tests.junit
+
+    compile libs.support_annotations
+    provided libs.javaxAnnotation
     compile libs.support_appcompat_v7
     compile libs.timber
     compile libs.react_native
