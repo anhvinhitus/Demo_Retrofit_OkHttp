@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -60,6 +61,8 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channellist.item.MapItem;
+import vn.com.zalopay.wallet.ui.channellist.item.ZaloPayItem;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -343,6 +346,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans());
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
+            initAdapter();
             //init channel proxy
             mChannelProxy = ChannelProxy.get()
                     .setChannelListPresenter(this)
@@ -358,6 +362,20 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         } catch (Exception e) {
             Log.d(this, e);
         }
+    }
+
+    private void initAdapter() throws Exception{
+        mChannelAdapter = new ChannelListAdapter();
+        Context context = getViewOrThrow().getContext();
+        long amount = mPaymentInfoHelper.getAmount();
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        int userLevel = mPaymentInfoHelper.getLevel();
+        @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
+        mChannelAdapter.addZaloPayBinder(context,amount,userInfo,transtype);
+        mChannelAdapter.addMapBinder(context,amount,userLevel);
+        mChannelAdapter.addTitle();
+        mChannelAdapter.addInputBinder(context,amount,userInfo,transtype);
+        getViewOrThrow().onBindingChannel(mChannelAdapter);
     }
 
     private void renderItemDetail() throws Exception {
@@ -495,10 +513,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
             Log.d(this, "preparing channels");
-            mChannelAdapter = new ChannelListAdapter(getViewOrThrow().getContext(), (long) mPaymentInfoHelper.getAmountTotal(),
-                    mPaymentInfoHelper.getUserInfo(), mPaymentInfoHelper.getTranstype());
-            getViewOrThrow().onBindingChannel(mChannelAdapter);
-
             mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
                     mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getAmount(), mPaymentInfoHelper.getBalance(),
                     mPaymentInfoHelper.getTranstype());

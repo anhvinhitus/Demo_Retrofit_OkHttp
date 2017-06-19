@@ -104,12 +104,10 @@ public class ChannelProxy extends SingletonBase {
         @Override
         public void onCheckedFingerPrint(boolean pChecked) {
             Log.d(this, "on changed check", pChecked);
-
         }
 
         @Override
         public void onCancel() {
-            Log.d(this, "user canceled password");
         }
 
         @Override

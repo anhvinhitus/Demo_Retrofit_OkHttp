@@ -21,12 +21,23 @@ import vn.com.zalopay.wallet.ui.channellist.item.ZaloPayItem;
  */
 public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.ItemType> {
 
-    public ChannelListAdapter(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {
-        addAllBinder(
-                new ZaloPayItem(context, amount, userInfo, transtype, this),
-                new MapItem(context, amount, userInfo.level, this),
-                new TitleItem(this),
-                new InputItem(context, amount, userInfo, transtype, this));
+    public ChannelListAdapter() {
+    }
+
+    public void addZaloPayBinder(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {
+        addBinder(new ZaloPayItem(context, amount, userInfo, transtype, this));
+    }
+
+    public void addMapBinder(Context context, long amount, int user_level) {
+        addBinder(new MapItem(context, amount, user_level, this));
+    }
+
+    public void addInputBinder(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {
+        addBinder(new InputItem(context, amount, userInfo, transtype, this));
+    }
+
+    public void addTitle() {
+        addBinder(new TitleItem(this));
     }
 
     public void setChannel(ItemType pItemType, PaymentChannel pChannel) {
