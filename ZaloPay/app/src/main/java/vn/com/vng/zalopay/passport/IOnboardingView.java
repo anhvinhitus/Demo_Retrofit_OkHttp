@@ -28,4 +28,6 @@ interface IOnboardingView {
     void startOTPCountDown();
 
     void showIncorrectOtp(String msg);
+
+    void showIncorrectPhone(String msg);
 }

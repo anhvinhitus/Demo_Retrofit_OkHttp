@@ -96,9 +96,9 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
                 return;
             }
 
-            if (mView != null) {
-                mView.showError(ErrorMessageFactory.create(mApplicationContext, e));
-            }
+            String msg = ErrorMessageFactory.create(mApplicationContext, e);
+            boolean incorrectPhone = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.PHONE_EXIST;
+            showRegisterError(incorrectPhone, msg);
         }
 
         public void onNext(Boolean t) {
@@ -149,16 +149,28 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
 
         String msg = ErrorMessageFactory.create(mApplicationContext, e);
         boolean incorrectOtp = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.INCORRECT_OTP;
-        showErrorView(incorrectOtp, msg);
+        showAuthenticationError(incorrectOtp, msg);
     }
 
-    private void showErrorView(boolean isOtp, String msg) {
+    private void showAuthenticationError(boolean incorrectOtp, String msg) {
         if (mView == null) {
             return;
         }
 
-        if (isOtp) {
+        if (incorrectOtp) {
             mView.showIncorrectOtp(msg);
+        } else {
+            mView.showError(msg);
+        }
+    }
+
+    private void showRegisterError(boolean incorrectPhone, String msg) {
+        if (mView == null) {
+            return;
+        }
+
+        if (incorrectPhone) {
+            mView.showIncorrectPhone(msg);
         } else {
             mView.showError(msg);
         }

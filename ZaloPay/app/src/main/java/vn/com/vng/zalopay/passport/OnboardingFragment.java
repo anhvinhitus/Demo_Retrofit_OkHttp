@@ -402,6 +402,15 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         mInputOtpView.setError(msg);
     }
 
+    @Override
+    public void showIncorrectPhone(String msg) {
+        if (getCurrentPage() != INPUT_PHONE) {
+            return;
+        }
+
+        mInputPhoneView.setError(msg);
+    }
+
     public void setOtp(String otp) {
 
         if (getCurrentPage() != INPUT_OTP) {

@@ -117,6 +117,7 @@ public class ServerErrorMessage {
     public static final int ZALOPAYNAME_NOT_EXIST = -153;
     public static final int REQUEST_PHONE_NUMBER = 35;
     public static final int INCORRECT_OTP = 36;
+    public static final int PHONE_EXIST = -197;
 
     public static String getMessage(Context context, int errorCode) {
         int stringResourceId;
