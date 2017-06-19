@@ -1,5 +1,14 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
+import android.text.TextUtils;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 
@@ -25,7 +34,29 @@ public class AbstractOrder {
         if (pmcTransType != null) {
             fee = pmcTransType.totalfee;
             amount_total = amount + fee;
-            Log.d(this, "calculate order fee ",fee);
+            Log.d(this, "calculate order fee ", fee);
         }
+    }
+
+    public List<NameValuePair> parseItems() {
+        if (TextUtils.isEmpty(item)) {
+            Log.d(this, "item is empty - skip render item detail");
+            return null;
+        }
+        List<NameValuePair> items = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(item);
+            String itemExt = jsonObject.optString("ext");
+            if (!TextUtils.isEmpty(itemExt)) {
+                items = Strings.parseNameValues(itemExt);
+            }
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
+        /*List<NameValuePair> expected = new ArrayList<>();
+        expected.add(new NameValuePair("Nhà mạng", "Viettel"));
+        expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
+        expected.add(new NameValuePair("Nạp cho", "Số của tôi - 0902167233"));*/
+        return items;
     }
 }

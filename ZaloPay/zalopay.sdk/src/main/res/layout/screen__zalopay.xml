@@ -3,7 +3,7 @@
     android:id="@+id/supperRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@android:color/white"
     android:elevation="4dp"
     android:orientation="vertical">
 
@@ -15,8 +15,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
+        android:layout_height="match_parent">
 
         <ScrollView
             android:id="@+id/zpw_scrollview_container"
@@ -31,17 +30,10 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/zpsdk_app_info"
-                    layout="@layout/module__app__info"
+                    android:id="@+id/orderinfo_module"
+                    layout="@layout/module_order_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/zpsdk_transfer_info"
-                    layout="@layout/module_transfer_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/zpsdk_pay_success"
@@ -65,42 +57,14 @@
                     android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
 
                 <include
-                    android:id="@+id/zpw_confirm"
-                    layout="@layout/module__confirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include
                     android:id="@+id/zpw_submit_view"
                     layout="@layout/module__submit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/zpw_margin_top_submit_button_phone" />
-
-                <TextView
-                    android:id="@+id/zpw_submit_support"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/zpw_padding_12"
-                    android:background="?android:selectableItemBackground"
-                    android:gravity="center"
-                    android:padding="@dimen/zpw_padding_12"
-                    android:text="@string/zpw_support"
-                    android:textColor="@color/blue_btn_bg_pressed_color"
-                    android:textSize="@dimen/zpw_text_size_medium"
-                    android:visibility="gone" />
             </LinearLayout>
 
         </ScrollView>
-
-        <include
-            android:id="@+id/zpw_pay_info_buttom_view"
-            layout="@layout/module__pay__info_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:visibility="gone" />
 
         <include
             android:id="@+id/zpw_pay_support_buttom_view"

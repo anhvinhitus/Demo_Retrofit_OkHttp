@@ -1,162 +1,136 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_info_finish"
+    android:orientation="vertical"
     android:visibility="gone">
 
-    <LinearLayout
-        android:id="@+id/layout_top"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/fail_imageview"
+        android:layout_width="@dimen/sdk_ic_fail_size"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/sdk_margin_top_icon"
+        app:actualImageScaleType="centerInside"
+        app:viewAspectRatio="1" />
+
+    <TextView
+        android:id="@+id/sdk_trans_fail_reason_message_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical">
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
+        android:gravity="center"
+        android:textColor="@color/text_color_bold"
+        android:textSize="@dimen/zpw_text_size_medium" />
+
+    <TextView
+        android:id="@+id/sdk_sugguest_action_message_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
+        android:gravity="center"
+        android:textColor="@color/text_color_dl"
+        android:textSize="@dimen/zpw_text_size_medium"
+        android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
+        android:background="@drawable/dash_line" />
+
+    <ViewStub
+        android:id="@+id/fail_trans_detail_stub"
+        android:inflatedId="@+id/fail_trans_detail_stub"
+        android:layout="@layout/module__trans__detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/zpw_payment_fail_rl_update_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpw_bg_top_bottom_side_border"
+        android:padding="@dimen/padding_large"
+        android:visibility="gone">
+
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/zpw_payment_fail_imageview"
-            android:layout_width="@dimen/sdk_ic_fail_size"
+            android:id="@+id/zpw_payment_fail_iv_update_info"
+            android:layout_width="@dimen/sdk_update_info_size"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/zpw_margin_bottom_supper_supper_label"
-            android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label"
-            app:viewAspectRatio="1"
-            app:actualImageScaleType="centerInside" />
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
 
         <TextView
-            android:id="@+id/zpw_payment_fail_textview"
+            android:id="@+id/zpw_payment_fail_tv_update_info_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/zpw_string_payment_fail_transaction"
-            android:textColor="@color/text_color_bold"
-            android:textSize="@dimen/zpw_text_size_big" />
-
-        <TextView
-            android:id="@+id/zpw_textview_error_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/zpw_margin_16"
-            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/zpw_payment_fail_iv_update_info"
             android:paddingLeft="@dimen/zpw_padding_10"
             android:paddingRight="@dimen/zpw_padding_10"
+            android:text="@string/zpw_update_info"
             android:textColor="@color/text_color_bold"
             android:textSize="@dimen/zpw_text_size_medium" />
 
-        <TextView
-            android:id="@+id/zpw_textview_update_level_inform"
-            android:layout_width="match_parent"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/zpw_payment_fail_iv_update_info_next"
+            android:layout_width="@dimen/sdk_update_info_next_size"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/zpw_margin_16"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/zpw_margin_10"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/zpw_margin_10"
-            android:paddingTop="@dimen/zpw_padding_10"
-            android:paddingBottom="@dimen/zpw_padding_10"
-            android:textColor="@color/text_color_dl"
-            android:textSize="@dimen/zpw_text_size_medium"
-            android:background="@drawable/zpw_bg_update_level_inform_content_border"/>
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/zpw_payment_fail_dashline"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_below="@+id/layout_top"
-        android:background="@color/background"
-        android:paddingLeft="@dimen/zpw_padding_5"
-        android:paddingRight="@dimen/zpw_padding_5" />
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
+    </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_support"
+        android:id="@+id/zpw_payment_fail_rl_support"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/zpw_payment_fail_dashline"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/zpw_padding_10"
-        android:paddingRight="@dimen/zpw_padding_5">
+        android:background="@drawable/zpw_bg_top_bottom_side_border"
+        android:padding="@dimen/padding_large">
 
-        <RelativeLayout
-            android:id="@+id/zpw_payment_fail_rl_update_info"
-            android:layout_width="match_parent"
-            android:layout_height="40dp">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/zpw_payment_fail_iv_support"
+            android:layout_width="@dimen/sdk_update_info_size"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/zpw_payment_fail_iv_update_info"
-                android:layout_width="@dimen/sdk_update_info_size"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
-                app:viewAspectRatio="1"
-                app:actualImageScaleType="centerInside"/>
+        <TextView
+            android:id="@+id/zpw_payment_fail_tv_support_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/zpw_payment_fail_iv_support"
+            android:paddingLeft="@dimen/zpw_padding_10"
+            android:paddingRight="@dimen/zpw_padding_10"
+            android:text="@string/zpw_support"
+            android:textColor="@color/text_color_bold"
+            android:textSize="@dimen/zpw_text_size_medium" />
 
-            <TextView
-                android:id="@+id/zpw_payment_fail_tv_update_info_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/zpw_payment_fail_iv_update_info"
-                android:paddingLeft="@dimen/zpw_padding_10"
-                android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_update_info"
-                android:textColor="@color/text_color_bold"
-                android:textSize="@dimen/zpw_text_size_medium" />
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/zpw_payment_fail_iv_update_info_next"
-                android:layout_width="@dimen/sdk_update_info_next_size"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/zpw_margin_10"
-                app:viewAspectRatio="1"
-                app:actualImageScaleType="centerInside" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/zpw_line_height"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/zpw_margin_10"
-                android:layout_toRightOf="@+id/zpw_payment_fail_iv_update_info"
-                android:background="@color/background" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/zpw_payment_fail_rl_support"
-            android:layout_width="match_parent"
-            android:layout_height="40dp">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/zpw_payment_fail_iv_support"
-                android:layout_width="@dimen/sdk_update_info_size"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
-                app:viewAspectRatio="1"
-                app:actualImageScaleType="centerInside"/>
-
-            <TextView
-                android:id="@+id/zpw_payment_fail_tv_support_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/zpw_payment_fail_iv_support"
-                android:paddingLeft="@dimen/zpw_padding_10"
-                android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_support"
-                android:textColor="@color/text_color_bold"
-                android:textSize="@dimen/zpw_text_size_medium" />
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/zpw_payment_fail_iv_support_next"
-                android:layout_width="@dimen/sdk_update_info_next_size"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/zpw_margin_10"
-                app:viewAspectRatio="1"
-                app:actualImageScaleType="centerInside"/>
-        </RelativeLayout>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/zpw_payment_fail_iv_support_next"
+            android:layout_width="@dimen/sdk_update_info_next_size"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/zpw_margin_10"
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
     </RelativeLayout>
-</RelativeLayout>
+
+</LinearLayout>

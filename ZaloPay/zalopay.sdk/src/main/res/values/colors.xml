@@ -34,6 +34,7 @@
     <color name="text_color">#acb3ba</color>
     <color name="text_color_extra">#bfc6ce</color>
 
+    <color name="text_color_gray">#2b2b2b</color>
     <color name="text_color_bold">#24272b</color>
     <color name="text_color_primary">#008fe5</color>
     <color name="text_color_grey">#727f8c</color>

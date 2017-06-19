@@ -26,7 +26,7 @@ public interface ChannelListContract extends IContract {
 
         void renderOrderInfo(AbstractOrder order);
 
-        void renderOrderFee(double total_amount, double fee);
+        void renderTotalAmountAndFee(double total_amount, double fee);
 
         void renderDynamicItemDetail(List<NameValuePair> nameValuePair);
 

@@ -9,10 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -38,6 +36,8 @@ import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+
+import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -92,8 +92,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
 
-        order_amount_linearlayout = view.findViewById(R.id.order_amount_linearlayout);
-        order_amount_txt = (TextView) view.findViewById(R.id.order_amount_txt);
+        order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);
+        order_amount_txt = (TextView) view.findViewById(R.id.order_amount_total_txt);
         order_description_txt = (TextView) view.findViewById(R.id.order_description_txt);
         appname_relativelayout = view.findViewById(R.id.appname_relativelayout);
         appname_txt = (TextView) view.findViewById(R.id.appname_txt);
@@ -185,40 +185,14 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void renderDynamicItemDetail(List<NameValuePair> nameValuePairList) {
-        if (nameValuePairList == null) {
-            return;
-        }
-        for (int i = 0; i < nameValuePairList.size(); i++) {
-            NameValuePair nameValuePair = nameValuePairList.get(i);
-            if (nameValuePair != null) {
-                RelativeLayout relativeLayout = new RelativeLayout(getContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.bottomMargin = (int) getResources().getDimension(R.dimen.zpw_padding_app_info_left_right);
-                relativeLayout.setLayoutParams(params);
-                if (!TextUtils.isEmpty(nameValuePair.key)) {
-                    TextView name_txt = new TextView(getContext());
-                    name_txt.setText(nameValuePair.key);
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    name_txt.setLayoutParams(layoutParams);
-                    relativeLayout.addView(name_txt);
-                }
-                if (!TextUtils.isEmpty(nameValuePair.value)) {
-                    TextView value_txt = new TextView(getContext());
-                    value_txt.setText(nameValuePair.value);
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    value_txt.setLayoutParams(layoutParams);
-                    relativeLayout.addView(value_txt);
-                }
-                item_detail_linearlayout.addView(relativeLayout);
+        List<View> views = genDynamicItemDetail(getContext(), nameValuePairList);
+        boolean hasView = views != null && views.size() > 0;
+        if (hasView) {
+            for (View view : views) {
+                item_detail_linearlayout.addView(view);
             }
         }
-        item_detail_linearlayout.setVisibility(nameValuePairList.size() > 0 ? View.VISIBLE : View.GONE);
+        item_detail_linearlayout.setVisibility(hasView ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -231,7 +205,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void renderOrderFee(double total_amount, double fee) {
+    public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
             String txtFee = StringUtil.formatVnCurrence(String.valueOf(fee));
             order_fee_txt.setText(txtFee);
@@ -261,7 +235,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         order_description_txt.setVisibility(hasDesc ? View.VISIBLE : View.GONE);
         //order amount
         order.amount_total = order.amount + order.fee;
-        renderOrderFee(order.amount_total, order.fee);
+        renderTotalAmountAndFee(order.amount_total, order.fee);
     }
 
     @Override

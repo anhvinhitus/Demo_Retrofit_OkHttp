@@ -13,18 +13,16 @@ public class ConnectionUtil {
     }
 
     public static boolean isOnline(Context ctx) {
+        boolean online;
         try {
             ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                return true;
-            }
+            online = netInfo != null && netInfo.isConnectedOrConnecting();
         } catch (Exception e) {
             Log.e("isOnline", e.getMessage());
+            online = true;
         }
-
-        return false;
+        return online;
     }
 
     public static String getConnectionType(Context context) {

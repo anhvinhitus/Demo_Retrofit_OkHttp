@@ -69,7 +69,7 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
                 .doOnSubscribe(() -> running = true)
                 /*.map(statusResponse -> {
                     statusResponse.isprocessing = true;
-                    //statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
+                    statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;
                 })*/
                 .repeatWhen(o -> o.flatMap(v -> Observable.timer(intervalRetry, MILLISECONDS)))

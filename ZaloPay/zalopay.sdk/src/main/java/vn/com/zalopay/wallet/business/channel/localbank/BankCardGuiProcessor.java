@@ -301,16 +301,13 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected void actionAfterFinishInputCard() {
         if (isUseOtpToken()) {
             getAdapter().setCanEditCardInfo(true);
-
             moveToAuthenOptionView();
         } else {
-            getAdapter().getActivity().setVisible(R.id.zpsdk_app_info, false);
-
             getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
             getAdapter().getActivity().visibleCardViewNavigateButton(false);
-
             getAdapter().getActivity().visibleSubmitButton(true);
             getAdapter().getActivity().enableSubmitBtn(true);
+            getAdapter().getActivity().visibleOrderInfo(false);
 
             getAdapter().onClickSubmission();
         }
@@ -439,8 +436,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     public void showOtpTokenView() {
         getAdapter().getActivity().visibleInputCardView(false);
-        getAdapter().getActivity().visibleConfirmView(false);
-        getAdapter().getActivity().visibleHeaderInfo();
+        getAdapter().getActivity().showOrderInfo();
         getAdapter().getActivity().setText(R.id.zpsdk_btn_submit, GlobalData.getStringResource(RS.string.zpw_button_submit_text));
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
         switch (mAuthenType) {
@@ -573,12 +569,10 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     private void moveToAuthenOptionView() {
-        getAdapter().getActivity().setVisible(R.id.zpsdk_app_info, false);
-
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
+        getAdapter().getActivity().visibleOrderInfo(false);
         getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
         getAdapter().getActivity().visibleCardViewNavigateButton(false);
-
         getAdapter().getActivity().visibleSubmitButton(true);
         getAdapter().getActivity().enableSubmitBtn(true);
 

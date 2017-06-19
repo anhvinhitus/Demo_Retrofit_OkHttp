@@ -3,8 +3,7 @@
     android:id="@+id/supperRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:elevation="4dp"
+    android:background="@android:color/white"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -22,7 +21,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background"
             android:orientation="vertical">
 
             <ScrollView
@@ -39,17 +37,10 @@
                     android:orientation="vertical">
 
                     <include
-                        android:id="@+id/zpsdk_app_info"
-                        layout="@layout/module__app__info"
+                        android:id="@+id/orderinfo_module"
+                        layout="@layout/module_order_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-
-                    <include
-                        android:id="@+id/zpsdk_transfer_info"
-                        layout="@layout/module_transfer_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
 
                     <include
                         android:id="@+id/zpsdk_pay_success"
@@ -86,12 +77,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_top_card" />
-
-                    <include
-                        android:id="@+id/zpw_confirm"
-                        layout="@layout/module__confirm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
 
                     <include
                         android:id="@+id/zpw_content_input_view_root"
@@ -132,14 +117,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:orientation="vertical" />
-
-            <include
-                android:id="@+id/zpw_pay_info_buttom_view"
-                layout="@layout/module__pay__info_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:visibility="gone" />
 
             <vn.com.zalopay.wallet.business.webview.base.PaymentWebView
                 android:id="@+id/zpw_threesecurity_webview"

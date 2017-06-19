@@ -47,6 +47,7 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
+import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
 import static vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter.REQUEST_CODE;
 
 /***
@@ -63,15 +64,15 @@ public class ChannelProxy extends SingletonBase {
     private IRequest mRequestApi;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
-    private String mTransId;
+    private String mTransId = "0";
     private String fpPassword;//password from fingerprint
     private String inputPassword;//password input on popup
     private boolean transStatusStart = false;
     private int retryTransStatusCount = 1;
     private Action1<Throwable> submitOrderException = throwable -> {
         Log.d(this, "submit order on error", throwable);
-        if(mStatusResponse == null){
-            mStatusResponse = new StatusResponse(-1, GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder));
+        if (mStatusResponse == null) {
+            mStatusResponse = new StatusResponse(-1, getSubmitExceptionMessage(GlobalData.getAppContext()));
         }
         mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
         moveToResultScreen();
@@ -200,13 +201,13 @@ public class ChannelProxy extends SingletonBase {
         return ChannelProxy._object;
     }
 
-    private boolean preventSubmitOrder(){
+    private boolean preventSubmitOrder() {
         boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
         if (isSubmitted) {
             try {
                 getView().showInfoDialog(GlobalData.getStringResource(RS.string.sdk_warning_order_submit));
             } catch (Exception e) {
-                Log.e(this,e);
+                Log.e(this, e);
             }
         }
         return isSubmitted;
@@ -376,6 +377,10 @@ public class ChannelProxy extends SingletonBase {
 
     private void submitOrder(String pHashPassword) {
         try {
+            if (getPresenter().networkOffline()) {
+                closePassword();
+                return;
+            }
             Log.d(this, "start submit order");
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
@@ -484,7 +489,7 @@ public class ChannelProxy extends SingletonBase {
             return;
         }
         //balance less than order amount
-        if(mChannel.isZaloPayChannel() && !mPaymentInfoHelper.balanceEnoughForPayment()){
+        if (mChannel.isZaloPayChannel() && !mPaymentInfoHelper.balanceEnoughForPayment()) {
             mPaymentInfoHelper.setResult(PaymentStatus.ERROR_BALANCE);
             startChannelActivity();
         }

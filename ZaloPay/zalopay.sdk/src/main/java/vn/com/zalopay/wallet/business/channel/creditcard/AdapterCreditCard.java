@@ -51,8 +51,6 @@ public class AdapterCreditCard extends AdapterBase {
         }
         if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
             onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
-        }
-        if (mPaymentInfoHelper.payByCardMap()) {
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
     }

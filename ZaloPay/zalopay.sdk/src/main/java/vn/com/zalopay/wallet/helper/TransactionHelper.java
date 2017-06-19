@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -59,6 +60,9 @@ public class TransactionHelper {
                 break;
             case TransactionType.TOPUP:
                 appName = context.getString(R.string.sdk_topup_service);
+                break;
+            case TransactionType.LINK:
+                appName = context.getString(R.string.sdk_link_card_service);
                 break;
         }
         return appName;
@@ -119,6 +123,12 @@ public class TransactionHelper {
         return pResponse != null && pResponse.isprocessing;
     }
 
+    public static String getSubmitExceptionMessage(Context context) {
+        boolean online = ConnectionUtil.isOnline(context);
+        return online ? context.getString(R.string.zpw_alert_network_error_submitorder) :
+                context.getString(R.string.sdk_alert_network_onfline_submitorder);
+    }
+
     public static boolean isTransactionSuccess(StatusResponse pResponse) {
         return pResponse != null && !pResponse.isprocessing && pResponse.returncode == 1;
     }
@@ -161,12 +171,13 @@ public class TransactionHelper {
         }
     }
 
-    public static boolean isTransNetworkError(String pMessage) {
-        return pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account));
+    public static boolean isTransNetworkError(Context context, String pMessage) {
+        return pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_networking_error_check_status))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_order_not_submit))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.zingpaysdk_alert_network_error))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_networking_off_in_transaction))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_link_account))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_unlink_account))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_network_onfline_submitorder));
     }
 }

@@ -88,11 +88,8 @@ public class AdapterBankCard extends AdapterBase {
         }
         if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
             onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
-        }
-        if (mPaymentInfoHelper.payByCardMap()) {
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
-        showFee();
     }
 
     @Override
@@ -355,8 +352,8 @@ public class AdapterBankCard extends AdapterBase {
                     });
                 }
 
-                //update top info if this is tranfer money transaction
-                getActivity().showConfirmView(true, true, getConfig());
+                //update top info
+                getActivity().showOrderInfo();
 
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {

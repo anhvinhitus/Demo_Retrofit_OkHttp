@@ -24,6 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zpw_line_height"
+                android:layout_marginLeft="@dimen/sdk_margin_left_right"
+                android:background="@color/dark_transparent" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/channel_list_recycler"
                 android:layout_width="match_parent"

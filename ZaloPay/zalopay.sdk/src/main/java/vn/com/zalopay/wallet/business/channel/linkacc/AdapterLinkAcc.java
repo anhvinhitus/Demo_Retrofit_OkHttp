@@ -386,19 +386,13 @@ public class AdapterLinkAcc extends AdapterBase {
         // set pageCode
         mPageName = PAGE_LINKACC_SUCCESS;
         getActivity().renderByResource();
-        try {
-            getActivity().showPaymentSuccessContent(mTransactionID);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
+        getActivity().renderSuccess(mTransactionID,null,getActivity().getString(R.string.sdk_link_account_service));
         getActivity().enableSubmitBtn(true);
-
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
-
         try {
             // get bankaccount from cache callback to app
             List<BankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
@@ -421,7 +415,7 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_LINKACC_FAIL;
         mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
-        getActivity().showFailView(pMessage, pTransID);
+        getActivity().renderFail(pMessage, pTransID, null,getActivity().getString(R.string.sdk_link_account_service), mResponseStatus);
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
@@ -441,13 +435,8 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
-        try {
-            getActivity().showPaymentSuccessContent(mTransactionID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getActivity().renderSuccess(mTransactionID, null, getActivity().getString(R.string.sdk_unlink_account_service));
         getActivity().enableSubmitBtn(true);
-
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
@@ -456,7 +445,6 @@ public class AdapterLinkAcc extends AdapterBase {
         if (mBankAccountList != null && mBankAccountList.size() > 0) {
             mPaymentInfoHelper.setMapBank(mBankAccountList.get(0));
         }
-        //tracking translog id unlink success
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
@@ -469,7 +457,7 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_UNLINKACC_FAIL;
         // rendering by resource
         getActivity().renderByResource();
-        getActivity().showFailView(pMessage, pTransID);
+        getActivity().renderFail(pMessage, pTransID,null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus);
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview

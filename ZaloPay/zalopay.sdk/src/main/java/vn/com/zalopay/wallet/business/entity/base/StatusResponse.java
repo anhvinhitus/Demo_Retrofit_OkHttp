@@ -42,7 +42,7 @@ public class StatusResponse extends BaseResponse implements Parcelable {
         this.data = null;
         this.returncode = pCode;
         this.returnmessage = pMessage;
-        this.suggestmessage = pMessage;
+        this.zptransid = "0";
         this.isprocessing = false;
     }
 

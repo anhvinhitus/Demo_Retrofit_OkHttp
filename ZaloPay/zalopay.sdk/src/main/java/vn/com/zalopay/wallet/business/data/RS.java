@@ -60,6 +60,7 @@ public class RS {
         public static final String prefix_numberphone_vcb = "prefix_numberphone_vcb";
         public static final String suffix_numberphone_vcb = "suffix_numberphone_vcb";
 
+        public static final String sdk_alert_network_onfline_submitorder = "sdk_alert_network_onfline_submitorder";
         public static final String zpw_alert_network_error_loadmapbankaccountlist = "zpw_alert_network_error_loadmapbankaccountlist";
         public static final String zpw_alert_network_error_submitorder = "zpw_alert_network_error_submitorder";
         public static final String zpw_alert_network_error_verifymapcard = "zpw_alert_network_error_verifymapcard";
@@ -412,8 +413,6 @@ public class RS {
 
         public static final String screen__success__special = "screen__success__special";
 
-        public static final String screen__require_pin = "screen__require_pin";
-
         public static final String screen__fail = "screen__fail";
 
         public static final String screen__fail_networking = "screen__fail_networking";
@@ -421,8 +420,6 @@ public class RS {
         public static final String screen__fail_processing = "screen__fail_processing";
 
         public static final String screen__zalopay__balance_error = "screen__zalopay__balance_error";
-
-        public static final String screen__gateway = "screen__gateway";
 
         public static final String screen__zalopay = "screen__zalopay";
 
@@ -442,7 +439,6 @@ public class RS {
         public static final String ic_checked = "ic_checked.png";
         public static final String ic_next = "ic_next.png";
         public static final String ic_bank_support_help = "ic_bank_support_help.png";
-        public static final String ic_select = "ic_select.png";
-
+        public static final String ic_arrow = "ic_arrow.png";
     }
 }

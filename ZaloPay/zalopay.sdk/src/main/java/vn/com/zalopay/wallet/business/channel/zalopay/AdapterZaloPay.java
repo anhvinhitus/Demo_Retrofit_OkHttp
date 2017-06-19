@@ -10,6 +10,8 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
+
 public class AdapterZaloPay extends AdapterBase {
     public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
@@ -18,11 +20,16 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     @Override
+    public String getDefaultPageName() {
+        return PAGE_BALANCE_ERROR;
+    }
+
+    @Override
     public void init() throws Exception {
         super.init();
-        if (Constants.PAGE_BALANCE_ERROR.equals(mPageName)) {
-            showFee();
-            moveToConfirmScreen();
+        if (PAGE_BALANCE_ERROR.equals(mPageName)) {
+            getActivity().setToolBarTitle();
+            getActivity().enableSubmitBtn(true);
         }
     }
 
@@ -34,13 +41,6 @@ public class AdapterZaloPay extends AdapterBase {
     public int getChannelID() {
         int channelId = super.getChannelID();
         return channelId != -1 ? channelId : getDefaultChannelId();
-    }
-
-    public void moveToConfirmScreen() {
-        setBalanceView(getConfig());
-        getActivity().showConfirmView(true, true, getConfig());
-        getActivity().setToolBarTitle();
-        getActivity().enableSubmitBtn(true);
     }
 
     /***
@@ -55,11 +55,6 @@ public class AdapterZaloPay extends AdapterBase {
             onClickSubmission();
         }
         return isReqPackage;
-    }
-
-    public void setBalanceView(MiniPmcTransType pConfig) {
-        getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_zalopay_wallet_method_name));
-        getActivity().renderPaymentBalanceContent(pConfig);
     }
 
     @Override

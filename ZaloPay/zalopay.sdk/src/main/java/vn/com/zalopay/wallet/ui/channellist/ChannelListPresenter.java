@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.data.util.NameValuePair;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -232,6 +230,21 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
+    public boolean networkOffline() {
+        boolean offline = false;
+        try {
+            //check networking
+            Activity activity = BaseActivity.getCurrentActivity();
+            offline = activity != null && !ConnectionUtil.isOnline(activity);
+            if (offline) {
+                getViewOrThrow().showOpenSettingNetwokingDialog(null);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return offline;
+    }
+
     private void onSelectedChannel(int pPosition, PaymentChannel pChannel) {
         if (pChannel == null) {
             Log.d(this, "channel is null");
@@ -239,9 +252,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
         try {
             //check networking
-            Activity activity = BaseActivity.getCurrentActivity();
-            if (activity != null && !ConnectionUtil.isOnline(activity)) {
-                getViewOrThrow().showOpenSettingNetwokingDialog(null);
+            if (networkOffline()) {
                 return;
             }
             if (!mChannelProxy.validate(pChannel)) {
@@ -252,7 +263,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (pChannel.hasFee()) {
                 double fee = pChannel.totalfee;
                 double total_amount = mPaymentInfoHelper.getAmount() + fee;
-                getViewOrThrow().renderOrderFee(total_amount, fee);
+                getViewOrThrow().renderTotalAmountAndFee(total_amount, fee);
             }
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
@@ -334,24 +345,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     private void renderItemDetail() throws Exception {
-        if (TextUtils.isEmpty(mPaymentInfoHelper.getOrder().item)) {
-            Log.d(this, "item is empty - skip render item detail");
-            return;
-        }
-        List<NameValuePair> items = new ArrayList<>();
-        try {
-            JSONObject jsonObject = new JSONObject(mPaymentInfoHelper.getOrder().item);
-            String itemExt = jsonObject.optString("ext");
-            if (!TextUtils.isEmpty(itemExt)) {
-                items = Strings.parseNameValues(itemExt);
-            }
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
-       /* List<NameValuePair> expected = new ArrayList<>();
-        expected.add(new NameValuePair("Nhà mạng", "Viettel"));
-        expected.add(new NameValuePair("Mệnh giá", "50.000 VND"));
-        expected.add(new NameValuePair("Nạp cho", "Số của tôi - 0902167233"));*/
+        List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
         getViewOrThrow().renderDynamicItemDetail(items);
     }
 

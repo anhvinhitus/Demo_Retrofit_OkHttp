@@ -2,6 +2,8 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+
 import rx.Observable;
 import rx.functions.Func0;
 import vn.com.zalopay.utility.GsonUtils;
@@ -73,12 +75,15 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
             }
-             MapCard mapCard = new MapCard();
-                mapCard.bankcode = CardType.PVTB;
-                mapCard.cardname = "VO VAN CHUC";
-                mapCard.last4cardno = "8156";
-                mapCard.first6cardno = "970415";
-                pResponse.cardinfos.add(mapCard);
+           /* MapCard mapCard = new MapCard();
+            mapCard.bankcode = CardType.PVTB;
+            mapCard.cardname = "VO VAN CHUC";
+            mapCard.last4cardno = "8156";
+            mapCard.first6cardno = "970415";
+            if (pResponse.cardinfos == null) {
+                pResponse.cardinfos = new ArrayList<>();
+            }
+            pResponse.cardinfos.add(mapCard);*/
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();
 //        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);

@@ -25,7 +25,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 
-import rx.functions.Action0;
 import rx.functions.Action1;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.PlayStoreUtils;
@@ -52,7 +51,6 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
@@ -398,8 +396,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         getAdapter().setECardFlowType(BankFlow.API);
 
-        getAdapter().showFee();
-
         getCardFinder();
 
         setCardDateOnCardView();
@@ -423,8 +419,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         getAdapter().getActivity().visibleCardViewNavigateButton(true);
         getAdapter().getActivity().visibleSubmitButton(false);
-        getAdapter().getActivity().visibleAppInfo(false);
-        getAdapter().getActivity().visibleTranferWalletInfo(false);
+        getAdapter().getActivity().visibleOrderInfo(false);
 
         getAdapter().getActivity().visibleCardInfo(true);
 

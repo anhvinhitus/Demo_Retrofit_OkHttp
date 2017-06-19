@@ -16,7 +16,12 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
+import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -31,6 +36,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
@@ -38,9 +44,12 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
@@ -166,6 +175,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         initTimer();
         renderActivity();
+        //hide header if this is link card.
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
+            visibleOrderInfo(false);
+        } else {
+            renderOrderInfo();
+        }
         try {
             getAdapter().init();
         } catch (Exception e) {
@@ -218,17 +233,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void actionIfPreventApp() {
         onExit(GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app), true);
-    }
-
-    @Override
-    public void setBackground(int color) {
-
-        if (color == -1)
-            color = getResources().getColor(R.color.white);
-
-        super.setBackground(color);
-
-        Log.d(this, "===setBackground=" + color);
     }
 
     @Override
@@ -289,16 +293,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         Log.d(this, "onStart");
         updateFontCardNumber();
-        if (!mIsStart && (getAdapter() != null && (getAdapter().isZaloPayFlow() ||
-                mPaymentInfoHelper.payByCardMap() ||
-                mPaymentInfoHelper.payByBankAccountMap()))) {
-            try {
-                setConfirmTitle();
-                mIsStart = true;
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
     }
 
     protected void prepareLink() {
@@ -346,6 +340,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected void onResume() {
         super.onResume();
         showKeyBoardOnFocusingViewAgain();
+        //capture networking change event on resume
+        if (ConnectionUtil.isOnline(this)) {
+            PaymentSnackBar.getInstance().dismiss();
+            numberOfRetryOpenNetwoking = 0;
+        } else if (!getAdapter().isFinalScreen()) {
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
+        }
         Log.d(this, "onResume");
     }
 
@@ -386,29 +388,79 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         setContentView(RS.getLayout(layoutResID));
-        try {
-            showAmount();
-            showDisplayInfo();
-        } catch (Exception e) {
-            Log.e(this, e);
-            onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-        }
         setMarginSubmitButtonTop(false);
         if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             renderByResource();
         }
         setListener();
         getAdapter().setListener();
-        //hide header if this is link card.
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            visibleAppInfo(false);
-        }
         applyFont();
     }
 
-    @Override
-    protected void setListener() {
-        super.setListener();
+    private void renderOrderInfo() {
+        double total_amount = 0, fee = 0;
+        AbstractOrder order = mPaymentInfoHelper.getOrder();
+        if (order != null) {
+            total_amount = order.amount_total;
+            fee = order.fee;
+        }
+        renderTotalAmountAndFee(total_amount, fee);
+        String desc = null;
+        if (order != null) {
+            desc = order.description;
+        }
+        renderDesc(desc);
+        //render app info
+        String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+        if (TextUtils.isEmpty(appName)) {
+            AppInfo appInfo = SDKApplication.getApplicationComponent()
+                    .appInfoInteractor()
+                    .get(mPaymentInfoHelper.getAppId());
+            appName = appInfo != null ? appInfo.appname : null;
+        }
+        renderAppInfo(appName);
+        renderItemDetail();
+    }
+
+    private void renderDesc(String pDesc) {
+        //order desc
+        boolean hasDesc = !TextUtils.isEmpty(pDesc);
+        if (hasDesc) {
+            setText(R.id.order_description_txt, pDesc);
+        }
+        setVisible(R.id.order_description_txt, hasDesc);
+    }
+
+    private void renderTotalAmountAndFee(double total_amount, double fee) {
+        if (fee > 0) {
+            String txtFee = StringUtil.formatVnCurrence(String.valueOf(fee));
+            setText(R.id.order_fee_txt, txtFee);
+        } else {
+            setText(R.id.order_fee_txt, getResources().getString(R.string.sdk_order_fee_free));
+        }
+        //order amount
+        boolean hasAmount = total_amount > 0;
+        if (hasAmount) {
+            String order_amount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
+            setText(R.id.order_amount_total_txt, order_amount);
+        }
+        setVisible(R.id.order_amount_total_linearlayout, hasAmount);
+    }
+
+    private void renderItemDetail() {
+        List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
+        renderDynamicItemDetail(findViewById(R.id.orderinfo_module), items);
+    }
+
+    private void renderAppInfo(String appName) {
+        boolean hasAppName = !TextUtils.isEmpty(appName);
+        if (hasAppName) {
+            setText(R.id.appname_txt, appName);
+        }
+        setVisible(R.id.appname_relativelayout, hasAppName);
+    }
+
+    private void setListener() {
         View exitView = findViewById(R.id.zpsdk_exit_ctl);
         if (exitView != null) {
             exitView.setOnClickListener(mOnClickExitListener);
@@ -440,23 +492,15 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             } else {
                 Log.d(this, "PaymentChannelActivity.render resourceManager is null");
             }
-            Log.d(this, "PaymentChannelActivity.renderByResource: Total time:" + (System.currentTimeMillis() - time));
+            Log.d(this, "PaymentChannelActivity.renderByResource: Total time:", (System.currentTimeMillis() - time));
         } catch (Exception e) {
             Log.e(this, e);
             onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);
         }
     }
 
-    public void renderPaymentBalanceContent(MiniPmcTransType pConfig) {
-        try {
-            showBalanceContent(pConfig);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    }
-
     public void enableSubmitBtn(boolean pIsEnabled) {
-        Log.d(this, "enable button submit " + pIsEnabled);
+        Log.d(this, "enable button submit", pIsEnabled);
         setEnableButton(findViewById(R.id.zpsdk_btn_submit), pIsEnabled);
     }
 
@@ -483,18 +527,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         } else {
             pButtonView.setBackgroundResource(RS.getDrawable(RS.drawable.zpw_bg_button_disable));
         }
-    }
-
-    public void setConfirmTitle() {
-        String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_pay);
-        if (mPaymentInfoHelper.isTopupTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_topup);
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_tranfer);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_withdraw);
-        }
-        setConfirmTitle(title);
     }
 
     protected void updateFontCardNumber() {
@@ -669,7 +701,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     public void callBackThenTerminate() {
-        Log.d(this, "call back result and end sdk - status ", mPaymentInfoHelper.getStatus() );
+        Log.d(this, "call back result and end sdk - status ", mPaymentInfoHelper.getStatus());
         Activity activity = BaseActivity.getCurrentActivity();
         if (activity instanceof ChannelListActivity) {
             setCallBack(Activity.RESULT_OK);

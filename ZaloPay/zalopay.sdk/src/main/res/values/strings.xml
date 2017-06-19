@@ -67,6 +67,8 @@
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_networking_off_in_transaction">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
 
+    <string name="sdk_alert_network_onfline_submitorder">Mạng đã tắt, không gửi được hóa đơn.\nVui lòng bật mạng và thực hiện lại giao dịch</string>
+
     <string name="zpw_alert_network_error_loadappinfo">Mạng không ổn định, không kiểm tra được thông tin app.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadbanklist">Mạng không ổn định, không tải được thông tin ngân hàng.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadplatforminfo">Mạng không ổn định, không tải được thông tin platform.\nVui lòng kiểm tra lại kết nối mạng</string>
@@ -445,7 +447,7 @@
 
     <string name="zpw_fail_transanction_by_ssl">Website đang giao dịch bị lỗi vấn đề bảo mật (SSL) nên bạn không thể thực hiên giao dịch.\nVui lòng thử lại bằng thẻ khác!</string>
 
-    <string name="zpw_have_no_transid">Chưa có mã giao dịch</string>
+    <string name="sdk_no_transid_label">Chưa có mã giao dịch</string>
     <string name="zpw_update_info">Cập nhật thông tin</string>
     <string name="zpw_support">Bạn cần hỗ trợ ?</string>
     <string name="zpw_support_question">Câu Hỏi Thường Gặp</string>
@@ -547,10 +549,15 @@
     <string name="sdk_appname_title">Dịch vụ</string>
     <string name="sdk_order_fee_title">Phí giao dịch</string>
     <string name="sdk_order_fee_free">Miễn phí</string>
+    <string name="sdk_trans_time_title">Thời gian</string>
+    <string name="sdk_trans_id_title">Mã giao dịch</string>
 
     <string name="sdk_withdraw_service">Rút tiền</string>
     <string name="sdk_tranfer_money_service">Chuyển tiền</string>
     <string name="sdk_topup_service">Nạp tiền</string>
+    <string name="sdk_link_card_service">Liên kết thẻ</string>
+    <string name="sdk_link_account_service">Liên kết tài khoản</string>
+    <string name="sdk_unlink_account_service">Hủy liên kết tài khoản</string>
 
     <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Bạn có thể thực hiện lại giao dịch</string>
 

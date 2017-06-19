@@ -14,16 +14,18 @@ import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,7 +35,6 @@ import android.widget.ToggleButton;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
@@ -49,6 +50,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Stack;
 
 import rx.Subscription;
@@ -56,6 +58,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -83,7 +86,6 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
@@ -102,18 +104,16 @@ import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
-import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
+import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
     private static Stack<BasePaymentActivity> mActivityStack = new Stack<>();//stack to keep activity
@@ -140,21 +140,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected int numberOfRetryOpenNetwoking = 0;//number of openning networking dialog retry
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
-    /**
-     * show more info icon click listener
-     */
-    protected onShowDetailOrderListener mShowDetailOrderClick = new onShowDetailOrderListener() {
-
-        @Override
-        public void onShowDetailOrder() {
-            try {
-                showInfoDialog(null, mPaymentInfoHelper.getOrder().description);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-    };
-    protected ZPWOnCloseDialogListener mCloseDialog = this::onCloseDialogSelection;
+    //close snackbar networking alert listener
+    protected onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
     /***
      * loading website so long,over timeout 40s
      */
@@ -252,8 +239,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
-    //close snackbar networking alert listener
-    protected onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
     private View.OnClickListener mSupportButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -502,14 +487,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }, GlobalData.getStringResource(RS.string.zpw_alert_linkcard_not_support));
     }
 
-    public synchronized void recycleGateway() {
-        setEnableView(R.id.zpsdk_exit_ctl, false);
-        finish();
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onComplete();
-        }
-    }
-
     //animation
     protected void fadeOutTransition() {
         this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -574,20 +551,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             mActivityStack.push(this);
         }
         mBus = SDKApplication.getApplicationComponent().eventBus();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(this, "on resume");
-        //clear snackbar if has networkign again when user resume
-        if (ConnectionUtil.isOnline(this)) {
-            PaymentSnackBar.getInstance().dismiss();
-            numberOfRetryOpenNetwoking = 0;
-        } else {
-            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
-                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
-        }
     }
 
     @Override
@@ -908,16 +871,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    public void visibleAppInfo(boolean pIsVisible) {
-        setVisible(R.id.zpsdk_app_info, pIsVisible);
+    public void visibleOrderInfo(boolean pIsVisible) {
+        setVisible(R.id.orderinfo_module, pIsVisible);
     }
 
     public void visibleCardInfo(boolean pIsVisible) {
         setVisible(R.id.zpw_card_info, pIsVisible);
-    }
-
-    public void visibleTranferWalletInfo(boolean pIsVisible) {
-        setVisible(R.id.zpsdk_transfer_info, pIsVisible);
     }
 
     public void visibleSubmitButton(boolean pIsVisible) {
@@ -936,116 +895,27 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
-    public void visibleConfirmView(boolean pIsVisible) {
-        setVisible(R.id.zpw_confirm, pIsVisible);
-    }
-
     public void setBarTitle(String pTitle) {
         setText(R.id.payment_method_name, pTitle);
         mTitleHeaderText = pTitle;
     }
 
-    public void visibleHeaderInfo() {
+    public void showOrderInfo() {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-            if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-                getAdapter().getActivity().visibleTranferWalletInfo(true);
-            } else {
-                getAdapter().getActivity().visibleAppInfo(true);
-            }
+            getAdapter().getActivity().visibleOrderInfo(true);
         }
-    }
-
-    public void setConfirmTitle(String pTitle) {
-        setText(R.id.zpw_payment_method_label, pTitle);
-    }
-
-    public void showOrderFeeView() {
-        AbstractOrder order = mPaymentInfoHelper.getOrder();
-        if (order == null) {
-            return;
-        }
-        if (order.amount_total > 0) {
-            setVisible(R.id.zpw_fee_view_wrapper, true);
-            setVisible(R.id.zpw_total_view_wrapper, true);
-            setText(R.id.zpw_payment_channel_fee, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-            setText(R.id.zpw_payment_channel_total_pay, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-            applyFont(findViewById(R.id.zpw_payment_channel_total_pay), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        }
-
-    }
-
-    protected void showAmount() {
-        try {
-            AbstractOrder order = mPaymentInfoHelper.getOrder();
-            if (order != null && order.amount > 0) {
-                String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount));
-                setText(R.id.amount_txt, txtAmount);
-                setText(R.id.currency_unit_txt, GlobalData.getStringResource(RS.string.zpw_string_payment_currency_label));
-            } else {
-                setVisible(R.id.amount_txt, false);
-                setVisible(R.id.currency_unit_txt, false);
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    }
-
-    protected void setBackground(int color) {
-        View view = findViewById(R.id.supperRootView);
-        if (view != null)
-            view.setBackgroundColor(color);
     }
 
     public void animationImageViewSuccessSpecial() {
         startAnimate(R.id.zpw_imageview_success_icon);
     }
 
-    public void animationImageViewSuccess() {
-        startAnimate(R.id.zpw_payment_success_imageview);
+    public void animSuccess() {
+        startAnimate(R.id.success_imageview);
     }
 
-    public void animateImageViewFail() {
-        startAnimate(R.id.zpw_payment_fail_imageview);
-    }
-
-    public void showFailView(String pMessage, String pTransID) {
-        setText(R.id.zpw_textview_error_message, pMessage);
-
-        if (this instanceof PaymentChannelActivity) {
-            StatusResponse statusResponse = getAdapter().getResponseStatus();
-//            statusResponse.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
-            // The inform text would be set from server
-            if (statusResponse != null) {
-                setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
-                setVisible(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
-
-//                int[] status = new int[]{2, 1};
-                if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
-                    setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
-                } else {
-                    setVisible(R.id.zpw_payment_fail_rl_update_info, false);
-                    setVisible(R.id.zpw_payment_fail_rl_support, true);
-                }
-            } else {
-                setVisible(R.id.zpw_textview_update_level_inform, false);
-                setVisible(R.id.zpw_payment_fail_rl_update_info, false);
-                setVisible(R.id.zpw_payment_fail_rl_support, false);
-            }
-        }
-
-        setVisible(R.id.zpw_pay_info_buttom_view, true);
-
-        if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
-            setVisible(R.id.zpw_transaction_wrapper, true);
-            setText(R.id.zpw_textview_transaction, pTransID);
-            setVisible(R.id.zpw_notransid_textview, false);
-        } else {
-            setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, !((mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()) || mPaymentInfoHelper.bankAccountUnlink()));//hide all if unlink account
-        }
-        applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
-        animateImageViewFail();
+    public void animFail() {
+        startAnimate(R.id.fail_imageview);
     }
 
     private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
@@ -1078,135 +948,168 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    public void showPaymentSuccessContent(String pTransID) throws Exception {
-        if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
-            setVisible(R.id.zpw_transaction_wrapper, true);
-            setText(R.id.zpw_textview_transaction, pTransID);
-            setVisible(R.id.zpw_notransid_textview, false);
+    private String getDescLinkAccount() {
+        if (getPaymentChannelActivity() == null) {
+            return null;
+        }
+        if (getAdapter().getPageName().equals(PAGE_LINKACC_SUCCESS)) {
+            String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
+            if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                    ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
+                desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
+            }
+            return desc;
         } else {
-            setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || mPaymentInfoHelper.bankAccountUnlink()));//hide all if unlink account
-        }
-        setVisible(R.id.zpw_pay_info_buttom_view, true);
-        long appId = mPaymentInfoHelper.getAppId();
-        if (GlobalData.isRedPacketChannel(appId)) {
-            setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_textview_transaction_lixi_label, true);
-            String formattedString = "<b>" + GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title_02) + "</b>";
-            setTextHtml(R.id.zpw_textview_transaction_lixi_label, String.format(GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title), formattedString));
-        }
-        applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        //show transaction amount when ! withdraw
-        AbstractOrder order = mPaymentInfoHelper.getOrder();
-        if (order != null && order.amount_total > 0 && !mPaymentInfoHelper.isWithDrawTrans() && !mPaymentInfoHelper.isMoneyTranferTrans()) {
-            setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-            if (!TextUtils.isEmpty(order.description)) {
-                setVisible(R.id.payment_description_label, true);
-                setText(R.id.payment_description_label, order.description);
-            } else {
-                setVisible(R.id.payment_description_label, false);
+            String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
+            if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                    ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
+                desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
             }
-        } else if (mPaymentInfoHelper.isBankAccountTrans()) { // show label for linkAcc
-            if (getAdapter().getPageName().equals(PAGE_LINKACC_SUCCESS)) {
-                setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
-                setVisible(R.id.payment_description_label, true);
+            return desc;
+        }
+    }
 
-                String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
-                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
-                    desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
-                }
-                setText(R.id.payment_description_label, desc);
-                setVisible(R.id.price_linearlayout, false);
-                setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_medium_label));
-            } else {
-                setVisible(R.id.zpw_payment_success_textview, false);
-                setVisible(R.id.payment_description_label, true);
-                String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
-                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
-                    desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
-                }
-                setText(R.id.payment_description_label, desc);
-                setVisible(R.id.price_linearlayout, false);
-                setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
+    protected void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) {
+        List<View> views = genDynamicItemDetail(getApplicationContext(), nameValuePairList);
+        boolean hasView = views != null && views.size() > 0;
+        LinearLayout stubView = (LinearLayout) viewContainer.findViewById(R.id.item_detail_linearlayout);
+        if (hasView && stubView != null) {
+            for (View view : views) {
+                stubView.addView(view);
             }
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {// Show detail tranfer
+        }
+        setVisible(R.id.item_detail_linearlayout, hasView);
+    }
+
+    private void renderTransDetail(View viewContainer, String pTransID, AbstractOrder order, String appName) {
+        //service name
+        boolean hasAppName = !TextUtils.isEmpty(appName);
+        TextView appname_txt = (TextView) viewContainer.findViewById(R.id.appname_txt);
+        if (hasAppName) {
+            appname_txt.setText(appName);
+        }
+        appname_txt.setVisibility(hasAppName ? View.VISIBLE : View.GONE);
+        //trans id
+        boolean hasTransId = !TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0;
+        TextView transaction_id_txt = (TextView) viewContainer.findViewById(R.id.transaction_id_txt);
+        if (hasTransId) {
+            transaction_id_txt.setText(pTransID);
+            applyFont(transaction_id_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
+        } else {
+            transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_label));
+            View sdk_trans_id_relativelayout = viewContainer.findViewById(R.id.sdk_trans_id_relativelayout);
+            sdk_trans_id_relativelayout.setVisibility(!(GlobalData.shouldNativeWebFlow() || mPaymentInfoHelper.bankAccountUnlink()) ? View.VISIBLE : View.GONE);//hide trans id if unlink account
+        }
+        //trans time
+        Long paymentTime = order != null ? order.apptime : new Date().getTime();
+        TextView transaction_time_txt = (TextView) viewContainer.findViewById(R.id.transaction_time_txt);
+        transaction_time_txt.setText(SdkUtils.convertDateTime(paymentTime));
+        //trans fee
+        String transFee = order != null && order.fee > 0 ? StringUtil.formatVnCurrence(String.valueOf(order.fee)) :
+                getResources().getString(R.string.sdk_order_fee_free);
+        TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
+        order_fee_txt.setText(transFee);
+        //render item detail dynamic
+        List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
+        renderDynamicItemDetail(viewContainer, items);
+    }
+
+    public void renderSuccess(String pTransID, AbstractOrder order, String appName) {
+        //transaction amount
+        boolean hasAmount = order != null && order.amount_total > 0;
+        if (hasAmount) {
+            setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
+        }
+        if (!hasAmount || mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
+            setVisible(R.id.success_order_amount_total_linearlayout, false);
+        }
+        //desc
+        String desc = order != null ? order.description : null;
+        if (mPaymentInfoHelper.isBankAccountTrans()) {
+            desc = getDescLinkAccount();
+        }
+        boolean hasDesc = !TextUtils.isEmpty(desc);
+        if (hasDesc) {
+            setText(R.id.order_description_txt, desc);
+        }
+        setVisible(R.id.order_description_txt, hasDesc);
+        //show 2 user avatar in tranfer money
+        if (mPaymentInfoHelper.isMoneyTranferTrans()) {
             //prevent capture screen
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-            }
-            if (!SdkUtils.isTablet(this)) {
-                int[] locate = new int[2];
-                View view = findViewById(R.id.zpw_pay_info_buttom_view);
-                view.getLocationInWindow(locate);
-                int mLocate = locate[1];
-
-                View submitButton = findViewById(R.id.zpw_submit_view);
-                LinearLayout.LayoutParams submitButtonParams = (LinearLayout.LayoutParams) submitButton.getLayoutParams();
-                submitButtonParams.setMargins(0, 0, 0, 0);
-                submitButton.setLayoutParams(submitButtonParams);
-
-                View LayoutRoot = findViewById(R.id.supperRootView);
-                View LayoutScrollView = findViewById(R.id.zpw_scrollview_layout);
-                ViewTreeObserver vto = LayoutRoot.getViewTreeObserver();
-
-                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-
-                        if (LayoutRoot.getViewTreeObserver().isAlive()) {
-                            LayoutRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
-                        int mHeightScrollView = LayoutScrollView.getHeight();
-                        LayoutScrollView.setMinimumHeight(mHeightScrollView + mLocate);
-                        Log.d(this, "addOnGlobalLayoutListener==" + LayoutScrollView.getHeight());
-
-                    }
-                });
-
-            }
-
-            setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-            setVisible(R.id.layout_detail, true);
-            setVisible(R.id.payment_description_label, false);
-            if (order != null && !TextUtils.isEmpty(order.description)) {
-                setText(R.id.text_description, order.description);
-            } else {
-                setVisible(R.id.layout_success_description, false);
-            }
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            setVisible(R.id.money_tranfer_useravatar_linearlayout, true);
             UserInfo destinationUser = mPaymentInfoHelper.getDestinationUser();
             if (destinationUser != null) {
-                if (TextUtils.isEmpty(destinationUser.zalopay_name)) {// check zalo pay ID
-                    setText(R.id.text_zalopay_id, GlobalData.getStringResource(RS.string.zpw_string_transfer_zalopay_id_null));
-                } else {
-                    setText(R.id.text_zalopay_id, destinationUser.zalopay_name);
-                }
-
-                setText(R.id.text_userTo, destinationUser.zalo_name);
                 findViewAndLoadUri(R.id.img_avatarTo, destinationUser.avatar);
             }
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             if (userInfo != null && !TextUtils.isEmpty(userInfo.avatar)) {
                 findViewAndLoadUri(R.id.img_avatarFrom, userInfo.avatar);
             }
-            if (order != null) {
-                Long paymentTime = order.apptime;
-                if (paymentTime == null || paymentTime == 0) {
-                    paymentTime = new Date().getTime();
-                }
-                setTransferDate(SdkUtils.convertDateTime(paymentTime));
-            }
-        } else {
-            setVisible(R.id.payment_description_label, false);
-            setVisible(R.id.price_linearlayout, false);
-            setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
+            findViewAndLoadUri(R.id.arrow_imageview, ResourceManager.getAbsoluteImagePath(RS.drawable.ic_arrow));
         }
+        //inflat trans detail layout
+        ViewStub success_trans_detail_stub = (ViewStub) findViewById(R.id.success_trans_detail_stub);
+        if (success_trans_detail_stub != null) {
+            View trans_detail_view = success_trans_detail_stub.inflate();
+            renderTransDetail(trans_detail_view, pTransID, order, appName);
+        }
+        //center title toolbar
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
-        animationImageViewSuccess();
+        //anim success icon
+        animSuccess();
+        changeSubmitButtonBackground();
     }
 
-    public void showPaymentSpecialSuccessContent(AppInfo appInfo, String pTransID) {
+    /***
+     * change background drawable button close
+     */
+    private void changeSubmitButtonBackground() {
+        Button close_btn = (Button) findViewById(R.id.zpsdk_btn_submit);
+        if (close_btn != null) {
+            close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
+            close_btn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.text_color_grey));
+        }
+    }
+
+    public void renderFail(String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse) {
+        boolean hasTransFailMessage = !TextUtils.isEmpty(pMessage);
+        if (hasTransFailMessage) {
+            setText(R.id.sdk_trans_fail_reason_message_textview, pMessage);
+        }
+        setVisible(R.id.sdk_trans_fail_reason_message_textview, hasTransFailMessage);
+        //inflate trans detail layout
+        ViewStub fail_trans_detail_stub = (ViewStub) findViewById(R.id.fail_trans_detail_stub);
+        if (fail_trans_detail_stub != null) {
+            View trans_detail_view = fail_trans_detail_stub.inflate();
+            renderTransDetail(trans_detail_view, pTransID, order, appName);
+        }
+        // The inform text would be set from server
+        if (statusResponse != null) {
+            //message action
+            boolean hasSuggestActionMessage = !TextUtils.isEmpty(statusResponse.getSuggestMessage());
+            if (hasSuggestActionMessage) {
+                setText(R.id.sdk_sugguest_action_message_textview, statusResponse.getSuggestMessage());
+            }
+            setVisible(R.id.sdk_sugguest_action_message_textview, hasSuggestActionMessage);
+            if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
+                setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
+            } else {
+                setVisible(R.id.zpw_payment_fail_rl_support, true);
+            }
+        }
+        //trans id
+        boolean hasTransId = !TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0;
+        if (!hasTransId) {
+            setVisible(R.id.sdk_trans_id_relativelayout, !((mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()) ||
+                    mPaymentInfoHelper.bankAccountUnlink()));//hide all if unlink account
+        }
+        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
+        animFail();
+        changeSubmitButtonBackground();
+    }
+
+    public void renderSuccessSpecial(AppInfo appInfo, String pTransID) {
         setText(R.id.zpw_textview_transaction_id, pTransID);
         AbstractOrder order = mPaymentInfoHelper.getOrder();
         if (order != null && order.amount_total >= 0) {
@@ -1227,22 +1130,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setMarginLeft(R.id.payment_method_name, (int) getResources().getDimension(R.dimen.zpw_header_label_margin));
         //animate icon
         animationImageViewSuccessSpecial();
-    }
-
-    protected void showBalanceContent(MiniPmcTransType pConfig) throws Exception {
-        long user_balance = mPaymentInfoHelper.getBalance();
-        double amount_total = mPaymentInfoHelper.getAmountTotal();
-        setText(R.id.zalopay_bill_info, StringUtil.formatVnCurrence(String.valueOf(user_balance)));
-        setVisible(R.id.zpw_channel_layout, true);
-        setVisible(R.id.zpw_channel_label_textview, false);
-        setText(R.id.zpw_channel_name_textview, pConfig != null ? pConfig.pmcname : GlobalData.getStringResource(RS.string.zpw_string_zalopay_wallet_method_name));
-        if (user_balance < amount_total) {
-            setText(R.id.zalopay_info_error, GlobalData.getStringResource(RS.string.zpw_string_zalopay_balance_error_label));
-            setViewColor(R.id.zalopay_info_error, getResources().getColor(R.color.holo_red_light));
-        } else {
-            setText(R.id.zalopay_info_error, GlobalData.getStringResource(RS.string.zpw_string_zalopay_balance_label));
-            setViewColor(R.id.zalopay_info_error, getResources().getColor(R.color.text_color));
-        }
     }
 
     public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
@@ -1278,118 +1165,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
-     * show special view for wallet tranfer and withdraw
-     */
-    protected void showUserInfoWalletTransfer() {
-        if (!mPaymentInfoHelper.isMoneyTranferTrans()) {
-            return;
-        }
-
-        //show fee
-        showConfirmView(false, false, null);
-
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        AbstractOrder order = mPaymentInfoHelper.getOrder();
-        //zalo name
-        if (!TextUtils.isEmpty(userInfo.zalo_name))
-            setText(R.id.receiver_zaloname_txt, userInfo.zalo_name);
-        else
-            setVisible(R.id.receiver_zaloname_relativelayout, false);
-
-        //zalopay name
-        if (!TextUtils.isEmpty(userInfo.zalopay_name))
-            setText(R.id.receiver_zalopayname_txt, userInfo.zalopay_name);
-        else
-            setVisible(R.id.receiver_zalopayname_relativelayout, false);
-
-        //description
-        if (!TextUtils.isEmpty(order.description)) {
-            setVisible(R.id.transfer_description_txt, true);
-            setText(R.id.transfer_description_txt, order.description);
-        } else
-            setVisible(R.id.transfer_description_txt, false);
-
-        //amount
-        if (order.amount > 0) {
-            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount));
-            setText(R.id.transfer_amount_txt, txtAmount);
-        }
-    }
-
-    /**
-     * show fee
-     */
-    public void showConfirmView(boolean pHidden, boolean pShow, MiniPmcTransType pChannel) {
-        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper) && pHidden) {
-            visibleTranferWalletInfo(false);
-            visibleAppInfo(false);
-
-            return;
-        }
-
-        if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            visibleTranferWalletInfo(true);
-            visibleAppInfo(false);
-
-            AbstractOrder order = mPaymentInfoHelper.getOrder();
-            if (pShow && order.fee > 0) {
-                setVisible(R.id.transfer_amount_txt, true);
-                setVisible(R.id.transfer_fee_relativelayout, true);
-
-                if (pChannel != null) {
-                    String txtprice = StringUtil.formatVnCurrence(String.valueOf(order.fee));
-                    setText(R.id.transfer_fee_txt, txtprice);
-                }
-
-                try {
-                    if (order.amount_total > 0) {
-                        String txtAmount = StringUtil.formatVnCurrence(String.valueOf(order.amount_total));
-                        setText(R.id.transfer_amounttotal_txt, txtAmount);
-
-                    }
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
-            } else {
-                setVisible(R.id.transfer_amount_txt, false);
-                setVisible(R.id.transfer_fee_relativelayout, false);
-            }
-        } else if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
-            visibleTranferWalletInfo(false);
-            visibleAppInfo(false);
-        }
-
-    }
-
-    /***
-     * show header text
-     */
-    protected void showDisplayInfo() {
-        if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            visibleTranferWalletInfo(true);
-            visibleAppInfo(false);
-            showUserInfoWalletTransfer();
-        } else {
-            AbstractOrder order = mPaymentInfoHelper.getOrder();
-            if (mPaymentInfoHelper.isWithDrawTrans()) {
-                setText(R.id.item_name, GlobalData.getStringResource(RS.string.zpw_string_withdraw_description));
-            } else if (order != null) {
-                setText(R.id.item_name, order.description);
-            }
-        }
-    }
-
     protected void startAnimate(int pID) {
         View view = findViewById(pID);
-
         if (view != null) {
-
             Animation animationBounce = AnimationUtils.loadAnimation(this, R.anim.bounce_interpolator);
-
             AnimationSet growShrink = new AnimationSet(true);
             growShrink.addAnimation(animationBounce);
-
             view.startAnimation(growShrink);
         }
     }
@@ -1401,7 +1182,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public void setMarginSubmitButtonTop(boolean viewEnd) {
         View submitButton = findViewById(R.id.zpw_submit_view);
-        View confirmRootView = findViewById(R.id.zpw_payment_confirm_root_view);
         View authenLocalView = findViewById(R.id.linearlayout_selection_authen);
         View authenInputCardView = findViewById(R.id.linearlayout_authenticate_local_card);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -1413,10 +1193,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (submitButton != null) {
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
-            }
-            if (confirmRootView != null) {
-                confirmRootView.setPadding(0, 0, 0, paddingButtom);
-                confirmRootView.requestLayout();
             }
             if (authenLocalView != null) {
                 authenLocalView.setPadding(0, 0, 0, paddingButtom);
@@ -1450,12 +1226,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
         applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
         applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
-    }
-
-    protected void setListener() {
-        View view = findViewById(R.id.item_name);
-        if (view != null)
-            ((EllipsizingTextView) view).setOnShowDetailOrderListener(mShowDetailOrderClick);
     }
 
     public void applyFont(View pView, String pFontName) {
@@ -1493,7 +1263,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     /***
      * server maintenance dialog
-     *
      * @param pStatusMessage
      */
     public void showServerMaintenanceDialog(String pStatusMessage) {
@@ -1513,16 +1282,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public void confirmUpgradeLevelIfUserInputBankAccount(final String pMessage, ZPWOnEventConfirmDialogListener pListener) {
         showNoticeDialog(pListener, pMessage, GlobalData.getStringResource(RS.string.dialog_upgrade_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
-    }
-
-    /***
-     * show bank maintenance dialog
-     *
-     * @param pBankCode
-     * @return
-     */
-    public boolean showBankMaintenance(String pBankCode) {
-        return showBankMaintenance(null, pBankCode);
     }
 
     /***
@@ -1615,7 +1374,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public void showInfoDialog(final ZPWOnEventDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
-            Log.d(this, "===showWarningDialog===params=NULL");
             return;
         }
         String message = params[0];
@@ -1633,7 +1391,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showNoticeDialog(final ZPWOnEventConfirmDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
-            Log.d(this, "===showWarningDialog===params=NULL");
             return;
         }
         String message = params[0];
@@ -1657,7 +1414,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showRetryDialog(final ZPWOnEventConfirmDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
-            Log.d(this, "===showRetryDialog===params=NULL");
             return;
         }
         String message = params[0];
@@ -1721,7 +1477,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     private String getMessageFailView() {
-        TextView textView = (TextView) findViewById(R.id.zpw_textview_error_message);
+        TextView textView = (TextView) findViewById(R.id.sdk_trans_fail_reason_message_textview);
         return ((textView != null) ? String.valueOf(textView.getText()) : "");
     }
 
@@ -1783,10 +1539,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private SimpleDraweeView findAndPrepare(@IdRes int viewId) {
         SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
         return view;
-    }
-
-    public void setTransferDate(String pDate) {
-        setText(R.id.text_transfer_date, pDate);
     }
 
     //endregion

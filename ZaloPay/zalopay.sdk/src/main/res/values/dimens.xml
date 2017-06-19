@@ -5,7 +5,8 @@
     <dimen name="sdk_form_input_card_number_size">17sp</dimen>
 
     <dimen name="payment_displayInfo_padding">5dp</dimen>
-    <dimen name="zpw_padding_app_info_left_right">10dp</dimen>
+    <dimen name="sdk_margin_left_right">10dp</dimen>
+    <dimen name="sdk_margin_top_bottom">10dp</dimen>
     <dimen name="zpw_padding_text_right">20dp</dimen>
     <dimen name="zpw_padding_3">3dp</dimen>
     <dimen name="zpw_padding_6">6dp</dimen>
@@ -196,4 +197,8 @@
     <dimen name="sdk_ic_channel_size">33dp</dimen>
 
     <dimen name="button_radius">3dp</dimen>
+
+    <dimen name="sdk_margin_top_icon">15dp</dimen>
+    <dimen name="sdk_text_size_supper">36sp</dimen>
+    <dimen name="sdk_text_size_medium">18sp</dimen>
 </resources>
