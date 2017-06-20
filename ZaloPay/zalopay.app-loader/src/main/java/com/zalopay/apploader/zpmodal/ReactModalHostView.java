@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +37,8 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.zalopay.apploader.ReactNativeHostable;
+
+import timber.log.Timber;
 
 /**
  * ReactModalHostView is a view that sits in the view hierarchy representing a Modal view.
@@ -222,9 +225,18 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         } else if (mAnimationType.equals("slide")) {
             theme = R.style.Theme_FullScreenDialogAnimatedSlide;
         }
-        mDialog = new Dialog(mReactNativeHostable.getActivityContext(), theme);
+
+        Context context = mReactNativeHostable.getActivityContext();
+        Timber.d("showOrUpdate: [context : %s]", context);
+
+
+        mDialog = new Dialog(context, theme);
+
+        // mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        // mDialog.setContentView(mHostView);
 
         mDialog.setContentView(getContentView());
+
         updateProperties();
 
         mDialog.setOnShowListener(mOnShowListener);
@@ -283,7 +295,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
      */
     private void updateProperties() {
         Assertions.assertNotNull(mDialog, "mDialog must exist when we call updateProperties");
-
+        //mDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         if (mTransparent) {
             mDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         } else {
