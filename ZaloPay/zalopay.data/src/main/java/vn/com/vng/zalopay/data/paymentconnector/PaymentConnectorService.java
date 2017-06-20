@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 public class PaymentConnectorService implements OnReceivedPushMessageListener {
 
     private static final int CONNECT_TIMEOUT = 5; // 5 SECONDS
+    private static final int INITIAL_CAPACITY_CALLBACK = 32;
 
     private final Connection mPaymentService;
     private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
@@ -50,7 +51,7 @@ public class PaymentConnectorService implements OnReceivedPushMessageListener {
     private final CompositeSubscription mSubscription = new CompositeSubscription();
 
     public PaymentConnectorService(Context context, Connection service) {
-        this.mPaymentCallBackArray = new LongSparseArray<>();
+        this.mPaymentCallBackArray = new LongSparseArray<>(INITIAL_CAPACITY_CALLBACK);
         this.mRequestQueue = new LinkedList<>();
         this.mContext = context;
         this.mPaymentService = service;
