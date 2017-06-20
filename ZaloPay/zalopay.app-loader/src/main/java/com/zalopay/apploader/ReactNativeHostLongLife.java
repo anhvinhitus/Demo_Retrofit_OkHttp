@@ -3,6 +3,7 @@ package com.zalopay.apploader;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactInstanceManagerBuilder;
 import com.facebook.react.common.LifecycleState;
@@ -12,6 +13,7 @@ import com.facebook.react.ReactPackage;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import timber.log.Timber;
 
@@ -22,6 +24,8 @@ import timber.log.Timber;
 public class ReactNativeHostLongLife implements ReactNativeHostable {
     private Map<String, ReactInstanceManager> mInstance = new HashMap<>();
     private Map<String, Boolean> mNameMapping = new HashMap<>();
+    private WeakHashMap<String, Activity> mWeakHashMapActivity = new WeakHashMap<>();
+    private String mCurrentClassActivity;
 
     public ReactNativeHostLongLife() {
     }
@@ -190,26 +194,30 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         activity.handleException(e);
     }
 
-    private WeakReference<Activity> mActivity;
-
     @Override
     public Context getActivityContext() {
-        if (mActivity != null) {
-            return mActivity.get();
+        if (TextUtils.isEmpty(mCurrentClassActivity)) {
+            return null;
         }
-        return null;
+
+        return mWeakHashMapActivity.get(mCurrentClassActivity);
+    }
+
+    @Override
+    public void activeCurrentActivity(String className) {
+        mCurrentClassActivity = className;
     }
 
     @Override
     public void setActivityContext(Activity activity) {
-        if (activity == null) {
-            if (mActivity != null) {
-                mActivity.clear();
-                mActivity = null;
-            }
-        } else {
-            mActivity = new WeakReference<>(activity);
-        }
+        mWeakHashMapActivity.put(activity.getLocalClassName(), activity);
+
+        Timber.d("setActivityContext: activity cache [size %s]", mWeakHashMapActivity.size());
+    }
+
+    @Override
+    public void destroyActivityContext(Activity activity) {
+        mWeakHashMapActivity.remove(activity.getLocalClassName());
     }
 
     @Override
@@ -219,9 +227,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
                 manager.destroy();
             }
             mInstance.clear();
-            if (mActivity != null) {
-                mActivity.clear();
-            }
+            mWeakHashMapActivity.clear();
         } catch (Exception e) {
             Timber.w(e, "Error on cleanup of ReactNativeInstanceManagerLongLife");
         }

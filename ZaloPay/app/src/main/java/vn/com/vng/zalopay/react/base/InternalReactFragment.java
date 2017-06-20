@@ -167,6 +167,12 @@ public class InternalReactFragment extends ReactBaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        nativeInstanceManager().activeCurrentActivity(getActivity().getLocalClassName());
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         startReactApplication();

@@ -35,4 +35,8 @@ public interface ReactNativeHostable {
     Context getActivityContext();
 
     void setActivityContext(Activity activity);
+
+    void destroyActivityContext(Activity activity);
+
+    void activeCurrentActivity(String className);
 }

@@ -175,6 +175,12 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        nativeInstanceManager().activeCurrentActivity(getLocalClassName());
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -214,7 +220,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
-        nativeInstanceManager().setActivityContext(null);
+        nativeInstanceManager().destroyActivityContext(this);
         super.onDestroy();
     }
 

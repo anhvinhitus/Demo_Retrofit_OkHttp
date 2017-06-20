@@ -162,7 +162,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
             mReactInstanceManager = null;
         }
 
-        nativeInstanceManager().setActivityContext(null);
+        nativeInstanceManager().destroyActivityContext(getActivity());
         super.onDestroyView();
     }
 
