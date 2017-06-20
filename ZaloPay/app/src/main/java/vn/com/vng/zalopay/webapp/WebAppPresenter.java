@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.webapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -164,25 +165,36 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
                 mView.updateLoadProgress(progress);
+
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    if (progress == 100) {
+                        String title = view.getTitle();
+                        setReceivedTitleStatus(view, title);
+                    }
+                }
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                if (view.canGoBack()) {
-                    setHomeDisplayStatus(false);
-                } else {
-                    setHomeDisplayStatus(true);
-                    title = getActivity().getString(R.string.promotion_title);
-                }
-
-                mView.onReceivedTitle(title);
+                setReceivedTitleStatus(view, title);
             }
         });
     }
 
+    private void setReceivedTitleStatus(WebView view, String title) {
+        if (view.canGoBack()) {
+            setHomeDisplayStatus(false);
+        } else {
+            setHomeDisplayStatus(true);
+            title = getActivity().getString(R.string.promotion_title);
+        }
+
+        mView.onReceivedTitle(title);
+    }
+
     private void setHomeDisplayStatus(boolean isHome) {
-        if(isHome) {
+        if (isHome) {
             mView.setHiddenBackButton(true);
             mView.setHiddenShareButton(true);
             mView.setHiddenTabBar(false);
