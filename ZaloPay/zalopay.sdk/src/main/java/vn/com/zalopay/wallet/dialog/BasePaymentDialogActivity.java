@@ -1,12 +1,12 @@
-package vn.com.zalopay.wallet.view.component.activity;
+package vn.com.zalopay.wallet.dialog;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Window;
 
-import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.R;
 
 public abstract class BasePaymentDialogActivity extends Activity {
     protected abstract void initData();
@@ -37,37 +37,20 @@ public abstract class BasePaymentDialogActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setFinishOnTouchOutside(false);
-
         setContentView(getLayout());
-
         float percentWitdh = getResources().getInteger(R.integer.dialog_percent_ondefault);
-
         if (SdkUtils.isTablet(getApplicationContext())) {
             percentWitdh = getResources().getInteger(R.integer.dialog_percent_ontablet);
         }
-
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int screenWidth = (int) (metrics.widthPixels * percentWitdh / 100);
         int screenHeigh = (int) (metrics.heightPixels * 0.70);
         getWindow().setLayout(screenWidth, screenHeigh);
-
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
         getArguments();
         initViews();
     }

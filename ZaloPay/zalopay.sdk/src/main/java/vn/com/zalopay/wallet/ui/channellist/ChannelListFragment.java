@@ -26,17 +26,17 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
-import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 /**
@@ -338,13 +338,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                         terminate();
                     }
                 });
-    }
-
-    @Override
-    public void showSelectionBankAccountDialog() {
-        Intent intent = new Intent(getContext(), MapListSelectionActivity.class);
-        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PVCB);
-        startActivity(intent);
     }
 
     @Override

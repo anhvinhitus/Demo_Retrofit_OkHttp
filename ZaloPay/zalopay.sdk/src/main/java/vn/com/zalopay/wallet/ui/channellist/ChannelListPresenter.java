@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.ui.channellist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,17 +62,19 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channellist.item.MapItem;
-import vn.com.zalopay.wallet.ui.channellist.item.ZaloPayItem;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+
+import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 
 /**
  * Created by chucvv on 6/12/17.
  */
 
 public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment> {
-    public static final int REQUEST_CODE = 1000;
     @Inject
     public EventBus mBus;
     @Inject
@@ -156,8 +159,12 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         Log.d(this, "call constructor ChannelListPresenter");
     }
 
+    public List<Object> getChannelList() {
+        return mChannelList;
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == CHANNEL_PAYMENT_REQUEST_CODE) {
             Log.d(this, "onActivityResult resultCode", resultCode);
             switch (resultCode) {
                 case Activity.RESULT_OK:
@@ -183,6 +190,21 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                         }
                     }
                     break;
+                case MAP_POPUP_RESULT_CODE:
+                    selectChannelFromPopup(data);
+                    break;
+            }
+        }
+    }
+
+    private void selectChannelFromPopup(Intent data) {
+        if (data != null) {
+            int position = data.getIntExtra(SELECTED_PMC_POSITION, -1);
+            SdkSelectedChannelMessage event = new SdkSelectedChannelMessage(position);
+            OnSelectChannelEvent(event);
+            if(position == mPreviousPosition){
+                //delay waiting for destroy popup
+                new Handler().postDelayed(this::startPayment, 300);
             }
         }
     }
@@ -228,7 +250,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             Log.d(this, "channel list is empty");
             return;
         }
-        if (pMessage.position >= 0) {//prevent so many click on channel
+        if (pMessage.position >= 0) {
             Object object = mChannelList.get(pMessage.position);
             if (object instanceof PaymentChannel) {
                 onSelectedChannel(pMessage.position, (PaymentChannel) object);
@@ -364,17 +386,17 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    private void initAdapter() throws Exception{
+    private void initAdapter() throws Exception {
         mChannelAdapter = new ChannelListAdapter();
         Context context = getViewOrThrow().getContext();
         long amount = mPaymentInfoHelper.getAmount();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
         int userLevel = mPaymentInfoHelper.getLevel();
         @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
-        mChannelAdapter.addZaloPayBinder(context,amount,userInfo,transtype);
-        mChannelAdapter.addMapBinder(context,amount,userLevel);
+        mChannelAdapter.addZaloPayBinder(context, amount, userInfo, transtype);
+        mChannelAdapter.addMapBinder(context, amount, userLevel);
         mChannelAdapter.addTitle();
-        mChannelAdapter.addInputBinder(context,amount,userInfo,transtype);
+        mChannelAdapter.addInputBinder(context, amount, userInfo, transtype);
         getViewOrThrow().onBindingChannel(mChannelAdapter);
     }
 
@@ -396,7 +418,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                 setInputMethodTitle = true;
             }
         }
-        mChannelAdapter.setChannel(itemType, pChannel);
+        mChannelAdapter.add(itemType, pChannel);
     }
 
     private void doCompleteLoadChannel() {

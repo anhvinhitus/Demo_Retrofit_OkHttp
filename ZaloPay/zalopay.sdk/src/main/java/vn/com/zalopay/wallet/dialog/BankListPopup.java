@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.component.activity;
+package vn.com.zalopay.wallet.dialog;
 
 import android.text.Html;
 import android.view.View;
@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardSupportGridViewAdapter;
 
-public class BankListActivity extends BasePaymentDialogActivity {
+public class BankListPopup extends BasePaymentDialogActivity {
 
     protected static WeakReference<ZPWOnCloseDialogListener> mCloseCardSupportDialogListener;
     protected static WeakReference<CardSupportAdapter> mCardSupportGridViewAdapter;
@@ -25,19 +25,19 @@ public class BankListActivity extends BasePaymentDialogActivity {
     protected View mRippleButtonSelectBank;
 
     public static void setCloseDialogListener(ZPWOnCloseDialogListener pListener) {
-        BankListActivity.mCloseCardSupportDialogListener = new WeakReference<>(pListener);
+        BankListPopup.mCloseCardSupportDialogListener = new WeakReference<>(pListener);
     }
 
     public ZPWOnCloseDialogListener getListener() {
-        return BankListActivity.mCloseCardSupportDialogListener.get();
+        return BankListPopup.mCloseCardSupportDialogListener.get();
     }
 
     public CardSupportAdapter getAdapter() {
-        return BankListActivity.mCardSupportGridViewAdapter.get();
+        return BankListPopup.mCardSupportGridViewAdapter.get();
     }
 
     public static void setAdapter(CardSupportAdapter pAdapter) {
-        BankListActivity.mCardSupportGridViewAdapter = new WeakReference<>(pAdapter);
+        BankListPopup.mCardSupportGridViewAdapter = new WeakReference<>(pAdapter);
     }
 
     public void onBackPressed() {
@@ -49,7 +49,6 @@ public class BankListActivity extends BasePaymentDialogActivity {
 
     @Override
     protected void getArguments() {
-
     }
 
     @Override
@@ -60,11 +59,8 @@ public class BankListActivity extends BasePaymentDialogActivity {
     @Override
     protected void initViews() {
         mGridViewBank = (GridView) findViewById(R.id.gridViewCard);
-
         txtLabel = (TextView) findViewById(R.id.cardsupport_label);
-
         mRippleButtonSelectBank = findViewById(R.id.rippleButtonSelectBank);
-
         mRippleButtonSelectBank.setOnClickListener(view -> onBackPressed());
     }
 

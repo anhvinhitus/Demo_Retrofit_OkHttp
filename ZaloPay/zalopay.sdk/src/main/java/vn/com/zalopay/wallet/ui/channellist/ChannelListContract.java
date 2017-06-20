@@ -42,8 +42,6 @@ public interface ChannelListContract extends IContract {
 
         void showSupportBankVersionDialog(String pMessage);
 
-        void showSelectionBankAccountDialog();
-
         void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener);
 
         void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener);

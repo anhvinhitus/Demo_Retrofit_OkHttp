@@ -5,7 +5,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -16,6 +15,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
@@ -136,19 +136,12 @@ public class ChannelPreValidation extends SingletonBase {
          * if user have some link bank account, he need to select one to continue to payment
          */
         if (channel.isBankAccount() && !channel.isBankAccountMap) {
-            //use don't have vietcombank link
-            if (!BankAccountHelper.hasBankAccountOnCache(userInfo.zalopay_userid, CardType.PVCB)) {
-                //callback bankcode to app , app will direct user to link bank account to right that bank
-                BankAccount dBankAccount = new BankAccount();
-                dBankAccount.bankcode = CardType.PVCB;
-                mPaymentInfoHelper.setMapBank(dBankAccount);
-                mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-                getView().callbackThenterminate();
-            }
-            //use has an bank account list
-            else {
-                getView().showSelectionBankAccountDialog();
-            }
+            //callback bankcode to app , app will direct user to link bank account to right that bank
+            BankAccount dBankAccount = new BankAccount();
+            dBankAccount.bankcode = CardType.PVCB;
+            mPaymentInfoHelper.setMapBank(dBankAccount);
+            mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
+            getView().callbackThenterminate();
             return false;
         }
         return true;

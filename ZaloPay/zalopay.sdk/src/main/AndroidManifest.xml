@@ -30,11 +30,11 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.component.activity.BankListActivity"
+            android:name=".dialog.BankListPopup"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".view.component.activity.MapListSelectionActivity"
+            android:name=".dialog.MapBankPopup"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog" />
         <!-- receivers -->

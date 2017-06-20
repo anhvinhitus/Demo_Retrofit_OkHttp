@@ -78,6 +78,11 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         notifyBinderDataSetChanged();
     }
 
+    public void addAll(List<PaymentChannel> channelList) {
+        mDataSet.addAll(channelList);
+        notifyBinderDataSetChanged();
+    }
+
     public void clear() {
         mDataSet.clear();
         notifyBinderDataSetChanged();

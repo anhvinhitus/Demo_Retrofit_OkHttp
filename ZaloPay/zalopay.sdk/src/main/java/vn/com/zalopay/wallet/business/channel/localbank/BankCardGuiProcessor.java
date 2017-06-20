@@ -83,20 +83,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void init(PaymentInfoHelper paymentInfoHelper) {
         super.init(paymentInfoHelper);
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
-        } else {
-            getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_atm_method_name));
-        }
-
         mOtpTokenLayoutRootView = getAdapter().getActivity().findViewById(R.id.zpw_content_input_view_root);
         mOtpTokenLayoutRootView.setVisibility(View.GONE);
-
         mRadioGroupAuthenSelectionView = getAdapter().getActivity().findViewById(R.id.linearlayout_selection_authen);
-
         AppCompatRadioButton mRadioButtonSms = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionSmS);
         mRadioButtonToken = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionToken);
-
         mRadioButtonSms.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 mOtpAuthenEditText.setVisibility(View.VISIBLE);

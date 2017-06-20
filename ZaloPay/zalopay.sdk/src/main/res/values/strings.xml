@@ -165,8 +165,7 @@
 
     <string name="zpw_string_atm_method_name">Thẻ nội địa</string>
     <string name="zpw_string_credit_card_method_name">Thẻ tín dụng</string>
-    <string name="zpw_string_credit_card_link">Liên kết thẻ</string>
-    <string name="zpw_string_zalopay_wallet_method_name">Tài khoản Zalo Pay</string>
+    <string name="sdk_link_card_title">Liên kết thẻ</string>
 
     <string name="zpw_button_submit_text">Tiếp Tục</string>
     <string name="zpw_string_card_number_hint">Nhập số thẻ</string>

@@ -40,10 +40,17 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
         addBinder(new TitleItem(this));
     }
 
-    public void setChannel(ItemType pItemType, PaymentChannel pChannel) {
+    public void add(ItemType pItemType, PaymentChannel pChannel) {
         AbstractItem abstractItem = getDataBinder(pItemType);
         if (abstractItem != null) {
             abstractItem.add(pChannel);
+        }
+    }
+
+    public void addAll(ItemType pItemType, List<PaymentChannel> channelList) {
+        AbstractItem abstractItem = getDataBinder(pItemType);
+        if (abstractItem != null) {
+            abstractItem.addAll(channelList);
         }
     }
 

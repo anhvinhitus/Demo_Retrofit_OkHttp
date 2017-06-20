@@ -10,6 +10,7 @@ import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,11 +51,11 @@ import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
-import static vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter.REQUEST_CODE;
 
 /***
  * pre check before start payment channel
@@ -204,6 +205,10 @@ public class ChannelProxy extends SingletonBase {
             ChannelProxy._object = new ChannelProxy();
         }
         return ChannelProxy._object;
+    }
+
+    public List<Object> getChannels() throws Exception {
+        return getPresenter().getChannelList();
     }
 
     private boolean preventSubmitOrder() {
@@ -524,7 +529,7 @@ public class ChannelProxy extends SingletonBase {
             intent.putExtra(PMC_CONFIG, mChannel);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            getView().startActivityForResult(intent, REQUEST_CODE);
+            getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
         } catch (Exception e) {
             Log.e(this, e);
         } finally {

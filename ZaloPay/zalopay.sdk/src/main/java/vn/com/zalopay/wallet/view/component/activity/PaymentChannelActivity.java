@@ -57,6 +57,8 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 import static vn.com.zalopay.wallet.constants.Constants.API;
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 
@@ -188,6 +190,27 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             renderResourceAfterDelay();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MAP_POPUP_REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    if (data != null) {
+                        setResult(MAP_POPUP_RESULT_CODE, data);
+                        finish();
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Log.d(this, "cancel popup map selection");
+                    if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
+                        getAdapter().getGuiProcessor().clearCardNumberAndShowKeyBoard();
+                    }
+                    break;
+            }
         }
     }
 
@@ -708,11 +731,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             GlobalData.getPaymentListener().onComplete();
             finish();
         }
-    }
-
-    @Override
-    protected String getCloseButtonText() {
-        return GlobalData.getStringResource(RS.string.dialog_retry_input_card_button);
     }
 
     @Override

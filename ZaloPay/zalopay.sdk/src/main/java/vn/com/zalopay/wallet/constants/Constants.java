@@ -120,4 +120,18 @@ public class Constants {
 
     public static final String PMC_CONFIG = "config";
     public static final String STATUS_RESPONSE = "status";
+
+    public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
+    public static final String BANKCODE_EXTRA = "bankcode";
+    public static final String CARDNUMBER_EXTRA = "cardnumber";
+    public static final String NOTICE_CONTENT_EXTRA = "content";
+    public static final String AMOUNT_EXTRA = "amount";
+    public static final String USER_LEVEL_EXTRA = "level";
+    public static final String SELECTED_PMC_POSITION = "pmc_name";
+
+    public static final int MAP_POPUP_REQUEST_CODE = 1000;
+    public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
+    public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
+
+    public static final int MAP_POPUP_RESULT_CODE = 880;
 }

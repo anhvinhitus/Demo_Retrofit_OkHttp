@@ -44,15 +44,15 @@ public class AdapterCreditCard extends AdapterBase {
         if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             this.mGuiProcessor.initPager();
         }
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
-        } else {
-            getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name));
-        }
         if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
             onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
+    }
+
+    @Override
+    protected String getTitle() {
+        return GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name);
     }
 
     private int getDefaultChannelId() {

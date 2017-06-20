@@ -241,8 +241,22 @@ public abstract class AdapterBase {
             } else if (!TransactionHelper.isSecurityFlow(mResponseStatus)) {
                 showTransactionFailView(mResponseStatus.returnmessage);
             }
+        }else{
+            setTitle();
         }
         Log.d(this, "start adapter with page name", mPageName);
+    }
+
+    protected void setTitle(){
+        if (mPaymentInfoHelper.isCardLinkTrans()) {
+            getActivity().setBarTitle(GlobalData.getStringResource(RS.string.sdk_link_card_title));
+        } else {
+            getActivity().setBarTitle(getTitle());
+        }
+    }
+
+    protected String getTitle(){
+        return GlobalData.getStringResource(RS.string.zpw_string_atm_method_name);
     }
 
     public abstract void onProcessPhrase() throws Exception;

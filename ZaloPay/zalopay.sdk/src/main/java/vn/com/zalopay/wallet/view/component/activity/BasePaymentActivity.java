@@ -90,12 +90,12 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
@@ -112,6 +112,7 @@ import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
@@ -1391,7 +1392,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             String transactionTitle = getTransactionTitle();
 
             if (mPaymentInfoHelper.isCardLinkTrans()) {
-                transactionTitle = GlobalData.getStringResource(RS.string.zpw_string_credit_card_link);
+                transactionTitle = GlobalData.getStringResource(RS.string.sdk_link_card_title);
             }
             int errorcode = getAdapter().getResponseStatus() != null ? getAdapter().getResponseStatus().returncode : Constants.NULL_ERRORCODE;
             //Create Parcelable Feedback
@@ -1437,13 +1438,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private String getMessageFailView() {
         TextView textView = (TextView) findViewById(R.id.sdk_trans_fail_reason_message_textview);
         return ((textView != null) ? String.valueOf(textView.getText()) : "");
-    }
-
-    public void showSelectionBankAccountDialog() {
-        Intent intent = new Intent(getApplicationContext(), MapListSelectionActivity.class);
-        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PVCB);
-        intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());
-        startActivity(intent);
     }
 
     public void setTextInputLayoutHint(EditText pEditext, String pMessage, Context pContext) {

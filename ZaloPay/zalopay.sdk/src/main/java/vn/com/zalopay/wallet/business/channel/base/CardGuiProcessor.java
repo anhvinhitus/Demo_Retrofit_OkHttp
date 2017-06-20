@@ -50,11 +50,13 @@ import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.dialog.BankListPopup;
+import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
-import vn.com.zalopay.wallet.view.component.activity.BankListActivity;
+import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -64,6 +66,8 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardIssueFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
+
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 
 /***
  * card processor class
@@ -393,15 +397,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } else {
             initForMapCardAndZaloPay();
         }
-
         getAdapter().setECardFlowType(BankFlow.API);
-
         getCardFinder();
-
         setCardDateOnCardView();
-
         initMutualView();
-
         setMinHeightSwitchCardButton();
     }
 
@@ -786,7 +785,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
 
         getViewPager().setCurrentItem(0);
-
         //auto show keyboard when the first time start
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -984,7 +982,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     GlobalData.getStringResource(RS.string.dialog_linkaccount_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
 
         } else if (getAdapter() != null && getAdapter().getActivity() != null) {
-            getAdapter().getActivity().showSelectionBankAccountDialog();
+            PaymentChannelActivity activity = getAdapter().getActivity();
+            Intent intent = MapBankPopup.createVCBIntent(activity, activity.getString(R.string.dialog_retry_input_card_button),
+                    mPaymentInfoHelper.getAmountTotal(), mPaymentInfoHelper.getLevel());
+            activity.startActivityForResult(intent, MAP_POPUP_REQUEST_CODE);
         }
     }
 
@@ -1541,10 +1542,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (cardSupportGridViewAdapter == null)
             cardSupportGridViewAdapter = CardSupportAdapter.createAdapterProxy(isATMChannel(), mPaymentInfoHelper.getTranstype());
 
-        BankListActivity.setAdapter(cardSupportGridViewAdapter);
-        BankListActivity.setCloseDialogListener(getCloseDialogListener());
+        BankListPopup.setAdapter(cardSupportGridViewAdapter);
+        BankListPopup.setCloseDialogListener(getCloseDialogListener());
 
-        Intent intentBankList = new Intent(getAdapter().getActivity(), BankListActivity.class);
+        Intent intentBankList = new Intent(getAdapter().getActivity(), BankListPopup.class);
         getAdapter().getActivity().startActivity(intentBankList);
     }
 

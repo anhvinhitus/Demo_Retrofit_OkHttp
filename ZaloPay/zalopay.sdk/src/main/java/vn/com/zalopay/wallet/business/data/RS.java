@@ -113,7 +113,6 @@ public class RS {
 
         public static final String zpw_string_transaction_expired = "zpw_string_transaction_expired";
         public static final String zpw_alert_cardname_has_whitespace = "zpw_alert_cardname_has_whitespace";
-        public static final String zpw_string_pin_wrong = "zpw_string_pin_wrong";
 
         public static final String sdk_link_card_exist = "sdk_link_card_exist";
         public static final String sdk_link_card_exist_detail = "sdk_link_card_exist_detail";
@@ -131,16 +130,8 @@ public class RS {
         public static final String zpw_string_alert_networking_online = "zpw_string_alert_networking_online";
         public static final String zpw_string_remind_turn_on_networking = "zpw_string_remind_turn_on_networking";
 
-        public static final String zpw_string_visible_pin_on = "zpw_string_visible_pin_on";
-        public static final String zpw_string_visible_pin_off = "zpw_string_visible_pin_off";
-
-        public static final String zpw_string_withdraw_description = "zpw_string_withdraw_description";
-
         public static final String zpw_redpackage_app_id = "zpw_redpackage_app_id";
         public static final String zpw_string_pay_domain = "zpw_string_pay_domain";
-
-        public static final String zpw_string_lixi_notice_title_02 = "zpw_string_lixi_notice_title_02";
-        public static final String zpw_string_lixi_notice_title = "zpw_string_lixi_notice_title";
 
         public static final String zpw_string_linkacc_notice_description = "zpw_string_linkacc_notice_description";
         public static final String zpw_string_unlinkacc_notice_description = "zpw_string_unlinkacc_notice_description";
@@ -162,17 +153,6 @@ public class RS {
         public static final String zpw_string_fee_format = "zpw_string_fee_format";
 
         public static final String zpw_string_title_select_card = "zpw_string_title_select_card";
-
-        public static final String zpw_string_title_payment_gateway = "zpw_string_title_payment_gateway";
-        public static final String zpw_string_title_payment_gateway_tranfer = "zpw_string_title_payment_gateway_tranfer";
-        public static final String zpw_string_title_payment_gateway_topup = "zpw_string_title_payment_gateway_topup";
-        public static final String zpw_string_title_payment_gateway_withdraw = "zpw_string_title_payment_gateway_withdraw";
-
-        public static final String zpw_string_title_payment_gateway_confirm_pay = "zpw_string_title_payment_gateway_confirm_pay";
-        public static final String zpw_string_title_payment_gateway_confirm_topup = "zpw_string_title_payment_gateway_confirm_topup";
-        public static final String zpw_string_title_payment_gateway_confirm_tranfer = "zpw_string_title_payment_gateway_confirm_tranfer";
-        public static final String zpw_string_title_payment_gateway_confirm_withdraw = "zpw_string_title_payment_gateway_confirm_withdraw";
-        public static final String zpw_string_transfer_zalopay_id_null = "zpw_string_transfer_zalopay_id_null";
 
         public static final String zpw_string_merchant_creditcard_3ds_url_prefix = "zpw_string_merchant_creditcard_3ds_url_prefix";
         public static final String zpw_font_regular = "zpw_font_regular";
@@ -287,22 +267,15 @@ public class RS {
         public static final String zpsdk_luhn_check_atm = "zpsdk_luhn_check_atm";
         public static final String zpw_alert_cardname_wrong = "zpw_alert_cardname_wrong";
 
-        public static final String zingpaysdk_pmc_name_zalopay = "zingpaysdk_pmc_name_zalopay";
-        public static final String zpw_string_zalopay_balance_error_label = "zpw_string_zalopay_balance_error_label";
-        public static final String zpw_string_zalopay_balance_label = "zpw_string_zalopay_balance_label";
-
         public static final String zpw_string_atm_method_name = "zpw_string_atm_method_name";
         public static final String zpw_string_credit_card_method_name = "zpw_string_credit_card_method_name";
-        public static final String zpw_string_credit_card_link = "zpw_string_credit_card_link";
-        public static final String zpw_string_zalopay_wallet_method_name = "zpw_string_zalopay_wallet_method_name";
+        public static final String sdk_link_card_title = "sdk_link_card_title";
 
         public static final String zpw_string_card_not_support = "zpw_string_card_not_support";
 
         public static final String zpw_string_payment_currency_label = "zpw_string_payment_currency_label";
 
         public static final String zpw_string_title_header_pay_result = "zpw_string_title_header_pay_result";
-
-        public static final String zpw_string_not_enough_money_wallet = "zpw_string_not_enough_money_wallet";
 
         public static final String zpw_app_info_exclude_channel = "zpw_app_info_exclude_channel";
         public static final String zpw_string_alert_linkcard_channel_withdraw = "zpw_string_alert_linkcard_channel_withdraw";

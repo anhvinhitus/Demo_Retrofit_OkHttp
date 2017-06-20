@@ -23,11 +23,14 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/text_color_bold" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:background="@color/dark_transparent" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/channel_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/zpw_bg_top_bottom_side_border"
         android:scrollbars="none" />
 
     <RelativeLayout

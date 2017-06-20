@@ -83,7 +83,14 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             if (pResponse.cardinfos == null) {
                 pResponse.cardinfos = new ArrayList<>();
             }
+            pResponse.cardinfos.add(mapCard);
+            mapCard = new MapCard();
+            mapCard.bankcode = CardType.PBIDV;
+            mapCard.cardname = "DO NGOC PHI CUONG";
+            mapCard.last4cardno = "1195";
+            mapCard.first6cardno = "970418";
             pResponse.cardinfos.add(mapCard);*/
+
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();
 //        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);

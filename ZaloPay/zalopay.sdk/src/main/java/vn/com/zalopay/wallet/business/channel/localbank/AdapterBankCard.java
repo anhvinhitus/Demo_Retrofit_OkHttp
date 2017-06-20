@@ -35,12 +35,19 @@ import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
-import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
+import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
+import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SELECTION_ACCOUNT_BANK;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
+import static vn.com.zalopay.wallet.constants.Constants.USER_LEVEL_EXTRA;
 
 public class AdapterBankCard extends AdapterBase {
     private PaymentWebViewClient mWebViewProcessor = null;
@@ -517,14 +524,9 @@ public class AdapterBankCard extends AdapterBase {
 
         //have some card bidv in map card list and have this card
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && hasBidvBankInMapCardList(pCardNumber))) {
-
-            MapListSelectionActivity.setCloseDialogListener(getGuiProcessor().getCloseDialogListener());
-            Intent intentBankList = new Intent(getActivity(), MapListSelectionActivity.class);
-            intentBankList.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, CardType.PBIDV);
-            intentBankList.putExtra(MapListSelectionActivity.CARDNUMBER_EXTRA, getGuiProcessor().getCardNumber());
-            intentBankList.putExtra(MapListSelectionActivity.NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
-            intentBankList.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
-            getActivity().startActivity(intentBankList);
+            Intent intentBidv = MapBankPopup.createBidvIntent(getActivity(), getGuiProcessor().getCardNumber(),
+                    mPaymentInfoHelper.getAmountTotal(), mPaymentInfoHelper.getLevel());
+            getActivity().startActivityForResult(intentBidv, MAP_POPUP_REQUEST_CODE);
             return true;
         }
         //have some card bidv in map card list and but don't have this card
@@ -534,7 +536,6 @@ public class AdapterBankCard extends AdapterBase {
                                                 public void onCancelEvent() {
                                                     getGuiProcessor().clearCardNumberAndShowKeyBoard();
                                                 }
-
                                                 @Override
                                                 public void onOKevent() {
                                                     needLinkCardBeforePayment(pBankCode);
