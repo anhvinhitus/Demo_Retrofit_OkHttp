@@ -132,7 +132,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     private void renderWarningDesc(T holder, PaymentChannel channel) {
         String desc = getWarningDesc(channel);
         boolean zaloPay = this instanceof ZaloPayItem;
-        if (zaloPay) {
+        if (zaloPay && !channel.isAllowOrderAmount()) {
             ZaloPayItem zaloPayItem = (ZaloPayItem) this;
             zaloPayItem.renderBalanceError((ZaloPayItem.ViewHolder) holder, desc);
         } else {
@@ -141,7 +141,6 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         holder.name_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
         holder.fee_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color_red_blur)));
         holder.icon_imageview.setImageAlpha(100);
-        holder.fee_textview.setVisibility(!zaloPay ? View.VISIBLE : View.GONE);
     }
 
     protected void renderDesc(T holder, String desc) {

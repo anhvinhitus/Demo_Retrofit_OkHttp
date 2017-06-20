@@ -72,6 +72,7 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
     public void renderBalanceError(ZaloPayItem.ViewHolder holder, String warningDesc) {
         holder.balance_error_textview.setText(warningDesc);
         holder.balance_error_textview.setVisibility(View.VISIBLE);
+        holder.fee_textview.setVisibility(View.GONE);
         renderBalance(holder);
     }
 
