@@ -15,7 +15,7 @@ import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
-
+    protected CCWebViewClient mCCWebViewClient ;
     public PaymentWebView(Context context) {
         super(context);
         init();
@@ -45,9 +45,13 @@ public class PaymentWebView extends WebView {
         // set user agent. mobile
         getSettings().setUserAgentString(AgentUtil.getUserAgent());
     }
-
     public void setPaymentWebViewClient(AdapterBase pAdapter) {
-        setWebViewClient(new CCWebViewClient(pAdapter));
+        mCCWebViewClient = new CCWebViewClient(pAdapter);
+        setWebViewClient(mCCWebViewClient);
+    }
+    public CCWebViewClient getCCWebViewClient()
+    {
+        return mCCWebViewClient;
     }
 
     public void reloadPaymentUrl() {

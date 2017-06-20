@@ -656,6 +656,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception ignored) {
         }
     }
+    public void setView(int pId, boolean pIsVisible) {
+        View view = findViewById(pId);
+        if (view != null) {
+            view.setVisibility(pIsVisible ? View.VISIBLE : View.GONE);
+        }
+    }
 
     public boolean isVisible(View view) {
         return view != null && view.getVisibility() == View.VISIBLE;

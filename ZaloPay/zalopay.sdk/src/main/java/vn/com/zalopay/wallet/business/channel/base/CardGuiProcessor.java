@@ -1260,6 +1260,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         cardSupportGridViewAdapter = null;
 
         if (mWebView != null) {
+            mWebView.getCCWebViewClient().dispose();
             mWebView.release();
         }
     }
@@ -1294,7 +1295,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getViewPager().setCurrentItem(errorFragmentIndex);
         }
     }
+    public void bidvAutoFillOtp(String pOtp) {
+        if (mWebView != null) {
+            mWebView.getCCWebViewClient().BIDVWebFlowFillOtp(pOtp);
+        }
 
+    }
     public void reloadUrl() {
         if (mWebView == null) {
             initWebView();

@@ -525,6 +525,8 @@
     <string name="zpw_string_special_bankscript_vcb_register_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/Dangky_Step2).*$</string>
     <string name="zpw_string_special_bankscript_vcb_unregister_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/NgungSuDungViDienTu).*$</string>
     <string name="zpw_string_special_bankscript_vcb_auto_select_service">^.+(vietcombank\\.com\\.vn\\/IBanking2015).*$</string>
+    <string name="zpw_string_special_bankscript_bidv_auto_select_rule">"^.+(bidv).+.+(EWALLET\\/((index\\.jsp))).*$"</string>
+    <string name="zpw_string_special_bankscript_bidv_auto_fill_otp">"^.+(bidv).+.+(EWALLET\\/((CheckPayerOtp))).*$"</string>
     <string name="zpw_string_number_retry_password">3</string>
     <string name="zpw_string_number_retry_captcha">3</string>
     <string name="zpw_string_cancel_retry_otp">Liên kết tài khoản đã bị hủy!</string>
@@ -562,5 +564,5 @@
 
     <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Bạn có thể thực hiện lại giao dịch</string>
     <string name="sdk_warning_balance_error">Số dư không đủ</string>
-
+    <string name="zpw_string_bankcode_bidv">123PBIDV</string>
 </resources>
