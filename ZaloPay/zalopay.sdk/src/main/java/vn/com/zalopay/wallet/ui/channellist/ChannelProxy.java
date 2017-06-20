@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.ui.channellist;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -16,7 +17,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.FingerprintUtils;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -42,18 +45,21 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
+import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.transaction.GetTransStatus;
+import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
 import vn.com.zalopay.wallet.transaction.SubmitOrder;
+import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
+import static vn.com.zalopay.wallet.constants.Constants.RETRY_PASSWORD_MAX;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
 
@@ -68,6 +74,7 @@ public class ChannelProxy extends SingletonBase {
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
+    private ITransService mTransService;
     private IRequest mRequestApi;
     private Subscription mSubscription;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
@@ -76,24 +83,68 @@ public class ChannelProxy extends SingletonBase {
     private String fpPassword;//password from fingerprint
     private String inputPassword;//password input on popup
     private boolean transStatusStart = false;
-    private int retryTransStatusCount = 1;
-    private Action1<Throwable> submitOrderException = throwable -> {
-        Log.d(this, "submit order on error", throwable);
-        if (mStatusResponse == null) {
-            mStatusResponse = new StatusResponse(-1, getSubmitExceptionMessage(GlobalData.getAppContext()));
+    private int showRetryDialogCount = 1;
+    private int retryPassword = 1;
+    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            if (mRequestApi.isRunning()) {
+                Log.d(this, "get tran status is running - skip process");
+                return;
+            }
+            processStatus(statusResponse);
         }
-        mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-        moveToResultScreen();
     };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
+            if (networkException(throwable)) {
+                return;
+            }
             try {
-                askToRetryGetStatus();
+                if (showRetryDialogCount < MAX_RETRY_GETSTATUS) {
+                    askToRetryGetStatus();
+                } else {
+                    moveToResultScreen();
+                }
             } catch (Exception e) {
                 startChannelActivity();
             }
-            Log.d(this, "trans status on error", throwable);
+            Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
+        }
+    };
+    private Action1<StatusResponse> appTransStatusSubscriber = new Action1<StatusResponse>() {
+        @Override
+        public void call(StatusResponse statusResponse) {
+            if (mRequestApi.isRunning()) {
+                Log.d(this, "get app tran status is running - skip process");
+                return;
+            }
+            if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
+                markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+            } else {
+                processStatus(statusResponse);
+            }
+        }
+    };
+    private Action1<Throwable> submitOrderException = throwable -> {
+        Log.d(this, "submit order on error", throwable);
+        if (!networkException(throwable)) {
+            //check trans status by app trans id
+            getTransStatusByAppTrans();
+        }
+    };
+
+    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+        Log.d(this, "submit order on complete", statusResponse);
+        if (statusResponse == null) {
+            //check trans status by app trans id
+            getTransStatusByAppTrans();
+        } else {
+            //continue check payment status
+            mTransId = statusResponse.zptransid;
+            processStatus(statusResponse);
         }
     };
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
@@ -126,24 +177,6 @@ public class ChannelProxy extends SingletonBase {
                 Log.e(this, "empty password");
             }
         }
-    };
-    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            Log.d(this, "get tran status on complete", statusResponse);
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get tran status is running - skip process");
-                return;
-            }
-            processStatus(statusResponse);
-        }
-    };
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
-        Log.d(this, "submit order on complete", statusResponse);
-        if (statusResponse != null) {
-            mTransId = statusResponse.zptransid;
-        }
-        processStatus(statusResponse);
     };
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -198,6 +231,7 @@ public class ChannelProxy extends SingletonBase {
 
     public ChannelProxy() {
         super();
+        mTransService = SDKApplication.getApplicationComponent().transService();
     }
 
     public static ChannelProxy get() {
@@ -205,6 +239,24 @@ public class ChannelProxy extends SingletonBase {
             ChannelProxy._object = new ChannelProxy();
         }
         return ChannelProxy._object;
+    }
+
+    private boolean networkException(Throwable throwable) {
+        boolean networkError = throwable instanceof NetworkConnectionException;
+        if (networkError) {
+            markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+        }
+        return networkError;
+    }
+
+    private void markTransFail(String pError) {
+        if (mStatusResponse == null) {
+            mStatusResponse = new StatusResponse(-1, pError);
+        } else {
+            mStatusResponse.returnmessage = pError;
+        }
+        mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+        moveToResultScreen();
     }
 
     public List<Object> getChannels() throws Exception {
@@ -231,6 +283,7 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void askToRetryGetStatus() throws Exception {
+        showRetryDialogCount++;
         String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
@@ -252,7 +305,7 @@ public class ChannelProxy extends SingletonBase {
             Log.e(this, e);
         }
         if (pResponse == null) {
-            mPassword.setErrorMessage(RS.string.zpw_alert_network_error_submitorder);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(GlobalData.getAppContext()));
         } else {
             mStatusResponse = pResponse;
             if (TextUtils.isEmpty(mTransId)) {
@@ -272,7 +325,7 @@ public class ChannelProxy extends SingletonBase {
                 case PaymentState.PROCESSING:
                     mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
                     //continue get trans status
-                    if (transStatusStart && retryTransStatusCount < MAX_RETRY_GETSTATUS) {
+                    if (transStatusStart && showRetryDialogCount < MAX_RETRY_GETSTATUS) {
                         try {
                             askToRetryGetStatus();
                         } catch (Exception e) {
@@ -292,17 +345,21 @@ public class ChannelProxy extends SingletonBase {
                     moveToResultScreen();
                     break;
                 case PaymentState.INVALID_PASSWORD:
-                    if (mPassword != null) {
-                        //user using poup , not fingerprint
-                        mPassword.setErrorMessage(mStatusResponse.returnmessage);
+                    if (retryPassword >= RETRY_PASSWORD_MAX) {
+                        moveToResultScreen();
+                    } else {
+                        setError(mStatusResponse.returnmessage);
+                        retryPassword++;
                     }
-                    Activity activity = BaseActivity.getCurrentActivity();
-                    if (activity == null || activity.isFinishing()) {
-                        return;
-                    }
-                    getPasswordManager(activity).showPinView();//show again if user using fingerprint
                     break;
             }
+        }
+    }
+
+    private void setError(String pError) {
+        if (mPassword != null) {
+            mPassword.setErrorMessage(pError);
+            mPassword.unlock();
         }
     }
 
@@ -310,22 +367,10 @@ public class ChannelProxy extends SingletonBase {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
-            mStatusResponse.returnmessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_get_status_fail);
+            mStatusResponse.returnmessage = GlobalData.getStringResource(RS.string.sdk_fail_trans_status);
         }
         closePassword();
         startChannelActivity();
-    }
-
-    private void getTransStatus() {
-        try {
-            mPassword.showLoading(true);
-            mSubscription = transStatus();
-            getPresenter().addSubscription(mSubscription);
-        } catch (Exception e) {
-            Log.e(this, e);
-            closePassword();
-            startChannelActivity();
-        }
     }
 
     private void updatePasswordOnSuccess() {
@@ -392,6 +437,8 @@ public class ChannelProxy extends SingletonBase {
                 return;
             }
             Log.d(this, "start submit order");
+            mPassword.showLoading(true);
+            mPassword.lock();
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
             Subscription subscription =
@@ -413,13 +460,36 @@ public class ChannelProxy extends SingletonBase {
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Log.e(this, e);
+            markTransFail(TransactionHelper.getSubmitExceptionMessage(BaseActivity.getCurrentActivity()));
         }
+    }
+
+    private void getTransStatus() {
+        try {
+            mSubscription = transStatus();
+            getPresenter().addSubscription(mSubscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(BaseActivity.getCurrentActivity()));
+        }
+    }
+
+    private void getTransStatusByAppTrans() {
+        new Handler().postDelayed(() -> {
+            try {
+                mSubscription = appTransStatus();
+                getPresenter().addSubscription(mSubscription);
+            } catch (Exception e) {
+                Log.e(this, e);
+                markTransFail(TransactionHelper.getGenericExceptionMessage(BaseActivity.getCurrentActivity()));
+            }
+        }, 1000);
     }
 
     private Subscription transStatus() {
         Log.d(this, "start check order status");
         mRequestApi = getTransStatusRequest();
-        return ((GetTransStatus) mRequestApi).getObserver()
+        return ((TransStatus) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnNext(statusResponse -> {
                     try {
@@ -429,6 +499,14 @@ public class ChannelProxy extends SingletonBase {
                     }
                 })
                 .subscribe(transStatusSubscriber, transStatusException);
+    }
+
+    private Subscription appTransStatus() {
+        Log.d(this, "start app trans status");
+        mRequestApi = getTransStatusAppTransRequest();
+        return ((StatusByAppTrans) mRequestApi).getObserver()
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(appTransStatusSubscriber, appTransStatusException);
     }
 
     /***
@@ -499,7 +577,7 @@ public class ChannelProxy extends SingletonBase {
             return;
         }
         //password flow
-        else if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
+        if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
             if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
                 startPasswordFlow(activity);
             } else {
@@ -584,16 +662,20 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private IRequest getSubmitTransRequest() {
-        ITransService transService = SDKApplication.getApplicationComponent().transService();
-        return new SubmitOrder(transService,
+        return new SubmitOrder(mTransService,
                 getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(),
                 getPaymentInfoHelper().getLocation(), getPaymentInfoHelper().getTranstype());
     }
 
     private IRequest getTransStatusRequest() {
-        ITransService transService = SDKApplication.getApplicationComponent().transService();
-        return new GetTransStatus(transService,
+        return new TransStatus(mTransService,
                 getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserInfo(), mTransId);
+    }
+
+    private IRequest getTransStatusAppTransRequest() {
+        Log.d(this, "start check order by app trans id");
+        return new StatusByAppTrans(mTransService,
+                getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserId(), getPaymentInfoHelper().getAppTransId());
     }
 
     public void OnTransEvent(Object... pEventData) throws Exception {
@@ -622,7 +704,7 @@ public class ChannelProxy extends SingletonBase {
             return;
         }
         //make sure api get trans status is running
-        if (mRequestApi instanceof GetTransStatus && mRequestApi.isRunning()) {
+        if (mRequestApi instanceof TransStatus && mRequestApi.isRunning()) {
             //cancel running request
             if (mSubscription != null && !mSubscription.isUnsubscribed()) {
                 mSubscription.unsubscribe();

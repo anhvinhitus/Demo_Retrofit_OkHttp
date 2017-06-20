@@ -12,12 +12,12 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 
@@ -117,11 +117,11 @@ public class DataParameter {
      * @param params
      * @param pAppTransID
      */
-    public static void prepareCheckSubmitOrderStatusParams(String appID, UserInfo pUserInfo, Map<String, String> params, String pAppTransID) throws Exception {
+    public static void prepareGetStatusByAppStransParams(String appID, String zalopay_userid, String pAppTransID, Map<String, String> params) {
         putBase(params);
         params.put(ConstantParams.APP_ID, appID);
         params.put(ConstantParams.APP_TRANS_ID, pAppTransID);
-        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
+        params.put(ConstantParams.USER_ID, zalopay_userid);
     }
 
     public static void prepareGetStatusMapCardParams(Map<String, String> params, UserInfo pUserInfo, String pTransID) throws Exception {

@@ -10,11 +10,11 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.constants.ConstantParams;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.constants.ConstantParams;
+import vn.com.zalopay.wallet.constants.Constants;
 
 public interface ITransService {
     /**
@@ -35,7 +35,7 @@ public interface ITransService {
      */
     @GET(Constants.URL_CHECK_SUBMIT_ORDER_STATUS)
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT)
-    Observable<StatusResponse> checkOrderStatusFailSubmit(@QueryMap Map<String, String> params);
+    Observable<StatusResponse> getStatusByAppTransClient(@QueryMap Map<String, String> params);
 
     /**
      * Api ATM Authen

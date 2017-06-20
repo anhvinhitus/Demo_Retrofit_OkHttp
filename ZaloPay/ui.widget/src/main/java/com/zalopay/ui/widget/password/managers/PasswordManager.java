@@ -24,6 +24,22 @@ public class PasswordManager {
     private WeakReference<Activity> mActivity;
     private IBuilder mIBuilder;
     private UIBottomSheetDialog mUiBottomSheetDialog;
+    private IControl mControl = new IControl() {
+        @Override
+        public void clickCancel() {
+            if (mIBuilder == null) {
+                Log.e(TAG, "mBuilder is null");
+                return;
+            }
+            if (mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing()) {
+                mIBuilder.showLoadding(false);
+                mIBuilder.clearText();
+                mIBuilder.getIFPinCallBack().onCancel();
+                mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+
+        }
+    };
 
     /**
      * @param pActivity
@@ -96,7 +112,6 @@ public class PasswordManager {
         mIBuilder.showLoadding(pShowing);
     }
 
-
     public void showFingerPrintCheckBox(boolean pShowing) {
         if (mIBuilder == null) {
             Log.e(TAG, "mBuilder is null");
@@ -105,30 +120,20 @@ public class PasswordManager {
         mIBuilder.setFingerPrint(pShowing);
     }
 
-    public void LockView(boolean isLock) {
+    public void lock() {
+        disable(true);
+    }
+
+    public void unlock() {
+        disable(false);
+    }
+
+    private void disable(boolean enable) {
         if (mUiBottomSheetDialog == null) {
             Log.d(TAG, "mUiBottomSheetDialog is null");
             return;
         }
-        mUiBottomSheetDialog.setDisableHidden(isLock);
-        mIBuilder.setLockControl(isLock);
+        mUiBottomSheetDialog.setDisableHidden(enable);
+        mIBuilder.setLockControl(enable);
     }
-
-
-    private IControl mControl = new IControl() {
-        @Override
-        public void clickCancel() {
-            if (mIBuilder == null) {
-                Log.e(TAG, "mBuilder is null");
-                return;
-            }
-            if (mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing()) {
-                mIBuilder.showLoadding(false);
-                mIBuilder.clearText();
-                mIBuilder.getIFPinCallBack().onCancel();
-                mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
-
-        }
-    };
 }

@@ -126,6 +126,12 @@ public class TransactionHelper {
                 context.getString(R.string.sdk_alert_network_onfline_submitorder);
     }
 
+    public static String getGenericExceptionMessage(Context context){
+        boolean online = ConnectionUtil.isOnline(context);
+        return online ? context.getString(R.string.sdk_fail_trans_status) :
+                context.getString(R.string.sdk_alert_networking_off_generic);
+    }
+
     public static boolean isTransactionSuccess(StatusResponse pResponse) {
         return pResponse != null && !pResponse.isprocessing && pResponse.returncode == 1;
     }

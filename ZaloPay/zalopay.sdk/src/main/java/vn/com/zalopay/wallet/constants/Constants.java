@@ -43,17 +43,14 @@ public class Constants {
     public static final int API_PLATFORM_TIMEOUT = 30000;//ms
     public static final int API_MAX_RETRY = 3;
     public static final int API_DELAY_RETRY = 500;//ms
-    public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
-    public static final int TRANS_STATUS_MAX_RETRY = 30;
     public static final int PLATFORM_RETRY_INTERVAL = 7000;//ms.
     public static final int PLATFORM_MAX_RETRY = 10;
     public static final int DOWNLOAD_RESOURCE_RETRY_INTERVAL = 10000;//ms.
     public static final int DOWNLOAD_RESOURCE_MAX_RETRY = 10;
-    public static final long GETSTATUS_CLIENT_COUNT = 5;
     public static final int MAX_RETRY_GETSTATUS = 5;
     public static final int MIN_CC_LENGTH = 6;
     public static final int MIN_ATM_LENGTH = 6;
-    public static final int MAX_COUNT_RETRY_PIN = 5;
+    public static final int RETRY_PASSWORD_MAX = 5;
     public static final int MAX_COUNT_RETRY_CAPTCHA = 5;
     public static final int MAX_RETRY_OPEN_NETWORKING = 3;
     public static final int PIN_WRONG_RETURN_CODE = -117;
@@ -135,4 +132,10 @@ public class Constants {
     public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
 
     public static final int MAP_POPUP_RESULT_CODE = 880;
+
+    public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
+    public static final int TRANS_STATUS_MAX_RETRY = 30;
+
+    public static final long GETSTATUS_APPTRANS_MAX_RETRY = 5;
+    public static final long GETSTATUS_APPTRANS_INTERVAL = 200;
 }

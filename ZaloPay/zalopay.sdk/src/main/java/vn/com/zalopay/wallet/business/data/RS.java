@@ -231,8 +231,8 @@ public class RS {
         public static final String zingpaysdk_alert_processing_ask_to_retry = "zingpaysdk_alert_processing_ask_to_retry";
         public static final String zingpaysdk_alert_error_networking_ask_to_retry = "zingpaysdk_alert_error_networking_ask_to_retry";
 
-        public static final String zingpaysdk_alert_processing_get_status_fail = "zingpaysdk_alert_processing_get_status_fail";
-        public static final String zingpaysdk_alert_processing_get_status_linkcard_fail = "zingpaysdk_alert_processing_get_status_linkcard_fail";
+        public static final String sdk_fail_trans_status = "sdk_fail_trans_status";
+        public static final String sdk_fail_trans_status_link = "sdk_fail_trans_status_link";
         public static final String zingpaysdk_alert_transaction_success = "zingpaysdk_alert_transaction_success";
 
         public static final String zpw_string_load_website_timeout_message = "zpw_string_load_website_timeout_message";

@@ -196,7 +196,7 @@ public class GlobalData {
 
     public static String getTransProcessingMessage(@TransactionType int pTranstype) {
         return pTranstype == TransactionType.LINK ?
-                RS.string.zingpaysdk_alert_processing_get_status_linkcard_fail : RS.string.zingpaysdk_alert_processing_get_status_fail;
+                RS.string.sdk_fail_trans_status_link : RS.string.sdk_fail_trans_status;
     }
 
     public static String getStringResource(String pResourceID) {

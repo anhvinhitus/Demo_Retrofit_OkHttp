@@ -60,8 +60,8 @@
 
     <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch!</string>
 
-    <string name="zingpaysdk_alert_processing_get_status_fail">Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Thanh Toán sau ít phút</string>
-    <string name="zingpaysdk_alert_processing_get_status_linkcard_fail">Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
+    <string name="sdk_fail_trans_status">Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
+    <string name="sdk_fail_trans_status_link">Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
 
     <string name="zingpaysdk_alert_no_connection">Không có kết nối internet.\nVui lòng kiểm tra kết nối mạng!</string>
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
@@ -74,11 +74,13 @@
     <string name="zpw_alert_network_error_loadplatforminfo">Mạng không ổn định, không tải được thông tin platform.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadmapcardlist">Mạng không ổn định, không tải được thông tin thẻ đã lưu.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadmapbankaccountlist">Mạng không ổn định, không tải được thông tin tài khoản ngân hàng đã liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>
-    <string name="zpw_alert_network_error_submitorder">Mạng không ổn định, không gửi được hóa đơn.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_submitorder">Không gửi được hóa đơn.\nVui lòng thực hiện lại giao dịch</string>
     <string name="zpw_alert_network_error_verifymapcard">Mạng không ổn định, không thể liên kết thẻ.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_submitbankaccount">Mạng không ổn định, không thể liên kết tài khoản.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định, không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="zpw_alert_network_error_authenpayer">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
+    <string name="sdk_alert_generic_error">Lỗi khởi tạo dữ liệu. Vui lòng thực hiện lại giao dịch!</string>
+    <string name="sdk_alert_networking_off_generic">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch!</string>
 
     <string name="zpw_generic_error">Có lỗi xảy ra.Vui lòng thử lại</string>
     <string name="sdk_alert_networking_off_in_link_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại liên kết tài khoản</string>

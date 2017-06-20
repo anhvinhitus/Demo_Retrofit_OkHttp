@@ -1,12 +1,12 @@
 package vn.com.zalopay.wallet.api.task;
 
+import vn.com.zalopay.wallet.api.DataParameter;
+import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.DataParameter;
-import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
 
 /***
  * get status transaction in case error networking
@@ -75,7 +75,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
         try {
             UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
             long appId = mAdapter.getPaymentInfoHelper().getAppId();
-            DataParameter.prepareCheckSubmitOrderStatusParams(String.valueOf(appId), userInfo, getDataParams(), mAppTransID);
+            DataParameter.prepareGetStatusByAppStransParams(String.valueOf(appId), userInfo.zalopay_userid, mAppTransID, getDataParams());
             return true;
         } catch (Exception e) {
             Log.e(this, e);

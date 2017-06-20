@@ -21,7 +21,7 @@ import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
  * Created by chucvv on 6/17/17.
  */
 
-public class GetTransStatus extends AbstractRequest<StatusResponse> {
+public class TransStatus extends AbstractRequest<StatusResponse> {
     private long mAppId;
     private UserInfo mUserInfo;
     private String mTransId;
@@ -34,7 +34,7 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
         return stop;
     };
 
-    public GetTransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
+    public TransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
         super(transService);
         this.mAppId = appId;
         this.mUserInfo = userInfo;
@@ -75,18 +75,6 @@ public class GetTransStatus extends AbstractRequest<StatusResponse> {
                 .repeatWhen(o -> o.flatMap(v -> Observable.timer(intervalRetry, MILLISECONDS)))
                 .takeUntil(shouldStop);
     }
-
-    /*private Observable<StatusResponse> getStatus(Map<String, String> params, StatusResponse response) {
-        return shouldStop(response)
-                ? Observable.just(response)
-                : mTransService.getStatus(params)
-                .doOnSubscribe(() -> running = true)
-                .delaySubscription(intervalRetry, MILLISECONDS)
-                .concatMap(response1 -> getStatus(params, response1)
-                        .startWith(response1)
-                        .takeUntil(shouldStop)
-                );
-    }*/
 
     @Override
     public Observable<StatusResponse> getObserver() {

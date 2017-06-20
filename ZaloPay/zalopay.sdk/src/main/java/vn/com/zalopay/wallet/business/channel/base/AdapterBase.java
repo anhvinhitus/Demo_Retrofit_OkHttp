@@ -75,6 +75,7 @@ import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
+import static vn.com.zalopay.wallet.constants.Constants.GETSTATUS_APPTRANS_MAX_RETRY;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
@@ -586,7 +587,7 @@ public abstract class AdapterBase {
                 if (PaymentStatusHelper.isTransactionNotSubmit(mResponseStatus)) {
                     try {
                         mCountCheckStatus++;
-                        if (mCountCheckStatus == Constants.GETSTATUS_CLIENT_COUNT) {
+                        if (mCountCheckStatus == GETSTATUS_APPTRANS_MAX_RETRY) {
                             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit));
                         } else if (order != null) {
                             //retry again
