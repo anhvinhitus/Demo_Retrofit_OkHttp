@@ -98,7 +98,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/zpw_bg_top_bottom_side_border"
-        android:padding="@dimen/padding_large">
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingRight="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_xlarge"
+        android:paddingBottom="@dimen/padding_xlarge">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/zpw_payment_fail_iv_support"
