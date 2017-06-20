@@ -20,6 +20,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.utility.PlayStoreUtils;
@@ -159,6 +160,11 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
 
     @Override
     public void onClickBankSupportListener(ZPBank card, int position) {
+        if(!NetworkHelper.isNetworkAvailable(getActivity())) {
+            super.showNetworkErrorDialog();
+            return;
+        }
+
         if (card.bankStatus == BankStatus.MAINTENANCE) {
             showMessageDialog(card.bankMessage, null);
         } else if (card.bankStatus == BankStatus.UPVERSION) {
