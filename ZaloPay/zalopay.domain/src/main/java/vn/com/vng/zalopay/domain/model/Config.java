@@ -35,4 +35,7 @@ public class Config {
         public int enableMergeContactName = 1;
     }
 
+    @SerializedName("withdraw_money")
+    public List<Long> denominationWithdraw;
+
 }

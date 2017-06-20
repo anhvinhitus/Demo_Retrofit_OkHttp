@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -129,6 +131,14 @@ public class ConfigUtil {
      */
     public static boolean containsApi(String apiName) {
         return !(mConfig == null || mConfig.apiNames == null) && mConfig.apiNames.contains(apiName);
+    }
+
+    public static List<Long> getDenominationWithdraw() {
+        if (mConfig == null || Lists.isEmptyOrNull(mConfig.denominationWithdraw)) {
+           return Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
+        } else {
+            return mConfig.denominationWithdraw;
+        }
     }
 }
 
