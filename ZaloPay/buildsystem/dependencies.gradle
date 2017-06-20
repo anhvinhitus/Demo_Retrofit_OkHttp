@@ -39,7 +39,7 @@ ext {
     dexmakerVersion = '1.0'
     espressoVersion = '2.2.2'
     testingSupportLibVersion = '0.1'
-    leakCanaryVersion = '1.4-beta2'
+    leakCanaryVersion = '1.5.1'
     robolectricVersion = '3.0'
     espressoVersionContrib = "2.2.2"
 
