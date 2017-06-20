@@ -131,7 +131,10 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {
         if (pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_bidv_auto_select_rule))) {
             executeJs(Constants.AUTOCHECK_RULE_FILLOTP_BIDV_JS, pOtp, pView);
-
+            //request permission read/view sms on android 6.0+
+            if (isFirstLoad) {
+                getAdapter().requestReadOtpPermission();
+            }
         }
 
     }
