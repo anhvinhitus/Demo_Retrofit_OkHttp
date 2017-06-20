@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:fadingEdge="none"
         android:overScrollMode="never"
+        android:layout_gravity="center"
         android:paddingLeft="@dimen/spacing.medium"
         android:paddingRight="@dimen/spacing.medium"
         android:paddingTop="@dimen/spacing.medium.s" />
