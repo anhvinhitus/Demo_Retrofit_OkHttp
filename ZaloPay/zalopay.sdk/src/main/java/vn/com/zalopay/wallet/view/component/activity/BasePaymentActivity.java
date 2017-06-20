@@ -560,7 +560,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             mActivityStack.remove(this);
             if (getCurrentActivityCount() == 0 && BaseActivity.getActivityCount() == 0) {
                 if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper.trackUserCancel();
+                    GlobalData.analyticsTrackerWrapper.trackUserCancel(true);
                 }
                 //dispose all instance and static resource.
                 SingletonLifeCircleManager.disposeAll();

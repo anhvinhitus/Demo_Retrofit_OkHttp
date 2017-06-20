@@ -283,7 +283,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         mOnClickExitListener.onClick(null);
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackUserCancel();
+            GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
         }
     }
 

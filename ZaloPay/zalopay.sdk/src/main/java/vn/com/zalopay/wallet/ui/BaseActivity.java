@@ -61,7 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mActivityStack.remove(this);
             if (getActivityCount() == 0) {
                 if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper.trackUserCancel();
+                    GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
                 }
                 //dispose all instance and static resource.
                 SingletonLifeCircleManager.disposeAll();
