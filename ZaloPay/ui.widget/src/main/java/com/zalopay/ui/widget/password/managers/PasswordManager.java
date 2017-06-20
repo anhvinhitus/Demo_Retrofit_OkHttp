@@ -31,7 +31,7 @@ public class PasswordManager {
      * @param pLogoPath
      * @param pIPinCallBack
      */
-    public PasswordManager(Activity pActivity, String pTitle, String pLogoPath, boolean pFingerPrint,IPinCallBack pIPinCallBack) {
+    public PasswordManager(Activity pActivity, String pTitle, String pLogoPath, boolean pFingerPrint, IPinCallBack pIPinCallBack) {
         mIPinCallBack = new WeakReference<>(pIPinCallBack);
         mActivity = new WeakReference<>(pActivity);
         View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
@@ -97,14 +97,23 @@ public class PasswordManager {
     }
 
 
-    public void showFingerPrintCheckBox(boolean pShowing)
-    {
+    public void showFingerPrintCheckBox(boolean pShowing) {
         if (mIBuilder == null) {
             Log.e(TAG, "mBuilder is null");
             return;
         }
         mIBuilder.setFingerPrint(pShowing);
     }
+
+    public void LockView(boolean isLock) {
+        if (mUiBottomSheetDialog == null) {
+            Log.d(TAG, "mUiBottomSheetDialog is null");
+            return;
+        }
+        mUiBottomSheetDialog.setDisableHidden(isLock);
+        mIBuilder.setLockControl(isLock);
+    }
+
 
     private IControl mControl = new IControl() {
         @Override

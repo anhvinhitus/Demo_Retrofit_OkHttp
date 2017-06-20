@@ -41,5 +41,6 @@ public interface IBuilder {
 
     IControl getIFControl();
 
+    IBuilder setLockControl(boolean isLockControl);
     void release();
 }

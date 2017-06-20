@@ -135,4 +135,12 @@ public abstract class PasswordBuilder implements IBuilder {
     public boolean getFingerPrint() {
         return mFingerPrint;
     }
+
+    @Override
+    public IBuilder setLockControl(boolean isLockControl) {
+        if (mISetDataToView != null) {
+            mISetDataToView.lockControl(isLockControl);
+        }
+        return this;
+    }
 }

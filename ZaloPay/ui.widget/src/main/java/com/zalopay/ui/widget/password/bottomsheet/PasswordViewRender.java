@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -91,23 +89,26 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
                     mLoadingIndicatorView.setVisibility(View.VISIBLE);
                     mTextMessage.setVisibility(View.INVISIBLE);
-                    //disable(mMaskLayout, false);
                 }
             } else {
                 if (mLoadingIndicatorView != null && mTextMessage != null) {
                     mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                     mTextMessage.setVisibility(View.VISIBLE);
-                    //disable(mMaskLayout, true);
                 }
             }
-
-
         }
 
         @Override
         public void showFingerPrintCheckBox(boolean pShow) {
             showFingerPrin(pShow);
+        }
 
+        @Override
+        public void lockControl(boolean islock) {
+            if (mMaskLayout == null) {
+                return;
+            }
+            DisableView(mMaskLayout, !islock);
         }
     };
 
@@ -192,6 +193,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
     }
+
     /**
      * Gets the {@link String} to be used in the {@link #mStepTextView} based on {@link #mType}
      *
@@ -328,14 +330,14 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
 
-    private static void disable(ViewGroup layout, boolean pIsEnable) {
-        layout.setEnabled(pIsEnable);
+    private void DisableView(ViewGroup layout, boolean pIsDisable) {
+        layout.setEnabled(pIsDisable);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
             if (child instanceof ViewGroup) {
-                disable((ViewGroup) child, pIsEnable);
+                DisableView((ViewGroup) child, pIsDisable);
             } else {
-                child.setClickable(pIsEnable);
+                child.setClickable(pIsDisable);
             }
         }
     }

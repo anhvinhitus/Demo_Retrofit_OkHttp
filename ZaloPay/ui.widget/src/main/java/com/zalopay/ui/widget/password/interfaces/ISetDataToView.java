@@ -18,4 +18,6 @@ public interface ISetDataToView {
     void showLoading(boolean pShow);
 
     void showFingerPrintCheckBox(boolean pShow);
+
+    void lockControl(boolean islock);
 }
