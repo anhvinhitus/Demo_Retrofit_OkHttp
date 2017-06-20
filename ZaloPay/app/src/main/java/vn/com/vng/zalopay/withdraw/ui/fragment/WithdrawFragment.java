@@ -6,25 +6,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
@@ -76,8 +66,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         listview.setHasFixedSize(true);
-        HomeSpacingItemDecoration itemDecoration = new HomeSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false);
-        listview.addItemDecoration(itemDecoration);
+        listview.addItemDecoration(new VerticalGridCardSpacingDecoration());
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
         gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());

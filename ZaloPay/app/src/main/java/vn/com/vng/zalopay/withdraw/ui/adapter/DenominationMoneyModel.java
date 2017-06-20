@@ -47,12 +47,13 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
 
     @Override
     public void bind(ViewHolder holder) {
-        holder.mMoneyView.setText(CurrencyUtil.spanFormatCurrency(money, true));
+        holder.mMoneyView.setText(CurrencyUtil.formatCurrency(money, false));
         holder.mItemLayout.setOnClickListener(viewClickListener);
 
         boolean isValid = balance >= money;
         holder.mItemLayout.setEnabled(isValid);
         holder.mMoneyView.setEnabled(isValid);
+        holder.mMaskView.setVisibility(isValid ? View.GONE : View.VISIBLE);
     }
 
     private final DebouncingOnClickListener viewClickListener = new DebouncingOnClickListener() {
@@ -86,6 +87,9 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
 
         @BindView(R.id.itemLayout)
         View mItemLayout;
+
+        @BindView(R.id.mask)
+        View mMaskView;
 
         @Override
         protected void bindView(View itemView) {
