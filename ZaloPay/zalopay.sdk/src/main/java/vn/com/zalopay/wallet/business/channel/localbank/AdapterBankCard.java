@@ -197,8 +197,8 @@ public class AdapterBankCard extends AdapterBase {
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        if(otpReceiverPattern.bankcode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))){
-                            ((BankCardGuiProcessor) getGuiProcessor()).bidvAutoFillOtp(otp);
+                        if(CardType.PBIDV.equals(otpReceiverPattern.bankcode)){
+                            getGuiProcessor().bidvAutoFillOtp(otp);
                         }
 
                         ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
