@@ -159,6 +159,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         ResourceManager.loadImageIntoView(holder.icon_imageview, channel.channel_icon);
         holder.name_textview.setText(channel.pmcname);
         holder.select_imageview.setVisibility(channel.select ? View.VISIBLE : View.INVISIBLE);
+        renderGeneric(holder);
         //show not support channel
         if (!channel.meetPaymentCondition()) {
             renderWarningDesc(holder, channel);
@@ -171,6 +172,9 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         } else if (position + 1 < getItemCount()) {
             adjustLine(holder.line);
         }
+    }
+
+    protected void renderGeneric(T holder) {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
