@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.VerifyTimeoutException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -84,6 +85,42 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         mSubscription.add(subs);
     }
 
+    private void verifyTimeout() {
+        if (mView == null) {
+            return;
+        }
+
+        mView.gotoLoginPage();
+        mView.finish();
+    }
+
+    private void onRegisterError(Throwable e) {
+        hideLoadingView();
+        if (ResponseHelper.shouldIgnoreError(e)) {
+            return;
+        }
+
+        if (e instanceof VerifyTimeoutException) {
+            verifyTimeout();
+            return;
+        }
+
+        String msg = ErrorMessageFactory.create(mApplicationContext, e);
+        boolean incorrectPhone = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.PHONE_EXIST;
+        showRegisterError(incorrectPhone, msg);
+    }
+
+    private void onRegisterSuccess(Boolean t) {
+        hideLoadingView();
+
+        if (mView == null) {
+            return;
+        }
+
+        mView.nextPage();
+        mView.startOTPCountDown();
+    }
+
     private class RegisterSubscriber extends DefaultSubscriber<Boolean> {
 
         public void onStart() {
@@ -91,25 +128,11 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         }
 
         public void onError(Throwable e) {
-            hideLoadingView();
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-
-            String msg = ErrorMessageFactory.create(mApplicationContext, e);
-            boolean incorrectPhone = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.PHONE_EXIST;
-            showRegisterError(incorrectPhone, msg);
+            onRegisterError(e);
         }
 
         public void onNext(Boolean t) {
-            hideLoadingView();
-
-            if (mView == null) {
-                return;
-            }
-
-            mView.nextPage();
-            mView.startOTPCountDown();
+            onRegisterSuccess(t);
         }
     }
 
@@ -144,6 +167,11 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         hideLoadingView();
 
         if (ResponseHelper.shouldIgnoreError(e)) {
+            return;
+        }
+
+        if (e instanceof VerifyTimeoutException) {
+            verifyTimeout();
             return;
         }
 

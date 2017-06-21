@@ -44,26 +44,42 @@
         android:layout_height="36dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/btn_round_selector"
+        android:drawablePadding="6dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:text="@string/come.back"/>
 
-    <com.zalopay.ui.widget.IconFontTextView
+
+    <LinearLayout
         android:id="@+id/btnSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:drawablePadding="6dp"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="@string/resend.otp"
-        android:textColor="@color/txt_default_selector"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:iconLeftColor="@color/txt_item_sub"
-        app:iconLeftName="@string/profile_library"
-        app:iconLeftSize="@dimen/font_size_profile_icon"
-        />
+        android:paddingRight="10dp">
+
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/icBtnSecondary"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            app:iconName="@string/onboarding_refresh"
+            app:iconSize="20dp"/>
+
+        <TextView
+            android:id="@+id/tvBtnSecondary"
+            style="@style/TextView.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resend.otp"
+            android:textColor="@color/txt_default_selector"
+            android:textSize="12sp"/>
+    </LinearLayout>
 
 </merge>

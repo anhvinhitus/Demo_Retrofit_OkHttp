@@ -427,7 +427,7 @@
     <string name="bank.error.load.supportbank">Không tải được thông tin ngân hàng.\nVui lòng thử lại!</string>
     <string name="bank.maintenance.message">Đang bảo trì</string>
     <string name="bank.upversion.message">Nâng cấp phiên bản để sử dụng</string>
-    <string name="ip.desc.confirm.change.phone">Mã xác thực đang được gửi đến SĐT bạn đã nhập. Bạn chắc chắn muốn quay lại?</string>
+    <string name="ip.desc.confirm.change.phone">Mã xác thực đang được gửi đến %s. Bạn có chắc chắn muốn quay lại?</string>
 
     <!-- Balance Management -->
     <string name="balance_management_deposit_description">Từ ngân hàng đã liên kết vào TK Zalo Pay</string>

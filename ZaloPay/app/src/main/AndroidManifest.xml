@@ -179,6 +179,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait"
             android:label=""
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity

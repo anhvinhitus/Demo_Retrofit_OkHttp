@@ -5,9 +5,12 @@ import javax.inject.Singleton;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.VerifyTimeoutException;
 import vn.com.vng.zalopay.data.repository.datasource.PassportFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -69,11 +72,25 @@ public class PassportRepositoryImpl implements PassportRepository {
     }
 
     public Observable<Boolean> registerPhoneNumber(long zaloid, String oauthcode, String paymentPassword, String phonenumber) {
-        return passportFactory.registerPhoneNumber(zaloid, oauthcode, paymentPassword, phonenumber);
+        return passportFactory.registerPhoneNumber(zaloid, oauthcode, paymentPassword, phonenumber)
+                .onErrorResumeNext(this::errorVerify);
     }
 
     public Observable<User> authenticatePhoneNumber(long zaloid, String oauthcode, String otp) {
         return passportFactory.authenticatePhoneNumber(zaloid, oauthcode, otp)
-                .map(this::saveUser);
+                .map(this::saveUser)
+                .onErrorResumeNext(this::errorVerify);
+    }
+
+    private <T> Observable<T> errorVerify(Throwable throwable) {
+        if (!(throwable instanceof BodyException)) {
+            return Observable.error(throwable);
+        }
+
+        if (((BodyException) throwable).errorCode != ServerErrorMessage.ZALO_LOGIN_FAIL) {
+            return Observable.error(throwable);
+        }
+
+        return Observable.error(new VerifyTimeoutException());
     }
 }
