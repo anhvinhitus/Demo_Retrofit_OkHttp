@@ -61,6 +61,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
 
     protected String formatFeeDesc(String fee_desc) {
         if (!TextUtils.isEmpty(fee_desc)
+                && !fee_desc.equals(mContext.getString(R.string.default_message_pmc_fee))
                 && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_free))
                 && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_upgrade_level))) {
             fee_desc = String.format(mContext.getString(R.string.zpw_string_fee_format), fee_desc);

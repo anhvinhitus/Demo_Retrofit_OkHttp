@@ -9,8 +9,10 @@ import com.google.gson.Gson;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
-import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
@@ -222,6 +224,11 @@ public class MiniPmcTransType implements Parcelable {
 
     public void checkPmcOrderAmount(long pOrderAmount) {
         setAllowPmcQuota(isAmountSupport((long) (pOrderAmount + totalfee)));
+    }
+
+    public String getDefaultPmcFee() {
+        return isAtmChannel() ? GlobalData.getStringResource(RS.string.default_message_pmc_fee) :
+                GlobalData.getStringResource(RS.string.zpw_string_fee_free);
     }
 
     /***
