@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,43 +16,48 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
+import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
 
 /**
- * Created by chucvv on 8/28/16.
- * WebAppFragment
+ * Created by datnt10 on 6/21/17.
  */
-public class WebAppFragment extends BaseFragment implements IWebViewListener, IWebAppView {
-
-    public static WebAppFragment newInstance(Bundle bundle) {
-        WebAppFragment fragment = new WebAppFragment();
+public class WebAppPromotionFragment extends BaseFragment implements IWebViewListener, IWebAppView, SwipeRefreshLayout.OnRefreshListener {
+    public static WebAppPromotionFragment newInstance(Bundle bundle) {
+        WebAppPromotionFragment fragment = new WebAppPromotionFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(WebAppFragment.this);
+        getUserComponent().inject(WebAppPromotionFragment.this);
     }
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.webapp_fragment_mainview;
+        return R.layout.webapp_fragment_promotion;
     }
 
     private WebBottomSheetDialogFragment mBottomSheetDialog;
@@ -67,6 +74,29 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @BindView(R.id.webview)
     ZPWebViewApp webView;
 
+    @BindView(R.id.promotion_btn_back)
+    View btnBack;
+
+    @BindView(R.id.promotion_btn_share)
+    View btnShare;
+
+    @BindView(R.id.promotion_tv_title)
+    TextView tvTitle;
+
+    @BindView(R.id.promotion_refresh_layout)
+    MultiSwipeRefreshLayout refreshLayout;
+
+    @OnClick(R.id.promotion_btn_back)
+    public void onClickBack() {
+        onBackPressed();
+    }
+
+    @OnClick(R.id.promotion_btn_share)
+    public void onClickShare() {
+        showBottomSheetDialog();
+//        mPresenter.shareContent(webView.getUrl());
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +112,10 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     protected void initPresenter(View view) {
-        mPresenter.attachView(WebAppFragment.this);
+        mPresenter.attachView(WebAppPromotionFragment.this);
         mPresenter.initWebView(webView);
+        refreshLayout.setSwipeableChildren(R.id.webview);
+        refreshLayout.setOnRefreshListener(this);
     }
 
     protected void loadDefaultWebView() {
@@ -93,6 +125,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
         mPresenter.loadUrl(originalUrl);
+        checkRegex(originalUrl);
     }
 
     protected void onClickRetryWebView() {
@@ -104,7 +137,12 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         mErrorImageView = (ImageView) rootView.findViewById(R.id.imgError);
         mErrorTextView = (TextView) rootView.findViewById(R.id.tvError);
         View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(v -> onClickRetryWebView());
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRetryWebView();
+            }
+        });
         hideError();
     }
 
@@ -173,27 +211,48 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     @Override
     public void onReceivedTitle(String title) {
-        getActivity().setTitle(title);
+//        getActivity().setTitle(title);
+        tvTitle.setText(title);
     }
 
     @Override
     public void setHiddenBackButton(boolean hide) {
+        if (btnBack == null) {
+            return;
+        }
 
+        if (hide) {
+            btnBack.setVisibility(View.GONE);
+        } else {
+            btnBack.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void setHiddenShareButton(boolean hide) {
+        if (btnShare == null) {
+            return;
+        }
 
+        if (hide) {
+            btnShare.setVisibility(View.GONE);
+        } else {
+            btnShare.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void setHiddenTabBar(boolean hide) {
-
+        AndroidUtils.runOnUIThread(() -> {
+            if (getActivity() instanceof HomeActivity) {
+                ((HomeActivity) getActivity()).setHiddenTabbar(hide);
+            }
+        });
     }
 
     @Override
     public void setRefreshing(boolean setRefresh) {
-
+        refreshLayout.setRefreshing(setRefresh);
     }
 
     public void showError(String message) {
@@ -270,7 +329,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     @Override
     public Fragment getFragment() {
-        return WebAppFragment.this;
+        return WebAppPromotionFragment.this;
     }
 
     private void showBottomSheetDialog() {
@@ -310,5 +369,29 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         mBottomSheetDialog.dismiss();
         mBottomSheetDialog = null;
     }
-}
 
+    @Override
+    public void onRefresh() {
+        mPresenter.onRequestRefreshPage();
+    }
+
+    private void checkRegex(String url) {
+//        final String regex = "^((.+)\\.)?zalopay\\.vn";
+//        final String string = "abc.zalopay.zing.vn\n"
+//                + ".zalopay.zing.vn\n"
+//                + "acbzalopay.zing.vn\n"
+//                + "zalopay.zing.vn\n";
+//        url.matches("https://");
+        String regex = TextUtils.join("||", ConfigUtil.allowUrls());
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(url);
+
+        while (matcher.find()) {
+            System.out.println("URL: " + url);
+            System.out.println("Full match: " + matcher.group(0));
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                System.out.println("Group " + i + ": " + matcher.group(i));
+            }
+        }
+    }
+}

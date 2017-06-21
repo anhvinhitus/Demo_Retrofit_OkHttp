@@ -54,7 +54,6 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
     protected Navigator mNavigator;
     private final ProcessMessageListener mProcessMessageListener = new ProcessMessageListener(this);
 
-
     @Inject
     WebAppPresenter(AccountStore.Repository accountRepository,
                     Navigator navigator,
@@ -166,8 +165,8 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
                 Timber.d("WebLoading progress: %s", progress);
                 mView.updateLoadProgress(progress);
 
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    if (progress == 100) {
+                if (progress == 100) {
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                         String title = view.getTitle();
                         setReceivedTitleStatus(view, title);
                     }
