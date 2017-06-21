@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.IconFontTextView;
 
 import butterknife.BindView;
@@ -66,7 +68,13 @@ abstract class OnboardingView extends LinearLayout {
     Button mPrimaryBtnView;
 
     @BindView(R.id.btnSecondary)
-    IconFontTextView mSecondaryButton;
+    View mSecondaryButton;
+
+    @BindView(R.id.icBtnSecondary)
+    IconFont mIconBtnSecondary;
+
+    @BindView(R.id.tvBtnSecondary)
+    TextView mTvSecondaryView;
 
     private void initialize(Context context, AttributeSet attrs) {
         setOrientation(VERTICAL);
@@ -116,7 +124,7 @@ abstract class OnboardingView extends LinearLayout {
         mDescInputView.setText(mDescInput);
         showPrimaryButton(mShowButton);
         showSecondaryButton(mShowSecButton);
-        mSecondaryButton.setText(mSecondButtonText);
+        mTvSecondaryView.setText(mSecondButtonText);
     }
 
     public void setOnClick(View.OnClickListener listener) {
@@ -142,8 +150,10 @@ abstract class OnboardingView extends LinearLayout {
     public void setError(@Nullable String msg, Boolean clear) {
         if (TextUtils.isEmpty(msg)) {
             mDescInputView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            mPrimaryBtnView.setEnabled(true);
         } else {
             mDescInputView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+            mPrimaryBtnView.setEnabled(false);
         }
 
         mDescInputView.setText(msg);
@@ -178,11 +188,27 @@ abstract class OnboardingView extends LinearLayout {
         mSubTitleView.setText(text);
     }
 
-    public void setTextSecondButton(String text) {
-        mSecondaryButton.setText(text);
+    public void setTextSecondaryButton(String text) {
+        mTvSecondaryView.setText(text);
     }
 
-    public void setEnableSecondButton(Boolean enable) {
+    public void setEnableSecondaryButton(Boolean enable) {
         mSecondaryButton.setEnabled(enable);
+        mTvSecondaryView.setEnabled(enable);
+    }
+
+    public void setIconSecondaryButton(String name) {
+        if (TextUtils.isEmpty(name)) {
+            mIconBtnSecondary.setVisibility(GONE);
+        } else {
+            mIconBtnSecondary.setVisibility(View.VISIBLE);
+            mIconBtnSecondary.setIcon(name);
+        }
+    }
+
+    public void setStyleLinkPrimaryButton() {
+        mPrimaryBtnView.setBackground(null);
+        mPrimaryBtnView.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_selector), null);
+        mPrimaryBtnView.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.txt_blue_selector));
     }
 }

@@ -17,6 +17,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.passport.widget.CustomKeyboardView;
 
 import com.zalopay.ui.widget.util.TimeUtils;
@@ -54,6 +56,8 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         return fragment;
     }
 
+    private static final long ACTIVE_TIMEOUT = 60;
+    private static final String ARGUMENT_ACTIVE_TIME = "active_time";
     private static final String ARGUMENT_TAB_POSITION = "position";
     private static final String ARGUMENT_PHONE_NUMBER = "phone";
     public static final long RESEND_OTP_INTERVAL = 60000L;
@@ -108,9 +112,28 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     private CountDownTimer mCountDownTime = null;
 
+    private long mActiveTime;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shouldFinish(savedInstanceState);
         initArgs(savedInstanceState == null ? getActivity().getIntent().getExtras() : savedInstanceState);
+    }
+
+    private void shouldFinish(Bundle savedInstanceState) {
+
+        long currentTime = System.currentTimeMillis() / 1000;
+        if (savedInstanceState == null) {
+            mActiveTime = currentTime;
+            return;
+        }
+
+        mActiveTime = savedInstanceState.getLong(ARGUMENT_ACTIVE_TIME, currentTime);
+
+        if (Math.abs(currentTime - mActiveTime) >= ACTIVE_TIMEOUT) {
+            gotoLoginPage();
+            finish();
+        }
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -130,8 +153,9 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         });
 
         mInputPhoneView.setLengthToActiveButton(1);
-        mInputPhoneView.setInputLength(getResources().getInteger(R.integer.max_length_phone));
+        mInputPhoneView.setInputLength(PhoneUtil.getMaxLengthPhoneNumber(getContext()));
         mInputPhoneView.addValidator(new VNPhoneValidate().getValidates());
+        mInputPhoneView.setStyleLinkPrimaryButton();
 
         mInputOtpView.setOnClick(v -> authenticate());
         int pinLength = getResources().getInteger(R.integer.pin_length);
@@ -176,6 +200,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         outState.putParcelable(ARGUMENT_KEY_ZALOPROFILE, mProfile);
         outState.putString(ARGUMENT_KEY_OAUTHTOKEN, oauthcode);
         outState.putInt(ARGUMENT_TAB_POSITION, getCurrentPage());
+        outState.putLong(ARGUMENT_ACTIVE_TIME, mActiveTime);
 
         String phoneNumber = mInputPhoneView.getInputText();
         if (!TextUtils.isEmpty(phoneNumber)) {
@@ -263,11 +288,17 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         navigator.startHomeActivity(getContext());
     }
 
+    @Override
+    public void gotoLoginPage() {
+        navigator.startLoginActivity(getContext(), false);
+    }
+
     public void setProfile(ZaloProfile user) {
         mAvatarView.setImageURI(user.avatar);
         mDisplayNameView.setText(user.displayName);
         mBirthDayView.setText(TimeUtils.toDate(user.birthDate));
         mGenderView.setText(user.getGender());
+        mGenderView.setLeftIcon(user.userGender == 1 ? getString(R.string.onboarding_male) : getString(R.string.onboarding_female));
     }
 
     public void nextPage() {
@@ -289,7 +320,8 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     }
 
     private void previousToPhone() {
-        showConfirmDialog(getString(R.string.ip_desc_confirm_change_phone),
+        String msg = String.format(getString(R.string.ip_desc_confirm_change_phone), mInputPhoneView.getInputText());
+        showConfirmDialog(msg,
                 getString(R.string.accept),
                 getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
                     @Override
@@ -355,7 +387,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         } else {
             mInputOtpView.setInputText("");
         }
-
     }
 
     private void setSubTitleOtp(String phone) {
@@ -374,9 +405,11 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
                 break;
             case INPUT_PHONE:
                 mKeyboardView.setEditable(mInputPhoneView.getNumberEditable());
+                mInputPhoneView.requestFocusInput();
                 break;
             case INPUT_OTP:
                 mKeyboardView.setEditable(mInputOtpView.getNumberEditable());
+                mInputOtpView.requestFocusInput();
                 break;
         }
     }
@@ -457,14 +490,16 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         }
 
         public void onFinish() {
-            mInputOtpView.setTextSecondButton(getString(R.string.resend_otp));
-            mInputOtpView.setEnableSecondButton(true);
+            mInputOtpView.setTextSecondaryButton(getString(R.string.resend_otp));
+            mInputOtpView.setEnableSecondaryButton(true);
+            mInputOtpView.setIconSecondaryButton(getString(R.string.onboarding_refresh));
         }
 
         public void onTick(long millisUntilFinished) {
             String msgFormat = getString(R.string.resend_otp_count_down_format);
-            mInputOtpView.setTextSecondButton(String.format(msgFormat, TimeUtils.formatCountDownTime(millisUntilFinished)));
-            mInputOtpView.setEnableSecondButton(false);
+            mInputOtpView.setTextSecondaryButton(String.format(msgFormat, TimeUtils.formatCountDownTime(millisUntilFinished)));
+            mInputOtpView.setEnableSecondaryButton(false);
+            mInputOtpView.setIconSecondaryButton("");
         }
 
     }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="pin_length">6</integer>
+    <integer name="max_length_otp">6</integer>
+    <integer name="max_length_phone">20</integer>
+</resources>

@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.com.vng.zalopay.ui.widget.GridSpacingItemSearchDecoration;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
 /**
@@ -91,7 +92,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
 
-        mItemDecoration = new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false);
+        mItemDecoration = new GridSpacingItemSearchDecoration(SPAN_COUNT_APPLICATION,1, false);
         mGridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
         mGridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -99,7 +100,6 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setFocusable(false);
         mRecyclerView.setItemAnimator(null);
-        
         mSearchIcon = (IconFont) getActivity().findViewById(R.id.ifSearch);
         mSearchIcon.setIcon(R.string.general_search);
         edtSearch = (ZPEditText) getActivity().findViewById(R.id.edtSearch);

@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@drawable/cover_large">
+    >
+
+    <vn.com.vng.zalopay.ui.widget.ZPImageView
+        style="@style/CoverDraweeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="192dp"
+        app:failureImage="@color/white.f5f5f5"
+        app:fileName="app_cover_large"
+        app:placeholderImage="@color/white.f5f5f5"/>
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?selector"
-                android:drawablePadding="6dp"
+                android:drawablePadding="4dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/txt_item_sub"
                 android:textSize="14sp"
@@ -61,8 +71,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginLeft="3dp"
                 android:layout_marginRight="6dp"
+                android:layout_marginStart="3dp"
                 android:text="•"
                 android:textColor="@color/txt_item_sub"/>
 
@@ -76,13 +88,12 @@
                 android:textColor="@color/txt_item_sub"
                 android:textSize="14sp"
                 app:iconLeftColor="@color/txt_item_sub"
-                app:iconLeftName="@string/profile_library"
+                app:iconLeftName="@string/onboarding_birthday"
                 app:iconLeftSize="@dimen/font_size_profile_icon"
                 tools:text="14/12/1989"
                 />
 
         </LinearLayout>
-
 
     </LinearLayout>
 </FrameLayout>

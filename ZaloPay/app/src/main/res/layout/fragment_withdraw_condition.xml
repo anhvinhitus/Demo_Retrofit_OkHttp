@@ -28,13 +28,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing.large"
-            android:gravity="center"
-            android:text="@string/withdraw_condition_note"
-            android:textSize="13sp"
             android:layout_marginLeft="@dimen/spacing.medium"
             android:layout_marginRight="@dimen/spacing.medium"
-            android:textColor="@color/text_color_grey"/>
+            android:layout_marginTop="@dimen/spacing.large"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/spacing.small.t"
+            android:text="@string/withdraw_condition_note"
+            android:textColor="@color/text_color_grey"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/btn_link_card"
             style="@style/Button.Default.New"

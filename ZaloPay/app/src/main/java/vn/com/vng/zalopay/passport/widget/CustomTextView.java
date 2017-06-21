@@ -2,8 +2,10 @@ package vn.com.vng.zalopay.passport.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import com.zalopay.ui.widget.edittext.NonSelectionActionModeCallback;
 
@@ -12,7 +14,7 @@ import com.zalopay.ui.widget.edittext.NonSelectionActionModeCallback;
  * *
  */
 
-public class CustomTextView extends android.support.v7.widget.AppCompatEditText implements NumberEditable {
+public class CustomTextView extends AppCompatEditText implements NumberEditable {
 
     public CustomTextView(Context context) {
         super(context);
@@ -42,6 +44,7 @@ public class CustomTextView extends android.support.v7.widget.AppCompatEditText 
 
         text = text.substring(0, text.length() - 1);
         setInputText(text);
+        setSelection(text.length());
     }
 
     @Override
@@ -53,4 +56,24 @@ public class CustomTextView extends android.support.v7.widget.AppCompatEditText 
     public void setInputText(String text) {
         super.setText(text);
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return true;
+    }
+
+    /* @Override
+    public boolean onCheckIsTextEditor() {
+        return false;
+    }
+
+    @Override
+    public boolean isTextSelectable() {
+        return true;
+    }*/
 }

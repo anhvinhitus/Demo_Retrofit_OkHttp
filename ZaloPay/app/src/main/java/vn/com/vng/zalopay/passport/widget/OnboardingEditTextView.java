@@ -51,12 +51,20 @@ public class OnboardingEditTextView extends OnboardingView {
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mPrimaryBtnView.setEnabled(s.length() >= mLengthToActiveButton);
+            if (s.length() == 0) {
+                clearError();
+            }
         }
     }
 
     @NonNull
     public String getInputText() {
         return mInputView.getInputText();
+    }
+
+    public void requestFocusInput() {
+        mInputView.requestFocus();
+        mInputView.setSelection(mInputView.length());
     }
 
     public void setInputText(String text) {

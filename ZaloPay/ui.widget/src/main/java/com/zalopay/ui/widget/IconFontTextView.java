@@ -2,6 +2,7 @@ package com.zalopay.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
@@ -9,7 +10,6 @@ import timber.log.Timber;
 
 /**
  * Created by khattn on 3/2/17.
- *
  */
 
 public class IconFontTextView extends AppCompatTextView {
@@ -78,7 +78,7 @@ public class IconFontTextView extends AppCompatTextView {
     }
 
     private void initIcon(IconFontDrawable icon, TypedArray typedArray, int name, int size, int color) {
-        if(icon == null) {
+        if (icon == null) {
             return;
         }
 
@@ -107,19 +107,19 @@ public class IconFontTextView extends AppCompatTextView {
 
         if (leftPad >= 0) {
             leftPad = getContext().getResources().getDimensionPixelSize(leftPad);
-            mLeftIcon.setPxPadding(leftPad, 0 , 0, 0);
+            mLeftIcon.setPxPadding(leftPad, 0, 0, 0);
         }
         if (topPad >= 0) {
             topPad = getContext().getResources().getDimensionPixelSize(topPad);
-            mTopIcon.setPxPadding(0, topPad , 0, 0);
+            mTopIcon.setPxPadding(0, topPad, 0, 0);
         }
         if (rightPad >= 0) {
             rightPad = getContext().getResources().getDimensionPixelSize(rightPad);
-            mRightIcon.setPxPadding(0, 0 , rightPad, 0);
+            mRightIcon.setPxPadding(0, 0, rightPad, 0);
         }
         if (bottomPad >= 0) {
             bottomPad = getContext().getResources().getDimensionPixelSize(bottomPad);
-            mBottomIcon.setPxPadding(0, 0 , 0, bottomPad);
+            mBottomIcon.setPxPadding(0, 0, 0, bottomPad);
         }
     }
 
@@ -137,5 +137,30 @@ public class IconFontTextView extends AppCompatTextView {
 
     public IconFontDrawable getBottomIcon() {
         return mBottomIcon;
+    }
+
+    public void setLeftIcon(String name, @ColorInt int color, int size) {
+        if (mLeftIcon == null) {
+            return;
+        }
+
+        mLeftIcon.setPxSize(size);
+        mLeftIcon.setColor(color);
+        mLeftIcon.setIcon(name);
+    }
+
+    public void setLeftIcon(String name, @ColorInt int color) {
+        if (mLeftIcon == null) {
+            return;
+        }
+
+        mLeftIcon.setColor(color);
+        mLeftIcon.setIcon(name);
+    }
+
+    public void setLeftIcon(String name) {
+        if (mLeftIcon != null) {
+            mLeftIcon.setIcon(name);
+        }
     }
 }

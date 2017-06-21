@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <bitmap android:src="@drawable/ic_arrow_right" android:tint="@color/grey.c7c7cc"/>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/ic_arrow_right" android:tint="@color/blue.008fe5"/>
+    </item>
+</selector>

@@ -9,6 +9,8 @@ import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 interface IOnboardingView {
     void gotoHomePage();
 
+    void gotoLoginPage();
+
     void finish();
 
     void setProfile(ZaloProfile user);

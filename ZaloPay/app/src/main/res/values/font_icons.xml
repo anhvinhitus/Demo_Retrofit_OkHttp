@@ -37,7 +37,7 @@
     <string name="general_arrowright">general_arrowright</string>
     <string name="general_search">general_search</string>
     <string name="general_delete_card">general_delete_card</string>
-    
+
     <string name="profile_lock">profile_lock</string>
     <string name="profile_camera">profile_camera</string>
     <string name="profile_library">profile_library</string>
@@ -85,4 +85,9 @@
 
     <string name="tab_notifynew">tab_notifynew</string>
     <string name="nav_notify">nav_notify</string>
+
+    <string name="onboarding_birthday">onboarding_birthday</string>
+    <string name="onboarding_male">onboarding_male</string>
+    <string name="onboarding_female">onboarding_female</string>
+    <string name="onboarding_refresh">onboarding_refresh</string>
 </resources>
