@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.data.util;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.domain.model.PhoneFormat;
 
 /**
@@ -85,12 +83,11 @@ public class PhoneUtil {
         return mPhoneFormat;
     }
 
-    public static int getMaxLengthPhoneNumber(Context context) {
+    public static int getMaxLengthPhoneNumber(int lengthDefault) {
         if (mPhoneFormat != null && mPhoneFormat.mMaxLength > 0) {
             return mPhoneFormat.mMaxLength;
         }
-
-        return context.getResources().getInteger(R.integer.max_length_phone);
+        return lengthDefault;
     }
 
     public static boolean isMobileNumber(String input) {

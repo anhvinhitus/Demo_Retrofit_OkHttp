@@ -153,7 +153,10 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         });
 
         mInputPhoneView.setLengthToActiveButton(1);
-        mInputPhoneView.setInputLength(PhoneUtil.getMaxLengthPhoneNumber(getContext()));
+
+        int maxLengthPhone = getResources().getInteger(R.integer.max_length_phone);
+
+        mInputPhoneView.setInputLength(PhoneUtil.getMaxLengthPhoneNumber(maxLengthPhone));
         mInputPhoneView.addValidator(new VNPhoneValidate().getValidates());
         mInputPhoneView.setStyleLinkPrimaryButton();
 
