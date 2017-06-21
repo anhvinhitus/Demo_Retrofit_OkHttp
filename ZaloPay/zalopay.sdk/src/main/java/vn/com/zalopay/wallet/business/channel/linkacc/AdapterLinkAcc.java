@@ -97,6 +97,7 @@ public class AdapterLinkAcc extends AdapterBase {
     private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
+    private int COUNT_UNREGISTER = 0;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapAccNum;
     private TreeMap<String, String> mHashMapPhoneNum;
@@ -105,7 +106,6 @@ public class AdapterLinkAcc extends AdapterBase {
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             if (!isLoadingCaptcha()) {
                 Log.d(this, "refreshCaptcha()");
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
@@ -599,7 +599,6 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
-        super.onEvent(pEventType, pAdditionParams);
         // show value progressing
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
@@ -622,11 +621,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }
 
         if (pEventType == EEventType.ON_SUBMIT_LINKACC_COMPLETED) {
-            // TODO: code here for submit linkacc complete
-            StatusResponse response = (StatusResponse) pAdditionParams[0];
-            mResponseStatus = response;
-            // set transID
-            mTransactionID = String.valueOf(response.zptransid);
+            mResponseStatus = (StatusResponse) pAdditionParams[0];
+            mTransactionID = String.valueOf(mResponseStatus.zptransid);
             return null;
         }
 
@@ -652,7 +648,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event login page");
                 hideLoadingDialog(); // close process dialog
                 //for testing
-                if (!SDKApplication.isReleaseBuild()) {
+                if (!SDKApplication.isReleaseBuild() && !GlobalData.shouldNativeWebFlow()) {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
@@ -673,6 +669,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setCaptchaImgLogin(response.otpimgsrc);
                     linkAccGuiProcessor.resetCaptchaInput();
                 }
+
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
                     Log.d(this, response.message);
@@ -705,7 +702,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             return null;
                         case WRONG_CAPTCHA:
                             if (!GlobalData.shouldNativeWebFlow()) {
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
+                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText(null);
                             linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha());//auto show keyboard
@@ -717,7 +714,9 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
-                linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
+                if (!GlobalData.shouldNativeWebFlow()) {
+                    linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
+                }
                 return null;
             }
 
@@ -726,7 +725,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
 
                 // TrackApptransidEvent confirm stage
-                if (GlobalData.analyticsTrackerWrapper != null) {
+                if(GlobalData.analyticsTrackerWrapper != null){
                     GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                 }
 
@@ -822,7 +821,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().enableSubmitBtn(false);
 
                     // TrackApptransidEvent AuthenType
-                    if (GlobalData.analyticsTrackerWrapper != null) {
+                    if(GlobalData.analyticsTrackerWrapper != null){
                         GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                     }
 
@@ -832,7 +831,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         switch (VcbUtils.getVcbType(response.message)) {
                             case EMPTY_CAPCHA:
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
+                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                 break;
                             case WRONG_CAPTCHA:
                                 if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
@@ -844,12 +843,14 @@ public class AdapterLinkAcc extends AdapterBase {
                                     }
 
                                 } else {
+
                                     getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                     if (!GlobalData.shouldNativeWebFlow()) {
-                                        showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
+                                        showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
+
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -892,7 +893,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                if (GlobalData.analyticsTrackerWrapper != null) {
+                if(GlobalData.analyticsTrackerWrapper != null){
                     GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                 }
 
@@ -900,6 +901,28 @@ public class AdapterLinkAcc extends AdapterBase {
                 mPageName = PAGE_VCB_CONFIRM_UNLINK;
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+
+                if (COUNT_UNREGISTER > 0) {
+                    String Message = (TextUtils.isEmpty(response.message)) ? GlobalData.getStringResource(RS.string.zpw_string_vcb_error_password) : response.message;
+                    if (COUNT_UNREGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+
+                        if (!TextUtils.isEmpty(response.messageResult)) {
+                            // SUCCESS. Success register
+                            // get & check bankaccount list
+                            checkBankAccount();
+                        } else {
+                            // FAIL. Fail register
+                            hideLoadingDialog();
+                            unlinkAccFail(Message, mTransactionID);
+                        }
+                        return null;
+                    }
+                    forceVirtualKeyboard();
+                    linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
+
+                    showMessage(null, Message, TSnackbar.LENGTH_LONG);
+                }
+                COUNT_UNREGISTER++;
 
                 if (GlobalData.shouldNativeWebFlow()) {
                     Log.d(this, "user following web flow, skip event login vcb");
@@ -1006,7 +1029,6 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
-                Log.d(this, "Unregister Complete page");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -1015,24 +1037,13 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkBankAccount();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    if (!TextUtils.isEmpty(response.message)) {
                         hideLoadingDialog();
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
-                    } else {
-                        if (!TextUtils.isEmpty(response.messageTimeout)) {
-                            // code here if js time out.
-                            checkBankAccount();
-                        } else if (!GlobalData.shouldNativeWebFlow()) {
-                            showMessage(null, response.message, TSnackbar.LENGTH_LONG);
-                        }
-                        hideLoadingDialog();
-                        linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
-                        forceVirtualKeyboard();
                     }
+                    return null;
                 }
-                COUNT_ERROR_PASS++;
-                return null;
             }
             return null;
         }
