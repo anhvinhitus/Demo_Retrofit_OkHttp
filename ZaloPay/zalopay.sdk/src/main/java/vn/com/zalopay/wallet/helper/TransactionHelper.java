@@ -107,7 +107,7 @@ public class TransactionHelper {
     }
 
     public static boolean isSecurityFlow(StatusResponse pResponse) {
-        if (pResponse != null && !TextUtils.isEmpty(pResponse.data)) {
+        if (pResponse != null && pResponse.isprocessing && !TextUtils.isEmpty(pResponse.data)) {
             SecurityResponse dataResponse = GsonUtils.fromJsonString(pResponse.data, SecurityResponse.class);
             if (dataResponse != null && PaymentStatusHelper.is3DSResponse(dataResponse) || PaymentStatusHelper.isOtpResponse(dataResponse)) {
                 return true;

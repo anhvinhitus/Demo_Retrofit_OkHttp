@@ -1061,19 +1061,6 @@ public abstract class AdapterBase {
         }
     }
 
-    /***
-     * check status in case networking error
-     *
-     * @param pAppTransID
-     * @param pMessage
-     */
-    protected void checkTransactionStatus(String pAppTransID, String pMessage) {
-        isAlreadyCheckStatusFailSubmit = true;
-        showProgressBar(true, TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
-        BaseTask checkOrderStatusFailSubmit = new CheckOrderStatusFailSubmit(this, pAppTransID);
-        checkOrderStatusFailSubmit.makeRequest();
-    }
-
     /**
      * Check transaction status
      *
