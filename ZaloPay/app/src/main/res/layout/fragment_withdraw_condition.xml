@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:drawablePadding="28dp"
-            android:drawableTop="@drawable/ico_dkrt"
+            android:drawableTop="@drawable/ic_dkrt"
             android:text="@string/withdraw_miss_condition"
             android:textSize="@dimen/font_size_xlarge" />
 

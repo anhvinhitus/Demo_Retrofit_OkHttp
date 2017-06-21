@@ -21,15 +21,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/btn_cancel_round_padding"
+            android:layout_marginLeft="@dimen/btn_cancel_round_padding"
+            android:layout_marginTop="@dimen/btn_cancel_round_padding"
             android:src="@drawable/cancel" />
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/cancel_action"
-            android:background="@android:color/white"
             android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing.large.t"
             android:orientation="vertical">
 
             <TextView
@@ -56,8 +57,8 @@
                     android:id="@+id/ic_content"
                     android:layout_width="@dimen/channel_image_size"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/btn_cancel_round_padding"
                     app:actualImageScaleType="centerInside"
+                    android:padding="@dimen/spacing.small.t"
                     app:viewAspectRatio="1" />
 
                 <TextView
