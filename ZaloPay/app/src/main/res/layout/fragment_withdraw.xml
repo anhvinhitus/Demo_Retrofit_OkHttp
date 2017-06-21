@@ -1,71 +1,30 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ScrollView"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment">
+    android:background="@drawable/background_withdraw">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:orientation="vertical">
+        android:layout_height="164dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing.small"
-            android:paddingRight="@dimen/spacing.medium.t"
-            android:paddingTop="@dimen/spacing.medium">
-
-            <TextView
-                android:id="@+id/tvResourceMoney"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="@string/min_money"
-                android:textColor="@color/deposit.title"
-                android:textSize="@dimen/textsize.small" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.tiny"
-                android:gravity="right"
-                android:text="@string/vnd"
-                android:textColor="@color/deposit.title"
-                android:textSize="@dimen/textsize.tiny.s" />
-        </LinearLayout>
-
-        <View
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/separate_stroke"
-            android:background="@color/separate" />
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/WrapperEditText">
+            <include layout="@layout/header_withdraw_layout"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
 
-            <vn.com.vng.zalopay.ui.widget.MoneyEditText
-                android:id="@+id/edtAmount"
-                style="@style/ZaloPayEditText.Money"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:hint="@string/hint_amount"
-                android:maxLength="@integer/max_length_edittext_money" />
-        </FrameLayout>
-
-        <Button
-            android:id="@+id/btnContinue"
-            style="@style/Button.Default.New"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button.height"
-            android:text="@string/btn_continue" />
-    </LinearLayout>
-</ScrollView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listview"
+        style="@style/RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_overlapTop="40dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</android.support.design.widget.CoordinatorLayout>

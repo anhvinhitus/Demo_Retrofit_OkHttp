@@ -18,20 +18,20 @@ public class WithdrawAdapter extends EpoxyAdapter {
         void onClickDenomination(long money);
     }
 
-    private final HeaderWithdrawModel mBalanceModel = new HeaderWithdrawModel();
+  //  private final HeaderWithdrawModel mBalanceModel = new HeaderWithdrawModel();
 
     private OnClickDenominationListener mListener;
 
     public WithdrawAdapter(OnClickDenominationListener listener) {
         enableDiffing();
-        addModel(mBalanceModel);
+        //  addModel(mBalanceModel);
         mListener = listener;
     }
 
     public void setBalance(long balance) {
-        mBalanceModel.setBalance(balance);
+        //  mBalanceModel.setBalance(balance);
 
-        for (EpoxyModel<?> model : getAllModelsAfter(mBalanceModel)) {
+        for (EpoxyModel<?> model : models) {
             ((DenominationMoneyModel) model).setBalance(balance);
         }
 

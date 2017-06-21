@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
@@ -36,8 +38,8 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     @BindView(R.id.listview)
     RecyclerView listview;
 
-    @BindView(R.id.progressContainer)
-    View progressContainer;
+    @BindView(R.id.tvMoney)
+    TextView mMoneyView;
 
     @Override
     protected void setupFragmentComponent() {
@@ -46,7 +48,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_recycleview;
+        return R.layout.fragment_withdraw;
     }
 
     @Inject
@@ -72,7 +74,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
         listview.setLayoutManager(gridLayoutManager);
         listview.setAdapter(mAdapter);
-        progressContainer.setVisibility(View.GONE);
 
     }
 
@@ -122,7 +123,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @Override
     public void setBalance(long balance) {
+        mMoneyView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
         mAdapter.setBalance(balance);
+
     }
 
     @Override
