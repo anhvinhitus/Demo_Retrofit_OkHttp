@@ -38,7 +38,7 @@
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/zpw_submit_button_height"
-        android:background="@drawable/bg_btn_green_border_selector"
+        android:background="@drawable/bg_btn_silver_border"
         android:layout_alignParentBottom="true"
         android:enabled="false"
         android:textColor="@android:color/white"

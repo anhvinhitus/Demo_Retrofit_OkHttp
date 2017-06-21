@@ -140,9 +140,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showLoading(String pTitle) {
         if (getActivity() != null) {
             getActivity().setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> {
-                showError(getResources().getString(R.string.zingpaysdk_alert_network_error));
-            });
+            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.zingpaysdk_alert_network_error)));
         }
     }
 
@@ -206,7 +204,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
-            String txtFee = StringUtil.formatVnCurrence(String.valueOf(fee));
+            String txtFee = String.format(getString(R.string.sdk_fee_format), StringUtil.formatVnCurrence(String.valueOf(fee)));
             order_fee_txt.setText(txtFee);
         } else {
             order_fee_txt.setText(getResources().getString(R.string.sdk_order_fee_free));

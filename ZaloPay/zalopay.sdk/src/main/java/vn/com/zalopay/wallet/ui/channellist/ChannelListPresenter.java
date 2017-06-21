@@ -98,7 +98,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private ChannelProxy mChannelProxy;
     private List<Object> mChannelList = new ArrayList<>();
     private AbstractChannelLoader mChannelLoader;
-    private int mPreviousPosition = -1;
+    private PaymentChannel mSelectChannel = null;
     private Action1<AppInfo> appInfoSubscriber = new Action1<AppInfo>() {
         @Override
         public void call(AppInfo appInfo) {
@@ -197,13 +197,13 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    public boolean onBackPressed(){
-        Log.d(this,"onBackPressed");
-        if(mChannelProxy == null){
+    public boolean onBackPressed() {
+        Log.d(this, "onBackPressed");
+        if (mChannelProxy == null) {
             return false;
         }
         @OrderState int orderState = mChannelProxy.orderProcessing();
-        switch (orderState){
+        switch (orderState) {
             case OrderState.SUBMIT:
             case OrderState.QUERY_STATUS:
                 return true;
@@ -215,9 +215,8 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     private void selectChannelFromPopup(Intent data) {
         if (data != null) {
             int position = data.getIntExtra(SELECTED_PMC_POSITION, -1);
-            SdkSelectedChannelMessage event = new SdkSelectedChannelMessage(position);
-            OnSelectChannelEvent(event);
-            if(position == mPreviousPosition){
+            PaymentChannel channel = onSelectedChannel(position);
+            if (channel != null) {
                 //delay waiting for destroy popup
                 new Handler().postDelayed(this::startPayment, 300);
             }
@@ -260,17 +259,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
-        Log.d(this, "select at position", pMessage.position);
-        if (mChannelList == null || mChannelList.size() <= 0) {
-            Log.d(this, "channel list is empty");
-            return;
-        }
-        if (pMessage.position >= 0) {
-            Object object = mChannelList.get(pMessage.position);
-            if (object instanceof PaymentChannel) {
-                onSelectedChannel(pMessage.position, (PaymentChannel) object);
-            }
-        }
+        onSelectedChannel(pMessage.position);
     }
 
     public boolean networkOffline() {
@@ -288,93 +277,81 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         return offline;
     }
 
-    private void onSelectedChannel(int pPosition, PaymentChannel pChannel) {
-        if (pChannel == null) {
+
+    private PaymentChannel onSelectedChannel(int pPosition) {
+        Log.d(this, "select at position", pPosition);
+        if (mChannelList == null || mChannelList.size() <= 0) {
+            Log.d(this, "channel list is empty");
+            return null;
+        }
+        PaymentChannel channel = null;
+        if (pPosition >= 0) {
+            Object object = mChannelList.get(pPosition);
+            if (object instanceof PaymentChannel) {
+                channel = (PaymentChannel) object;
+            }
+        }
+        if (channel == null) {
             Log.d(this, "channel is null");
-            return;
+            return null;
+        }
+        if (!changedChannel(channel)) {
+            Log.d(this, "click same channel");
+            return null;
+        }
+        //check networking
+        if (networkOffline()) {
+            return null;
+        }
+        if (!mChannelProxy.validate(channel)) {
+            return null;
         }
         try {
-            //check networking
-            if (networkOffline()) {
-                return;
-            }
-            if (!mChannelProxy.validate(pChannel)) {
-                return;
-            }
-            selectChannel(pPosition);
-            //update fee
-            if (pChannel.hasFee()) {
-                double fee = pChannel.totalfee;
-                double total_amount = mPaymentInfoHelper.getAmount() + fee;
-                getViewOrThrow().renderTotalAmountAndFee(total_amount, fee);
-            }
+
+            markSelectChannel(channel, pPosition);
             if (GlobalData.analyticsTrackerWrapper != null) {
-                GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, pChannel.pmcid);
+                GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
             }
         } catch (Exception e) {
             Log.d(this, e);
         }
+        return channel;
     }
 
-    private void selectChannel(int pPosition) {
-        boolean hasUpdate = false;
-        if (mChannelList != null && mChannelList.size() > 0 && pPosition >= 0) {
-            //reset the previous one
-            try {
-                if (mPreviousPosition >= 0) {
-                    Object object = mChannelList.get(mPreviousPosition);
-                    if (object instanceof PaymentChannel) {
-                        ((PaymentChannel) object).select = false;
-                        hasUpdate = true;
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-            try {
-                Object object = mChannelList.get(pPosition);
-                if (object instanceof PaymentChannel) {
-                    ((PaymentChannel) object).select = true;
-                    hasUpdate = true;
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+    private boolean changedChannel(PaymentChannel selectChannel) {
+        return mSelectChannel == null || mSelectChannel != selectChannel;
+    }
+
+    private void markSelectChannel(PaymentChannel channel, int position) throws Exception {
+        if (channel == null) {
+            Log.d(this, "channel is null");
+            return;
         }
-        if (hasUpdate) {
-            try {
-                mPreviousPosition = pPosition;//save to the previous position
-                mChannelAdapter.notifyBinderItemChanged(pPosition);
-                updateButton();
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+        if (!changedChannel(channel)) {
+            Log.d(this, "click same channel");
+            return;
         }
+        //update total amount and fee
+        double fee = channel.totalfee;
+        double total_amount = mPaymentInfoHelper.getAmount() + fee;
+        getViewOrThrow().renderTotalAmountAndFee(total_amount, fee);
+
+        if (mSelectChannel != null) {
+            mSelectChannel.select = false;
+        }
+        mSelectChannel = channel;
+        mSelectChannel.select = true;
+        mChannelAdapter.notifyBinderItemChanged(position);
+        updateButton(channel);
     }
 
     public void startPayment() {
         try {
-            PaymentChannel channel = getSelectChannel();
-            if (channel != null) {
-                mChannelProxy.setChannel(channel).start();
+            if (mSelectChannel != null) {
+                mChannelProxy.setChannel(mSelectChannel).start();
             }
         } catch (Exception e) {
             Log.e(this, e);
-        }
-    }
-
-    private PaymentChannel getSelectChannel() throws Exception {
-        if (mPreviousPosition < 0 || mChannelList == null || mChannelList.size() <= 0) {
-            throw new Exception("invalid channel list");
-        }
-        try {
-            Object object = mChannelList.get(mPreviousPosition);
-            if (!(object instanceof PaymentChannel)) {
-                throw new Exception("invalid select channel");
-            }
-            return (PaymentChannel) object;
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -476,35 +453,31 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
      * make default select channel
      */
     private void makeDefaultSelection() {
-        for (int i = 0; i < mChannelList.size(); i++) {
-            Object object = mChannelList.get(i);
-            if (object instanceof PaymentChannel) {
-                PaymentChannel paymentChannel = (PaymentChannel) object;
-                if (paymentChannel.meetPaymentCondition()) {
-                    Log.d(this, "make default select channel", paymentChannel);
-                    selectChannel(i);
-                    break;
+        try {
+            for (int position = 0; position < mChannelList.size(); position++) {
+                Object object = mChannelList.get(position);
+                if (object instanceof PaymentChannel) {
+                    PaymentChannel paymentChannel = (PaymentChannel) object;
+                    if (paymentChannel.meetPaymentCondition()) {
+                        Log.d(this, "make default select channel", paymentChannel);
+                        markSelectChannel(paymentChannel, position);
+                        break;
+                    }
                 }
             }
-        }
-        try {
-            updateButton();
         } catch (Exception e) {
             Log.e(this, e);
         }
     }
 
-    private void updateButton() throws Exception {
-        if (mPreviousPosition < 0) {
+    private void updateButton(PaymentChannel channel) throws Exception {
+        if (channel == null) {
             getViewOrThrow().disableConfirmButton();
         } else {
             //update text by trans type
-            PaymentChannel channel = getSelectChannel();
-            if (channel != null) {
-                int btnTextId = ChannelHelper.btnConfirmText(channel, mPaymentInfoHelper.getTranstype());
-                int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
-                getViewOrThrow().enableConfirmButton(btnTextId, btnBgDrawableId);
-            }
+            int btnTextId = ChannelHelper.btnConfirmText(channel, mPaymentInfoHelper.getTranstype());
+            int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
+            getViewOrThrow().enableConfirmButton(btnTextId, btnBgDrawableId);
         }
     }
 
