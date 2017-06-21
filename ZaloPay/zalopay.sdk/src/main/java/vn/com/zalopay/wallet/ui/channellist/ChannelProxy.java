@@ -86,16 +86,7 @@ public class ChannelProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
-    private Action1<StatusResponse> transStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get tran status is running - skip process");
-                return;
-            }
-            processStatus(statusResponse);
-        }
-    };
+    private Action1<StatusResponse> transStatusSubscriber = this::processStatus;
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -114,18 +105,11 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
         }
     };
-    private Action1<StatusResponse> appTransStatusSubscriber = new Action1<StatusResponse>() {
-        @Override
-        public void call(StatusResponse statusResponse) {
-            if (mRequestApi.isRunning()) {
-                Log.d(this, "get app tran status is running - skip process");
-                return;
-            }
-            if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-                markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
-            } else {
-                processStatus(statusResponse);
-            }
+    private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
+        if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
+            markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+        } else {
+            processStatus(statusResponse);
         }
     };
     private Action1<Throwable> submitOrderException = throwable -> {
@@ -299,6 +283,7 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void processStatus(StatusResponse pResponse) {
+        Log.d(this, "process status", pResponse);
         try {
             getView().updateDefaultTitle();
         } catch (Exception e) {

@@ -28,11 +28,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     private int retryCount = 0;
     private long intervalRetry = TRANS_STATUS_DELAY_RETRY;
 
-    private Func1<StatusResponse, Boolean> shouldStop = pResponse -> {
-        boolean stop = shouldStop(pResponse);
-        running = !stop;
-        return stop;
-    };
+    private Func1<StatusResponse, Boolean> shouldStop = this::shouldStop;
 
     public TransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
         super(transService);
@@ -53,7 +49,6 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
         if (TransactionHelper.isSecurityFlow(pResponse)) {
             return true;
         }
-        retryCount++;
         return !pResponse.isprocessing;
     }
 
@@ -66,14 +61,15 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
 
     public Observable<StatusResponse> getStatus(Map<String, String> params) {
         return mTransService.getStatus(params)
-                .doOnSubscribe(() -> running = true)
+                .doOnSubscribe(() -> retryCount++)
                 /*.map(statusResponse -> {
                     statusResponse.isprocessing = true;
-                    statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
+                    //statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;
                 })*/
-                .repeatWhen(o -> o.flatMap(v -> Observable.timer(intervalRetry, MILLISECONDS)))
-                .takeUntil(shouldStop);
+                .repeatWhen(observable -> observable.delay(intervalRetry, MILLISECONDS))
+                .takeUntil(shouldStop)
+                .filter(this::shouldStop);
     }
 
     @Override

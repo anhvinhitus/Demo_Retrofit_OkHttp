@@ -25,12 +25,8 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     private long appId;
     private String userId;
     private String appTransId;
-    private int retryCount = 0;
-    private Func1<StatusResponse, Boolean> shouldStop = pResponse -> {
-        boolean stop = shouldStop(pResponse);
-        running = !stop;
-        return stop;
-    };
+    private int retryCount = 1;
+    private Func1<StatusResponse, Boolean> shouldStop = this::shouldStop;
 
     public StatusByAppTrans(ITransService pTransService, long appId, String userId, String appTransId) {
         super(pTransService);
@@ -51,7 +47,6 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         if (retryCount >= GETSTATUS_APPTRANS_MAX_RETRY) {
             return true;
         }
-        retryCount++;
         return false;
     }
 
@@ -65,8 +60,9 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     @Override
     public Observable<StatusResponse> getObserver() {
         return mTransService.getStatusByAppTransClient(buildParams())
-                .doOnSubscribe(() -> running = true)
-                .repeatWhen(o -> o.flatMap(v -> Observable.timer(GETSTATUS_APPTRANS_INTERVAL, MILLISECONDS)))
-                .takeUntil(shouldStop);
+                .doOnSubscribe(() -> retryCount++)
+                .repeatWhen(observable -> observable.delay(GETSTATUS_APPTRANS_INTERVAL * retryCount, MILLISECONDS))
+                .takeUntil(shouldStop)
+                .filter(this::shouldStop);
     }
 }
