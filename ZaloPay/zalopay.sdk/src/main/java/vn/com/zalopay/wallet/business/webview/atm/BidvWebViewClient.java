@@ -10,20 +10,21 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 
 public class BidvWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;
@@ -31,6 +32,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     protected int countIntervalCheck = 0;
 
+    ;
     private boolean mIsRunningScript = false;
 
     private boolean mIsLoadingFinished = true;
@@ -40,6 +42,8 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     private String mStartedtUrl = null;
     private String mCurrentUrl = null;
     private DBankScript mCurrentBankScript = null;
+
+    private long mLastStartPageTime = 0;
     private Handler mHandler = new Handler();
 
     private int mEventID = 0;
@@ -53,7 +57,6 @@ public class BidvWebViewClient extends PaymentWebViewClient {
             mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-            setPaymentWebView(mWebPaymentBridge);
         }
     }
 
@@ -65,6 +68,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void hit() {
+        mLastStartPageTime = System.currentTimeMillis();
         matchAndRunJs(EJavaScriptType.HIT, false);
     }
 
@@ -125,12 +129,29 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         }
     }
 
+    public void executeJs(String pJsFileName, String pJsInput) {
+        if (!TextUtils.isEmpty(pJsFileName)) {
+            Log.d(this, pJsFileName);
+            Log.d(this, pJsInput);
+
+            String jsContent = null;
+            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
+                jsContent = ResourceManager.getJavascriptContent(jsFile);
+                jsContent = String.format(jsContent, pJsInput);
+                mWebPaymentBridge.runScript(jsContent);
+            }
+        }
+    }
+
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         Log.i(this, "===onPageStarted: ===" + url);
 
         mStartedtUrl = url;
         mIsLoadingFinished = false;
+
+        // Modify this variable to inform that it not run in ajax mode
+        mLastStartPageTime++;
         if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
             view.stopLoading();
         }
@@ -142,6 +163,9 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
         }
+        // Modify this variable to inform that it not run in ajax mode
+        mLastStartPageTime++;
+
         mIsLoadingFinished = false;
         view.loadUrl(url);
 
@@ -162,7 +186,12 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         countIntervalCheck++;
         Log.d(this, "===intervalCheck===" + countIntervalCheck);
         mIsRunningScript = true;
-        mHandler.postDelayed(() -> matchAndRunJs(EJavaScriptType.AUTO, false), DELAY_TIME_TO_RUN_SCRIPT);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                matchAndRunJs(EJavaScriptType.AUTO, false);
+            }
+        }, DELAY_TIME_TO_RUN_SCRIPT);
     }
 
     public void onLoadResource(WebView view, final String url) {
@@ -174,6 +203,11 @@ public class BidvWebViewClient extends PaymentWebViewClient {
             }
             intervalCheck();
         }
+    }
+
+    @JavascriptInterface
+    public void logDebug(String msg) {
+        Log.d(this, "****** Debug webview: " + msg);
     }
 
     @Override
@@ -212,21 +246,38 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     public void onJsPaymentResult(String pResult) {
         mIsRunningScript = false;
         Log.d(this, "==== onJsPaymentResult: " + pResult);
+        // Modify this variable to inform that it not run in ajax mode
+        mLastStartPageTime++;
+
         final String result = pResult;
-        getAdapter().getActivity().runOnUiThread(() -> {
-            DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-            countIntervalCheck = 0;
-            EEventType eventType = convertPageIdToEvent(mEventID);
-            BaseResponse response = genResponse(eventType, scriptOutput);
-            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                // Auto hit at first step
-                mIsFirst = false;
-                hit();
-            } else {
-                if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                    getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+
+        getAdapter().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+
+				/*
+                if(scriptOutput != null && !scriptOutput.stopIntervalCheck )
+				{
+					intervalCheck();
+					return;
+				}
+				*/
+                countIntervalCheck = 0;
+
+                EEventType eventType = convertPageIdToEvent(mEventID);
+                BaseResponse response = genResponse(eventType, scriptOutput);
+
+                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                    // Auto hit at first step
+                    mIsFirst = false;
+                    hit();
                 } else {
-                    getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+                    } else {
+                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                    }
                 }
             }
         });

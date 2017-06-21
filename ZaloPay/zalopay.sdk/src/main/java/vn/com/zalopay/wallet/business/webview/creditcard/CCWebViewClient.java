@@ -7,14 +7,8 @@ import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
-import rx.SingleSubscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -26,13 +20,17 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_SSL;
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.business.entity.base.WebViewError.SSL_ERROR;
 
 public class CCWebViewClient extends PaymentWebViewClient {
     protected boolean isFirstLoad = true;
-    private String mMerchantPrefix;
+
+    private String mMerchantPrefix = "";
     private WebView mWebView = null;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+
     public CCWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
         this.mMerchantPrefix = GlobalData.getStringResource(RS.string.zpw_string_merchant_creditcard_3ds_url_prefix);
@@ -47,24 +45,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void hit() {
 
     }
-    public void dispose() {
-        if (mWebView != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                mWebView.removeJavascriptInterface(JAVA_SCRIPT_INTERFACE_NAME);
-            }
-            mWebView.setWebViewClient(null);
-            mWebView.removeAllViews();
-            mWebView.clearHistory();
-            mWebView.freeMemory();
-            mWebView.destroy();
-            mWebView = null;
-            Log.d(this, "disposed mWebPaymentBridge");
-        }
-        if (compositeSubscription.hasSubscriptions()) {
-            compositeSubscription.clear();
-            Log.d(this, "cleared subscriptions");
-        }
-    }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Log.d(this, "load url " + url);
@@ -96,7 +77,6 @@ public class CCWebViewClient extends PaymentWebViewClient {
             getAdapter().showProgressBar(false, null);
             BIDVWebFlow(null, url, view);
         }
-
         isFirstLoad = false;
     }
 
@@ -105,11 +85,11 @@ public class CCWebViewClient extends PaymentWebViewClient {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
         }
         if (getAdapter() != null) {
-            StringBuilder errStringBuilder = new StringBuilder();
+            StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
             errStringBuilder.append(failingUrl);
             try {
-                getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, errStringBuilder.toString());
+                getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -121,13 +101,14 @@ public class CCWebViewClient extends PaymentWebViewClient {
         if (getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(SSL_ERROR, null));
             try {
-                getAdapter().sdkReportError(SDKReportTask.ERROR_SSL, GsonUtils.toJsonString(error));
+                getAdapter().sdkReportError(ERROR_SSL, GsonUtils.toJsonString(error));
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
         Log.d(this, "there're error ssl on page", error);
     }
+
     public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {
         if (pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_bidv_auto_select_rule))) {
             executeJs(Constants.AUTOCHECK_RULE_FILLOTP_BIDV_JS, pOtp, pView);
@@ -148,27 +129,13 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     public void executeJs(String pJsFileName, String pJsInput, WebView pView) {
         if (!TextUtils.isEmpty(pJsFileName)) {
-            Log.d(this, pJsFileName);
-            Log.d(this, pJsInput);
+            String jsContent;
+            Log.d("executeJs", pJsFileName);
+            Log.d("executeJs", pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
-                Subscription subscription = ResourceManager.getJavascriptContent(jsFile)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new SingleSubscriber<String>() {
-                            @Override
-                            public void onSuccess(String fileContent) {
-                                if (!TextUtils.isEmpty(fileContent) && pView != null) {
-                                    String jsContent = String.format(fileContent, pJsInput);
-                                 runScript(jsContent, pView);
-                                }
-                            }
-                            @Override
-                            public void onError(Throwable error) {
-                                Log.e(this, "load file js error " + GsonUtils.toJsonString(error));
-                                getAdapter().onEvent(EEventType.ON_FAIL);
-                            }
-                        });
-                compositeSubscription.add(subscription);
+                jsContent = ResourceManager.getJavascriptContent(jsFile);
+                jsContent = String.format(jsContent, pJsInput);
+                runScript(jsContent, pView);
             }
         }
     }

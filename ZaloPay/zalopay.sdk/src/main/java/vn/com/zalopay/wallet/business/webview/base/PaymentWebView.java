@@ -7,15 +7,14 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
-import com.zalopay.ui.widget.util.AgentUtil;
-
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
-    protected CCWebViewClient mCCWebViewClient ;
+    protected CCWebViewClient mCCWebViewClient;
+
     public PaymentWebView(Context context) {
         super(context);
         init();
@@ -43,14 +42,24 @@ public class PaymentWebView extends WebView {
         getSettings().setSaveFormData(false);
 
         // set user agent. mobile
-        getSettings().setUserAgentString(AgentUtil.getUserAgent());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String UA_LOLLIPOP_AND_ABOVE = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
+            getSettings().setUserAgentString(UA_LOLLIPOP_AND_ABOVE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String UA_KITKAT_TO_LOLLIPOP = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
+            getSettings().setUserAgentString(UA_KITKAT_TO_LOLLIPOP);
+        } else {
+            String UA_OLD = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30";
+            getSettings().setUserAgentString(UA_OLD);
+        }
     }
+
     public void setPaymentWebViewClient(AdapterBase pAdapter) {
         mCCWebViewClient = new CCWebViewClient(pAdapter);
         setWebViewClient(mCCWebViewClient);
     }
-    public CCWebViewClient getCCWebViewClient()
-    {
+
+    public CCWebViewClient getCCWebViewClient() {
         return mCCWebViewClient;
     }
 
@@ -68,8 +77,7 @@ public class PaymentWebView extends WebView {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent) {
-        Log.d(this, "##### runScript: " + scriptContent);
-
+        Log.d(this, "runScript: " + scriptContent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript(scriptContent, null);
         } else {

@@ -1,7 +1,10 @@
 package vn.com.zalopay.wallet.business.webview.linkacc;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
+import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
@@ -12,11 +15,11 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -29,10 +32,10 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
-import vn.com.zalopay.utility.GsonUtils;
 
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
 import static vn.com.zalopay.wallet.constants.Constants.VCB_REFRESH_CAPTCHA;
 import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_COMPLETE_PAGE;
@@ -43,6 +46,7 @@ import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_COMPLETE_
  * @author SinhTT
  */
 public class LinkAccWebViewClient extends PaymentWebViewClient {
+    public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
     // value is used for
@@ -85,7 +89,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-            setPaymentWebView(mWebPaymentBridge);
         }
     }
 
@@ -98,7 +101,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-            setPaymentWebView(mWebPaymentBridge);
         }
     }
 
@@ -168,7 +170,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 mAdapter.onEvent(EEventType.ON_FAIL);
                 mAdapter.getActivity().onBackPressed();
                 try {
-                    getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, error.toString());
+                    getAdapter().sdkReportError(ERROR_WEBSITE, error.toString());
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
@@ -181,7 +183,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }, mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website), mAdapter.getActivity().getString(R.string.dialog_continue_button), mAdapter.getActivity().getString(R.string.dialog_close_button));
     }
 
-    @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
         if (failingUrl.contains(HTTP_EXCEPTION)) {
@@ -192,12 +193,12 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
         }
         if (getAdapter() != null) {
-            StringBuilder errStringBuilder = new StringBuilder();
+            StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
             errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
             try {
-                getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, errStringBuilder.toString());
+                getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -348,6 +349,24 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, inputScript);
     }
 
+    public void executeJs(String pJsFileName, String pJsInput) {
+        if (!TextUtils.isEmpty(pJsFileName)) {
+            String jsContent;
+            Log.d("executeJs", pJsFileName);
+            Log.d("executeJs", pJsInput);
+            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
+                jsContent = ResourceManager.getJavascriptContent(jsFile);
+                jsContent = String.format(jsContent, pJsInput);
+                mWebPaymentBridge.runScript(jsContent);
+            }
+        }
+    }
+
+    @JavascriptInterface
+    public void logDebug(String msg) {
+        Log.d("Js", "****** Debug webview: " + msg);
+    }
+
     /***
      * run normal. not ajax
      *
@@ -355,6 +374,20 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
      */
     public void onPageFinishedAuto(String url) {
         matchAndRunJs(url, EJavaScriptType.AUTO, false);
+    }
+
+    /***
+     * run when load ajax
+     *
+     * @param pUrl
+     */
+    public void onPageFinishedAjax(final String pUrl, long pDelay) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                matchAndRunJs(pUrl, EJavaScriptType.AUTO, true);
+            }
+        }, pDelay); // delay 1s for Ajax run
     }
 
     /***
@@ -366,20 +399,23 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
         final String result = pResult;
 
-        getAdapter().getActivity().runOnUiThread(() -> {
-            DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
-            EEventType eventType = convertPageIdToEvent(mEventID);
-            StatusResponse response = genResponse(eventType, scriptOutput);
-            Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
-            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                // Auto hit at first step
-                mIsFirst = false;
-                hit();
-            } else {
-                if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                    mAdapter.onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+        getAdapter().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
+                EEventType eventType = convertPageIdToEvent(mEventID);
+                StatusResponse response = genResponse(eventType, scriptOutput);
+                Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
+                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                    // Auto hit at first step
+                    mIsFirst = false;
+                    hit();
                 } else {
-                    mAdapter.onEvent(eventType, response, mPageCode, mEventID);
+                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                        mAdapter.onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+                    } else {
+                        mAdapter.onEvent(eventType, response, mPageCode, mEventID);
+                    }
                 }
             }
         });
@@ -398,8 +434,12 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
     }
 
+    public boolean isVerifyCardComplete() {
+        return mEventID == 1;
+    }
+
     public StatusResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
-        StatusResponse ret;
+        StatusResponse ret = null;
         switch (pEventType) {
             default:
                 ret = new StatusResponse();
@@ -416,5 +456,24 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
 
         return ret;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @SuppressWarnings("deprecation")
+    public void dispose() {
+        // When clearing the webview reference. Simply set it to null is not
+        // enough.
+        // http://garena.github.io/blog/2014/07/18/android-prevent-webview-from-memory-leak/
+        if (mWebPaymentBridge != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mWebPaymentBridge.removeJavascriptInterface(JAVA_SCRIPT_INTERFACE_NAME);
+            }
+            mWebPaymentBridge.setWebViewClient(null);
+            mWebPaymentBridge.removeAllViews();
+            mWebPaymentBridge.clearHistory();
+            mWebPaymentBridge.freeMemory();
+            mWebPaymentBridge.destroy();
+            mWebPaymentBridge = null;
+        }
     }
 }

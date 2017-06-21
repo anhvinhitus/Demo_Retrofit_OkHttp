@@ -190,7 +190,16 @@ public class ResourceManager extends SingletonBase {
         });
     }
 
-    public static Single<String> getJavascriptContent(String pJsName) {
+    public static String getJavascriptContent(String pJsName) {
+        try {
+            return loadResourceFile(PREFIX_JS, pJsName);
+        } catch (Exception e) {
+            Log.e("getJavascriptContent", e);
+        }
+        return null;
+    }
+
+   /* public static Single<String> getJavascriptContent(String pJsName) {
         return Single.create(singleSubscriber -> {
             try {
                 singleSubscriber.onSuccess(loadResourceFile(PREFIX_JS, pJsName));
@@ -198,7 +207,7 @@ public class ResourceManager extends SingletonBase {
                 singleSubscriber.onError(e);
             }
         });
-    }
+    }*/
 
     public static Bitmap getImage(String imageName) {
         if (imageName.equals(HIDE_IMG_NAME)) {
@@ -215,14 +224,15 @@ public class ResourceManager extends SingletonBase {
         return bitmap;
     }
 
-    public static String getAbsoluteImagePath(String pImageName){
+    public static String getAbsoluteImagePath(String pImageName) {
         try {
             return String.format("file://%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
         } catch (Exception e) {
-            Log.e("getAbsolutePath",e);
+            Log.e("getAbsolutePath", e);
         }
         return null;
     }
+
     /***
      * load image into SimpleDraweeView
      * use Fresco
@@ -232,8 +242,8 @@ public class ResourceManager extends SingletonBase {
     public static void loadImageIntoView(View pView, String pImageName) {
         try {
             String pFilePath = getAbsoluteImagePath(pImageName);
-            if(!TextUtils.isEmpty(pFilePath) && pView != null){
-                ((SimpleDraweeView)pView).setImageURI(pFilePath);
+            if (!TextUtils.isEmpty(pFilePath) && pView != null) {
+                ((SimpleDraweeView) pView).setImageURI(pFilePath);
             }
         } catch (Exception e) {
             Log.e("loadImageIntoView", e);

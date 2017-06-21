@@ -1,12 +1,15 @@
 package vn.com.zalopay.wallet.business.webview.atm;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 
 public class BankWebView extends PaymentWebView {
@@ -49,5 +52,15 @@ public class BankWebView extends PaymentWebView {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void runScript(String scriptContent) {
+        Log.d(this, "##### runScript: " + scriptContent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript(scriptContent, null);
+        } else {
+            loadUrl("javascript:{" + scriptContent + "}");
+        }
+    }
 
 }

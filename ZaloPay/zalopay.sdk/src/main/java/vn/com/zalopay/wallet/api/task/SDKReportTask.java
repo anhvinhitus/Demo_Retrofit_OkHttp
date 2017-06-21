@@ -24,7 +24,6 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
     protected String mBankCode;
     protected String mException;
     protected int mExInfo;
-    protected UserInfo mUserInfo;
 
     public SDKReportTask(UserInfo pUserInfo, int pExInfo, String... pParams) {
         super(pUserInfo);
@@ -54,16 +53,6 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
      */
     public static void makeReportError(UserInfo pUserInfo, int pCode, String... pParams) {
         BaseTask baseRequest = new SDKReportTask(pUserInfo, pCode, pParams);
-        baseRequest.makeRequest();
-    }
-
-    /***
-     * overlap function
-     *
-     * @param pParams [transid,exception,bankcode]
-     */
-    public static void makeReportError(UserInfo pUserInfo, String... pParams) {
-        BaseTask baseRequest = new SDKReportTask(pUserInfo, pParams);
         baseRequest.makeRequest();
     }
 
