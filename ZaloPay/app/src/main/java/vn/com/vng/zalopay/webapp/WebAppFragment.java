@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +17,9 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -25,6 +29,7 @@ import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -93,6 +98,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
         mPresenter.loadUrl(originalUrl);
+        checkRegex(originalUrl);
     }
 
     protected void onClickRetryWebView() {
@@ -194,6 +200,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @Override
     public void setRefreshing(boolean setRefresh) {
 
+    }
+
+    @Override
+    public void clearCached() {
+        webView.clearCache(true);
     }
 
     public void showError(String message) {
@@ -309,6 +320,21 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
         mBottomSheetDialog.dismiss();
         mBottomSheetDialog = null;
+    }
+
+        private void checkRegex(String url) {
+//        url.matches("https://");
+        String regex = TextUtils.join("|", ConfigUtil.allowUrls());
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(url);
+
+        while (matcher.find()) {
+            System.out.println("URL: " + url);
+            System.out.println("Full match: " + matcher.group(0));
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                System.out.println("Group " + i + ": " + matcher.group(i));
+            }
+        }
     }
 }
 

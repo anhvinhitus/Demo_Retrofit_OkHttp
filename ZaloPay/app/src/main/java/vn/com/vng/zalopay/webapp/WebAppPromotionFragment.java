@@ -254,6 +254,11 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
         refreshLayout.setRefreshing(setRefresh);
     }
 
+    @Override
+    public void clearCached() {
+        webView.clearCache(true);
+    }
+
     public void showError(String message) {
         showErrorDialog(message, getString(R.string.txt_close), null);
     }

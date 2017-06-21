@@ -32,4 +32,6 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
     void setHiddenTabBar(boolean hide);
 
     void setRefreshing(boolean setRefresh);
+
+    void clearCached();
 }

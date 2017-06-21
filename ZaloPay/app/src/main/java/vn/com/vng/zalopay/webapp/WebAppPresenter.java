@@ -165,8 +165,8 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
                 Timber.d("WebLoading progress: %s", progress);
                 mView.updateLoadProgress(progress);
 
-                if (progress == 100) {
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    if (progress == 100) {
                         String title = view.getTitle();
                         setReceivedTitleStatus(view, title);
                     }
@@ -349,6 +349,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> implements W
         mView.hideError();
         mView.dismissBottomSheet();
         mView.setRefreshing(false);
+        mView.clearCached();
     }
 
     public boolean onBackPressed() {
