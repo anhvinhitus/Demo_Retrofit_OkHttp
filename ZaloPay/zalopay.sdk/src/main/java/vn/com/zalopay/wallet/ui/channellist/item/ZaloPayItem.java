@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,11 +68,9 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
     }
 
     public void renderBalance(ViewHolder holder) {
-        boolean hasBalance = userInfo.balance > 0;
-        if (hasBalance) {
-            holder.balance_textview.setText(StringUtil.formatVnCurrence(String.valueOf(userInfo.balance)));
-        }
-        holder.balance_linearlayout.setVisibility(hasBalance ? View.VISIBLE : View.GONE);
+        long balance = userInfo.balance;
+        balance = balance > 0 ? balance : 0;
+        holder.balance_textview.setText(StringUtil.formatVnCurrence(String.valueOf(balance)));
     }
 
     public void renderBalanceError(ZaloPayItem.ViewHolder holder, String warningDesc) {

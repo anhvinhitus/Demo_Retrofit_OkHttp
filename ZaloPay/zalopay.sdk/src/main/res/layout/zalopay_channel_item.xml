@@ -32,9 +32,9 @@
 
     <LinearLayout
         android:id="@+id/name_fee_linearlayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
         android:layout_toLeftOf="@+id/right_linearlayout"
         android:layout_toRightOf="@+id/icon_imageview"
@@ -77,6 +77,7 @@
         <LinearLayout
             android:id="@+id/balance_linearlayout"
             android:layout_width="wrap_content"
+            android:layout_gravity="right"
             android:layout_height="wrap_content">
 
             <TextView
@@ -107,6 +108,7 @@
             android:id="@+id/balance_error_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium_small"
             android:visibility="gone"/>
