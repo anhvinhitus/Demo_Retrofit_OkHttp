@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.transaction;
 import java.util.Map;
 
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
@@ -28,7 +29,11 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     private int retryCount = 0;
     private long intervalRetry = TRANS_STATUS_DELAY_RETRY;
 
-    private Func1<StatusResponse, Boolean> shouldStop = this::shouldStop;
+    private Func1<StatusResponse, Boolean> shouldStop = statusResponse -> {
+        boolean stop = shouldStop(statusResponse);
+        running = !stop;
+        return stop;
+    };
 
     public TransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
         super(transService);
@@ -61,8 +66,11 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
 
     public Observable<StatusResponse> getStatus(Map<String, String> params) {
         return mTransService.getStatus(params)
-                .doOnSubscribe(() -> retryCount++)
-                /*.map(statusResponse -> {
+                .doOnSubscribe(() -> {
+                    retryCount ++;
+                    running = true;
+                })
+               /* .map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     //statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;

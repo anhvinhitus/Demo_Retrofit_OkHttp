@@ -35,6 +35,10 @@ public abstract class BaseFragment extends Fragment {
         onUnBound();
     }
 
+    public boolean onBackPressed() {
+        return false;
+    }
+
     protected void onArguments() {
     }
 

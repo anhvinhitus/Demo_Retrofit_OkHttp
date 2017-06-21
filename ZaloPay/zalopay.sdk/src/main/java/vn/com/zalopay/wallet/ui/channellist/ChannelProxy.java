@@ -40,6 +40,7 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -491,6 +492,13 @@ public class ChannelProxy extends SingletonBase {
         mRequestApi = getTransStatusAppTransRequest();
         return ((StatusByAppTrans) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
+                .doOnNext(statusResponse -> {
+                    try {
+                        getView().setTitle(GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                })
                 .subscribe(appTransStatusSubscriber, appTransStatusException);
     }
 
@@ -704,6 +712,18 @@ public class ChannelProxy extends SingletonBase {
             updatePasswordOnSuccess();
             moveToResultScreen();
             Log.d(this, "trans success from notification");
+        }
+    }
+
+    public
+    @OrderState
+    int orderProcessing() {
+        if (mRequestApi instanceof SubmitOrder && mRequestApi.isRunning()) {
+            return OrderState.SUBMIT;
+        } else if ((mRequestApi instanceof TransStatus || mRequestApi instanceof StatusByAppTrans) && mRequestApi.isRunning()) {
+            return OrderState.QUERY_STATUS;
+        } else {
+            return OrderState.NO_STATUS;
         }
     }
 }

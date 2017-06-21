@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -67,6 +68,23 @@ public abstract class BaseActivity extends AppCompatActivity {
                 SingletonLifeCircleManager.disposeAll();
             }
         }
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        Fragment activeFragment = getActiveFragment();
+        if (activeFragment instanceof BaseFragment) {
+            if (((BaseFragment) activeFragment).onBackPressed()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    protected Fragment getActiveFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     @Override

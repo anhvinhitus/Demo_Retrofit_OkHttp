@@ -41,6 +41,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -66,7 +67,6 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 
@@ -194,6 +194,21 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     selectChannelFromPopup(data);
                     break;
             }
+        }
+    }
+
+    public boolean onBackPressed(){
+        Log.d(this,"onBackPressed");
+        if(mChannelProxy == null){
+            return false;
+        }
+        @OrderState int orderState = mChannelProxy.orderProcessing();
+        switch (orderState){
+            case OrderState.SUBMIT:
+            case OrderState.QUERY_STATUS:
+                return true;
+            default:
+                return false;
         }
     }
 
