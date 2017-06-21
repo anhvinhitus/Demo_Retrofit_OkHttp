@@ -98,7 +98,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
         mPresenter.loadUrl(originalUrl);
-        checkRegex(originalUrl);
     }
 
     protected void onClickRetryWebView() {
@@ -320,21 +319,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
         mBottomSheetDialog.dismiss();
         mBottomSheetDialog = null;
-    }
-
-        private void checkRegex(String url) {
-//        url.matches("https://");
-        String regex = TextUtils.join("|", ConfigUtil.allowUrls());
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-        final Matcher matcher = pattern.matcher(url);
-
-        while (matcher.find()) {
-            System.out.println("URL: " + url);
-            System.out.println("Full match: " + matcher.group(0));
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                System.out.println("Group " + i + ": " + matcher.group(i));
-            }
-        }
     }
 }
 
