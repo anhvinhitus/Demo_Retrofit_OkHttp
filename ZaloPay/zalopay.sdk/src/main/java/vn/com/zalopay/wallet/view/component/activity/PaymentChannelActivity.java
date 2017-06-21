@@ -75,7 +75,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
      */
     private View.OnClickListener mOnClickExitListener = v -> {
         //get status again if user back when payment in bank's site
-        if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
+        if (getAdapter() != null && !getAdapter().isFinalScreen() && getAdapter().isCardFlowWeb() &&
                 (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
             confirmQuitOrGetStatus();
             return;
@@ -441,7 +441,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             appName = appInfo != null ? appInfo.appname : null;
         }
         renderAppInfo(appName);
-        renderItemDetail();
+        try {
+            renderItemDetail();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     private void renderDesc(String pDesc) {
@@ -469,7 +473,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         setVisible(R.id.order_amount_total_linearlayout, hasAmount);
     }
 
-    private void renderItemDetail() {
+    private void renderItemDetail() throws Exception {
         List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
         renderDynamicItemDetail(findViewById(R.id.orderinfo_module), items);
     }

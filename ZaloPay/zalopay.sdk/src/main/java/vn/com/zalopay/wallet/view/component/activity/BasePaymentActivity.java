@@ -95,7 +95,6 @@ import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
@@ -112,7 +111,6 @@ import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
@@ -656,6 +654,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception ignored) {
         }
     }
+
     public void setView(int pId, boolean pIsVisible) {
         View view = findViewById(pId);
         if (view != null) {
@@ -955,7 +954,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    protected void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) {
+    protected void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) throws Exception {
         List<View> views = genDynamicItemDetail(getApplicationContext(), nameValuePairList);
         boolean hasView = views != null && views.size() > 0;
         LinearLayout stubView = (LinearLayout) viewContainer.findViewById(R.id.item_detail_linearlayout);
@@ -967,7 +966,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setVisible(R.id.item_detail_linearlayout, hasView);
     }
 
-    private void renderTransDetail(View viewContainer, String pTransID, AbstractOrder order, String appName) {
+    private void renderTransDetail(View viewContainer, String pTransID, AbstractOrder order, String appName) throws Exception {
         //service name
         boolean hasAppName = !TextUtils.isEmpty(appName);
         TextView appname_txt = (TextView) viewContainer.findViewById(R.id.appname_txt);
@@ -1040,7 +1039,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         ViewStub success_trans_detail_stub = (ViewStub) findViewById(R.id.success_trans_detail_stub);
         if (success_trans_detail_stub != null) {
             View trans_detail_view = success_trans_detail_stub.inflate();
-            renderTransDetail(trans_detail_view, pTransID, order, appName);
+            try {
+                renderTransDetail(trans_detail_view, pTransID, order, appName);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
         //center title toolbar
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
@@ -1070,7 +1073,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         ViewStub fail_trans_detail_stub = (ViewStub) findViewById(R.id.fail_trans_detail_stub);
         if (fail_trans_detail_stub != null) {
             View trans_detail_view = fail_trans_detail_stub.inflate();
-            renderTransDetail(trans_detail_view, pTransID, order, appName);
+            try {
+                renderTransDetail(trans_detail_view, pTransID, order, appName);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
         // The inform text would be set from server
         if (statusResponse != null) {
