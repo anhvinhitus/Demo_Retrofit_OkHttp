@@ -165,6 +165,6 @@
     <dimen name="bank_support_selection_maintain_notice">11sp</dimen>
 
     <!-- Override default bottom navigation view title size (trick to remove zoom out size animation) -->
-    <dimen name="design_bottom_navigation_text_size" tools:override="true">13sp</dimen>
-    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">13sp</dimen>
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
 </resources>
