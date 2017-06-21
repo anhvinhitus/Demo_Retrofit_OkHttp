@@ -228,7 +228,7 @@ public class AdapterBankCard extends AdapterBase {
                     showTransactionFailView(mResponseStatus.getMessage());
                     releaseClickSubmit();
                 } else if (shouldCheckStatusAgain()) {
-                    Log.d(this, "===continue get status because mResponseStatus=NULL after authen payer===");
+                    Log.d(this, "continue get status because response is null after authen payer");
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
                     showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
@@ -252,16 +252,13 @@ public class AdapterBankCard extends AdapterBase {
                     showTransactionFailView(failMessage);
                     showProgressBar(false, null);
                 }
-
                 //get website content and send to server
                 getWebViewProcessor().getSiteContent();
             }
             //flow webview parse website
             else if (pEventType == EEventType.ON_PAYMENT_COMPLETED) {
                 mOtpEndTime = System.currentTimeMillis();
-
                 BaseResponse response = (BaseResponse) pAdditionParams[0];
-
                 if (response.returncode == ParseWebCode.ATM_VERIFY_OTP_SUCCESS) {
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
@@ -270,7 +267,6 @@ public class AdapterBankCard extends AdapterBase {
             }
             //render webview flow
             else if (pEventType == EEventType.ON_REQUIRE_RENDER) {
-
                 if (isFinalScreen()) {
                     Log.d(this, "EEventType.ON_REQUIRE_RENDER but in final screen now");
                     return null;
@@ -292,13 +288,11 @@ public class AdapterBankCard extends AdapterBase {
                         showTransactionFailView(message);
                         return null;
                     }
-
                     numberRetryCaptcha++;
-
                     ((BankCardGuiProcessor) getGuiProcessor()).setCaptchaImage(response.otpimg, response.otpimgsrc);
                 }
                 //vietcombank have 2 account on 1 card.
-                if (response != null && !TextUtils.isEmpty(response.accountList)) {
+                if (!TextUtils.isEmpty(response.accountList)) {
                     ArrayList<String> accountList = new ArrayList<>();
                     try {
                         for (String accountName : response.accountList.split(Constants.COMMA)) {
@@ -316,14 +310,10 @@ public class AdapterBankCard extends AdapterBase {
                         mWebViewProcessor.hit();
                     } else {
                         //SHOW SELECTION ACCOUNT LIST
-
                         mPageName = PAGE_SELECTION_ACCOUNT_BANK;
                         getActivity().renderByResource();
-
                         ((BankCardGuiProcessor) getGuiProcessor()).showAccountList(accountList);
-
                         showProgressBar(false, null);
-
                         return null;
                     }
                 }
@@ -332,14 +322,11 @@ public class AdapterBankCard extends AdapterBase {
                 if (pAdditionParams.length > 1) {
                     mPageName = PAGE_COVER_BANK_AUTHEN;
                     getActivity().renderByResource();
-
                     mPageName = (String) pAdditionParams[1];
-
                     getActivity().renderByResource(response.staticView, response.dynamicView);
                     getGuiProcessor().checkEnableSubmitButton();
 
                 }
-
                 if (!response.isError()) {
                     if (!TextUtils.isEmpty(response.info)) {
                         showDialog(GlobalData.getStringResource(response.info));
@@ -365,20 +352,16 @@ public class AdapterBankCard extends AdapterBase {
                 }
 
                 //update top info
-                getActivity().showOrderInfo();
-
+                getActivity().visibleOrderInfo(false);
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();
-
                     getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
                 }
-
                 if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
                     mCaptchaEndTime = System.currentTimeMillis();
                     //request permission read/view sms on android 6.0+
                     requestReadOtpPermission();
-
                     getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
                 }
 
@@ -406,16 +389,13 @@ public class AdapterBankCard extends AdapterBase {
                 }
 
                 showProgressBar(false, null);
-
                 if (getActivity().getActivityRender() != null) {
                     getActivity().getActivityRender().renderKeyBoard();
                 }
             }
         } catch (Exception ex) {
             Log.e(this, ex);
-
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
-
         }
         return null;
     }
