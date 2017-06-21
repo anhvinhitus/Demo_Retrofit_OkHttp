@@ -9,6 +9,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/layout_broder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_gray_border_card"

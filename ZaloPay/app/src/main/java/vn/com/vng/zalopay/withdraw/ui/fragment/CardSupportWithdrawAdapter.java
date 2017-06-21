@@ -5,8 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
@@ -89,8 +88,11 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw,
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-         @BindView(R.id.imBankIcon)
+        @BindView(R.id.imBankIcon)
         SimpleDraweeView mImBankIcon;
+        @BindView(R.id.layout_broder)
+        LinearLayout mLinearLayout;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -98,10 +100,10 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw,
 
         void bindView(BankSupportWithdraw card) {
             if (card == null || card.mBankConfig == null) {
-                mImBankIcon.setVisibility(View.INVISIBLE);
+                mLinearLayout.setVisibility(View.INVISIBLE);
                 return;
             } else {
-                mImBankIcon.setVisibility(View.VISIBLE);
+                mLinearLayout.setVisibility(View.VISIBLE);
 
             }
             mImBankIcon.setImageBitmap(ResourceManager.getImage(card.mBankConfig.bankLogo));
