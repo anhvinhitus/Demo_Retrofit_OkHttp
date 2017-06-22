@@ -87,7 +87,6 @@ public class ChannelProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
-    private Action1<StatusResponse> transStatusSubscriber = this::processStatus;
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -106,6 +105,7 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
         }
     };
+    private Action1<StatusResponse> transStatusSubscriber = this::processStatus;
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
             markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
@@ -343,10 +343,7 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void setError(String pError) {
-        if (mPassword != null) {
-            mPassword.setErrorMessage(pError);
-            mPassword.unlock();
-        }
+        hideLoading(pError);
     }
 
     private synchronized void moveToResultScreen() {
@@ -416,6 +413,34 @@ public class ChannelProxy extends SingletonBase {
         return false;
     }
 
+    private void showLoading(String pMessage) {
+        try {
+            if (mPassword != null) {
+                mPassword.showLoading(true);
+                mPassword.lock();
+                getView().setTitle(pMessage);
+            } else {
+                getView().showLoading(pMessage);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+    private void hideLoading(String pError) {
+        try {
+            if (mPassword != null) {
+                mPassword.setErrorMessage(pError);
+                mPassword.unlock();
+            } else {
+                getView().hideLoading();
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+
     private void submitOrder(String pHashPassword) {
         try {
             if (getPresenter().networkOffline()) {
@@ -423,8 +448,6 @@ public class ChannelProxy extends SingletonBase {
                 return;
             }
             Log.d(this, "start submit order");
-            mPassword.showLoading(true);
-            mPassword.lock();
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
             Subscription subscription =
@@ -435,12 +458,7 @@ public class ChannelProxy extends SingletonBase {
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
                             .doOnNext(statusResponse -> {
-                                try {
-                                    mPassword.showLoading(true);
-                                    getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
-                                } catch (Exception e) {
-                                    Log.e(this, e);
-                                }
+                                showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
                             })
                             .subscribe(submitOrderSubscriber, submitOrderException);
             getPresenter().addSubscription(subscription);
