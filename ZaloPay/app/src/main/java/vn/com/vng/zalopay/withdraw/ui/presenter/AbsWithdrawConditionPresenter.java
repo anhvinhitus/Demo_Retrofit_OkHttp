@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -33,11 +32,6 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
     }
 
     public abstract Activity getActivity();
-
-    protected boolean isValidProfile() {
-        User user = mUser;
-        return !(user == null || user.profilelevel < BuildConfig.level_allow_withdraw);
-    }
 
     protected void validLinkCard(final IListenerValid listenerValid) {
         Timber.d("start get bank support");

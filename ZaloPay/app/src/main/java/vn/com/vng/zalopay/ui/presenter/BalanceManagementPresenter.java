@@ -22,9 +22,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -47,7 +47,6 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
                                BalanceStore.Repository balanceRepository,
                                Navigator navigator) {
         super(user);
-
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
         this.mNavigator = navigator;
@@ -65,16 +64,15 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         super.detachView();
     }
 
-    private void updateUserInfo() {
-        mView.updateUserInfo(mUser);
-    }
+    public void loadView() {
+        boolean isEnableDeposit = CShareDataWrapper.isEnableDeposite();
+        if (mView == null) {
+            return;
+        }
 
-    @Override
-    public void resume() {
-        super.resume();
-        mView.updateBalance(mBalanceRepository.currentBalance());
-        updateBalance();
-        updateUserInfo();
+        mView.showDeposit(isEnableDeposit);
+        mView.setUser(mUser);
+        getBalance();
     }
 
     private void registerEvent() {
@@ -99,7 +97,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     public void onEventMainThread(ChangeBalanceEvent event) {
         Timber.d("onEventMainThread ChangeBalanceEvent");
         if (mView != null) {
-            mView.updateBalance(event.balance);
+            mView.setBalance(event.balance);
         }
     }
 
@@ -174,7 +172,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         if (mView == null) {
             return null;
         }
-        return mView.getActivity();
+        return (Activity) mView.getContext();
     }
 
     private int getProfileLevel() {
@@ -207,15 +205,24 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
 
                     @Override
                     public void onOKevent() {
-                        mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                        if (mView != null) {
+                            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                        }
                     }
                 });
     }
 
-    private void updateBalance() {
-        Subscription subscription = mBalanceRepository.updateBalance()
+    private void getBalance() {
+        Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (mView != null) {
+                            mView.setBalance(ConvertHelper.unboxValue(aLong, 0));
+                        }
+                    }
+                });
         mSubscription.add(subscription);
     }
 

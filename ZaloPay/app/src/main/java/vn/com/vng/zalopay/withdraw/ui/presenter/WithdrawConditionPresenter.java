@@ -30,7 +30,7 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
             @Override
             public void onSuccess(List<BankConfig> list, boolean isValidLinkCard, boolean isValidLinkAccount) {
                 hideLoading();
-                if (isValidProfile() && (isValidLinkCard || isValidLinkAccount)) {
+                if ((isValidLinkCard || isValidLinkAccount)) {
                     if (mView != null && mView.getActivity() != null) {
                         mNavigator.startWithdrawActivityAndFinish(mView.getActivity());
                     }

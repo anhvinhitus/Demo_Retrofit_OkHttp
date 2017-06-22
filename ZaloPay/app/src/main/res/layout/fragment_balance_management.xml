@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context=".ui.fragment.BalanceManagementFragment">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background"
+              android:orientation="vertical"
+              tools:context=".ui.fragment.BalanceManagementFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             app:iconTopColor="@color/white"
             app:iconTopName="@string/header_overbalance"
             app:iconTopPadding="@dimen/spacing.medium.m"
-            app:iconTopSize="@dimen/font_size_balance_manager_header" />
+            app:iconTopSize="@dimen/font_size_balance_manager_header"/>
 
         <TextView
             android:id="@+id/tv_balance"
@@ -36,7 +36,7 @@
             android:textColor="@color/white"
             android:textSize="34sp"
             android:textStyle="normal"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"/>
     </LinearLayout>
 
     <LinearLayout
@@ -53,7 +53,7 @@
             style="@style/TextView.Item.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/account_name" />
+            android:text="@string/account_name"/>
 
         <TextView
             android:id="@+id/tvAccountName"
@@ -63,19 +63,19 @@
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/menu_font_ic_green"
                 app:iconName="@string/notify_1_receivemoney"
-                app:iconSize="@dimen/font_size_balance_manager_deposit" />
+                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -116,14 +116,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start|center_vertical"
-                    android:text="@string/txt_deposit" />
+                    android:text="@string/txt_deposit"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@string/balance_management_deposit_description"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
 
             <com.zalopay.ui.widget.IconFont
@@ -134,7 +134,7 @@
                 android:layout_centerVertical="true"
                 android:textColor="@color/arrow_right"
                 app:iconName="@string/general_arrowright"
-                app:iconSize="@dimen/font_size_arrow_right" />
+                app:iconSize="@dimen/font_size_arrow_right"/>
         </RelativeLayout>
 
         <View
@@ -142,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
             android:layout_marginLeft="66dp"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
 
         <RelativeLayout
             android:id="@+id/balance_management_rl_withdraw"
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/menu_font_ic_yellow"
                 app:iconName="@string/notify_1_withdraw"
-                app:iconSize="@dimen/font_size_balance_manager_withdraw" />
+                app:iconSize="@dimen/font_size_balance_manager_withdraw"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -177,14 +177,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start|center_vertical"
-                    android:text="@string/txt_withdraw" />
+                    android:text="@string/txt_withdraw"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@string/balance_management_withdraw_description"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
 
             <com.zalopay.ui.widget.IconFont
@@ -195,13 +195,13 @@
                 android:layout_centerVertical="true"
                 android:textColor="@color/arrow_right"
                 app:iconName="@string/general_arrowright"
-                app:iconSize="@dimen/font_size_arrow_right" />
+                app:iconSize="@dimen/font_size_arrow_right"/>
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
     </LinearLayout>
 
     <LinearLayout
@@ -210,7 +210,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center_horizontal|bottom"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/text.support.margin.normal">
+        android:paddingBottom="16dp">
 
         <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/tvQuestion"
@@ -221,6 +221,6 @@
             app:iconLeftColor="@color/text_green"
             app:iconLeftName="@string/general_question"
             app:iconLeftPadding="@dimen/spacing.small"
-            app:iconLeftSize="@dimen/font_size_balance_manager_question" />
+            app:iconLeftSize="@dimen/font_size_balance_manager_question"/>
     </LinearLayout>
 </LinearLayout>

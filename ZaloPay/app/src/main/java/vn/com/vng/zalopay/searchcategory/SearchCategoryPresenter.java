@@ -291,46 +291,44 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         if (isMaintainWithdraw()) {
             return;
         }
-        if (!isValidProfile()) {
-            mNavigator.startWithdrawConditionActivity(mView.getContext());
-        } else {
-            validLinkCard(new AbsWithdrawConditionPresenter.IListenerValid() {
-                @Override
-                public void onSuccess(List<BankConfig> list,
-                                      boolean isValidLinkCard,
-                                      boolean isValidLinkAccount) {
-                    if (mView == null || mView.getContext() == null) {
-                        return;
-                    }
-                    if (isValidLinkCard || isValidLinkAccount) {
-                        mNavigator.startWithdrawActivity(mView.getContext());
-                    } else {
-                        mNavigator.startWithdrawConditionActivity(mView.getContext());
-                    }
+
+        validLinkCard(new AbsWithdrawConditionPresenter.IListenerValid() {
+            @Override
+            public void onSuccess(List<BankConfig> list,
+                                  boolean isValidLinkCard,
+                                  boolean isValidLinkAccount) {
+                if (mView == null || mView.getContext() == null) {
+                    return;
                 }
-
-                @Override
-                public void onError(String error) {
-                    if (mView == null || mView.getContext() == null) {
-                        return;
-                    }
-                    mView.showConfirmDialog(error,
-                            mView.getContext().getString(R.string.txt_retry),
-                            mView.getContext().getString(R.string.txt_close),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-
-                                }
-
-                                @Override
-                                public void onOKevent() {
-                                    startWithdrawActivity();
-                                }
-                            });
+                if (isValidLinkCard || isValidLinkAccount) {
+                    mNavigator.startWithdrawActivity(mView.getContext());
+                } else {
+                    mNavigator.startWithdrawConditionActivity(mView.getContext());
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onError(String error) {
+                if (mView == null || mView.getContext() == null) {
+                    return;
+                }
+                mView.showConfirmDialog(error,
+                        mView.getContext().getString(R.string.txt_retry),
+                        mView.getContext().getString(R.string.txt_close),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                startWithdrawActivity();
+                            }
+                        });
+            }
+        });
+
     }
 
     private void startServiceWebViewActivity(long appId, String webViewUrl) {
