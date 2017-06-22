@@ -1,18 +1,21 @@
 package vn.com.vng.zalopay.domain.model;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by chucvv on 6/22/17.
  */
 
 public class Item {
-    public int transtype;
-    public String ext;
+    @SerializedName("transtype")
+    public int mTranstype;
+    @SerializedName("ext")
+    public String mExt;
 
     public Item(int transtype, String ext) {
-        this.transtype = transtype;
-        this.ext = ext;
+        this.mTranstype = transtype;
+        this.mExt = ext;
     }
 
     public static String tranferExtFormat() {
