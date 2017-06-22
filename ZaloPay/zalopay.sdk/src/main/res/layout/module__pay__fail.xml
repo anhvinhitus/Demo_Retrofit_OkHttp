@@ -10,7 +10,8 @@
         android:layout_width="@dimen/sdk_ic_fail_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/sdk_margin_top_icon"
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom_large"
+        android:layout_marginTop="@dimen/sdk_margin_top_bottom_large"
         app:actualImageScaleType="centerInside"
         app:viewAspectRatio="1" />
 
@@ -18,9 +19,9 @@
         android:id="@+id/sdk_trans_fail_reason_message_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/sdk_margin_left_right"
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
         android:layout_marginRight="@dimen/sdk_margin_left_right"
-        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
         android:gravity="center"
         android:textColor="@color/text_color_bold"
         android:textSize="@dimen/zpw_text_size_medium" />
@@ -29,28 +30,32 @@
         android:id="@+id/sdk_sugguest_action_message_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/sdk_margin_left_right"
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
         android:layout_marginRight="@dimen/sdk_margin_left_right"
-        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
         android:gravity="center"
         android:textColor="@color/text_color_dl"
         android:textSize="@dimen/zpw_text_size_medium"
-        android:visibility="gone"/>
+        android:textStyle="italic"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom_large"
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
         android:layout_marginRight="@dimen/sdk_margin_left_right"
-        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
+        android:layout_marginTop="@dimen/sdk_margin_left_right"
         android:background="@drawable/dash_line" />
 
     <ViewStub
         android:id="@+id/fail_trans_detail_stub"
-        android:inflatedId="@+id/fail_trans_detail"
-        android:layout="@layout/module__trans__detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:inflatedId="@+id/fail_trans_detail"
+        android:layout="@layout/module__trans__detail" />
 
     <RelativeLayout
         android:id="@+id/zpw_payment_fail_rl_update_info"
@@ -98,10 +103,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/zpw_bg_top_bottom_side_border"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="@dimen/padding_xlarge"
         android:paddingLeft="@dimen/padding_large"
         android:paddingRight="@dimen/padding_large"
-        android:paddingTop="@dimen/padding_xlarge"
-        android:paddingBottom="@dimen/padding_xlarge">
+        android:paddingTop="@dimen/padding_xlarge">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/zpw_payment_fail_iv_support"

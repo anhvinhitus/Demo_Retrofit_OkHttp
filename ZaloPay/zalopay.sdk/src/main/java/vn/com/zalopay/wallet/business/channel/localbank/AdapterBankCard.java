@@ -36,18 +36,12 @@ import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.dialog.MapBankPopup;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
-import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SELECTION_ACCOUNT_BANK;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
-import static vn.com.zalopay.wallet.constants.Constants.USER_LEVEL_EXTRA;
 
 public class AdapterBankCard extends AdapterBase {
     private PaymentWebViewClient mWebViewProcessor = null;

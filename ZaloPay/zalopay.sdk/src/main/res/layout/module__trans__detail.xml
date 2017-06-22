@@ -1,25 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/sdk_margin_left_right"
-    android:layout_marginRight="@dimen/sdk_margin_left_right"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/appname_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sdk_margin_top_bottom"
-        android:orientation="horizontal"
-        android:padding="@dimen/sdk_margin_left_right">
+        android:layout_marginBottom="@dimen/sdk_margin_left_right"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/sdk_appname_title"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
@@ -40,27 +35,21 @@
         android:id="@+id/item_detail_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/sdk_margin_left_right"
-        android:paddingRight="@dimen/sdk_margin_left_right">
+        android:orientation="vertical">
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/sdk_margin_top_bottom"
-        android:paddingLeft="@dimen/sdk_margin_left_right"
-        android:paddingRight="@dimen/sdk_margin_left_right">
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/sdk_order_fee_title"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
@@ -71,8 +60,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/sdk_order_fee_free"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
@@ -81,18 +68,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/sdk_margin_top_bottom"
-        android:paddingLeft="@dimen/sdk_margin_left_right"
-        android:paddingRight="@dimen/sdk_margin_left_right">
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/sdk_trans_time_title"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
@@ -103,8 +86,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
     </RelativeLayout>
@@ -113,18 +94,14 @@
         android:id="@+id/sdk_trans_id_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/sdk_margin_top_bottom"
-        android:paddingLeft="@dimen/sdk_margin_left_right"
-        android:paddingRight="@dimen/sdk_margin_left_right">
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/sdk_trans_id_title"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
@@ -135,8 +112,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
     </RelativeLayout>

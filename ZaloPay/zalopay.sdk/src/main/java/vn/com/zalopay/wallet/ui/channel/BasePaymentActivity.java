@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.component.activity;
+package vn.com.zalopay.wallet.ui.channel;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -74,7 +72,6 @@ import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.dao.CFontManager;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -101,17 +98,17 @@ import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
-import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
-import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_LINKACC_SUCCESS;
+import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
@@ -990,7 +987,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         TextView transaction_time_txt = (TextView) viewContainer.findViewById(R.id.transaction_time_txt);
         transaction_time_txt.setText(SdkUtils.convertDateTime(paymentTime));
         //trans fee
-        String transFee = order != null && order.fee > 0 ? StringUtil.formatVnCurrence(String.valueOf(order.fee)) :
+        String transFee = order != null && order.fee > 0 ? String.format(getResources().getString(R.string.sdk_fee_format), StringUtil.formatVnCurrence(String.valueOf(order.fee))) :
                 getResources().getString(R.string.sdk_order_fee_free);
         TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
         order_fee_txt.setText(transFee);
@@ -1006,6 +1003,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
             setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
+            ((TextView)findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
         if (!hasAmount || mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
             setVisible(R.id.success_order_amount_total_linearlayout, false);
@@ -1187,49 +1185,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 submitButton.requestLayout();
             }
             Log.d(this, "setMarginSubmitButtonTop  Tab");
-        }
-    }
-
-    /***
-     * apply font for all view on screen.
-     */
-    protected void applyFont() {
-        ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
-        overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
-        applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
-    }
-
-    public void applyFont(View pView, String pFontName) {
-        Typeface tf = CFontManager.getInstance().loadFont(pFontName);
-        if (tf != null) {
-            if (pView instanceof TextView)
-                ((TextView) pView).setTypeface(tf);
-            else if (pView instanceof VPaymentDrawableEditText)
-                ((VPaymentDrawableEditText) pView).setTypeface(tf);
-        }
-    }
-
-    public void overrideFonts(final View pView, String pFontName) {
-        try {
-            if (pView instanceof ViewGroup) {
-                ViewGroup vg = (ViewGroup) pView;
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    View child = vg.getChildAt(i);
-                    overrideFonts(child, pFontName);
-                }
-            } else if (pView.getId() != R.id.front_card_number &&
-                    ((pView instanceof TextView) || pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)) {
-                Typeface typeFace = CFontManager.getInstance().loadFont(pFontName);
-                if (typeFace != null) {
-                    if (pView instanceof TextView) {
-                        ((TextView) pView).setTypeface(typeFace);
-                    } else {
-                        ((VPaymentEditText) pView).setTypeface(typeFace);
-                    }
-                }
-            }
-        } catch (Exception ignored) {
         }
     }
 

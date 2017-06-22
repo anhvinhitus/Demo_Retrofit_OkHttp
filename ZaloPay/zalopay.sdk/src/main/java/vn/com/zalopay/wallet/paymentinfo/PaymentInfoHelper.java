@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;

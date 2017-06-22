@@ -28,8 +28,8 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
 
 /***

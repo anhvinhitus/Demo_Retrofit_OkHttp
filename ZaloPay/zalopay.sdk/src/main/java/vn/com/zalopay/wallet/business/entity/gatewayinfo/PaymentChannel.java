@@ -17,15 +17,6 @@ public class PaymentChannel extends MiniPmcTransType {
         super(channel);
     }
 
-    public PaymentChannel clone() {
-        PaymentChannel paymentChannel = new PaymentChannel(this);
-        paymentChannel.channel_icon = this.channel_icon;
-        paymentChannel.channel_next_icon = this.channel_next_icon;
-        paymentChannel.l4no = this.l4no;
-        paymentChannel.f6no = this.f6no;
-        return paymentChannel;
-    }
-
     public boolean isMapValid() {
         return !TextUtils.isEmpty(f6no) && !TextUtils.isEmpty(l4no);
     }

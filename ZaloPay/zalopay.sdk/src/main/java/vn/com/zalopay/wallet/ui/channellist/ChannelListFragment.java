@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,7 +27,9 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -35,6 +38,7 @@ import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
+import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 /**
@@ -73,6 +77,14 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         return fragment;
     }
 
+    /***
+     * apply font bold for some view
+     */
+    private void makeFont() {
+        applyFont(confirm_button, GlobalData.getStringResource(RS.string.zpw_font_regular));
+        applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
+    }
+
     @Override
     public boolean onBackPressed() {
         return mPresenter.onBackPressed();
@@ -107,6 +119,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
         setupRecyclerView();
+
+        makeFont();
     }
 
     @Override
@@ -214,6 +228,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         if (hasAmount) {
             String txtAmount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
             order_amount_txt.setText(txtAmount);
+            order_amount_txt.setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
         }
         order_amount_linearlayout.setVisibility(hasAmount ? View.VISIBLE : View.GONE);
     }

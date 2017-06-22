@@ -19,7 +19,7 @@
         android:theme="@style/WalletTheme">
 
         <activity
-            android:name=".view.component.activity.PaymentChannelActivity"
+            android:name=".ui.channel.PaymentChannelActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

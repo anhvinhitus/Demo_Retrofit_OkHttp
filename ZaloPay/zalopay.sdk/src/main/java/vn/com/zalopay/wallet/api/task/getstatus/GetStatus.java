@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 /***
  * get transaction status class

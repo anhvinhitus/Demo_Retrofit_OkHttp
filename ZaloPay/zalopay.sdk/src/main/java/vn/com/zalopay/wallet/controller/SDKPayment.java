@@ -29,8 +29,8 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 

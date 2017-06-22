@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.component.activity;
+package vn.com.zalopay.wallet.ui.channel;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
@@ -48,6 +49,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
+import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -61,6 +63,8 @@ import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
+import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
+import static vn.com.zalopay.wallet.helper.FontHelper.overrideFont;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
     protected CountDownTimer mExpireTransTimer;
@@ -416,7 +420,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         setListener();
         getAdapter().setListener();
-        applyFont();
+
+        overrideFont((ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0));
+        applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
     private void renderOrderInfo() {

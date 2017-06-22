@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.validation.CardValidation;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {
     public static final char VERTICAL_SEPERATOR = ' ';

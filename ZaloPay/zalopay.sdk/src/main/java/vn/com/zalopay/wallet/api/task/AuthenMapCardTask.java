@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;

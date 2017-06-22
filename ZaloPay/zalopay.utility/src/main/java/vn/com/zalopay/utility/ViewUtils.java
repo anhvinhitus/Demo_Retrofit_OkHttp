@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 public class ViewUtils {
+
     public static void correctTextView(TextView textView, int desiredWidth) {
         Paint paint = new Paint();
         Rect bounds = new Rect();

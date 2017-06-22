@@ -6,9 +6,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
 

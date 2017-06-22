@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.component.activity;
+package vn.com.zalopay.wallet.ui.channel;
 
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;

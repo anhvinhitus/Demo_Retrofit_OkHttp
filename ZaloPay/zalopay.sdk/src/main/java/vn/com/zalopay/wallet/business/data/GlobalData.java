@@ -21,8 +21,8 @@ import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 /***
  * static class contain static data.

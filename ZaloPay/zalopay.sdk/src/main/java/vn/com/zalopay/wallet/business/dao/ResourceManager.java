@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Completable;
-import rx.Single;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -31,8 +30,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.view.component.activity.ActivityRendering;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.ActivityRendering;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class ResourceManager extends SingletonBase {
     public static final String CONFIG_FILE = "config.json";

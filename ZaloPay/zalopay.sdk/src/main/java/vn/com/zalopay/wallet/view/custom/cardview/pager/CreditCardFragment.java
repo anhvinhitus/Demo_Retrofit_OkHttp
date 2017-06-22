@@ -14,8 +14,8 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
 public abstract class CreditCardFragment extends Fragment {

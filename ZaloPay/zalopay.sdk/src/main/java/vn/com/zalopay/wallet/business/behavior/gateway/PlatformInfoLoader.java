@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.business.behavior.gateway;
 
 import android.text.TextUtils;
 
-import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,7 +20,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.interactor.UpversionCallback;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
     private static PlatformInfoLoader _object;

@@ -15,7 +15,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {
     public static final int FIELD_MONTH = 1;

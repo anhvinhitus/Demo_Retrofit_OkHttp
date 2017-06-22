@@ -56,7 +56,7 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -68,6 +68,7 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
+import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 
 /***
  * card processor class
@@ -1237,12 +1238,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (getViewPager() != null && !TextUtils.isEmpty(pCardNumber)) {
             try {
                 SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
-
-                getAdapter().getActivity().applyFont(getAdapter().getActivity().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
-
+                applyFont(getAdapter().getActivity().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
                 getCardNumberView().setText(pCardNumber);
                 getCardNumberView().formatText(true);
-
                 //reset other
                 getCardView().setCVV(null);
                 getCardView().setCardHolderName(null);
@@ -1270,9 +1268,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      */
     protected void onDoneTapped() {
         int errorFragmentIndex = validateInputCard();
-
-        Log.d(this, "===onDoneTapped===errorFragmentIndex=" + errorFragmentIndex);
-
         //there're no error
         if (errorFragmentIndex == -1) {
             clearHighLight();
@@ -1433,32 +1428,21 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         int currentIndex = getViewPager().getCurrentItem();
         int max = getViewPager().getAdapter().getCount();
-
-        Log.d(this, "===refreshNavigateButton===currentIndex=" + currentIndex + "===max=" + max);
-
         if (currentIndex == 0) {
             disablePrevious();
-
-            Log.d(this, "===refreshNavigateButton===mButtonPre=false");
         } else if ((max - currentIndex == 1) && mCardAdapter.hasError() > -1) {
             disableNext();
-            Log.d(this, "===refreshNavigateButton===mButtonNext=false");
         } else {
             enablePrevious();
             enableNext();
-
-            Log.d(this, "===refreshNavigateButton===true===true");
         }
     }
 
     public void showPrevious() {
-
         int currentIndex = getViewPager().getCurrentItem();
-
         if (currentIndex - 1 >= 0) {
             getViewPager().setCurrentItem(currentIndex - 1);
         }
-
         refreshNavigateButton();
     }
 
@@ -1723,7 +1707,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected void updateCardInfoAfterTextChange(String pInfo) {
         if (getCurrentFocusView() == null) {
-            Log.d(this, "===updateCardInfoAfterTextChange===getCurrentFocusView()=NULL");
             return;
         }
         if (getCurrentFocusView().getId() == R.id.edittext_localcard_name) {
@@ -1745,10 +1728,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         DCardIdentifier cardIdentifier;
         if (mPaymentInfoHelper.isCardLinkTrans()) {
             cardIdentifier = getBankCardFinder().getCardIdentifier();
-            Log.d(this, "===cardIdentifier = getBankCardFinder().getCardIdentifier()");
             if (cardIdentifier == null) {
                 cardIdentifier = getCreditCardFinder().getCardIdentifier();
-                Log.d(this, "getCreditCardFinder().getCardIdentifier()");
             }
         } else {
             cardIdentifier = getCardFinder().getCardIdentifier();
@@ -1760,9 +1741,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (TextUtils.isEmpty(pCardNumber)) {
             return false;
         }
-
         DCardIdentifier cardIdentifier = getSelectBankCardIdentifier();
-
         if (cardIdentifier != null) {
             if (cardIdentifier.isMatchMaxLengthCard(pCardNumber.length())) {
 
@@ -1774,7 +1753,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return true;
             }
         }
-
         return false;
     }
 
@@ -1785,15 +1763,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         //card number
         if (getCurrentFocusView() != null && getCurrentFocusView().getId() == R.id.edittext_localcard_number) {
             VPaymentDrawableEditText numberCard = (VPaymentDrawableEditText) getCurrentFocusView();
-
             if (!checkAutoMoveCardNumberFromBundle && numberCard.getString().length() == 16) {
                 showNext();
-
-                Log.d(this, "===autoMoveToNextFragment===checkAutoMoveCardNumberFromBundle=false");
-
                 return;
             }
-
             if (isCardLengthMatchIdentifier(numberCard.getString())) {
                 showNext();
             }
@@ -1846,38 +1819,30 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         if (getAdapter().getActivity().getCurrentFocus() instanceof VPaymentEditText) {
             VPaymentEditText currentFocusView = (VPaymentEditText) getCurrentFocusView();
-
-            Log.d(this, "===validateInputOnTextChange===currentFocusView.text=" + currentFocusView.getText().toString());
-
             //card name input
             if (currentFocusView.getId() == R.id.edittext_localcard_name && !currentFocusView.isValidInput()) {
                 showHintError(currentFocusView, GlobalData.getStringResource(RS.string.zpw_alert_cardname_wrong));
-
                 return false;
             }
             //empty or input valid
             else if (TextUtils.isEmpty(currentFocusView.getText().toString()) || (currentFocusView.isValidPattern())) {
                 clearHintError(currentFocusView);
-
                 return true;
             }
             //special case for issue day card.
             else if (currentFocusView.getId() == R.id.edittext_issue_date || currentFocusView.getId() == R.id.CreditCardExpiredDate) {
                 try {
                     VPaymentValidDateEditText cardIssueDate = (VPaymentValidDateEditText) currentFocusView;
-
                     if (cardIssueDate.isInputMaxLength()) {
                         if (cardIssueDate.isValidPattern()) {
                             clearHintError(cardIssueDate);
                             return true;
                         } else {
                             showHintError(cardIssueDate, cardIssueDate.getPatternErrorMessage());
-
                             return false;
                         }
                     } else if (mLengthBeforeChange > currentFocusView.getLength()) {
                         showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
-
                         return false;
                     }
                     disableNext();
@@ -1888,39 +1853,31 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             //user delete input
             else if (mLengthBeforeChange > currentFocusView.getLength()) {
                 showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
-
                 return false;
             }
         }
-
         return true;
     }
 
     protected boolean validCardNameWithWhiteSpace(String pCardName) {
         try {
             String newString = (pCardName.length() > 1) ? String.valueOf(pCardName.charAt(pCardName.length() - 1)) : "";
-
             //check input 2 space
             if (mLastCharacterCardName.equals(VERTICAL_SEPERATOR) && newString.equals(VERTICAL_SEPERATOR)) {
                 mLastCharacterCardName = "";
                 isInputValidWithWhiteSpace = false;
-
                 return isInputValidWithWhiteSpace;
-
             }
-
             // focus text when input text in cardNameView
             if (getCardNameView() != null && getCardNameView().isFocused()) {
                 getCardNameView().setSelection(pCardName.length());
             }
-
             mLastCharacterCardName = newString;
             lastValue = pCardName;
 
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         isInputValidWithWhiteSpace = true;
         return isInputValidWithWhiteSpace;
     }
@@ -1931,45 +1888,30 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     @Override
     public void onPageSelected(int position) {
-
-        Log.d(this, "===onPageSelected===" + position);
-
+        Log.d(this, "onPageSelecte", position);
         if (mCardAdapter == null) {
-            Log.d(this, "===mCardAdapter= null");
-
+            Log.d(this, "mCardAdapter is null");
             return;
         }
-
         if (preventNavigateIfHasError(position)) {
             return;
         }
-
         if (!validateCardNumber()) {
             return;
         }
-
         if (!validateCardDate()) {
             return;
         }
-
         if (!validateCardCVV()) {
             return;
         }
-
-
         //flip card side
         flipCardView(position);
-
         selectDot(position);
-
         updateLastPagePosition(position);
-
         refreshNavigateButton();
-
         clearHighLightOnCardView();
-
         moveCursorToLastPositionOnText(position);
-
         if (position == 1) {
             checkForSwitchChannel();
         }
@@ -1978,5 +1920,4 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     @Override
     public void onPageScrollStateChanged(int state) {
     }
-
 }

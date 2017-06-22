@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.codetail.animation.ViewAnimationUtils;
+import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
@@ -25,10 +27,9 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.ViewUtils;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
+
+import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 
 public class CreditCardView extends FrameLayout {
     private static final int TEXTVIEW_CARD_HOLDER_ID = R.id.front_card_holder_name;
@@ -86,6 +87,14 @@ public class CreditCardView extends FrameLayout {
         return mCVV;
     }
 
+    public void setCVV(String cvv) {
+        if (cvv == null) {
+            cvv = "";
+        }
+        this.mCVV = cvv;
+        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
+    }
+
     public void setCVV(int cvvInt) {
 
         if (cvvInt == 0) {
@@ -95,14 +104,6 @@ public class CreditCardView extends FrameLayout {
             setCVV(cvv);
         }
 
-    }
-
-    public void setCVV(String cvv) {
-        if (cvv == null) {
-            cvv = "";
-        }
-        this.mCVV = cvv;
-        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
     }
 
     public String getCardDate() {
@@ -164,10 +165,7 @@ public class CreditCardView extends FrameLayout {
         }
 
         paintCard();
-        if (BasePaymentActivity.getCurrentActivity() != null) {
-            ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.zpw_font_unisec));
-        }
-
+        applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.zpw_font_unisec));
         resizeFontCardNumber(mWidthCardView);
 
         a.recycle();

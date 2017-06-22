@@ -55,7 +55,7 @@ import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
 import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;

@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenPayerImpl;
-import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class AuthenPayerTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
