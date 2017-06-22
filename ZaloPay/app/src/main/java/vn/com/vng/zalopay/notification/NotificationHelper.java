@@ -50,6 +50,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.event.PreferentialNotificationEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
@@ -149,6 +150,7 @@ public class NotificationHelper {
     private void processNotification(@NonNull NotificationData notify, boolean isRecovery) {
 
         this.shouldMarkRead(notify);
+        boolean skipStorage = false;
 
         int notificationType = (int) notify.notificationtype;
         switch (notificationType) {
@@ -180,7 +182,6 @@ public class NotificationHelper {
             CShareDataWrapper.notifyTransactionFinish(notify.notificationtype, notify.transid, notify.timestamp);
         }
 
-        boolean skipStorage = false;
         this.shouldUpdateTransAndBalance(notify);
 
         switch (notificationType) {
@@ -207,6 +208,10 @@ public class NotificationHelper {
                 break;
             case NotificationType.PROMOTION:
                 postPromotion(notify);
+                break;
+            case NotificationType.PREFERENTIAL:
+                skipStorage = true;
+                showBadgePreferential();
                 break;
         }
 
@@ -583,88 +588,9 @@ public class NotificationHelper {
         mUserConfig.removeFingerprint();
     }
 
-    /*private boolean needReloadBalanceAndTransaction(NotificationData notify) {
-        if (notify == null) {
-            return false;
-        }
-        switch ((int) notify.notificationtype) {
-            case NotificationType.ORDER_PAYMENT:
-                //Reload balance & transaction when handle callback from PaymentSDK.
-                return false;
-            case NotificationType.TOPUP_WALLET:
-                //Reload balance & transaction when handle callback from PaymentSDK.
-                return false;
-            case NotificationType.ADD_BANK_CARD:
-                //Reload balance & transaction when handle callback from PaymentSDK.
-                return false;
-            case NotificationType.MONEY_TRANSFER:
-                //If anyone transfer money to me then reload.
-                //Else Reload balance & transaction when handle callback from PaymentSDK.
-                return mUser.zaloPayId.equalsIgnoreCase(notify.destuserid);
-            case NotificationType.MONEY_WITHDRAW:
-                //Reload balance & transaction when handle callback from PaymentSDK.
-                return false;
-            case NotificationType.RECEIVE_RED_PACKET:
-                return true;
-            case NotificationType.REFUND_RED_PACKET:
-                return true;
-            case NotificationType.DONATE_MONEY:
-                return true;
-            case NotificationType.RECOVERY_MONEY:
-                return true;
-            case NotificationType.MERCHANT_TRANSFER:
-                return true;
-            case NotificationType.DEPOSIT_FROM_WEB_VCB_SUCCESS:
-                return true;
-
-            //Notification Profile -> don't need reload
-            case NotificationType.UPDATE_PROFILE_LEVEL_OK:
-                return false;
-            case NotificationType.UPDATE_PROFILE_LEVEL_FAILED:
-                return false;
-            case NotificationType.UPLOAD_PROFILE_LEVEL_3:
-                return false;
-
-            case NotificationType.REFUND_TRANSACTION:
-                return true;
-            case NotificationType.REFUND_TRANSACTION_BANK:
-                //Yêu cầu hoàn tiền đang được ngân hàng xử lý
-                return true;
-            case NotificationType.RETRY_TRANSACTION:
-                //Giao dịch của bạn đã retry thành công
-                return true;
-
-            case NotificationType.APP_P2P_NOTIFICATION:
-                //Balance & transaction not change
-                return false;
-            case NotificationType.RESET_PAYMENT_PASSWORD:
-                //Balance & transaction not change
-                return false;
-
-            case NotificationType.NOTIFICATION_RECEIVE_RED_PACKET:
-                //Reloaded when receive red packet.
-                return false;
-
-            case NotificationType.LINK_CARD_EXPIRED:
-                //Balance & transaction not change
-                return false;
-
-            case NotificationType.MERCHANT_BILL:
-                return true;
-
-            case NotificationType.LINK_ACCOUNT:
-                //Balance & transaction not change
-                return false;
-            case NotificationType.UNLINK_ACCOUNT:
-                //Balance & transaction not change
-                return false;
-            case NotificationType.PROMOTION:
-                //need reload balance and transaction history on promotion
-                return true;
-            default:
-                return true;
-        }
-    }*/
+    private void showBadgePreferential() {
+        mEventBus.post(new PreferentialNotificationEvent());
+    }
 
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
 

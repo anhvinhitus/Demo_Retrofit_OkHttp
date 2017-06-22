@@ -15,4 +15,6 @@ public interface IHomeView extends ILoadDataView {
     void refreshIconFont();
 
     void showCashBackView(IBuilder builder, PromotionEvent event);
+
+    void showBadgePreferential();
 }

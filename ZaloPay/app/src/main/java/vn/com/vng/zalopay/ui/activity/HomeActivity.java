@@ -235,4 +235,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
             mBottomNavigationView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
         }
     }
+
+    @Override
+    public void showBadgePreferential() {
+        if (mBottomNavigationView != null) {
+            mBottomNavigationView.setPromotionNewState(true);
+        }
+    }
 }

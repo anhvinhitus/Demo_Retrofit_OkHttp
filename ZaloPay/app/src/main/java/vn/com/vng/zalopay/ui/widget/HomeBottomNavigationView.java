@@ -9,9 +9,11 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
@@ -117,6 +119,10 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         }
 
         mPager.setCurrentItem(position, false);
+
+        if (position == HomePagerAdapter.TAB_PROMOTION_INDEX) {
+            setPromotionNewState(false);
+        }
     }
 
     private ViewPager mPager;
@@ -149,26 +155,29 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         return false;
     }
 
+    private boolean mShowIconNewPromotion;
+    private View mIconNewPromotion;
 
-     /*   private void setPromotionNewState(boolean isActive) {
-        FrameLayout tabPromotion = (FrameLayout) mBottomNavigationView.findViewById(R.id.menu_promotion);
+    public void setPromotionNewState(boolean isActive) {
+        FrameLayout tabPromotion = (FrameLayout) findViewById(R.id.menu_promotion);
         if (isActive) {
-            if (mShowIconNewPromotion) {
-                mShowIconNewPromotion = false;
-                removeIconNew(tabPromotion);
+            if (!mShowIconNewPromotion) {
+                mShowIconNewPromotion = true;
+                addIconNew(tabPromotion);
             }
         } else {
             if (mShowIconNewPromotion) {
-                addIconNew(tabPromotion);
+                removeIconNew(tabPromotion);
+                mShowIconNewPromotion = false;
             }
         }
-    }*/
+    }
 
-  /*  private void addIconNew(FrameLayout frameLayout) {
+    private void addIconNew(FrameLayout frameLayout) {
         if (mIconNewPromotion != null) {
             return;
         }
-        mIconNewPromotion = getLayoutInflater().inflate(R.layout.icon_new, null);
+        mIconNewPromotion = View.inflate(getContext(), R.layout.icon_new, null);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
@@ -181,5 +190,5 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         }
         frameLayout.removeView(mIconNewPromotion);
         mIconNewPromotion = null;
-    }*/
+    }
 }

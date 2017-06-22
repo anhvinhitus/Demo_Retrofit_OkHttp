@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.event.PreferentialNotificationEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
@@ -200,7 +201,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void detachView() {
-        mEventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
         unsubscribeIfNotNull(mRefPlatformSubscription);
         CShareDataWrapper.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
@@ -543,5 +546,13 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                     }
                 });
         mSubscription.add(subscriptionSuccess);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceivePreferentialNotification(PreferentialNotificationEvent event) {
+        Timber.d("onReceivePreferentialNotification: ");
+        if (mView != null) {
+            mView.showBadgePreferential();
+        }
     }
 }
