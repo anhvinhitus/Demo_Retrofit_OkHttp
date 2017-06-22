@@ -764,25 +764,33 @@ public class Navigator implements INavigator {
             return true;
         }
 
-        if (channel == 2) {
-            try {
-                List<MapCard> mapCardLis = CShareDataWrapper
-                        .getMappedCardList(mUserConfig.getCurrentUser());
-                if (mapCardLis == null || mapCardLis.size() == 0) {
-                    Helpers.promiseResolveSuccess(promise, null);
-                    return true;
-                }
-            } catch (Exception ex) {
-                Timber.d(ex, "startLinkCardActivity");
-                Helpers.promiseResolveSuccess(promise, null);
-                return true;
-            }
+        if (ignorePasswordPrompts(channel)) {
+            Helpers.promiseResolveSuccess(promise, null);
+            return true;
         }
 
         showPinDialog(context, promise);
         return false;
     }
 
+    private boolean ignorePasswordPrompts(int channel) {
+        if (channel == ChannelDisplay.PROFILE || channel == ChannelDisplay.TRANSACTION) {
+            return true;
+        }
+
+        if (channel == ChannelDisplay.CARD_LISTS) {
+            List<MapCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUserConfig.getCurrentUser());
+            return Lists.isEmptyOrNull(mapCardLis);
+        }
+
+        return false;
+    }
+
+    interface ChannelDisplay {
+        int PROFILE = 1;
+        int CARD_LISTS = 2;
+        int TRANSACTION = 3;
+    }
 
     public void startTransferViaAccountName(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
