@@ -19,6 +19,7 @@ public class Constants {
     public static final String APPUSER = "appuser";
     public static final String DESCRIPTION = "description";
     public static final String EMBEDDATA = "embeddata";
+    public static final String ITEM = "item";
 
     public static final String ACCESSTOKEN = "accesstoken";
     public static final String SENDER = "sender";

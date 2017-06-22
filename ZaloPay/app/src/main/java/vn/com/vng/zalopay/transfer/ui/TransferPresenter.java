@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.Item;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
@@ -328,15 +329,22 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         transferMoney(amount);
     }
 
+    private Item buildItem(){
+        String ext = String.format(Item.tranferExtFormat(),mTransferObject.displayName);
+        return new Item(TransactionType.MONEY_TRANSFER,ext);
+    }
+
     private void transferMoney(long amount) {
         LocationProvider.updateLocation();
         mPreviousTransferId = null;
+        String item = buildItem().toJson();
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                 amount,
                 TransactionType.MONEY_TRANSFER,
                 "1;" + mTransferObject.zalopayId,
                 mView.getMessage(),
-                mTransferObject.displayName)
+                mTransferObject.displayName,
+                item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());

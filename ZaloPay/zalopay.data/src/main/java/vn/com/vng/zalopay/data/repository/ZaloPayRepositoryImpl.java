@@ -41,11 +41,11 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     @Override
     public Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description) {
-        return createwalletorder(appId, amount, transtype, appUser, description, null);
+        return createwalletorder(appId, amount, transtype, appUser, description, null, null);
     }
 
     @Override
-    public Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description, String embeddata) {
+    public Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description, String embeddata, String item) {
         if (appId <= 0 || amount <= 0) {
             Timber.e(new Exception(
                     String.format("Create wallet order with data is invalid, appId[%s] amount[%s] transType[%s]",
@@ -53,7 +53,7 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
                             amount,
                             transtype)));
         }
-        return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description, embeddata)
+        return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description, embeddata, item)
                 .map(orderResponse -> {
                     orderResponse.setAppid(appId);
                     if (orderResponse.appid <= 0

@@ -14,6 +14,6 @@ public interface ZaloPayRepository {
 
     Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description);
 
-    Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description, String embeddata);
+    Observable<Order> createwalletorder(long appId, long amount, int transtype, String appUser, String description, String embeddata, String item);
 
 }
