@@ -111,23 +111,22 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
 
     private String getWarningDesc(PaymentChannel pChannel) {
         String mess;
-        if (!pChannel.isAllowPmcQuota()) {
+        if (pChannel.isZaloPayChannel() && !pChannel.isAllowOrderAmount()) {
+            mess = mContext.getString(R.string.sdk_warning_balance_error);
+        } else if ((amount + pChannel.totalfee) < pChannel.minvalue) {
+            mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount_small);
+        } else if (!pChannel.isAllowPmcQuota()) {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount);
-            if ((amount + pChannel.totalfee) < pChannel.minvalue) {
-                mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount_small);
-            }
         } else if (pChannel.isMaintenance() && pChannel.isMapCardChannel()) {
             mess = mContext.getString(R.string.zpw_string_bank_maintenance);
         } else if (pChannel.isMaintenance()) {
             mess = mContext.getString(R.string.zpw_string_channel_maintenance);
-        } else if (pChannel.isZaloPayChannel() && !pChannel.isAllowOrderAmount()) {
-            mess = mContext.getString(R.string.sdk_warning_balance_error);
         } else if (!pChannel.isAllowOrderAmount()) {
             StringBuilder builder = new StringBuilder();
             if (pChannel.hasFee()) {
                 builder.append(String.format(mContext.getString(R.string.zpw_string_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))));
             }
-            builder.append(".").append(mContext.getString(R.string.zpw_string_channel_not_allow_by_fee));
+            builder.append(mContext.getString(R.string.zpw_string_channel_not_allow_by_fee));
             mess = builder.toString();
         } else {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow);
@@ -145,12 +144,20 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
             holder.fee_textview.setText(RenderHelper.getHtml(desc));
         }
         holder.name_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
-        holder.fee_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color_red_blur)));
+        holder.fee_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
         holder.icon_imageview.setImageAlpha(100);
     }
 
+    private boolean displayDesc(String desc) {
+        return !mContext.getString(R.string.zpw_string_fee_free).equals(desc);
+    }
+
     protected void renderDesc(T holder, String desc) {
-        holder.fee_textview.setText(desc);
+        boolean shouldDisplayDesc = displayDesc(desc);
+        if (shouldDisplayDesc) {
+            holder.fee_textview.setText(desc);
+        }
+        holder.fee_textview.setVisibility(shouldDisplayDesc ? View.VISIBLE : View.GONE);
     }
 
     @Override

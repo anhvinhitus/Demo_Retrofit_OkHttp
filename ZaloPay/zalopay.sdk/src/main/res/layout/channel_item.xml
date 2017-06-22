@@ -32,8 +32,9 @@
 
     <LinearLayout
         android:id="@+id/name_fee_linearlayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
         android:layout_toRightOf="@+id/icon_imageview"
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/text_color_bold"
             android:textSize="@dimen/zpw_text_size_medium" />
 
