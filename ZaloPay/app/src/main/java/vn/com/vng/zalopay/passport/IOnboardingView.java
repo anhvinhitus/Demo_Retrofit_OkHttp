@@ -32,4 +32,6 @@ interface IOnboardingView {
     void showIncorrectOtp(String msg);
 
     void showIncorrectPhone(String msg);
+
+    void resendOTPSuccess();
 }

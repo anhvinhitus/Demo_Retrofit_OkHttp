@@ -433,6 +433,7 @@
     <string name="balance_management_deposit_description">Từ ngân hàng đã liên kết vào TK Zalo Pay</string>
     <string name="balance_management_withdraw_description">Từ TK Zalo Pay về ngân hàng đã liên kết</string>
     <string name="resend.otp.count.down.format">Gửi lại mã trong %s</string>
+    <string name="sent.otp">Đã gửi lại mã xác thực</string>
 
 </resources>
 

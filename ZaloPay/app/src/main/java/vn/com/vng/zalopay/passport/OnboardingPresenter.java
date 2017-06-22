@@ -64,13 +64,13 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         }
     }
 
-    void register(Long zaloid, String oauthcode, String password, String phone) {
+    void register(Long zaloid, String oauthcode, String password, String phone, boolean resend) {
         Timber.d("register zaloid %s password %s phone %s", zaloid, password, phone);
 
         Subscription subs = mPassportRepository.registerPhoneNumber(zaloid, oauthcode, password, phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RegisterSubscriber());
+                .subscribe(new RegisterSubscriber(resend));
         mSubscription.add(subs);
     }
 
@@ -110,7 +110,7 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         showRegisterError(incorrectPhone, msg);
     }
 
-    private void onRegisterSuccess(Boolean t) {
+    private void onRegisterSuccess(Boolean t, boolean isResend) {
         hideLoadingView();
 
         if (mView == null) {
@@ -119,9 +119,18 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
 
         mView.nextPage();
         mView.startOTPCountDown();
+
+        if (isResend) {
+            mView.resendOTPSuccess();
+        }
     }
 
     private class RegisterSubscriber extends DefaultSubscriber<Boolean> {
+        private boolean isResend;
+
+        RegisterSubscriber(boolean resend) {
+            isResend = resend;
+        }
 
         public void onStart() {
             showLoadingView();
@@ -132,7 +141,7 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         }
 
         public void onNext(Boolean t) {
-            onRegisterSuccess(t);
+            onRegisterSuccess(t, isResend);
         }
     }
 

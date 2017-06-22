@@ -7,8 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import butterknife.BindView;
@@ -25,6 +27,7 @@ import com.zalopay.ui.widget.util.TimeUtils;
 
 import timber.log.Timber;
 
+import static com.zing.zalo.zalosdk.facebook.Facebook.getApplicationContext;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 
@@ -56,7 +59,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         return fragment;
     }
 
-    private static final long ACTIVE_TIMEOUT = 60;
+    private static final long ACTIVE_TIMEOUT = 3600;
     private static final String ARGUMENT_ACTIVE_TIME = "active_time";
     private static final String ARGUMENT_TAB_POSITION = "position";
     private static final String ARGUMENT_PHONE_NUMBER = "phone";
@@ -148,7 +151,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
         mInputPhoneView.setOnClick(v -> {
             if (mInputPhoneView.validate()) {
-                register();
+                register(false);
             }
         });
 
@@ -164,7 +167,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         int pinLength = getResources().getInteger(R.integer.pin_length);
         mInputOtpView.setLengthToActiveButton(pinLength);
         mInputOtpView.setInputLength(pinLength);
-        mInputOtpView.setOnSecondClick(v -> register());
+        mInputOtpView.setOnSecondClick(v -> register(true));
 
         shouldShowBackButton();
         keyboardActive(getCurrentPage());
@@ -279,8 +282,8 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         }
     }
 
-    private void register() {
-        mPresenter.register(mProfile.userId, oauthcode, mReInputPwdView.getInputText(), mInputPhoneView.getInputText());
+    private void register(boolean resend) {
+        mPresenter.register(mProfile.userId, oauthcode, mReInputPwdView.getInputText(), mInputPhoneView.getInputText(), resend);
     }
 
     private void authenticate() {
@@ -505,5 +508,14 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
             mInputOtpView.setIconSecondaryButton("");
         }
 
+    }
+
+    @Override
+    public void resendOTPSuccess() {
+        Toast toast = new Toast(getContext());
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(View.inflate(getContext(), R.layout.layout_onboarding_toast, null));
+        toast.show();
     }
 }

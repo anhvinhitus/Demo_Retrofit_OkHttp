@@ -1,9 +1,9 @@
 package vn.com.vng.zalopay.passport;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 
 import com.jaeger.library.StatusBarUtil;
@@ -24,7 +24,7 @@ public class OnboardingActivity extends BaseToolBarActivity {
         Drawable navigationIcon = getToolbar().getNavigationIcon();
 
         if (navigationIcon != null) {
-            DrawableCompat.setTint(navigationIcon, Color.BLACK);
+            DrawableCompat.setTint(navigationIcon, ContextCompat.getColor(this,R.color.blue_008fe5));
             navigationIcon.setAlpha(255);
         }
 
