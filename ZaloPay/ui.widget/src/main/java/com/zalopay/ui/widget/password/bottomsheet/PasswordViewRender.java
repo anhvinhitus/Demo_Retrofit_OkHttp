@@ -236,7 +236,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     public void onKeyboardClick(KeyboardButtonEnum keyboardButtonEnum) {
         if (mPinCode.length() < this.getPinLength()) {
             int value = keyboardButtonEnum.getButtonValue();
-
             if (value == KeyboardButtonEnum.BUTTON_CLEAR.getButtonValue()) {
                 if (!mPinCode.isEmpty()) {
                     setPinCode(mPinCode.substring(0, mPinCode.length() - 1));
@@ -247,13 +246,14 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 setPinCode(mPinCode + value);
             }
         }
+        if (mPinCode.length() == this.getPinLength()) {
+            onPinCodeInputed();
+        }
     }
 
     @Override
     public void onRippleAnimationEnd() {
-        if (mPinCode.length() == this.getPinLength()) {
-            onPinCodeInputed();
-        }
+        Log.d(TAG, "==onRippleAnimationEnd==" + mPinCode.length());
     }
 
     public void closePinView() {
@@ -269,15 +269,11 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected void onPinCodeInputed() {
         switch (mType) {
             case 1:
-                onPinCodeSuccess();
+                onPinSuccess();
                 break;
             default:
                 break;
         }
-    }
-
-    protected void onPinCodeSuccess() {
-        onPinSuccess();
     }
 
     public void onPinSuccess() {
@@ -325,7 +321,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     public void onCheckedChanged(CompoundButton checkBoxView, boolean isChecked) {
         if (checkBoxView.getId() == R.id.checkbox_fingerprint) {
             mBuilder.getIFPinCallBack().onCheckedFingerPrint(isChecked);
-            Log.d(TAG, " ==onPinSuccess==" + isChecked);
         }
     }
 
