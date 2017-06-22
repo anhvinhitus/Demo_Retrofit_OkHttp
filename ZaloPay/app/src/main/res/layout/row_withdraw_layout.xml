@@ -29,6 +29,6 @@
         android:id="@+id/mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#7Fffffff"/>
+        android:background="#B3ffffff"/>
 
 </FrameLayout>

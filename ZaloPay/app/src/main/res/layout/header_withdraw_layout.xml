@@ -48,7 +48,7 @@
             style="@style/TextView.Item.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Miễn phí rút tiền"
+            android:text="@string/free.withdrawal"
             android:textColor="@color/white"
             android:textSize="12sp"/>
 

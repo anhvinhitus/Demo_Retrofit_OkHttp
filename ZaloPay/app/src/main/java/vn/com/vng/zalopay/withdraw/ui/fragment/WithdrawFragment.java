@@ -123,7 +123,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @Override
     public void setBalance(long balance) {
-        mMoneyView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
+        mMoneyView.setText(CurrencyUtil.formatCurrency(balance, false));
         mAdapter.setBalance(balance);
 
     }
