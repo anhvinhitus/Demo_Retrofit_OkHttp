@@ -21,10 +21,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.webview.ui.IWebView;
 
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
@@ -32,12 +34,16 @@ import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
  * Created by huuhoa on 4/20/17.
  */
 class ProcessMessageListener implements IProcessMessageListener {
-    private WeakReference<WebAppPresenter> mWebAppPresenterWeakReference;
-    private List<AppResource> mListResources;
+    private WeakReference<AbstractWebAppPresenter> mWebAppPresenterWeakReference;
+//    private WeakReference<WebAppPresenter> mWebAppPresenterWeakReference;
 
-    public ProcessMessageListener(WebAppPresenter presenter) {
+    public ProcessMessageListener(AbstractWebAppPresenter presenter) {
         mWebAppPresenterWeakReference = new WeakReference<>(presenter);
     }
+
+//    public ProcessMessageListener(WebAppPresenter presenter) {
+//        mWebAppPresenterWeakReference = new WeakReference<>(presenter);
+//    }
 
     @Override
     public void hideLoading() {
@@ -67,6 +73,11 @@ class ProcessMessageListener implements IProcessMessageListener {
 
     @Override
     public void launchApp(String packageID, String alternateUrl) {
+        if (mWebAppPresenterWeakReference.get() == null ||
+                mWebAppPresenterWeakReference.get().getActivity() == null) {
+            return;
+        }
+
         try {
             // Check whether the application exists or not
             boolean isPackageInstalled = isPackageInstalled(packageID, mWebAppPresenterWeakReference.get().getActivity());
@@ -90,6 +101,11 @@ class ProcessMessageListener implements IProcessMessageListener {
 
     @Override
     public void launchInternalApp(int internalAppID) {
+        if (mWebAppPresenterWeakReference.get() == null
+                || mWebAppPresenterWeakReference.get().getActivity() == null) {
+            return;
+        }
+
         if (internalAppID == PaymentAppConfig.Constants.RED_PACKET) {
             mWebAppPresenterWeakReference.get().mNavigator.startMiniAppActivity(
                     mWebAppPresenterWeakReference.get().getActivity(), ModuleName.RED_PACKET);
@@ -207,7 +223,7 @@ class ProcessMessageListener implements IProcessMessageListener {
     }
 
     private void handleOpenWebService(int internalAppID, List<AppResource> listResouces) {
-        if(listResouces == null) return;
+        if (listResouces == null) return;
 
         String webURL = "";
         for (AppResource appResource : listResouces) {

@@ -5,34 +5,24 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -43,7 +33,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 /**
  * Created by datnt10 on 6/21/17.
  */
-public class WebAppPromotionFragment extends BaseFragment implements IWebViewListener, IWebAppView, SwipeRefreshLayout.OnRefreshListener {
+public class WebAppPromotionFragment extends BaseFragment implements IWebViewListener, IWebAppPromotionView, SwipeRefreshLayout.OnRefreshListener {
     public static WebAppPromotionFragment newInstance(Bundle bundle) {
         WebAppPromotionFragment fragment = new WebAppPromotionFragment();
         fragment.setArguments(bundle);
@@ -69,7 +59,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     ProgressBar mProgressBar;
 
     @Inject
-    WebAppPresenter mPresenter;
+    WebAppPromotionPresenter mPresenter;
 
     @BindView(R.id.webview)
     ZPWebViewApp webView;
@@ -94,7 +84,6 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @OnClick(R.id.promotion_btn_share)
     public void onClickShare() {
         showBottomSheetDialog();
-//        mPresenter.shareContent(webView.getUrl());
     }
 
     @Override
@@ -210,7 +199,6 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
 
     @Override
     public void onReceivedTitle(String title) {
-//        getActivity().setTitle(title);
         tvTitle.setText(title);
     }
 
@@ -297,24 +285,6 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
 
     public boolean onBackPressed() {
         return mPresenter.onBackPressed();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.webapp_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-
-        MenuItem menuItem = menu.findItem(R.id.action_settings);
-        View view = menuItem.getActionView();
-        IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
-        mIcon.setIcon(R.string.webapp_3point_android);
-        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
-        view.setOnClickListener(new DebouncingOnClickListener() {
-            @Override
-            public void doClick(View v) {
-                showBottomSheetDialog();
-            }
-        });
     }
 
     @Override

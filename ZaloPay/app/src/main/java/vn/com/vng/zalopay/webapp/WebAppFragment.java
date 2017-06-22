@@ -182,21 +182,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     @Override
-    public void setHiddenBackButton(boolean hide) {
-
-    }
-
-    @Override
-    public void setHiddenShareButton(boolean hide) {
-
-    }
-
-    @Override
-    public void setHiddenTabBar(boolean hide) {
-
-    }
-
-    @Override
     public void setRefreshing(boolean setRefresh) {
 
     }
@@ -255,7 +240,8 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         View view = menuItem.getActionView();
         IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
         mIcon.setIcon(R.string.webapp_3point_android);
-        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
+        mIcon.setIconColor(R.color.white);
+//        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
         view.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {

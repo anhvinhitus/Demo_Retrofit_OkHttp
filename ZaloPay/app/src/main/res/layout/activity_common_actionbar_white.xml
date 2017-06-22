@@ -4,7 +4,8 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_white" />
+    <include layout="@layout/toolbar_webapp" />
+    <!--<include layout="@layout/toolbar_white" />-->
 
     <FrameLayout
         android:id="@+id/fragment_container"

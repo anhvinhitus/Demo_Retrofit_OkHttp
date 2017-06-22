@@ -7,11 +7,10 @@ import vn.com.vng.zalopay.ui.presenter.IPaymentDataView;
  * Created by longlv on 2/9/17.
  * *
  */
-
 interface IWebAppView extends IPaymentDataView, IWebViewListener {
-
     /**
      * Tell view to update progress of loading webview
+     *
      * @param progress current progress in scale 0--100
      */
     void updateLoadProgress(int progress);
@@ -24,12 +23,6 @@ interface IWebAppView extends IPaymentDataView, IWebViewListener {
     void hideError();
 
     void onReceivedTitle(String title);
-
-    void setHiddenBackButton(boolean hide);
-
-    void setHiddenShareButton(boolean hide);
-
-    void setHiddenTabBar(boolean hide);
 
     void setRefreshing(boolean setRefresh);
 
