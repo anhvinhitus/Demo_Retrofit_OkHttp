@@ -74,20 +74,27 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 TransactionLogDao.Properties.Reqdate.ge(minreqdate),
                 TransactionLogDao.Properties.Statustype.eq(statusType));
 
-        if (!Lists.isEmptyOrNull(transTypes)) {
-            if (transTypes.contains(TRANSFER_TYPE) && sign != 0) {
-                WhereCondition whereType = queryBuilder.and(TransactionLogDao.Properties.Type.eq(TRANSFER_TYPE), TransactionLogDao.Properties.Sign.eq(sign));
-                for (int i = 0; i < transTypes.size(); i++) {
-                    if (transTypes.get(i) != TRANSFER_TYPE) {
-                        whereType = queryBuilder.or(whereType, TransactionLogDao.Properties.Type.eq(transTypes.get(i)));
-                    }
-                }
-                where = queryBuilder.and(where, whereType);
-            } else {
-                where = queryBuilder.and(where, TransactionLogDao.Properties.Type.in(transTypes));
-            }
+        if (Lists.isEmptyOrNull(transTypes)) {
+            return queryList(offset, limit, where);
         }
 
+        if (!transTypes.contains(TRANSFER_TYPE) || sign == 0) {
+            where = queryBuilder.and(where, TransactionLogDao.Properties.Type.in(transTypes));
+            return queryList(offset, limit, where);
+        }
+
+        WhereCondition whereType = queryBuilder.and(TransactionLogDao.Properties.Type.eq(TRANSFER_TYPE), TransactionLogDao.Properties.Sign.eq(sign));
+        for (int i = 0; i < transTypes.size(); i++) {
+            if (transTypes.get(i) != TRANSFER_TYPE) {
+                whereType = queryBuilder.or(whereType, TransactionLogDao.Properties.Type.eq(transTypes.get(i)));
+            }
+        }
+        where = queryBuilder.and(where, whereType);
+        return queryList(offset, limit, where);
+    }
+
+    private List<TransHistoryEntity> queryList(int offset, int limit, WhereCondition where) {
+        QueryBuilder<TransactionLog> queryBuilder = getDaoSession().getTransactionLogDao().queryBuilder();
         return transform2Entity(
                 queryBuilder
                         .where(where)
@@ -189,7 +196,6 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         return getTransactionById(id);
     }
 
-
     private TransHistoryEntity getTransactionById(long id) {
         TransactionLog transactionLog = queryTransactionById(id);
         return transform(transactionLog);
@@ -202,6 +208,9 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void updateStatusType(long transId, int status) {
         TransactionLog transactionLog = queryTransactionById(transId);
+        if (transactionLog == null) {
+            return;
+        }
         transactionLog.statustype = (long) (status);
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
     }
