@@ -1,17 +1,2 @@
-Zalo Pay (Sandbox v2.14.0 - build 277) - Released on 2017-06-22 09:04
-+ [SDK] Chỉnh giao diện theo design by vo van chuc (#761eaa8)
-+ [SDK] Clear hardcode Bidv bankcode by vo van chuc (#d86eed0)
-+ [SDK] Fix lỗi show phí giao dịch by vo van chuc (#0fc94d7)
-+ [SDK] Fix lỗi center text channel zalopay khi số dư không đủ để giao dịch by vo van chuc (#dae7e70)
-+ [WebApp] fix build fail by datnt10 (#9e3340a)
-+ [Onboarding] Refactor code by hieuvm (#e56e47b)
-+ Merge branch 'master' of https://gitlab.zalopay.vn/zalopay-apps/app-android by datnt10 (#19bf1d4)
-+ [WebApp] task#611 [WebApp] Xóa cache khi user chọn Làm mới by datnt10 (#ecfe64a)
-+ [Withdraw] Task#583: Update background withdraw by hieuvm (#67e7f9a)
-+ [Onboarding] Update onboarding flow by hieuvm (#fa80cc2)
-+ [APP] Update UI Search View by lytm (#1fa466a)
-+ [WebApp] fix build fail by datnt10 (#1e3da7b)
-+ [WebApp] task#610 [Android] WebApp framework hiển thị 2 action bar by datnt10 (#fe5c7cc)
-+ [APP] Update design Password by lytm (#ea0ed51)
-+ [APP] Rename icon by lytm (#03b39c3)
-+ [SDK] Fix lỗi không show balance khi kênh zalopay bị disable by vo van chuc (#ac52a61)
+Zalo Pay (Staging v2.14.0 - build 278) - Released on 2017-06-22 09:17
+
