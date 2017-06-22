@@ -235,7 +235,6 @@ public class SDKPayment {
                 intent.putExtra(PMC_CONFIG, pmcTransType);
             }
         } else {
-            //intent = new Intent(pOwner, PaymentGatewayActivity.class);
             intent = new Intent(pOwner, ChannelListActivity.class);
         }
         if (pmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {

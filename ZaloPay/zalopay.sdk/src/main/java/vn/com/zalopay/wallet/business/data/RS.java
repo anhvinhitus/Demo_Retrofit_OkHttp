@@ -162,7 +162,7 @@ public class RS {
         public static final String zpw_font_medium = "zpw_font_medium";
         public static final String zpw_font_unisec = "zpw_font_unisec";
 
-        public static final String zingpaysdk_confirm_quit = "zingpaysdk_confirm_quit";
+        public static final String sdk_quit_confirm_text = "sdk_quit_confirm_text";
         public static final String zingpaysdk_confirm_quit_rescan_qrcode = "zingpaysdk_confirm_quit_rescan_qrcode";
         public static final String sdk_confirm_quit_link_account = "sdk_confirm_quit_link_account";
 

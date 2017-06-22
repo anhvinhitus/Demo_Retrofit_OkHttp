@@ -49,5 +49,7 @@ public interface ChannelListContract extends IContract {
         void enableConfirmButton(int buttonTextId, int bgResourceId);
 
         void disableConfirmButton();
+
+        void showQuitConfirm();
     }
 }

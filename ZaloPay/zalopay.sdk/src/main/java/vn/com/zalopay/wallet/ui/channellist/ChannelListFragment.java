@@ -87,7 +87,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public boolean onBackPressed() {
-        return mPresenter.onBackPressed();
+        boolean back_pressed = mPresenter.onBackPressed();
+        if(!back_pressed){
+            showQuitConfirm();
+            back_pressed = true;
+        }
+        return back_pressed;
     }
 
     @Override
@@ -328,6 +333,23 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 },
                 getResources().getString(R.string.dialog_turn_off),
                 getResources().getString(R.string.dialog_turn_on));
+    }
+
+    @Override
+    public void showQuitConfirm() {
+        DialogManager.showSweetDialogConfirm(getActivity(), getString(R.string.sdk_quit_confirm_text),
+                getString(R.string.dialog_khong_button),
+                getString(R.string.dialog_co_button), new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        mPresenter.setPaymentStatusAndCallback(PaymentStatus.USER_CLOSE);
+                        callbackThenterminate();
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                    }
+                });
     }
 
     @Override

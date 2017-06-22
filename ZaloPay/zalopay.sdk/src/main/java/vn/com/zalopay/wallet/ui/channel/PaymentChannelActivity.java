@@ -49,7 +49,6 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
-import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -691,7 +690,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     protected void confirmQuitPayment() {
-        String message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit);
+        String message = GlobalData.getStringResource(RS.string.sdk_quit_confirm_text);
         if (mPaymentInfoHelper.isPayTrans()) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
         } else if (mPaymentInfoHelper.isBankAccountTrans()) {
