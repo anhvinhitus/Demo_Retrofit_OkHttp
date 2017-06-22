@@ -240,7 +240,7 @@
 
     <string name="zpw_string_title_fee">Phí dịch vụ</string>
     <string name="zpw_string_title_total_pay">Thanh toán</string>
-    <string name="zpw_string_vnd_success">  VND</string>
+    <string name="zpw_string_vnd_success">VND</string>
     <string name="zpw_string_title_select_bank">Các ngân hàng được hỗ trợ</string>
     <string name="zpw_string_title_select_card"><![CDATA[ Các thẻ được "<b>Zalo Pay</b>" hỗ trợ ]]></string>
 
@@ -351,7 +351,7 @@
 
     <string name="zpw_string_tittle_account_list">CHỌN TÀI KHOẢN NGÂN HÀNG</string>
 
-    <string name="zpw_string_fee_format">Phí: %1$s VND.</string>
+    <string name="zpw_string_fee_format">Phí: %1$s VND</string>
     <string name="sdk_fee_format">%1$s VND</string>
 
     <string name="zpw_string_exit_without_pin">Để giao dịch an toàn, chúng tôi cần bạn nhập mật khẩu thanh toán.\nBạn có muốn tiếp tục giao dịch?</string>
