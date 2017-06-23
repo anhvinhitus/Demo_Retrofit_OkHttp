@@ -344,7 +344,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     @Override
                     public void onCancelEvent() {
                         mPresenter.setPaymentStatusAndCallback(PaymentStatus.USER_CLOSE);
-                        callbackThenterminate();
+                        terminate();
                     }
 
                     @Override
