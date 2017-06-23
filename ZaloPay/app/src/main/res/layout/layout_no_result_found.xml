@@ -14,12 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:drawablePadding="28dp"
-        android:textSize="@dimen/font_size_xlarge"
-        android:drawableTop="@drawable/search_emty" />
+        android:drawableTop="@drawable/search_emty"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:lineSpacingExtra="@dimen/spacing.small.t"
+        android:textSize="@dimen/font_size_xlarge" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing.medium"
         android:gravity="center"
+        android:padding="@dimen/spacing.medium"
         android:text="@string/search_no_result_description" />
 </LinearLayout>

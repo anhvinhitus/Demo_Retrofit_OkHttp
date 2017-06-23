@@ -371,7 +371,7 @@
     <string name="search_representative_app">ỨNG DỤNG TIÊU BIỂU</string>
     <string name="search_app">ỨNG DỤNG</string>
     <string name="search_friend">BẠN BÈ</string>
-    <string name="search_no_result">Không tìm thấy kết quả cho từ khoá “%s”</string>
+    <string name="search_no_result">Không tìm thấy kết quả cho từ khoá\n“%s”</string>
     <string name="search_no_result_description">Vui lòng kiểm tra lại chính tả\nhoặc sử dụng các từ khoá tổng quát hơn</string>
     <string name="see_all">Xem tất cả</string>
     <string name="left">left</string>
