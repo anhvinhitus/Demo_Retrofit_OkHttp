@@ -62,7 +62,8 @@
             android:layout_marginRight="6dp"
             android:layout_marginStart="3dp"
             android:text="•"
-            android:textColor="#acb3ba"/>
+            android:textColor="#acb3ba"
+            android:textSize="10dp"/>
 
         <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/tvBirthday"
