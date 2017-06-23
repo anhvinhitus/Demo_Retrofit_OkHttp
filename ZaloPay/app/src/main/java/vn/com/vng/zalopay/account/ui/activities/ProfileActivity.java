@@ -96,7 +96,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         presenter.attachView(this);
         mZaloSdkApi.getProfile();
         icfontRightArrow.setVisibility(View.GONE);
-//        getSupportActionBar().setTitle(getString(R.string.title_activity_profile));
+//        getSupportActionBar().setPmName(getString(R.string.title_activity_profile));
         tvToolbarTitle.setText(getString(R.string.title_activity_profile));
     }
 

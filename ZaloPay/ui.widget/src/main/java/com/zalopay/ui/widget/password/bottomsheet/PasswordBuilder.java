@@ -16,10 +16,11 @@ public abstract class PasswordBuilder implements IBuilder {
     protected View mView;
     protected Activity mActivity;
     protected String mIdLogo;
-    protected String mTextTitle;
+    protected String mTextPmcName;
     protected ISetDataToView mISetDataToView;
     protected IControl mControl;
     protected boolean mFingerPrint;
+    protected String mTitle;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
@@ -75,10 +76,10 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setTitle(String pTitle) {
-        mTextTitle = pTitle;
-        if (!TextUtils.isEmpty(pTitle) && mISetDataToView != null) {
-            mISetDataToView.setTitle(pTitle);
+    public IBuilder setPmName(String pPmcName) {
+        mTextPmcName = pPmcName;
+        if (!TextUtils.isEmpty(pPmcName) && mISetDataToView != null) {
+            mISetDataToView.setPmcName(pPmcName);
         }
         return this;
     }
@@ -107,8 +108,8 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public String getTitle() {
-        return mTextTitle;
+    public String getPmcName() {
+        return mTextPmcName;
     }
 
     @Override
@@ -141,6 +142,17 @@ public abstract class PasswordBuilder implements IBuilder {
         if (mISetDataToView != null) {
             mISetDataToView.lockControl(isLockControl);
         }
+        return this;
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
+    }
+
+    @Override
+    public IBuilder setTitle(String pTitle) {
+        mTitle = pTitle;
         return this;
     }
 }

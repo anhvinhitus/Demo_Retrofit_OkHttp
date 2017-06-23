@@ -32,7 +32,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     public static final String TAG = "PinViewRender";
     private static final int DEFAULT_PIN_LENGTH = 6;
 
-    protected TextView mStepTextView;
     protected PassCodeRoundView mPinCodeRoundView;
     protected KeyboardView mKeyboardView;
     protected ImageView mCancelImageView;
@@ -40,7 +39,8 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected int mType = 1;
     protected String mPinCode;
     protected SimpleDraweeView mLogo;
-    protected TextView mTextTitle;
+    protected TextView mTextViewPmcName;
+    protected TextView mTextViewTitle;
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
@@ -49,6 +49,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private LinearLayout mMaskLayout;
     private LoadingIndicatorView mLoadingIndicatorView;
     private LinearLayout mLayoutCheckBox;
+    private LinearLayout mLayoutContent;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
         public void setErrorMessage(Activity pActivity, String pError) {
@@ -70,10 +71,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
-        public void setTitle(String pTitle) {
+        public void setPmcName(String pTitle) {
             //set title here
-            if (mTextTitle != null) {
-                mTextTitle.setText(pTitle);
+            if (mTextViewPmcName != null) {
+                mTextViewPmcName.setText(pTitle);
             }
         }
 
@@ -146,7 +147,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         TypedArray typedArray = pContext.obtainStyledAttributes(attrs);
         backgroundResource = typedArray.getResourceId(0, 0);
         mPinCode = "";
-        mStepTextView = (TextView) pWView.findViewById(R.id.pin_code_step_textview);
         mPinCodeRoundView = (PassCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
         mPinCodeRoundView.setPinLength(this.getPinLength());
         mKeyboardView = (KeyboardView) pWView.findViewById(R.id.pin_code_keyboard_view);
@@ -154,19 +154,19 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mCancelImageView.setBackgroundResource(backgroundResource);
         mTextMessage = (TextView) pWView.findViewById(R.id.text_error);
         mRootView = pWView.findViewById(R.id.layout_root_view);
-        mTextTitle = (TextView) pWView.findViewById(R.id.text_content);
+        mTextViewPmcName = (TextView) pWView.findViewById(R.id.textview_pmc_name);
+        mTextViewTitle = (TextView) pWView.findViewById(R.id.textview_title);
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
         mMaskLayout = (LinearLayout) pWView.findViewById(R.id.layout_root_view);
         mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
+        mLayoutContent = (LinearLayout) pWView.findViewById(R.id.layout_content);
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
         mBuilder.getCallBackToView(mISetDataToView);
         mCheckBox.setOnCheckedChangeListener(this);
-
-        mTextTitle.setText(mBuilder.getTitle());
         String image_path = mBuilder.getLogoPath();
 
         if (!TextUtils.isEmpty(image_path)) {
@@ -175,11 +175,22 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             mLogo.setVisibility(View.GONE);
         }
         showFingerPrin(mBuilder.getFingerPrint());
-        setStepText(pContext);
+        setTitleText(pContext);
     }
 
-    private void setStepText(Context pContext) {
-        mStepTextView.setText(getStepText(mType, pContext));
+    private void setTitleText(Context pContext) {
+
+        if (mBuilder != null && !TextUtils.isEmpty(mBuilder.getPmcName())) {
+            mTextViewPmcName.setText(mBuilder.getPmcName());
+        } else {
+            mTextViewPmcName.setVisibility(View.INVISIBLE);
+        }
+
+        if (mBuilder != null && !TextUtils.isEmpty(mBuilder.getTitle())) {
+            mTextViewTitle.setText(mBuilder.getTitle());
+        } else {
+            mTextViewTitle.setText(pContext.getString(R.string.pin_code_step_unlock));
+        }
     }
 
     private void showFingerPrin(boolean pShow) {
@@ -192,21 +203,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             mLayoutCheckBox.setVisibility(View.GONE);
         }
 
-    }
-
-    /**
-     * Gets the {@link String} to be used in the {@link #mStepTextView} based on {@link #mType}
-     *
-     * @param reason The {@link #mType} to return a {@link String} for
-     * @return The {@link String} for the {@link }
-     */
-    public String getStepText(int reason, Context pContext) {
-        String msg = null;
-        switch (reason) {
-            case 1:
-                msg = pContext.getString(R.string.pin_code_step_unlock);
-        }
-        return msg;
     }
 
     /**

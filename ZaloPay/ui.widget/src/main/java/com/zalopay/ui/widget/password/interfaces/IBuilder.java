@@ -15,6 +15,8 @@ public interface IBuilder {
 
     String getLogoPath();
 
+    String getPmcName();
+
     String getTitle();
 
     IBuilder setView(View pView);
@@ -22,6 +24,8 @@ public interface IBuilder {
     IBuilder setErrorMessage(Activity pActivity, String pMessage);
 
     IBuilder clearText();
+
+    IBuilder setPmName(String pPmcName);
 
     IBuilder setTitle(String pTitle);
 
@@ -42,5 +46,6 @@ public interface IBuilder {
     IControl getIFControl();
 
     IBuilder setLockControl(boolean isLockControl);
+
     void release();
 }

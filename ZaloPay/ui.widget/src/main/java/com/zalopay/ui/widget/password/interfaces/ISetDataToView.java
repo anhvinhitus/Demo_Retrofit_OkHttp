@@ -11,7 +11,7 @@ public interface ISetDataToView {
 
     void setImage(String pIdImage);
 
-    void setTitle(String pTitle);
+    void setPmcName(String pPmcName);
 
     void clearData();
 

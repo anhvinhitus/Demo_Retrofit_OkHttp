@@ -133,7 +133,7 @@ public class AuthenActor {
         if (mPassword == null) {
             //just show checkbox when device have fingerprint feature available but user hasn't config password payment yet
             boolean visualCheckbox = shouldUseFPPassword();
-            mPassword = new PasswordManager(pActivity, pPaymentChannel.pmcname, logo_path, visualCheckbox, mPasswordCallback);
+            mPassword = new PasswordManager(pActivity, null, pPaymentChannel.pmcname, logo_path, visualCheckbox, mPasswordCallback);
         } else {
             mPassword.setContent(pPaymentChannel.pmcname, logo_path);
         }
