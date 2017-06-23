@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFontTextView;
 
@@ -31,11 +32,11 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
     @Inject
     HomeCollapseHeaderPresenter presenter;
 
-    @BindView(R.id.home_tv_balance)
-    IconFontTextView mBalanceView;
+//    @BindView(R.id.home_tv_balance)
+//    IconFontTextView mBalanceView;
 
-//    @BindView(R.id.tv_balance)
-//    TextView mBalanceView;
+    @BindView(R.id.tv_balance)
+    TextView mBalanceView;
 
     public static HomeCollapseHeaderFragment newInstance() {
         Bundle args = new Bundle();
@@ -88,8 +89,8 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
 
     @Override
     public void setBalance(long balance) {
-//        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
-        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
+        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
+//        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     @Override

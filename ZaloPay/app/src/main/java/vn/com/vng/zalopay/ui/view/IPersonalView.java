@@ -20,7 +20,8 @@ public interface IPersonalView {
 
     void setBalance(long balance);
 
-    void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount);
+//    void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount);
+    void setBankLinkText(int accounts);
 
     Context getContext();
 

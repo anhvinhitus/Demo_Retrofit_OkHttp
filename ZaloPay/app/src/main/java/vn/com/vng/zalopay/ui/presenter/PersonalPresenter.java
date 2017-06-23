@@ -63,6 +63,16 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private Navigator mNavigator;
     private int linkBankStatus;
 
+    public int getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(int accounts) {
+        this.accounts = accounts;
+    }
+
+    private int accounts;
+
     public int getLinkBankStatus() {
         return linkBankStatus;
     }
@@ -216,23 +226,29 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private void checkLinkCardStatus() {
         List<MapCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
         List<BankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
+        int nAccounts;
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_NONE);
+            setAccounts(0);
         } else if (!Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Đã liên kết thẻ, chưa liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_CARD_LINKED);
+            setAccounts(mapAccList.size());
         } else if (Lists.isEmptyOrNull(mapCardList) && !Lists.isEmptyOrNull(mapAccList)) {
             // Chưa liên kết thẻ, đã liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_ACCOUNT_LINKED);
+            setAccounts(mapAccList.size());
         } else {
             // Đã liên kết thẻ, liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_CARD_ACCOUNT_LINKED);
+            setAccounts(mapCardList.size() + mapAccList.size());
         }
 
         if (mView != null) {
-            mView.setBankLinkText(getLinkBankStatus(), mapCardList.size(), mapAccList.size());
+            mView.setBankLinkText(getAccounts());
+//            mView.setBankLinkText(getLinkBankStatus(), mapCardList.size(), mapAccList.size());
         }
     }
 

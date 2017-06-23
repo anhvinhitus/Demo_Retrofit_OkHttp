@@ -142,24 +142,35 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
     }
 
     @Override
-    public void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount) {
+    public void setBankLinkText(int accounts) {
         if (tvBankLink != null) {
-            switch (linkBankStatus) {
-                case Constants.LINK_BANK_NONE:
-                    tvBankLink.setText(getString(R.string.personal_link_now_text));
-                    break;
-                case Constants.LINK_BANK_CARD_LINKED:
-                    tvBankLink.setText(cardAmount + " thẻ");
-                    break;
-                case Constants.LINK_BANK_ACCOUNT_LINKED:
-                    tvBankLink.setText(accAmount + " tài khoản");
-                    break;
-                case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
-                    tvBankLink.setText("Đã liên kết thẻ và tài khoản");
-                    break;
+            if(accounts > 0) {
+                tvBankLink.setText(accounts + " liên kết");
+            } else {
+                tvBankLink.setText(getString(R.string.personal_link_now_text));
             }
         }
     }
+
+//    @Override
+//    public void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount) {
+//        if (tvBankLink != null) {
+//            switch (linkBankStatus) {
+//                case Constants.LINK_BANK_NONE:
+//                    tvBankLink.setText(getString(R.string.personal_link_now_text));
+//                    break;
+//                case Constants.LINK_BANK_CARD_LINKED:
+//                    tvBankLink.setText(cardAmount + " thẻ");
+//                    break;
+//                case Constants.LINK_BANK_ACCOUNT_LINKED:
+//                    tvBankLink.setText(accAmount + " tài khoản");
+//                    break;
+//                case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
+//                    tvBankLink.setText("Đã liên kết thẻ và tài khoản");
+//                    break;
+//            }
+//        }
+//    }
 
     @OnClick(R.id.personal_rl_setting)
     public void goToProtectAccount() {
@@ -186,18 +197,26 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
 
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
-        switch (presenter.getLinkBankStatus()) {
-            case Constants.LINK_BANK_NONE:
-                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-                presenter.addLinkCard();
-                break;
-            case Constants.LINK_BANK_CARD_LINKED:
-            case Constants.LINK_BANK_ACCOUNT_LINKED:
-            case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
-                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
-                navigator.startLinkCardActivity(getContext());
-                break;
+        if(presenter.getAccounts() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
+            navigator.startLinkCardActivity(getContext());
+        } else {
+            ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
+            presenter.addLinkCard();
         }
+
+//        switch (presenter.getLinkBankStatus()) {
+//            case Constants.LINK_BANK_NONE:
+//                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
+//                presenter.addLinkCard();
+//                break;
+//            case Constants.LINK_BANK_CARD_LINKED:
+//            case Constants.LINK_BANK_ACCOUNT_LINKED:
+//            case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
+//                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
+//                navigator.startLinkCardActivity(getContext());
+//                break;
+//        }
     }
 
 //    @OnClick(R.id.tab_personal_rl_bill)
