@@ -326,29 +326,21 @@ public class TransactionRepository implements TransactionStore.Repository {
             return false;
         }
 
+        if (recurseWithTranstype) {
+            return data.size() < TRANSACTION_LENGTH;
+        }
+
         if (sortOrder == TRANSACTION_ORDER_LATEST) {
             if (nextTimestamp <= timestamp && timestamp > 0) {
                 //   Timber.d("nextTimestamp lt timestamp [%s] lt [%s]", nextTimestamp, timestamp);
                 return false;
             }
         } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
-            if (nextTimestamp >= timestamp && timestamp > 0) {
+            if ((nextTimestamp >= timestamp && timestamp > 0) || Lists.isEmptyOrNull(data) || data.size() < TRANSACTION_LENGTH) {
                 updateOutOfData(timestamp, statusType, true);
                 // Timber.d("nextTimestamp gt timestamp [%s] gt [%s]", nextTimestamp, timestamp);
                 return false;
             }
-        }
-
-        if (recurseWithTranstype) {
-            if (data.size() < TRANSACTION_LENGTH) {
-                return true;
-            }
-            return false;
-        }
-
-        if (Lists.isEmptyOrNull(data) || data.size() < TRANSACTION_LENGTH) { // hết data để lấy else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
-            updateOutOfData(timestamp, statusType, true);
-            return false;
         }
 
         if (thresholdTime > 0) { // đệ quy đến 1 giới hạn thời gian nào đó.
@@ -369,6 +361,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void updateOutOfData(long timestamp, int statusType, boolean isOutOfData) {
+        Timber.d("updateOutOfData: timestamp [%s]", timestamp);
         if (!mFragmentLocalStorage.isHasData(timestamp, statusType)) {
             mFragmentLocalStorage.put(new TransactionFragmentEntity(statusType, timestamp, timestamp, isOutOfData));
         } else {
