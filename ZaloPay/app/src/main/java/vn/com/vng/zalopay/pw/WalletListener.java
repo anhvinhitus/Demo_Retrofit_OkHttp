@@ -18,28 +18,29 @@ import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 import static vn.com.zalopay.wallet.constants.PaymentError.COMPONENT_NULL;
 import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
 import static vn.com.zalopay.wallet.constants.PaymentError.NETWORKING_ERROR;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_CLOSE;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.FAILURE;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.INVALID_DATA;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_LOCK;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.ERROR_BALANCE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINK_ACCOUNT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DISCONNECT;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ERROR_BALANCE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.FAILURE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.INVALID_DATA;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.LEVEL_UPGRADE_PASSWORD;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.PROCESSING;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.SERVICE_MAINTENANCE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.SUCCESS;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.TOKEN_EXPIRE;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.LEVEL_UPGRADE_PASSWORD;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.UPVERSION;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_CLOSE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_LOCK;
 
 /**
  * Created by huuhoa on 12/8/16.
@@ -68,136 +69,126 @@ class WalletListener implements ZPPaymentListener {
         Timber.d("pay complete, result [%d]", paymentStatus);
         boolean paymentIsCompleted = true;
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
-        if (paymentStatus == PaymentStatus.PROCESSING) {
-            if (NetworkHelper.isNetworkAvailable(mPaymentWrapper.mActivity)) {
-                responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
-            } else {
-                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-            }
-            mPaymentWrapper.clearPendingOrder();
-        } else {
-            Timber.d("pay complete, status [%s]", paymentStatus);
-            switch (paymentStatus) {
-                case SUCCESS:
-                    if (mPaymentWrapper.mShowNotificationLinkCard) {
-                        DMapCardResult mapCard = mPaymentWrapper.getPaymentInfoBuilder().getMapCard();
+
+        Timber.d("pay complete, status [%s]", paymentStatus);
+        if (mPaymentWrapper.mActivity == null) {
+            Timber.w("Activity is null after pay order complete");
+        }
+
+        switch (paymentStatus) {
+            case PROCESSING:
+                if (mPaymentWrapper.mActivity == null || NetworkHelper.isNetworkAvailable(mPaymentWrapper.mActivity)) {
+                    responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
+                } else {
+                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                }
+                mPaymentWrapper.clearPendingOrder();
+                break;
+
+            case SUCCESS:
+                if (mPaymentWrapper.mShowNotificationLinkCard) {
+                    DMapCardResult mapCard = mPaymentWrapper.getPaymentInfoBuilder().getMapCard();
+                    if (mPaymentWrapper.mActivity != null) {
                         mPaymentWrapper.mNavigator.startNotificationLinkCardActivity(mPaymentWrapper.mActivity, mapCard);
                     }
-                    responseListener.onResponseSuccess(mPaymentWrapper.getPaymentInfoBuilder());
-                    break;
-                case TOKEN_EXPIRE:
-                    responseListener.onResponseTokenInvalid();
-                    break;
-                case USER_LOCK:
-                    responseListener.onResponseAccountSuspended();
-                    break;
-                case LEVEL_UPGRADE_PASSWORD:
-                    //Hien update profile level 2
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfile2ForResult();
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startUpdateProfileLevel();
-                    }
+                }
+                responseListener.onResponseSuccess(mPaymentWrapper.getPaymentInfoBuilder());
+                break;
+            case TOKEN_EXPIRE:
+                responseListener.onResponseTokenInvalid();
+                break;
+            case USER_LOCK:
+                responseListener.onResponseAccountSuspended();
+                break;
+            case LEVEL_UPGRADE_PASSWORD:
+                //Hien update profile level 2
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startUpdateProfile2ForResult();
+                } else {
+                    mPaymentWrapper.mRedirectListener.startUpdateProfileLevel();
+                }
 
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                case ERROR_BALANCE:
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startDepositForResult();
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startDepositForResult();
-                    }
+                paymentIsCompleted = false; // will continue after update profile
+                break;
+            case ERROR_BALANCE:
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startDepositForResult();
+                } else {
+                    mPaymentWrapper.mRedirectListener.startDepositForResult();
+                }
 
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                case USER_CLOSE:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
-                    /*// TODO: 5/29/17 - longlv: Fake data to test
-                    pPaymentResult.paymentStatus = EPaymentStatus.SUCCESS;
-                    //LinkAccount
-                    pPaymentResult.paymentInfo.linkAccInfo = new LinkAccInfo(ECardType.PVCB.toString(), ELinkAccType.LINK);
-                    BankAccount dBankAccount = new BankAccount();
-                    dBankAccount.bankcode = ECardType.PVCB.toString();
-                    dBankAccount.firstaccountno = "097654";
-                    dBankAccount.lastaccountno = "4321";
-                    pPaymentResult.paymentInfo.mapBank = dBankAccount;
-                    //LinkCard
-                    *//*MapCard mappedCard = new MapCard();
-                    mappedCard.bankcode = ECardType.PBIDV.toString();
-                    mappedCard.first6cardno = "970418";
-                    mappedCard.last4cardno = "4321";
-                    pPaymentResult.paymentInfo.mapBank = mappedCard;*//*
-
-                    mPaymentWrapper.responseListener.onResponseSuccess(pPaymentResult);*/
-                    break;
-                case INVALID_DATA:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
-                    break;
-                case FAILURE:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
-                    break;
-                case PROCESSING:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
-                    break;
-                case SERVICE_MAINTENANCE:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
-                    break;
-                case DISCONNECT:
-                    responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
-                    break;
-                case DIRECT_LINKCARD:
-                    responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
-                    break;
-                case DIRECT_LINK_ACCOUNT:
-                    if (mPaymentWrapper.mLinkCardListener != null) {
-                        Timber.d("pay complete, switch to link account because link card but user input bank account");
-                        mPaymentWrapper.mLinkCardListener.onErrorLinkCardButInputBankAccount(mapBank);
-                    } else {
-                        Timber.w("pay complete, response error: DIRECT_LINK_ACCOUNT");
-                        responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
-                    }
-                    break;
-                case DIRECT_LINK_ACCOUNT_AND_PAYMENT:
-                    String bankCode = null;
-                    if (mapBank != null) {
-                        bankCode = mapBank.bankcode;
-                    }
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkAccountActivity(bankCode);
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity(bankCode);
-                    }
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                case DIRECT_LINKCARD_AND_PAYMENT:
-                    String bankCodeLinkCard = null;
-                    if (mapBank != null) {
-                        bankCodeLinkCard = mapBank.bankcode;
-                    }
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startLinkCardActivity(bankCodeLinkCard);
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startLinkCardActivity(bankCodeLinkCard);
-                    }
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                case UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfileBeforeLinkAcc();
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startUpdateProfileBeforeLinkAcc();
-                    }
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                default:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
-                    break;
-            }
-
-            if (mPaymentWrapper.shouldClearPendingOrder(paymentStatus)) {
-                mPaymentWrapper.clearPendingOrder();
-            }
+                paymentIsCompleted = false; // will continue after update profile
+                break;
+            case USER_CLOSE:
+                responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+                break;
+            case INVALID_DATA:
+                responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
+                break;
+            case FAILURE:
+                responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
+                break;
+            case SERVICE_MAINTENANCE:
+                responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
+                break;
+            case DISCONNECT:
+                responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
+                break;
+            case DIRECT_LINKCARD:
+                responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
+                break;
+            case DIRECT_LINK_ACCOUNT:
+                if (mPaymentWrapper.mLinkCardListener != null) {
+                    Timber.d("pay complete, switch to link account because link card but user input bank account");
+                    mPaymentWrapper.mLinkCardListener.onErrorLinkCardButInputBankAccount(mapBank);
+                } else {
+                    Timber.w("pay complete, response error: DIRECT_LINK_ACCOUNT");
+                    responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
+                }
+                break;
+            case DIRECT_LINK_ACCOUNT_AND_PAYMENT:
+                String bankCode = null;
+                if (mapBank != null) {
+                    bankCode = mapBank.bankcode;
+                }
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startLinkAccountActivity(bankCode);
+                } else {
+                    mPaymentWrapper.mRedirectListener.startLinkAccountActivity(bankCode);
+                }
+                paymentIsCompleted = false; // will continue after update profile
+                break;
+            case DIRECT_LINKCARD_AND_PAYMENT:
+                String bankCodeLinkCard = null;
+                if (mapBank != null) {
+                    bankCodeLinkCard = mapBank.bankcode;
+                }
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startLinkCardActivity(bankCodeLinkCard);
+                } else {
+                    mPaymentWrapper.mRedirectListener.startLinkCardActivity(bankCodeLinkCard);
+                }
+                paymentIsCompleted = false; // will continue after update profile
+                break;
+            case UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startUpdateProfileBeforeLinkAcc();
+                } else {
+                    mPaymentWrapper.mRedirectListener.startUpdateProfileBeforeLinkAcc();
+                }
+                paymentIsCompleted = false; // will continue after update profile
+                break;
+            case LEVEL_UPGRADE_CMND_EMAIL:
+            case UPVERSION:
+            default:
+                responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
+                break;
         }
+
+        if (mPaymentWrapper.shouldClearPendingOrder(paymentStatus)) {
+            mPaymentWrapper.clearPendingOrder();
+        }
+
 
         // cleanup temporary variables
         if (paymentIsCompleted) {
@@ -233,6 +224,12 @@ class WalletListener implements ZPPaymentListener {
     public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
         Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]",
                 forceUpdate, latestVersion, msg);
+
+        if (mPaymentWrapper.mActivity == null) {
+            Timber.w("Activity is null after pay order complete");
+            return;
+        }
+
         AppVersionUtils.handleEventUpdateVersion(mPaymentWrapper.mActivity,
                 forceUpdate, latestVersion, msg);
     }
