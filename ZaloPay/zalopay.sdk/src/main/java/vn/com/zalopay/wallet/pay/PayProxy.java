@@ -168,10 +168,6 @@ public class PayProxy extends SingletonBase {
 
     public PayProxy() {
         super();
-        mTransService = SDKApplication.getApplicationComponent().transService();
-        mActivity = new WeakReference<>((BaseActivity) BaseActivity.getCurrentActivity());
-        mContext = SDKApplication.getApplication();
-        mAuthenActor = AuthenActor.get().plant(this);
     }
 
     public static PayProxy get() {
@@ -179,6 +175,14 @@ public class PayProxy extends SingletonBase {
             PayProxy._object = new PayProxy();
         }
         return PayProxy._object;
+    }
+
+    public PayProxy initialize(BaseActivity activity) {
+        mActivity = new WeakReference<>(activity);
+        mAuthenActor = AuthenActor.get().plant(this);
+        mTransService = SDKApplication.getApplicationComponent().transService();
+        mContext = SDKApplication.getApplication();
+        return this;
     }
 
     public AuthenActor getAuthenActor() {

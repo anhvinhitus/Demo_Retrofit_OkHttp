@@ -366,7 +366,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             renderItemDetail();
             initAdapter();
             //init channel proxy
-            mPayProxy = PayProxy.get()
+            mPayProxy = PayProxy.get().initialize((BaseActivity) getViewOrThrow().getActivity())
                     .setChannelListPresenter(this)
                     .setPaymentInfo(mPaymentInfoHelper);
             //validate user level

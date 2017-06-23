@@ -41,6 +41,7 @@ public class RS {
 
     public static final class string {
 
+        public static final String sdk_banklogo_visa = "sdk_banklogo_visa";
         public static final String zpw_string_vcb_error_password = "zpw_string_vcb_error_password";
 
         public static final String sdk_warning_order_submit = "sdk_warning_order_submit";
