@@ -90,6 +90,13 @@ public class PhoneUtil {
         return lengthDefault;
     }
 
+    public static int getMinLengthPhoneNumber(int lengthDefault) {
+        if (mPhoneFormat != null && mPhoneFormat.mMinLength > 0) {
+            return mPhoneFormat.mMinLength;
+        }
+        return lengthDefault;
+    }
+
     public static boolean isMobileNumber(String input) {
         return isMobileNumber(input, false);
     }
