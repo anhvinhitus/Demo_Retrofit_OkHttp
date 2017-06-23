@@ -1,2 +1,18 @@
-Zalo Pay (Staging v2.14.0 - build 280) - Released on 2017-06-23 09:27
-
+Zalo Pay (Sandbox v2.14.0 - build 281) - Released on 2017-06-23 18:01
++ [SDK] Fix lỗi gọi callback 2 lần by vo van chuc (#5b1b119)
++ [PW] Refactor wallet listener & check null activity by hieuvm (#11d4a2e)
++ [BalanceManager] Update ui: change text size by hieuvm (#902e4bf)
++ [APP] Update UI search no result task#620 by lytm (#ca44451)
++ [Transaction] Fix logic update out of data by khattn (#f13b83a)
++ [SDK] Thêm redirect_url vào appinfo by vo van chuc (#3999709)
++ [Onboarding] Sửa logic UI phone number. by hieuvm (#148dcd7)
++ [BalanceManager] Update ui, fix bug refresh accountname by hieuvm (#885f016)
++ [AccountName] Task#620: Bug UI build 277 by hieuvm (#faba59a)
++ [Onboarding] Update ui onboarding by hieuvm (#46e79c2)
++ [Onboarding] Sửa string resource phone by hieuvm (#650a21e)
++ [Ưu đãi] Task#612 : Hiển thị/Ẩn badge (N) ở tab Ưu Đãi by hieuvm (#e0ad303)
++ [Notify] Task#621: xử lý notification với area = 6 by hieuvm (#4bb0110)
++ [App] task#620 [Android] Bug UI build 277 by datnt10 (#b773d05)
++ [PIN] Update set title and pmcname by lytm (#58b82ee)
++ [UI] Update icon visa và mastercard by vo van chuc (#02bef3a)
++ [SDK] Fix lỗi crash khi vào liên kết thẻ by vo van chuc (#8e62622)
