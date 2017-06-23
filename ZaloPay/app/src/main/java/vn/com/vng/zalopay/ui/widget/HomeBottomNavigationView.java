@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.widget;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -40,11 +43,11 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         init();
     }
 
-    private void addLineSeparate() {
-        View line = new View(getContext());
-        line.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.separate));
-        addView(line, new LayoutParams(LayoutParams.MATCH_PARENT, AndroidUtils.dp(0.5F)));
-    }
+    private final SharedPreferences mPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
+    private final static String PREF_KEY_BADGE = "pref_badge_key";
+    private boolean mShowIconNewPromotion;
+    private View mIconNewPromotion;
+    private ViewPager mPager;
 
     private void init() {
         inflateMenu(R.menu.bottom_navigation_items);
@@ -53,8 +56,13 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         addLineSeparate();
         BottomNavigationViewHelper.disableShiftMode(this);
         setOnNavigationItemSelectedListener(this);
+        initBadge();
     }
 
+    private void initBadge() {
+        mShowIconNewPromotion = mPreferences.getBoolean(PREF_KEY_BADGE, false);
+        setBadgeViewPromotion(mShowIconNewPromotion);
+    }
 
     private void changeBottomNavigationLayout() {
         int paddingBottom = (int) getResources().getDimension(R.dimen.spacing_tiny_s);
@@ -66,6 +74,12 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         tabPromotion.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
         View tabProfile = findViewById(R.id.menu_profile);
         tabProfile.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
+    }
+
+    private void addLineSeparate() {
+        View line = new View(getContext());
+        line.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.separate));
+        addView(line, new LayoutParams(LayoutParams.MATCH_PARENT, AndroidUtils.dp(0.5F)));
     }
 
     private StateListDrawable createStateListDrawable(@StringRes int iconNameActive,
@@ -118,14 +132,14 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
             throw new RuntimeException("Viewpager not initialized");
         }
 
+        int previousPosition = mPager.getCurrentItem();
+
         mPager.setCurrentItem(position, false);
 
-        if (position == HomePagerAdapter.TAB_PROMOTION_INDEX) {
-            setPromotionNewState(false);
+        if (position == HomePagerAdapter.TAB_PROMOTION_INDEX || previousPosition == HomePagerAdapter.TAB_PROMOTION_INDEX) {
+            setBadgePromotion(false);
         }
     }
-
-    private ViewPager mPager;
 
     public void setViewPager(@NonNull ViewPager pager) {
         mPager = pager;
@@ -155,21 +169,25 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         return false;
     }
 
-    private boolean mShowIconNewPromotion;
-    private View mIconNewPromotion;
+    public void setBadgePromotion(boolean enable) {
+        Timber.d("set badge promotion: state [old:%s new:%s]", mShowIconNewPromotion, enable);
+        if (mShowIconNewPromotion == enable) {
+            return;
+        }
 
-    public void setPromotionNewState(boolean isActive) {
+        mPreferences.edit().putBoolean(PREF_KEY_BADGE, enable)
+                .apply();
+        mShowIconNewPromotion = enable;
+
+        setBadgeViewPromotion(enable);
+    }
+
+    private void setBadgeViewPromotion(boolean enable) {
         FrameLayout tabPromotion = (FrameLayout) findViewById(R.id.menu_promotion);
-        if (isActive) {
-            if (!mShowIconNewPromotion) {
-                mShowIconNewPromotion = true;
-                addIconNew(tabPromotion);
-            }
+        if (enable) {
+            addIconNew(tabPromotion);
         } else {
-            if (mShowIconNewPromotion) {
-                removeIconNew(tabPromotion);
-                mShowIconNewPromotion = false;
-            }
+            removeIconNew(tabPromotion);
         }
     }
 
@@ -177,17 +195,19 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         if (mIconNewPromotion != null) {
             return;
         }
+
         mIconNewPromotion = View.inflate(getContext(), R.layout.icon_new, null);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        frameLayout.addView(mIconNewPromotion, -1, layoutParams);
+        frameLayout.addView(mIconNewPromotion, layoutParams);
     }
 
     private void removeIconNew(FrameLayout frameLayout) {
         if (frameLayout == null || mIconNewPromotion == null) {
             return;
         }
+
         frameLayout.removeView(mIconNewPromotion);
         mIconNewPromotion = null;
     }

@@ -550,7 +550,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceivePreferentialNotification(PreferentialNotificationEvent event) {
-        Timber.d("onReceivePreferentialNotification: ");
         if (mView != null) {
             mView.showBadgePreferential();
         }

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zalopay.apploader.ReactBaseFragment;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
@@ -24,7 +23,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -239,7 +237,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Override
     public void showBadgePreferential() {
         if (mBottomNavigationView != null) {
-            mBottomNavigationView.setPromotionNewState(true);
+            mBottomNavigationView.setBadgePromotion(true);
         }
     }
 }
