@@ -62,7 +62,7 @@ public class PasswordManager {
         mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
     }
 
-    public void showPinView() {
+    public void show() {
         if (mUiBottomSheetDialog != null && !isShowing()) {
             mUiBottomSheetDialog.show();
             mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);

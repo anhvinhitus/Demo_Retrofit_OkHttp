@@ -1,14 +1,13 @@
-package vn.com.zalopay.wallet.ui.channellist;
+package vn.com.zalopay.wallet.pay;
 
 import android.app.Activity;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
-import com.zalopay.ui.widget.password.managers.PasswordManager;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -20,9 +19,9 @@ import rx.functions.Action1;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.FingerprintUtils;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -34,8 +33,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.fingerprint.FPError;
-import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -56,37 +53,46 @@ import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
 import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.RETRY_PASSWORD_MAX;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
+import static vn.com.zalopay.wallet.helper.TransactionHelper.getGenericExceptionMessage;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
 
 /***
  * pre check before start payment channel
  */
-public class ChannelProxy extends SingletonBase {
-    private static ChannelProxy _object;
-    private DialogFragment mFingerPrintDialog = null;
-    private ChannelPreValidation mChannelPreValidation;
-    private PasswordManager mPassword;
+public class PayProxy extends SingletonBase {
+    private static PayProxy _object;
+    private Context mContext;
+    private WeakReference<BaseActivity> mActivity;
+    private ValidationActor mValidActor;
+    private AuthenActor mAuthenActor;
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
-    private IBank mBankInteractor;
     private ITransService mTransService;
     private IRequest mRequestApi;
     private Subscription mSubscription;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
     private String mTransId = "0";
-    private String fpPassword;//password from fingerprint
-    private String inputPassword;//password input on popup
     private boolean transStatusStart = false;
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
-    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -105,12 +111,16 @@ public class ChannelProxy extends SingletonBase {
             Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
         }
     };
-    private Action1<StatusResponse> transStatusSubscriber = this::processStatus;
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-            markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+            markTransFail(getSubmitExceptionMessage(mContext));
         } else {
-            processStatus(statusResponse);
+            try {
+                processStatus(statusResponse);
+            } catch (Exception e) {
+                Log.e(this, e);
+                markTransFail(getGenericExceptionMessage(mContext));
+            }
         }
     };
     private Action1<Throwable> submitOrderException = throwable -> {
@@ -120,7 +130,6 @@ public class ChannelProxy extends SingletonBase {
             getTransStatusByAppTrans();
         }
     };
-
     private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
         Log.d(this, "submit order on complete", statusResponse);
         if (statusResponse == null) {
@@ -129,73 +138,11 @@ public class ChannelProxy extends SingletonBase {
         } else {
             //continue check payment status
             mTransId = statusResponse.zptransid;
-            processStatus(statusResponse);
-        }
-    };
-    private IPinCallBack mPasswordCallback = new IPinCallBack() {
-        @Override
-        public void onError(String pError) {
-            Log.e(this, pError);
-        }
-
-        @Override
-        public void onCheckedFingerPrint(boolean pChecked) {
-            Log.d(this, "on changed check", pChecked);
-        }
-
-        @Override
-        public void onCancel() {
-        }
-
-        @Override
-        public void onComplete(String pHashPassword) {
-            if (preventSubmitOrder()) {
-                Log.d(this, "order is submit - skip");
-                return;
-            }
-            Log.d(this, "password", pHashPassword);
-            if (!TextUtils.isEmpty(pHashPassword)) {
-                Log.d(this, "start submit trans pw", pHashPassword);
-                inputPassword = pHashPassword;
-                submitOrder(pHashPassword);
-            } else {
-                Log.e(this, "empty password");
-            }
-        }
-    };
-    private final IFPCallback mFingerPrintCallback = new IFPCallback() {
-        @Override
-        public void onError(FPError pError) {
-            dismissFingerPrintDialog();
             try {
-                getView().showInfoDialog(GlobalData.getStringResource(RS.string.zpw_error_authen_pin));
+                processStatus(statusResponse);
             } catch (Exception e) {
-                Log.d(this, e);
-            }
-        }
-
-        @Override
-        public void onCancel() {
-        }
-
-        @Override
-        public void onComplete(String pHashPassword) {
-            dismissFingerPrintDialog();
-            if (preventSubmitOrder()) {
-                Log.d(this, "order is submit - skip");
-                return;
-            }
-            //user don't setting use fingerprint for payment
-            if (TextUtils.isEmpty(pHashPassword)) {
-                Activity activity = BaseActivity.getCurrentActivity();
-                if (activity != null && !activity.isFinishing()) {
-                    showPassword(activity);
-                }
-            } else {
-                //submit password
-                Log.d(this, "start submit trans pw", pHashPassword);
-                fpPassword = pHashPassword;
-                submitOrder(pHashPassword);
+                Log.e(this, e);
+                markTransFail(getGenericExceptionMessage(mContext));
             }
         }
     };
@@ -204,7 +151,12 @@ public class ChannelProxy extends SingletonBase {
         public void call(BankConfigResponse bankConfigResponse) {
             String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
             if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
-                startFlow();
+                try {
+                    startFlow();
+                } catch (Exception e) {
+                    Log.e(this, e);
+                    markTransFail(getGenericExceptionMessage(mContext));
+                }
             }
             try {
                 getView().hideLoading();
@@ -214,22 +166,36 @@ public class ChannelProxy extends SingletonBase {
         }
     };
 
-    public ChannelProxy() {
+    public PayProxy() {
         super();
         mTransService = SDKApplication.getApplicationComponent().transService();
+        mActivity = new WeakReference<>((BaseActivity) BaseActivity.getCurrentActivity());
+        mContext = SDKApplication.getApplication();
+        mAuthenActor = AuthenActor.get().plant(this);
     }
 
-    public static ChannelProxy get() {
-        if (ChannelProxy._object == null) {
-            ChannelProxy._object = new ChannelProxy();
+    public static PayProxy get() {
+        if (PayProxy._object == null) {
+            PayProxy._object = new PayProxy();
         }
-        return ChannelProxy._object;
+        return PayProxy._object;
+    }
+
+    public AuthenActor getAuthenActor() {
+        return mAuthenActor;
+    }
+
+    public BaseActivity getActivity() throws Exception {
+        if (mActivity.get() == null || mActivity.get().isFinishing()) {
+            throw new IllegalStateException("invalid channel list activity");
+        }
+        return mActivity.get();
     }
 
     private boolean networkException(Throwable throwable) {
         boolean networkError = throwable instanceof NetworkConnectionException;
         if (networkError) {
-            markTransFail(getSubmitExceptionMessage(GlobalData.getAppContext()));
+            markTransFail(getSubmitExceptionMessage(mContext));
         }
         return networkError;
     }
@@ -252,7 +218,7 @@ public class ChannelProxy extends SingletonBase {
         boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
         if (isSubmitted) {
             try {
-                getView().showInfoDialog(GlobalData.getStringResource(RS.string.sdk_warning_order_submit));
+                getView().showInfoDialog(mContext.getString(R.string.sdk_warning_order_submit));
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -260,16 +226,9 @@ public class ChannelProxy extends SingletonBase {
         return isSubmitted;
     }
 
-    private void closePassword() {
-        if (mPassword != null) {
-            mPassword.closePinView();
-            mPassword = null;
-        }
-    }
-
     private void askToRetryGetStatus() throws Exception {
         showRetryDialogCount++;
-        String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);
+        String message = mContext.getString(R.string.zingpaysdk_alert_processing_ask_to_retry);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -283,7 +242,7 @@ public class ChannelProxy extends SingletonBase {
         });
     }
 
-    private void processStatus(StatusResponse pResponse) {
+    private void processStatus(StatusResponse pResponse) throws Exception {
         Log.d(this, "process status", pResponse);
         try {
             getView().updateDefaultTitle();
@@ -291,7 +250,7 @@ public class ChannelProxy extends SingletonBase {
             Log.e(this, e);
         }
         if (pResponse == null) {
-            markTransFail(TransactionHelper.getGenericExceptionMessage(GlobalData.getAppContext()));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         } else {
             mStatusResponse = pResponse;
             if (TextUtils.isEmpty(mTransId)) {
@@ -301,11 +260,10 @@ public class ChannelProxy extends SingletonBase {
             switch (status) {
                 case PaymentState.SUCCESS:
                     mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-                    updatePasswordOnSuccess();
                     moveToResultScreen();
                     break;
                 case PaymentState.SECURITY:
-                    closePassword();
+                    mAuthenActor.closeAuthen();
                     startChannelActivity();
                     break;
                 case PaymentState.PROCESSING:
@@ -334,6 +292,7 @@ public class ChannelProxy extends SingletonBase {
                     if (retryPassword >= RETRY_PASSWORD_MAX) {
                         moveToResultScreen();
                     } else {
+                        showPassword(getActivity());
                         setError(mStatusResponse.returnmessage);
                         retryPassword++;
                     }
@@ -350,28 +309,13 @@ public class ChannelProxy extends SingletonBase {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
-            mStatusResponse.returnmessage = GlobalData.getStringResource(RS.string.sdk_fail_trans_status);
+            mStatusResponse.returnmessage = mContext.getString(R.string.sdk_fail_trans_status);
         }
-        closePassword();
+        mAuthenActor.closeAuthen();
         startChannelActivity();
     }
 
-    private void updatePasswordOnSuccess() {
-        if (!TextUtils.isEmpty(fpPassword) && !TextUtils.isEmpty(inputPassword) && !fpPassword.equals(inputPassword)) {
-            try {
-                PaymentFingerPrint.shared().updatePassword(fpPassword, inputPassword);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-    }
-
-    public ChannelProxy setBankInteractor(IBank pBankInteractor) {
-        mBankInteractor = pBankInteractor;
-        return this;
-    }
-
-    public ChannelProxy setChannel(PaymentChannel pChannel) {
+    public PayProxy setChannel(PaymentChannel pChannel) {
         mChannel = pChannel;
         return this;
     }
@@ -387,7 +331,7 @@ public class ChannelProxy extends SingletonBase {
         return mChannelListPresenter.get();
     }
 
-    public ChannelProxy setChannelListPresenter(ChannelListPresenter presenter) {
+    public PayProxy setChannelListPresenter(ChannelListPresenter presenter) {
         mChannelListPresenter = new WeakReference<>(presenter);
         return this;
     }
@@ -396,17 +340,20 @@ public class ChannelProxy extends SingletonBase {
         return mPaymentInfoHelper;
     }
 
-    public ChannelProxy setPaymentInfo(PaymentInfoHelper paymentInfoHelper) {
+    public PayProxy setPaymentInfo(PaymentInfoHelper paymentInfoHelper) {
         mPaymentInfoHelper = paymentInfoHelper;
         return this;
     }
 
     public boolean validate(PaymentChannel channel) {
         try {
-            if (mChannelPreValidation == null) {
-                mChannelPreValidation = new ChannelPreValidation(mPaymentInfoHelper, mBankInteractor, getPresenter());
+            if (mValidActor == null) {
+                IBank bankInteractor = SDKApplication
+                        .getApplicationComponent()
+                        .bankListInteractor();
+                mValidActor = new ValidationActor(mPaymentInfoHelper, bankInteractor, getPresenter());
             }
-            return mChannelPreValidation.validate(channel);
+            return mValidActor.validate(channel);
         } catch (Exception e) {
             Log.d(this, e);
         }
@@ -415,9 +362,7 @@ public class ChannelProxy extends SingletonBase {
 
     private void showLoading(String pMessage) {
         try {
-            if (mPassword != null) {
-                mPassword.showLoading(true);
-                mPassword.lock();
+            if (mAuthenActor.showLoading()) {
                 getView().setTitle(pMessage);
             } else {
                 getView().showLoading(pMessage);
@@ -429,10 +374,7 @@ public class ChannelProxy extends SingletonBase {
 
     private void hideLoading(String pError) {
         try {
-            if (mPassword != null) {
-                mPassword.setErrorMessage(pError);
-                mPassword.unlock();
-            } else {
+            if (!mAuthenActor.hideLoading(pError)) {
                 getView().hideLoading();
             }
         } catch (Exception e) {
@@ -444,7 +386,7 @@ public class ChannelProxy extends SingletonBase {
     private void submitOrder(String pHashPassword) {
         try {
             if (getPresenter().networkOffline()) {
-                closePassword();
+                mAuthenActor.closeAuthen();
                 return;
             }
             Log.d(this, "start submit order");
@@ -458,13 +400,13 @@ public class ChannelProxy extends SingletonBase {
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
                             .doOnNext(statusResponse -> {
-                                showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
+                                showLoading(mContext.getString(R.string.zpw_string_alert_submit_order));
                             })
                             .subscribe(submitOrderSubscriber, submitOrderException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Log.e(this, e);
-            markTransFail(TransactionHelper.getSubmitExceptionMessage(BaseActivity.getCurrentActivity()));
+            markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
         }
     }
 
@@ -474,7 +416,7 @@ public class ChannelProxy extends SingletonBase {
             getPresenter().addSubscription(mSubscription);
         } catch (Exception e) {
             Log.e(this, e);
-            markTransFail(TransactionHelper.getGenericExceptionMessage(BaseActivity.getCurrentActivity()));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
 
@@ -485,7 +427,7 @@ public class ChannelProxy extends SingletonBase {
                 getPresenter().addSubscription(mSubscription);
             } catch (Exception e) {
                 Log.e(this, e);
-                markTransFail(TransactionHelper.getGenericExceptionMessage(BaseActivity.getCurrentActivity()));
+                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         }, 1000);
     }
@@ -497,7 +439,7 @@ public class ChannelProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnNext(statusResponse -> {
                     try {
-                        getView().setTitle(GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                        getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -512,7 +454,7 @@ public class ChannelProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnNext(statusResponse -> {
                     try {
-                        getView().setTitle(GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                        getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -525,11 +467,6 @@ public class ChannelProxy extends SingletonBase {
      */
     public void start() throws Exception {
         Log.d(this, "start payment channel", mChannel);
-        Activity activity = BaseActivity.getCurrentActivity();
-        if (!(activity instanceof BaseActivity)) {
-            Log.e(this, "channel list activity is not valid");
-            return;
-        }
         //map card channel clicked
         if (mChannel.isMapValid()) {
             BaseMap mapBank = mChannel.isBankAccountMap ? new BankAccount() : new MapCard();
@@ -542,7 +479,7 @@ public class ChannelProxy extends SingletonBase {
         }
         mPaymentInfoHelper.getOrder().populateFee(mChannel);
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-            getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+            getView().showLoading(mContext.getString(R.string.zpw_string_alert_loading_bank));
             ChannelListPresenter presenter = getPresenter();
             presenter.loadBankList(bankListSubscriber, presenter.mBankListException);
         } else {
@@ -556,7 +493,10 @@ public class ChannelProxy extends SingletonBase {
         }
 
         int bankFunction = GlobalData.getCurrentBankFunction();
-        BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
+        BankConfig bankConfig = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(pBankCode);
         if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
             try {
                 getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
@@ -582,15 +522,11 @@ public class ChannelProxy extends SingletonBase {
         return true;
     }
 
-    private void startFlow() {
-        Activity activity = BaseActivity.getCurrentActivity();
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
+    private void startFlow() throws Exception {
         //password flow
         if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
             if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
-                startPasswordFlow(activity);
+                startPasswordFlow(getActivity());
             } else {
                 //submit order without password
                 submitOrder("");
@@ -640,36 +576,22 @@ public class ChannelProxy extends SingletonBase {
     }
 
     private void showPassword(Activity pActivity) {
-        getPasswordManager(pActivity).showPinView();
+        try {
+            mAuthenActor.showPasswordPopup(pActivity, mChannel);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
     }
 
-    private void showFingerPrint(Activity pActivity) throws Exception {
-        mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
-        if (mFingerPrintDialog != null) {
-            mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
-        } else {
+    private void showFingerPrint(Activity pActivity) {
+        try {
+            mAuthenActor.showFingerPrint(pActivity);
+        } catch (Exception e) {
+            Log.e(this, e);
             showPassword(pActivity);
             Log.d(this, "use password instead of fingerprint");
         }
-    }
-
-    private void dismissFingerPrintDialog() {
-        if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
-            mFingerPrintDialog.dismiss();
-            mFingerPrintDialog = null;
-            Log.d(this, "dismiss dialog fingerprint");
-        }
-    }
-
-    private PasswordManager getPasswordManager(Activity pActivity) {
-        String logo_path = ResourceManager.getAbsoluteImagePath(mChannel.channel_icon);
-        if (mPassword == null) {
-            boolean supportFingerPrint = FingerprintUtils.deviceSupportFingerPrint(pActivity.getApplicationContext());
-            mPassword = new PasswordManager(pActivity, mChannel.pmcname, logo_path, supportFingerPrint, mPasswordCallback);
-        } else {
-            mPassword.setContent(mChannel.pmcname, logo_path);
-        }
-        return mPassword;
     }
 
     private IRequest getSubmitTransRequest() {
@@ -727,7 +649,6 @@ public class ChannelProxy extends SingletonBase {
             }
             //mark trans as success
             mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-            updatePasswordOnSuccess();
             moveToResultScreen();
             Log.d(this, "trans success from notification");
         }
@@ -742,6 +663,78 @@ public class ChannelProxy extends SingletonBase {
             return OrderState.QUERY_STATUS;
         } else {
             return OrderState.NO_STATUS;
+        }
+    }
+
+    public void onCompletePasswordPopup(String pHashPassword) {
+        if (preventSubmitOrder()) {
+            Log.d(this, "order is submit - skip");
+            return;
+        }
+        if (!TextUtils.isEmpty(pHashPassword)) {
+            Log.d(this, "start submit trans pw", pHashPassword);
+            submitOrder(pHashPassword);
+        } else {
+            Log.e(this, "empty password");
+        }
+    }
+
+    public void onErrorPasswordPopup() {
+        markTransFail(getGenericExceptionMessage(mContext));
+    }
+
+    public void onComleteFingerPrint(String pHashPassword) {
+        if (preventSubmitOrder()) {
+            Log.d(this, "order is submit - skip");
+            return;
+        }
+        //user don't setting use fingerprint for payment
+        if (TextUtils.isEmpty(pHashPassword)) {
+            try {
+                showPassword(getActivity());
+            } catch (Exception e) {
+                Log.e(this, e);
+                markTransFail(getGenericExceptionMessage(mContext));
+            }
+        } else {
+            //submit password
+            Log.d(this, "start submit trans pw", pHashPassword);
+            submitOrder(pHashPassword);
+        }
+    }
+
+    public void onErrorFingerPrint() {
+        try {
+            getView().showInfoDialog(mContext.getString(R.string.zpw_error_authen_pin), new ZPWOnEventDialogListener() {
+                @Override
+                public void onOKevent() {
+                    try {
+                        showPassword(getActivity());
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                        markTransFail(getGenericExceptionMessage(mContext));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    }
+
+    public void release() {
+        Log.d(this, "start release pay proxy factors");
+        mActivity = null;
+        mValidActor = null;
+        mRequestApi = null;
+        mChannelListPresenter = null;
+        mChannel = null;
+        if (mAuthenActor != null) {
+            mAuthenActor.release();
+            mAuthenActor = null;
+        }
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
         }
     }
 }

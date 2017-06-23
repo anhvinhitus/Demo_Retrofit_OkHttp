@@ -61,6 +61,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
@@ -242,13 +243,13 @@ public abstract class AdapterBase {
             } else if (!TransactionHelper.isSecurityFlow(mResponseStatus)) {
                 showTransactionFailView(mResponseStatus.returnmessage);
             }
-        }else{
+        } else {
             setTitle();
         }
         Log.d(this, "start adapter with page name", mPageName);
     }
 
-    protected void setTitle(){
+    protected void setTitle() {
         if (mPaymentInfoHelper.isCardLinkTrans()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.sdk_link_card_title));
         } else {
@@ -256,7 +257,7 @@ public abstract class AdapterBase {
         }
     }
 
-    protected String getTitle(){
+    protected String getTitle() {
         return GlobalData.getStringResource(RS.string.zpw_string_atm_method_name);
     }
 
@@ -1241,6 +1242,10 @@ public abstract class AdapterBase {
         PaymentSnackBar.getInstance().dismiss();
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         processSaveCardOnResult();
+        //update password fingerprint
+        if (PayProxy.get().getAuthenActor().updatePassword()) {
+            getActivity().showToast(R.layout.layout_update_password_toast);
+        }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 

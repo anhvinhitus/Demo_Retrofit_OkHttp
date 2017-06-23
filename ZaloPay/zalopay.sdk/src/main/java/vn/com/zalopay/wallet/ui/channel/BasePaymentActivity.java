@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -1100,6 +1102,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animFail();
         changeSubmitButtonBackground();
+    }
+
+    public void showToast(int layout){
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(View.inflate(getApplicationContext(),layout, null));
+        toast.show();
     }
 
     public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {

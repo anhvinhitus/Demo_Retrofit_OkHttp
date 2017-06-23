@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
@@ -54,7 +55,7 @@ public class GlobalData {
     }
 
     public static boolean isUserInSDK() {
-        return BasePaymentActivity.getCurrentActivityCount() > 0;
+        return BasePaymentActivity.getCurrentActivityCount() > 0 || BaseActivity.getActivityCount() > 0;
     }
 
     public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
@@ -176,10 +177,8 @@ public class GlobalData {
             return SDKApplication.getApplication();
         } catch (Exception e) {
             Log.e(GlobalData.class.getName(), e);
-
             terminateSDK();
         }
-
         return null;
     }
 

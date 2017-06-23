@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public boolean onBackPressed() {
         boolean back_pressed = mPresenter.onBackPressed();
-        if(!back_pressed){
+        if (!back_pressed) {
             showQuitConfirm();
             back_pressed = true;
         }
@@ -354,10 +354,15 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showInfoDialog(String pMessage) {
+        showInfoDialog(pMessage, null);
+    }
+
+    @Override
+    public void showInfoDialog(String pMessage, ZPWOnEventDialogListener zpwOnEventDialogListener) {
         hideLoading();
         DialogManager.showSweetDialogCustom(getActivity(),
                 pMessage, getResources().getString(R.string.dialog_close_button),
-                SweetAlertDialog.INFO_TYPE, null);
+                SweetAlertDialog.INFO_TYPE, zpwOnEventDialogListener);
     }
 
     @Override

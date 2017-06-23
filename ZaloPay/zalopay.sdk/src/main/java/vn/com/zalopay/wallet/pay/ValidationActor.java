@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.ui.channellist;
+package vn.com.zalopay.wallet.pay;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
@@ -20,11 +20,13 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
 /***
  * pre check before start payment channel
  */
-public class ChannelPreValidation extends SingletonBase {
+public class ValidationActor extends SingletonBase {
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
     private IBank mBankInteractor;
@@ -50,7 +52,7 @@ public class ChannelPreValidation extends SingletonBase {
         }
     };
 
-    public ChannelPreValidation(PaymentInfoHelper paymentInfoHelper, IBank iBank, ChannelListPresenter channelListPresenter) {
+    public ValidationActor(PaymentInfoHelper paymentInfoHelper, IBank iBank, ChannelListPresenter channelListPresenter) {
         this.mPaymentInfoHelper = paymentInfoHelper;
         this.mBankInteractor = iBank;
         this.mChannelListPresenter = new WeakReference<>(channelListPresenter);

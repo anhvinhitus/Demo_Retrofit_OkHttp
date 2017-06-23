@@ -569,4 +569,6 @@
     <string name="sdk_warning_balance_error">Số dư không đủ</string>
 
     <string name="zpw_string_vcb_error_password">Mật khẩu hiện tại không đúng. Xin vui lòng kiểm tra lại</string>
+
+    <string name="sdk_update_fingerprint_success_text">Kích hoạt vân tay thành công</string>
 </resources>

@@ -60,6 +60,7 @@ import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -95,7 +96,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     };
     protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
-    private ChannelProxy mChannelProxy;
+    private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
@@ -199,10 +200,10 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     public boolean onBackPressed() {
         Log.d(this, "onBackPressed");
-        if (mChannelProxy == null) {
+        if (mPayProxy == null) {
             return false;
         }
-        @OrderState int orderState = mChannelProxy.orderProcessing();
+        @OrderState int orderState = mPayProxy.orderProcessing();
         switch (orderState) {
             case OrderState.SUBMIT:
             case OrderState.QUERY_STATUS:
@@ -247,6 +248,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         super.onDetach();
         mChannelAdapter = null;
         mChannelList = null;
+        if(mPayProxy != null){
+            mPayProxy.release();
+        }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -303,7 +307,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         if (networkOffline()) {
             return null;
         }
-        if (!mChannelProxy.validate(channel)) {
+        if (!mPayProxy.validate(channel)) {
             return null;
         }
         try {
@@ -348,7 +352,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void startPayment() {
         try {
             if (mSelectChannel != null) {
-                mChannelProxy.setChannel(mSelectChannel).start();
+                mPayProxy.setChannel(mSelectChannel).start();
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -362,10 +366,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             renderItemDetail();
             initAdapter();
             //init channel proxy
-            mChannelProxy = ChannelProxy.get()
+            mPayProxy = PayProxy.get()
                     .setChannelListPresenter(this)
-                    .setPaymentInfo(mPaymentInfoHelper)
-                    .setBankInteractor(mBankInteractor);
+                    .setPaymentInfo(mPaymentInfoHelper);
             //validate user level
             if (!mPaymentInfoHelper.userLevelValid()) {
                 getViewOrThrow().showForceUpdateLevelDialog();
@@ -764,9 +767,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessTransEvent(SdkSuccessTransEvent event) {
-        if (mChannelProxy != null) {
+        if (mPayProxy != null) {
             try {
-                mChannelProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
+                mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
             } catch (Exception e) {
                 Log.e(this, e);
             }

@@ -53,7 +53,7 @@ import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
-import vn.com.zalopay.wallet.ui.channellist.ChannelProxy;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -288,7 +288,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
-        mPaymentInfoHelper = ChannelProxy.get().getPaymentInfoHelper();
+        mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
         if (mPaymentInfoHelper == null) {
             Log.d(this, "this channel not start from gateway channel list");
             return;
