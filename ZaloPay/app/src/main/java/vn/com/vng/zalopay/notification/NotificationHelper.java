@@ -87,6 +87,8 @@ public class NotificationHelper {
     private IResourceLoader mResourceLoader;
     private PromotionHelper mPromotionHelper;
 
+    private static final int AREA_SKIP = 6;
+
     @Inject
     NotificationHelper(Context applicationContext, User user,
                        NotificationStore.Repository notifyRepository,
@@ -150,7 +152,7 @@ public class NotificationHelper {
     private void processNotification(@NonNull NotificationData notify, boolean isRecovery) {
 
         this.shouldMarkRead(notify);
-        boolean skipStorage = false;
+        boolean skipStorage = skipStorage(notify);
 
         int notificationType = (int) notify.notificationtype;
         switch (notificationType) {
@@ -219,6 +221,10 @@ public class NotificationHelper {
             this.putNotification(notify);
         }
 
+    }
+
+    private boolean skipStorage(NotificationData notify) {
+        return notify.area == AREA_SKIP;
     }
 
     void processImmediateNotification(NotificationData notify) {
