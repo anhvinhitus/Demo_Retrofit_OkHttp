@@ -3,224 +3,135 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/background"
+              android:background="@color/white"
               android:orientation="vertical"
               tools:context=".ui.fragment.BalanceManagementFragment">
 
-    <LinearLayout
+    <include layout="@layout/header_balance_manager_layout"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
+
+    <RelativeLayout
+        android:id="@+id/balance_management_rl_deposit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical">
-
-        <com.zalopay.ui.widget.IconFontTextView
-            style="@style/TextView.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:text="@string/my_balance"
-            android:textColor="@color/white"
-            app:iconTopColor="@color/white"
-            app:iconTopName="@string/header_overbalance"
-            app:iconTopPadding="@dimen/spacing.medium.m"
-            app:iconTopSize="@dimen/font_size_balance_manager_header"/>
-
-        <TextView
-            android:id="@+id/tv_balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/spacing.medium"
-            android:text="0"
-            android:textColor="@color/white"
-            android:textSize="34sp"
-            android:textStyle="normal"
-            tools:ignore="HardcodedText"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutAccountName"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/white"
-        android:gravity="center_vertical"
+        android:background="?selector"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/app_padding"
         android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
+        android:paddingRight="@dimen/spacing.medium"
+        android:paddingTop="@dimen/app_padding">
 
-        <TextView
-            style="@style/TextView.Item.Title"
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/icfont_recharge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/account_name"/>
+            android:textColor="@color/menu_font_ic_green"
+            app:iconName="@string/notify_1_receivemoney"
+            app:iconSize="@dimen/font_size_balance_manager_deposit"/>
 
-        <TextView
-            android:id="@+id/tvAccountName"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/app_padding"
+            android:layout_toLeftOf="@+id/icfont_right_arrow"
+            android:layout_toRightOf="@+id/icfont_recharge"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/LeftMenu.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:text="@string/txt_deposit"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/balance_management_deposit_description"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/icfont_right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/arrow_right"
+            app:iconName="@string/general_arrowright"
+            app:iconSize="@dimen/font_size_arrow_right"/>
+    </RelativeLayout>
 
     <View
+        android:id="@+id/viewSeparate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
+        android:layout_marginLeft="66dp"
         android:background="@color/separate"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/balance_management_rl_withdraw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/balance_management_rl_deposit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?selector"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/app_padding"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/app_padding">
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/icfont_recharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/menu_font_ic_green"
-                app:iconName="@string/notify_1_receivemoney"
-                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/app_padding"
-                android:layout_toLeftOf="@+id/icfont_right_arrow"
-                android:layout_toRightOf="@+id/icfont_recharge"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/LeftMenu.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="@string/txt_deposit"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/balance_management_deposit_description"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/icfont_right_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/arrow_right"
-                app:iconName="@string/general_arrowright"
-                app:iconSize="@dimen/font_size_arrow_right"/>
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/viewSeparate"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:layout_marginLeft="66dp"
-            android:background="@color/separate"/>
-
-        <RelativeLayout
-            android:id="@+id/balance_management_rl_withdraw"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?selector"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/app_padding"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/app_padding">
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/icfont_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/menu_font_ic_yellow"
-                app:iconName="@string/notify_1_withdraw"
-                app:iconSize="@dimen/font_size_balance_manager_withdraw"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/app_padding"
-                android:layout_toLeftOf="@+id/icfont_right_arrow_withdraw"
-                android:layout_toRightOf="@+id/icfont_withdraw"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/LeftMenu.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="@string/txt_withdraw"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/balance_management_withdraw_description"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/icfont_right_arrow_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/arrow_right"
-                app:iconName="@string/general_arrowright"
-                app:iconSize="@dimen/font_size_arrow_right"/>
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal|bottom"
+        android:background="?selector"
         android:orientation="horizontal"
-        android:paddingBottom="16dp">
+        android:paddingBottom="@dimen/app_padding"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:paddingTop="@dimen/app_padding">
 
-        <com.zalopay.ui.widget.IconFontTextView
-            android:id="@+id/tvQuestion"
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/icfont_withdraw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/more_info_acc_zalopay"
-            android:textColor="@color/text_green"
-            app:iconLeftColor="@color/text_green"
-            app:iconLeftName="@string/general_question"
-            app:iconLeftPadding="@dimen/spacing.small"
-            app:iconLeftSize="@dimen/font_size_balance_manager_question"/>
-    </LinearLayout>
+            android:textColor="@color/menu_font_ic_yellow"
+            app:iconName="@string/notify_1_withdraw"
+            app:iconSize="@dimen/font_size_balance_manager_withdraw"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/app_padding"
+            android:layout_toLeftOf="@+id/icfont_right_arrow_withdraw"
+            android:layout_toRightOf="@+id/icfont_withdraw"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/LeftMenu.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:text="@string/txt_withdraw"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/balance_management_withdraw_description"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/icfont_right_arrow_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/arrow_right"
+            app:iconName="@string/general_arrowright"
+            app:iconSize="@dimen/font_size_arrow_right"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
 </LinearLayout>
+

@@ -26,7 +26,9 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -1131,5 +1133,11 @@ public class AndroidUtils {
         }
 
         return ua;
+    }
+
+    public static Drawable getDrawable(Context context, @DrawableRes int id, @ColorRes int color) {
+        Drawable drawable = ContextCompat.getDrawable(context, id);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(context, color));
+        return drawable;
     }
 }

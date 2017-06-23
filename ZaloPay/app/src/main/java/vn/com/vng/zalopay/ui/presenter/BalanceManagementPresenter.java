@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -98,6 +99,14 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         Timber.d("onEventMainThread ChangeBalanceEvent");
         if (mView != null) {
             mView.setBalance(event.balance);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onZaloPayNameEvent(ZaloPayNameEvent event) {
+        Timber.d("zalopayname change [%s] ", event.zaloPayName);
+        if (mView != null) {
+            mView.setUser(mUser);
         }
     }
 

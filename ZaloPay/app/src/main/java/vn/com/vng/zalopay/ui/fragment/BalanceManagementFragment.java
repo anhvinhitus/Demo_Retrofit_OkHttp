@@ -1,12 +1,13 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.zalopay.apploader.internal.ModuleName;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
@@ -45,15 +46,11 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         return R.layout.fragment_balance_management;
     }
 
-
     @Inject
     BalanceManagementPresenter mPresenter;
 
     @BindView(R.id.tv_balance)
     TextView mTvBalance;
-
-    @BindView(R.id.layoutAccountName)
-    View layoutAccountName;
 
     @BindView(R.id.tvAccountName)
     TextView mTvAccountName;
@@ -64,10 +61,16 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @BindView(R.id.viewSeparate)
     View mViewSeparate;
 
+    @BindView(R.id.background)
+    SimpleDraweeView mBackgroundView;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mBackgroundView
+                .getHierarchy()
+                .setPlaceholderImageFocusPoint(new PointF(0.5f, 0f));
         mPresenter.loadView();
     }
 
@@ -105,12 +108,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         mPresenter.startWithdrawActivity();
     }
 
-    @OnClick(R.id.tvQuestion)
-    public void onClickQuestion() {
-        navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
-    }
-
-    @OnClick(R.id.layoutAccountName)
+    @OnClick(R.id.tvAccountName)
     public void onClickAccountName() {
         mPresenter.updateZaloPayID();
     }
@@ -135,13 +133,18 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
             return;
         }
 
+        String name = TextUtils.isEmpty(user.zalopayname) ? getString(R.string.not_update) : user.zalopayname;
+
+        String accountLabel = String.format(getString(R.string.zalopayid_not_update_format), name);
+
         if (TextUtils.isEmpty(user.zalopayname)) {
-            mTvAccountName.setHint(getString(R.string.not_update));
-            layoutAccountName.setClickable(true);
+            mTvAccountName.setHint(accountLabel);
+            mTvAccountName.setClickable(true);
+            mTvAccountName.setCompoundDrawablesWithIntrinsicBounds(null, null, AndroidUtils.getDrawable(getContext(), R.drawable.ic_arrow_right, R.color.blue_008fe5), null);
         } else {
-            mTvAccountName.setText(user.zalopayname);
+            mTvAccountName.setText(accountLabel);
+            mTvAccountName.setClickable(false);
             mTvAccountName.setCompoundDrawables(null, null, null, null);
-            layoutAccountName.setClickable(false);
         }
     }
 
