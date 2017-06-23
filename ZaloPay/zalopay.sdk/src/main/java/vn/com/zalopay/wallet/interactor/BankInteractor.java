@@ -30,6 +30,8 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 
+import static vn.com.zalopay.wallet.constants.Constants.BITMAP_EXTENSION;
+
 /**
  * Interactor decide which get data from
  * do some bussiness logic on return result and delegate the result to caller
@@ -99,7 +101,9 @@ public class BankInteractor implements IBank {
                     String bankCodeMaster = CardType.MASTER;
 
                     ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    visa.bankLogo = getBankLogo(bankCodeVisa);
+                    String bankLogoVisa = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa),
+                            BITMAP_EXTENSION);
+                    visa.bankLogo = bankLogoVisa;
                     visa.bankCode = bankCodeVisa;
                     visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
 
@@ -183,7 +187,7 @@ public class BankInteractor implements IBank {
     }
 
     protected String getBankLogo(String pBankCode) {
-        return String.format("bank_%s%s", pBankCode, Constants.BITMAP_EXTENSION);
+        return String.format("%s%s", pBankCode, BITMAP_EXTENSION);
     }
 
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {

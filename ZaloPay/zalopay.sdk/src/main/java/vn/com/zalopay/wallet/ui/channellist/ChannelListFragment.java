@@ -17,6 +17,7 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 
 import java.util.List;
 

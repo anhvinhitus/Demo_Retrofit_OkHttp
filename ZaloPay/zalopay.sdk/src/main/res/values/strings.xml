@@ -405,6 +405,7 @@
     <string name="zpw_string_service_transaction_title">Mã giao dịch</string>
     <string name="zpw_string_service_transaction_success">Thành công</string>
 
+    <string name="sdk_banklogo_visa">VISA1</string>
     <string name="zpw_string_bankname_visa">VISA</string>
     <string name="zpw_string_bankname_master">Mastercard</string>
 

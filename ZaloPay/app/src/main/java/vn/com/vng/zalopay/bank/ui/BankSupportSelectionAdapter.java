@@ -127,7 +127,7 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, Bank
                 mDashLine.setVisibility(View.GONE);
             }
 
-            mLogoView.setImageBitmap(ResourceManager.getImage(String.format("%s.png", card.bankCode)));
+            mLogoView.setImageBitmap(ResourceManager.getImage(card.bankLogo));
             mLogoView.setVisibility(View.VISIBLE);
             tvBankName.setText(card.bankName);
             ivNext.setImageBitmap(ResourceManager.getImage("ic_next.png"));
