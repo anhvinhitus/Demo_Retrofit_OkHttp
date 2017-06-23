@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.authentication;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -83,6 +82,25 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
             mKeyTools.storePassword(s1);
         }
+    }
+
+    @Override
+    public boolean isFingerPrintAvailable() {
+        return mFingerprintManagerCompat.isFingerprintAvailable();
+    }
+
+    @Override
+    public boolean hasPassword() {
+        return mKeyTools.isHavePassword();
+    }
+
+    @Override
+    public boolean putPassword(String pNewPassword) {
+        if (TextUtils.isEmpty(pNewPassword)) {
+            return false;
+        }
+        Timber.d("put new password %s", pNewPassword);
+        return mKeyTools.storePassword(pNewPassword);
     }
 
     public void showSuggestionDialog(Activity activity, String hashPassword) {

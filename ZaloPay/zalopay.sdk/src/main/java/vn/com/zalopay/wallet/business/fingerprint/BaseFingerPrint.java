@@ -3,11 +3,8 @@ package vn.com.zalopay.wallet.business.fingerprint;
 import android.app.Activity;
 import android.app.DialogFragment;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.utility.FingerprintUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public abstract class BaseFingerPrint extends SingletonBase implements IPaymentFingerPrint {
     protected IPaymentFingerPrint mPaymentFingerPrint;
@@ -20,32 +17,34 @@ public abstract class BaseFingerPrint extends SingletonBase implements IPaymentF
         this.mPaymentFingerPrint = pPaymentFingerPrint;
     }
 
-    protected IPaymentFingerPrint getPaymentFingerPrintCallback() {
-        return mPaymentFingerPrint;
-    }
-
     @Override
     public DialogFragment getDialogFingerprintAuthentication(Activity pActivity, IFPCallback pCallback) throws Exception {
-        if (this.getPaymentFingerPrintCallback() == null) {
-            throw new Exception("mPaymentFingerPrint=NULL");
+        if (mPaymentFingerPrint == null) {
+            throw new Exception("mPaymentFingerPrint is null");
         }
-
-        return this.getPaymentFingerPrintCallback().getDialogFingerprintAuthentication(pActivity, pCallback);
+        return mPaymentFingerPrint.getDialogFingerprintAuthentication(pActivity, pCallback);
     }
 
     @Override
     public void updatePassword(String pOldPassword, String pNewPassword) throws Exception {
-        if (this.getPaymentFingerPrintCallback() == null) {
-            throw new Exception("mPaymentFingerPrint=NULL");
+        if (mPaymentFingerPrint == null) {
+            throw new Exception("mPaymentFingerPrint is null");
         }
-        this.getPaymentFingerPrintCallback().updatePassword(pOldPassword, pNewPassword);
+        mPaymentFingerPrint.updatePassword(pOldPassword, pNewPassword);
     }
 
     @Override
-    public void showSuggestionDialog(Activity activity, String hashPassword) throws Exception {
-        if (this.getPaymentFingerPrintCallback() == null) {
-            throw new Exception("mPaymentFingerPrint=NULL");
-        }
-        this.getPaymentFingerPrintCallback().showSuggestionDialog(activity, hashPassword);
+    public boolean isFingerPrintAvailable() {
+        return mPaymentFingerPrint != null && mPaymentFingerPrint.isFingerPrintAvailable();
+    }
+
+    @Override
+    public boolean hasPassword() {
+        return mPaymentFingerPrint != null && mPaymentFingerPrint.hasPassword();
+    }
+
+    @Override
+    public boolean putPassword(String pNewPassword) {
+        return mPaymentFingerPrint != null && mPaymentFingerPrint.putPassword(pNewPassword);
     }
 }
