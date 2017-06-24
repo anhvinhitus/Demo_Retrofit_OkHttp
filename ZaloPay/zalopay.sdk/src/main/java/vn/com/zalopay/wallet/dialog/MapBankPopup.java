@@ -28,8 +28,8 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
-import vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter;
 import vn.com.zalopay.wallet.pay.PayProxy;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
@@ -197,7 +197,12 @@ public class MapBankPopup extends BasePaymentDialogActivity {
 
     protected List<PaymentChannel> getMapChannel() throws Exception {
         List<PaymentChannel> channelList = new ArrayList<>();
-        List<Object> objectList = PayProxy.get().getChannels();
+        List<Object> objectList = new ArrayList<>();
+        try {
+            objectList = PayProxy.get().getChannels();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
         for (int i = 0; i < objectList.size(); i++) {
             Object object = objectList.get(i);
             if (object instanceof PaymentChannel) {

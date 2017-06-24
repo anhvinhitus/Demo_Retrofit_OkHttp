@@ -288,7 +288,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
         }
-        mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
+        try {
+            mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
+        } catch (Exception e) {
+            Log.d(this,e);
+        }
         if (mPaymentInfoHelper == null) {
             Log.d(this, "this channel not start from gateway channel list");
             return;

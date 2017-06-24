@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.pay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -170,7 +171,14 @@ public class PayProxy extends SingletonBase {
         super();
     }
 
-    public static PayProxy get() {
+    public static PayProxy get() throws Exception{
+        if(PayProxy._object == null){
+            throw new IllegalAccessException("invalid pay proxy");
+        }
+        return PayProxy._object;
+    }
+
+    public static PayProxy shared(){
         if (PayProxy._object == null) {
             PayProxy._object = new PayProxy();
         }

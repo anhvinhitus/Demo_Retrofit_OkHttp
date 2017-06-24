@@ -1243,8 +1243,12 @@ public abstract class AdapterBase {
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         processSaveCardOnResult();
         //update password fingerprint
-        if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
-            getActivity().showToast(R.layout.layout_update_password_toast);
+        try {
+            if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
+                getActivity().showToast(R.layout.layout_update_password_toast);
+            }
+        } catch (Exception e) {
+            Log.d(this,e);
         }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
