@@ -29,7 +29,7 @@
     <string name="zpw_string_params_wrong">Thông tin thanh toán không hợp lệ.</string>
     <string name="zpw_not_allow_payment_app">Ứng dụng chưa được phép giao dịch.\nVui lòng chọn ứng dụng khác.</string>
     <string name="sdk_creditcard_label">%s ••• </string>
-    <string name="sdk_card_generic_label">Thẻ %s ••• </string>
+    <string name="sdk_card_generic_label">%s ••• </string>
     <string name="sdk_card_default_label">Thẻ đã liên kết ••• </string>
     <string name="zpw_string_all_channel_maintenance">Kênh thanh toán đang bảo trì.</string>
 
@@ -437,7 +437,7 @@
 
     <string name="zpw_otp_instruction">Mã OTP đã được gửi qua SMS đến số ĐT của bạn</string>
 
-    <string name="sdk_link_card_exist_detail">Thẻ %1$s •••%2$s đã được liên kết</string>
+    <string name="sdk_link_card_exist_detail">%1$s •••%2$s đã được liên kết</string>
     <string name="sdk_link_card_exist">Thẻ bạn nhập đã được liên kết</string>
     <string name="zpw_string_card_error_luhn">Thẻ không hợp lệ</string>
     <string name="zpsdk_luhn_check_cc">true</string>

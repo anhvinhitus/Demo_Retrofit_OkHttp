@@ -78,11 +78,7 @@ public class CreditCardCheck extends CardCheck {
 
     @Override
     public String getShortBankName() {
-        String bankName = getBankName();
-        if (!TextUtils.isEmpty(bankName) && bankName.startsWith("Thẻ")) {
-            bankName = bankName.substring(3);
-        }
-        return bankName;
+        return getBankName();
     }
 
     @Override
