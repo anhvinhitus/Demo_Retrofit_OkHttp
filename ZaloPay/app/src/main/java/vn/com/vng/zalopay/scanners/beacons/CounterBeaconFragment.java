@@ -40,7 +40,7 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
 
-    private BeaconScanner beaconScanner;
+    private BeaconScanner mBeaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
 
     private PaymentWrapper mPaymentWrapper;
@@ -54,7 +54,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     RippleBackground mWareWaveView;
 
     @BindView(R.id.tvLabel)
-    View mLableView;
+    View mLabelView;
 
     private Timer timer;
 
@@ -63,7 +63,8 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
      * fragment (e.g. upon screen orientation changes).
      */
     public CounterBeaconFragment() {
-        beaconScanner = new BeaconScanner(new BeaconListener());
+        mBeaconScanner = new BeaconScanner();
+        mBeaconScanner.setListener(new BeaconListener());
     }
 
     public static CounterBeaconFragment newInstance() {
@@ -78,7 +79,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         Timber.d("Begin setupFragmentComponent");
         getUserComponent().inject(this);
 
-        if (!beaconScanner.initialize(this.getActivity())) {
+        if (!mBeaconScanner.initialize(this.getActivity())) {
             showToast("Không thể khởi động Bluetooth");
             return;
         }
@@ -150,6 +151,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     @Override
     public void onDestroyView() {
         mRecyclerView.setAdapter(null);
+        mBeaconScanner.setListener(null);
         super.onDestroyView();
     }
 
@@ -172,24 +174,18 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimerTask(), 0, 1000);
 
-        getAppComponent().threadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (beaconScanner != null) {
-                    beaconScanner.startScan();
-                }
+        getAppComponent().threadExecutor().execute(() -> {
+            if (mBeaconScanner != null) {
+                mBeaconScanner.startScan();
             }
         });
     }
 
     private void stopBeaconScanner() {
         Timber.d("stopBeaconScanner");
-        getAppComponent().threadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (beaconScanner != null) {
-                    beaconScanner.stopScan();
-                }
+        getAppComponent().threadExecutor().execute(() -> {
+            if (mBeaconScanner != null) {
+                mBeaconScanner.stopScan();
             }
         });
 
@@ -237,7 +233,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
             }
             getAppComponent().monitorTiming().finishEvent(MonitorEvents.BLE_SCANNING);
 
-            beaconScanner.stopScan();
+            mBeaconScanner.stopScan();
             if (item.order != null) {
                 mPaymentWrapper.payWithOrder(getActivity(), item.order, ZPPaymentSteps.OrderSource_Bluetooth);
             } else {
@@ -308,7 +304,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     private class GetOrderCallback implements PaymentWrapper.IGetOrderCallback {
         private final BeaconDevice device;
 
-        public GetOrderCallback(BeaconDevice device) {
+        private GetOrderCallback(BeaconDevice device) {
             this.device = device;
         }
 
@@ -421,13 +417,13 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         @Override
         public void onParameterError(String param) {
 //                        showToast("Error in parameter: " + param);
-            beaconScanner.startScan();
+            mBeaconScanner.startScan();
         }
 
         @Override
         public void onResponseError(PaymentError paymentError) {
             Timber.d("Payment error: %s", paymentError.value());
-            beaconScanner.startScan();
+            mBeaconScanner.startScan();
         }
 
         @Override
@@ -439,7 +435,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         public void onAppError(String msg) {
             Timber.d("onAppError msg [%s]", msg);
             showToast(getString(R.string.exception_generic));
-            beaconScanner.startScan();
+            mBeaconScanner.startScan();
         }
 
     }
@@ -459,16 +455,16 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     private void checkIfEmpty() {
         if (mViewAdapter == null ||
                 mWareWaveView == null
-                || mLableView == null) {
+                || mLabelView == null) {
             return;
         }
 
         if (mViewAdapter.getItemCount() == 0) {
             mWareWaveView.setVisibility(View.VISIBLE);
-            mLableView.setVisibility(View.VISIBLE);
+            mLabelView.setVisibility(View.VISIBLE);
         } else {
             mWareWaveView.setVisibility(View.INVISIBLE);
-            mLableView.setVisibility(View.INVISIBLE);
+            mLabelView.setVisibility(View.INVISIBLE);
         }
     }
 

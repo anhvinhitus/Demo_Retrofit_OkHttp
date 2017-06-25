@@ -27,10 +27,10 @@ import vn.com.vng.zalopay.scanners.models.PaymentRecord;
  * Created by huuhoa on 6/3/16.
  * Beacon scanner
  */
-public class BeaconScanner {
-    public static boolean INCLUDE_NON_PAYMENT_DEVICE = false;
+class BeaconScanner {
+    private static boolean INCLUDE_NON_PAYMENT_DEVICE = false;
 
-    public interface BeaconListener {
+    interface BeaconListener {
         void shouldRequestEnableBluetooth();
 
         void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data);
@@ -43,13 +43,15 @@ public class BeaconScanner {
     private BluetoothAdapter mBluetoothAdapter;
 
     private BluetoothLeScanner mLEScanner;
-    private ScanSettings settings;
-    private List<ScanFilter> filters;
+    @Nullable
     private BeaconListener mListener;
     private boolean initialized = false;
     private static final int DATA_TYPE_MANUFACTURER_SPECIFIC_DATA = 0xFF;
 
-    public BeaconScanner(BeaconListener listener) {
+    BeaconScanner() {
+    }
+
+    void setListener(@Nullable BeaconListener listener) {
         mListener = listener;
     }
 
@@ -71,7 +73,7 @@ public class BeaconScanner {
         return true;
     }
 
-    public void startScan() {
+    void startScan() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return;
         }
@@ -81,24 +83,28 @@ public class BeaconScanner {
         }
 
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            mListener.shouldRequestEnableBluetooth();
+            if (mListener != null) {
+                mListener.shouldRequestEnableBluetooth();
+            }
         } else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothAdapter.startLeScan(getScanCallback18());
             } else {
                 mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-                settings = new ScanSettings.Builder()
+                ScanSettings settings = new ScanSettings.Builder()
                         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                         .build();
-                filters = new ArrayList<>();
+                List<ScanFilter> filters = new ArrayList<>();
                 mLEScanner.startScan(filters, settings, getScanCallback());
             }
 
-            mListener.onScanningStarted();
+            if (mListener != null) {
+                mListener.onScanningStarted();
+            }
         }
     }
 
-    public void stopScan() {
+    void stopScan() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return;
         }
@@ -123,7 +129,10 @@ public class BeaconScanner {
             Timber.w(e, "Exception while shutting down BLE");
         }
 
-        mListener.onScanningStopped();
+        if (mListener != null) {
+            mListener.onScanningStopped();
+        }
+
     }
 
 //
@@ -185,7 +194,9 @@ public class BeaconScanner {
             BluetoothDevice btDevice = result.getDevice();
             PaymentRecord paymentRecord = parseScanRecord(result.getScanRecord());
             if (INCLUDE_NON_PAYMENT_DEVICE || paymentRecord != null) {
-                mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
+                if (mListener != null) {
+                    mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
+                }
             }
         }
 
@@ -212,7 +223,9 @@ public class BeaconScanner {
             Timber.v("onLeScan: %s", device.toString());
             PaymentRecord paymentRecord = parseScanRecord(scanRecord);
             if (INCLUDE_NON_PAYMENT_DEVICE || paymentRecord != null) {
-                mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
+                if (mListener != null) {
+                    mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
+                }
             }
         }
     }
@@ -271,7 +284,7 @@ public class BeaconScanner {
 
     }
 
-    SparseArray<byte[]> splitScanRecord(byte[] scanRecord) {
+    private SparseArray<byte[]> splitScanRecord(byte[] scanRecord) {
         if (scanRecord == null) {
             return null;
         }
