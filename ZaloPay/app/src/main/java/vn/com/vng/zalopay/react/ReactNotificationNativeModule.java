@@ -72,6 +72,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         Timber.d("get notification : index [%s] count [%s]", pageIndex, count);
         Subscription subscription = mNotificationRepository.getNotification(pageIndex, count)
                 .map(this::transform)
+                .subscribeOn(Schedulers.io())
                 .subscribe(new NotificationSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
@@ -89,7 +90,8 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         }
 
         Subscription subscription = mNotificationRepository.markAsRead(notifyId)
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
 
         Helpers.promiseResolveSuccess(promise, null);
@@ -128,6 +130,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @ReactMethod
     public void removeAllNotification(Promise promise) {
         Subscription subscription = mNotificationRepository.removeAllNotification()
+                .subscribeOn(Schedulers.io())
                 .subscribe(new RemoveNotifySubscriber(promise));
 
         mCompositeSubscription.add(subscription);
@@ -242,7 +245,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         getReactApplicationContext().removeLifecycleEventListener(this);
     }
 
-    public void unsubscribeIfNotNull(CompositeSubscription subscription) {
+    private void unsubscribeIfNotNull(CompositeSubscription subscription) {
         if (subscription != null) {
             subscription.clear();
         }
