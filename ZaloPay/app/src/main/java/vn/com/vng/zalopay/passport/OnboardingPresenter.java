@@ -163,13 +163,17 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
     private void onAuthenticated(User user) {
         Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
-        hideLoadingView();
         AndroidApplication.instance().createUserComponent(user);
 
-        if (mView != null) {
-            mView.showIncorrectOtp("");
-            mView.gotoHomePage();
+        if (mView == null) {
+            return;
         }
+
+        hideLoadingView();
+        mView.showIncorrectOtp("");
+        mView.gotoHomePage();
+        mView.finish();
+
     }
 
     private void onAuthenticationError(Throwable e) {
