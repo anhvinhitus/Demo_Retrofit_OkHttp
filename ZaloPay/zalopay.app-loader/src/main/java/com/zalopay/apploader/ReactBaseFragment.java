@@ -157,6 +157,10 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         }
 
         if (mReactInstanceManager != null) {
+            mReactInstanceManager.onHostDestroy(getActivity());
+        }
+
+        if (mReactInstanceManager != null) {
             mReactInstanceManager.removeReactInstanceEventListener(this);
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
@@ -164,15 +168,6 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
 
         nativeInstanceManager().destroyActivityContext(getActivity());
         super.onDestroyView();
-    }
-
-    // TODO: 4/20/17 Tạm sử dụng ReactInstanceManager#onHostDestroy() để không crash 
-    @Override
-    public void onDestroy() {
-        if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostDestroy();
-        }
-        super.onDestroy();
     }
 
     @Nullable

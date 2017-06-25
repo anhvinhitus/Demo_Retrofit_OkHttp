@@ -217,6 +217,10 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         }
 
         if (mReactInstanceManager != null) {
+            mReactInstanceManager.onHostDestroy(this);
+        }
+
+        if (mReactInstanceManager != null) {
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
