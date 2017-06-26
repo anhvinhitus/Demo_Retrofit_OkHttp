@@ -178,8 +178,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void setCardDateOnCardView() {
-        if (getCardView() != null)
-            getCardView().setHintTextIssue();
+       // Set hint card issue here
     }
 
     public void continueDetectCardForLinkCard() {

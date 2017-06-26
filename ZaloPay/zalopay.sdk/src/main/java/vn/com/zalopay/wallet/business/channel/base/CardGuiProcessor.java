@@ -784,10 +784,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             String bankName = getDetectedBankName();
             String bankCode = getDetectedBankCode();
             setCardNumberHint(bankName);
-
-            if (!TextUtils.isEmpty(bankCode)) {
-                getCardView().switchCardDateHintByBankCode(bankCode);
-            }
             MiniPmcTransType miniPmcTransType = null;
             if (TextUtils.isEmpty(bankCode)) {
                 getAdapter().setMiniPmcTransType(null);
@@ -957,11 +953,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void setDetectedCard(String pBankName, String pBankCode) {
         try {
             setCardNumberHint(pBankName);
-
-            if (!TextUtils.isEmpty(pBankCode)) {
-                getCardView().switchCardDateHintByBankCode(pBankCode);
-            }
-
             MiniPmcTransType miniPmcTransType = null;
             if (TextUtils.isEmpty(pBankCode)) {
                 getAdapter().setMiniPmcTransType(null);
@@ -1068,20 +1059,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     break;
                 case 2:
                     //issue day
-                    getCardView().visibleCardDate();
                     mCardAdapter.addIssueDateFragment();
                     mCardAdapter.notifyDataSetChanged();
                     updateDots();
                     break;
                 case 4:
                     //expire day
-                    getCardView().visibleCardDate();
                     mCardAdapter.addExpireDateFragment();
                     mCardAdapter.notifyDataSetChanged();
                     updateDots();
                     break;
                 default:
-                    getCardView().hideCardDate();
                     mCardAdapter.removeFragment(CardIssueFragment.class.getName());
                     mCardAdapter.removeFragment(CardExpiryFragment.class.getName());
                     mCardAdapter.notifyDataSetChanged();

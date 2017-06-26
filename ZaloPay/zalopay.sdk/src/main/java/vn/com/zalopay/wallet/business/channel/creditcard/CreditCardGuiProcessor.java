@@ -51,8 +51,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void setCardDateOnCardView() {
-        if (getCardView() != null)
-            getCardView().setHintTextExpire();
+        // Set hint card expiry here
     }
 
     public void continueDetectCardForLinkCard() {

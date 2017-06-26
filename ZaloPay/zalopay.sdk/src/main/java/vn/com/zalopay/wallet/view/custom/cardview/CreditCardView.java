@@ -389,22 +389,12 @@ public class CreditCardView extends FrameLayout {
         flip(true, false);
     }
 
-    public void setHintTextIssue() {
-
-        ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_local);
-    }
-
     public void hideCardDate() {
         findViewById(TEXTVIEW_CARD_EXPIRY_ID).setVisibility(GONE);
     }
 
     public void visibleCardDate() {
         findViewById(TEXTVIEW_CARD_EXPIRY_ID).setVisibility(VISIBLE);
-    }
-
-    public void setHintTextExpire() {
-
-        ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_expire);
     }
 
     public void showFrontImmediate() {
@@ -429,20 +419,6 @@ public class CreditCardView extends FrameLayout {
 
     public void clearHighLightCardHolderName() {
         ((TextView) findViewById(TEXTVIEW_CARD_HOLDER_ID)).setText(getCardHolderName());
-    }
-
-    /***
-     * update card date hint by atm or cc (issue date / expire date)
-     *
-     * @param bankCode
-     */
-    public void switchCardDateHintByBankCode(String bankCode) {
-
-        if (BuildConfig.CC_CODE.equals(bankCode)) {
-            ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_expire);
-        } else {
-            ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setHint(R.string.card_date_hint_local);
-        }
     }
 
     public void paintCard() {
