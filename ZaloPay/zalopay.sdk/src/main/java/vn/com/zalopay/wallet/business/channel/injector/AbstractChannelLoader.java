@@ -93,9 +93,10 @@ public abstract class AbstractChannelLoader {
                     continue;
                 }
                 PaymentChannel channel = new PaymentChannel(activeChannel);
-                if (channel.isBankAccount()
-                        && BankAccountHelper.hasBankAccountOnCache(mUserId, CardType.PVCB)) {
-                    continue;//user has linked vietcom bank account , no need show bank account channel
+                /*if (channel.isBankAccount()
+                        && BankAccountHelper.hasBankAccountOnCache(mUserId, CardType.PVCB)) {*/
+                if (channel.isBankAccount()) {
+                    continue;//skip bank account
                 }
                 if (channel.isEnable()) {
                     channel.calculateFee(mAmount);//calculate fee of this channel
