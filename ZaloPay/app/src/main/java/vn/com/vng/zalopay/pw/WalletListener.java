@@ -71,7 +71,6 @@ class WalletListener implements ZPPaymentListener {
         boolean paymentIsCompleted = true;
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
 
-        Timber.d("pay complete, status [%s]", paymentStatus);
         if (mPaymentWrapper.mActivity == null) {
             Timber.w("Activity is null after pay order complete");
         }
