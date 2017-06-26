@@ -12,8 +12,8 @@ public class AppInfo {
     public int status = -1;
     @SerializedName("expriretime")
     public long expriretime;
-    @SerializedName("redirect_url")
-    public String redirect_url;
+    @SerializedName("webredirecturl")
+    public String webredirecturl;
 
     public boolean isAllow() {
         return status == 1;
