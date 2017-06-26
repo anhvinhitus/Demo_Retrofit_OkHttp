@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
@@ -29,7 +30,11 @@ public class HandleZaloIntegration {
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     void initialize() {
-        AndroidApplication.instance().getUserComponent().inject(this);
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            userComponent.inject(this);
+            SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
+        }
     }
 
     void getBalance() {
@@ -53,14 +58,12 @@ public class HandleZaloIntegration {
         userInfo.accesstoken = user.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
         Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber());
-        if (subscriptions != null && subscriptions.length > 0) {
-            for (int i = 0; i < subscriptions.length; i++) {
-                mCompositeSubscription.add(subscriptions[i]);
-            }
+        if (subscriptions != null) {
+            mCompositeSubscription.addAll(subscriptions);
         }
     }
 
-    public void loadPaymentSdk() {
+    void loadPaymentSdk() {
         loadGatewayInfoPaymentSDK(mUser);
     }
 
