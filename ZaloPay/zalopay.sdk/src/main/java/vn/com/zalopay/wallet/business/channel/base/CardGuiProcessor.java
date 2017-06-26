@@ -869,8 +869,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     public void onOKevent() {
                         PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                         try {
-                            getAdapter().getPresenter().setCallBack(Activity.RESULT_OK);
-                            getAdapter().getView().terminate();
+                            getAdapter().getPresenter().callBackThenTerminate();
                         } catch (Exception e) {
                             Log.e(this, e);
                         }

@@ -105,23 +105,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     private MiniPmcTransType mMiniPmcTransType;
     private StatusResponse mStatusResponse;
     private PaymentInfoHelper mPaymentInfoHelper;
-    private ZPWOnSweetDialogListener dialogManyOptionClick = new ZPWOnSweetDialogListener() {
-        @Override
-        public void onClickDiaLog(int pIndex) {
-            switch (pIndex) {
-                case 0:
-                    break;
-                case 1:
-                    try {
-                        setCallBack(Activity.RESULT_OK);
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
-                    break;
-                case 2:
-                    mAdapter.onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
-                    break;
-            }
+    private ZPWOnSweetDialogListener dialogManyOptionClick = pIndex -> {
+        switch (pIndex) {
+            case 0:
+                break;
+            case 1:
+                callBackThenTerminate();
+                break;
+            case 2:
+                mAdapter.onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
+                break;
         }
     };
 
@@ -234,39 +227,35 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return true;
         }
         if (mAdapter != null && mAdapter.isZaloPayFlow() && mAdapter.isBalanceErrorPharse()) {
-            mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-            setCallBack(Activity.RESULT_OK);
+            setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             return false;
         }
         if (mAdapter != null && mAdapter.exitWithoutConfirm() && !isInProgress()) {
             if (mAdapter.isTransactionSuccess()) {
-                mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-                setCallBack(Activity.RESULT_OK);
+                setPaymentStatusAndCallback(PaymentStatus.SUCCESS);
             } else if (mAdapter.isTransactionFail()) {
-                mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-                setCallBack(Activity.RESULT_OK);
+                setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             } else {
-                setCallBack(Activity.RESULT_CANCELED);
+                setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             }
             return false;
         } else {
             getViewOrThrow().showQuitConfirm(TransactionHelper.getQuitMessage(mPaymentInfoHelper), new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
-                    showKeyBoardOnFocusingViewAgain();
-                }
-
-                @Override
-                public void onOKevent() {
-                    mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
                     try {
-                        setCallBack(Activity.RESULT_OK);
+                        setPaymentStatusAndCallback(PaymentStatus.FAILURE);
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
                     if (GlobalData.analyticsTrackerWrapper != null) {
                         GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
                     }
+                }
+
+                @Override
+                public void onOKevent() {
+                    showKeyBoardOnFocusingViewAgain();
                 }
             });
             return true;
@@ -408,8 +397,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
                                 @Override
                                 public void onOKevent() {
-                                    mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-                                    callBackThenTerminate();
+                                    setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                                 }
                             });
                     return;
@@ -638,7 +626,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return mAdapter != null ? mAdapter.getTransactionID() : "";
     }
 
-    private void callBackThenTerminate() {
+    public void callBackThenTerminate() {
         Log.d(this, "call back result and end sdk - status ", mPaymentInfoHelper.getStatus());
         try {
             setCallBack(Activity.RESULT_OK);
