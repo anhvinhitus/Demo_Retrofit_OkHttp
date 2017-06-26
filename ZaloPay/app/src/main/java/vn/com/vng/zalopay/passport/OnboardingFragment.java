@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.passport;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.ViewFlipper;
 
 import butterknife.BindView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -114,6 +116,9 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     @BindView(R.id.flipper4)
     OnboardingEditTextView mInputOtpView;
 
+    @BindView(R.id.background)
+    SimpleDraweeView mBackgroundView;
+
     private CountDownTimer mCountDownTime = null;
 
     private long mActiveTime;
@@ -173,6 +178,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
         shouldShowBackButton();
         keyboardActive(getCurrentPage());
+        mBackgroundView.getHierarchy().setPlaceholderImageFocusPoint(new PointF(0.5f, 0));
     }
 
     public void onResume() {

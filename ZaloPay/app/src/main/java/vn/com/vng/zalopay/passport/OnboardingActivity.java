@@ -24,11 +24,11 @@ public class OnboardingActivity extends BaseToolBarActivity {
         Drawable navigationIcon = getToolbar().getNavigationIcon();
 
         if (navigationIcon != null) {
-            DrawableCompat.setTint(navigationIcon, ContextCompat.getColor(this,R.color.blue_008fe5));
+            DrawableCompat.setTint(navigationIcon, ContextCompat.getColor(this, R.color.blue_008fe5));
             navigationIcon.setAlpha(255);
         }
 
-        StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, findViewById(R.id.toolbar));
+        StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, getToolbar());
     }
 
     public BaseFragment getFragmentToHost() {

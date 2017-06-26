@@ -43,7 +43,7 @@
     <string name="btn_link">Liên Kết</string>
     <string name="btn_cancel_transaction">Hủy Giao Dịch</string>
     <string name="btn_retry_select_bank">Chọn ngân hàng khác</string>
-
+    <string name="txt_continue">Tiếp tục</string>
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
     <string name="txt_update">Cập nhật</string>
@@ -411,7 +411,7 @@
     <string name="input.password">Nhập mật khẩu</string>
     <string name="re.input.password">Nhập lại mật khẩu</string>
     <string name="password.not.match">Mật khẩu thanh toán không trùng khớp</string>
-    <string name="ip.title.confirm.password">Xác nhận mật khẩu thanh toán</string>
+    <string name="ip.title.confirm.password">Xác nhận mật khẩu</string>
     <string name="ip.desc.confirm.password">Vui lòng không chia sẻ mật khẩu với bất kỳ ai</string>
     <string name="come.back">Quay Lại</string>
     <string name="ip.title.input.phone">Số điện thoại di động</string>
@@ -419,7 +419,7 @@
     <string name="input.phone">Nhập số điện thoại</string>
     <string name="ip.title.conform.otp">Xác nhận mã xác thực</string>
     <string name="ip.desc.format.conform.otp">Mã xác thực đã gửi đến %s</string>
-    <string name="resend.otp">Gửi lại mã xác thực</string>
+    <string name="resend.otp">Mã xác thực khác</string>
     <string name="input.otp">Nhập mã xác thực</string>
     <string name="login.bottom.description">Không cần đăng ký, đăng nhập nhanh hơn với Zalo</string>
 

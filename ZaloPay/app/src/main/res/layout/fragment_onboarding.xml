@@ -29,7 +29,7 @@
                 android:id="@+id/separate"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/separate"/>
+                android:background="#ededed"/>
 
             <include layout="@layout/layout_onboarding_body"/>
         </LinearLayout>

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -208,6 +209,11 @@ abstract class OnboardingView extends LinearLayout {
 
     public void setStyleLinkPrimaryButton() {
         mPrimaryBtnView.setBackground(null);
+        ViewGroup.LayoutParams layoutParams = mPrimaryBtnView.getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mPrimaryBtnView.setLayoutParams(layoutParams);
+        int padding = AndroidUtils.dp(16);
+        mPrimaryBtnView.setPadding(padding, 0, padding, 0);
         mPrimaryBtnView.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_selector), null);
         mPrimaryBtnView.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.txt_blue_selector));
     }

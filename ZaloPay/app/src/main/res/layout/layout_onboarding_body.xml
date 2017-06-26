@@ -31,7 +31,7 @@
         android:id="@+id/flipper3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:onb_buttonText="@string/btn_continue"
+        app:onb_buttonText="@string/txt_continue"
         app:onb_descriptionInput=""
         app:onb_input_layout="@layout/layout_onboarding_edt_input"
         app:onb_showButton="true"
