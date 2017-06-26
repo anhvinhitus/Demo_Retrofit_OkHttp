@@ -901,12 +901,19 @@ public class Navigator implements INavigator {
         return false;
     }
 
+    @Deprecated
     public void showSuggestionDialog(Activity activity, String hashPassword) {
         UserSession.mHashPassword = hashPassword;
         showSuggestionDialog(activity);
     }
 
+    @Deprecated
     public void showSuggestionDialog(Activity activity) {
+
+        if (true) {
+            return; // Tạm tắt suggestion
+        }
+
         if (!shouldShowSuggestDialog()) {
             return;
         }
@@ -1005,6 +1012,6 @@ public class Navigator implements INavigator {
     }
 
     public void startBrowser(Context context, String url) {
-        AndroidUtils.openBrowser(context,url);
+        AndroidUtils.openBrowser(context, url);
     }
 }
