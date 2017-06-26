@@ -28,8 +28,8 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
 
 /***
@@ -130,10 +130,9 @@ public class CShareData extends SingletonBase {
 
     private void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
         Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
-        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
-                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
-            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
-
+        ChannelActivity activity = BaseActivity.getChannelActivity();
+        if (activity != null && !activity.isFinishing() && activity.getAdapter() instanceof AdapterLinkAcc) {
+            activity.getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
@@ -164,9 +163,9 @@ public class CShareData extends SingletonBase {
     private void sendNotifyTransactionFinishIntoSDK(Object... pObject) {
         //user in sdk now.
         Log.d(this, "start send notify finish transaction into sdk", pObject);
-        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
-                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
-            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
+        ChannelActivity activity = BaseActivity.getChannelActivity();
+        if (activity != null && !activity.isFinishing() && activity.getAdapter() != null) {
+            activity.getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
         } else {
             try {
                 SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
@@ -201,9 +200,9 @@ public class CShareData extends SingletonBase {
     }
 
     private void sendNotifyPromotionEventToAdapter(Object... pObject) {
-        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
-                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
-            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);
+        ChannelActivity activity = BaseActivity.getChannelActivity();
+        if (activity != null && !activity.isFinishing() && activity.getAdapter() != null) {
+            activity.getAdapter().onEvent(EEventType.ON_PROMOTION, pObject);
         } else if (pObject[1] instanceof IPromotionResult) {
             IPromotionResult promotionResult = (IPromotionResult) pObject[1];
             promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available

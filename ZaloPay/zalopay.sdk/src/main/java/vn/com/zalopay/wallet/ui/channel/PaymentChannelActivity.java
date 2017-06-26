@@ -1,3 +1,4 @@
+/*
 package vn.com.zalopay.wallet.ui.channel;
 
 import android.app.Activity;
@@ -50,10 +51,11 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
-import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -70,12 +72,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
     private boolean mIsSwitching = false;
-    private ActivityRendering mActivityRender;
+    private ResourceRender mActivityRender;
     private MiniPmcTransType mMiniPmcTransType;
     private StatusResponse mStatusResponse;
-    /***
+    */
+/***
      * back pressed
-     */
+     *//*
+
     private View.OnClickListener mOnClickExitListener = v -> {
         //get status again if user back when payment in bank's site
         if (getAdapter() != null && !getAdapter().isFinalScreen() && getAdapter().isCardFlowWeb() &&
@@ -148,9 +152,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    /***
+    */
+/***
      * transaction expired in 7minutes
-     */
+     *//*
+
     protected void initTimer() {
         int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
         iTimeToLiveTrans *= 60 * 1000;
@@ -171,8 +177,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         };
     }
 
-    public void startPayment() {
-        mAdapter = AdapterFactory.produce(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+    public void startPayment(PaymentInfoHelper paymentInfoHelper) {
+        mAdapter = AdapterFactory.create(this, mMiniPmcTransType, paymentInfoHelper, mStatusResponse);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             return;
@@ -180,7 +186,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         initTimer();
         renderActivity();
         //hide header if this is link card.
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
+        if (paymentInfoHelper.isCardLinkTrans()) {
             visibleOrderInfo(false);
         } else {
             renderOrderInfo();
@@ -191,7 +197,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             Log.d(this, e);
             return;
         }
-        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
+        if (GlobalData.isChannelHasInputCard(paymentInfoHelper)) {
             renderResourceAfterDelay();
         }
     }
@@ -218,8 +224,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     @Override
-    public void paymentInfoReady() {
-        startPayment();
+    protected void paymentInfoReady(PaymentInfoHelper paymentInfoHelper) {
+        startPayment(paymentInfoHelper);
         prepareLink();
     }
 
@@ -228,11 +234,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         Log.d(this, "ready for payment");
         renderByResource();
         showProgress(false, null);
-        /***
+        */
+/***
          * exception bidv bank
          * use can not pay by card with bidv so he/she need to link before payment.
          * auto fill again card number that he/she input before when direct to link channel
-         */
+         *//*
+
         fillCardNumberFromCache();
 
         if (mAdapter instanceof AdapterLinkAcc) {
@@ -297,7 +305,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             Log.d(this, "this channel not start from gateway channel list");
             return;
         }
-        startPayment();
+        startPayment(mPaymentInfoHelper);
     }
 
     @Override
@@ -307,7 +315,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         //user is summiting order
-        if (processingOrder) {
+        if (mAdapter.processingOrder) {
             Log.d(this, "can not back, order still request api");
             return;
         }
@@ -328,14 +336,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         //this is link account and the first call
         if (mPaymentInfoHelper.isBankAccountTrans()) {
             try {
-                //check static resource whether ready or not
-                loadStaticReload();
+                loadStaticReload(); //check static resource whether ready or not
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
             }
         }
-        //this is link card channel and the first call.
+        //link card
         else if (mPaymentInfoHelper.isCardLinkTrans()) {
             //check profile level permission in table map
             try {
@@ -347,7 +354,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     return;
                 }
                 if (allowATM == Constants.LEVELMAP_BAN && allowCC == Constants.LEVELMAP_BAN) {
-                    getAdapter().confirmUpgradeLevel();
+                    //getAdapter().confirmUpgradeLevel();
                     return;
                 }
                 isAllowLinkCardATM = (allowATM == Constants.LEVELMAP_ALLOW);
@@ -356,8 +363,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(BuildConfig.channel_credit_card)) {
                     initChannel();
                 }
-                long appId = BuildConfig.ZALOAPP_ID;
-                loadAppInfo(appId, TransactionType.LINK, userInfo.zalopay_userid, userInfo.accesstoken);
+                loadAppInfo(BuildConfig.ZALOAPP_ID, TransactionType.LINK, userInfo.zalopay_userid, userInfo.accesstoken);
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
@@ -422,7 +428,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             renderByResource();
         }
         setListener();
-        getAdapter().setListener();
+        //getAdapter().setListener();
 
         overrideFont((ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0));
         applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
@@ -540,7 +546,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         setEnableButton(findViewById(R.id.zpsdk_btn_submit), pIsEnabled);
     }
 
-    public ActivityRendering getActivityRender() {
+    public ResourceRender getActivityRender() {
         return mActivityRender;
     }
 
@@ -582,9 +588,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    /***
+    */
+/***
      * register event finish layout to render resource
-     */
+     *//*
+
     private void renderResourceAfterDelay() {
         final View buttonWrapper = getAdapter().getActivity().findViewById(R.id.zpw_switch_card_button);
         if (buttonWrapper != null) {
@@ -615,7 +623,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
                     getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, transtype, pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType != null) {
-                mAdapter = AdapterFactory.produceChannelByPmc(this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+                mAdapter = AdapterFactory.createByPmc(this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
                 return true;
             }
         } catch (Exception e) {
@@ -645,12 +653,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         this.mIsSwitching = pSwitching;
     }
 
-    /***
+    */
+/***
      * switch between atm and creditcard for linkcard channel
      *
      * @param pChannelID
      * @param pCardNumber
-     */
+     *//*
+
     public synchronized void switchChannel(int pChannelID, final String pCardNumber) {
         if (getAdapter() != null && getAdapter().isATMFlow() && pChannelID == BuildConfig.channel_atm)
             return;
@@ -794,3 +804,4 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 }
+*/

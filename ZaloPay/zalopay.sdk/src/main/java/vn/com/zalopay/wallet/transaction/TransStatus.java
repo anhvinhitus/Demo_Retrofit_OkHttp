@@ -70,11 +70,11 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
                     retryCount ++;
                     running = true;
                 })
-               /* .map(statusResponse -> {
+                .map(statusResponse -> {
                     statusResponse.isprocessing = true;
-                    //statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
+                    statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;
-                })*/
+                })
                 .repeatWhen(observable -> observable.delay(intervalRetry, MILLISECONDS))
                 .takeUntil(shouldStop)
                 .filter(this::shouldStop);

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscription;
@@ -31,33 +30,25 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
+import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
-import vn.com.zalopay.wallet.dialog.MapBankPopup;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SELECTION_ACCOUNT_BANK;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 
 public class AdapterBankCard extends AdapterBase {
     private PaymentWebViewClient mWebViewProcessor = null;
-
     private int numberRetryCaptcha = 0;
 
-    public AdapterBankCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+    public AdapterBankCard(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                            PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
-        mLayoutId = SCREEN_ATM;
+        super(SCREEN_ATM,pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         GlobalData.cardChannelType = CardChannel.ATM;
-    }
-
-    @Override
-    public String getDefaultPageName() {
-        return SCREEN_ATM;
     }
 
     @Override
@@ -103,7 +94,11 @@ public class AdapterBankCard extends AdapterBase {
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getCreditCardFinder().reset();
         Subscription subscription = getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
-        getActivity().addSuscription(subscription);
+        try {
+            getPresenter().addSubscription(subscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public PaymentWebViewClient getWebViewProcessor() {
@@ -142,9 +137,6 @@ public class AdapterBankCard extends AdapterBase {
                         else {
                             start = pOtp.length() - otpReceiverPattern.length - otpReceiverPattern.start;
                         }
-
-                        String otp = pOtp.substring(start, start + otpReceiverPattern.length);
-
                         /***
                          * vietinbank has 2 type of sms
                          * 1. 6 number otp in the fist of content
@@ -179,24 +171,20 @@ public class AdapterBankCard extends AdapterBase {
                             validOtp = validOtp.trim();
                         }
                         //clear whitespace and - character
-                        otp = PaymentUtils.clearOTP(validOtp);
-
+                        String otp = PaymentUtils.clearOTP(validOtp);
                         Log.d(this, "otp after split by space " + validOtp);
                         //check it whether length match length of otp in config
                         if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
                             continue;
                         }
-
-
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        if(CardType.PBIDV.equals(otpReceiverPattern.bankcode)){
+                        if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
                             getGuiProcessor().bidvAutoFillOtp(otp);
                         }
-
                         ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
-                        getActivity().setView(R.id.txtOtpInstruction, false);
+                        getView().setVisible(R.id.txtOtpInstruction, false);
                         break;
                     }
                 }
@@ -220,13 +208,11 @@ public class AdapterBankCard extends AdapterBase {
                     processWrongOtp();
                 } else if (mResponseStatus != null) {
                     showTransactionFailView(mResponseStatus.getMessage());
-                    releaseClickSubmit();
                 } else if (shouldCheckStatusAgain()) {
                     Log.d(this, "continue get status because response is null after authen payer");
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
                     showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-                    releaseClickSubmit();
                 }
             }
             //flow webview parse website
@@ -244,7 +230,7 @@ public class AdapterBankCard extends AdapterBase {
                         failMessage = GlobalData.getStringResource(RS.string.zpw_alert_networking_error_parse_website);
                     }
                     showTransactionFailView(failMessage);
-                    showProgressBar(false, null);
+                    getView().hideLoading();
                 }
                 //get website content and send to server
                 getWebViewProcessor().getSiteContent();
@@ -266,7 +252,7 @@ public class AdapterBankCard extends AdapterBase {
                     return null;
                 }
                 DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];
-                if (isBidvBankPayment() && !continueProcessForBidvBank(response.message)) {
+                if (paymentBIDV() && !continueProcessForBidvBank(response.message)) {
                     if (isCaptchaStep()) {
                         showTransactionFailView(response.message);
                     }
@@ -285,39 +271,12 @@ public class AdapterBankCard extends AdapterBase {
                     numberRetryCaptcha++;
                     ((BankCardGuiProcessor) getGuiProcessor()).setCaptchaImage(response.otpimg, response.otpimgsrc);
                 }
-                //vietcombank have 2 account on 1 card.
-                if (!TextUtils.isEmpty(response.accountList)) {
-                    ArrayList<String> accountList = new ArrayList<>();
-                    try {
-                        for (String accountName : response.accountList.split(Constants.COMMA)) {
-                            if (!TextUtils.isEmpty(accountName))
-                                accountList.add(accountName);
-                        }
-
-                    } catch (Exception ex) {
-                        Log.e(this, ex);
-                    }
-
-                    if (accountList.size() <= 1) {
-                        //CONTINUE HIT if this card only have 1 account
-                        showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
-                        mWebViewProcessor.hit();
-                    } else {
-                        //SHOW SELECTION ACCOUNT LIST
-                        mPageName = PAGE_SELECTION_ACCOUNT_BANK;
-                        getActivity().renderByResource();
-                        ((BankCardGuiProcessor) getGuiProcessor()).showAccountList(accountList);
-                        showProgressBar(false, null);
-                        return null;
-                    }
-                }
-
                 // re-render from web bank
                 if (pAdditionParams.length > 1) {
                     mPageName = PAGE_COVER_BANK_AUTHEN;
-                    getActivity().renderByResource();
+                    getView().renderByResource(mPageName);
                     mPageName = (String) pAdditionParams[1];
-                    getActivity().renderByResource(response.staticView, response.dynamicView);
+                    getView().renderByResource(mPageName, response.staticView, response.dynamicView);
                     getGuiProcessor().checkEnableSubmitButton();
 
                 }
@@ -344,9 +303,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
                     });
                 }
-
-                //update top info
-                getActivity().visibleOrderInfo(false);
+                getView().visiableOrderInfo(false);
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();
@@ -360,8 +317,7 @@ public class AdapterBankCard extends AdapterBase {
                 }
 
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                    getActivity().setVisible(R.id.txtOtpInstruction, true);
-
+                    getView().setVisible(R.id.txtOtpInstruction, true);
                     //testing broadcast otp viettinbak
                     /*
                     new Handler().postDelayed(new Runnable() {
@@ -381,11 +337,8 @@ public class AdapterBankCard extends AdapterBase {
 					*/
 
                 }
-
-                showProgressBar(false, null);
-                if (getActivity().getActivityRender() != null) {
-                    getActivity().getActivityRender().renderKeyBoard();
-                }
+                getView().hideLoading();
+                getView().renderKeyBoard();
             }
         } catch (Exception ex) {
             Log.e(this, ex);
@@ -420,8 +373,8 @@ public class AdapterBankCard extends AdapterBase {
     public void onProcessPhrase() throws Exception {
         //authen payer atm
         if (isAuthenPayerPharse()) {
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
-            getActivity().processingOrder = true;
+            getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
+            processingOrder = true;
             SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
             if (mOtpEndTime == 0)
                 mOtpBeginTime = System.currentTimeMillis();
@@ -429,10 +382,10 @@ public class AdapterBankCard extends AdapterBase {
         }
         //web flow
         if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
-            if (!checkNetworkingAndShowRequest()) {
+            if (!openSettingNetworking()) {
                 return;
             }
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -499,7 +452,7 @@ public class AdapterBankCard extends AdapterBase {
         return false;
     }
 
-    public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) {
+    public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) throws Exception {
 
         //have some card bidv in map card list and have this card
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && hasBidvBankInMapCardList(pCardNumber))) {
@@ -510,48 +463,51 @@ public class AdapterBankCard extends AdapterBase {
         }
         //have some card bidv in map card list and but don't have this card
         if (hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !hasBidvBankInMapCardList(pCardNumber)) {
-            getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-                                                @Override
-                                                public void onCancelEvent() {
-                                                    getGuiProcessor().clearCardNumberAndShowKeyBoard();
-                                                }
-                                                @Override
-                                                public void onOKevent() {
-                                                    needLinkCardBeforePayment(pBankCode);
-                                                }
-                                            }, GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getStringResource(RS.string.dialog_linkcard_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
+            getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
+                    GlobalData.getStringResource(RS.string.dialog_linkcard_button),
+                    GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            getGuiProcessor().clearCardNumberAndShowKeyBoard();
+                        }
+
+                        @Override
+                        public void onOKevent() {
+                            needLinkCardBeforePayment(pBankCode);
+                        }
+                    });
 
             return true;
         }
         //have no any card in map card list
         if (!hasBidvBankInMapCardList()) {
-            getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-                                                @Override
-                                                public void onCancelEvent() {
-                                                    getGuiProcessor().clearCardNumberAndShowKeyBoard();
-                                                }
+            getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
+                    GlobalData.getStringResource(RS.string.dialog_linkcard_button),
+                    GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            getGuiProcessor().clearCardNumberAndShowKeyBoard();
+                        }
 
-                                                @Override
-                                                public void onOKevent() {
-                                                    needLinkCardBeforePayment(pBankCode);
-                                                }
-                                            }, GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getStringResource(RS.string.dialog_linkcard_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
+                        @Override
+                        public void onOKevent() {
+                            needLinkCardBeforePayment(pBankCode);
+                        }
+                    });
             return true;
         }
         return false;
     }
 
-    public boolean isBidvBankPayment() {
+    public boolean paymentBIDV() {
         BankCardCheck atmCardCheck = getGuiProcessor().getBankCardFinder();
         return atmCardCheck != null && atmCardCheck.isDetected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
     }
 
-    protected boolean continueProcessForBidvBank(String pMessage) {
+    private boolean continueProcessForBidvBank(String pMessage) {
         boolean isContinue = false;
-        Log.d(this, "===continueProcessForBidvBank===pMessage=" + pMessage);
-
         if (TextUtils.isEmpty(pMessage)) {
             isContinue = true;
         }
@@ -560,7 +516,6 @@ public class AdapterBankCard extends AdapterBase {
                         || pMessage.equals(GlobalData.getStringResource(RS.string.zpw_error_message_bidv_website_wrong_password)))) {
             isContinue = true;
         }
-        Log.d(this, "===continueProcessForBidvBank===isContinue=" + isContinue);
         return isContinue;
     }
 }

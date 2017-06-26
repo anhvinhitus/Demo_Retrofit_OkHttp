@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.ui;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -20,6 +21,7 @@ public abstract class AbstractPresenter<T> implements IPresenter<T> {
         mView = pView;
     }
 
+    @CallSuper
     @Override
     public void onDetach() {
         mView = null;

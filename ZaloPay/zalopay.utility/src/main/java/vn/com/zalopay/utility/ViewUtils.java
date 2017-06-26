@@ -1,5 +1,6 @@
 package vn.com.zalopay.utility;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -8,9 +9,22 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 public class ViewUtils {
+
+    public static void animIcon(Activity pActivity,int pID) {
+        View view = pActivity.findViewById(pID);
+        if (view != null) {
+            Animation animationBounce = AnimationUtils.loadAnimation(pActivity, R.anim.bounce_interpolator);
+            AnimationSet growShrink = new AnimationSet(true);
+            growShrink.addAnimation(animationBounce);
+            view.startAnimation(growShrink);
+        }
+    }
 
     public static void correctTextView(TextView textView, int desiredWidth) {
         Paint paint = new Paint();

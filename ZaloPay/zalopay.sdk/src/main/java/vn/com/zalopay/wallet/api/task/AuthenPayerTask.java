@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.api.task;
 
-import com.zalopay.ui.widget.dialog.DialogManager;
-
+import vn.com.zalopay.wallet.api.DataParameter;
+import vn.com.zalopay.wallet.api.implement.AuthenPayerImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -9,9 +9,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.DataParameter;
-import vn.com.zalopay.wallet.api.implement.AuthenPayerImpl;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class AuthenPayerTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
@@ -50,9 +47,11 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
     @Override
     public void onRequestInProcess() {
         if (mAdapter != null) {
-            mAdapter.showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
-        } else {
-            DialogManager.showProcessDialog(BasePaymentActivity.getCurrentActivity(), null);
+            try {
+                mAdapter.getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
         Log.d(this, "onRequestInProcess");
     }
@@ -64,7 +63,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.checkNetworkingAndShowRequest()) {
+        if (mAdapter.openSettingNetworking()) {
             shareDataRepository().setTask(this).postData(new AuthenPayerImpl(), getDataParams());
         }
     }

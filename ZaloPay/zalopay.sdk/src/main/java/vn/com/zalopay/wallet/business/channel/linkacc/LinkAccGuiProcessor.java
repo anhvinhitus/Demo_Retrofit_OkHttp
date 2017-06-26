@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.utility.BitmapUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -39,8 +38,6 @@ import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
-import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -53,31 +50,9 @@ import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 public class LinkAccGuiProcessor extends CardGuiProcessor {
     private AdapterBase mAdapter;
     private int mPositionSpn;
-    private View.OnFocusChangeListener mOnFocusChangeListenerLoginHolder = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(final View view, boolean hasFocus) {
-
-            if (hasFocus) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-
-                            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) view);
-                            Log.d(this, "mOnFocusChangeListener");
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                        }
-                    }
-                }, 200);
-            }
-        }
-    };
     private ProgressBar pgbProgress;
     private TextView txtMessage;
     private LoginHolder loginHolder;
-    ///////LISTENER////////
-    // listener EditText
     private TextWatcher mLoginEditTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -95,8 +70,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
     private RegisterHolder registerHolder;
-    ///////LISTENER////////
-    // listener EditText
     private TextWatcher mConfirmCaptchaEditTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -133,8 +106,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
     private UnregisterHolder unregisterHolder;
-    ///////LISTENER////////
-    // listener EditText
     private TextWatcher mUnRegPassEditTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -159,24 +130,15 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             try {
                 int i = view.getId();
                 if (i == R.id.footer_confirm_button) {
-                    Log.d("OnClick()", "Confirm Button");
                     getRegisterHolder().getSpnAccNumberDefault().setSelection(mPositionSpn);
-                } else if (i == R.id.zpw_vcb_dialog_spinner) {
-                    Log.d("OnClickListener", "zpw_pay_support_buttom_view");
-                } else if (i == R.id.cancel_button) {
-                    Log.d("OnClickListener", "cancel_button");
                 }
-
                 closeSpinnerView();
-
             } catch (Exception ex) {
                 Log.e(this, ex);
             }
         }
     };
-    /***
-     * @param pAdapter
-     */
+
     public LinkAccGuiProcessor(AdapterBase pAdapter) {
         mAdapter = pAdapter;
         init();
@@ -184,35 +146,29 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void useWebView(boolean pIsUseWebView) {
-        mAdapter.getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(pIsUseWebView ? View.VISIBLE : View.GONE); // disable webview
+        try {
+            mAdapter.getView().setVisible(R.id.zpw_threesecurity_webview, pIsUseWebView);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     protected AdapterBase getAdapter() {
         return mAdapter;
     }
 
-    public void setAccountTest() {
-        loginHolder.edtUsername.setText("9044060a00");
-        loginHolder.edtPassword.setText("minhly2910");
-    }
-
-    /***
-     * Show showDialogSpinner view
-     */
     public void showDialogSpinnerView() {
         try {
-            setView(R.id.zpw_vcb_dialog_spinner, true);
+            getAdapter().getView().setVisible(R.id.zpw_vcb_dialog_spinner, true);
             isVisibilitySpinner = true;
-            //
-
-            View view_spinnert = mAdapter.getActivity().findViewById(R.id.zpw_vcb_dialog_spinner);
-            View cancel_button = mAdapter.getActivity().findViewById(R.id.cancel_button);
-            View footer_confirm_button = mAdapter.getActivity().findViewById(R.id.footer_confirm_button);
+            View view_spinnert = mAdapter.getView().findViewById(R.id.zpw_vcb_dialog_spinner);
+            View cancel_button = mAdapter.getView().findViewById(R.id.cancel_button);
+            View footer_confirm_button = mAdapter.getView().findViewById(R.id.footer_confirm_button);
 
             view_spinnert.setOnClickListener(mSpinnerButtonClickListener);
             cancel_button.setOnClickListener(mSpinnerButtonClickListener);
             footer_confirm_button.setOnClickListener(mSpinnerButtonClickListener);
-            View v = mAdapter.getActivity().findViewById(R.id.layout_animation);
+            View v = mAdapter.getView().findViewById(R.id.layout_animation);
             if (v != null) {
                 Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(mAdapter.getActivity(), R.anim.slide_in_bottom);
                 v.startAnimation(hyperspaceJumpAnimation);
@@ -223,35 +179,30 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     }
 
-    public void setView(int pId, boolean pIsVisible) {
-        View view = mAdapter.getActivity().findViewById(pId);
-
-        if (view != null) {
-            view.setVisibility(pIsVisible ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    public void closeSpinnerView() {
-        View v = mAdapter.getActivity().findViewById(R.id.layout_animation);
+    public void closeSpinnerView() throws Exception {
+        View v = mAdapter.getView().findViewById(R.id.layout_animation);
         if (v != null) {
             Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(mAdapter.getActivity(), R.anim.slide_out_bottom);
             v.startAnimation(hyperspaceJumpAnimation);
         }
         isVisibilitySpinner = false;
         final Handler handler = new Handler();
-        handler.postDelayed(() -> setView(R.id.zpw_vcb_dialog_spinner, false), 300);
-    }
-
-    public boolean getVisibilitySpinnerView() {
-        return isVisibilitySpinner;
+        handler.postDelayed(() -> {
+            try {
+                mAdapter.getView().setVisible(R.id.zpw_vcb_dialog_spinner, false);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }, 300);
     }
 
     public View getNumberPickerView() {
-        return mAdapter.getActivity().findViewById(R.id.number_picker);
-    }
-
-    public View getSpinnerView() {
-        return ((mAdapter.getActivity().findViewById(R.id.zpw_vcb_dialog_spinner) != null) ? mAdapter.getActivity().findViewById(R.id.zpw_vcb_dialog_spinner) : null);
+        try {
+            return mAdapter.getView().findViewById(R.id.number_picker);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return null;
     }
 
     public LoginHolder getLoginHolder() {
@@ -295,7 +246,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public LinearLayout getLlRoot_linear_layout() {
-        return (LinearLayout) mAdapter.getActivity().findViewById(R.id.ll_layout_rootview);
+        try {
+            return (LinearLayout) mAdapter.getView().findViewById(R.id.ll_layout_rootview);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return null;
     }
 
     public View getLlButton() {
@@ -303,143 +259,145 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     protected void init() {
-        // new gui init login
-        loginHolder = new LoginHolder();
-        loginHolder.llLogin = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_login);
-        loginHolder.imgLogoLinkAcc = (ImageView) mAdapter.getActivity().findViewById(R.id.img_logo_linkacc);
-        loginHolder.edtUsername = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_login_username);
-        loginHolder.edtUsername.setGroupText(false);
-        loginHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_login_password);
-        loginHolder.edtPassword.setGroupText(false);
-        loginHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_login_captcha);
-        loginHolder.btnRefreshCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.refresh_captcha);
-        loginHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (start < 1) {
-                    getAdapter().getActivity().setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
-                            GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint),
-                            mAdapter.getActivity());
+        try {
+            loginHolder = new LoginHolder();
+            loginHolder.llLogin = (LinearLayout) mAdapter.getView().findViewById(R.id.zpw_vcb_login);
+            loginHolder.imgLogoLinkAcc = (ImageView) mAdapter.getView().findViewById(R.id.img_logo_linkacc);
+            loginHolder.edtUsername = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_login_username);
+            loginHolder.edtUsername.setGroupText(false);
+            loginHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_login_password);
+            loginHolder.edtPassword.setGroupText(false);
+            loginHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_login_captcha);
+            loginHolder.btnRefreshCaptcha = (ImageView) mAdapter.getView().findViewById(R.id.refresh_captcha);
+            loginHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    if (start < 1) {
+                        try {
+                            getAdapter().getView().setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
+                                    GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint), GlobalData.getAppContext());
+                        } catch (Exception e) {
+                            Log.e(this, e);
+                        }
+                    }
                 }
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        loginHolder.edtCaptchaTextInputLayout = (TextInputLayout) mAdapter.getActivity().findViewById(R.id.edt_login_captcha_textInputLayout);
-        loginHolder.edtCaptcha.setGroupText(false);
-        loginHolder.srvScrollView = (ScrollView) mAdapter.getActivity().findViewById(R.id.zpw_scrollview_container);
-        loginHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                mAdapter.onClickSubmission();
-                return true;
-            }
-            return false;
-        });
-
-        loginHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_login_captcha);
-        loginHolder.webCaptcha = (WebView) mAdapter.getActivity().findViewById(R.id.web_login_captcha);
-
-        // new gui init confirm info
-        registerHolder = new RegisterHolder();
-        registerHolder.llRegister = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_confirm_link);
-        registerHolder.spnWalletType = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_register_WalletType);
-        registerHolder.spnAccNumberDefault = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_register_AccNumberDefault);
-        registerHolder.llAccNumberDefault = (LinearLayout) mAdapter.getActivity().findViewById(R.id.ll_register_AccNumberDefault);
-        registerHolder.ilAccNumberDefault = (TextInputLayout) mAdapter.getActivity().findViewById(R.id.il_register_AccNumberDefault);
-        registerHolder.spnPhoneNumber = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_register_PhoneNumber);
-        registerHolder.edtPhoneNum = (EditText) mAdapter.getActivity().findViewById(R.id.edt_register_PhoneNumber);
-        registerHolder.edtPhoneNum.setKeyListener(null);
-        registerHolder.edtAccNumDefault = (EditText) mAdapter.getActivity().findViewById(R.id.edt_register_AccNumberDefault);
-        registerHolder.edtAccNumDefault.setKeyListener(null);
-        registerHolder.spnOTPValidType = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_register_OTPValidType);
-        registerHolder.tvPhoneReceiveOTP = (TextView) mAdapter.getActivity().findViewById(R.id.tv_register_phone_receive_OTP);
-        registerHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_register_captcha);
-        registerHolder.btnRefreshCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.refresh_captcha_register);
-        registerHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (start < 1) {
-                    getAdapter().getActivity().setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
-                            GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint)
-                            , mAdapter.getActivity());
                 }
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                @Override
+                public void afterTextChanged(Editable editable) {
 
-            }
+                }
+            });
+            loginHolder.edtCaptchaTextInputLayout = (TextInputLayout) mAdapter.getView().findViewById(R.id.edt_login_captcha_textInputLayout);
+            loginHolder.edtCaptcha.setGroupText(false);
+            loginHolder.srvScrollView = (ScrollView) mAdapter.getView().findViewById(R.id.zpw_scrollview_container);
+            loginHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mAdapter.onClickSubmission();
+                    return true;
+                }
+                return false;
+            });
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+            loginHolder.imgCaptcha = (ImageView) mAdapter.getView().findViewById(R.id.img_login_captcha);
+            loginHolder.webCaptcha = (WebView) mAdapter.getView().findViewById(R.id.web_login_captcha);
 
-            }
-        });
-        registerHolder.edtCaptcha.setGroupText(false);
-        registerHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                mAdapter.onClickSubmission();
-                return true;
-            }
-            return false;
-        });
-        registerHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_register_captcha);
-        registerHolder.webCaptcha = (WebView) mAdapter.getActivity().findViewById(R.id.web_register_captcha);
+            // new gui init confirm info
+            registerHolder = new RegisterHolder();
+            registerHolder.llRegister = (LinearLayout) mAdapter.getView().findViewById(R.id.zpw_vcb_confirm_link);
+            registerHolder.spnWalletType = (Spinner) mAdapter.getView().findViewById(R.id.spn_register_WalletType);
+            registerHolder.spnAccNumberDefault = (Spinner) mAdapter.getView().findViewById(R.id.spn_register_AccNumberDefault);
+            registerHolder.llAccNumberDefault = (LinearLayout) mAdapter.getView().findViewById(R.id.ll_register_AccNumberDefault);
+            registerHolder.ilAccNumberDefault = (TextInputLayout) mAdapter.getView().findViewById(R.id.il_register_AccNumberDefault);
+            registerHolder.spnPhoneNumber = (Spinner) mAdapter.getView().findViewById(R.id.spn_register_PhoneNumber);
+            registerHolder.edtPhoneNum = (EditText) mAdapter.getView().findViewById(R.id.edt_register_PhoneNumber);
+            registerHolder.edtPhoneNum.setKeyListener(null);
+            registerHolder.edtAccNumDefault = (EditText) mAdapter.getView().findViewById(R.id.edt_register_AccNumberDefault);
+            registerHolder.edtAccNumDefault.setKeyListener(null);
+            registerHolder.spnOTPValidType = (Spinner) mAdapter.getView().findViewById(R.id.spn_register_OTPValidType);
+            registerHolder.tvPhoneReceiveOTP = (TextView) mAdapter.getView().findViewById(R.id.tv_register_phone_receive_OTP);
+            registerHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_register_captcha);
+            registerHolder.btnRefreshCaptcha = (ImageView) mAdapter.getView().findViewById(R.id.refresh_captcha_register);
+            registerHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    if (start < 1) {
+                        try {
+                            getAdapter().getView().setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
+                                    GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint)
+                                    , GlobalData.getAppContext());
+                        } catch (Exception e) {
+                            Log.e(this, e);
+                        }
+                    }
+                }
 
-        // new gui init confirm otp
-        confirmOTPHolder = new ConfirmOTPHolder();
-        confirmOTPHolder.llConfirmOTP = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_otp);
-        confirmOTPHolder.edtConfirmOTP = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_otp_OTP);
-        confirmOTPHolder.edtConfirmOTP.setGroupText(false);
-        confirmOTPHolder.edtConfirmOTP.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                mAdapter.onClickSubmission();
-                return true;
-            }
-            return false;
-        });
+                @Override
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
 
-        // new gui init unregister
-        unregisterHolder = new UnregisterHolder();
-        unregisterHolder.llUnregister = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_confirm_unlink);
-        unregisterHolder.spnWalletType = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_unregister_WalletType);
-        unregisterHolder.spnPhoneNumber = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_unregister_PhoneNumber);
-        unregisterHolder.edtPhoneNumber = (EditText) mAdapter.getActivity().findViewById(R.id.edt_unregister_PhoneNumber);
-        unregisterHolder.edtPhoneNumber.setKeyListener(null);
-        unregisterHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_unregister_password);
-        unregisterHolder.edtPassword.setGroupText(false);
-        unregisterHolder.edtPassword.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                mAdapter.onClickSubmission();
-                return true;
-            }
-            return false;
-        });
+                }
 
-        // message
-        txtMessage = (TextView) mAdapter.getActivity().findViewById(R.id.txt_Message);
+                @Override
+                public void afterTextChanged(Editable editable) {
 
-        // progress
-        pgbProgress = (ProgressBar) mAdapter.getActivity().findViewById(R.id.pgb_progress);
+                }
+            });
+            registerHolder.edtCaptcha.setGroupText(false);
+            registerHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mAdapter.onClickSubmission();
+                    return true;
+                }
+                return false;
+            });
+            registerHolder.imgCaptcha = (ImageView) mAdapter.getView().findViewById(R.id.img_register_captcha);
+            registerHolder.webCaptcha = (WebView) mAdapter.getView().findViewById(R.id.web_register_captcha);
 
-        submitButton = mAdapter.getActivity().findViewById(R.id.zpw_vcb_submit);
+            // new gui init confirm otp
+            confirmOTPHolder = new ConfirmOTPHolder();
+            confirmOTPHolder.llConfirmOTP = (LinearLayout) mAdapter.getView().findViewById(R.id.zpw_vcb_otp);
+            confirmOTPHolder.edtConfirmOTP = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_otp_OTP);
+            confirmOTPHolder.edtConfirmOTP.setGroupText(false);
+            confirmOTPHolder.edtConfirmOTP.setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mAdapter.onClickSubmission();
+                    return true;
+                }
+                return false;
+            });
 
-        // set group text
-        // TODO: code here
+            // new gui init unregister
+            unregisterHolder = new UnregisterHolder();
+            unregisterHolder.llUnregister = (LinearLayout) mAdapter.getView().findViewById(R.id.zpw_vcb_confirm_unlink);
+            unregisterHolder.spnWalletType = (Spinner) mAdapter.getView().findViewById(R.id.spn_unregister_WalletType);
+            unregisterHolder.spnPhoneNumber = (Spinner) mAdapter.getView().findViewById(R.id.spn_unregister_PhoneNumber);
+            unregisterHolder.edtPhoneNumber = (EditText) mAdapter.getView().findViewById(R.id.edt_unregister_PhoneNumber);
+            unregisterHolder.edtPhoneNumber.setKeyListener(null);
+            unregisterHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getView().findViewById(R.id.edt_unregister_password);
+            unregisterHolder.edtPassword.setGroupText(false);
+            unregisterHolder.edtPassword.setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    mAdapter.onClickSubmission();
+                    return true;
+                }
+                return false;
+            });
 
-        // set setKeyListener
-        // TODO: code here
+            // message
+            txtMessage = (TextView) mAdapter.getView().findViewById(R.id.txt_Message);
 
-        //set listener editText
-        // TODO: code here
+            // progress
+            pgbProgress = (ProgressBar) mAdapter.getView().findViewById(R.id.pgb_progress);
+
+            submitButton = mAdapter.getView().findViewById(R.id.zpw_vcb_submit);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+
         getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
@@ -473,13 +431,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setCaptchaImgB64Login(String pB64Encoded) {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
-
         Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
-
         if (bitmap != null) {
             getLoginHolder().getImgCaptcha().setVisibility(View.VISIBLE);
             getLoginHolder().getWebCaptcha().setVisibility(View.GONE);
-
             // set Image
             getLoginHolder().getImgCaptcha().setImageBitmap(bitmap);
         }
@@ -492,7 +447,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setCaptchaImgLogin(String pUrl) {
         if (TextUtils.isEmpty(pUrl))
             return;
-
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
@@ -513,23 +467,15 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
         getLoginHolder().getWebCaptcha().loadDataWithBaseURL(pUrl, sb.toString(),
                 "text/html", null, null);
-
     }
 
-    /***
-     * @param pB64Encoded
-     */
     public void setCaptchaImgB64Confirm(String pB64Encoded) {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
-
         Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
-
         if (bitmap != null) {
             getRegisterHolder().getImgCaptcha().setVisibility(View.VISIBLE);
             getRegisterHolder().getWebCaptcha().setVisibility(View.GONE);
-
-            // set Image
             getRegisterHolder().getImgCaptcha().setImageBitmap(bitmap);
         }
     }
@@ -541,7 +487,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setCaptchaImgConfirm(String pUrl) {
         if (TextUtils.isEmpty(pUrl))
             return;
-
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
@@ -604,8 +549,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setWalletList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnWalletType().setAdapter(adapter);
         }
@@ -616,13 +560,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setAccNumList(ArrayList<String> pList) {
         if (pList != null) {
-            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList));
+            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList));
             getRegisterHolder().getSpnAccNumberDefault().setClickable(true);
             getRegisterHolder().getSpnAccNumberDefault().setOnTouchListener((view, motionEvent) -> {
-
-                // TODO: code here to show dialog_spinner
-
                 showDialogSpinnerView();
                 if (getNumberPickerView() != null) {
                     NumberPicker picker = (NumberPicker) getNumberPickerView();
@@ -638,65 +578,43 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 }
                 return true;
             });
-
-
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setAccNum(ArrayList<String> pList) {
         if (pList != null) {
             getRegisterHolder().getEdtAccNumDefault().setText(pList.get(0));
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setPhoneNumList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnPhoneNumber().setAdapter(adapter);
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setPhoneNum(List<String> pList) {
         if (pList != null) {
             getRegisterHolder().getEdtPhoneNum().setText(pList.get(0));
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setOtpValidList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnOTPValidType().setAdapter(adapter);
         }
     }
 
-    /***
-     * @param pValue
-     */
     public void setPhoneReceiveOTP(String pValue) {
         if (pValue != null) {
             getRegisterHolder().getTvPhoneReceiveOTP().setText(pValue);
         }
     }
 
-    /***
-     * @param pValue
-     */
     public void setProgress(int pValue) {
         if (pValue < 0 && pValue > 100) {
             return;
@@ -705,33 +623,22 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getPgbProgress().setProgress(pValue);
     }
 
-    /***
-     * @param pList
-     */
     public void setWalletUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnWalletType().setAdapter(adapter);
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setPhoneNumUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
-                    android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnPhoneNumber().setAdapter(adapter);
         }
     }
 
-    /***
-     * @param pList
-     */
     public void setPhoneNumUnReg(List<String> pList) {
         if (pList != null) {
             getUnregisterHolder().getEdtPhoneNumber().setText(pList.get(0));
@@ -845,36 +752,40 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return null;
     }
 
-    /***
-     * @return
-     */
     public boolean checkEnableLoginSubmitButton() {
         boolean isLoginCaptcha = checkValidRequiredEditText(getLoginHolder().getEdtCaptcha());
         boolean isLoginName = checkValidRequiredEditText(getLoginHolder().getEdtUsername());
         boolean isLoginPassword = checkValidRequiredEditText(getLoginHolder().getEdtPassword());
-
-        if (isLoginPassword && isLoginName && isLoginCaptcha) {
-            getAdapter().getActivity().enableSubmitBtn(true);
-            return true;
-        } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
-            return false;
+        try {
+            if (isLoginPassword && isLoginName && isLoginCaptcha) {
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                return true;
+            } else {
+                getAdapter().getView().disableSubmitBtn();
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
+        return false;
     }
 
-    /***
-     * @return
-     */
     public boolean checkEnableConfirmCaptchaSubmitButton() {
         boolean isConfirmCaptcha = checkValidRequiredEditText(getRegisterHolder().getEdtCaptcha());
-
-        if (isConfirmCaptcha) {
-            getAdapter().getActivity().enableSubmitBtn(true);
-            return true;
-        } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
-            return false;
+        try {
+            if (isConfirmCaptcha) {
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                return true;
+            } else {
+                getAdapter().getView().disableSubmitBtn();
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
+        return false;
     }
 
     /***
@@ -882,14 +793,19 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public boolean checkEnableConfirmOtpSubmitButton() {
         boolean isConfirmOtp = checkValidRequiredEditText(getConfirmOTPHolder().getEdtConfirmOTP());
-
-        if (isConfirmOtp) {
-            getAdapter().getActivity().enableSubmitBtn(true);
-            return true;
-        } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
-            return false;
+        try {
+            if (isConfirmOtp) {
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                return true;
+            } else {
+                getAdapter().getView().disableSubmitBtn();
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
+        return false;
     }
 
     /***
@@ -897,14 +813,19 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public boolean checkEnableUnRegPassSubmitButton() {
         boolean isUnRegisterPassword = checkValidRequiredEditText(getUnregisterHolder().getEdtPassword());
-
-        if (isUnRegisterPassword) {
-            getAdapter().getActivity().enableSubmitBtn(true);
-            return true;
-        } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
-            return false;
+        try {
+            if (isUnRegisterPassword) {
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                return true;
+            } else {
+                getAdapter().getView().disableSubmitBtn();
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
+        return false;
     }
 
     public class UnregisterHolder {

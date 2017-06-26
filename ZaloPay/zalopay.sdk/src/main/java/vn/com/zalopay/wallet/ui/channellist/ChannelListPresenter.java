@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -27,7 +26,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
-import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -62,8 +61,10 @@ import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.PaymentPresenter;
+import vn.com.zalopay.wallet.ui.channellist.item.AbstractItem;
+import vn.com.zalopay.wallet.ui.channellist.item.TitleItem;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -75,14 +76,48 @@ import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
  * Created by chucvv on 6/12/17.
  */
 
-public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment> {
+public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
     @Inject
     public EventBus mBus;
     @Inject
     public IBank mBankInteractor;
     @Inject
     public IAppInfo mAppInfoInteractor;
-    public Action1<Throwable> mBankListException = throwable -> {
+
+    protected PaymentInfoHelper mPaymentInfoHelper;
+    private ChannelListAdapter mChannelAdapter;
+    private PayProxy mPayProxy;
+    private List<Object> mChannelList = new ArrayList<>();
+    private AbstractChannelLoader mChannelLoader;
+    private PaymentChannel mSelectChannel = null;
+    private boolean setInputMethodTitle = false;
+    private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
+        @Override
+        public void onClose() {
+            try {
+                getViewOrThrow().showOpenSettingNetwokingDialog(null);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+    };
+
+    public ChannelListPresenter() {
+        SDKApplication.getApplicationComponent().inject(this);
+        Log.d(this, "call constructor ChannelListPresenter");
+    }
+
+    @Override
+    protected void loadBankListOnProgress() {
+        try {
+            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+    @Override
+    protected void loadBankListOnError(Throwable throwable) {
         Log.d(this, "load bank list error", throwable);
         String message = TransactionHelper.getMessage(throwable);
         if (TextUtils.isEmpty(message)) {
@@ -93,34 +128,28 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         } catch (Exception e) {
             Log.d(this, e);
         }
-    };
-    protected PaymentInfoHelper mPaymentInfoHelper;
-    private ChannelListAdapter mChannelAdapter;
-    private PayProxy mPayProxy;
-    private List<Object> mChannelList = new ArrayList<>();
-    private AbstractChannelLoader mChannelLoader;
-    private PaymentChannel mSelectChannel = null;
-    private Action1<AppInfo> appInfoSubscriber = new Action1<AppInfo>() {
-        @Override
-        public void call(AppInfo appInfo) {
-            try {
-                Log.d(this, "load app info success", appInfo);
-                if (appInfo == null || !appInfo.isAllow()) {
-                    getViewOrThrow().showAppInfoNotFoundDialog();
-                    return;
-                }
-                String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
-                if (TextUtils.isEmpty(appName)) {
-                    appName = appInfo.appname;
-                }
-                getViewOrThrow().renderAppInfo(appName);
-                loadStaticReload();
-            } catch (Exception e) {
-                Log.d(this, e);
-            }
+    }
+
+    @Override
+    protected void loadBankListOnComplete(BankConfigResponse bankConfigResponse) {
+        try {
+            loadChannels();
+        } catch (Exception e) {
+            Log.d(this, e);
         }
-    };
-    private Action1<Throwable> appInfoException = throwable -> {
+    }
+
+    @Override
+    protected void loadAppInfoOnProcess() {
+        try {
+            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
+    }
+
+    @Override
+    protected void loadAppInfoOnError(Throwable throwable) {
         Log.d(this, "load app info on error", throwable);
         try {
             getViewOrThrow().hideLoading();
@@ -137,27 +166,32 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (showDialog) {
                 getViewOrThrow().showError(message);
             } else {
-                getViewOrThrow().callbackThenterminate();
+                getViewOrThrow().callbackThenTerminate();
             }
         } catch (Exception e) {
             Log.d(this, e);
         }
-    };
-    private boolean setInputMethodTitle = false;
-    private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
-        @Override
-        public void onClose() {
-            try {
-                getViewOrThrow().showOpenSettingNetwokingDialog(null);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-    };
+    }
 
-    public ChannelListPresenter() {
-        SDKApplication.getApplicationComponent().inject(this);
-        Log.d(this, "call constructor ChannelListPresenter");
+    @Override
+    protected void loadAppInfoOnComplete(AppInfo appInfo) {
+        try {
+            Log.d(this, "load app info success", appInfo);
+            if (appInfo == null || !appInfo.isAllow()) {
+                getViewOrThrow().showAppInfoNotFoundDialog();
+                return;
+            }
+            String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+            if (TextUtils.isEmpty(appName)) {
+                appName = appInfo.appname;
+            }
+            getViewOrThrow().renderAppInfo(appName);
+            if(!loadStaticResource(mPaymentInfoHelper.getUserInfo())){
+                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
+            }
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
     }
 
     public List<Object> getChannelList() {
@@ -248,7 +282,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         super.onDetach();
         mChannelAdapter = null;
         mChannelList = null;
-        if(mPayProxy != null){
+        if (mPayProxy != null) {
             mPayProxy.release();
         }
     }
@@ -257,7 +291,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void OnPaymentInfoEvent(PaymentInfoHelper paymentInfoHelper) {
         mBus.removeStickyEvent(PaymentInfoHelper.class);
         mPaymentInfoHelper = paymentInfoHelper;
-        paymentInfoReady();
+        onPaymentReady();
         Log.d(this, "got event payment info", mPaymentInfoHelper);
     }
 
@@ -359,9 +393,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    private void paymentInfoReady() {
+    private void onPaymentReady() {
         try {
-            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans());
+            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
             initAdapter();
@@ -424,13 +458,12 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.INPUT));
         // don't have any channel now
-        if (mChannelList.size() <= 0) {
+        if (mChannelList.size() <= 0 || (mChannelList.size() == 1 && ! (mChannelList.get(0) instanceof PaymentChannel))) {
             /***
              * this is withdraw link card and no mapp card.
              * need remind user go to link card to can withdraw
              */
             if (mPaymentInfoHelper.isWithDrawTrans()) {
-
                 try {
                     getViewOrThrow().showWarningLinkCardBeforeWithdraw();
                 } catch (Exception e) {
@@ -519,9 +552,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         };
     }
 
-    /***
-     * prepare show channel and show header.
-     */
     private synchronized void loadChannels() throws Exception {
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
@@ -538,29 +568,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     }
 
-    private void readyForPayment() throws Exception {
-        getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        loadBankList(new Action1<BankConfigResponse>() {
-            @Override
-            public void call(BankConfigResponse bankConfigResponse) {
-                try {
-                    loadChannels();
-                } catch (Exception e) {
-                    Log.d(this, e);
-                }
-                Log.d(this, "load bank list finish");
-            }
-        }, mBankListException);
+    private void readyForPayment() {
+        loadBankList(mBankInteractor);
         Log.d(this, "ready for payment");
-    }
-
-    public void loadBankList(Action1<BankConfigResponse> success, Action1<Throwable> error) {
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        long currentTime = System.currentTimeMillis();
-        Subscription subscription = mBankInteractor.getBankList(appVersion, currentTime)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success, error);
-        addSubscription(subscription);
     }
 
     public boolean isUniqueChannel() {
@@ -570,7 +580,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void exitHasOneChannel() {
         if (isUniqueChannel()) {
             try {
-                getViewOrThrow().callbackThenterminate();
+                getViewOrThrow().callbackThenTerminate();
             } catch (Exception e) {
                 Log.d(this, e);
             }
@@ -584,40 +594,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         long appId = mPaymentInfoHelper.getAppId();
         @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        long currentTime = System.currentTimeMillis();
-        Subscription subscription = mAppInfoInteractor.loadAppInfo(appId, new int[]{transtype},
-                userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> {
-                    try {
-                        getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-                    } catch (Exception e) {
-                        Log.d(this, e);
-                    }
-                })
-                .subscribe(appInfoSubscriber, appInfoException);
-        addSubscription(subscription);
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
-        }
-    }
-
-    private void loadStaticReload() throws Exception {
-        try {
-            Log.d(this, "check static resource start");
-            PlatformInfoLoader.getInstance(mPaymentInfoHelper.getUserInfo()).checkPlatformInfo();
-        } catch (Exception e) {
-            getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-            Log.e(this, e);
-        }
-    }
-
-    public void callback() {
-        Log.d(this, "callback presenter");
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onComplete();
-        }
+        loadAppInfo(mAppInfoInteractor, appId, transtype, userInfo);
     }
 
     public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
@@ -696,30 +673,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                 }
             } else {
                 try {
-                    getViewOrThrow().callbackThenterminate();
+                    getViewOrThrow().callbackThenTerminate();
                 } catch (Exception e) {
                     Log.d(this, e);
                 }
             }
-        }
-    }
-
-    private void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) throws Exception {
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
-        }
-        if (pForceUpdate) {
-            getViewOrThrow().terminate();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnUpVersionEvent(SdkUpVersionMessage pMessage) {
-        Log.d(this, "OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
-        try {
-            notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
-        } catch (Exception e) {
-            Log.d(this, e);
         }
     }
 
@@ -769,7 +727,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void onSuccessTransEvent(SdkSuccessTransEvent event) {
         if (mPayProxy != null) {
             try {
-                mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
+                //mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -784,6 +742,20 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                     TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         } catch (Exception e) {
             Log.e(this, e);
+        }
+    }
+
+    @Override
+    protected void onUpdateVersion(SdkUpVersionMessage pMessage) {
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onUpVersion(pMessage.forceupdate, pMessage.version, pMessage.message);
+        }
+        if (pMessage.forceupdate) {
+            try {
+                getViewOrThrow().terminate();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -22,15 +23,16 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.IValidate;
 import vn.com.zalopay.wallet.business.validation.PaymentInfoValidation;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
 
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 
@@ -54,10 +56,12 @@ public class SDKPayment {
      */
     public synchronized static boolean canCloseSdk() {
         try {
-            if (BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity
-                    && ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter() != null) {
-                return ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter().isFinalScreen();
+            ChannelActivity channelActivity = BaseActivity.getChannelActivity();
+            if (channelActivity == null || channelActivity.isFinishing()) {
+                return true;
             }
+            AdapterBase adapterBase = channelActivity.getAdapter();
+            return adapterBase != null && adapterBase.isFinalScreen();
         } catch (Exception ex) {
             Log.e("canCloseSdk", ex);
         }
@@ -77,9 +81,12 @@ public class SDKPayment {
             throw new Exception("Có 1 hóa đơn vẫn đang xử lý. Không thể đóng giao dịch khi chưa hoàn thành.");
         }
         try {
-            if (BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity
-                    && ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter() != null) {
-                ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter().onClickSubmission();
+            ChannelActivity channelActivity = BaseActivity.getChannelActivity();
+            if (channelActivity != null && !channelActivity.isFinishing()) {
+                AdapterBase adapterBase = channelActivity.getAdapter();
+                if (adapterBase != null) {
+                    adapterBase.onClickSubmission();
+                }
             } else {
                 throw new Exception("Không thể đóng sdk lúc này");
             }
@@ -226,7 +233,9 @@ public class SDKPayment {
         int transtype = paymentInfoHelper.getTranstype();
         //this is link card , go to channel directly
         if (paymentInfoHelper.isCardLinkTrans() || paymentInfoHelper.isBankAccountTrans()) {
-            intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
+            int layoutId = !paymentInfoHelper.isCardLinkTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
+            intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
             pmcTransType = SDKApplication
                     .getApplicationComponent()
                     .appInfoInteractor()
@@ -237,7 +246,7 @@ public class SDKPayment {
         } else {
             intent = new Intent(pOwner, ChannelListActivity.class);
         }
-        if (pmcTransType == null && intent.getComponent().getClassName().equals(PaymentChannelActivity.class.getName())) {
+        if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
         } else {
             SDKApplication.getApplicationComponent().eventBus().postSticky(paymentInfoHelper);

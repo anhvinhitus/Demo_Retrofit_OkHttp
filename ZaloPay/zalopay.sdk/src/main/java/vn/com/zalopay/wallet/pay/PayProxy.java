@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.pay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -44,6 +43,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
+import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -53,7 +53,7 @@ import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
 import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
@@ -86,14 +86,6 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -110,6 +102,14 @@ public class PayProxy extends SingletonBase {
                 startChannelActivity();
             }
             Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
+        }
+    };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
         }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
@@ -171,14 +171,14 @@ public class PayProxy extends SingletonBase {
         super();
     }
 
-    public static PayProxy get() throws Exception{
-        if(PayProxy._object == null){
+    public static PayProxy get() throws Exception {
+        if (PayProxy._object == null) {
             throw new IllegalAccessException("invalid pay proxy");
         }
         return PayProxy._object;
     }
 
-    public static PayProxy shared(){
+    public static PayProxy shared() {
         if (PayProxy._object == null) {
             PayProxy._object = new PayProxy();
         }
@@ -493,7 +493,9 @@ public class PayProxy extends SingletonBase {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getView().showLoading(mContext.getString(R.string.zpw_string_alert_loading_bank));
             ChannelListPresenter presenter = getPresenter();
-            presenter.loadBankList(bankListSubscriber, presenter.mBankListException);
+            IBank bank = SDKApplication.getApplicationComponent()
+                    .bankListInteractor();
+            presenter.loadBankList(bank, bankListSubscriber);
         } else {
             startFlow();
         }
@@ -553,7 +555,7 @@ public class PayProxy extends SingletonBase {
         Lock lock = new ReentrantLock();
         try {
             lock.lock();
-            Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            Intent intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
             if (mStatusResponse != null) {
                 /***
                  * re-assign trans id again because of some case
@@ -564,6 +566,7 @@ public class PayProxy extends SingletonBase {
                 Log.d(this, "start channel status response", mStatusResponse);
             }
             intent.putExtra(PMC_CONFIG, mChannel);
+            intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);

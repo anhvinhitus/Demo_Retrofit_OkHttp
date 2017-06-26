@@ -146,10 +146,8 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
 
     public void removeFragment(String pTag) {
         int pos = getIndexOfFragment(pTag);
-
         if (pos != -1) {
             cardFragments.remove(pos);
-
             Log.d(this, "===removeFragment===pos=" + pos);
         }
     }

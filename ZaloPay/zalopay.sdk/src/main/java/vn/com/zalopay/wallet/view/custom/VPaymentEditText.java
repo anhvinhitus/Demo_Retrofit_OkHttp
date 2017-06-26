@@ -20,16 +20,15 @@ import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdit
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 public class VPaymentEditText extends TextInputEditText {
     public static final int OFFSET = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.zpw_offset_drawable_right);
     protected DDynamicEditText mEditTextConfig = null;
     protected char SPACE_SEPERATOR;
-
-    protected AdapterBase mAdapter = null;
-
     protected boolean mIsTextGroup = true;
     protected boolean mIsPattern = false;
     protected String mPattern = null;
@@ -97,12 +96,9 @@ public class VPaymentEditText extends TextInputEditText {
         return true;
     }
 
-    public void init(DDynamicEditText pEditText, AdapterBase pAdapter) {
+    public void init(DDynamicEditText pEditText) {
         mIsPattern = pEditText.pattern;
         mEditTextConfig = pEditText;
-
-        mAdapter = pAdapter;
-
         this.addTextChangedListener(mTextFormater);
     }
 
@@ -227,14 +223,18 @@ public class VPaymentEditText extends TextInputEditText {
 
     /***
      * prevent user hide softkeyboard when inputting the card info
-     *
      * @param keyCode
      * @param event
      * @return
      */
     @Override
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && mAdapter != null && mAdapter.isInputStep()) {
+        ChannelActivity activity = BaseActivity.getChannelActivity();
+        AdapterBase adapterBase = null;
+        if (activity != null && !activity.isFinishing()) {
+            adapterBase = activity.getAdapter();
+        }
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && adapterBase != null && adapterBase.isInputStep()) {
             Log.d(this, "can not back,you have to input card info");
             return true;
         }

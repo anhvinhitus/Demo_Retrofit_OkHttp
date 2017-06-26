@@ -20,7 +20,7 @@ public abstract class PaymentWebViewClient extends WebViewClient {
     }
 
     public static PaymentWebViewClient createPaymentWebViewClientByBank(AdapterBase pAdapter) {
-        if (pAdapter instanceof AdapterBankCard && ((AdapterBankCard) pAdapter).isBidvBankPayment()) {
+        if (pAdapter instanceof AdapterBankCard && ((AdapterBankCard) pAdapter).paymentBIDV()) {
             return new BidvWebViewClient(pAdapter);
         } else {
             return new BankWebViewClient(pAdapter);

@@ -1,3 +1,4 @@
+/*
 package vn.com.zalopay.wallet.ui.channel;
 
 import android.app.Activity;
@@ -120,12 +121,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean mIsBackClick = true;
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
-    //dialog asking open networking listener
     public ZPWPaymentOpenNetworkingDialogListener paymentOpenNetworkingDialogListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
             if (getCurrentActivity() instanceof PaymentChannelActivity) {
-                ((PaymentChannelActivity) getCurrentActivity()).getAdapter().closeSDKAfterNetworkOffline();
+                ((PaymentChannelActivity) getCurrentActivity()).getAdapter().whetherQuitPaymentOffline();
             }
         }
 
@@ -138,11 +138,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected int numberOfRetryOpenNetwoking = 0;//number of openning networking dialog retry
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
-    //close snackbar networking alert listener
     protected onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
-    /***
+    */
+/***
      * loading website so long,over timeout 40s
-     */
+     *//*
+
     int numberOfRetryTimeout = 1;
     ZPWOnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new ZPWOnProgressDialogTimeoutListener() {
         @Override
@@ -320,12 +321,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         mCompositeSubscription.add(subscription);
     }
 
+    protected abstract void paymentInfoReady(PaymentInfoHelper paymentInfoHelper);
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void OnPaymentInfoEvent(PaymentInfoHelper paymentInfoHelper) {
         mBus.removeStickyEvent(PaymentInfoHelper.class);
-        mPaymentInfoHelper = paymentInfoHelper;
-        paymentInfoReady();
-        Log.d(this, "got event payment info", mPaymentInfoHelper);
+        paymentInfoReady(paymentInfoHelper);
+        Log.d(this, "got event payment info from bus", paymentInfoHelper);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -351,11 +353,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             addSuscription(subscription);
         } else {
             Log.d(this, "init resource error " + pMessage);
-            /***
+            */
+/***
              * delete folder resource to download again.
              * this prevent case file resource downloaded but was damaged on the wire so
              * can not parse json file.
-             */
+             *//*
+
             try {
                 String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
                 if (!TextUtils.isEmpty(resPath))
@@ -391,6 +395,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnInitialResourceCompleteEvent(SdkStartInitResourceMessage pMessage) {
+        Log.d(this, "OnInitialResourceCompleteEvent");
         if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
             Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
             return;
@@ -430,8 +435,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.e(this, e);
         }
     }
-
-    public abstract void paymentInfoReady();
 
     public abstract void callBackThenTerminate();
 
@@ -587,9 +590,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         addSuscription(subscription);
     }
 
-    /***
+    */
+/***
      * load app info from cache or api
-     */
+     *//*
+
     protected void loadAppInfo(long appId, @TransactionType int transtype, String userId, String accessToken) {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
@@ -619,12 +624,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
+    */
+/***
      * set keyboard type for edittext from config.json
      * @param pStrID
      * @param pKeyBoardType
      * @return
-     */
+     *//*
+
     public View setKeyBoard(String pStrID, @KeyboardType int pKeyBoardType) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
@@ -825,7 +832,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         if (activity != null && !activity.isFinishing()) {
             if (numberOfRetryOpenNetwoking >= Constants.MAX_RETRY_OPEN_NETWORKING && activity instanceof PaymentChannelActivity) {
-                ((PaymentChannelActivity) getCurrentActivity()).getAdapter().closeSDKAfterNetworkOffline();
+                ((PaymentChannelActivity) getCurrentActivity()).getAdapter().whetherQuitPaymentOffline();
                 numberOfRetryOpenNetwoking = 0;
                 return;
             }
@@ -1005,7 +1012,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
             setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
-            ((TextView)findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
+            ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
         if (!hasAmount || mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
             setVisible(R.id.success_order_amount_total_linearlayout, false);
@@ -1052,9 +1059,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         changeSubmitButtonBackground();
     }
 
-    /***
+    */
+/***
      * change background drawable button close
-     */
+     *//*
+
     private void changeSubmitButtonBackground() {
         Button close_btn = (Button) findViewById(R.id.zpsdk_btn_submit);
         if (close_btn != null) {
@@ -1104,11 +1113,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         changeSubmitButtonBackground();
     }
 
-    public void showToast(int layout){
+    public void showToast(int layout) {
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(View.inflate(getApplicationContext(),layout, null));
+        toast.setView(View.inflate(getApplicationContext(), layout, null));
         toast.show();
     }
 
@@ -1155,11 +1164,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
+    */
+/***
      * set margin top  Submit Button tab or phone
      *
      * @param viewEnd successview or failview
-     */
+     *//*
+
     public void setMarginSubmitButtonTop(boolean viewEnd) {
         View submitButton = findViewById(R.id.zpw_submit_view);
         View authenLocalView = findViewById(R.id.linearlayout_selection_authen);
@@ -1198,10 +1209,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
+    */
+/***
      * server maintenance dialog
      * @param pStatusMessage
-     */
+     *//*
+
     public void showServerMaintenanceDialog(String pStatusMessage) {
         String mMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_maintenance);
         if (!TextUtils.isEmpty(pStatusMessage)) {
@@ -1214,20 +1227,24 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }, mMessage);
     }
 
-    /**
+    */
+/**
      * Show dialog confirm upgrade level when user input bank account number
-     */
+     *//*
+
     public void confirmUpgradeLevelIfUserInputBankAccount(final String pMessage, ZPWOnEventConfirmDialogListener pListener) {
         showNoticeDialog(pListener, pMessage, GlobalData.getStringResource(RS.string.dialog_upgrade_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
     }
 
-    /***
+    */
+/***
      * show bank maintenance dialog
      *
      * @param pListener
      * @param pBankCode
      * @return
-     */
+     *//*
+
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             int bankFunction = GlobalData.getCurrentBankFunction();
@@ -1253,12 +1270,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         DialogManager.showSweetDialogConfirm(this, pMessage, pButtonLeftText, pButtonRightText, pListener);
     }
 
-    /***
+    */
+/***
      * show error dialog
      *
      * @param pDialogListener
      * @param params
-     */
+     *//*
+
     public void showErrorDialog(final ZPWOnEventDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
             Log.d(this, "===showWarningDialog===params=NULL");
@@ -1278,11 +1297,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 SweetAlertDialog.ERROR_TYPE, pDialogListener);
     }
 
-    /***
+    */
+/***
      * warning dialog
      * @param pDialogListener
      * @param params
-     */
+     *//*
+
     public void showWarningDialog(final ZPWOnEventDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
             Log.d(this, "===showWarningDialog===params=NULL");
@@ -1304,11 +1325,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 SweetAlertDialog.WARNING_TYPE, pDialogListener);
     }
 
-    /***
+    */
+/***
      * info dialog
      * @param pDialogListener
      * @param params
-     */
+     *//*
+
     public void showInfoDialog(final ZPWOnEventDialogListener pDialogListener, String... params) {
         if (params == null || params.length <= 0) {
             return;
@@ -1358,9 +1381,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         DialogManager.showSweetDialogRetry(this, message, pDialogListener);
     }
 
-    /***
+    */
+/***
      * Show support view
-     */
+     *//*
+
     public void showSupportView(String pTransactionID) {
         try {
             Bitmap mBitmap = SdkUtils.CaptureScreenshot(getCurrentActivity());
@@ -1500,3 +1525,4 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 }
+*/

@@ -4,28 +4,22 @@ import rx.Subscription;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
 
 public class AdapterCreditCard extends AdapterBase {
-    public AdapterCreditCard(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+    public AdapterCreditCard(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                              PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
-        mLayoutId = SCREEN_CC;
+        super(SCREEN_CC, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         GlobalData.cardChannelType = CardChannel.CREDIT;
-    }
-
-    @Override
-    public String getDefaultPageName() {
-        return SCREEN_CC;
     }
 
     @Override
@@ -34,7 +28,11 @@ public class AdapterCreditCard extends AdapterBase {
         Subscription subscription = getGuiProcessor()
                 .getCardFinder()
                 .detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
-        getActivity().addSuscription(subscription);
+        try {
+            getPresenter().addSubscription(subscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     @Override
@@ -48,11 +46,6 @@ public class AdapterCreditCard extends AdapterBase {
             onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
-    }
-
-    @Override
-    protected String getTitle() {
-        return GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name);
     }
 
     private int getDefaultChannelId() {
@@ -72,12 +65,6 @@ public class AdapterCreditCard extends AdapterBase {
     }
 
     @Override
-    public void showTransactionFailView(String pMessage) {
-        super.showTransactionFailView(pMessage);
-        showProgressBar(false, null);
-    }
-
-    @Override
     public void onProcessPhrase() {
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
@@ -85,5 +72,4 @@ public class AdapterCreditCard extends AdapterBase {
         }
         startSubmitTransaction();
     }
-
 }

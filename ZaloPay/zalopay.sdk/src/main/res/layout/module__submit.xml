@@ -4,27 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!--<vn.com.zalopay.wallet.view.custom.ZPWRippleButton
-        android:id="@+id/zpsdk_btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/zpw_submit_button_height"
-        android:gravity="center"
-        android:background="@color/color_primary"
-        android:layout_marginLeft="@dimen/padding_large"
-        android:layout_marginRight="@dimen/padding_large"
-        android:enabled="false"
-        android:text="@string/zpw_button_submit_text"
-        android:textColor="@color/white"
-        android:textSize="@dimen/zpw_submit_button_text_size"
-        android:textAppearance="?android:attr/textAppearanceMedium" />-->
-
     <Button
         android:id="@+id/zpsdk_btn_submit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/zpw_submit_button_height"
         android:layout_marginLeft="@dimen/padding_large"
         android:layout_marginRight="@dimen/padding_large"
-        android:background="@color/color_primary"
+        android:background="@drawable/bg_btn_blue_border_selector"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/zpw_button_submit_text"

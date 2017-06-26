@@ -20,7 +20,8 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.interactor.UpversionCallback;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
     private static PlatformInfoLoader _object;
@@ -39,8 +40,9 @@ public class PlatformInfoLoader extends SingletonBase {
             if (e instanceof RequestException) {
                 RequestException requestException = (RequestException) e;
                 message = e.getMessage();
-                if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
-                    ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).updatePaymentStatus(requestException.code);
+                ChannelActivity activity = BaseActivity.getChannelActivity();
+                if (activity != null && !activity.isFinishing()) {
+                    activity.getAdapter().getPaymentInfoHelper().updateTransactionResult(requestException.code);
                 }
             }
             if (TextUtils.isEmpty(message)) {

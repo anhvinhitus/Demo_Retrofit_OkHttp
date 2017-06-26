@@ -9,13 +9,15 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdittext;
+import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {
     public static final int FIELD_MONTH = 1;
@@ -58,10 +60,6 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        if (this.getContext() instanceof PaymentChannelActivity) {
-            mAdapter = ((PaymentChannelActivity) getContext()).getAdapter();
-        }
-
         this.addTextChangedListener(mTextFormater);
         this.setClickable(true);
         this.setEnabled(true);
@@ -176,9 +174,17 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         /***
          * check pattern get from bundle
          */
-        if (mIsPattern && mAdapter != null) {
-            mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(mAdapter.getChannelID()));
 
+        if (mIsPattern) {
+            ChannelActivity channelActivity = BaseActivity.getChannelActivity();
+            if (channelActivity == null || channelActivity.isFinishing()) {
+                return false;
+            }
+            AdapterBase adapterBase = channelActivity.getAdapter();
+            if (adapterBase == null) {
+                return false;
+            }
+            mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(adapterBase.getChannelID()));
             if (mPattern == null) {
                 mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, "all");
             }

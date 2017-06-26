@@ -3,33 +3,20 @@ package vn.com.zalopay.wallet.business.channel.zalopay;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
+import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ZALOPAY;
 
 public class AdapterZaloPay extends AdapterBase {
-    public AdapterZaloPay(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+    public AdapterZaloPay(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
-        mLayoutId = RS.layout.screen__zalopay;
-    }
-
-    @Override
-    public String getDefaultPageName() {
-        return PAGE_BALANCE_ERROR;
-    }
-
-    @Override
-    public void init() throws Exception {
-        super.init();
-        if (PAGE_BALANCE_ERROR.equals(mPageName)) {
-            getActivity().setToolBarTitle();
-            getActivity().enableSubmitBtn(true);
-        }
+        super(SCREEN_ZALOPAY,pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
     }
 
     protected int getDefaultChannelId() {
@@ -59,7 +46,11 @@ public class AdapterZaloPay extends AdapterBase {
     @Override
     public void onProcessPhrase() {
         if (isBalanceErrorPharse()) {
-            getActivity().callBackThenTerminate();
+            try {
+                getPresenter().setPaymentStatusAndCallback(PaymentStatus.ERROR_BALANCE);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 }

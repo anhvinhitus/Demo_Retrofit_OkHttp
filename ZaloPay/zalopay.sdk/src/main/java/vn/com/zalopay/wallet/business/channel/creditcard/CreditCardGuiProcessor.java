@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference;
 import rx.Subscription;
 import rx.functions.Action1;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -71,7 +72,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                 }
             }
         });
-        getAdapter().getActivity().addSuscription(subscription);
+        try {
+            getAdapter().getPresenter().addSubscription(subscription);
+        } catch (Exception e) {
+            Log.e(this,e);
+        }
     }
 
     @Override
@@ -102,59 +107,53 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected CardFragmentBaseAdapter onCreateCardFragmentAdapter() {
-        return new CreditCardFragmentAdapter(getAdapter().getActivity().getSupportFragmentManager(), getAdapter().getActivity().getIntent().getExtras());
+        try {
+            return new CreditCardFragmentAdapter(getAdapter().getActivity().getSupportFragmentManager(), getAdapter().getActivity().getIntent().getExtras());
+        } catch (Exception e) {
+            Log.e(this,e);
+        }
+        return null;
     }
 
     @Override
     protected int validateInputCard() {
         int errorFragmentIndex = mCardAdapter.hasError();
-
         if (errorFragmentIndex > -1)
             return errorFragmentIndex;
-
         if (!getCardFinder().isValidCardLength() || !getCardFinder().isDetected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
-
             return 0;
         }
         if (TextUtils.isEmpty(getCardExpire())) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardExpiryFragment.class.getName());
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
-
             return 1;
         }
 
         if (TextUtils.isEmpty(getCardCVV()) || getCardCVV().length() < 3) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardCVVFragment.class.getName());
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
-
             return 2;
         }
 
         if (TextUtils.isEmpty(getCardName()) || getCardName().length() <= 3) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNameFragment.class.getName());
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
-
             return 3;
         }
-
         return errorFragmentIndex;
     }
 
@@ -189,17 +188,31 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         if (isValidCardNumber()
                 && !TextUtils.isEmpty(getCardCVV())
                 && !TextUtils.isEmpty(getCardExpire())) {
-            getAdapter().getActivity().enableSubmitBtn(true);
+            try {
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+            } catch (Exception e) {
+                Log.e(this,e);
+            }
             return true;
         } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
+            try {
+                getAdapter().getView().disableSubmitBtn();
+            } catch (Exception e) {
+                Log.e(this,e);
+            }
             return false;
         }
     }
 
     @Override
     protected boolean canSwitchChannelLinkCard() {
-        return getAdapter().getActivity().isAllowLinkCardATM();
+        try {
+            return getAdapter().getPresenter().hasAtm;
+        } catch (Exception e) {
+            Log.e(this,e);
+        }
+        return false;
     }
 
     @Override
@@ -210,8 +223,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void switchChannel() {
         Log.d(this, "===switchChannel===");
-
-        getAdapter().getActivity().switchChannel(BuildConfig.channel_atm, getCardNumber());
+        try {
+            getAdapter().getPresenter().switchChannel(BuildConfig.channel_atm, getCardNumber());
+        } catch (Exception e) {
+            Log.e(this,e);
+        }
     }
 
     /***

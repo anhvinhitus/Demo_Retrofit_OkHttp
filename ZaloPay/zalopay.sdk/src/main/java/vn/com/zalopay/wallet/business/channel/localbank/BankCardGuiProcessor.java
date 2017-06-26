@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.text.TextUtils;
@@ -13,12 +12,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 import rx.Subscription;
 import rx.functions.Action1;
@@ -38,7 +34,6 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
-import vn.com.zalopay.wallet.view.adapter.VietComBankAccountListViewAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -48,7 +43,6 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 
 public class BankCardGuiProcessor extends CardGuiProcessor {
     private RadioGroup mInputRadioGroupAuthenType;
-
     @AuthenType
     private String mAuthenType = AuthenType.OTP;
 
@@ -70,10 +64,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     private WebView mCaptchaWebview;
     private VPaymentDrawableEditText mAccountNameEditText, mAccountPasswordEditText, mOtpWebEditText, mCaptchaWebEditText, mOnlinePasswordEditText;
 
-    //vietcombank account list
-    private ListView mAccountListView;
-    private VietComBankAccountListViewAdapter mAccountAdapter;
-
     public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) {
         super();
         mAdapter = new WeakReference<>(pAdapterLocalCard);
@@ -83,103 +73,104 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void init(PaymentInfoHelper paymentInfoHelper) {
         super.init(paymentInfoHelper);
-        mOtpTokenLayoutRootView = getAdapter().getActivity().findViewById(R.id.zpw_content_input_view_root);
-        mOtpTokenLayoutRootView.setVisibility(View.GONE);
-        mRadioGroupAuthenSelectionView = getAdapter().getActivity().findViewById(R.id.linearlayout_selection_authen);
-        AppCompatRadioButton mRadioButtonSms = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionSmS);
-        mRadioButtonToken = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionToken);
-        mRadioButtonSms.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                mOtpAuthenEditText.setVisibility(View.VISIBLE);
-                mTextLayoutOtp.setVisibility(View.VISIBLE);
-                mTokenAuthenEditText.setVisibility(View.GONE);
-                mTextLayoutToken.setVisibility(View.GONE);
+        try {
+            mOtpTokenLayoutRootView = getAdapter().getView().findViewById(R.id.zpw_content_input_view_root);
+            mOtpTokenLayoutRootView.setVisibility(View.GONE);
+            mRadioGroupAuthenSelectionView = getAdapter().getView().findViewById(R.id.linearlayout_selection_authen);
+            AppCompatRadioButton mRadioButtonSms = (AppCompatRadioButton) getAdapter().getView().findViewById(R.id.radioSelectionSmS);
+            mRadioButtonToken = (AppCompatRadioButton) getAdapter().getView().findViewById(R.id.radioSelectionToken);
+            mRadioButtonSms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    mOtpAuthenEditText.setVisibility(View.VISIBLE);
+                    mTextLayoutOtp.setVisibility(View.VISIBLE);
+                    mTokenAuthenEditText.setVisibility(View.GONE);
+                    mTextLayoutToken.setVisibility(View.GONE);
 
-                mAuthenType = AuthenType.OTP;
-            }
-        });
-        mRadioButtonToken.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                mOtpAuthenEditText.setVisibility(View.GONE);
-                mTextLayoutOtp.setVisibility(View.GONE);
-                mTokenAuthenEditText.setVisibility(View.VISIBLE);
-                mTextLayoutToken.setVisibility(View.VISIBLE);
+                    mAuthenType = AuthenType.OTP;
+                }
+            });
+            mRadioButtonToken.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    mOtpAuthenEditText.setVisibility(View.GONE);
+                    mTextLayoutOtp.setVisibility(View.GONE);
+                    mTokenAuthenEditText.setVisibility(View.VISIBLE);
+                    mTextLayoutToken.setVisibility(View.VISIBLE);
 
-                mAuthenType = AuthenType.TOKEN;
-            }
-        });
+                    mAuthenType = AuthenType.TOKEN;
+                }
+            });
 
 
-        mOtpAuthenEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.edittext_otp);
-        mTokenAuthenEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.edittext_token);
+            mOtpAuthenEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.edittext_otp);
+            mTokenAuthenEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.edittext_token);
 
-        mTextLayoutOtp = (TextInputLayout) getAdapter().getActivity().findViewById(R.id.textLayoutOtp);
-        mTextLayoutToken = (TextInputLayout) getAdapter().getActivity().findViewById(R.id.textLayoutToken);
+            mTextLayoutOtp = (TextInputLayout) getAdapter().getView().findViewById(R.id.textLayoutOtp);
+            mTextLayoutToken = (TextInputLayout) getAdapter().getView().findViewById(R.id.textLayoutToken);
 
-        mOtpAuthenEditText.setGroupText(false);
-        mTokenAuthenEditText.setGroupText(false);
-
-        mOtpTockenLayoutView = getAdapter().getActivity().findViewById(R.id.linearlayout_authenticate_local_card);
-
-        mInputRadioGroupAuthenType = (RadioGroup) getAdapter().getActivity().findViewById(R.id.radioGroupAuthenType);
-        mAuthenRadioGroup = (RadioGroup) getAdapter().getActivity().findViewById(R.id.radioGroupAuthenSmsToken);
-
-        mOtpWebEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.zpsdk_otp_ctl);
-        mCaptchaWebEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.zpsdk_captchar_ctl);
-        mCaptchaImage = (ImageView) getAdapter().getActivity().findViewById(R.id.zpsdk_captchar_img_ctl);
-        mCaptchaFrame = getAdapter().getActivity().findViewById(R.id.zpsdk_captchar_wv_frame);
-        mCaptchaWebview = (WebView) getAdapter().getActivity().findViewById(R.id.zpsdk_captchar_wv_ctl);
-
-        mAccountNameEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.zpsdk_acc_name_ctl);
-        mAccountPasswordEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.zpsdk_acc_password_ctl);
-
-        mOnlinePasswordEditText = (VPaymentDrawableEditText) getAdapter().getActivity().findViewById(R.id.zpsdk_card_password_ctl);
-
-        mAccountListView = (ListView) getAdapter().getActivity().findViewById(R.id.zpw_account_listview);
-
-        if (mOtpWebEditText != null && mCaptchaWebEditText != null && mAccountNameEditText != null && mAccountPasswordEditText != null && mOnlinePasswordEditText != null) {
-            mAccountNameEditText.setGroupText(false);
-            mAccountPasswordEditText.setGroupText(false);
-            mCaptchaWebEditText.setGroupText(false);
-            mOtpWebEditText.setGroupText(false);
-            mOnlinePasswordEditText.setGroupText(false);
-
-            mOtpWebEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
-            mOtpWebEditText.addTextChangedListener(mEnabledTextWatcher);
-            mOtpWebEditText.setOnEditorActionListener(mEditorActionListener);
-            mOtpWebEditText.setOnTouchListener(mOnTouchListener);
-
-            mAccountNameEditText.addTextChangedListener(mEnabledTextWatcher);
-            mAccountNameEditText.setOnFocusChangeListener(mOnFocusChangeListener);
-
-            mAccountPasswordEditText.addTextChangedListener(mEnabledTextWatcher);
-            mAccountPasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
-
-            //mCaptchaWebEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
-            mCaptchaWebEditText.addTextChangedListener(mEnabledTextWatcher);
-            mCaptchaWebEditText.setOnEditorActionListener(mEditorActionListener);
-            //mCaptchaWebEditText.setOnTouchListener(mOnTouchListener);
-
-            mOnlinePasswordEditText.addTextChangedListener(mEnabledTextWatcher);
-            mOnlinePasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
-            mOnlinePasswordEditText.setOnTouchListener(mOnTouchListener);
-        }
-
-        if (mOtpAuthenEditText != null && mTokenAuthenEditText != null) {
             mOtpAuthenEditText.setGroupText(false);
             mTokenAuthenEditText.setGroupText(false);
 
-            mOtpAuthenEditText.addTextChangedListener(mEnabledTextWatcher);
-            mOtpAuthenEditText.setOnEditorActionListener(mEditorActionListener);
-            mOtpAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
-            mOtpAuthenEditText.setOnTouchListener(mOnTouchListener);
+            mOtpTockenLayoutView = getAdapter().getView().findViewById(R.id.linearlayout_authenticate_local_card);
 
-            mTokenAuthenEditText.addTextChangedListener(mEnabledTextWatcher);
-            mTokenAuthenEditText.setOnEditorActionListener(mEditorActionListener);
-            mTokenAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
-            mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
+            mInputRadioGroupAuthenType = (RadioGroup) getAdapter().getView().findViewById(R.id.radioGroupAuthenType);
+            mAuthenRadioGroup = (RadioGroup) getAdapter().getView().findViewById(R.id.radioGroupAuthenSmsToken);
+
+            mOtpWebEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.zpsdk_otp_ctl);
+            mCaptchaWebEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.zpsdk_captchar_ctl);
+            mCaptchaImage = (ImageView) getAdapter().getView().findViewById(R.id.zpsdk_captchar_img_ctl);
+            mCaptchaFrame = getAdapter().getView().findViewById(R.id.zpsdk_captchar_wv_frame);
+            mCaptchaWebview = (WebView) getAdapter().getView().findViewById(R.id.zpsdk_captchar_wv_ctl);
+
+            mAccountNameEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.zpsdk_acc_name_ctl);
+            mAccountPasswordEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.zpsdk_acc_password_ctl);
+
+            mOnlinePasswordEditText = (VPaymentDrawableEditText) getAdapter().getView().findViewById(R.id.zpsdk_card_password_ctl);
+
+            if (mOtpWebEditText != null && mCaptchaWebEditText != null && mAccountNameEditText != null && mAccountPasswordEditText != null && mOnlinePasswordEditText != null) {
+                mAccountNameEditText.setGroupText(false);
+                mAccountPasswordEditText.setGroupText(false);
+                mCaptchaWebEditText.setGroupText(false);
+                mOtpWebEditText.setGroupText(false);
+                mOnlinePasswordEditText.setGroupText(false);
+
+                mOtpWebEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
+                mOtpWebEditText.addTextChangedListener(mEnabledTextWatcher);
+                mOtpWebEditText.setOnEditorActionListener(mEditorActionListener);
+                mOtpWebEditText.setOnTouchListener(mOnTouchListener);
+
+                mAccountNameEditText.addTextChangedListener(mEnabledTextWatcher);
+                mAccountNameEditText.setOnFocusChangeListener(mOnFocusChangeListener);
+
+                mAccountPasswordEditText.addTextChangedListener(mEnabledTextWatcher);
+                mAccountPasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
+
+                //mCaptchaWebEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
+                mCaptchaWebEditText.addTextChangedListener(mEnabledTextWatcher);
+                mCaptchaWebEditText.setOnEditorActionListener(mEditorActionListener);
+                //mCaptchaWebEditText.setOnTouchListener(mOnTouchListener);
+
+                mOnlinePasswordEditText.addTextChangedListener(mEnabledTextWatcher);
+                mOnlinePasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
+                mOnlinePasswordEditText.setOnTouchListener(mOnTouchListener);
+            }
+
+            if (mOtpAuthenEditText != null && mTokenAuthenEditText != null) {
+                mOtpAuthenEditText.setGroupText(false);
+                mTokenAuthenEditText.setGroupText(false);
+
+                mOtpAuthenEditText.addTextChangedListener(mEnabledTextWatcher);
+                mOtpAuthenEditText.setOnEditorActionListener(mEditorActionListener);
+                mOtpAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
+                mOtpAuthenEditText.setOnTouchListener(mOnTouchListener);
+
+                mTokenAuthenEditText.addTextChangedListener(mEnabledTextWatcher);
+                mTokenAuthenEditText.setOnEditorActionListener(mEditorActionListener);
+                mTokenAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
+                mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
-        // TrackApptransidEvent input card info
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
         }
@@ -209,7 +200,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 }
             }
         });
-        getAdapter().getActivity().addSuscription(subscription);
+        try {
+            getAdapter().getPresenter().addSubscription(subscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     @Override
@@ -219,7 +214,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected CardFragmentBaseAdapter onCreateCardFragmentAdapter() {
-        return new LocalCardFragmentAdapter(getAdapter().getActivity().getSupportFragmentManager(), getAdapter().getActivity().getIntent().getExtras());
+        try {
+            return new LocalCardFragmentAdapter(getAdapter().getActivity().getSupportFragmentManager(), getAdapter().getActivity().getIntent().getExtras());
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        return null;
     }
 
     @Override
@@ -292,14 +292,21 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected void actionAfterFinishInputCard() {
         if (isUseOtpToken()) {
             getAdapter().setCanEditCardInfo(true);
-            moveToAuthenOptionView();
+            try {
+                moveToAuthenOptionView();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         } else {
-            getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
-            getAdapter().getActivity().visibleCardViewNavigateButton(false);
-            getAdapter().getActivity().visibleSubmitButton(true);
-            getAdapter().getActivity().enableSubmitBtn(true);
-            getAdapter().getActivity().visibleOrderInfo(false);
-
+            try {
+                getAdapter().getView().setVisible(R.id.linearlayout_input_local_card, false);
+                getAdapter().getView().visibleCardViewNavigateButton(false);
+                getAdapter().getView().visibleSubmitButton(true);
+                getAdapter().getView().enableSubmitBtn();
+                getAdapter().getView().visiableOrderInfo(false);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
             getAdapter().onClickSubmission();
         }
     }
@@ -342,35 +349,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public void showAccountList(ArrayList<String> pAccountList) {
-        if (mAccountListView != null) {
-
-            mAccountAdapter = new VietComBankAccountListViewAdapter(getAdapter().getActivity(), R.layout.item__account__listview, pAccountList);
-
-            mAccountListView.setAdapter(mAccountAdapter);
-
-            mAccountListView.setOnItemClickListener((parent, view, position, id) -> mAccountAdapter.setSelectedIndex(position));
-
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mAccountListView.getLayoutParams();
-            params.height = (int) (pAccountList.size() * getAdapter().getActivity().getResources().getDimension(R.dimen.zpw_account_list_item_height));
-            mAccountListView.requestLayout();
-
-
-            new Handler().postDelayed(() -> mAccountAdapter.setSelectedIndex(0), 500);
-
-
-            getAdapter().getActivity().enableSubmitBtn(true);
-        }
-    }
-
-    public int getSelectedAccountIndex() {
-        int index = 0;
-        if (mAccountAdapter != null)
-            index = mAccountAdapter.getSelectedIndex();
-
-        return index;
-    }
-
     @AuthenType
     public String getAuthenType() {
         return mAuthenType;
@@ -406,29 +384,41 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public void visualOtpToken(boolean pVisible) {
-        getAdapter().getActivity().setVisible(R.id.linearlayout_authenticate_local_card, pVisible);
+        try {
+            getAdapter().getView().setVisible(R.id.linearlayout_authenticate_local_card, pVisible);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public void goBackInputCard() {
-        if (getAdapter().getActivity() != null) {
-            getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, true);
-            getAdapter().getActivity().visibleCardViewNavigateButton(true);
-            getAdapter().getActivity().visibleSubmitButton(false);
-            getAdapter().getActivity().enableSubmitBtn(false);
-            visualOtpToken(false);
-            getAdapter().setCanEditCardInfo(false);
-            try {
-                SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+        try {
+            getAdapter().getView().setVisible(R.id.linearlayout_input_local_card, true);
+            getAdapter().getView().visibleCardViewNavigateButton(true);
+            getAdapter().getView().visibleSubmitButton(false);
+            getAdapter().getView().disableSubmitBtn();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        visualOtpToken(false);
+        getAdapter().setCanEditCardInfo(false);
+        try {
+            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 
     public void showOtpTokenView() {
-        getAdapter().getActivity().visibleInputCardView(false);
-        getAdapter().getActivity().showOrderInfo();
-        getAdapter().getActivity().setText(R.id.zpsdk_btn_submit, GlobalData.getStringResource(RS.string.zpw_button_submit_text));
+        try {
+            getAdapter().getView().visibleInputCardView(false);
+            getAdapter().getView().setText(R.id.zpsdk_btn_submit, GlobalData.getStringResource(RS.string.zpw_button_submit_text));
+            if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
+                getAdapter().getView().visiableOrderInfo(true);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
         switch (mAuthenType) {
             case AuthenType.OTP:
@@ -461,7 +451,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public boolean isCoverBankInProcess() {
-        View view = getAdapter().getActivity().findViewById(R.id.zpw_content_input_root_view_cover_bank);
+        View view = null;
+        try {
+            view = getAdapter().getView().findViewById(R.id.zpw_content_input_root_view_cover_bank);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
         return view != null && view.getVisibility() == View.VISIBLE;
 
     }
@@ -559,13 +554,14 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    private void moveToAuthenOptionView() {
+    private void moveToAuthenOptionView() throws Exception {
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
-        getAdapter().getActivity().visibleOrderInfo(false);
-        getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
-        getAdapter().getActivity().visibleCardViewNavigateButton(false);
-        getAdapter().getActivity().visibleSubmitButton(true);
-        getAdapter().getActivity().enableSubmitBtn(true);
+        getAdapter().getView().visiableOrderInfo(false);
+        getAdapter().getView().setVisible(R.id.linearlayout_input_local_card, false);
+        getAdapter().getView().visibleCardViewNavigateButton(false);
+        getAdapter().getView().visibleSubmitButton(true);
+        getAdapter().getView().enableSubmitBtn();
+        getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
 
         visualOtpToken(true);
     }
@@ -573,9 +569,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     public void setCaptchaImage(String pB64Encoded) {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
-
         Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
-
         if (bitmap != null) {
             mCaptchaImage.setImageBitmap(bitmap);
         }
@@ -641,19 +635,33 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             isOtp = checkValidRequiredEditText(mOtpAuthenEditText);
             isToken = checkValidRequiredEditText(mTokenAuthenEditText);
         }
-
-        if (isOtp && isToken && isCoverBankOtp && isCoverBankCaptcha && isAccountName && isAccountPassword && isOnlinePassword) {
-            getAdapter().getActivity().enableSubmitBtn(true);
-            return true;
-        } else {
-            getAdapter().getActivity().enableSubmitBtn(false);
-            return false;
+        try {
+            if (isOtp && isToken && isCoverBankOtp && isCoverBankCaptcha && isAccountName && isAccountPassword && isOnlinePassword) {
+                try {
+                    getAdapter().getView().enableSubmitBtn();
+                    getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
+                return true;
+            } else {
+                getAdapter().getView().disableSubmitBtn();
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
+        return false;
     }
 
     @Override
     protected boolean canSwitchChannelLinkCard() {
-        return getAdapter().getActivity().isAllowLinkCardCC();
+        try {
+            return getAdapter().getPresenter().hasCC;
+        } catch (Exception e) {
+            Log.e(this, e);
+            return false;
+        }
     }
 
     @Override
@@ -663,9 +671,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void switchChannel() {
-
         Log.d(this, "===switchChannel===");
-
-        getAdapter().getActivity().switchChannel(BuildConfig.channel_credit_card, getCardNumber());
+        try {
+            getAdapter().getPresenter().switchChannel(BuildConfig.channel_credit_card, getCardNumber());
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 }

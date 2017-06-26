@@ -6,12 +6,6 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/zpsdk_header"
-        layout="@layout/module__header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <include
         layout="@layout/include_show_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

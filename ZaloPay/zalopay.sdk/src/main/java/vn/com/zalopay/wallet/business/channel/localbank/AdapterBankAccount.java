@@ -4,12 +4,12 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
 public class AdapterBankAccount extends AdapterBankCard {
-    public AdapterBankAccount(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType,
+    public AdapterBankAccount(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                               PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
     }
 
     protected int getDefaultChannelId() {

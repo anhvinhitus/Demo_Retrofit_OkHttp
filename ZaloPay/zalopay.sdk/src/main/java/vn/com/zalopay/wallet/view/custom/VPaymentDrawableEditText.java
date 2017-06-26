@@ -10,20 +10,17 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
+import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.validation.CardValidation;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {
     public static final char VERTICAL_SEPERATOR = ' ';
-    private static final String TAG = VPaymentDrawableEditText.class.getName();
-    //private Drawable drawableRightScan;
     private Drawable drawableRightDelete;
-
-    //private boolean mIsCameraScan = false;
-
     private OnClickListener mSelectedCardScanListener = null;
     private OnClickListener mOnClickListener = null;
 
@@ -55,9 +52,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        if (this.getContext() instanceof PaymentChannelActivity) {
-            mAdapter = ((PaymentChannelActivity) getContext()).getAdapter();
-        }
         this.addTextChangedListener(mTextFormater);
         this.setClickable(true);
         this.setEnabled(true);
@@ -89,10 +83,14 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
      */
     @Override
     public boolean isValid() {
-        if (mIsPattern && mAdapter != null) {
+        ChannelActivity activity = BaseActivity.getChannelActivity();
+        if (activity == null || activity.isFinishing()) {
+            return false;
+        }
+        AdapterBase adapterBase = activity.getAdapter();
+        if (mIsPattern && adapterBase != null) {
             try {
-
-                mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(mAdapter.getChannelID()));
+                mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, String.valueOf(adapterBase.getChannelID()));
 
                 if (mPattern == null) {
                     mPattern = ResourceManager.getInstance(null).getPattern(mEditTextConfig.id, "all");
@@ -142,7 +140,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
                         // Only if its a digit where there should be a space we
                         // insert a space
                         if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(SPACE_SEPERATOR)).length <= 3) {
-
                             InputFilter[] filters = s.getFilters(); // save filters
                             s.setFilters(new InputFilter[]{}); // clear filters
                             s.insert(i - 1, String.valueOf(SPACE_SEPERATOR));
@@ -158,7 +155,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
                 // Only if its a digit where there should be a space we
                 // insert a space
                 if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(SPACE_SEPERATOR)).length <= 4) {
-
                     InputFilter[] filters = s.getFilters(); // save filters
                     s.setFilters(new InputFilter[]{}); // clear filters
                     s.insert(s.length() - 1, String.valueOf(SPACE_SEPERATOR));
@@ -185,7 +181,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
 
                 if (drawableRightDelete != null) {
                     Rect rectIcon = drawableRightDelete.getBounds();
-
                     //extend the bound
                     bounds = new Rect();
                     bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
@@ -197,7 +192,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawableRightDelete, null);
-
                 }
             }
         } else {
@@ -213,7 +207,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
     public String getPatternErrorMessage() {
         if (mIsPattern && mEditTextConfig != null)
             return mEditTextConfig.errMess;
-
         return super.getPatternErrorMessage();
     }
 

@@ -1,10 +1,13 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -19,8 +22,9 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;
@@ -233,14 +237,42 @@ public class PaymentInfoHelper extends SingletonBase {
         return title;
     }
 
-    public String getTitleByTrans() {
-        String title = GlobalData.getStringResource(RS.string.walletsdk_string_bar_title);
+    public String getTitleByTrans(Context context) {
+        String title = context.getString(R.string.sdk_pay_title);
         if (isTopupTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_pay_title);
+            title = context.getString(R.string.sdk_topup_title);
         } else if (isMoneyTranferTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_tranfer_title);
+            title = context.getString(R.string.sdk_transfer_title);
         } else if (isWithDrawTrans()) {
-            title = GlobalData.getStringResource(RS.string.zpw_string_withdraw_title);
+            title = context.getString(R.string.sdk_withdraw_title);
+        }
+        return title;
+    }
+
+    public String getFailTitleByTrans(Context context) {
+        String title = context.getString(R.string.sdk_pay_fail_title);
+        if (isTopupTrans()) {
+            title = context.getString(R.string.sdk_topup_fail_title);
+        } else if (isMoneyTranferTrans()) {
+            title = context.getString(R.string.sdk_transfer_fail_title);
+        } else if (isWithDrawTrans()) {
+            title = context.getString(R.string.sdk_withdraw_fail_title);
+        } else if (isCardLinkTrans()) {
+            title = context.getString(R.string.sdk_link_acc_fail_title);
+        }
+        return title;
+    }
+
+    public String getSuccessTitleByTrans(Context context) {
+        String title = context.getString(R.string.sdk_pay_success_title);
+        if (isTopupTrans()) {
+            title = context.getString(R.string.sdk_topup_success_title);
+        } else if (isMoneyTranferTrans()) {
+            title = context.getString(R.string.sdk_transfer_success_title);
+        } else if (isWithDrawTrans()) {
+            title = context.getString(R.string.sdk_withdraw_success_title);
+        } else if (isCardLinkTrans()) {
+            title = context.getString(R.string.sdk_link_acc_success_title);
         }
         return title;
     }
@@ -293,7 +325,7 @@ public class PaymentInfoHelper extends SingletonBase {
     public boolean updateResultNetworkingError(String pMessage) {
         boolean isOffNetworking;
         try {
-            isOffNetworking = !ConnectionUtil.isOnline(BasePaymentActivity.getCurrentActivity());
+            isOffNetworking = !ConnectionUtil.isOnline(BaseActivity.getCurrentActivity());
         } catch (Exception ex) {
             Log.e("updateResultNetworkingError", ex);
             isOffNetworking = false;
@@ -306,5 +338,23 @@ public class PaymentInfoHelper extends SingletonBase {
             setResult(PaymentStatus.DISCONNECT);
         }
         return isOffNetworking;
+    }
+
+    public String getMessage(Throwable throwable) {
+        String message = null;
+        if (throwable instanceof RequestException) {
+            RequestException requestException = (RequestException) throwable;
+            message = requestException.getMessage();
+            switch (requestException.code) {
+                case RequestException.NULL:
+                    message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+                    break;
+                default:
+                    updateTransactionResult(requestException.code);
+            }
+        } else if (throwable instanceof NetworkConnectionException) {
+            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        }
+        return message;
     }
 }

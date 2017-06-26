@@ -1,11 +1,8 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-
 import java.util.List;
 
 import vn.com.vng.zalopay.data.util.NameValuePair;
-import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
@@ -34,17 +31,9 @@ public interface ChannelListContract extends IContract {
 
         void showForceUpdateLevelDialog();
 
-        void showUpdateLevelDialog(String message, String btnCloseText, ZPWOnEventConfirmDialogListener pListener);
-
         void showWarningLinkCardBeforeWithdraw();
 
-        void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener);
-
         void showSupportBankVersionDialog(String pMessage);
-
-        void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener);
-
-        void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener);
 
         void enableConfirmButton(int buttonTextId, int bgResourceId);
 

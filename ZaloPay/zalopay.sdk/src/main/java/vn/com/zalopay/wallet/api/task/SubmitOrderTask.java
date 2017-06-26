@@ -60,7 +60,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.checkNetworkingAndShowRequest()) {
+        if (mAdapter.openSettingNetworking()) {
             shareDataRepository().setTask(this).postData(new SubmitOrderImpl(), getDataParams());
         }
     }

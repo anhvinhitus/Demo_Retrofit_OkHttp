@@ -30,8 +30,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.ui.channel.ActivityRendering;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
+import vn.com.zalopay.wallet.ui.channel.RenderFragment;
+import vn.com.zalopay.wallet.ui.channel.ResourceRender;
 
 public class ResourceManager extends SingletonBase {
     public static final String CONFIG_FILE = "config.json";
@@ -349,10 +349,10 @@ public class ResourceManager extends SingletonBase {
         return this.mPageConfig.dynamicView;
     }
 
-    public ActivityRendering produceRendering(BasePaymentActivity pActivity) {
+    public ResourceRender produceRendering(RenderFragment renderFragment) {
         if (this.mPageConfig == null) {
             return null;
         }
-        return new ActivityRendering(this, pActivity);
+        return new ResourceRender(this, renderFragment);
     }
 }

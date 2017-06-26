@@ -1,22 +1,20 @@
 package vn.com.zalopay.wallet.api.task;
 
-import com.zalopay.ui.widget.dialog.DialogManager;
-
+import vn.com.zalopay.wallet.api.DataParameter;
+import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.DataParameter;
-import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
     private String mTransID, mAuthenType, mAuthenValue;
-    public AuthenMapCardTask(AdapterBase pAdapter,String pTransID, String pAuthenType, String pAuthenValue) {
+
+    public AuthenMapCardTask(AdapterBase pAdapter, String pTransID, String pAuthenType, String pAuthenValue) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
         mTransID = pTransID;
@@ -49,9 +47,11 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     @Override
     public void onRequestInProcess() {
         if (mAdapter != null) {
-            mAdapter.showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
-        } else {
-            DialogManager.showProcessDialog(BasePaymentActivity.getCurrentActivity(), null);
+            try {
+                mAdapter.getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 
@@ -62,7 +62,7 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.checkNetworkingAndShowRequest()) {
+        if (mAdapter.openSettingNetworking()) {
             shareDataRepository().setTask(this).postData(new AuthenMapCardImpl(), getDataParams());
         }
     }
@@ -71,7 +71,7 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     protected boolean doParams() {
         try {
             UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
-            DataParameter.prepareAtmAuthenPayer(getDataParams(),userInfo.zalopay_userid, userInfo.accesstoken, mTransID, mAuthenType, mAuthenValue);
+            DataParameter.prepareAtmAuthenPayer(getDataParams(), userInfo.zalopay_userid, userInfo.accesstoken, mTransID, mAuthenType, mAuthenValue);
             return true;
         } catch (Exception e) {
             Log.e(this, e);

@@ -14,8 +14,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
 public abstract class CreditCardFragment extends Fragment {
@@ -76,48 +75,48 @@ public abstract class CreditCardFragment extends Fragment {
         if (mGuiProcessor == null || mGuiProcessor.get() == null) {
             try {
                 mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
-
                 return mGuiProcessor.get();
-
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
-
         return mGuiProcessor.get();
     }
 
-    public BasePaymentActivity getHostActivity() throws Exception {
-        if (getActivity() instanceof BasePaymentActivity)
-            return (BasePaymentActivity) getActivity();
-
+    public ChannelActivity getHostActivity() throws Exception {
+        if (getActivity() instanceof ChannelActivity) {
+            return (ChannelActivity) getActivity();
+        }
         throw new Exception();
     }
 
     public AdapterBase getPaymentAdapter() throws Exception {
-        BasePaymentActivity activity = getHostActivity();
-
-        if (activity instanceof PaymentChannelActivity) {
-            return ((PaymentChannelActivity) activity).getAdapter();
+        ChannelActivity channelActivity = getHostActivity();
+        if (channelActivity != null && !channelActivity.isFinishing()) {
+            return channelActivity.getAdapter();
         }
         throw new Exception();
     }
 
-    /***
-     * set error to hint on TextInputLayout
-     *
-     * @param pEditText
-     * @param pMessage
-     */
     protected void setErrorHint(EditText pEditText, String pMessage) {
-        if (BasePaymentActivity.getCurrentActivity() != null) {
-            ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).setTextInputLayoutHintError(pEditText, pMessage, GlobalData.getAppContext());
+        try {
+            AdapterBase adapterBase = getPaymentAdapter();
+            if (adapterBase != null) {
+                adapterBase.getView().setTextInputLayoutHintError(pEditText, pMessage, GlobalData.getAppContext());
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 
     protected void setHint(EditText pEditText, String pMessage) {
-        if (BasePaymentActivity.getCurrentActivity() != null) {
-            ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).setTextInputLayoutHint(pEditText, pMessage, GlobalData.getAppContext());
+        try {
+            AdapterBase adapterBase = getPaymentAdapter();
+            if (adapterBase != null) {
+                adapterBase.getView().setTextInputLayoutHint(pEditText, pMessage, GlobalData.getAppContext());
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 }

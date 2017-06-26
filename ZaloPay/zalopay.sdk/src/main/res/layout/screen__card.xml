@@ -1,133 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/supperRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/zpw_scrollview_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-        <include
-            android:id="@+id/zpsdk_header"
-            layout="@layout/module__header"
+        <LinearLayout
+            android:id="@+id/zpw_scrollview_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:orientation="vertical">
 
-            <ScrollView
-                android:id="@+id/zpw_scrollview_container"
+            <include
+                android:id="@+id/orderinfo_module"
+                layout="@layout/module_order_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/zpsdk_pay_success"
+                layout="@layout/module__pay__success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none">
+                android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
 
-                <LinearLayout
-                    android:id="@+id/zpw_scrollview_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:orientation="vertical">
-
-                    <include
-                        android:id="@+id/orderinfo_module"
-                        layout="@layout/module_order_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <include
-                        android:id="@+id/zpsdk_pay_success"
-                        layout="@layout/module__pay__success"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
-
-                    <include
-                        android:id="@+id/zpsdk_pay_fail"
-                        layout="@layout/module__pay__fail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
-
-                    <include
-                        android:id="@+id/zpw_card_info"
-                        layout="@layout/module__card__info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_top_card"
-                        android:visibility="gone" />
-
-                    <include
-                        android:id="@+id/localcard_view_root"
-                        layout="@layout/module__input__card__info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_top_card" />
-
-                    <include
-                        android:id="@+id/zpw_content_input_view_root"
-                        layout="@layout/module__authen__local__card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-
-                    <include
-                        android:id="@+id/zpw_content_input_root_view_cover_bank"
-                        layout="@layout/module__cover__bank"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-
-                    <include
-                        android:id="@+id/zpw_switch_card_button"
-                        layout="@layout/module__switch__card__button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:visibility="gone" />
-
-                    <include
-                        android:id="@+id/zpw_submit_view"
-                        layout="@layout/module__submit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginTop="@dimen/zpw_margin_top_submit_button_phone" />
-                </LinearLayout>
-
-            </ScrollView>
-
-            <LinearLayout
-                android:id="@+id/zpw_layout_get_height"
+            <include
+                android:id="@+id/zpsdk_pay_fail"
+                layout="@layout/module__pay__fail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="vertical" />
+                android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
 
-            <vn.com.zalopay.wallet.business.webview.base.PaymentWebView
-                android:id="@+id/zpw_threesecurity_webview"
+            <include
+                android:id="@+id/zpw_card_info"
+                layout="@layout/module__card__info"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_card"
                 android:visibility="gone" />
 
             <include
-                android:id="@+id/zpw_pay_support_buttom_view"
-                layout="@layout/dialog_content"
+                android:id="@+id/localcard_view_root"
+                layout="@layout/module__input__card__info"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_card" />
+
+            <include
+                android:id="@+id/zpw_content_input_view_root"
+                layout="@layout/module__authen__local__card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/zpw_content_input_root_view_cover_bank"
+                layout="@layout/module__cover__bank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/zpw_switch_card_button"
+                layout="@layout/module__switch__card__button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:visibility="gone" />
 
-        </FrameLayout>
+            <include
+                android:id="@+id/zpw_submit_view"
+                layout="@layout/module__submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/zpw_margin_top_submit_button_phone" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/zpw_layout_get_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical" />
+
+    <vn.com.zalopay.wallet.business.webview.base.PaymentWebView
+        android:id="@+id/zpw_threesecurity_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/zpw_pay_support_buttom_view"
+        layout="@layout/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
+
+</LinearLayout>

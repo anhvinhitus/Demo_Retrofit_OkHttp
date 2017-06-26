@@ -22,7 +22,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.HashMapUtils;
 import vn.com.zalopay.utility.LayoutUtils;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -30,16 +29,15 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -50,11 +48,11 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -94,10 +92,10 @@ public class AdapterLinkAcc extends AdapterBase {
     protected ZPWNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
     private int COUNT_ERROR_CAPTCHA = 1;
-    private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
     private int COUNT_UNREGISTER = 0;
+    private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapAccNum;
     private TreeMap<String, String> mHashMapPhoneNum;
@@ -109,7 +107,11 @@ public class AdapterLinkAcc extends AdapterBase {
             if (!isLoadingCaptcha()) {
                 Log.d(this, "refreshCaptcha()");
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                    SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                    try {
+                        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
                     linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
                     return;
                 }
@@ -120,7 +122,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }
     };
-    private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
+    /*private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
         @Override
         public void call(BankConfigResponse bankConfigResponse) {
             try {
@@ -129,7 +131,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
                 BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
                 if (bankConfig == null || !bankConfig.isActive()) {
-                    getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
+                    terminate(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
                 } else {
                     String loginBankUrl = bankConfig.loginbankurl;
                     if (TextUtils.isEmpty(loginBankUrl)) {
@@ -141,14 +143,18 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.e(this, e);
             }
         }
-    };
+    };*/
     private List<BankAccount> mBankAccountList = null;
     private Action1<Boolean> loadBankAccountSubscriber = new Action1<Boolean>() {
         @Override
         public void call(Boolean aBoolean) {
             Log.d(this, "load bank account finish");
             hideLoadingDialog();
-            loadBankAccountSuccess();
+            try {
+                loadBankAccountSuccess();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     };
     private Action1<Throwable> loadBankAccountException = new Action1<Throwable>() {
@@ -156,19 +162,22 @@ public class AdapterLinkAcc extends AdapterBase {
         public void call(Throwable throwable) {
             hideLoadingDialog();
             Log.d(this, "load bank account error", throwable);
-            String message = getActivity().getMessage(throwable);
+            String message = mPaymentInfoHelper.getMessage(throwable);
             if (TextUtils.isEmpty(message)) {
                 message = GlobalData.getStringResource(RS.string.zpw_alert_network_error_loadmapbankaccountlist);
             }
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccFail(message, mTransactionID);
             } else {
-                unlinkAccFail(message, mTransactionID);
+                try {
+                    unlinkAccFail(message, mTransactionID);
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             }
         }
     };
     protected final Runnable runnableWaitingNotifyLink = () -> {
-        // get & check bankaccount list
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         Subscription subscription = SDKApplication.getApplicationComponent()
@@ -176,7 +185,11 @@ public class AdapterLinkAcc extends AdapterBase {
                 .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loadBankAccountSubscriber, loadBankAccountException);
-        getActivity().addSuscription(subscription);
+        try {
+            getPresenter().addSubscription(subscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     };
     private int mNumAllowLoginWrong;
     private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
@@ -184,7 +197,11 @@ public class AdapterLinkAcc extends AdapterBase {
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
                 if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                    SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                    try {
+                        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
                     linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
                     return;
                 }
@@ -197,17 +214,23 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     };
 
-    public AdapterLinkAcc(PaymentChannelActivity pOwnerActivity, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
-        super(pOwnerActivity, pMiniPmcTransType, paymentInfoHelper, null);
-        mLayoutId = SCREEN_LINK_ACC;
+    public AdapterLinkAcc(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
+        super(SCREEN_LINK_ACC,pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
     }
 
-    @Override
-    public String getDefaultPageName() {
-        return SCREEN_LINK_ACC;
+    private String getDescLinkAccount() {
+        if (getPageName().equals(PAGE_LINKACC_SUCCESS)) {
+            String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
+            if (getNotification() != null) {
+                desc = getNotification().getMsg();
+            }
+            return desc;
+        } else {
+            return GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
+        }
     }
 
-    private void loadBankAccountSuccess() {
+    private void loadBankAccountSuccess() throws Exception {
         if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
@@ -259,10 +282,21 @@ public class AdapterLinkAcc extends AdapterBase {
                 || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
-    public void startFlow() {
+    public void startFlow() throws Exception {
         Log.d(this, "start flow link account");
-        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        getActivity().loadBankList(bankListSubscriber, getActivity().bankListException);
+        String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
+        BankConfig bankConfig = SDKApplication.getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(bankCode);
+        if (bankConfig == null || !bankConfig.isActive()) {
+            terminate(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
+        } else {
+            String loginBankUrl = bankConfig.loginbankurl;
+            if (TextUtils.isEmpty(loginBankUrl)) {
+                loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
+            }
+            initWebView(loginBankUrl);
+        }
     }
 
     @Override
@@ -280,9 +314,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // show title bar
         if (mPaymentInfoHelper.bankAccountLink()) {
-            getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
+            getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
         } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-            getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
+            getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
             try {
                 mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             } catch (Exception e) {
@@ -305,7 +339,11 @@ public class AdapterLinkAcc extends AdapterBase {
     public void onProcessPhrase() {
         Log.d(this, "on process phase " + mPageName);
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            getActivity().askToOpenSettingNetwoking();
+            try {
+                getView().showOpenSettingNetwokingDialog(closeSettingNetworkingListener);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
             Log.d(this, "networking is offline, stop processing click event");
             return;
         }
@@ -341,10 +379,13 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void forceVirtualKeyboard() {
-        // Check if no view has focus:
-        View view = getActivity().getCurrentFocus();
-        if (view != null && view instanceof EditText) {
-            linkAccGuiProcessor.showKeyBoardOnEditText((EditText) view);
+        try {
+            View view = getActivity().getCurrentFocus();
+            if (view != null && view instanceof EditText) {
+                linkAccGuiProcessor.showKeyBoardOnEditText((EditText) view);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 
@@ -378,21 +419,18 @@ public class AdapterLinkAcc extends AdapterBase {
         mHandler.postDelayed(runnableWaitingNotifyLink, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
-    /***
-     * Link Account Success
-     */
     private void linkAccSuccess() {
-        // set pageCode
-        mPageName = PAGE_LINKACC_SUCCESS;
-        getActivity().renderByResource();
-        getActivity().renderSuccess(mTransactionID,null,getActivity().getString(R.string.sdk_link_account_service));
-        getActivity().enableSubmitBtn(true);
-        // enable web parse. disable webview
-        if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
-            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
-        }
         try {
+            mPageName = PAGE_LINKACC_SUCCESS;
+            getView().renderByResource(mPageName);
+            String descLink = getDescLinkAccount();
+            UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+            getView().renderSuccess(mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, GlobalData.getAppContext().getString(R.string.sdk_link_acc_success_title));
+            // enable web parse. disable webview
+            if (GlobalData.shouldNativeWebFlow()) {
+                getView().setVisible(R.id.zpw_threesecurity_webview, false);
+                getView().setVisible(R.id.ll_test_rootview, true);
+            }
             // get bankaccount from cache callback to app
             List<BankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             if (dBankAccountList != null && dBankAccountList.size() > 0) {
@@ -401,7 +439,6 @@ public class AdapterLinkAcc extends AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        //tracking translog id link success
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
@@ -411,31 +448,33 @@ public class AdapterLinkAcc extends AdapterBase {
      * @param pMessage
      */
     private void linkAccFail(String pMessage, String pTransID) {
-        mPageName = PAGE_LINKACC_FAIL;
-        mWebViewProcessor.stop();//stop loading website
-        getActivity().renderByResource();
-        getActivity().renderFail(pMessage, pTransID, null,getActivity().getString(R.string.sdk_link_account_service), mResponseStatus);
-        getActivity().enableSubmitBtn(true);
-
-        // enable web parse. disable webview
-        if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
-            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        try {
+            mPageName = PAGE_LINKACC_FAIL;
+            mWebViewProcessor.stop();//stop loading website
+            getView().renderByResource(mPageName);
+            getView().renderFail(pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
+                    mResponseStatus, true, GlobalData.getAppContext().getString(R.string.sdk_link_acc_fail_title));
+            // enable web parse. disable webview
+            if (GlobalData.shouldNativeWebFlow()) {
+                getView().setVisible(R.id.zpw_threesecurity_webview, false);
+                getView().setVisible(R.id.ll_test_rootview, true);
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
         PaymentSnackBar.getInstance().dismiss();
-        //tracking translogid link fail
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     /***
      * unlink Account Success
      */
-    private void unlinkAccSuccess() {
+    private void unlinkAccSuccess() throws Exception {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
-        getActivity().renderByResource();
-        getActivity().renderSuccess(mTransactionID, null, getActivity().getString(R.string.sdk_unlink_account_service));
-        getActivity().enableSubmitBtn(true);
+        getView().renderByResource(mPageName);
+        getView().renderSuccess(mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service),
+                getDescLinkAccount(), true, false, null, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_success_title));
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
@@ -453,18 +492,17 @@ public class AdapterLinkAcc extends AdapterBase {
      * @param pMessage
      */
     private void unlinkAccFail(String pMessage, String pTransID) {
-        mPageName = PAGE_UNLINKACC_FAIL;
-        // rendering by resource
-        getActivity().renderByResource();
-        getActivity().renderFail(pMessage, pTransID,null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus);
-        getActivity().enableSubmitBtn(true);
-
-        // enable web parse. disable webview
-        if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
-            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        try {
+            mPageName = PAGE_UNLINKACC_FAIL;
+            getView().renderByResource(mPageName);
+            getView().renderFail(pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_fail_title));
+            if (GlobalData.shouldNativeWebFlow()) {
+                getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
+                getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
-        //tracking translog id unlink fail
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
@@ -587,18 +625,27 @@ public class AdapterLinkAcc extends AdapterBase {
         return false;
     }
 
-    protected void visibleLoadingDialog(String pMessage) {
+    private void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.isShowingProgressDialog()) {
-            showProgressBar(true, pMessage);
+            try {
+                getView().showLoading(pMessage);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 
-    protected void hideLoadingDialog() {
-        showProgressBar(false, null);
+    private void hideLoadingDialog() {
+        try {
+            getView().hideLoading();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
+        super.onEvent(pEventType, pAdditionParams);
         // show value progressing
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
@@ -647,20 +694,12 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_LOGIN_PAGE)) {
                 Log.d(this, "event login page");
                 hideLoadingDialog(); // close process dialog
-                //for testing
-                if (!SDKApplication.isReleaseBuild() && !GlobalData.shouldNativeWebFlow()) {
-                    linkAccGuiProcessor.setAccountTest();
-                }
-
                 mPageName = PAGE_VCB_LOGIN;
-
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
-
                 if (GlobalData.shouldNativeWebFlow()) {
                     Log.d(this, "user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
-
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
                     linkAccGuiProcessor.setCaptchaImgB64Login(response.otpimg);
@@ -688,16 +727,16 @@ public class AdapterLinkAcc extends AdapterBase {
                                 linkAccGuiProcessor.getLoginHolder().getEdtUsername().selectAll();
                                 linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                             } else if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
+                                linkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
+                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             }
                             return null;
                         case ACCOUNT_LOCKED:
                             if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
+                                linkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             } else {
-                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
+                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             }
                             return null;
                         case WRONG_CAPTCHA:
@@ -712,8 +751,12 @@ public class AdapterLinkAcc extends AdapterBase {
                     }
                     linkAccGuiProcessor.setMessage(response.message);
                 }
-                getActivity().renderByResource();
-                getActivity().enableSubmitBtn(false);
+                try {
+                    getView().renderByResource(mPageName);
+                    getView().disableSubmitBtn();
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
                 if (!GlobalData.shouldNativeWebFlow()) {
                     linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                 }
@@ -725,7 +768,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
 
                 // TrackApptransidEvent confirm stage
-                if(GlobalData.analyticsTrackerWrapper != null){
+                if (GlobalData.analyticsTrackerWrapper != null) {
                     GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                 }
 
@@ -816,15 +859,15 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!GlobalData.shouldNativeWebFlow()) {
                         submitMapAccount(getAccNumValue());
                     }
-
-                    getActivity().renderByResource();
-                    getActivity().enableSubmitBtn(false);
-
-                    // TrackApptransidEvent AuthenType
-                    if(GlobalData.analyticsTrackerWrapper != null){
+                    try {
+                        getView().renderByResource(mPageName);
+                        getView().disableSubmitBtn();
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                    if (GlobalData.analyticsTrackerWrapper != null) {
                         GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                     }
-
                     return null;
                 } else {
                     // set Message
@@ -843,8 +886,11 @@ public class AdapterLinkAcc extends AdapterBase {
                                     }
 
                                 } else {
-
-                                    getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                                    try {
+                                        getView().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                                    } catch (Exception e) {
+                                        Log.e(this, e);
+                                    }
                                     if (!GlobalData.shouldNativeWebFlow()) {
                                         showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                     }
@@ -880,9 +926,12 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus(); // focus captcha confirm
-                getActivity().renderByResource();
-                getActivity().enableSubmitBtn(false);
-
+                try {
+                    getView().renderByResource(mPageName);
+                    getView().disableSubmitBtn();
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
                 requestReadOtpPermission();
                 return null;
             }
@@ -893,7 +942,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
-                if(GlobalData.analyticsTrackerWrapper != null){
+                if (GlobalData.analyticsTrackerWrapper != null) {
                     GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
                 }
 
@@ -913,7 +962,11 @@ public class AdapterLinkAcc extends AdapterBase {
                         } else {
                             // FAIL. Fail register
                             hideLoadingDialog();
-                            unlinkAccFail(Message, mTransactionID);
+                            try {
+                                unlinkAccFail(Message, mTransactionID);
+                            } catch (Exception e) {
+                                Log.e(this, e);
+                            }
                         }
                         return null;
                     }
@@ -959,8 +1012,12 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
-                getActivity().renderByResource();
-                getActivity().enableSubmitBtn(false);
+                try {
+                    getView().renderByResource(mPageName);
+                    getView().disableSubmitBtn();
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
                 return null;
             }
 
@@ -987,25 +1044,32 @@ public class AdapterLinkAcc extends AdapterBase {
                         } else {
                             hideLoadingDialog();
                             if (!GlobalData.shouldNativeWebFlow()) {
-                                getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-                                    @Override
-                                    public void onCancelEvent() {
-                                        hideLoadingDialog(); // close process dialog
-                                        String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
-                                        linkAccFail(msgErr, mTransactionID);
-                                    }
+                                try {
+                                    getView().showConfirmDialog(response.message,
+                                            getActivity().getString(R.string.dialog_retry_button),
+                                            getActivity().getString(R.string.dialog_close_button),
+                                            new ZPWOnEventConfirmDialogListener() {
+                                                @Override
+                                                public void onCancelEvent() {
+                                                    hideLoadingDialog(); // close process dialog
+                                                    String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
+                                                    linkAccFail(msgErr, mTransactionID);
+                                                }
 
-                                    @Override
-                                    public void onOKevent() {
-                                        //retry reload the previous page
-                                        if (!TextUtils.isEmpty(mUrlReload)) {
-                                            visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));
-                                            linkAccGuiProcessor.resetCaptchaConfirm();
-                                            linkAccGuiProcessor.resetOtp();
-                                            mWebViewProcessor.reloadWebView(mUrlReload);
-                                        }
-                                    }
-                                }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
+                                                @Override
+                                                public void onOKevent() {
+                                                    //retry reload the previous page
+                                                    if (!TextUtils.isEmpty(mUrlReload)) {
+                                                        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+                                                        linkAccGuiProcessor.resetCaptchaConfirm();
+                                                        linkAccGuiProcessor.resetOtp();
+                                                        mWebViewProcessor.reloadWebView(mUrlReload);
+                                                    }
+                                                }
+                                            });
+                                } catch (Exception e) {
+                                    Log.e(this, e);
+                                }
 
                             }/* else {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
@@ -1063,7 +1127,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 return pAdditionParams;
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified));
+            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : GlobalData.getAppContext().getString(R.string.zpw_string_vcb_error_unidentified));
             return pAdditionParams;
         }
         //event notification from app.
@@ -1088,32 +1152,37 @@ public class AdapterLinkAcc extends AdapterBase {
         return pAdditionParams;
     }
 
-    protected void showMessage(String pTitle, String pMessage, int pDuration) {
-        getActivity().showMessageSnackBar(getActivity().findViewById(R.id.zpsdk_header),
-                pTitle,
-                pMessage, null, pDuration, () -> {
-
-                });
+    private void showMessage(String pTitle, String pMessage, int pDuration) {
+        try {
+            getView().showMessageSnackBar(getView().findViewById(R.id.supperRootView), pTitle, pMessage, pDuration, null);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     protected void initWebView(final String pUrl) {
-        // Init:
         if (mWebViewProcessor == null) {
             // Check show WebView in BankList
-            if (GlobalData.shouldNativeWebFlow()) {
+            boolean nativeFlow = GlobalData.shouldNativeWebFlow();
+            if (nativeFlow) {
                 // show webview && hide web parse
-                getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.VISIBLE);
-                getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.GONE);
-                mWebViewProcessor = new LinkAccWebViewClient(this, (PaymentWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
+                try {
+                    mWebViewProcessor = new LinkAccWebViewClient(this, (PaymentWebView) getView().findViewById(R.id.zpw_threesecurity_webview));
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             } else {
                 // hide webview && show web parse
-                getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
                 visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
+            try {
+                getView().setVisible(R.id.zpw_threesecurity_webview, nativeFlow);
+                getView().setVisible(R.id.ll_test_rootview, !nativeFlow);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
-
         //networking is offline
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             showFailScreenOnType(GlobalData.getOfflineMessage(mPaymentInfoHelper));

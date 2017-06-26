@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import android.os.Bundle;
+
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.ToolbarActivity;
@@ -14,7 +16,7 @@ public class ChannelListActivity extends ToolbarActivity {
     }
 
     @Override
-    protected BaseFragment getFragmentToHost() {
-        return ChannelListFragment.newInstance();
+    protected BaseFragment getFragmentToHost(Bundle bundle) {
+        return ChannelListFragment.newInstance(bundle);
     }
 }

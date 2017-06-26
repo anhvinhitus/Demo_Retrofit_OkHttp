@@ -54,7 +54,11 @@ public class CCWebViewClient extends PaymentWebViewClient {
             return true;
         }
         if (getAdapter() != null) {
-            getAdapter().showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
+            try {
+                getAdapter().getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
         view.loadUrl(url);
         mWebView = view;
@@ -65,7 +69,11 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void onLoadResource(WebView view, String url) {
         Log.d(this, "load resource " + url);
         if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.zpw_string_pay_domain)) && getAdapter() != null) {
-            getAdapter().showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
+            try {
+                getAdapter().getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
         super.onLoadResource(view, url);
     }
@@ -74,7 +82,11 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void onPageFinished(WebView view, String url) {
         Log.d(this, "load page finish " + url);
         if (getAdapter() != null) {
-            getAdapter().showProgressBar(false, null);
+            try {
+                getAdapter().getView().hideLoading();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
             BIDVWebFlow(null, url, view);
         }
         isFirstLoad = false;

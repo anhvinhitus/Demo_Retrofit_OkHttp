@@ -89,16 +89,16 @@ public class Constants {
     public static int NULL_ERRORCODE = -747;
     public static String TRUE = "true";
 
+    public static final String SCREEN_CC = RS.layout.screen__card;
+    public static final String SCREEN_ATM = RS.layout.screen__card;
+    public static final String SCREEN_ZALOPAY = RS.layout.screen__zalopay;
     public static final String PAGE_SUCCESS = RS.layout.screen__success;
     public static final String PAGE_FAIL = RS.layout.screen__fail;
     public static final String PAGE_FAIL_NETWORKING = RS.layout.screen__fail_networking;
     public static final String PAGE_FAIL_PROCESSING = RS.layout.screen__fail_processing;
     public static final String PAGE_BALANCE_ERROR = RS.layout.screen__zalopay__balance_error;
-    public static final String SCREEN_CC = RS.layout.screen__card;
-    public static final String SCREEN_ATM = RS.layout.screen__card;
     public static final String PAGE_AUTHEN = RS.layout.screen__local__card__authen;
     public static final String PAGE_COVER_BANK_AUTHEN = RS.layout.screen__cover__bank__authen;
-    public static final String PAGE_SELECTION_ACCOUNT_BANK = RS.layout.screen_selection_account_list;
 
     public static final String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
     public static final String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
@@ -138,4 +138,8 @@ public class Constants {
 
     public static final long GETSTATUS_APPTRANS_MAX_RETRY = 5;
     public static final long GETSTATUS_APPTRANS_INTERVAL = 200;
+
+    public interface CHANNEL_CONST{
+        String layout = "layout";
+    }
 }

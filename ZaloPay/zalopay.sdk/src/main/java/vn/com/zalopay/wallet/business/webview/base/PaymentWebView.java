@@ -5,11 +5,16 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
+
+import static android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
@@ -31,7 +36,15 @@ public class PaymentWebView extends WebView {
     }
 
     protected void init() {
-        getSettings().setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setWebContentsDebuggingEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
+        }
+       /* getSettings().setJavaScriptEnabled(true);
+        getSettings().setDomStorageEnabled(true);
         getSettings().setBuiltInZoomControls(false);
         getSettings().setSupportZoom(true);
         getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -39,7 +52,20 @@ public class PaymentWebView extends WebView {
         getSettings().setLoadWithOverviewMode(true);
         getSettings().setLoadsImagesAutomatically(true);
         getSettings().setSavePassword(false);
-        getSettings().setSaveFormData(false);
+        getSettings().setSaveFormData(false);*/
+        getSettings().setJavaScriptEnabled(true);
+        getSettings().setSupportMultipleWindows(true);
+        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        getSettings().setUseWideViewPort(true);
+        getSettings().setLoadWithOverviewMode(true);
+        getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        getSettings().setAllowUniversalAccessFromFileURLs(true);
+        getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        getSettings().setAppCacheEnabled(false);
+        getSettings().setDomStorageEnabled(true);
+
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
 
         // set user agent. mobile
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

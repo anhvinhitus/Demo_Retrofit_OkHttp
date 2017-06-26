@@ -21,13 +21,13 @@ import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
-public class ActivityRendering {
+public class ResourceRender {
     private ResourceManager mResourceManager = null;
-    private BasePaymentActivity mOwnerActivity = null;
+    private RenderFragment mView = null;
 
-    public ActivityRendering(ResourceManager pResourceManager, BasePaymentActivity pOwnerActivity) {
+    public ResourceRender(ResourceManager pResourceManager, RenderFragment renderFragment) {
         this.mResourceManager = pResourceManager;
-        this.mOwnerActivity = pOwnerActivity;
+        this.mView = renderFragment;
     }
 
     public void render() {
@@ -39,7 +39,7 @@ public class ActivityRendering {
 
     public void renderKeyBoard() {
         List<DKeyBoardConfig> keyBoardConfigs = mResourceManager.getKeyBoardConfig();
-        if (keyBoardConfigs != null && keyBoardConfigs.size() > 0 && mOwnerActivity != null) {
+        if (keyBoardConfigs != null && keyBoardConfigs.size() > 0 && mView != null) {
             for (DKeyBoardConfig keyboard : keyBoardConfigs) {
                 Log.d("renderKeyBoard", "preparing to set keyboard ", keyboard);
 
@@ -60,13 +60,13 @@ public class ActivityRendering {
                  */
                 //set keyboard for some view
                 if (TextUtils.isEmpty(keyboard.bankcode)) {
-                    mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
+                    mView.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for view", keyboard);
                     continue;
                 }
                 //set keyboard by bank
                 if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
-                    mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
+                    mView.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for bank " + BankCardCheck.getInstance().getDetectBankCode(), keyboard);
                 }
             }
@@ -74,11 +74,10 @@ public class ActivityRendering {
     }
 
     public void render(DStaticViewGroup pStaticViewGroup, DDynamicViewGroup pDynamicViewGroup) {
-        if (pStaticViewGroup == null && pDynamicViewGroup == null)
+        if (pStaticViewGroup == null && pDynamicViewGroup == null) {
             return;
-
-        View contentView = this.mOwnerActivity.findViewById(android.R.id.content).getRootView();
-
+        }
+        View contentView = mView.getActivity().findViewById(android.R.id.content).getRootView();
         if (contentView != null) {
             renderStaticView(pStaticViewGroup);
             renderDynamicView(pDynamicViewGroup);
@@ -88,8 +87,8 @@ public class ActivityRendering {
 
     private void renderStaticView(DStaticViewGroup pStaticViewGroup) {
         if (pStaticViewGroup != null) {
-            renderImageView(mOwnerActivity, pStaticViewGroup.ImageView);
-            renderTextView(mOwnerActivity, pStaticViewGroup.TextView);
+            renderImageView(mView, pStaticViewGroup.ImageView);
+            renderTextView(mView, pStaticViewGroup.TextView);
         }
     }
 
@@ -98,27 +97,20 @@ public class ActivityRendering {
             //set rule for edittext from bundle.
             if (pDynamicViewGroup.EditText != null && pDynamicViewGroup.EditText.size() > 0) {
                 for (DDynamicEditText editText : pDynamicViewGroup.EditText) {
-                    View view = mOwnerActivity.findViewById(mOwnerActivity.getViewID(editText.id));
-
+                    View view = mView.findViewById(editText.id);
                     //Log.d("renderDynamicView",editText.id + " is "+ ((view != null) ? view.toString(): "null"));
-
-                    if (mOwnerActivity instanceof PaymentChannelActivity) {
-                        if (view instanceof VPaymentDrawableEditText || view instanceof VPaymentValidDateEditText) {
-                            VPaymentEditText paymentEditText = (VPaymentEditText) view;
-                            paymentEditText.init(editText, mOwnerActivity.getAdapter());
-                        }
+                    if (view instanceof VPaymentDrawableEditText || view instanceof VPaymentValidDateEditText) {
+                        VPaymentEditText paymentEditText = (VPaymentEditText) view;
+                        paymentEditText.init(editText);
                     }
                 }
             }
-
             //add action keyboard. the done action if this is the last view
             if (pDynamicViewGroup.View != null && pDynamicViewGroup.View.size() > 0) {
                 View view;
                 View lastView = null;
-
                 for (Entry<String, Boolean> entry : pDynamicViewGroup.View.entrySet()) {
-                    view = mOwnerActivity.setVisible(entry.getKey(), entry.getValue());
-
+                    view = mView.setVisible(entry.getKey(), entry.getValue());
                     if (entry.getValue()) {
                         if (view instanceof EditText && entry.getValue()) {
                             ((EditText) view).setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
@@ -137,30 +129,28 @@ public class ActivityRendering {
                         ((EditText) lastView).setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
                     } else if (lastView instanceof TextInputLayout && ((TextInputLayout) lastView).getChildAt(0) instanceof EditText) {
                         EditText editText = (EditText) ((TextInputLayout) lastView).getChildAt(0);
-
                         editText.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-
                     }
                 }
             }
         }
     }
 
-    private void renderImageView(BasePaymentActivity pActivity, List<DStaticView> pImgViewList) {
+    private void renderImageView(RenderFragment renderFragment, List<DStaticView> pImgViewList) {
         if (pImgViewList == null) {
             return;
         }
         for (DStaticView imgView : pImgViewList) {
-            pActivity.setImage(imgView.id, imgView.value);
+            renderFragment.setImage(imgView.id, imgView.value);
         }
     }
 
-    private void renderTextView(BasePaymentActivity pActivity, List<DStaticView> pTxtViewList) {
+    private void renderTextView(RenderFragment renderFragment, List<DStaticView> pTxtViewList) {
         if (pTxtViewList == null) {
             return;
         }
         for (DStaticView txtView : pTxtViewList) {
-            pActivity.setText(txtView.id, txtView.value);
+            renderFragment.setText(txtView.id, txtView.value);
         }
     }
 

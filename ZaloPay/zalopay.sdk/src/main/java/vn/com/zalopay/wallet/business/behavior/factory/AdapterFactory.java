@@ -11,48 +11,42 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
 public class AdapterFactory {
-    /***
-     *
-     * @param owner
-     * @param pPmcTransType
-     * @return
-     */
-    public static AdapterBase produce(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType,
-                                      PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
+    public static AdapterBase create(ChannelPresenter presenter, MiniPmcTransType pPmcTransType,
+                                     PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
         AdapterBase adapter = null;
         try {
-            adapter = produceChannelByPmc(owner, pPmcTransType, paymentInfoHelper, statusResponse);
+            adapter = createByPmc(presenter, pPmcTransType, paymentInfoHelper, statusResponse);
         } catch (Exception ex) {
-            Log.e("produce", ex);
+            Log.e("create", ex);
         }
         return adapter;
     }
 
-    public static AdapterBase produceChannelByPmc(PaymentChannelActivity owner, MiniPmcTransType pPmcTransType,
-                                                  PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
+    public static AdapterBase createByPmc(ChannelPresenter presenter, MiniPmcTransType pPmcTransType,
+                                          PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
         AdapterBase adapter = null;
         switch (pPmcTransType.pmcid) {
             case BuildConfig.channel_zalopay:
-                adapter = new AdapterZaloPay(owner, pPmcTransType, paymentInfoHelper, statusResponse);
+                adapter = new AdapterZaloPay(presenter, pPmcTransType, paymentInfoHelper, statusResponse);
                 break;
             case BuildConfig.channel_atm:
-                adapter = new AdapterBankCard(owner, pPmcTransType, paymentInfoHelper, statusResponse);
+                adapter = new AdapterBankCard(presenter, pPmcTransType, paymentInfoHelper, statusResponse);
                 break;
             case BuildConfig.channel_credit_card:
-                adapter = new AdapterCreditCard(owner, pPmcTransType, paymentInfoHelper, statusResponse);
+                adapter = new AdapterCreditCard(presenter, pPmcTransType, paymentInfoHelper, statusResponse);
                 break;
             case BuildConfig.channel_bankaccount:
                 if (pPmcTransType.isBankAccountMap()) {
-                    adapter = new AdapterBankAccount(owner, pPmcTransType, paymentInfoHelper, statusResponse);
+                    adapter = new AdapterBankAccount(presenter, pPmcTransType, paymentInfoHelper, statusResponse);
                 } else {
-                    adapter = new AdapterLinkAcc(owner, pPmcTransType, paymentInfoHelper);
+                    adapter = new AdapterLinkAcc(presenter, pPmcTransType, paymentInfoHelper);
                 }
                 break;
         }
-        Log.d("produceChannelByPmc", "create adapter", adapter.getClass().getSimpleName());
+        Log.d("createByPmc", "create adapter", adapter.getClass().getSimpleName());
         return adapter;
     }
 }

@@ -1,13 +1,33 @@
 package vn.com.zalopay.wallet.helper;
 
+import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class ChannelHelper {
+    public static @LayoutRes int getLayout(int channelId, boolean isLinkAccount) {
+        switch (channelId) {
+            case BuildConfig.channel_zalopay:
+                return R.layout.screen__zalopay;
+            case BuildConfig.channel_atm:
+            case BuildConfig.channel_credit_card:
+                return R.layout.screen__card;
+            case BuildConfig.channel_bankaccount:
+                if (isLinkAccount) {
+                    return R.layout.screen__link__acc;
+                } else {
+                    return R.layout.screen__card;
+                }
+            default:
+                return R.layout.screen__card;
+        }
+    }
+
     /***
      * get icon for channel
      *

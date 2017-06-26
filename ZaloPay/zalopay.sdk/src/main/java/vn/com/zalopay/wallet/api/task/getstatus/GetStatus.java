@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.api.task.getstatus;
 
-import android.app.Activity;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 
@@ -18,7 +17,6 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 /***
  * get transaction status class
@@ -90,30 +88,28 @@ public class GetStatus extends BaseTask<StatusResponse> {
             return;
         }
 
-        Activity activity = BasePaymentActivity.getCurrentActivity();
-        if (activity == null || activity.isFinishing() || !(activity instanceof BasePaymentActivity)) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
-            return;
-        }
-
         if (mRetryCount == Constants.MAX_RETRY_GETSTATUS) {
             onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
             return;
         }
 
-        ((BasePaymentActivity) activity).showRetryDialog(new ZPWOnEventConfirmDialogListener() {
-            @Override
-            public void onCancelEvent() {
-                onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
-            }
+        try {
+            mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                    onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
+                }
 
-            @Override
-            public void onOKevent() {
-                mRetryCount++;
-                makeRequest();
-            }
-
-        }, pMessage);
+                @Override
+                public void onOKevent() {
+                    mRetryCount++;
+                    makeRequest();
+                }
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
+            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
+        }
     }
 
     private void onPostResult(StatusResponse pResponse) {
@@ -128,9 +124,14 @@ public class GetStatus extends BaseTask<StatusResponse> {
         if (TextUtils.isEmpty(mMessage)) {
             mMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing);
         }
-        BasePaymentActivity activity = mAdapter.getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            activity.showProgress(pIsShow, mMessage);
+        try {
+            if (pIsShow) {
+                mAdapter.getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
+            } else {
+                mAdapter.getView().hideLoading();
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 

@@ -163,24 +163,36 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + error.toString());
-        getAdapter().getActivity().showProgress(false, null);
-        getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-            @Override
-            public void onCancelEvent() {
-                mAdapter.onEvent(EEventType.ON_FAIL);
-                mAdapter.getActivity().onBackPressed();
-                try {
-                    getAdapter().sdkReportError(ERROR_WEBSITE, error.toString());
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
-            }
+        try {
+            getAdapter().getView().hideLoading();
+            getAdapter().getView().showConfirmDialog(
+                    GlobalData.getAppContext().getString(R.string.zpw_alert_ssl_error_parse_website),
+                    GlobalData.getAppContext().getString(R.string.dialog_continue_button),
+                    GlobalData.getAppContext().getString(R.string.dialog_close_button),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            mAdapter.onEvent(EEventType.ON_FAIL);
+                            try {
+                                mAdapter.getActivity().onBackPressed();
+                            } catch (Exception e) {
+                                Log.e(this, e);
+                            }
+                            try {
+                                getAdapter().sdkReportError(ERROR_WEBSITE, error.toString());
+                            } catch (Exception e) {
+                                Log.e(this, e);
+                            }
+                        }
 
-            @Override
-            public void onOKevent() {
-                handler.proceed(); // Ignore SSL certificate errors
-            }
-        }, mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website), mAdapter.getActivity().getString(R.string.dialog_continue_button), mAdapter.getActivity().getString(R.string.dialog_close_button));
+                        @Override
+                        public void onOKevent() {
+                            handler.proceed(); // Ignore SSL certificate errors
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -203,7 +215,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-        getAdapter().getActivity().showProgress(false, null);
+        try {
+            getAdapter().getView().hideLoading();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     /***
@@ -396,12 +412,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
         Log.d("Js", "==== onJsPaymentResult: " + pResult);
-
         final String result = pResult;
-
-        getAdapter().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        try {
+            getAdapter().getActivity().runOnUiThread(() -> {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = genResponse(eventType, scriptOutput);
@@ -417,8 +430,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                         mAdapter.onEvent(eventType, response, mPageCode, mEventID);
                     }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public EEventType convertPageIdToEvent(int pEventID) {

@@ -45,7 +45,7 @@ public class ValidationActor extends SingletonBase {
                 mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
             }
             try {
-                getView().callbackThenterminate();
+                getView().callbackThenTerminate();
             } catch (Exception e) {
                 Log.d(this, e);
             }
@@ -143,7 +143,7 @@ public class ValidationActor extends SingletonBase {
             dBankAccount.bankcode = CardType.PVCB;
             mPaymentInfoHelper.setMapBank(dBankAccount);
             mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-            getView().callbackThenterminate();
+            getView().callbackThenTerminate();
             return false;
         }
         return true;

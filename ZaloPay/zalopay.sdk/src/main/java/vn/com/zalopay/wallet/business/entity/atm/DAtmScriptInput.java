@@ -11,8 +11,6 @@ public class DAtmScriptInput {
     public String captcha;
     public String otp;
 
-    public int accountIndex;
-
     public String username;
     public String password;
 

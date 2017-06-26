@@ -20,6 +20,7 @@ import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
@@ -30,6 +31,16 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
  */
 
 public class TransactionHelper {
+    public static String getQuitMessage(PaymentInfoHelper paymentInfoHelper) {
+        String message = GlobalData.getStringResource(RS.string.sdk_quit_confirm_text);
+        if (paymentInfoHelper.isPayTrans()) {
+            message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
+        } else if (paymentInfoHelper.isBankAccountTrans()) {
+            message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
+        }
+        return message;
+    }
+
     public static String getMessage(Throwable throwable) {
         String message = null;
         if (throwable instanceof RequestException) {
@@ -126,7 +137,7 @@ public class TransactionHelper {
                 context.getString(R.string.sdk_alert_network_onfline_submitorder);
     }
 
-    public static String getGenericExceptionMessage(Context context){
+    public static String getGenericExceptionMessage(Context context) {
         boolean online = ConnectionUtil.isOnline(context);
         return online ? context.getString(R.string.sdk_fail_trans_status) :
                 context.getString(R.string.sdk_alert_networking_off_generic);

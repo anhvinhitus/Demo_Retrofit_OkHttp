@@ -17,7 +17,6 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 
 import java.util.List;
 
@@ -67,6 +66,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private LinearLayout item_detail_linearlayout;
     private Button confirm_button;
     private View view_top_linearlayout;
+    private TextView toolbar_title;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -74,7 +74,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     public static BaseFragment newInstance(Bundle args) {
         BaseFragment fragment = newInstance();
-        fragment.setArguments(args);
+        if(args != null){
+            fragment.setArguments(args);
+        }
         return fragment;
     }
 
@@ -84,6 +86,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private void makeFont() {
         applyFont(confirm_button, GlobalData.getStringResource(RS.string.zpw_font_regular));
         applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(toolbar_title, GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
     @Override
@@ -110,6 +113,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onViewBound(View view) {
         super.onViewBound(view);
+        toolbar_title = (TextView) view.findViewById(R.id.toolbar_title);
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);
@@ -135,7 +139,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             mOriginTitle = title;
         }
         if (getActivity() != null) {
-            getActivity().setTitle(title);
+            ((ChannelListActivity)getActivity()).setToolbarTitle(title);
         }
     }
 
@@ -181,7 +185,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showError(String pMessage) {
         hideLoading();
         DialogManager.showSweetDialogCustom(getActivity(), pMessage, getResources().getString(R.string.dialog_close_button),
-                SweetAlertDialog.WARNING_TYPE, this::callbackThenterminate);
+                SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
     }
 
     @Override
@@ -193,7 +197,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void callbackThenterminate() {
+    public void callbackThenTerminate() {
         if (mPresenter != null) {
             mPresenter.callback();
         }
@@ -266,7 +270,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         DialogManager.showSweetDialogCustom(getActivity(),
                 getResources().getString(R.string.zpw_not_allow_payment_app),
                 getResources().getString(R.string.dialog_close_button),
-                SweetAlertDialog.WARNING_TYPE, this::callbackThenterminate);
+                SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
     }
 
     @Override
@@ -277,13 +281,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 getResources().getString(R.string.dialog_cancel_button), new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-                        callbackThenterminate();
+                        callbackThenTerminate();
                     }
 
                     @Override
                     public void onOKevent() {
                         mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-                        callbackThenterminate();
+                        callbackThenTerminate();
                     }
                 });
     }
@@ -306,13 +310,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-                        callbackThenterminate();
+                        callbackThenTerminate();
                     }
 
                     @Override
                     public void onOKevent() {
                         mPresenter.setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINKCARD);
-                        callbackThenterminate();
+                        callbackThenTerminate();
                     }
                 });
     }

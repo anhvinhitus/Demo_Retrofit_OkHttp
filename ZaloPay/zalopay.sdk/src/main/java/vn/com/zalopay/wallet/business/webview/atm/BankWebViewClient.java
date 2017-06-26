@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.business.webview.atm;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
-import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
@@ -62,9 +61,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     public BankWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
-
         if (getAdapter() != null) {
-            mWebPaymentBridge = new BankWebView(getAdapter().getActivity().getApplicationContext());
+            mWebPaymentBridge = new BankWebView(GlobalData.getAppContext());
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
         }
@@ -104,7 +102,6 @@ public class BankWebViewClient extends PaymentWebViewClient {
             input.cardYear = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardYear();
             input.cardPass = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardPass();
             input.otp = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getOtp();
-            input.accountIndex = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getSelectedAccountIndex();
             input.captcha = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCaptcha();
             input.username = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getUsername();
             input.password = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getPassword();
@@ -115,15 +112,6 @@ public class BankWebViewClient extends PaymentWebViewClient {
     }
 
     public void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
-        //for testing
-        /*
-        if( ! TextUtils.isEmpty(((BankCardGuiProcessor)getAdapter().getGuiProcessor()).getOtp()))
-		{
-			getAdapter().onEvent(EEventType.ON_FAIL);
-			return;
-		}
-		*/
-
         boolean isMatched = false;
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
@@ -255,31 +243,32 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
-        Log.d(this, "==== onJsPaymentResult: " + pResult);
-        // Modify this variable to inform that it not run in ajax mode
+        Log.d(this, "onJsPaymentResult", pResult);
         mLastStartPageTime++;
-
         final String result = pResult;
+        try {
+            getAdapter().getActivity().runOnUiThread(() -> {
+                DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+                Log.d("onJsPaymentResult", scriptOutput);
+                EEventType eventType = convertPageIdToEvent(mEventID);
+                BaseResponse response = genResponse(eventType, scriptOutput);
 
-        getAdapter().getActivity().runOnUiThread(() -> {
-            DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-            Log.d("onJsPaymentResult", scriptOutput);
-            EEventType eventType = convertPageIdToEvent(mEventID);
-            BaseResponse response = genResponse(eventType, scriptOutput);
-
-            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                // Auto hit at first step
-                mIsFirst = false;
-                hit();
-            } else {
-                if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                    getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                    // Auto hit at first step
+                    mIsFirst = false;
+                    hit();
                 } else {
-                    getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
+                    } else {
+                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                    }
                 }
-            }
 
-        });
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public boolean isVerifyCardComplete() {
@@ -344,23 +333,27 @@ public class BankWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void getHtml(final String pHtml) {
         //pHtml = PaymentHtmlParser.getContent(pHtml);
-        Log.d(this, "===pHtml=" + pHtml);
+        Log.d(this, "Html", pHtml);
         if (getAdapter() != null) {
-            getAdapter().getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-                    if (!TextUtils.isEmpty(paymentError)) {
-                        paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
-                    }
+            try {
+                getAdapter().getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+                        if (!TextUtils.isEmpty(paymentError)) {
+                            paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
+                        }
 
-                    try {
-                        getAdapter().sdkReportError(ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
-                    } catch (Exception e) {
-                        Log.e(this, e);
+                        try {
+                            getAdapter().sdkReportError(ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                        } catch (Exception e) {
+                            Log.e(this, e);
+                        }
                     }
-                }
-            });
+                });
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 }

@@ -54,9 +54,13 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     public BidvWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
         if (getAdapter() != null) {
-            mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
-            mWebPaymentBridge.setWebViewClient(this);
-            mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+            try {
+                mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
+                mWebPaymentBridge.setWebViewClient(this);
+                mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
         }
     }
 
@@ -81,7 +85,6 @@ public class BidvWebViewClient extends PaymentWebViewClient {
             input.cardYear = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardYear();
             input.cardPass = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardPass();
             input.otp = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getOtp();
-            input.accountIndex = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getSelectedAccountIndex();
             input.captcha = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCaptcha();
             input.username = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getUsername();
             input.password = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getPassword();
@@ -245,29 +248,15 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
         mIsRunningScript = false;
-        Log.d(this, "==== onJsPaymentResult: " + pResult);
-        // Modify this variable to inform that it not run in ajax mode
+        Log.d(this, "onJsPaymentResult", pResult);
         mLastStartPageTime++;
-
         final String result = pResult;
-
-        getAdapter().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        try {
+            getAdapter().getActivity().runOnUiThread(() -> {
                 DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-
-				/*
-                if(scriptOutput != null && !scriptOutput.stopIntervalCheck )
-				{
-					intervalCheck();
-					return;
-				}
-				*/
                 countIntervalCheck = 0;
-
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
-
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;
@@ -279,8 +268,10 @@ public class BidvWebViewClient extends PaymentWebViewClient {
                         getAdapter().onEvent(eventType, response, mPageCode, mEventID);
                     }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
     }
 
     public boolean isVerifyCardComplete() {

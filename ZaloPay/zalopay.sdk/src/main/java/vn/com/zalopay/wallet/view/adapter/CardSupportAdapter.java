@@ -14,8 +14,8 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.view.adapter.holder.ZPWItemBankHolder;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
 
 public class CardSupportAdapter extends BaseAdapter {
     protected ArrayList<String> mBankCode = new ArrayList<>();
@@ -55,7 +55,7 @@ public class CardSupportAdapter extends BaseAdapter {
         ImageView imImageIcon;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(BasePaymentActivity.getCurrentActivity().getApplicationContext()).
+            convertView = LayoutInflater.from(BaseActivity.getCurrentActivity().getApplicationContext()).
                     inflate(R.layout.gridview__item__bank, parent, false);
             holder = new ZPWItemBankHolder();
             imImageIcon = (ImageView) convertView.findViewById(R.id.imBankIcon);

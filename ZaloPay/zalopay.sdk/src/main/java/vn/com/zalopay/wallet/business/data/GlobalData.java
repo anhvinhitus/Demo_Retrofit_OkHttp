@@ -6,7 +6,6 @@ import android.content.Context;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
@@ -22,8 +21,7 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channel.BasePaymentActivity;
-import vn.com.zalopay.wallet.ui.channel.PaymentChannelActivity;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 /***
  * static class contain static data.
@@ -55,14 +53,14 @@ public class GlobalData {
     }
 
     public static boolean isUserInSDK() {
-        return BasePaymentActivity.getCurrentActivityCount() > 0 || BaseActivity.getActivityCount() > 0;
+        return BaseActivity.getActivityCount() > 0 || BaseActivity.getActivityCount() > 0;
     }
 
     public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
         boolean isTransactionHasInputCard = !paymentInfoHelper.payByCardMap() && !paymentInfoHelper.payByBankAccountMap() && !paymentInfoHelper.isWithDrawTrans();
         boolean isChannelHasInputCard = true;
-        if (BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity
-                && ((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity()).getAdapter().isZaloPayFlow()) {
+        if (BaseActivity.getCurrentActivity() instanceof ChannelActivity
+                && ((ChannelActivity) BaseActivity.getCurrentActivity()).getAdapter().isZaloPayFlow()) {
             isChannelHasInputCard = false;
         }
         return isTransactionHasInputCard && isChannelHasInputCard;
@@ -165,21 +163,8 @@ public class GlobalData {
         FeedBackCollector.shared().setFeedBack(pFeedBack);
     }
 
-    public static void terminateSDK() {
-        Activity currentActivity = BasePaymentActivity.getCurrentActivity();
-        if (currentActivity instanceof BasePaymentActivity) {
-            ((BasePaymentActivity) currentActivity).onExit(currentActivity.getString(R.string.zingpaysdk_alert_context_error), true);
-        }
-    }
-
     public static Context getAppContext() {
-        try {
-            return SDKApplication.getApplication();
-        } catch (Exception e) {
-            Log.e(GlobalData.class.getName(), e);
-            terminateSDK();
-        }
-        return null;
+        return SDKApplication.getApplication();
     }
 
     public static Activity getMerchantActivity() {

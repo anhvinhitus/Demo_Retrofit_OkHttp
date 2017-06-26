@@ -67,7 +67,7 @@ public class VerifyMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.checkNetworkingAndShowRequest()) {
+        if (mAdapter.openSettingNetworking()) {
             shareDataRepository().setTask(this).postData(new VerifyMapCardImpl(), getDataParams());
         }
     }

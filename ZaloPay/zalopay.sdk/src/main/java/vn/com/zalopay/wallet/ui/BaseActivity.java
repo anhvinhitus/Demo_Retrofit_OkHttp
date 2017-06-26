@@ -10,9 +10,12 @@ import android.view.MenuItem;
 
 import java.util.Stack;
 
+import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -31,11 +34,36 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public static ChannelListActivity getChannelListActivity() {
+        for (Activity activity : mActivityStack) {
+            if (activity instanceof ChannelListActivity) {
+                return (ChannelListActivity) activity;
+            }
+        }
+        return null;
+    }
+
+    public static ChannelActivity getChannelActivity() {
+        for (Activity activity : mActivityStack) {
+            if (activity instanceof ChannelActivity) {
+                return (ChannelActivity) activity;
+            }
+        }
+        return null;
+    }
+
     public static int getActivityCount() {
         if (mActivityStack != null) {
             return mActivityStack.size();
         }
         return 0;
+    }
+
+    @CallSuper
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ZPAnalytics.trackScreen(TAG);
     }
 
     @CallSuper
@@ -50,7 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         setContentView(getLayoutId());
         if (savedInstanceState == null) {
-            hostFragment(getFragmentToHost());
+            hostFragment(getFragmentToHost(getIntent().getExtras()));
         }
     }
 
@@ -69,7 +97,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     @Override
@@ -109,7 +136,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         hostFragment(fragment, R.id.fragment_container);
     }
 
-    protected abstract BaseFragment getFragmentToHost();
+    protected abstract BaseFragment getFragmentToHost(Bundle bundle);
 
     protected abstract int getLayoutId();
 }

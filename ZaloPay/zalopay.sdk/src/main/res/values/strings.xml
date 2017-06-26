@@ -152,13 +152,29 @@
 
     <string name="zpw_conf_gwinfo_bank_account_list">bank_account_list_</string>
 
-    <string name="walletsdk_string_bar_title">Thanh toán</string>
+    <string name="sdk_pay_title">Thanh toán</string>
+    <string name="sdk_topup_title">Nạp tiền</string>
+    <string name="sdk_transfer_title">Chuyển tiền</string>
+    <string name="sdk_withdraw_title">Rút tiền</string>
 
-    <string name="zpw_string_pay_title">Nạp tiền</string>
+    <string name="sdk_pay_success_title">Thanh toán thành công</string>
+    <string name="sdk_topup_success_title">Nạp tiền thành công</string>
+    <string name="sdk_transfer_success_title">Chuyển tiền thành công</string>
+    <string name="sdk_withdraw_success_title">Rút tiền thành công</string>
+    <string name="sdk_link_card_success_title">Liên kết thành công</string>
 
-    <string name="zpw_string_tranfer_title">Chuyển tiền</string>
+    <string name="sdk_pay_fail_title">Thanh toán không thành công</string>
+    <string name="sdk_topup_fail_title">Nạp tiền không thành công</string>
+    <string name="sdk_transfer_fail_title">Chuyển tiền không thành công</string>
+    <string name="sdk_withdraw_fail_title">Rút tiền không thành công</string>
+    <string name="sdk_link_card_fail_title">Liên kết không thành công</string>
 
-    <string name="zpw_string_withdraw_title">Rút tiền</string>
+    <string name="sdk_link_acc_success_title">Liên kết thành công</string>
+    <string name="sdk_unlink_acc_success_title">Hủy liên kết thành công</string>
+
+    <string name="sdk_link_acc_fail_title">Liên kết không thành công</string>
+    <string name="sdk_unlink_acc_fail_title">Hủy liên kết không thành công</string>
+
 
     <string name="zingpaysdk_pmc_name_zalopay">Tài khoản Zalo Pay</string>
 
@@ -227,6 +243,8 @@
 
     <string name="zpw_string_fee_free">Miễn phí giao dịch</string>
 
+    <string name="sdk_error_init_data">Lỗi khởi tạo dữ liệu thanh toán. Vui lòng thử lại!</string>
+    <string name="sdk_link_not_allow">Liên kết hiện tại không hỗ trợ. Vui lòng thử lại sau</string>
     <string name="zpw_string_channel_not_allow">Không hỗ trợ</string>
     <string name="zpw_string_channel_not_allow_by_amount">Vượt quá hạn mức một lần giao dịch</string>
     <string name="zpw_string_channel_not_allow_by_amount_small">Không hỗ trợ mệnh giá này</string>
@@ -335,8 +353,6 @@
     <string name="zpw_string_bank_maitenance"><![CDATA[ <b>%1$s</b> bảo trì tới <b>%2$s</b>, bạn vui lòng chọn ngân hàng khác hoặc quay lại sau.]]></string>
 
     <string name="zpw_string_bank_not_support">Ngân hàng đã chọn không còn được hỗ trợ.\nVui lòng chọn thẻ khác để giao dịch</string>
-
-    <string name="zpw_string_title_header_pay_result">Kết quả</string>
 
     <string name="zpw_string_error_system">Hệ thống không thể thực hiện giao dịch lúc này.\nVui lòng thử lại sau ít phút</string>
 
