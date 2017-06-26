@@ -4,12 +4,12 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
-public class DMappedCreditCard {
+public class CardSubmit {
     public String f6no;
     public String l4no;
     public String bankcode;
 
-    public DMappedCreditCard(MapCard pMappedCard) {
+    public CardSubmit(MapCard pMappedCard) {
         this.f6no = pMappedCard.first6cardno;
         this.l4no = pMappedCard.last4cardno;
         this.bankcode = pMappedCard.bankcode;

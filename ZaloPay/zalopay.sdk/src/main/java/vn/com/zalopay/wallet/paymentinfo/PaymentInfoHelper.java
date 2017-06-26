@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
+import vn.com.zalopay.wallet.business.entity.creditcard.CardSubmit;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -313,7 +314,10 @@ public class PaymentInfoHelper extends SingletonBase {
 
     public String getChargeInfo(DPaymentCard paymentCard) {
         BaseMap mapBank = getMapBank();
-        if (mapBank != null && mapBank.isValid()) {
+        if (mapBank != null && mapBank.isValid() && mapBank instanceof MapCard) {
+            CardSubmit mapCard = new CardSubmit((MapCard) mapBank);
+            return GsonUtils.toJsonString(mapCard);
+        } else if (mapBank != null && mapBank.isValid() && mapBank instanceof BankAccount) {
             return GsonUtils.toJsonString(mapBank);
         } else if (paymentCard != null && paymentCard.isValid()) {
             return GsonUtils.toJsonString(paymentCard);
