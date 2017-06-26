@@ -26,14 +26,8 @@ public class WebAppActivity extends BaseToolBarActivity {
         getToolbar().setNavigationIcon(
                 new IconFontDrawable(this)
                         .setIcon(R.string.general_backandroid)
-                        .setResourcesColor(R.color.white)
+                        .setResourcesColor(R.color.colorWebAppPrimaryText)
                         .setDpSize(18)
         );
-//        getToolbar().setNavigationIcon(
-//                new IconFontDrawable(this)
-//                        .setIcon(R.string.general_backandroid)
-//                        .setResourcesColor(R.color.colorWebAppPrimaryText)
-//                        .setDpSize(18)
-//        );
     }
 }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,9 +16,6 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -29,7 +25,6 @@ import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -240,8 +235,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         View view = menuItem.getActionView();
         IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
         mIcon.setIcon(R.string.webapp_3point_android);
-        mIcon.setIconColor(R.color.white);
-//        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
+        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
         view.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
