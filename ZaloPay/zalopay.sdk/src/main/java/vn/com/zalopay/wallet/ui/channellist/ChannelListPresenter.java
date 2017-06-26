@@ -574,7 +574,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     public boolean isUniqueChannel() {
-        return mChannelList == null || mChannelList.size() <= 0;
+        return mChannelList == null || mChannelList.size() <= 1;
     }
 
     public void exitHasOneChannel() {

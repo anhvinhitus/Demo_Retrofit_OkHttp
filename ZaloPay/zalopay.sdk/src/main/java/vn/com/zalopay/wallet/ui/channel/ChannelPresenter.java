@@ -236,7 +236,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             } else if (mAdapter.isTransactionFail()) {
                 setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             } else {
-                setPaymentStatusAndCallback(PaymentStatus.FAILURE);
+                setCallBack(Activity.RESULT_CANCELED);
+                getViewOrThrow().terminate();
             }
             return false;
         } else {
