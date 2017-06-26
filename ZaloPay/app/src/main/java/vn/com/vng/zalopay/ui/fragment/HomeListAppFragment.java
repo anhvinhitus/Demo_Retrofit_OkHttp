@@ -85,6 +85,7 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
                 getString(R.string.check_internet));
         mSwipeRefreshLayout.setSwipeableChildren(R.id.home_rcv_list_app);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.back_ground_blue));
     }
 
     @Override

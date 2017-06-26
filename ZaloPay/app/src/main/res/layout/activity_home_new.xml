@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,20 +11,18 @@
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/tab_main" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/tab_main"
         android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/line_width"
             android:background="#D4D9DA" />
 
         <vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView
@@ -40,4 +38,4 @@
             app:itemTextColor="@color/bottom_nav_icon_color_selector" />
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

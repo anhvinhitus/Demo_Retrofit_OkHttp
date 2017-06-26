@@ -105,6 +105,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
         mPresenter.initWebView(webView);
         refreshLayout.setSwipeableChildren(R.id.webview);
         refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.back_ground_blue));
     }
 
     protected void loadDefaultWebView() {
