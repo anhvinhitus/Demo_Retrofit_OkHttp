@@ -9,12 +9,12 @@ import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeResponse;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
@@ -99,7 +99,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
 
             if (pResponse.needUpdateAppInfo()) {
                 //save app info to cache(id,name,icon...)
-                mSharedPreferences.setApp(String.valueOf(pResponse.info.appid), GsonUtils.toJsonString(pResponse.info));
+                mSharedPreferences.setApp(String.valueOf(pAppId), GsonUtils.toJsonString(pResponse.info));
                 mSharedPreferences.setCheckSumAppChannel(String.valueOf(pAppId), pResponse.appinfochecksum);
                 Log.d(this, "save app info to cache and update new checksum", pResponse.info);
             }

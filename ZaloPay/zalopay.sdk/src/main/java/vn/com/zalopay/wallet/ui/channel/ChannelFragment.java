@@ -345,7 +345,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         if (hasAmount) {
             String order_amount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
             setText(R.id.order_amount_total_txt, order_amount);
-            ((TextView)findViewById(R.id.order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
+            ((TextView) findViewById(R.id.order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
         }
         setVisible(R.id.order_amount_total_linearlayout, hasAmount);
     }
@@ -586,7 +586,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
-    private void renderTransDetail(View viewContainer, String pTransID, AbstractOrder order, String appName, boolean visibleTrans) throws Exception {
+    private void renderTransDetail(View viewContainer, boolean isLink, String pTransID, AbstractOrder order, String appName, boolean visibleTrans) throws Exception {
         //service name
         boolean hasAppName = !TextUtils.isEmpty(appName);
         TextView appname_txt = (TextView) viewContainer.findViewById(R.id.appname_txt);
@@ -618,9 +618,14 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             List<NameValuePair> items = order.parseItems();
             renderDynamicItemDetail(viewContainer, items);
         }
+
+        if (isLink) {
+            setVisible(R.id.appname_result_relativelayout, false);
+            setVisible(R.id.fee_relativelayout, false);
+        }
     }
 
-    public void renderSuccess(String pTransID, UserInfo userInfo, AbstractOrder order, String appName, String descLinkAccount, boolean hideAmount,
+    public void renderSuccess(boolean isLink, String pTransID, UserInfo userInfo, AbstractOrder order, String appName, String descLinkAccount, boolean hideAmount,
                               boolean isTransfer, UserInfo destinationUser, String pToolbarTitle) {
         //transaction amount
         boolean hasAmount = order != null && order.amount_total > 0;
@@ -659,7 +664,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         if (success_trans_detail_stub != null) {
             View trans_detail_view = success_trans_detail_stub.inflate();
             try {
-                renderTransDetail(trans_detail_view, pTransID, order, appName, true);
+                renderTransDetail(trans_detail_view, isLink, pTransID, order, appName, true);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -673,7 +678,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         enableSubmitBtn();
     }
 
-    public void renderFail(String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
+    public void renderFail(boolean isLink, String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
                            boolean visibleTrans, String pToolBarTitle) {
         boolean hasTransFailMessage = !TextUtils.isEmpty(pMessage);
         if (hasTransFailMessage) {
@@ -685,7 +690,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         if (fail_trans_detail_stub != null) {
             View trans_detail_view = fail_trans_detail_stub.inflate();
             try {
-                renderTransDetail(trans_detail_view, pTransID, order, appName, visibleTrans);
+                renderTransDetail(trans_detail_view, isLink, pTransID, order, appName, visibleTrans);
             } catch (Exception e) {
                 Log.e(this, e);
             }

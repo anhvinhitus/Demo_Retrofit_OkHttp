@@ -36,14 +36,7 @@ public class PaymentWebView extends WebView {
     }
 
     protected void init() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setWebContentsDebuggingEnabled(true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
-            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
-        }
-       /* getSettings().setJavaScriptEnabled(true);
+        getSettings().setJavaScriptEnabled(true);
         getSettings().setDomStorageEnabled(true);
         getSettings().setBuiltInZoomControls(false);
         getSettings().setSupportZoom(true);
@@ -52,21 +45,7 @@ public class PaymentWebView extends WebView {
         getSettings().setLoadWithOverviewMode(true);
         getSettings().setLoadsImagesAutomatically(true);
         getSettings().setSavePassword(false);
-        getSettings().setSaveFormData(false);*/
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setSupportMultipleWindows(true);
-        getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        getSettings().setUseWideViewPort(true);
-        getSettings().setLoadWithOverviewMode(true);
-        getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        getSettings().setAllowUniversalAccessFromFileURLs(true);
-        getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        getSettings().setAppCacheEnabled(false);
-        getSettings().setDomStorageEnabled(true);
-
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-
+        getSettings().setSaveFormData(false);
         // set user agent. mobile
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String UA_LOLLIPOP_AND_ABOVE = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";

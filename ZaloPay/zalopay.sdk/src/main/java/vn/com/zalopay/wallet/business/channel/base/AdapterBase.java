@@ -1009,24 +1009,12 @@ public abstract class AdapterBase {
         }
     }
 
-    public boolean shouldGetOneShotTransactionStatus() {
-        return hasTransId();
-    }
-
     public boolean shouldCheckTransactionStatusByClientId() {
         return !hasTransId();
     }
 
     protected boolean hasTransId() {
         return !TextUtils.isEmpty(mTransactionID);
-    }
-
-    /***
-     * get status 1 oneshot to check status again in load website is timeout
-     */
-    public void getOneShotTransactionStatus() {
-        setLoadWebTimeout(true);
-        getStatusStrategy(mTransactionID, false, null);
     }
 
     /**
@@ -1098,7 +1086,8 @@ public abstract class AdapterBase {
         }
         try {
             String title = mPaymentInfoHelper.getFailTitleByTrans(GlobalData.getAppContext());
-            getView().renderFail(message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mResponseStatus, true, title);
+            boolean isLink = mPaymentInfoHelper.isCardLinkTrans();
+            getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mResponseStatus, true, title);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1240,7 +1229,8 @@ public abstract class AdapterBase {
             boolean isTranfer = mPaymentInfoHelper.isMoneyTranferTrans();
             UserInfo destUser = mPaymentInfoHelper.getDestinationUser();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(GlobalData.getAppContext());
-            getView().renderSuccess(mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTranfer, destUser, title);
+            boolean isLink = mPaymentInfoHelper.isCardLinkTrans();
+            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTranfer, destUser, title);
         } catch (Exception e) {
             Log.e(this, e);
         }

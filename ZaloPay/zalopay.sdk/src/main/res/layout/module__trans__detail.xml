@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/appname_relativelayout"
+        android:id="@+id/appname_result_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/sdk_margin_left_right"
@@ -40,6 +40,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/fee_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/sdk_margin_top_bottom"

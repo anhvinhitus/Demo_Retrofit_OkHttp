@@ -215,7 +215,7 @@ public class AdapterLinkAcc extends AdapterBase {
     };
 
     public AdapterLinkAcc(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
-        super(SCREEN_LINK_ACC,pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
+        super(SCREEN_LINK_ACC, pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
     }
 
     private String getDescLinkAccount() {
@@ -425,7 +425,7 @@ public class AdapterLinkAcc extends AdapterBase {
             getView().renderByResource(mPageName);
             String descLink = getDescLinkAccount();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            getView().renderSuccess(mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, GlobalData.getAppContext().getString(R.string.sdk_link_acc_success_title));
+            getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, GlobalData.getAppContext().getString(R.string.sdk_link_acc_success_title));
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
@@ -452,7 +452,7 @@ public class AdapterLinkAcc extends AdapterBase {
             mPageName = PAGE_LINKACC_FAIL;
             mWebViewProcessor.stop();//stop loading website
             getView().renderByResource(mPageName);
-            getView().renderFail(pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
                     mResponseStatus, true, GlobalData.getAppContext().getString(R.string.sdk_link_acc_fail_title));
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
@@ -473,7 +473,7 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
         getView().renderByResource(mPageName);
-        getView().renderSuccess(mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service),
+        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service),
                 getDescLinkAccount(), true, false, null, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_success_title));
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
@@ -495,7 +495,7 @@ public class AdapterLinkAcc extends AdapterBase {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
-            getView().renderFail(pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_fail_title));
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_fail_title));
             if (GlobalData.shouldNativeWebFlow()) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
