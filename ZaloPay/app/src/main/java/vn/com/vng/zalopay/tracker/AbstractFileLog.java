@@ -48,7 +48,7 @@ abstract class AbstractFileLog {
 
     AbstractFileLog() {
         mDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        mDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
+        mDateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.getDefault());
     }
 
     void append(AbstractLogData logData) {

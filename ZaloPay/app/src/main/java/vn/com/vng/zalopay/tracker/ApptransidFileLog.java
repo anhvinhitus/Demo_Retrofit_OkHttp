@@ -28,7 +28,7 @@ class ApptransidFileLog {
 
     private ApptransidFileLog() {
         mDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        mDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
+        mDateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.getDefault());
     }
 
     String append(ApptransidLogData logData) {

@@ -43,7 +43,7 @@ final class FileLog {
 
     private FileLog() {
         mDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        mDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
+        mDateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.getDefault());
     }
 
     void append(LogData logData) {
