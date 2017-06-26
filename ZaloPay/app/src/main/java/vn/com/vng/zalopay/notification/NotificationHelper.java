@@ -35,6 +35,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -224,7 +225,27 @@ public class NotificationHelper {
     }
 
     private boolean skipStorage(NotificationData notify) {
-        return notify.area == AREA_SKIP;
+        boolean skipStorage = notify.area == AREA_SKIP;
+
+        if (notify.notificationtype != NotificationType.APP_P2P_NOTIFICATION) {
+            return skipStorage;
+        }
+
+        JsonObject embeddata = notify.getEmbeddata();
+
+        if (embeddata == null || !embeddata.has("type")) {
+            return skipStorage;
+        }
+
+        try {
+            int type = embeddata.get("type").getAsInt();
+            if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+                skipStorage = false;
+            }
+        } catch (Exception ignore) {
+        }
+
+        return skipStorage;
     }
 
     void processImmediateNotification(NotificationData notify) {
