@@ -1,2 +1,16 @@
-Zalo Pay (Staging v2.14.0 - build 283) - Released on 2017-06-26 09:59
-
+Zalo Pay (Staging v2.14.0 - build 284) - Released on 2017-06-26 14:23
++ [SDK] Update màn hình kết quả liên kết (bỏ row dịch vụ và phí) by vo van chuc (#6a90b0e)
++ [Analytics] Change format time by hieuvm (#5a2f8f8)
++ [WebApp] Edit header toolbar background by datnt10 (#45ab57f)
++ [App] Remove unused code by hieuvm (#05d2808)
++ [SDK] Fix lỗi submit card number by vo van chuc (#0aec28b)
++ [App] Update redirect_url -> webredirecturl trong appinfo by vo van chuc (#2b08261)
++ [SDK] Update redirect_url -> webredirecturl trong appinfo by vo van chuc (#7e8cc0e)
++ [App] Home: fix UI by datnt10 (#f926db9)
++ [SDK] task#620 Bug UI build 277  -  UI kết quả: Phần số Mã giao dịch bỏ bold by vo van chuc (#c349fab)
++ [SDK] Remove hardcode test by vo van chuc (#f2ce45e)
++ [ZaloIntegration] init network for sdk. by hieuvm (#185b4d4)
++ [SDK] Bỏ chữ NGÀY PHÁT HÀNH và  TÊN CHỦ THẺ khi nhập thông tin để liên kết thẻ task#620 by lytm (#9d6fdcd)
++ [App] Fix ui list app by hieuvm (#f403af8)
++ [App] Refresh app when load font success by hieuvm (#34b69e4)
++ [ZPDK] Task#593: open default browser by hieuvm (#b3ef46d)
