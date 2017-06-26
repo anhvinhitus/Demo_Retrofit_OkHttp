@@ -698,15 +698,13 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         // The inform text would be set from server
         if (statusResponse != null) {
             //message action
-            boolean hasSuggestActionMessage = !TextUtils.isEmpty(statusResponse.getSuggestMessage());
+            boolean hasSuggestActionMessage = !TextUtils.isEmpty(statusResponse.suggestmessage);
             if (hasSuggestActionMessage) {
-                setText(R.id.sdk_sugguest_action_message_textview, statusResponse.getSuggestMessage());
+                setText(R.id.sdk_sugguest_action_message_textview, statusResponse.suggestmessage);
             }
             setVisible(R.id.sdk_sugguest_action_message_textview, hasSuggestActionMessage);
-            if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
-                setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
-            } else {
-                setVisible(R.id.zpw_payment_fail_rl_support, true);
+            if (statusResponse.hasSuggestAction()) {
+                setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
             }
         }
         ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
@@ -747,22 +745,19 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         RelativeLayout.LayoutParams pSupport = (RelativeLayout.LayoutParams) rlSupport.getLayoutParams();
 
         if (Arrays.equals(ESuggestActionType.UPDATE_INFO_DISPLAY.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
             setVisible(R.id.zpw_payment_fail_rl_support, false);
-
+            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
         } else if (Arrays.equals(ESuggestActionType.SUPPORT_DISPLAY.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_update_info, false);
             setVisible(R.id.zpw_payment_fail_rl_support, true);
-
+            setVisible(R.id.zpw_payment_fail_rl_update_info, false);
         } else if (Arrays.equals(ESuggestActionType.UPDATE_INFO_ABOVE.getValue(), suggestActions)) {
             setVisible(R.id.zpw_payment_fail_rl_update_info, true);
             setVisible(R.id.zpw_payment_fail_rl_support, true);
             pSupport.addRule(RelativeLayout.BELOW, rlUpdateInfo.getId());
             rlSupport.setLayoutParams(pSupport);
-
         } else if (Arrays.equals(ESuggestActionType.SUPPORT_ABOVE.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
             setVisible(R.id.zpw_payment_fail_rl_support, true);
+            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
             pUpdateInfo.addRule(RelativeLayout.BELOW, rlSupport.getId());
             rlUpdateInfo.setLayoutParams(pUpdateInfo);
         }

@@ -20,6 +20,8 @@ public class StatusResponse extends BaseResponse implements Parcelable {
     public boolean isprocessing = false;
     public String data = null;
     public String zptransid;
+    public String suggestmessage = null;
+    public int[] suggestaction = null;
 
     public StatusResponse() {
         data = null;
@@ -27,7 +29,7 @@ public class StatusResponse extends BaseResponse implements Parcelable {
         isprocessing = false;
         returncode = -1;
         returnmessage = null;
-        suggestactions = null;
+        suggestaction = null;
     }
 
     public StatusResponse(DAtmScriptOutput pScriptOutput) {
@@ -54,7 +56,11 @@ public class StatusResponse extends BaseResponse implements Parcelable {
         returnmessage = in.readString();
         accesstoken = in.readString();
         suggestmessage = in.readString();
-        suggestactions = in.createIntArray();
+        suggestaction = in.createIntArray();
+    }
+
+    public boolean hasSuggestAction() {
+        return suggestaction != null && suggestaction.length >= 1;
     }
 
     @Override
@@ -71,6 +77,6 @@ public class StatusResponse extends BaseResponse implements Parcelable {
         parcel.writeString(returnmessage);
         parcel.writeString(accesstoken);
         parcel.writeString(suggestmessage);
-        parcel.writeIntArray(suggestactions);
+        parcel.writeIntArray(suggestaction);
     }
 }

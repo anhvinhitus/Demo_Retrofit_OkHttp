@@ -60,8 +60,8 @@
 
     <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch!</string>
 
-    <string name="sdk_fail_trans_status">Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
-    <string name="sdk_fail_trans_status_link">Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
+    <string name="sdk_fail_trans_status">Giao dịch đang xử lý. Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
+    <string name="sdk_fail_trans_status_link">Liên kết đang xử lý. Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
 
     <string name="zingpaysdk_alert_no_connection">Không có kết nối internet.\nVui lòng kiểm tra kết nối mạng!</string>
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
@@ -88,7 +88,7 @@
 
     <string name="zpw_alert_network_error_getappinfo">Mạng không ổn định, không kiểm tra được thông tin.\nVui lòng kiểm tra lại kết nối mạng</string>
 
-    <string name="zpw_alert_networking_error_check_status">Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
+    <string name="zpw_alert_networking_error_check_status">Giao dịch đang xử lý. Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
 
     <string name="zpw_alert_process_error">Lỗi xử lý dữ liệu.Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
 
