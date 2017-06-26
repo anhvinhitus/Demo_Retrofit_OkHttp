@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -77,9 +78,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Inject
     ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
-                         EventBus eventBus,
-                         AppResourceStore.Repository appResourceRepository,
-                         Navigator navigator) {
+                     EventBus eventBus,
+                     AppResourceStore.Repository appResourceRepository,
+                     Navigator navigator) {
         this.mMerchantRepository = mMerchantRepository;
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
@@ -262,7 +263,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
     private void unregisterEvent() {
-        mEventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
     }
 
     /*
@@ -321,4 +324,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
     }
 
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        if (mView != null) {
+            mView.refreshApps();
+        }
+    }
 }

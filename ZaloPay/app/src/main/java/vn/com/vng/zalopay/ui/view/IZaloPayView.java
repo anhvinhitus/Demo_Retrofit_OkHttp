@@ -30,4 +30,6 @@ public interface IZaloPayView {
     void hideLoading();
 
     void setRefreshing(boolean val);
+
+    void refreshApps();
 }
