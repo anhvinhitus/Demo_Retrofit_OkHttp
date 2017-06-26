@@ -36,12 +36,11 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by hieuvm on 6/10/17.
  * *
  */
-class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
+class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
 
-
-    private PassportRepository mPassportRepository;
-    private EventBus mEventBus;
-    private Context mApplicationContext;
+    private final PassportRepository mPassportRepository;
+    private final EventBus mEventBus;
+    private final Context mApplicationContext;
 
     @Inject
     OnboardingPresenter(PassportRepository passportRepository, EventBus eventBus, Context applicationContext) {
@@ -160,20 +159,10 @@ class OnboardingPresenter extends AbstractPresenter<IOnboardingView> {
         }
     }
 
-    private void onAuthenticated(User user) {
-        Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
-        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
-        AndroidApplication.instance().createUserComponent(user);
 
-        if (mView == null) {
-            return;
-        }
-
-        hideLoadingView();
-        mView.showIncorrectOtp("");
-        mView.gotoHomePage();
-        mView.finish();
-
+    protected void onAuthenticated(User user) {
+        super.onAuthenticated(user);
+      //  mView.showIncorrectOtp("");
     }
 
     private void onAuthenticationError(Throwable e) {

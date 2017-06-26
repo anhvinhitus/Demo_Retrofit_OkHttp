@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.navigation;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -158,8 +160,19 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startOnboarding(Context context, ZaloProfile zaloProfile, String oauthtoken) {
+    public void startOnboarding(Activity context, ZaloProfile zaloProfile, String oauthtoken) {
+        Intent loginIntent = context.getIntent();
+
         Intent intent = new Intent(context, OnboardingActivity.class);
+
+        if (loginIntent.getData() != null) {
+            intent.setData(loginIntent.getData());
+        }
+
+        if (loginIntent.getExtras() != null) {
+            intent.putExtras(loginIntent.getExtras());
+        }
+
         intent.putExtra(ARGUMENT_KEY_ZALOPROFILE, zaloProfile);
         intent.putExtra(ARGUMENT_KEY_OAUTHTOKEN, oauthtoken);
         context.startActivity(intent);
@@ -960,6 +973,34 @@ public class Navigator implements INavigator {
             showPinDialog(context, intentProtectAccountActivity(context), false);
         } else {
             startProtectAccount(context);
+        }
+    }
+
+    public void startChrome(Context context, String url) {
+
+        Uri uri = Uri.parse("googlechrome://navigate?url=" + url);
+        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(i);
+        } catch (ActivityNotFoundException ignore) {
+        }
+    }
+
+    public void startFirefox(Context context, String url) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setPackage("org.mozilla.firefox");
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+            return;
+        }
+
+        intent.setPackage("org.mozilla.firefox_beta");
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
         }
     }
 }

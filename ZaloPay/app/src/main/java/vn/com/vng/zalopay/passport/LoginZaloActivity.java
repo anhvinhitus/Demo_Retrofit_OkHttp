@@ -15,10 +15,7 @@ import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
 import javax.inject.Inject;
 
@@ -41,7 +38,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @Inject
-    LoginPresenter loginPresenter;
+    LoginPresenter mLoginPresenter;
 
     @Inject
     GlobalEventHandlingService mGlobalEventService;
@@ -50,37 +47,22 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Timber.d("onCreate taskid %s", getTaskId());
+
         restarted = savedInstanceState != null;
-        loginPresenter.attachView(this);
-        loginPresenter.fetchAppResource();
-        handleIntent(getIntent());
-    }
-
-    public void handleIntent(Intent data) {
-        if (data == null) {
-            return;
-        }
-
-        boolean callFrom = data.getBooleanExtra("callingExternal", false);
-        Timber.d("handleIntent: %s", callFrom);
-        loginPresenter.setCallingExternal(callFrom);
+        mLoginPresenter.attachView(this);
+        mLoginPresenter.fetchAppResource();
+        mLoginPresenter.handleIntent(getIntent());
     }
 
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-
-        handleIntent(intent);
+        mLoginPresenter.handleIntent(intent);
     }
 
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin() {
-        if (AppVersionUtils.showDialogForceUpgradeApp(this)) {
-            return;
-        }
-        loginPresenter.loginZalo(this);
-        ZPAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
+        mLoginPresenter.loginZalo(this);
     }
 
     public void onResume() {
@@ -91,35 +73,26 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         }
 
         restarted = true;
-        loginPresenter.resume();
+        mLoginPresenter.resume();
     }
 
     public void onPause() {
         super.onPause();
-        loginPresenter.pause();
+        mLoginPresenter.pause();
     }
 
     public void onDestroy() {
         destroyErrorDialog();
-        loginPresenter.destroy();
+        mLoginPresenter.destroy();
         hideLoading();
         mProgressDialog = null;
         super.onDestroy();
     }
 
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult requestCode %s resultCode %s", requestCode, resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-        loginPresenter.onActivityResult(this, requestCode, resultCode, data);
-    }
-
-    public void gotoMainActivity() {
-        navigator.startHomeActivity(this);
-        finish();
+        mLoginPresenter.onActivityResult(this, requestCode, resultCode, data);
     }
 
     public void gotoInvitationCode() {
@@ -153,10 +126,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         mErrorDialog.show();
     }
 
-    public void showNetworkError() {
-        DialogHelper.showNetworkErrorDialog(getActivity(), null);
-    }
-
     public void destroyErrorDialog() {
         if (mErrorDialog != null && mErrorDialog.isShowing()) {
             mErrorDialog.dismiss();
@@ -180,8 +149,14 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
                 message.messageType, null);
     }
 
+    @Override
     public void gotoOnboarding(ZaloProfile zaloProfile, String oauthcode) {
         navigator.startOnboarding(this, zaloProfile, oauthcode);
         finish();
+    }
+
+    @Override
+    public void gotoHomePage() {
+        navigator.startHomeActivity(this);
     }
 }

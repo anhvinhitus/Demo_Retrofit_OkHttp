@@ -15,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -22,7 +23,6 @@ import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
@@ -38,26 +38,22 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
     private static final int LOGIN_REQUEST_CODE = 100;
 
-    private UserConfig mUserConfig;
+    private final UserConfig mUserConfig;
+    private final ApplicationState mApplicationState;
+    private final EventBus mEventBus;
+    private final Navigator mNavigator;
+    private final Context mApplicationContext;
 
-    private ApplicationState mApplicationState;
-
-    private EventBus mEventBus;
-
-    private Navigator mNavigator;
-    private Context mApplicationContext;
-
-    private ApplicationSession mApplicationSession;
+    private HandleInAppPayment mHandleInAppPayment;
 
     @Inject
-    public ExternalCallSplashScreenPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
-                                             EventBus eventBus, Navigator navigator, ApplicationSession applicationSession) {
+    ExternalCallSplashScreenPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
+                                      EventBus eventBus, Navigator navigator) {
         this.mUserConfig = userConfig;
         this.mApplicationState = applicationState;
         this.mEventBus = eventBus;
         this.mNavigator = navigator;
         this.mApplicationContext = context;
-        this.mApplicationSession = applicationSession;
     }
 
     @Override
@@ -71,7 +67,17 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     @Override
     public void pause() {
         super.pause();
-        mEventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
+    }
+
+    @Override
+    public void detachView() {
+        if (mHandleInAppPayment != null) {
+            mHandleInAppPayment.cleanUp();
+        }
+        super.detachView();
     }
 
     public void handleIntent(Intent intent) {
@@ -92,7 +98,8 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == LOGIN_REQUEST_CODE) {
-                handleAppToAppPayment(data.getData());
+                handleDeepLink(data.getData());
+                return;
             }
         }
 
@@ -134,11 +141,17 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 handleAppToAppPayment(data);
             } else if (host.equalsIgnoreCase("otp")) {
                 handleOTPDeepLink(data);
+            } else if (host.equalsIgnoreCase("pay")) {
+                handleWebToApp(data);
             } else {
                 navigateToApp();
             }
 
         }
+    }
+
+    private void handleWebToApp(Uri data) {
+        payOrder(data);
     }
 
     private boolean handleOTPDeepLink(Uri data) {
@@ -184,8 +197,8 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     private void pay(Uri data) {
         Timber.d("pay with uri [%s] isAppToApp [%s]", data);
 
-        String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
-        String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
+        String appid = data.getQueryParameter(Constants.APPID);
+        String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
 
         if (!validateOrderParams(appid, zptranstoken)) {
             finish();
@@ -198,6 +211,10 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     }
 
     private void handleAppToAppPayment(Uri data) {
+        payOrder(data);
+    }
+
+    private void payOrder(Uri data) {
 
         if (data == null) {
             Timber.d("URI data is null");
@@ -206,39 +223,21 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
         Timber.d("handle uri %s", data.toString());
 
-        String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
-        String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
+        String appid = data.getQueryParameter(Constants.APPID);
+        String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
+        String source = data.getQueryParameter("source");
+        String browser = data.getQueryParameter("browser");
 
         boolean shouldFinishCurrentActivity = true;
         try {
 
-            if (!validateOrderParams(appid, zptranstoken)) {
+            int codePreProcess = prepareIntegration(data, appid, zptranstoken);
+            if (codePreProcess != PrepareIntegration.SUCCESS) {
+                shouldFinishCurrentActivity = codePreProcess == PrepareIntegration.ERROR_AND_FINISH;
                 return;
             }
 
-            if (mView == null) {
-                Timber.d("mView is null");
-                return;
-            }
-
-            if (shouldSignIn((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data)) {
-                shouldFinishCurrentActivity = false;
-                return;
-            }
-
-            if (insidePaymentOrder(mView.getContext())) {
-                shouldFinishCurrentActivity = false;
-                return;
-            }
-
-            HandleInAppPayment payment = new HandleInAppPayment((Activity) mView.getContext());
-            payment.initialize();
-            if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
-                Timber.d("need load payment sdk");
-                payment.loadPaymentSdk();
-            }
-
-            payment.start(Long.parseLong(appid), zptranstoken);
+            makePayment(Long.valueOf(appid), zptranstoken, source, browser);
             shouldFinishCurrentActivity = false;
         } finally {
             Timber.d("should finish current activity [%s] ", shouldFinishCurrentActivity);
@@ -246,6 +245,17 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 finish();
             }
         }
+    }
+
+    private void makePayment(long appid, String zptranstoken, String source, String browser) {
+        mHandleInAppPayment = new HandleInAppPayment((Activity) mView.getContext());
+        mHandleInAppPayment.initialize();
+        if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+            Timber.d("need load payment sdk");
+            mHandleInAppPayment.loadPaymentSdk();
+        }
+
+        mHandleInAppPayment.doPay(appid, zptranstoken, source, browser);
     }
 
     private void finish() {
@@ -323,6 +333,35 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 });
 
         return true;
+    }
+
+
+    private int prepareIntegration(Uri data, String appid, String zptranstoken) {
+
+        if (!validateOrderParams(appid, zptranstoken)) {
+            return PrepareIntegration.ERROR_AND_FINISH;
+        }
+
+        if (mView == null) {
+            Timber.d("mView is null");
+            return PrepareIntegration.ERROR_AND_FINISH;
+        }
+
+        if (shouldSignIn((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data)) {
+            return PrepareIntegration.ERROR;
+        }
+
+        if (insidePaymentOrder(mView.getContext())) {
+            return PrepareIntegration.ERROR;
+        }
+
+        return PrepareIntegration.SUCCESS;
+    }
+
+    private interface PrepareIntegration {
+        int SUCCESS = 1;
+        int ERROR_AND_FINISH = 0;
+        int ERROR = -1;
     }
 
 }

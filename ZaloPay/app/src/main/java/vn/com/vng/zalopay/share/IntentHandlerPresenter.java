@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
@@ -40,16 +41,12 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
     private static final int ZALO_INTEGRATION_LOGIN_REQUEST_CODE = 101;
 
-    private UserConfig mUserConfig;
-
-    private ApplicationState mApplicationState;
-
-    private EventBus mEventBus;
-
-    private Navigator mNavigator;
-    private Context mApplicationContext;
-
-    private ApplicationSession mApplicationSession;
+    private final UserConfig mUserConfig;
+    private final ApplicationState mApplicationState;
+    private final EventBus mEventBus;
+    private final Navigator mNavigator;
+    private final Context mApplicationContext;
+    private final ApplicationSession mApplicationSession;
 
     @Inject
     IntentHandlerPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
@@ -72,8 +69,11 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
     @Override
     public void pause() {
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
+
         super.pause();
-        mEventBus.unregister(this);
     }
 
     void handleIntent(Intent intent) {
@@ -166,10 +166,12 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
             Activity activity = (Activity) mView.getContext();
             if (activity.isTaskRoot()) {
-                startHomeActivity(activity, false);
+                startHomeActivity(activity, false, false);
             } else {
                 if (AppLifeCycle.isLastActivity(HomeActivity.class.getSimpleName())) {
-                    startHomeActivity(activity, true);
+                    startHomeActivity(activity, true, false);
+                } else if (AppLifeCycle.isLastActivity(LoginZaloActivity.class.getSimpleName())) {
+                    startHomeActivity(activity, true, true);
                 }
             }
 
@@ -180,8 +182,8 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         }
     }
 
-    private void startHomeActivity(Activity activity, boolean singleTop) {
-        Intent homeIntent = mNavigator.intentHomeActivity(activity, false);
+    private void startHomeActivity(Activity activity, boolean singleTop, boolean clearTop) {
+        Intent homeIntent = mNavigator.intentHomeActivity(activity, clearTop);
         if (singleTop) {
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         }

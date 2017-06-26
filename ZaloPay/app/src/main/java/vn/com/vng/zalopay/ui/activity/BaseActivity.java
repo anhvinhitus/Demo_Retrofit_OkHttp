@@ -199,10 +199,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ToastUtil.showToast(this, message);
     }
 
-    public void showToastLonger(String message) {
-        ToastUtil.showToast(this, message, Toast.LENGTH_LONG);
-    }
-
     public void showToast(int message) {
         ToastUtil.showToast(this, message);
     }

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.passport;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -142,6 +143,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mPresenter.handleIntent(getActivity().getIntent());
         setProfile(mProfile);
 
         mInputPwdView.setEnteredListener(new InputPasswordListener());
@@ -276,7 +278,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
             if (pinCode.equals(mInputPwdView.getInputText())) {
                 nextPage();
             } else {
-                //mReInputPwdView.showPrimaryButton(true)
                 mReInputPwdView.setError(getString(R.string.password_not_match), true);
             }
         }
@@ -517,5 +518,12 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(View.inflate(getContext(), R.layout.layout_onboarding_toast, null));
         toast.show();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (mPresenter != null) {
+            mPresenter.handleIntent(intent);
+        }
     }
 }

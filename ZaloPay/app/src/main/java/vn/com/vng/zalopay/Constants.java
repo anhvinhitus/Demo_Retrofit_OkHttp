@@ -5,6 +5,10 @@ package vn.com.vng.zalopay;
  * *
  */
 public interface Constants {
+
+    String ZPTRANSTOKEN = "zptranstoken";
+    String APPID = "appid";
+
     int CONNECTION_POOL_DOWNLOAD_COUNT = 1;
     int CONNECTION_KEEP_ALIVE_DOWNLOAD_DURATION = 5;
     int CONNECTION_POOL_COUNT = 5;

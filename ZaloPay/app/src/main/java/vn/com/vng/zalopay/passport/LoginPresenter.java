@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -49,7 +50,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * *
  */
 
-public class LoginPresenter extends AbstractPresenter<ILoginView> implements LoginListener.ILoginZaloListener {
+public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implements LoginListener.ILoginZaloListener {
 
     private final UserConfig mUserConfig;
     private final PassportRepository mPassportRepository;
@@ -80,10 +81,13 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
 
         Timber.d("resume has current user [%s]", mUserConfig.hasCurrentUser());
         UserComponent userComponent = ((AndroidApplication) mApplicationContext).getUserComponent();
-        if (mUserConfig.hasCurrentUser() && userComponent != null) {
-            Timber.d("go to home screen ignore login screen");
-            gotoHomeScreen();
+        if (userComponent == null) {
+            return;
         }
+
+        Timber.d("go to home screen ignore login screen");
+        mView.gotoHomePage();
+        mView.finish();
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -95,11 +99,12 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
 
     }
 
-    void setCallingExternal(Boolean isCallingExternal) {
-        mIsCallingExternal = isCallingExternal;
-    }
-
     void loginZalo(Activity activity) {
+        ZPAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
+
+        if (AppVersionUtils.showDialogForceUpgradeApp((Activity) mView.getContext())) {
+            return;
+        }
 
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             showNetworkError();
@@ -120,7 +125,6 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
 
     private boolean loginCallingExternal(Activity activity) {
         Intent intent = activity.getIntent();
-
 
         long zaloId = intent.getLongExtra("zaloid", 0);
         String zaloOAuthCode = intent.getStringExtra("zauthcode");
@@ -206,13 +210,7 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
 
     private void showNetworkError() {
         if (mView != null) {
-            mView.showNetworkError();
-        }
-    }
-
-    private void gotoHomeScreen() {
-        if (mView != null) {
-            mView.gotoMainActivity();
+            mView.showNetworkErrorDialog();
         }
     }
 
@@ -249,29 +247,11 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
         }
 
         public void onNext(User user) {
-            Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
             onAuthenticated(user);
         }
 
         public void onError(Throwable e) {
             onAuthenticationError(e, profile, oauthcode);
-        }
-    }
-
-    private void onAuthenticated(User user) {
-        if (mView == null) {
-            Timber.w("View login screen is NULL");
-            return;
-        }
-
-        Timber.d("login success [accesstoken: %s zalopayid: %s]", user.accesstoken, user.zaloPayId);
-        AndroidApplication.instance().createUserComponent(user);
-
-        if (mIsCallingExternal) {
-            sendResultSuccess(mView.getActivity());
-        } else {
-            gotoHomeScreen();
-            ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
         }
     }
 
@@ -299,33 +279,6 @@ public class LoginPresenter extends AbstractPresenter<ILoginView> implements Log
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
-    }
-
-    private void sendResultSuccess(Activity activity) {
-        Intent oldIntent = activity.getIntent();
-        if (oldIntent == null) {
-            activity.finish();
-            return;
-        }
-
-        Intent intent = new Intent();
-        if (oldIntent.getData() != null) {
-            intent.setData(oldIntent.getData());
-        }
-
-        try {
-            PendingIntent pi = oldIntent.getParcelableExtra("pendingResult");
-            if (pi != null) {
-                pi.send(activity, Activity.RESULT_OK, intent);
-            } else {
-                activity.setResult(Activity.RESULT_OK, intent);
-            }
-        } catch (Exception e) {
-            Timber.d(e);
-        } finally {
-            activity.finish();
-        }
-
     }
 
     void fetchAppResource() {
