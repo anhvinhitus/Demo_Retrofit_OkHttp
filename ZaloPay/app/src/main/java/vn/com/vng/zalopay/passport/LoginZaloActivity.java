@@ -159,4 +159,10 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void gotoHomePage() {
         navigator.startHomeActivity(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mLoginPresenter.sendResultToCallingExternal(this, RESULT_CANCELED);
+    }
 }

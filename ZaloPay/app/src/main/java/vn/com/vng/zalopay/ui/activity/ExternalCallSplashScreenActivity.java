@@ -45,10 +45,9 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
         super.onCreate(savedInstanceState);
 
         restarted = savedInstanceState != null;
-        initializeCallingPackage(this);
+        callingPackage = getCallingPackage();
         mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
-
 
     }
 
@@ -82,13 +81,5 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
             finish();
         }
         restarted = true;
-    }
-
-    private void initializeCallingPackage(final Activity activity) {
-        ComponentName componentName = activity.getCallingActivity();
-        if (componentName == null) {
-            return;
-        }
-        callingPackage = componentName.getPackageName();
     }
 }

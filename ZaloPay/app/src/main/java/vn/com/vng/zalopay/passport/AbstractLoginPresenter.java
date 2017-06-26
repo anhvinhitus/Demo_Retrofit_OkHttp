@@ -23,7 +23,7 @@ class AbstractLoginPresenter<View extends AbstractLoginView> extends AbstractPre
 
     private boolean mIsCallingExternal = false;
 
-    void sendResultSuccess(Activity activity) {
+    private void sendResult(Activity activity, int result) {
         Intent oldIntent = activity.getIntent();
         if (oldIntent == null) {
             activity.finish();
@@ -38,9 +38,9 @@ class AbstractLoginPresenter<View extends AbstractLoginView> extends AbstractPre
         try {
             PendingIntent pi = oldIntent.getParcelableExtra("pendingResult");
             if (pi != null) {
-                pi.send(activity, Activity.RESULT_OK, intent);
+                pi.send(activity, result, intent);
             } else {
-                activity.setResult(Activity.RESULT_OK, intent);
+                activity.setResult(result, intent);
             }
         } catch (Exception e) {
             Timber.d(e);
@@ -48,6 +48,14 @@ class AbstractLoginPresenter<View extends AbstractLoginView> extends AbstractPre
             activity.finish();
         }
 
+    }
+
+    void sendResultToCallingExternal(Activity activity, int result) {
+        if (!mIsCallingExternal) {
+            return;
+        }
+
+        sendResult(activity, result);
     }
 
     void onAuthenticated(User user) {
@@ -61,7 +69,7 @@ class AbstractLoginPresenter<View extends AbstractLoginView> extends AbstractPre
         AndroidApplication.instance().createUserComponent(user);
 
         if (mIsCallingExternal) {
-            sendResultSuccess((Activity) mView.getContext());
+            sendResult((Activity) mView.getContext(), Activity.RESULT_OK);
             return;
         }
 
