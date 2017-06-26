@@ -19,6 +19,7 @@ import rx.functions.Action1;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.FingerprintUtils;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -402,10 +403,11 @@ public class PayProxy extends SingletonBase {
                 return;
             }
             Log.d(this, "start submit order");
+            int channelId = mPaymentInfoHelper.isWithDrawTrans() ? BuildConfig.channel_zalopay : mChannel.pmcid;
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
             Subscription subscription =
-                    ((SubmitOrder) mRequestApi).channelId(mChannel.pmcid)
+                    ((SubmitOrder) mRequestApi).channelId(channelId)
                             .order(mPaymentInfoHelper.getOrder())
                             .password(pHashPassword)
                             .chargeInfo(chargeInfo)
