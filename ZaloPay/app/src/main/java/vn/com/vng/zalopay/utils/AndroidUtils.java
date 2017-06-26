@@ -353,23 +353,20 @@ public class AndroidUtils {
     }
 
     public static void openBrowser(Context context, String url) {
-        Timber.tag("AndroidUtils").d("openBrowser============url:" + url);
-        if (context == null)
+        if (context == null) {
             return;
-        if (TextUtils.isEmpty(url))
+        }
+        
+        if (TextUtils.isEmpty(url)) {
             return;
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);
-            } else {
-                Timber.tag("AndroidUtils").d("Show toast khong the tim thay browser");
-                ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
-            }
-        } catch (Exception ex) {
-            Timber.e(ex, "openBrowser exception [%s]", ex.getMessage());
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
             ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
         }
     }

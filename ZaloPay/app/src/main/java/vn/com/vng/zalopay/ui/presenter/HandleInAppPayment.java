@@ -77,7 +77,7 @@ public class HandleInAppPayment {
             userComponent.inject(this);
             SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
         }
-        
+
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper();
         }
@@ -207,7 +207,7 @@ public class HandleInAppPayment {
         } else if ("firefox".equalsIgnoreCase(browser)) {
             mNavigator.startFirefox(context, redirectUrl);
         } else {
-            Timber.d("Browser is undefine");
+            mNavigator.startBrowser(context, redirectUrl);
         }
     }
 

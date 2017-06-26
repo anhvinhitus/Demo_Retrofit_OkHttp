@@ -1003,4 +1003,8 @@ public class Navigator implements INavigator {
             context.startActivity(intent);
         }
     }
+
+    public void startBrowser(Context context, String url) {
+        AndroidUtils.openBrowser(context,url);
+    }
 }
