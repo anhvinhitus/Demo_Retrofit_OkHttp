@@ -13,10 +13,11 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 /***
  * get transaction status class
@@ -24,13 +25,15 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 public class GetStatus extends BaseTask<StatusResponse> {
     protected static CountDownTimer mTimer;//coundown timer to retry get status
     protected long mAppId;
+    @TransactionType
+    int transtype;
     private String mTransID;
     private boolean mIsNeedToCheckDataInResponse;
     private AdapterBase mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
     private int mRetryCount = 1;
-    private PaymentInfoHelper paymentInfoHelper;
+    private UserInfo userInfo;
 
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -38,7 +41,8 @@ public class GetStatus extends BaseTask<StatusResponse> {
         this.mIsNeedToCheckDataInResponse = pIsCheckData;
         this.mAdapter = pAdapter;
         this.mMessage = pMessage;
-        paymentInfoHelper = this.mAdapter.getPaymentInfoHelper();
+        this.transtype = mAdapter.getPaymentInfoHelper().getTranstype();
+        this.userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
         initTimer();
     }
 
@@ -89,7 +93,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         if (mRetryCount == Constants.MAX_RETRY_GETSTATUS) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
+            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
             return;
         }
 
@@ -97,7 +101,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
-                    onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
+                    onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
                 }
 
                 @Override
@@ -108,7 +112,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             });
         } catch (Exception e) {
             Log.e(this, e);
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()))));
+            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
         }
     }
 
@@ -169,7 +173,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         if (mAdapter.isLoadWebTimeout() && pResponse.isprocessing) {
             pResponse.isprocessing = false;
             pResponse.returncode = -1;
-            pResponse.returnmessage = GlobalData.getStringResource(GlobalData.getTransProcessingMessage(paymentInfoHelper.getTranstype()));
+            pResponse.returnmessage = GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype));
 
             mAdapter.setLoadWebTimeout(false);
             cancelTimer();
@@ -226,7 +230,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
-            GetStatusShare.shared().onPrepareParamsGetStatus(String.valueOf(mAppId), mDataParams, paymentInfoHelper.getUserInfo(), mTransID);
+            GetStatusShare.shared().onPrepareParamsGetStatus(String.valueOf(mAppId), mDataParams, mUserInfo, mTransID);
             return true;
         } catch (Exception e) {
             Log.e(this, e);
