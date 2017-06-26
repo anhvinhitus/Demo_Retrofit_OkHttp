@@ -599,7 +599,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         TextView transaction_id_txt = (TextView) viewContainer.findViewById(R.id.transaction_id_txt);
         if (hasTransId) {
             transaction_id_txt.setText(pTransID);
-            applyFont(transaction_id_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
         } else {
             transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_label));
         }
