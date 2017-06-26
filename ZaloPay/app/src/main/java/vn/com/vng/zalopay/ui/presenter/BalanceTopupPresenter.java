@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -25,10 +24,12 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -116,25 +117,6 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         paymentWrapper.setShowNotificationLinkCard(showNotificationLinkCard);
     }
 
-    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        @Override
-        public void onNext(Order order) {
-            Timber.d("Create order for WalletTopup success: %s", order);
-            BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            BalanceTopupPresenter.this.onCreateWalletOrderError(e);
-        }
-    }
-
     private void onCreateWalletOrderError(Throwable e) {
         Timber.d(e, "Create wallet order error");
         hideLoading();
@@ -159,7 +141,34 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         createWalletOrder(amount);
     }
 
+    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+        @Override
+        public void onNext(Order order) {
+            Timber.d("Create order for WalletTopup success: %s", order);
+            BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            BalanceTopupPresenter.this.onCreateWalletOrderError(e);
+        }
+    }
+
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        @Override
+        public void onResponseError(PaymentError status) {
+            super.onResponseError(status);
+            if (status.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
+                closeTopup();
+            }
+        }
+
         @Override
         protected ILoadDataView getView() {
             return mView;
@@ -180,6 +189,14 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 return;
             }
             mEventBus.postSticky(new TokenPaymentExpiredEvent());
+        }
+
+        private void closeTopup() {
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            mView.getActivity().setResult(Activity.RESULT_OK);
+            mView.getActivity().finish();
         }
     }
 }

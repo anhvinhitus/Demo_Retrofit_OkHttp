@@ -7,6 +7,7 @@ import timber.log.Timber;
  * Define error code & error message for PaymentWrapper
  */
 public enum PaymentError {
+    ERR_CODE_NON_STATE(-4),
     ERR_CODE_FAIL(-1),
     ERR_CODE_UNKNOWN(0),
     ERR_CODE_SUCCESS(1),
@@ -29,16 +30,15 @@ public enum PaymentError {
         this.value = value;
     }
 
-    public int value() {
-        return value;
-    }
-
     public static String getErrorMessage(PaymentError paymentError) {
         Timber.d("getErrorMessage error [%s]", paymentError);
         String errorMessage;
         switch (paymentError) {
             case ERR_CODE_SUCCESS:
                 errorMessage = "Giao dịch thành công.";
+                break;
+            case ERR_CODE_NON_STATE:
+                errorMessage = "Giao dịch đang xử lý. Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút";
                 break;
             case ERR_CODE_FAIL:
                 errorMessage = "Giao dịch thất bại.";
@@ -72,5 +72,9 @@ public enum PaymentError {
                 break;
         }
         return errorMessage;
+    }
+
+    public int value() {
+        return value;
     }
 }

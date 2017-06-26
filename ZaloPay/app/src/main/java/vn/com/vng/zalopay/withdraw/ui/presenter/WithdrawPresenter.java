@@ -253,14 +253,22 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
             if (paymentError == PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD) {
                 mNavigator.startLinkCardActivity(mView.getContext());
+                return;
+            }
+            if(paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()){
+                closeWithDraw();
             }
         }
 
         @Override
         public void onResponseSuccess(IBuilder builder) {
-            if (mView != null) {
-                mView.finish(Activity.RESULT_OK);
-            }
+            closeWithDraw();
+        }
+    }
+
+    private void closeWithDraw(){
+        if (mView != null) {
+            mView.finish(Activity.RESULT_OK);
         }
     }
 

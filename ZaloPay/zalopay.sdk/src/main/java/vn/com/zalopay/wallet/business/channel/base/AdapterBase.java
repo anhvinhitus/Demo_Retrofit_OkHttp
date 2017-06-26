@@ -1197,11 +1197,8 @@ public abstract class AdapterBase {
         }
 
         //notify to app to do some background task
-        try {
-            if (GlobalData.getPaymentListener() != null)
-                GlobalData.getPaymentListener().onPreComplete(true, mTransactionID, mPaymentInfoHelper.getAppTransId());
-        } catch (Exception e) {
-            Log.e(this, e);
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onPreComplete(true, mTransactionID, mPaymentInfoHelper.getAppTransId());
         }
         //if this is redpacket,then close sdk and callback to app
         if (processResultForRedPackage()) {
@@ -1210,7 +1207,6 @@ public abstract class AdapterBase {
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
         mPageName = PAGE_SUCCESS;
-
         try {
             getView().marginSubmitButtonTop(true);
             getView().renderByResource(mPageName);
@@ -1235,11 +1231,6 @@ public abstract class AdapterBase {
             Log.e(this, e);
         }
         try {
-            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
-        try {
             processSaveCardOnResult();
         } catch (Exception e) {
             Log.e(this, e);
@@ -1253,6 +1244,11 @@ public abstract class AdapterBase {
             Log.d(this, e);
         }
         PaymentSnackBar.getInstance().dismiss();
+        try {
+            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
@@ -1281,37 +1277,30 @@ public abstract class AdapterBase {
     }
 
     public synchronized void showTransactionFailView(String pMessage) {
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onPreComplete(false, mTransactionID, mPaymentInfoHelper.getAppTransId());
-        }
         //stop timer
         try {
             getPresenter().cancelTransactionExpiredTimer();
         } catch (Exception e) {
             Log.e(this, e);
         }
-        //hide webview
-        if (isCardFlow() && getGuiProcessor() != null) {
-            getGuiProcessor().useWebView(false);
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onPreComplete(false, mTransactionID, mPaymentInfoHelper.getAppTransId());
         }
         //hide webview
-        if (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
+        if (getGuiProcessor() != null && (isCardFlow() || (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()))) {
             getGuiProcessor().useWebView(false);
         }
-
         if (isTransactionProcessing(pMessage)) {
             mPageName = PAGE_FAIL_PROCESSING;
         } else if (isTransNetworkError(GlobalData.getAppContext(), pMessage)) {
             mPageName = PAGE_FAIL_NETWORKING;
-            //update payment status to no internet to app know
-            mPaymentInfoHelper.updateResultNetworkingError(pMessage);
+            mPaymentInfoHelper.updateResultNetworkingError(pMessage); //update payment status to no internet to app know
         } else {
             mPageName = PAGE_FAIL;
         }
-        //reset result to fail
         int status = mPaymentInfoHelper.getStatus();
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
-            mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+            mPaymentInfoHelper.setResult(mPageName.equals(PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
         }
 
         showDialogOnChannelList = false;

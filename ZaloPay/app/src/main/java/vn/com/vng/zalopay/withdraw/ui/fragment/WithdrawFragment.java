@@ -25,6 +25,13 @@ import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 public class WithdrawFragment extends BaseFragment implements IWithdrawView, WithdrawAdapter.OnClickDenominationListener {
 
     private final static int SPAN_COUNT_APPLICATION = 2;
+    @BindView(R.id.listview)
+    RecyclerView listview;
+    @BindView(R.id.tvMoney)
+    TextView mMoneyView;
+    @Inject
+    WithdrawPresenter mPresenter;
+    WithdrawAdapter mAdapter;
 
     public static WithdrawFragment newInstance() {
 
@@ -35,12 +42,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         return fragment;
     }
 
-    @BindView(R.id.listview)
-    RecyclerView listview;
-
-    @BindView(R.id.tvMoney)
-    TextView mMoneyView;
-
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -50,11 +51,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     protected int getResLayoutId() {
         return R.layout.fragment_withdraw;
     }
-
-    @Inject
-    WithdrawPresenter mPresenter;
-
-    WithdrawAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

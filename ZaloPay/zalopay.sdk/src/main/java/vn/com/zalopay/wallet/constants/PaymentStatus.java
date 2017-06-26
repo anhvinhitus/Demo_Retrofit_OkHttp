@@ -5,7 +5,7 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@IntDef({PaymentStatus.PROCESSING, PaymentStatus.SUCCESS, PaymentStatus.FAILURE,
+@IntDef({PaymentStatus.NON_STATE, PaymentStatus.PROCESSING, PaymentStatus.SUCCESS, PaymentStatus.FAILURE,
         PaymentStatus.ERROR_BALANCE, PaymentStatus.TOKEN_EXPIRE, PaymentStatus.INVALID_DATA,
         PaymentStatus.USER_CLOSE, PaymentStatus.USER_LOCK, PaymentStatus.LEVEL_UPGRADE_PASSWORD,
         PaymentStatus.DISCONNECT, PaymentStatus.SERVICE_MAINTENANCE,
@@ -14,6 +14,7 @@ import java.lang.annotation.RetentionPolicy;
         PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT, PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL})
 @Retention(RetentionPolicy.SOURCE)
 public @interface PaymentStatus {
+    int NON_STATE = -7;// order is processing on system, hasn't finish yet: client need to back user to home page
     int PROCESSING = 0; //order is processing
     int SUCCESS = 1;// transaction is success
     int FAILURE = -1; // transaction is fail

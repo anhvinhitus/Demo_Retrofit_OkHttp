@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +34,19 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  */
 public class BalanceManagementFragment extends BaseFragment implements IBalanceManagementView {
 
+    @Inject
+    BalanceManagementPresenter mPresenter;
+    @BindView(R.id.tv_balance)
+    TextView mTvBalance;
+    @BindView(R.id.tvAccountName)
+    TextView mTvAccountName;
+    @BindView(R.id.balance_management_rl_deposit)
+    View mViewDeposit;
+    @BindView(R.id.viewSeparate)
+    View mViewSeparate;
+    @BindView(R.id.background)
+    SimpleDraweeView mBackgroundView;
+
     public static BalanceManagementFragment newInstance() {
         return new BalanceManagementFragment();
     }
@@ -45,24 +60,6 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     protected int getResLayoutId() {
         return R.layout.fragment_balance_management;
     }
-
-    @Inject
-    BalanceManagementPresenter mPresenter;
-
-    @BindView(R.id.tv_balance)
-    TextView mTvBalance;
-
-    @BindView(R.id.tvAccountName)
-    TextView mTvAccountName;
-
-    @BindView(R.id.balance_management_rl_deposit)
-    View mViewDeposit;
-
-    @BindView(R.id.viewSeparate)
-    View mViewSeparate;
-
-    @BindView(R.id.background)
-    SimpleDraweeView mBackgroundView;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

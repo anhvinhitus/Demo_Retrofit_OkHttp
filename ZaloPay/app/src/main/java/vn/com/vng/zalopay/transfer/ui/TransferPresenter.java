@@ -599,34 +599,33 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
-
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
                 handleFailedTransferZalo(mView.getActivity(), paymentError.value());
-            } else if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
-                handleFailedTransferWeb(mView.getActivity(),
-                        paymentError.value(), PaymentError.getErrorMessage(paymentError));
+                return;
+            }
+            if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
+                handleFailedTransferWeb(mView.getActivity(), paymentError.value(), PaymentError.getErrorMessage(paymentError));
+                return;
+            }
+            if(paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()){
+                closeTranfer();
             }
         }
 
         @Override
         public void onResponseSuccess(IBuilder builder) {
             super.onResponseSuccess(builder);
-
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
-
             updateTransferObject(builder);
-
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
                 handleCompletedTransferZalo(mView.getActivity());
             } else if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
                 handleCompletedTransferWeb(mView.getActivity());
             } else {
-                mView.getActivity().setResult(Activity.RESULT_OK);
-                mView.getActivity().finish();
+                closeTranfer();
             }
-
             saveTransferRecent();
         }
 
@@ -646,6 +645,13 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
         }
 
+        private void closeTranfer(){
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            mView.getActivity().setResult(Activity.RESULT_OK);
+            mView.getActivity().finish();
+        }
 
         private void handleFailedTransferZalo(Activity activity, int code) {
             Timber.d("Transfer zalo failed : code [%s]", code);

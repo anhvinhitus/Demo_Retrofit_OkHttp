@@ -33,6 +33,7 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.FAILURE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.INVALID_DATA;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.LEVEL_UPGRADE_PASSWORD;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.NON_STATE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.PROCESSING;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.SERVICE_MAINTENANCE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.SUCCESS;
@@ -84,7 +85,6 @@ class WalletListener implements ZPPaymentListener {
                 }
                 mPaymentWrapper.clearPendingOrder();
                 break;
-
             case SUCCESS:
                 if (mPaymentWrapper.mShowNotificationLinkCard) {
                     DMapCardResult mapCard = mPaymentWrapper.getPaymentInfoBuilder().getMapCard();
@@ -116,7 +116,6 @@ class WalletListener implements ZPPaymentListener {
                 } else {
                     mPaymentWrapper.mRedirectListener.startDepositForResult();
                 }
-
                 paymentIsCompleted = false; // will continue after update profile
                 break;
             case USER_CLOSE:
@@ -124,6 +123,9 @@ class WalletListener implements ZPPaymentListener {
                 break;
             case INVALID_DATA:
                 responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
+                break;
+            case NON_STATE:
+                responseListener.onResponseError(PaymentError.ERR_CODE_NON_STATE);
                 break;
             case FAILURE:
                 responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
