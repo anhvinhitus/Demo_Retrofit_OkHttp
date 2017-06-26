@@ -30,6 +30,7 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -123,6 +124,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                             return resolveTransactionSuccess(timestamp, types, offset, count, sign, throwable);
                         }
                     })
+                    .subscribeOn(Schedulers.io())
                     .subscribe(new TransactionLogSubscriber(promise));
             mCompositeSubscription.add(subscription);
         } catch (Exception e) {
@@ -162,6 +164,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                             return resolveTransactionFail(timestamp, types, offset, count, sign, throwable);
                         }
                     })
+                    .subscribeOn(Schedulers.io())
                     .subscribe(new TransactionLogSubscriber(promise));
             mCompositeSubscription.add(subscription);
         } catch (Exception e) {
@@ -185,6 +188,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         Subscription subscription = mTransactionRepository.removeTransaction(value)
                 .map(result -> new TransactionResult(result ? ERR_CODE_SUCCESS.value() : ERR_CODE_FAIL.value(), "", Collections.emptyList()))
+                .subscribeOn(Schedulers.io())
                 .subscribe(new TransactionLogSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
@@ -206,6 +210,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         Subscription subscription = mTransactionRepository.getTransaction(value)
                 .map(transactions -> new TransactionResult(ERR_CODE_SUCCESS.value(), "", Collections.singletonList(transactions)))
+                .subscribeOn(Schedulers.io())
                 .subscribe(new TransactionLogSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
@@ -359,6 +364,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                     }
                 })
                 .map(transactions -> new TransactionResult(ERR_CODE_SUCCESS.value(), "", Collections.singletonList(transactions)))
+                .subscribeOn(Schedulers.io())
                 .subscribe(new TransactionLogSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
@@ -368,6 +374,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     public void showTransactionDetail(final int appid, final String transid, final Promise promise) {
         Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
         Subscription subscription = mResourceRepository.existResource(appid)
+                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
