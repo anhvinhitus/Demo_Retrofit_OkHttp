@@ -515,6 +515,13 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfile2ForResult(mActivity);
     }
 
+    void startUpdateProfile3(){
+        if (mActivity == null) {
+            return;
+        }
+        mNavigator.startUpdateProfile3Activity(mActivity, false);
+    }
+
     void startUpdateProfileBeforeLinkAcc() {
         if (mActivity == null) {
             return;
@@ -576,7 +583,9 @@ public class PaymentWrapper {
     }
 
     public interface IRedirectListener {
-        void startUpdateProfileLevel();
+        void startUpdateProfileLevel2();
+
+        void startUpdateProfileLevel3();
 
         void startDepositForResult();
 

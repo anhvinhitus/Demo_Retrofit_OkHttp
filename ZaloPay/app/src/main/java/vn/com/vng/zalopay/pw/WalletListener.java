@@ -105,7 +105,7 @@ class WalletListener implements ZPPaymentListener {
                 if (mPaymentWrapper.mRedirectListener == null) {
                     mPaymentWrapper.startUpdateProfile2ForResult();
                 } else {
-                    mPaymentWrapper.mRedirectListener.startUpdateProfileLevel();
+                    mPaymentWrapper.mRedirectListener.startUpdateProfileLevel2();
                 }
 
                 paymentIsCompleted = false; // will continue after update profile
@@ -181,6 +181,11 @@ class WalletListener implements ZPPaymentListener {
                 paymentIsCompleted = false; // will continue after update profile
                 break;
             case LEVEL_UPGRADE_CMND_EMAIL:
+                if (mPaymentWrapper.mRedirectListener == null) {
+                    mPaymentWrapper.startUpdateProfile3();
+                } else {
+                    mPaymentWrapper.mRedirectListener.startUpdateProfileLevel3();
+                }
             case UPVERSION:
             default:
                 responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);

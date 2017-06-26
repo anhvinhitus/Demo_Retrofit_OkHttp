@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,8 +32,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
-import vn.com.vng.zalopay.passport.OnboardingActivity;
-import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
@@ -50,6 +47,9 @@ import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
+import vn.com.vng.zalopay.passport.OnboardingActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
@@ -79,7 +79,6 @@ import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
-import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -575,6 +574,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    @Override
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
         if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
@@ -799,12 +799,6 @@ public class Navigator implements INavigator {
         return false;
     }
 
-    interface ChannelDisplay {
-        int PROFILE = 1;
-        int CARD_LISTS = 2;
-        int TRANSACTION = 3;
-    }
-
     public void startTransferViaAccountName(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID);
@@ -926,7 +920,6 @@ public class Navigator implements INavigator {
                 .apply();
     }
 
-
     private boolean shouldShowSuggestDialog() {
 
         if (TextUtils.isEmpty(UserSession.mHashPassword)) {
@@ -1013,5 +1006,11 @@ public class Navigator implements INavigator {
 
     public void startBrowser(Context context, String url) {
         AndroidUtils.openBrowser(context, url);
+    }
+
+    interface ChannelDisplay {
+        int PROFILE = 1;
+        int CARD_LISTS = 2;
+        int TRANSACTION = 3;
     }
 }

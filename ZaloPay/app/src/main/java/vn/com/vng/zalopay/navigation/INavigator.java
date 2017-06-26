@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public interface INavigator {
 
+    void startUpdateProfile3Activity(Context context, boolean focusIdentity);
+
     void startUpdateProfile2ForResult(Activity activity);
 
     void startUpdateProfile2ForResult(Fragment fragment);

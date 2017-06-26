@@ -14,14 +14,14 @@ import vn.com.vng.zalopay.navigation.INavigator;
 public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.IRedirectListener {
     private INavigator mNavigator;
 
-    public abstract Object getContext();
-
     public DefaultPaymentRedirectListener(INavigator navigator) {
         mNavigator = navigator;
     }
 
+    public abstract Object getContext();
+
     @Override
-    public void startUpdateProfileLevel() {
+    public void startUpdateProfileLevel2() {
         Object context = getContext();
         if (context == null || mNavigator == null) {
             return;
@@ -30,6 +30,19 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
             mNavigator.startUpdateProfile2ForResult((Fragment) context);
         } else if (context instanceof Activity) {
             mNavigator.startUpdateProfile2ForResult((Activity) context);
+        }
+    }
+
+    @Override
+    public void startUpdateProfileLevel3() {
+        Object context = getContext();
+        if (context == null || mNavigator == null) {
+            return;
+        }
+        if (context instanceof Fragment) {
+            mNavigator.startUpdateProfile3Activity(((Fragment) context).getActivity(), false);
+        } else if (context instanceof Activity) {
+            mNavigator.startUpdateProfile3Activity((Activity) context, false);
         }
     }
 
