@@ -1,10 +1,2 @@
-Zalo Pay (Sandbox v2.14.0 - build 282) - Released on 2017-06-26 09:12
-+ [SDK] Refactor phần channel activity by vo van chuc (#6d7bc17)
-+ [SDK] Refactor PayProxy by vo van chuc (#a4ff6c8)
-+ [UI] Bỏ "Thẻ" trong pmc name by vo van chuc (#138005d)
-+ [App] Home: edit ui by datnt10 (#d09f0c3)
-+ [ZPDK] Task#593: Update flow thanh toán Web-To-App by hieuvm (#4ebbb4f)
-+ [Onboarding] Fix bug: not finish activity by hieuvm (#d89f6cd)
-+ [React] Fix leak memory by hieuvm (#933b455)
-+ [Notification] change thread get notification by hieuvm (#f3a8ddc)
-+ [Beacon] Fix leak memory by hieuvm (#d5f7e19)
+Zalo Pay (Staging v2.14.0 - build 283) - Released on 2017-06-26 09:59
+
