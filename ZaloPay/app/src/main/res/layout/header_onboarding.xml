@@ -33,7 +33,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            app:roundingBorderColor="#93d5ff"
+            app:roundingBorderColor="#94D7FF"
             app:roundingBorderWidth="2dp"
             />
 
