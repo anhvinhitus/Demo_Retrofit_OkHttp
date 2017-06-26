@@ -147,6 +147,7 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
 
     @Override
     public void showWsConnectError() {
+        Timber.d("show socket error view");
         if (mTvInternetConnection == null ||
                 mTvInternetConnection.getVisibility() == View.VISIBLE) {
             return;
@@ -158,6 +159,7 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
 
     @Override
     public void showNetworkError() {
+        Timber.d("show network error view");
         if (mTvInternetConnection == null) {
             return;
         }
@@ -168,11 +170,10 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
 
     @Override
     public void hideNetworkError() {
-        if (mTvInternetConnection == null ||
-                mTvInternetConnection.getVisibility() == View.GONE) {
-            return;
+        Timber.d("hide network error view");
+        if (mTvInternetConnection != null) {
+            mTvInternetConnection.setVisibility(View.GONE);
         }
-        mTvInternetConnection.setVisibility(View.GONE);
     }
 
     @Override

@@ -301,6 +301,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             return;
         }
 
+        Timber.d("on socket connection changed: [isConnect %s]", event.isConnect);
+
         if (event.isConnect) {
             mView.hideNetworkError();
         } else {
