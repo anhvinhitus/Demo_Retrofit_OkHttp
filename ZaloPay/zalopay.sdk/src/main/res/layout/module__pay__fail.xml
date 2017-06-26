@@ -59,7 +59,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sdk_margin_left_right">
 
         <RelativeLayout
             android:id="@+id/zpw_payment_fail_rl_support"

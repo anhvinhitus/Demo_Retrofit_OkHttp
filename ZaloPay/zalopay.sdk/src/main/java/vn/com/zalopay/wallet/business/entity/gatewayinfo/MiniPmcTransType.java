@@ -239,7 +239,7 @@ public class MiniPmcTransType implements Parcelable {
         return allowPmcQuota;
     }
 
-    protected void setAllowPmcQuota(boolean allowPmcQuota) {
+    public void setAllowPmcQuota(boolean allowPmcQuota) {
         this.allowPmcQuota = allowPmcQuota;
     }
 

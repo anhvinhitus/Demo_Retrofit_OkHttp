@@ -11,13 +11,13 @@ import java.util.List;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class SharedPreferencesManager extends SingletonBase {
@@ -339,6 +339,15 @@ public class SharedPreferencesManager extends SingletonBase {
     public long getMaxValueChannel(String pKey) {
         return getLong(pKey + "__MAX");
     }
+
+    public boolean setBankMinAmountSupport(String pKey, long pValue) {
+        return setLong(pKey + "__MIN__BANK", pValue);
+    }
+
+    public long getBankMinAmountSupport(String pKey) {
+        return getLong(pKey + "__MIN__BANK");
+    }
+
 
     /***
      * save map card

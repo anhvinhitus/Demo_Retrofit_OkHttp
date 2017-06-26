@@ -7,7 +7,6 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
@@ -17,6 +16,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeRespons
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+
+import static vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader.MAX_VALUE_CHANNEL;
+import static vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader.MIN_VALUE_CHANNEL;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -38,13 +40,14 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setExpiredTimeAppChannel(String.valueOf(pAppId), expiredTime);
             if (pResponse.hasTranstypes()) {
-                long minValue, maxValue;
+                long minValue, maxValue, bankMinValueSupport;
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
                     int transtype = miniPmcTransTypeResponse.transtype;
                     List<MiniPmcTransType> miniPmcTransTypeList = miniPmcTransTypeResponse.transtypes;
 
-                    minValue = AbstractChannelLoader.MIN_VALUE_CHANNEL;
-                    maxValue = AbstractChannelLoader.MAX_VALUE_CHANNEL;
+                    minValue = MIN_VALUE_CHANNEL;
+                    maxValue = MAX_VALUE_CHANNEL;
+                    bankMinValueSupport = MIN_VALUE_CHANNEL;
                     ArrayList<String> transtypePmcIdList = new ArrayList<>();
 
                     String appInfoTranstypeKey = getTranstypeCheckSumKey(pAppId, transtype);
@@ -65,6 +68,10 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                             mSharedPreferences.setPmcConfig(pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));//set 1 channel
                             Log.d(this, "save channel to cache key " + pmcKey, defaultPmcTranstype);
                         }
+                        //min amount support of atm
+                        if (miniPmcTransType.isAtmChannel() && miniPmcTransType.minvalue < bankMinValueSupport) {
+                            bankMinValueSupport = miniPmcTransType.minvalue;
+                        }
                         //get min,max of this channel to app use
                         if (miniPmcTransType.minvalue < minValue) {
                             minValue = miniPmcTransType.minvalue;
@@ -82,14 +89,16 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                     }
                     mSharedPreferences.setPmcTranstypeKeyList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
                     mSharedPreferences.setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
+                    mSharedPreferences.setBankMinAmountSupport(appInfoTranstypeKey, bankMinValueSupport);
+                    Log.d(this, "save bank min value support", bankMinValueSupport);
                     Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used when user input amount
                     if (transtype == TransactionType.MONEY_TRANSFER || transtype == TransactionType.TOPUP || transtype == TransactionType.WITHDRAW) {
-                        if (minValue != AbstractChannelLoader.MIN_VALUE_CHANNEL) {
+                        if (minValue != MIN_VALUE_CHANNEL) {
                             mSharedPreferences.setMinValueChannel(String.valueOf(transtype), minValue);
                             Log.d(this, "save min value " + minValue + " transtype " + transtype);
                         }
-                        if (maxValue != AbstractChannelLoader.MAX_VALUE_CHANNEL) {
+                        if (maxValue != MAX_VALUE_CHANNEL) {
                             mSharedPreferences.setMaxValueChannel(String.valueOf(transtype), maxValue);
                             Log.d(this, "save max value " + maxValue + " transtype " + transtype);
                         }

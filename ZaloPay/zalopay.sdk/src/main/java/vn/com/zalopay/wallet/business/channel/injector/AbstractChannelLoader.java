@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -22,7 +21,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -106,11 +105,18 @@ public abstract class AbstractChannelLoader {
                 if (channel.isEnable() && ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
                         || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_BANK_ACCOUNT)))) {
                     channel.setStatus(PaymentChannelStatus.MAINTENANCE);
-                }
-                if(channel.isZaloPayChannel()){
-                    boolean balanceError = mBalance <= mAmount + channel.totalfee;
-                    if(balanceError){
+                } else if (channel.isZaloPayChannel()) {
+                    boolean balanceError = mBalance < mAmount + channel.totalfee;
+                    if (balanceError) {
                         channel.setAllowOrderAmount(false);
+                    }
+                } else if (channel.isAtmChannel()) {
+                    StringBuilder keyBuilder = new StringBuilder();
+                    keyBuilder.append(mAppId).append(Constants.UNDERLINE).append(mTranstype);
+                    long bankMinAmountSupport = SharedPreferencesManager.getInstance().getBankMinAmountSupport(keyBuilder.toString());
+                    if (bankMinAmountSupport > 0 && mAmount < bankMinAmountSupport) {
+                        channel.minvalue = bankMinAmountSupport;
+                        channel.status = PaymentChannelStatus.DISABLE;
                     }
                 }
                 //get icon

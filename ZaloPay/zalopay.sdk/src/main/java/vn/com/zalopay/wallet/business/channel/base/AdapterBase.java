@@ -486,7 +486,7 @@ public abstract class AdapterBase {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_alert_over_retry_otp));
             return;
         }
-        showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
+        showDialogWithCallBack(mResponseStatus.returnmessage, GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
             //reset otp and show keyboard again
             if (isCardFlow()) {
                 ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
@@ -549,7 +549,7 @@ public abstract class AdapterBase {
 
             //server is maintenance
             if (PaymentStatusHelper.isServerInMaintenance(mResponseStatus)) {
-                getView().showMaintenanceServiceDialog(mResponseStatus.getMessage());
+                getView().showMaintenanceServiceDialog(mResponseStatus.returnmessage);
                 return null;
             }
             //callback finish transation from webview
@@ -1055,8 +1055,8 @@ public abstract class AdapterBase {
                 showTransactionSuccessView();
             }
             //transaction is fail with message
-            else if (pStatusResponse != null && !pStatusResponse.isprocessing && !TextUtils.isEmpty(pStatusResponse.getMessage())) {
-                showTransactionFailView(pStatusResponse.getMessage());
+            else if (pStatusResponse != null && !pStatusResponse.isprocessing && !TextUtils.isEmpty(pStatusResponse.returnmessage)) {
+                showTransactionFailView(pStatusResponse.returnmessage);
             }
             //response is null
             else {

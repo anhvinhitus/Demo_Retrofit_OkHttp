@@ -179,7 +179,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             try {
                 //prevent user input if wrong card
                 String newValue = s.toString().trim();
-                if (!isCardInputSupport() && mLastLengthCardNumber < newValue.length()) {
+                if (!supportCard() && mLastLengthCardNumber < newValue.length()) {
                     getCardNumberView().setText(lastValue);
                     getCardNumberView().setSelection(mLastLengthCardNumber);
                     return;
@@ -290,7 +290,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     };
     protected ZPWOnCloseDialogListener mCloseDialogListener = this::clearCardNumberAndShowKeyBoard;
     protected View.OnClickListener mOnQuestionIconClick = view -> {
-        if (!isCardInputSupport()) {
+        if (!supportCard()) {
             try {
                 showSupportCardList();
             } catch (Exception e) {
@@ -1517,7 +1517,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         //card not support
         if (TextUtils.isEmpty(pMessageHint) && needToWarningNotSupportCard()) {
-            if (!isCardInputSupport()) {
+            if (!supportCard()) {
                 return;
             }
             cardNumberView.setError(GlobalData.getStringResource(RS.string.zpw_string_card_not_support));
@@ -1608,17 +1608,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }, 300);
     }
 
-    protected boolean isCardInputSupport() {
+    private boolean supportCard() {
         try {
-            if (mCardAdapter.getCardNumberFragment().hasError() && mCardAdapter.getCardNumberFragment().getError().equals(GlobalData.getStringResource(RS.string.zpw_string_card_not_support))) {
+            if (mCardAdapter.getCardNumberFragment().hasError() &&
+                    (mCardAdapter.getCardNumberFragment().getError().equals(GlobalData.getStringResource(RS.string.zpw_string_card_not_support))
+                            || mCardAdapter.getCardNumberFragment().getError().contains("không hỗ trợ"))) {
                 return false;
             }
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         return true;
-
     }
 
     protected void clearHighLight() {

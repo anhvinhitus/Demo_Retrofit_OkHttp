@@ -413,9 +413,7 @@ public class PayProxy extends SingletonBase {
                             .chargeInfo(chargeInfo)
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
-                            .doOnNext(statusResponse -> {
-                                showLoading(mContext.getString(R.string.zpw_string_alert_submit_order));
-                            })
+                            .doOnNext(statusResponse -> showLoading(mContext.getString(R.string.zpw_string_alert_submit_order)))
                             .subscribe(submitOrderSubscriber, submitOrderException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
