@@ -179,13 +179,13 @@ public class HandleInAppPayment {
                 .makeObservable(() -> SDKApplication.getApplicationComponent()
                         .appInfoInteractor()
                         .get(appId))
-                .filter(appInfo -> appInfo != null && !TextUtils.isEmpty(appInfo.redirect_url))
+                .filter(appInfo -> appInfo != null && !TextUtils.isEmpty(appInfo.webredirecturl))
                 .subscribe(new DefaultSubscriber<AppInfo>() {
                     @Override
                     public void onNext(AppInfo appInfo) {
                         Activity activity = mActivity.get();
                         if (activity != null && !activity.isFinishing()) {
-                            startBrowser(mActivity.get(), mBrowser, appInfo.redirect_url);
+                            startBrowser(mActivity.get(), mBrowser, appInfo.webredirecturl);
                         }
                     }
 
