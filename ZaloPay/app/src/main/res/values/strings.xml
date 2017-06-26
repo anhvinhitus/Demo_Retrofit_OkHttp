@@ -28,6 +28,7 @@
     <string name="hint_amount">Số tiền (VND)</string>
     <string name="hint_message">Lời nhắn</string>
 
+    <string name="btn_withdraw">Rút Tiền</string>
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
     <string name="btn_pay_now">Thanh Toán</string>
