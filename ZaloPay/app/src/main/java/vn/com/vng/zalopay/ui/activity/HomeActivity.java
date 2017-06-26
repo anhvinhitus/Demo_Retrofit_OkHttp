@@ -42,6 +42,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Inject
     HomePresenter mPresenter;
 
+    @BindView(R.id.tab_main)
+    View mTabbarView;
     @BindView(R.id.pager)
     ViewPager mViewPager;
     @BindView(R.id.navigation)
@@ -229,8 +231,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     public void setHiddenTabbar(boolean hiddenTabbar) {
-        if (mBottomNavigationView != null) {
-            mBottomNavigationView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
+//        if (mBottomNavigationView != null) {
+//            mBottomNavigationView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
+//        }
+        if (mTabbarView != null) {
+            mTabbarView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
         }
     }
 
