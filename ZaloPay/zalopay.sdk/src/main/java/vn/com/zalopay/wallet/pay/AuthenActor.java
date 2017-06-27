@@ -27,6 +27,8 @@ public class AuthenActor {
     private String popupPassword;//password input on popup
     private boolean useFPPassword = true;//user check checkbox
     private PasswordManager mPassword;
+    private PaymentChannel mPaymentChannel;
+    private Activity mActivity;
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
@@ -71,7 +73,15 @@ public class AuthenActor {
         }
 
         @Override
-        public void onCancel() {
+        public void showPassword() {
+            Log.d(this, "showPassword()");
+            if (mPaymentChannel != null && mActivity != null) {
+                try {
+                    showPasswordPopup(mActivity,mPaymentChannel);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
@@ -143,7 +153,10 @@ public class AuthenActor {
         mPassword.show();
     }
 
-    public void showFingerPrint(Activity pActivity) throws Exception {
+    public void showFingerPrint(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
+        mPaymentChannel = pPaymentChannel;
+        mActivity = pActivity;
+
         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
         if (mFingerPrintDialog != null) {
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);

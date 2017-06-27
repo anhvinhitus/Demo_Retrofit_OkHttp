@@ -395,7 +395,6 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-
     private void submitOrder(String pHashPassword) {
         try {
             if (getPresenter().networkOffline()) {
@@ -601,7 +600,7 @@ public class PayProxy extends SingletonBase {
 
     private void showFingerPrint(Activity pActivity) {
         try {
-            mAuthenActor.showFingerPrint(pActivity);
+            mAuthenActor.showFingerPrint(pActivity, mChannel);
         } catch (Exception e) {
             Log.e(this, e);
             showPassword(pActivity);

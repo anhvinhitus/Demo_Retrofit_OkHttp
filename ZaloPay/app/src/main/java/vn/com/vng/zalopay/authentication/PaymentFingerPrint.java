@@ -69,7 +69,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
             @Override
             public void onCancel() {
-                callback.onCancel();
+                callback.showPassword();
             }
 
             @Override
