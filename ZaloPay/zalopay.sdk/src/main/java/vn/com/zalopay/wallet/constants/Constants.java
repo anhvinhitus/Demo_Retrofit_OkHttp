@@ -136,9 +136,6 @@ public class Constants {
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
 
-    public static final long GETSTATUS_APPTRANS_MAX_RETRY = 5;
-    public static final long GETSTATUS_APPTRANS_INTERVAL = 200;
-
     public interface CHANNEL_CONST{
         String layout = "layout";
     }

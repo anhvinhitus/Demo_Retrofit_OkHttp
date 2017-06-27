@@ -12,8 +12,8 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static vn.com.zalopay.wallet.constants.Constants.GETSTATUS_APPTRANS_INTERVAL;
-import static vn.com.zalopay.wallet.constants.Constants.GETSTATUS_APPTRANS_MAX_RETRY;
+import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_DELAY_RETRY;
+import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
 
 /**
  * in case submit order return fail as networking - request timeout
@@ -48,7 +48,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         if (!PaymentStatusHelper.isTransactionNotSubmit(pResponse)) {
             return true;
         }
-        if (retryCount >= GETSTATUS_APPTRANS_MAX_RETRY) {
+        if (retryCount >= TRANS_STATUS_MAX_RETRY) {
             return true;
         }
         return false;
@@ -65,10 +65,15 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     public Observable<StatusResponse> getObserver() {
         return mTransService.getStatusByAppTransClient(buildParams())
                 .doOnSubscribe(() -> {
-                    retryCount ++;
+                    retryCount++;
                     running = true;
                 })
-                .repeatWhen(observable -> observable.delay(GETSTATUS_APPTRANS_INTERVAL * retryCount, MILLISECONDS))
+                /* .map(statusResponse -> {
+                    statusResponse.isprocessing = true;
+                    statusResponse.returncode = -49;
+                    return statusResponse;
+                })*/
+                .repeatWhen(observable -> observable.delay(TRANS_STATUS_DELAY_RETRY, MILLISECONDS))
                 .takeUntil(shouldStop)
                 .filter(this::shouldStop);
     }

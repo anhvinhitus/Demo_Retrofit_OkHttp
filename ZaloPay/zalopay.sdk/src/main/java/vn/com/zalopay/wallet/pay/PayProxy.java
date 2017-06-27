@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.pay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -18,7 +17,6 @@ import rx.Subscription;
 import rx.functions.Action1;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.FingerprintUtils;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
@@ -87,6 +85,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
@@ -102,20 +108,12 @@ public class PayProxy extends SingletonBase {
             } catch (Exception e) {
                 startChannelActivity();
             }
-            Log.d(this, "trans status on error" + GsonUtils.toJsonString(throwable));
-        }
-    };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
+            Log.d(this, "trans status on error", throwable);
         }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-            markTransFail(getSubmitExceptionMessage(mContext));
+            markTransFail(mContext.getString(R.string.sdk_error_not_submit_order));
         } else {
             try {
                 processStatus(statusResponse);
@@ -266,7 +264,7 @@ public class PayProxy extends SingletonBase {
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         } else {
             mStatusResponse = pResponse;
-            if (TextUtils.isEmpty(mTransId)) {
+            if (TextUtils.isEmpty(mTransId) || mTransId.equals("0")) {
                 mTransId = mStatusResponse.zptransid;
             }
             @PaymentState int status = TransactionHelper.paymentState(mStatusResponse);
@@ -432,15 +430,13 @@ public class PayProxy extends SingletonBase {
     }
 
     private void getTransStatusByAppTrans() {
-        new Handler().postDelayed(() -> {
-            try {
-                mSubscription = appTransStatus();
-                getPresenter().addSubscription(mSubscription);
-            } catch (Exception e) {
-                Log.e(this, e);
-                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-            }
-        }, 1000);
+        try {
+            mSubscription = appTransStatus();
+            getPresenter().addSubscription(mSubscription);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
     }
 
     private Subscription transStatus() {
