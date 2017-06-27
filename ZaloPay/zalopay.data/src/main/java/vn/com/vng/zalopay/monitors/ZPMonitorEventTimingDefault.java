@@ -15,6 +15,6 @@ public class ZPMonitorEventTimingDefault implements ZPMonitorEventTiming {
      */
     @Override
     public void recordEvent(ZPMonitorEvent event) {
-        Timber.d("Event %s at %s", event, System.currentTimeMillis());
+        Timber.d("| %s | %s", event, System.currentTimeMillis());
     }
 }
