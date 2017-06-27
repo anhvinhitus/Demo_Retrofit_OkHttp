@@ -105,16 +105,17 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
     }
 
     private void onRegisterSuccess(Boolean t, boolean isResend) {
-        if (isResend) {
-            mNumberResendOtp++;
-        }
-
-        hideLoadingView();
-
         if (mView == null) {
             return;
         }
 
+        if (isResend) {
+            mNumberResendOtp++;
+        } else {
+            mNumberResendOtp = 0;
+        }
+
+        hideLoadingView();
         mView.nextPage();
 
         long millisInFuture = RESEND_OTP_INTERVAL;
