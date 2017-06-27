@@ -21,6 +21,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -81,6 +83,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public IBank mBankInteractor;
     @Inject
     public IAppInfo mAppInfoInteractor;
+
+    @Inject
+    ZPMonitorEventTiming mEventTiming;
 
     protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
@@ -370,6 +375,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         //update total amount and fee
         double fee = channel.totalfee;
         double total_amount = mPaymentInfoHelper.getAmount() + fee;
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_TOTALAMOUNTANDFEE);
         getViewOrThrow().renderTotalAmountAndFee(total_amount, fee);
 
         if (mSelectChannel != null) {
@@ -394,6 +400,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void onPaymentReady() {
         try {
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
+            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
             initAdapter();
@@ -429,6 +436,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void renderItemDetail() throws Exception {
         List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_DYNAMICITEMDETAIL);
         getViewOrThrow().renderDynamicItemDetail(items);
     }
 
@@ -445,6 +453,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 setInputMethodTitle = true;
             }
         }
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ADD_PAYMENTCHANNEL);
         mChannelAdapter.add(itemType, pChannel);
     }
 

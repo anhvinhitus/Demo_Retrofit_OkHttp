@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 
 @Singleton
@@ -49,5 +51,11 @@ public class ApplicationModule {
     @Singleton
     public EventBus provideEventBus() {
         return EventBus.getDefault();
+    }
+
+    @Provides
+    @Singleton
+    public ZPMonitorEventTiming provideEventTiming() {
+        return new ZPMonitorEventTimingDefault();
     }
 }

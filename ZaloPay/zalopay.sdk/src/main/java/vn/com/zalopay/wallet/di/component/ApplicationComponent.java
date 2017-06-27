@@ -7,6 +7,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
@@ -59,4 +60,6 @@ public interface ApplicationComponent {
     ITransService transService();
 
     IDownloadService downloadService();
+
+    ZPMonitorEventTiming monitorEventTiming();
 }

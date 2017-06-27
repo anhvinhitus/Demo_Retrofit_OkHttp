@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -105,6 +106,7 @@ public class SDKPayment {
      * @param pExtraParams
      */
     public synchronized static void pay(final Activity pMerchantActivity, IPaymentInfo pPaymentInfo, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START);
 
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {
