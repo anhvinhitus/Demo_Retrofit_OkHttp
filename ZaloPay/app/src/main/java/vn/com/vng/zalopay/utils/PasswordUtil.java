@@ -24,4 +24,11 @@ public class PasswordUtil {
         FingerprintManagerCompat mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
         return mFingerprintManagerCompat.isFingerprintAvailable();
     }
+
+    public static boolean detectSuggestFingerprint(Context context, UserConfig pUserConfig) {
+        if (!detectFingerPrint(context)) {
+            return false;
+        }
+        return !detectShowFingerPrint(context, pUserConfig);
+    }
 }

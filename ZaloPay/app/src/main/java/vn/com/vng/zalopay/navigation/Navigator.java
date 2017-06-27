@@ -102,6 +102,8 @@ public class Navigator implements INavigator {
 
     private SharedPreferences mPreferences;
 
+    private   AuthenticationPassword authenticationPassword;
+
     @Inject
     public Navigator(UserConfig userConfig, SharedPreferences preferences) {
         this.mUserConfig = userConfig;
@@ -767,9 +769,8 @@ public class Navigator implements INavigator {
         }
 
     }
-
     private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
-        AuthenticationPassword authenticationPassword = new AuthenticationPassword(context, pendingIntent, isFinish);
+        authenticationPassword = new AuthenticationPassword(context,PasswordUtil.detectSuggestFingerprint(context,mUserConfig), pendingIntent, isFinish);
         authenticationPassword.initialize();
     }
 

@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCo
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.PasswordUtil;
 
 /**
  * Created by hieuvm on 12/26/16.
@@ -131,7 +132,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         if (mView == null) {
             return;
         }
-        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(),callback);
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), PasswordUtil.detectSuggestFingerprint(mView.getContext(),mUserConfig),callback);
         authenticationPassword.initialize();
       /*  AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD);

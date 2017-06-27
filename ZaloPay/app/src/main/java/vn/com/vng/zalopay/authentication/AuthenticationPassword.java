@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.service.UserSession;
-import vn.com.vng.zalopay.utils.PasswordUtil;
+
 
 /**
  * Created by lytm on 25/06/2017.
@@ -38,40 +38,44 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
 
     private AuthenticationProvider mAuthenticationProvider;
 
-    public AuthenticationPassword(Context mContext, Intent pendingIntent, boolean isFinish) {
+    public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, Intent pendingIntent, boolean isFinish) {
         this.mContext = mContext;
         this.pendingIntent = pendingIntent;
         this.isFinish = isFinish;
         this.mKeyTools = new KeyTools();
+        this.mSuggestFingerprint = pSuggestFingerprint;
         initPassword();
     }
 
-    public AuthenticationPassword(Context mContext, AuthenticationCallback pAuthenticationCallback) {
+    public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, AuthenticationCallback pAuthenticationCallback) {
         this.mContext = mContext;
         this.mKeyTools = new KeyTools();
         this.mAuthenticationCallback = pAuthenticationCallback;
+        this.mSuggestFingerprint = pSuggestFingerprint;
         initPassword();
     }
 
     private void initPassword() {
-        mPassword = new PasswordManager((Activity) mContext, mContext.getString(R.string.input_pin_to_access), null, null, PasswordUtil.detectFingerPrint(mContext), new IPinCallBack() {
+        mPassword = new PasswordManager((Activity) mContext, mContext.getString(R.string.input_pin_to_access), null, null, mSuggestFingerprint, new IPinCallBack() {
             @Override
             public void onError(String pError) {
-
+                Timber.d("PasswordManager onError [%s]", pError);
             }
 
             @Override
             public void onCheckedFingerPrint(boolean pChecked) {
+                Timber.d("PasswordManager onCheckedFingerPrint [%s]", pChecked);
                 mSuggestFingerprint = pChecked;
             }
 
             @Override
             public void onCancel() {
-
+                Timber.d("PasswordManager onCancel");
             }
 
             @Override
             public void onComplete(String pHashPin) {
+                Timber.d("PasswordManager onComplete [%s]", pHashPin);
                 checkPassword(pHashPin);
 
             }
