@@ -1,2 +1,19 @@
-Zalo Pay (Sandbox v2.14.0 - build 285) - Released on 2017-06-26 14:26
-
+Zalo Pay (Sandbox v2.14.0 - build 286) - Released on 2017-06-27 09:11
++ [SDK] Show text thoát giao dịch theo loại ứng dụng by vo van chuc (#e4a3272)
++ [SDK]  ZPF-101: Chuyển tiền: ví đang có 10k, chuyển 10k, Ví báo ko đủ tiền, phí free by vo van chuc (#6b97858)
++ [App] Thêm navigate update profile level 3 khi nhận callback cần cập nhật lên level 3 từ SDK by vo van chuc (#bbbdf78)
++ [SDK - UI] Fix lỗi hiển thị "Cập nhật thông tin" ở màn hình kết quả thất bại by vo van chuc (#43ad6bb)
++ [App] task#630 Back user về màn hình Home khi giao dịch không nhận được trạng thái by vo van chuc (#56f6698)
++ [Fingerprint] Off suggestion fingerprint dialog by hieuvm (#4b59fe9)
++ [Notification] Kiểm tra việc xử lý notification với area = 6 by hieuvm (#8001c2c)
++ [SDK] Sửa lỗi rút tiền trong flow UI mới (pmc = 38) by vo van chuc (#40d2688)
++ [Transaction] Change thread of transaction log function by khattn (#b51adc5)
++ [App] Update string resource by hieuvm (#2dc4739)
++ [SDK] Hard code remove bank account khỏi ds channel hỗ trợ thanh toán by vo van chuc (#80b081f)
++ [SDK] Refactor getStatus by vo van chuc (#e190460)
++ [SDK] Fix lỗi behavior nút Back khi user đang ở màn hình thanh toán by vo van chuc (#4fe29db)
++ [Onboarding] Fix ui onboarding - update border color by hieuvm (#d894ea8)
++ [Onboarding] Fix ui onboarding by hieuvm (#272a809)
++ [SDK] Fix lỗi layout website 3ds by vo van chuc (#a02e2e9)
++ [SDK] Sửa lỗi behavior nút back trong kênh thanh toán by vo van chuc (#bb95dd8)
++ [App] change state default view network error by hieuvm (#6f9e91c)
