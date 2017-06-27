@@ -84,9 +84,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
      * apply font bold for some view
      */
     private void makeFont() {
-        applyFont(confirm_button, GlobalData.getStringResource(RS.string.zpw_font_regular));
         applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
-        applyFont(toolbar_title, GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
     @Override

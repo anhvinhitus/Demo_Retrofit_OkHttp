@@ -166,7 +166,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
      * apply font bold for some view
      */
     private void makeFont() {
-        applyFont(findViewById(R.id.zpsdk_btn_submit), GlobalData.getStringResource(RS.string.zpw_font_regular));
+        //applyFont(findViewById(R.id.zpsdk_btn_submit), GlobalData.getStringResource(RS.string.zpw_font_regular));
         applyFont(findViewById(R.id.order_amount_total_txt), GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
@@ -630,6 +630,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         //transaction amount
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
+            applyFont(findViewById(R.id.success_order_amount_total_txt), GlobalData.getStringResource(RS.string.zpw_font_medium));
             setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
             ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
