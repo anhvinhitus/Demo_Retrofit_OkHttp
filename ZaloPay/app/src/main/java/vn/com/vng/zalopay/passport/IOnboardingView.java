@@ -18,11 +18,13 @@ interface IOnboardingView extends AbstractLoginView {
 
     void setOtp(String otp);
 
-    void startOTPCountDown();
+    void startOTPCountDown(long time);
 
     void showIncorrectOtp(String msg);
 
     void showIncorrectPhone(String msg);
 
     void resendOTPSuccess();
+
+    void showDialogVerifyOtpOverNumberLimit();
 }

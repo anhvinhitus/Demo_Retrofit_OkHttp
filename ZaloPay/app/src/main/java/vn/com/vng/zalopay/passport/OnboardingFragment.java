@@ -66,7 +66,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     private static final String ARGUMENT_ACTIVE_TIME = "active_time";
     private static final String ARGUMENT_TAB_POSITION = "position";
     private static final String ARGUMENT_PHONE_NUMBER = "phone";
-    public static final long RESEND_OTP_INTERVAL = 60000L;
     public static final int INPUT_PASSWORD = 0;
     public static final int REINPUT_PASSWORD = 1;
     public static final int INPUT_PHONE = 2;
@@ -385,7 +384,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     private void onOtpPageActive() {
         isPermissionGrantedAndRequest(new String[]{Manifest.permission.RECEIVE_SMS}, RuntimePermissionFragment.PERMISSION_CODE.RECEIVE_SMS);
         setSubTitleOtp(mInputPhoneView.getInputText());
-        startOTPCountDown();
+        startOTPCountDown(OnboardingPresenter.RESEND_OTP_INTERVAL);
     }
 
     private void onPasswordPageActive() {
@@ -490,9 +489,9 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         mCountDownTime = null;
     }
 
-    public void startOTPCountDown() {
+    public void startOTPCountDown(long time) {
         stopCountDown();
-        mCountDownTime = new ResendCountDown(RESEND_OTP_INTERVAL, 1000);
+        mCountDownTime = new ResendCountDown(time, 1000);
         mCountDownTime.start();
     }
 
@@ -531,5 +530,28 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         if (mPresenter != null) {
             mPresenter.handleIntent(intent);
         }
+    }
+
+    @Override
+    public void showDialogVerifyOtpOverNumberLimit() {
+
+        String msg = getString(R.string.message_verify_otp_over_limit);
+
+        showErrorDialog(msg, getString(R.string.accept),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        if (!isAdded()) {
+                            return;
+                        }
+
+                        gotoLoginPage();
+                    }
+                });
     }
 }

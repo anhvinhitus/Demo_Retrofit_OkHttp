@@ -2,9 +2,6 @@ package vn.com.vng.zalopay.passport;
 
 import android.content.Context;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.LoginEvent;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -18,7 +15,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -28,9 +24,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by hieuvm on 6/10/17.
@@ -41,6 +34,8 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
     private final PassportRepository mPassportRepository;
     private final EventBus mEventBus;
     private final Context mApplicationContext;
+    private int mNumberResendOtp;
+    static final long RESEND_OTP_INTERVAL = 60000L;
 
     @Inject
     OnboardingPresenter(PassportRepository passportRepository, EventBus eventBus, Context applicationContext) {
@@ -110,6 +105,10 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
     }
 
     private void onRegisterSuccess(Boolean t, boolean isResend) {
+        if (isResend) {
+            mNumberResendOtp++;
+        }
+
         hideLoadingView();
 
         if (mView == null) {
@@ -117,7 +116,14 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
         }
 
         mView.nextPage();
-        mView.startOTPCountDown();
+
+        long millisInFuture = RESEND_OTP_INTERVAL;
+
+        if (mNumberResendOtp != 0 && mNumberResendOtp % 3 == 0) {
+            millisInFuture = 15 * RESEND_OTP_INTERVAL;
+        }
+
+        mView.startOTPCountDown(millisInFuture);
 
         if (isResend) {
             mView.resendOTPSuccess();
@@ -162,7 +168,7 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
 
     protected void onAuthenticated(User user) {
         super.onAuthenticated(user);
-      //  mView.showIncorrectOtp("");
+        //  mView.showIncorrectOtp("");
     }
 
     private void onAuthenticationError(Throwable e) {
@@ -177,9 +183,25 @@ class OnboardingPresenter extends AbstractLoginPresenter<IOnboardingView> {
             return;
         }
 
+        boolean incorrectOtp = false;
+        if (e instanceof BodyException) {
+            int errorCode = ((BodyException) e).errorCode;
+            if (errorCode == ServerErrorMessage.INCORRECT_OTP) {
+                incorrectOtp = true;
+            } else if (errorCode == ServerErrorMessage.VERIFY_OTP_OVER_LIMIT) {
+                verifyOverNumberLimit();
+                return;
+            }
+        }
+
         String msg = ErrorMessageFactory.create(mApplicationContext, e);
-        boolean incorrectOtp = e instanceof BodyException && ((BodyException) e).errorCode == ServerErrorMessage.INCORRECT_OTP;
         showAuthenticationError(incorrectOtp, msg);
+    }
+
+    private void verifyOverNumberLimit() {
+        if (mView != null) {
+            mView.showDialogVerifyOtpOverNumberLimit();
+        }
     }
 
     private void showAuthenticationError(boolean incorrectOtp, String msg) {
