@@ -599,7 +599,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         boolean hasTransId = !TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0;
         TextView transaction_id_txt = (TextView) viewContainer.findViewById(R.id.transaction_id_txt);
         if (hasTransId) {
-            transaction_id_txt.setText(pTransID);
+            String newTransID = pTransID.substring(0, 6) + "-" + pTransID.substring(6, pTransID.length());
+            transaction_id_txt.setText(newTransID);
         } else {
             transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_label));
         }
