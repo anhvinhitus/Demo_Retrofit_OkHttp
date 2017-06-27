@@ -25,9 +25,9 @@ import vn.com.zalopay.analytics.ZPEvents;
 public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     private final Context mContext;
     private final Call<T> mOriginalCall;
-    private final int mApiClientId;
+    private final int[] mApiClientId;
 
-    public CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
+    public CallOnSubscribe(Context context, Call<T> originalCall, int[] apiClientId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
         mApiClientId = apiClientId;
@@ -37,9 +37,9 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
     public void call(final Subscriber<? super Response<T>> subscriber) {
         // Since Call is a one-shot type, clone it for each new subscriber.
         final Call<T> call = mOriginalCall.clone();
-
         // Attempt to cancel the call if it is still in-flight on unsubscription.
         subscriber.add(Subscriptions.create(call::cancel));
+
         try {
             long startNs = System.nanoTime();
             Response<T> response = call.execute();
@@ -130,17 +130,32 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
         ZPAnalytics.trackAPIError(request.url().encodedPath().replaceFirst("/", ""), httpCode, 0, networkCode);
     }
 
+    private int getEventId(boolean isPaymentCall) {
+        int length = mApiClientId.length;
+        switch (length) {
+            case 0:
+                return -1;
+            case 1:
+                return mApiClientId[0];
+            case 2:
+                return isPaymentCall ? mApiClientId[1] : mApiClientId[0];
+            default:
+                return mApiClientId[0];
+        }
+    }
+
     private void logTiming(long duration, Request request) {
-        Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
-        int eventId = mApiClientId;
+
+        boolean isPaymentCall = NetworkConstants.CONNECTOR.equals(request.tag());
+
+        int eventId = getEventId(isPaymentCall);
+        Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(eventId), duration);
         if (eventId <= 0) {
-            if (request != null) {
-                String path = request.url().encodedPath();
-                Timber.d("API Request: %s", path);
-                if (MerchantApiMap.gApiMapEvent.containsKey(path)) {
-                    Timber.d("Found API Request");
-                    eventId = MerchantApiMap.gApiMapEvent.get(path);
-                }
+            String path = request.url().encodedPath();
+            Timber.d("API Request: %s", path);
+            if (MerchantApiMap.gApiMapEvent.containsKey(path)) {
+                Timber.d("Found API Request");
+                eventId = MerchantApiMap.gApiMapEvent.get(path);
             }
 
             if (eventId <= 0) {

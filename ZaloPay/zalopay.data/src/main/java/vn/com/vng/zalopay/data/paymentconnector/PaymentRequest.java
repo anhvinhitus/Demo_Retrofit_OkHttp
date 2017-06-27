@@ -20,19 +20,19 @@ class PaymentRequest {
         return sPaymentRequestId++;
     }
 
-    public int priority;
-    public boolean cancelled;
+    private int priority;
+    boolean cancelled;
 
-    public long requestId;
+    long requestId;
     public List<Pair<String, String>> params;
     public List<Pair<String, String>> headers;
     public String path;
-    public int port;
+    int port;
     public String method;
     public String domain;
-    public long sentRequestAtMillis;
+    private long sentRequestAtMillis;
 
-    public PaymentRequest(long requestId, String domain, String path, List<Pair<String, String>> params, List<Pair<String, String>> headers, int port, String method, int priority) {
+    PaymentRequest(long requestId, String domain, String path, List<Pair<String, String>> params, List<Pair<String, String>> headers, int port, String method, int priority) {
         this.priority = priority;
         this.requestId = requestId;
         this.params = params;
@@ -46,17 +46,13 @@ class PaymentRequest {
 
     @Override
     public boolean equals(Object o) {
+        return o instanceof PaymentRequest && requestId == ((PaymentRequest) o).requestId;
 
-        if (o instanceof PaymentRequest) {
-            return requestId == ((PaymentRequest) o).requestId;
-        }
-
-        return false;
     }
 
     public static final class Builder {
 
-        public int priority;
+        private int priority;
 
         private List<Pair<String, String>> params;
         private List<Pair<String, String>> headers;

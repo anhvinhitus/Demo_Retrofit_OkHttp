@@ -31,18 +31,18 @@ import vn.com.zalopay.analytics.ZPAnalytics;
  */
 abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
 
-    protected final int mMaxRetries;
+    private final int mMaxRetries;
     protected final Context mContext;
-    protected final int mApiEventId;
-    protected final Type mResponseType;
-    protected final Scheduler mScheduler;
-    protected int mRestRetryCount;
+    private final int[] mApiEventId;
+    private final Type mResponseType;
+    private final Scheduler mScheduler;
+    private int mRestRetryCount;
 
-    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
+    BaseCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler) {
         this(context, apiEventId, responseType, scheduler, Constants.NUMBER_RETRY_REST);
     }
 
-    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
+    BaseCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
         this.mContext = context;
         this.mApiEventId = apiEventId;
         this.mResponseType = responseType;

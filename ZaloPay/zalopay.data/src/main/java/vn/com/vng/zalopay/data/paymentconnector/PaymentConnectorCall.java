@@ -16,6 +16,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
+import vn.com.vng.zalopay.network.NetworkConstants;
 
 /**
  * Created by hieuvm on 3/9/17.
@@ -37,7 +38,7 @@ class PaymentConnectorCall implements Call {
 
     PaymentConnectorCall(PaymentConnectorService client, @NonNull Request request) {
         this.mClient = client;
-        this.originalRequest = request;
+        this.originalRequest = rebuildRequest(request);
     }
 
     @Override
@@ -144,6 +145,15 @@ class PaymentConnectorCall implements Call {
                 .receivedResponseAtMillis(receivedResponseAtMillis)
                 .protocol(Protocol.HTTP_1_1)
                 .request(originalRequest)
+                .build();
+    }
+
+    private Request rebuildRequest(Request request) {
+        return new Request.Builder()
+                .url(request.url())
+                .method(request.method(), request.body())
+                .tag(NetworkConstants.CONNECTOR)
+                .headers(request.headers())
                 .build();
     }
 

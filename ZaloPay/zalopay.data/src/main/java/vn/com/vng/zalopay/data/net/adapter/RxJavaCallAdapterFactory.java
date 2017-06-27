@@ -63,7 +63,7 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        int apiEventId = -1;
+        int[] apiEventId = new int[]{};
         int maxRetries = Constants.NUMBER_RETRY_REST;
 
         for (Annotation annotation : annotations) {
@@ -81,7 +81,7 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
         return getCallAdapter(returnType, scheduler, apiEventId, maxRetries);
     }
 
-    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int apiEventId, int maxRetries) {
+    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int[] apiEventId, int maxRetries) {
         Class<?> rawType = getRawType(returnType);
         if (rawType != Observable.class) {
             return null;
