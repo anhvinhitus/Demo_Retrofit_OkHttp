@@ -186,7 +186,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         initTimer();
         renderActivity();
         //hide header if this is link card.
-        if (paymentInfoHelper.isCardLinkTrans()) {
+        if (paymentInfoHelper.isLinkTrans()) {
             visibleOrderInfo(false);
         } else {
             renderOrderInfo();
@@ -343,7 +343,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
         }
         //link card
-        else if (mPaymentInfoHelper.isCardLinkTrans()) {
+        else if (mPaymentInfoHelper.isLinkTrans()) {
             //check profile level permission in table map
             try {
                 UserInfo userInfo = mPaymentInfoHelper.getUserInfo();

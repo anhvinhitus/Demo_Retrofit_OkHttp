@@ -273,7 +273,7 @@ public class RS {
 
         public static final String zpw_string_atm_method_name = "zpw_string_atm_method_name";
         public static final String zpw_string_credit_card_method_name = "zpw_string_credit_card_method_name";
-        public static final String sdk_link_card_title = "sdk_link_card_title";
+        public static final String sdk_link_title = "sdk_link_title";
 
         public static final String zpw_string_card_not_support = "zpw_string_card_not_support";
 

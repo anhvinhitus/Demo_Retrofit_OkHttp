@@ -11,7 +11,7 @@ public class PaymentInfoValidation implements IValidate {
     public PaymentInfoValidation(PaymentInfoHelper paymentInfoHelper) {
         if (paymentInfoHelper.isBankAccountTrans()) {
             setValidator(new LinkAccValidation());
-        } else if (paymentInfoHelper.isCardLinkTrans()) {
+        } else if (paymentInfoHelper.isLinkTrans()) {
             setValidator(new LinkCardValidation());
         } else {
             setValidator(new PayValidation());

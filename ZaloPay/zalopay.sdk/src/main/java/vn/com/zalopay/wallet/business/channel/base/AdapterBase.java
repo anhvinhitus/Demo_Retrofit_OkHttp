@@ -253,20 +253,8 @@ public abstract class AdapterBase {
             } else if (!TransactionHelper.isSecurityFlow(mResponseStatus)) {
                 showTransactionFailView(mResponseStatus.returnmessage);
             }
-        } else {
-            setTitle();
         }
         Log.d(this, "start adapter with page name", mPageName);
-    }
-
-    protected void setTitle() {
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            try {
-                getView().setTitle(GlobalData.getStringResource(RS.string.sdk_link_card_title));
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
     }
 
     public abstract void onProcessPhrase() throws Exception;
@@ -938,11 +926,7 @@ public abstract class AdapterBase {
                 onProcessPhrase();
             }
         } catch (Exception ex) {
-            if (mPaymentInfoHelper.isCardLinkTrans()) {
-                terminate(null, true);
-            } else {
-                showDialog(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
-            }
+            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             Log.e(this, ex);
         }
     }
@@ -1086,7 +1070,7 @@ public abstract class AdapterBase {
         }
         try {
             String title = mPaymentInfoHelper.getFailTitleByTrans(GlobalData.getAppContext());
-            boolean isLink = mPaymentInfoHelper.isCardLinkTrans();
+            boolean isLink = mPaymentInfoHelper.isLinkTrans();
             getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mResponseStatus, true, title);
         } catch (Exception e) {
             Log.e(this, e);
@@ -1138,7 +1122,7 @@ public abstract class AdapterBase {
             sendLogTransaction();
         }
         //link card channel, server auto save card , client only save card to local cache without hit server
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
+        if (mPaymentInfoHelper.isLinkTrans()) {
             try {
                 if (mMapCard == null) {
                     tranferPaymentCardToMapCard();
@@ -1221,12 +1205,12 @@ public abstract class AdapterBase {
         }
         try {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            boolean hideAmount = mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans();
-            boolean isTranfer = mPaymentInfoHelper.isMoneyTranferTrans();
+            boolean isTransfer = mPaymentInfoHelper.isMoneyTranferTrans();
             UserInfo destUser = mPaymentInfoHelper.getDestinationUser();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(GlobalData.getAppContext());
-            boolean isLink = mPaymentInfoHelper.isCardLinkTrans();
-            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTranfer, destUser, title);
+            boolean isLink = mPaymentInfoHelper.isLinkTrans();
+            boolean hideAmount = isLink;
+            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, destUser, title);
         } catch (Exception e) {
             Log.e(this, e);
         }

@@ -124,7 +124,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         } catch (Exception e) {
             Log.d(this, e);
         }
-        if (mPaymentInfoHelper != null) {
+        if (mPaymentInfoHelper == null) {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
         }
         SDKApplication.getApplicationComponent().inject(this);
@@ -325,6 +325,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
             return;
         }
+        if (mMiniPmcTransType == null) {
+            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            return;
+        }
         try {
             mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
             if (mAdapter == null) {
@@ -335,16 +339,14 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             //hide header if this is link card
-            if (mPaymentInfoHelper.isCardLinkTrans()) {
+            if (mPaymentInfoHelper.isLinkTrans()) {
                 getViewOrThrow().visiableOrderInfo(false);
             } else {
                 getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             }
             initChannel();
-            if (mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
+            if (mPaymentInfoHelper.isLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
                 prepareLink();
-            } else if (mMiniPmcTransType == null) {
-                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -362,9 +364,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 Log.e(this, ex);
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
             }
+            return;
         }
         //this is link card channel and the first call.
-        else if (mPaymentInfoHelper.isCardLinkTrans()) {
+        if (mPaymentInfoHelper.isLinkTrans()) {
             //check profile level permission in table map
             try {
                 UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
@@ -639,9 +642,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             byte[] byteArray = stream.toByteArray();
             String transactionTitle = mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext());
-            if (mPaymentInfoHelper.isCardLinkTrans()) {
-                transactionTitle = GlobalData.getStringResource(RS.string.sdk_link_card_title);
-            }
             int errorcode = mAdapter.getResponseStatus() != null ? mAdapter.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
             feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAdapter.getTransactionID(), errorcode);
         } catch (Exception e) {

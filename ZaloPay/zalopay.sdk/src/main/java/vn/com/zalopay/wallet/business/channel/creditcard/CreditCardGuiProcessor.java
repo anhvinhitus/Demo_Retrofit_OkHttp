@@ -9,7 +9,6 @@ import java.lang.ref.WeakReference;
 import rx.Subscription;
 import rx.functions.Action1;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -95,7 +94,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected boolean validateCardNumberLength() {
-        return mPaymentInfoHelper.isCardLinkTrans() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
+        return mPaymentInfoHelper.isLinkTrans() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
 
     }
 

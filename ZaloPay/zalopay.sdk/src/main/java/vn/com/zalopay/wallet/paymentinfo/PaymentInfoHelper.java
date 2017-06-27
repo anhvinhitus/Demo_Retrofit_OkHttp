@@ -186,7 +186,7 @@ public class PaymentInfoHelper extends SingletonBase {
         return getLinkAccountInfo() != null && getLinkAccountInfo().isUnlinkAcc();
     }
 
-    public boolean isCardLinkTrans() {
+    public boolean isLinkTrans() {
         return getTranstype() == TransactionType.LINK;
     }
 
@@ -246,6 +246,8 @@ public class PaymentInfoHelper extends SingletonBase {
             title = context.getString(R.string.sdk_transfer_title);
         } else if (isWithDrawTrans()) {
             title = context.getString(R.string.sdk_withdraw_title);
+        } else if (isLinkTrans()) {
+            title = context.getString(R.string.sdk_link_title);
         }
         return title;
     }
@@ -258,7 +260,7 @@ public class PaymentInfoHelper extends SingletonBase {
             title = context.getString(R.string.sdk_transfer_fail_title);
         } else if (isWithDrawTrans()) {
             title = context.getString(R.string.sdk_withdraw_fail_title);
-        } else if (isCardLinkTrans()) {
+        } else if (isLinkTrans()) {
             title = context.getString(R.string.sdk_link_acc_fail_title);
         }
         return title;
@@ -272,7 +274,7 @@ public class PaymentInfoHelper extends SingletonBase {
             title = context.getString(R.string.sdk_transfer_success_title);
         } else if (isWithDrawTrans()) {
             title = context.getString(R.string.sdk_withdraw_success_title);
-        } else if (isCardLinkTrans()) {
+        } else if (isLinkTrans()) {
             title = context.getString(R.string.sdk_link_acc_success_title);
         }
         return title;

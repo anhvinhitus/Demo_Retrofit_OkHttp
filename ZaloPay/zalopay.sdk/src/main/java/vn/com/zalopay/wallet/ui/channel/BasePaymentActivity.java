@@ -1014,7 +1014,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
             ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
-        if (!hasAmount || mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
+        if (!hasAmount || mPaymentInfoHelper.isLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
             setVisible(R.id.success_order_amount_total_linearlayout, false);
         }
         //desc
@@ -1394,7 +1394,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             byte[] byteArray = stream.toByteArray();
             String transactionTitle = getTransactionTitle();
 
-            if (mPaymentInfoHelper.isCardLinkTrans()) {
+            if (mPaymentInfoHelper.isLinkTrans()) {
                 transactionTitle = GlobalData.getStringResource(RS.string.sdk_link_card_title);
             }
             int errorcode = getAdapter().getResponseStatus() != null ? getAdapter().getResponseStatus().returncode : Constants.NULL_ERRORCODE;

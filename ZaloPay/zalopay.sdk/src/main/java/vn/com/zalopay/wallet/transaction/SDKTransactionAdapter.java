@@ -25,7 +25,7 @@ public class SDKTransactionAdapter extends SingletonBase {
 
     public SDKTransactionAdapter setAdapter(AdapterBase adapterBase) {
         mAdapter = new WeakReference<>(adapterBase);
-        if (mAdapter.get().getPaymentInfoHelper().isCardLinkTrans()) {
+        if (mAdapter.get().getPaymentInfoHelper().isLinkTrans()) {
             mSDKTransaction = SDKMapCard.shared();
         } else {
             mSDKTransaction = SDKPayment.shared();

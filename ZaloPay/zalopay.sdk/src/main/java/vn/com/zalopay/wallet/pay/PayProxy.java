@@ -567,7 +567,8 @@ public class PayProxy extends SingletonBase {
             intent.putExtra(PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
         } catch (Exception e) {
             Log.e(this, e);

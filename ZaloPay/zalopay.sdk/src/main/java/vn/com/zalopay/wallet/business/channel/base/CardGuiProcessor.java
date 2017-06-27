@@ -310,7 +310,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
             if (!getAdapter().isNeedToSwitchChannel()) {
                 //workout prevent flicker when switch atm and cc
-                if (!detected && mPaymentInfoHelper.isCardLinkTrans()) {
+                if (!detected && mPaymentInfoHelper.isLinkTrans()) {
                     needToWarningNotSupportCard = false;
                 }
                 setDetectedCard();
@@ -321,7 +321,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
             //continue detect if haven't detected card type yet
-            if (!detected && mPaymentInfoHelper.isCardLinkTrans()) {
+            if (!detected && mPaymentInfoHelper.isLinkTrans()) {
                 needToWarningNotSupportCard = true;
                 continueDetectCardForLinkCard();
             }
@@ -681,7 +681,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean validateCardNumberLuhn() {
         boolean isDetected = getCardFinder().isDetected();
 
-        if (mPaymentInfoHelper.isCardLinkTrans() && !isDetected) {
+        if (mPaymentInfoHelper.isLinkTrans() && !isDetected) {
             isDetected = getCreditCardFinder().isDetected() ? getCreditCardFinder().isDetected() : getBankCardFinder().isDetected();
         }
 
@@ -791,7 +791,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 miniPmcTransType = getAdapter().getConfig(bankCode);
             }
             //check quota amount transaction for each bank
-            if (miniPmcTransType != null && !mPaymentInfoHelper.isCardLinkTrans() && (getAdapter() instanceof AdapterBankCard)) {
+            if (miniPmcTransType != null && !mPaymentInfoHelper.isLinkTrans() && (getAdapter() instanceof AdapterBankCard)) {
                 miniPmcTransType.calculateFee(mPaymentInfoHelper.getAmount());
                 mPaymentInfoHelper.getOrder().populateFee(miniPmcTransType);
                 miniPmcTransType.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
@@ -816,7 +816,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             //bidv card must paid by mapcard
-            if (!mPaymentInfoHelper.isCardLinkTrans() && (getAdapter() instanceof AdapterBankCard)
+            if (!mPaymentInfoHelper.isLinkTrans() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).paymentBIDV()
                     && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(bankCode, getCardNumber())) {
                 return;
@@ -854,7 +854,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             Log.d(this, "bank config is null");
             return;
         }
-        String pMessage = mPaymentInfoHelper.isCardLinkTrans() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+        String pMessage = mPaymentInfoHelper.isLinkTrans() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
         pMessage = String.format(pMessage, bankConfig.getShortBankName());
         getAdapter().getView().showConfirmDialog(pMessage,
                 GlobalData.getStringResource(RS.string.dialog_upgrade_button),
@@ -878,7 +878,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showWarningBankAccount() {
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
+        if (mPaymentInfoHelper.isLinkTrans()) {
             try {
                 getAdapter().getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
                         GlobalData.getStringResource(RS.string.dialog_linkaccount_button),
@@ -1270,7 +1270,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         int max = mCardAdapter.getCount();
         int currentIndex = getViewPager().getCurrentItem();
         //prevent user move to next if input existed card in link card
-        if (currentIndex == 0 && preventNextIfLinkCardExisted() && mPaymentInfoHelper.isCardLinkTrans()) {
+        if (currentIndex == 0 && preventNextIfLinkCardExisted() && mPaymentInfoHelper.isLinkTrans()) {
             try {
                 showHintError(getCardNumberView(), warningCardExist());
                 return;
@@ -1416,7 +1416,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showWarningDisablePmc(String pBankName) {
-        String mess = mPaymentInfoHelper.isCardLinkTrans() ? GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_link) : GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_payment);
+        String mess = mPaymentInfoHelper.isLinkTrans() ? GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_link) : GlobalData.getStringResource(RS.string.sdk_warning_pmc_transtype_disable_payment);
         String disableBankMessage = String.format(mess, pBankName);
         try {
             getAdapter().getView().showInfoDialog(disableBankMessage,
@@ -1649,7 +1649,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected DCardIdentifier getSelectBankCardIdentifier() {
         DCardIdentifier cardIdentifier;
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
+        if (mPaymentInfoHelper.isLinkTrans()) {
             cardIdentifier = getBankCardFinder().getCardIdentifier();
             if (cardIdentifier == null) {
                 cardIdentifier = getCreditCardFinder().getCardIdentifier();

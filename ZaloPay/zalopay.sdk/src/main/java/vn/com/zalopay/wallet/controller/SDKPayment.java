@@ -233,8 +233,8 @@ public class SDKPayment {
         Intent intent;
         MiniPmcTransType pmcTransType = null;
         int transtype = paymentInfoHelper.getTranstype();
-        //this is link card , go to channel directly
-        if (paymentInfoHelper.isCardLinkTrans() || paymentInfoHelper.isBankAccountTrans()) {
+        //this is link , go to channel directly
+        if (paymentInfoHelper.isLinkTrans()) {
             intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
             int layoutId = paymentInfoHelper.isBankAccountTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
             intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
@@ -254,7 +254,8 @@ public class SDKPayment {
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
             GlobalData.paymentInfoHelper = paymentInfoHelper;
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pOwner.startActivity(intent);
         }
         Log.d("startGateway", intent.getComponent().getShortClassName(), pmcTransType);
