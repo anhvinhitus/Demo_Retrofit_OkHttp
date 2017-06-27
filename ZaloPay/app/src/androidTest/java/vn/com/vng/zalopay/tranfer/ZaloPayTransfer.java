@@ -41,7 +41,7 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         //delay for app start
         SystemClock.sleep(5000);
         tranfer_item_name = mResource.getString(R.string.transfer_money);
-        long balance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
+      //  long balance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
         /*onView(withId(R.id.home_rcv_list_app))
                 .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(tranfer_item_name)), click()));*/
         //select tranfer
@@ -59,7 +59,7 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         //click button
         onView(withId(R.id.btnContinue)).perform(click());
 
-        tranfer_happen_insdk(balance);
+       // tranfer_happen_insdk(balance);
     }
 
     protected void tranfer_happen_insdk(long balance) {
@@ -79,7 +79,7 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         //delay for update balance and release payment resource
         SystemClock.sleep(1000);
         //asset balance again
-        long updatedBalance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
-        Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANFER);
+      //  long updatedBalance = Long.parseLong(getText(withId(R.id.home_tv_balance)).replace(".", ""));
+      //  Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANFER);
     }
 }

@@ -60,7 +60,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     public void setAuthenticationCallback(AuthenticationCallback callback) {
         this.mCallback = callback;
     }
-
     /**
      * Finish Activity sau khi XÁC THỰC THÀNH CÔNG
      */
@@ -193,14 +192,14 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
             cancel();
             return;
         }
-
-        if (isAuthPayment) {
-            onAuthenticated("");
+        else
+        {
+            if (mCallback != null) {
+                mCallback.onShowPassword();
+            }
+            cancel();
             return;
         }
-
-        mPresenter.verify(mPassword.getPassWord());
-        mPassword.clearPassword();
     }
 
     private void cancel() {

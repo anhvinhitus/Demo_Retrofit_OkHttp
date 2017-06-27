@@ -9,6 +9,8 @@ public abstract class AuthenticationCallback {
 
     public void onAuthenticationFailure() {
     }
+    public void onShowPassword() {
+    }
 
     public void onCancel() {
     }
