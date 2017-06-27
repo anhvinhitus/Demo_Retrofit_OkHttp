@@ -40,6 +40,7 @@ public class ZaloPayEntityDataMapper {
         item.sign = val.sign;
         item.username = val.username;
         item.appusername = val.appusername;
+        item.thank_message = val.thank_message;
 
         return item;
     }

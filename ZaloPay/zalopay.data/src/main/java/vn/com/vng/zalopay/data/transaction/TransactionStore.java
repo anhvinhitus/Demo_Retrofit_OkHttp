@@ -32,6 +32,8 @@ public interface TransactionStore {
 
         TransHistoryEntity getTransaction(long id);
 
+        void updateThankMessage(long transId, String message);
+
         void updateStatusType(long transId, int statusType);
 
         void setLoadedTransactionSuccess(boolean loaded);
@@ -41,11 +43,6 @@ public interface TransactionStore {
         boolean isLoadedTransactionSuccess();
 
         boolean isLoadedTransactionFail();
-
-        void putBackup(@Nullable TransHistoryEntity val);
-
-        @Nullable
-        TransHistoryEntity getBackup(long transId);
 
     }
 
@@ -64,6 +61,8 @@ public interface TransactionStore {
         Observable<List<TransHistory>> getTransactionsLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
         Observable<List<TransHistory>> getTransactionsFailLocal(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
+
+        Observable<Boolean> updateThankMessage(long transId, String message);
 
         Observable<Boolean> removeTransaction(long id);
 

@@ -21,12 +21,12 @@ public class NotificationMessageDeserializer implements JsonDeserializer<Notific
 
     @Override
     public NotificationEmbedData deserialize(JsonElement value, Type type,
-                                        JsonDeserializationContext context) throws JsonParseException {
+                                             JsonDeserializationContext context) throws JsonParseException {
         if (value.isJsonPrimitive()) {
             // try to decode base64 and convert to jsonobject
             String embedValue = value.getAsString();
             try {
-                embedValue = new String(Base64.decode(embedValue, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
+                embedValue = new String(Base64.decode(embedValue, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE), "UTF-8");
                 JsonParser parser = new JsonParser();
                 return new NotificationEmbedData(parser.parse(embedValue).getAsJsonObject());
             } catch (JsonParseException e) {

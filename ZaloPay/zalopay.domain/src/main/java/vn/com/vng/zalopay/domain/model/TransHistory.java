@@ -43,6 +43,8 @@ public class TransHistory extends AbstractData implements Parcelable {
 
     public String appusername;
 
+    public String thank_message;
+
 
     @Override
     public int describeContents() {
@@ -66,6 +68,7 @@ public class TransHistory extends AbstractData implements Parcelable {
         dest.writeLong(this.sign);
         dest.writeString(this.username);
         dest.writeString(this.appusername);
+        dest.writeString(this.thank_message);
     }
 
     protected TransHistory(Parcel in) {
@@ -84,6 +87,7 @@ public class TransHistory extends AbstractData implements Parcelable {
         this.sign = in.readInt();
         this.username = in.readString();
         this.appusername = in.readString();
+        this.thank_message = in.readString();
     }
 
     public static final Parcelable.Creator<TransHistory> CREATOR = new Parcelable.Creator<TransHistory>() {

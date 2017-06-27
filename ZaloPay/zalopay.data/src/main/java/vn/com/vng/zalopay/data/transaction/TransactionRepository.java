@@ -17,6 +17,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.TransactionFragmentEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
+import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -186,11 +187,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
-        Observable<TransHistoryEntity> observable = ObservableHelper.makeObservable(() -> mLocalStorage.getTransaction(id))
-                .filter(entity -> entity != null);
-        Observable<TransHistoryEntity> observableBackup = ObservableHelper.makeObservable(() -> mLocalStorage.getBackup(id));
-        return Observable.concat(observable, observableBackup)
-                .first()
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getTransaction(id))
                 .map(mDataMapper::transform);
     }
 
@@ -475,6 +472,15 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     @Override
+    public Observable<Boolean> updateThankMessage(long transId, String message) {
+        return ObservableHelper.makeObservable(() -> {
+            mLocalStorage.updateThankMessage(transId, message);
+            mEventBus.postSticky(new TransactionDetailChangeEvent(transId));
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
     public Observable<Boolean> removeTransaction(long id) {
         return ObservableHelper.makeObservable(() -> {
             mLocalStorage.remove(id);
@@ -486,13 +492,34 @@ public class TransactionRepository implements TransactionStore.Repository {
      * time là millis
      */
     @Override
-    public Observable<TransHistory> reloadTransactionHistory(long transId, long time) {
-        long timestamp = time + 5000;
+    public Observable<TransHistory> reloadTransactionHistory(long transId, long timestamp) {
+        return getTransaction(transId)
+                .flatMap(transHistory -> {
+                    if (transHistory == null) {
+                        return reloadTransaction(transId, timestamp);
+                    }
+                    return Observable.just(transHistory);
+                });
+    }
+
+    private Observable<TransHistory> reloadTransaction(long transId, long timestamp) {
         Timber.d("Reload transaction history: transactionId [%s] timeStamp [%s]", transId, timestamp);
         Observable<List<TransHistoryEntity>> observableSuccess = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_SUCCESS)
-                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
+                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()))
+                .doOnNext(transHistoryEntities -> {
+                    mLocalStorage.put(transHistoryEntities);
+                    long maxreqdate = transHistoryEntities.get(0).reqdate;
+                    long minreqdate = transHistoryEntities.get(transHistoryEntities.size() - 1).reqdate;
+                    updateTransactionFragment(timestamp, TRANSACTION_STATUS_SUCCESS, maxreqdate, minreqdate, TRANSACTION_ORDER_OLDEST);
+                });
         Observable<List<TransHistoryEntity>> observableFail = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_FAIL)
-                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
+                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()))
+                .doOnNext(transHistoryEntities -> {
+                    mLocalStorage.put(transHistoryEntities);
+                    long maxreqdate = transHistoryEntities.get(0).reqdate;
+                    long minreqdate = transHistoryEntities.get(transHistoryEntities.size() - 1).reqdate;
+                    updateTransactionFragment(timestamp, TRANSACTION_STATUS_FAIL, maxreqdate, minreqdate, TRANSACTION_ORDER_OLDEST);
+                });
 
         return Observable
                 .zip(observableSuccess, observableFail, (entitiesSuccess, entitiesFail) -> {
@@ -503,16 +530,8 @@ public class TransactionRepository implements TransactionStore.Repository {
                     }
                     return findTransaction(entitiesFail, transId);
                 })
-                .map(entity -> {
-                    if (entity != null) {
-                        mLocalStorage.putBackup(entity);
-                        return mDataMapper.transform(entity);
-                    }
-                    return null;
-                });
-
+                .map(mDataMapper::transform);
     }
-
 
     @Nullable
     private TransHistoryEntity findTransaction(List<TransHistoryEntity> entities, long transId) {

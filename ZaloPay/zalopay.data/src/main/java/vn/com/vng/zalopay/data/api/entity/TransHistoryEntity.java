@@ -60,6 +60,9 @@ public class TransHistoryEntity {
     @SerializedName("isretry")
     public boolean isretry;
 
+    @SerializedName("thank_message")
+    public String thank_message;
+
     @Expose(serialize = false, deserialize = false)
     public long statustype = 1;
 
@@ -90,6 +93,8 @@ public class TransHistoryEntity {
             return false;
         if (username != null ? !username.equals(that.username) : that.username != null)
             return false;
+        if (thank_message != null ? !thank_message.equals(that.thank_message) : that.thank_message != null)
+            return false;
         return appusername != null ? appusername.equals(that.appusername) : that.appusername == null;
 
     }
@@ -111,6 +116,7 @@ public class TransHistoryEntity {
         result = 31 * result + (int) (sign ^ (sign >>> 32));
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (appusername != null ? appusername.hashCode() : 0);
+        result = 31 * result + (thank_message != null ? thank_message.hashCode() : 0);
         result = 31 * result + (int) (transstatus ^ (transstatus >>> 32));
         result = 31 * result + (isretry ? 1 : 0);
         result = 31 * result + (int) (statustype ^ (statustype >>> 32));
@@ -138,6 +144,7 @@ public class TransHistoryEntity {
                 ", transstatus=" + transstatus +
                 ", isretry=" + isretry +
                 ", statustype=" + statustype +
+                ", thank_message=" + thank_message +
                 '}';
     }
 }

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
@@ -20,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
@@ -198,7 +201,7 @@ public class NotificationHelper {
                 break;
             case NotificationType.APP_P2P_NOTIFICATION:
                 mEventBus.post(notify);
-                skipStorage = true;
+                skipStorage = processAppP2PNotification(notify);
                 break;
             case NotificationType.MERCHANT_BILL:
                 payOrderFromNotify(notify);
@@ -224,6 +227,7 @@ public class NotificationHelper {
 
     }
 
+
     private boolean skipStorage(NotificationData notify) {
         boolean skipStorage = notify.area == AREA_SKIP;
 
@@ -246,6 +250,41 @@ public class NotificationHelper {
         }
 
         return skipStorage;
+}
+    private boolean processAppP2PNotification(NotificationData notify) {
+        try {
+            JsonObject embeddata = notify.getEmbeddata();
+            int type = embeddata.get("type").getAsInt();
+            boolean skipStorage = false;
+
+            switch (type) {
+                case Constants.AppP2PNotificationType.QR_TRANSFER:
+                    skipStorage = true;
+                    break;
+                case Constants.AppP2PNotificationType.SEND_THANK_MESSAGE:
+                    String message = embeddata.get("message").getAsString();
+                    String displayName = embeddata.get("displayname").getAsString();
+                    long transId = embeddata.get("transid").getAsLong();
+                    String zalopayid = embeddata.get("zalopayid").getAsString();
+
+                    String name = zalopayid != null && !zalopayid.isEmpty() ? zalopayid : displayName;
+
+                    notify.notificationstate = (long) (Enums.NotificationState.UNREAD.getId());
+                    notify.message = String.format(mContext.getString(R.string.receive_thank_message), name);
+                    notify.transid = transId;
+                    Subscription subscription = mTransactionRepository.updateThankMessage(transId, message)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new DefaultSubscriber<>());
+                    mCompositeSubscription.add(subscription);
+
+                    break;
+            }
+
+            return skipStorage;
+        } catch (Exception e) {
+            Timber.d("Fail to processAppP2PNotification: %s", e.getMessage());
+            return false;
+        }
     }
 
     void processImmediateNotification(NotificationData notify) {

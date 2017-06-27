@@ -10,7 +10,6 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
-import vn.com.vng.zalopay.data.cache.model.TransactionLogBackup;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
@@ -23,7 +22,6 @@ import vn.com.vng.zalopay.data.cache.model.TransactionFragmentGD;
 
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
-import vn.com.vng.zalopay.data.cache.model.TransactionLogBackupDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloProfileGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
@@ -45,7 +43,6 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig appResourceGDDaoConfig;
     private final DaoConfig transactionLogDaoConfig;
-    private final DaoConfig transactionLogBackupDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
     private final DaoConfig zaloProfileGDDaoConfig;
     private final DaoConfig zaloPayProfileGDDaoConfig;
@@ -58,7 +55,6 @@ public class DaoSession extends AbstractDaoSession {
 
     private final AppResourceGDDao appResourceGDDao;
     private final TransactionLogDao transactionLogDao;
-    private final TransactionLogBackupDao transactionLogBackupDao;
     private final DataManifestDao dataManifestDao;
     private final ZaloProfileGDDao zaloProfileGDDao;
     private final ZaloPayProfileGDDao zaloPayProfileGDDao;
@@ -78,9 +74,6 @@ public class DaoSession extends AbstractDaoSession {
 
         transactionLogDaoConfig = daoConfigMap.get(TransactionLogDao.class).clone();
         transactionLogDaoConfig.initIdentityScope(type);
-
-        transactionLogBackupDaoConfig = daoConfigMap.get(TransactionLogBackupDao.class).clone();
-        transactionLogBackupDaoConfig.initIdentityScope(type);
 
         dataManifestDaoConfig = daoConfigMap.get(DataManifestDao.class).clone();
         dataManifestDaoConfig.initIdentityScope(type);
@@ -111,7 +104,6 @@ public class DaoSession extends AbstractDaoSession {
 
         appResourceGDDao = new AppResourceGDDao(appResourceGDDaoConfig, this);
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
-        transactionLogBackupDao = new TransactionLogBackupDao(transactionLogBackupDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
         zaloProfileGDDao = new ZaloProfileGDDao(zaloProfileGDDaoConfig, this);
         zaloPayProfileGDDao = new ZaloPayProfileGDDao(zaloPayProfileGDDaoConfig, this);
@@ -124,7 +116,6 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(AppResourceGD.class, appResourceGDDao);
         registerDao(TransactionLog.class, transactionLogDao);
-        registerDao(TransactionLogBackup.class, transactionLogBackupDao);
         registerDao(DataManifest.class, dataManifestDao);
         registerDao(ZaloProfileGD.class, zaloProfileGDDao);
         registerDao(ZaloPayProfileGD.class, zaloPayProfileGDDao);
@@ -139,7 +130,6 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         appResourceGDDaoConfig.clearIdentityScope();
         transactionLogDaoConfig.clearIdentityScope();
-        transactionLogBackupDaoConfig.clearIdentityScope();
         dataManifestDaoConfig.clearIdentityScope();
         zaloProfileGDDaoConfig.clearIdentityScope();
         zaloPayProfileGDDaoConfig.clearIdentityScope();
@@ -157,10 +147,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public TransactionLogDao getTransactionLogDao() {
         return transactionLogDao;
-    }
-
-    public TransactionLogBackupDao getTransactionLogBackupDao() {
-        return transactionLogBackupDao;
     }
 
     public DataManifestDao getDataManifestDao() {

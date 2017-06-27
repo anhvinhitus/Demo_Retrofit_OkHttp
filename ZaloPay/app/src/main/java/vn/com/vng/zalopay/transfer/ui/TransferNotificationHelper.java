@@ -31,7 +31,7 @@ class TransferNotificationHelper {
 
     Subscription sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
+        jsonObject.addProperty("type", Constants.AppP2PNotificationType.QR_TRANSFER);
         jsonObject.addProperty("displayname", mUser.displayName);
         jsonObject.addProperty("avatar", mUser.avatar);
         jsonObject.addProperty("mt_progress", stage);

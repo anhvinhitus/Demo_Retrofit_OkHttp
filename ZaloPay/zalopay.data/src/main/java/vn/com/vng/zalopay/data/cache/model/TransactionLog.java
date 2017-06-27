@@ -28,6 +28,7 @@ public class TransactionLog {
     public String username;
     public String appusername;
     public Long statustype;
+    public String thank_message;
 
 
 }

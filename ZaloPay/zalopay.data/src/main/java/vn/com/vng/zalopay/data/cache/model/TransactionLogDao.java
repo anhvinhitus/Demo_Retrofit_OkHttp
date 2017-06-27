@@ -38,6 +38,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Username = new Property(13, String.class, "username", false, "USERNAME");
         public final static Property Appusername = new Property(14, String.class, "appusername", false, "APPUSERNAME");
         public final static Property Statustype = new Property(15, Long.class, "statustype", false, "STATUSTYPE");
+        public final static Property Thank_message = new Property(16, String.class, "thank_message", false, "THANK_MESSAGE");
     }
 
 
@@ -68,7 +69,8 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
                 "\"SIGN\" INTEGER," + // 12: sign
                 "\"USERNAME\" TEXT," + // 13: username
                 "\"APPUSERNAME\" TEXT," + // 14: appusername
-                "\"STATUSTYPE\" INTEGER);"); // 15: statustype
+                "\"STATUSTYPE\" INTEGER," + // 15: statustype
+                "\"THANK_MESSAGE\" TEXT);"); // 16: thank_message
     }
 
     /** Drops the underlying database table. */
@@ -152,6 +154,11 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
+ 
+        String thank_message = entity.thank_message;
+        if (thank_message != null) {
+            stmt.bindString(17, thank_message);
+        }
     }
 
     @Override
@@ -229,6 +236,11 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
+ 
+        String thank_message = entity.thank_message;
+        if (thank_message != null) {
+            stmt.bindString(17, thank_message);
+        }
     }
 
     @Override
@@ -261,6 +273,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         entity.username = cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13);
         entity.appusername = cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14);
         entity.statustype = cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15);
+        entity.thank_message = cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16);
      }
     
     @Override
