@@ -38,12 +38,13 @@ public class AuthenActor {
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            Log.e(this, pError);
+            Timber.w("password on error %s", pError);
         }
 
         @Override
         public void onCheckedFingerPrint(boolean pChecked) {
-            Log.d(this, "on changed check", pChecked);
+            Timber.d("activate ff for payment later %s", pChecked);
+            useFPPassword = pChecked;
         }
 
         @Override
