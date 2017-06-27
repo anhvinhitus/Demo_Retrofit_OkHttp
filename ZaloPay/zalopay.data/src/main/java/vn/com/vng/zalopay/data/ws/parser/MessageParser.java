@@ -139,6 +139,7 @@ public class MessageParser implements Parser {
             recoverMsg.usrid = ConvertHelper.unboxValue(recoverMessage.usrid, 0);
 
             for (RecoveryMessage message : recoverMessage.messages) {
+                Timber.d("Process recovered notification message: [%d-%d]", message.mtaid, message.mtuid);
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
                     recoverMsg.addRecoveryMessage(event);

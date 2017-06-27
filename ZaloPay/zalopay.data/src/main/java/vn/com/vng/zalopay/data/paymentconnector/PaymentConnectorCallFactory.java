@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.paymentconnector;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ConfigUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 
@@ -28,6 +29,7 @@ public class PaymentConnectorCallFactory implements Call.Factory {
         }
 
         if (!mConnectorService.isConnectionReady()) {
+            Timber.d("[NOTCONNECT] Reroute to https for request: %s", request.url().encodedPath());
             return mOkHttpClient.newCall(request);
         }
 
@@ -35,6 +37,7 @@ public class PaymentConnectorCallFactory implements Call.Factory {
         if (ConfigUtil.containsApi(apiName)) {
             return new PaymentConnectorCall(mConnectorService, request);
         } else {
+            Timber.d("[SKIP] Reroute to https for request: %s", request.url().encodedPath());
             return mOkHttpClient.newCall(request);
         }
 
