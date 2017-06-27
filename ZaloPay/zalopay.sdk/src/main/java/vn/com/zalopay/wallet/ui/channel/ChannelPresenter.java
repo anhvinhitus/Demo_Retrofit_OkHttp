@@ -241,7 +241,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             return false;
         } else {
-            getViewOrThrow().showQuitConfirm(TransactionHelper.getQuitMessage(mPaymentInfoHelper), new ZPWOnEventConfirmDialogListener() {
+            getViewOrThrow().showQuitConfirm(mPaymentInfoHelper.getQuitMessByTrans(GlobalData.getAppContext()), new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
                     try {

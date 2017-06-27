@@ -342,7 +342,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showQuitConfirm() {
-        DialogManager.showSweetDialogConfirm(getActivity(), getString(R.string.sdk_quit_confirm_text),
+        String mess = mPresenter.getQuitMessage();
+        DialogManager.showSweetDialogConfirm(getActivity(), mess,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), new ZPWOnEventConfirmDialogListener() {
                     @Override

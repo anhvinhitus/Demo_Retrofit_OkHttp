@@ -31,16 +31,6 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
  */
 
 public class TransactionHelper {
-    public static String getQuitMessage(PaymentInfoHelper paymentInfoHelper) {
-        String message = GlobalData.getStringResource(RS.string.sdk_quit_confirm_text);
-        if (paymentInfoHelper.isPayTrans()) {
-            message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
-        } else if (paymentInfoHelper.isBankAccountTrans()) {
-            message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
-        }
-        return message;
-    }
-
     public static String getMessage(Throwable throwable) {
         String message = null;
         if (throwable instanceof RequestException) {

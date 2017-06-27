@@ -278,6 +278,18 @@ public class PaymentInfoHelper extends SingletonBase {
         return title;
     }
 
+    public String getQuitMessByTrans(Context context) {
+        String title = context.getString(R.string.sdk_quit_pay_confirm_text);
+        if (isTopupTrans()) {
+            title = context.getString(R.string.sdk_quit_topup_confirm_text);
+        } else if (isMoneyTranferTrans()) {
+            title = context.getString(R.string.sdk_quit_tranfer_confirm_text);
+        } else if (isWithDrawTrans()) {
+            title = context.getString(R.string.sdk_quit_withdraw_confirm_text);
+        }
+        return title;
+    }
+
     /***
      * user level 1 can not tranfer money.
      * user level 1 can not withdraw.

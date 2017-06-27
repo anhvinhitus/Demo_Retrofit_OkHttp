@@ -63,8 +63,6 @@ import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
-import vn.com.zalopay.wallet.ui.channellist.item.AbstractItem;
-import vn.com.zalopay.wallet.ui.channellist.item.TitleItem;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -186,7 +184,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 appName = appInfo.appname;
             }
             getViewOrThrow().renderAppInfo(appName);
-            if(!loadStaticResource(mPaymentInfoHelper.getUserInfo())){
+            if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
                 getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
             }
         } catch (Exception e) {
@@ -458,7 +456,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.INPUT));
         // don't have any channel now
-        if (mChannelList.size() <= 0 || (mChannelList.size() == 1 && ! (mChannelList.get(0) instanceof PaymentChannel))) {
+        if (mChannelList.size() <= 0 || (mChannelList.size() == 1 && !(mChannelList.get(0) instanceof PaymentChannel))) {
             /***
              * this is withdraw link card and no mapp card.
              * need remind user go to link card to can withdraw
@@ -727,7 +725,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public void onSuccessTransEvent(SdkSuccessTransEvent event) {
         if (mPayProxy != null) {
             try {
-                //mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
+                mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -757,5 +755,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 Log.e(this, e);
             }
         }
+    }
+
+    public String getQuitMessage() {
+        return mPaymentInfoHelper.getQuitMessByTrans(GlobalData.getAppContext());
     }
 }
