@@ -290,6 +290,18 @@ public class PaymentInfoHelper extends SingletonBase {
         return title;
     }
 
+    public String getTitlePassword(Context context) {
+        String title = context.getString(R.string.pin_code_pay_title_text);
+        if (isTopupTrans()) {
+            title = context.getString(R.string.pin_code_topup_title_text);
+        } else if (isMoneyTranferTrans()) {
+            title = context.getString(R.string.pin_code_pay_title_text);
+        } else if (isWithDrawTrans()) {
+            title = context.getString(R.string.pin_code_withdraw_title_text);
+        }
+        return title;
+    }
+
     /***
      * user level 1 can not tranfer money.
      * user level 1 can not withdraw.

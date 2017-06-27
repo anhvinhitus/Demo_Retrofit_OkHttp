@@ -79,6 +79,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
+        public void setTitle(String pTitle) {
+            if (mTextViewTitle != null) {
+                mTextViewTitle.setText(pTitle);
+            }
+        }
+
+        @Override
         public void clearData() {
             mBuilder.showLoadding(false);
         }
@@ -189,7 +196,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         if (mBuilder != null && !TextUtils.isEmpty(mBuilder.getTitle())) {
             mTextViewTitle.setText(mBuilder.getTitle());
         } else {
-            mTextViewTitle.setText(pContext.getString(R.string.pin_code_step_unlock));
+            mTextViewTitle.setText(pContext.getString(R.string.pin_code_pay_title_text));
         }
     }
 

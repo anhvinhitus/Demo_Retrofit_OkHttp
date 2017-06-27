@@ -47,7 +47,7 @@ public class PasswordManager {
      * @param pLogoPath
      * @param pIPinCallBack
      */
-    public PasswordManager(Activity pActivity,String pTitle, String pPmcName, String pLogoPath, boolean pFingerPrint, IPinCallBack pIPinCallBack) {
+    public PasswordManager(Activity pActivity, String pTitle, String pPmcName, String pLogoPath, boolean pFingerPrint, IPinCallBack pIPinCallBack) {
         mIPinCallBack = new WeakReference<>(pIPinCallBack);
         mActivity = new WeakReference<>(pActivity);
         View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
@@ -96,12 +96,12 @@ public class PasswordManager {
         }
     }
 
-    public void setContent(String pTitle, String pLogoPath) {
+    public void setContent(String pPmName, String pLogoPath) {
         if (mIBuilder == null) {
             Log.e("setContent", "mBuilder is null");
             return;
         }
-        mIBuilder.setPmName(pTitle);
+        mIBuilder.setPmName(pPmName);
         mIBuilder.setLogoPath(pLogoPath);
     }
 
@@ -119,6 +119,15 @@ public class PasswordManager {
             return;
         }
         mIBuilder.setFingerPrint(pShowing);
+    }
+
+    public void setTitle(String pTitle) {
+
+        if (mIBuilder == null) {
+            Log.e("setContent", "mBuilder is null");
+            return;
+        }
+        mIBuilder.setTitle(pTitle);
     }
 
     public void lock() {

@@ -13,6 +13,8 @@ public interface ISetDataToView {
 
     void setPmcName(String pPmcName);
 
+    void setTitle(String pTitle);
+
     void clearData();
 
     void showLoading(boolean pShow);

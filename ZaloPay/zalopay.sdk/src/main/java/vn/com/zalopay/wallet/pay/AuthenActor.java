@@ -77,7 +77,7 @@ public class AuthenActor {
             Log.d(this, "showPassword()");
             if (mPaymentChannel != null && mActivity != null) {
                 try {
-                    showPasswordPopup(mActivity,mPaymentChannel);
+                    showPasswordPopup(mActivity, mPaymentChannel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -139,13 +139,16 @@ public class AuthenActor {
     }
 
     public void showPasswordPopup(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
+
         String logo_path = ResourceManager.getAbsoluteImagePath(pPaymentChannel.channel_icon);
+        String Title = getProxy().getPaymentInfoHelper().getTitlePassword(pActivity);
         if (mPassword == null) {
             //just show checkbox when device have fingerprint feature available but user hasn't config password payment yet
             boolean visualCheckbox = shouldUseFPPassword();
-            mPassword = new PasswordManager(pActivity, null, pPaymentChannel.pmcname, logo_path, visualCheckbox, mPasswordCallback);
+            mPassword = new PasswordManager(pActivity, Title, pPaymentChannel.pmcname, logo_path, visualCheckbox, mPasswordCallback);
         } else {
             mPassword.setContent(pPaymentChannel.pmcname, logo_path);
+            mPassword.setTitle(Title);
         }
         if (mPassword == null) {
             throw new Exception("password popup is not ready");

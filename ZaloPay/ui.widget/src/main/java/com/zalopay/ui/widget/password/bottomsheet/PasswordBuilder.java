@@ -153,6 +153,9 @@ public abstract class PasswordBuilder implements IBuilder {
     @Override
     public IBuilder setTitle(String pTitle) {
         mTitle = pTitle;
+        if (mISetDataToView != null) {
+            mISetDataToView.setTitle(pTitle);
+        }
         return this;
     }
 }
