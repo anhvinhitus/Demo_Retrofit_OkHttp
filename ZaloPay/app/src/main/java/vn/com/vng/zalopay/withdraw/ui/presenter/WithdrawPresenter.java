@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -135,6 +135,15 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
+    private void setBalanceAndCheckDenomination(long balance) {
+        if (mView == null) {
+            return;
+        }
+        mView.setBalance(balance);
+        long minDenominationMoney = ConvertHelper.unboxValue(Collections.min(mDenominationMoney), 0);
+        Timber.d("Min denomination money : %s", minDenominationMoney);
+        mView.showEnoughView(balance < minDenominationMoney);
+    }
 
     private void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
@@ -143,9 +152,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onNext(Long aLong) {
-                        if (mView != null) {
-                            mView.setBalance(ConvertHelper.unboxValue(aLong, 0));
-                        }
+                        setBalanceAndCheckDenomination(ConvertHelper.unboxValue(aLong, 0));
                     }
                 });
 
@@ -255,7 +262,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 mNavigator.startLinkCardActivity(mView.getContext());
                 return;
             }
-            if(paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()){
+            if (paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
                 closeWithDraw();
             }
         }
@@ -266,7 +273,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
-    private void closeWithDraw(){
+    private void closeWithDraw() {
         if (mView != null) {
             mView.finish(Activity.RESULT_OK);
         }
@@ -274,8 +281,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChange(ChangeBalanceEvent event) {
-        if (mView != null) {
-            mView.setBalance(event.balance);
-        }
+        setBalanceAndCheckDenomination(event.balance);
     }
 }

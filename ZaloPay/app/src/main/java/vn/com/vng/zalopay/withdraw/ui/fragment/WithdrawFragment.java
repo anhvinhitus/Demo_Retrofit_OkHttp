@@ -33,6 +33,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     WithdrawPresenter mPresenter;
     WithdrawAdapter mAdapter;
 
+    @BindView(R.id.tvEnoughMoney)
+    View mEnoughView;
+
     public static WithdrawFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -121,7 +124,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     public void setBalance(long balance) {
         mMoneyView.setText(CurrencyUtil.formatCurrency(balance, false));
         mAdapter.setBalance(balance);
-
     }
 
     @Override
@@ -138,5 +140,12 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     @Override
     public void onClickDenomination(long money) {
         mPresenter.withdraw(money);
+    }
+
+    @Override
+    public void showEnoughView(boolean isShow) {
+        if (mEnoughView != null) {
+            mEnoughView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        }
     }
 }

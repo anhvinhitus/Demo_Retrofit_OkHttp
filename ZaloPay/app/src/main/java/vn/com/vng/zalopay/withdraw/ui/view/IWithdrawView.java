@@ -18,4 +18,6 @@ public interface IWithdrawView extends ILoadDataView {
     void addDenominationMoney(List<Long> val);
 
     void finish(int result);
+
+    void showEnoughView(boolean isShow);
 }

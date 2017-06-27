@@ -438,6 +438,7 @@
     <string name="free.withdrawal">Miễn phí rút tiền</string>
     <string name="zalopayid.not.update.format">Zalo Pay ID: %s</string>
     <string name="message.verify.otp.over.limit">Bạn đã nhập sai mã xác thực quá số lần quy định. Vui lòng đăng nhập lại để tiếp tục</string>
+    <string name="not.enough.to.withdraw.money">Số tiền trong TK Zalo Pay không đủ để rút tiền</string>
 
 </resources>
 
