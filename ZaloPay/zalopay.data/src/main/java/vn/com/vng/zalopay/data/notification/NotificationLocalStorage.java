@@ -44,10 +44,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     @Override
     public void put(List<NotificationData> val) {
         List<NotificationGD> list = transform(val);
-        if (!Lists.isEmptyOrNull(list)) {
-            for (NotificationGD item : list) {
-                insertOrUpgrade(item);
-            }
+
+        if (Lists.isEmptyOrNull(list)) {
+            return;
+        }
+
+        for (NotificationGD item : list) {
+            insertOrUpgrade(item);
         }
     }
 
@@ -82,14 +85,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     private boolean shouldUpgrade(NotificationGD oldNotify, NotificationGD newNotify) {
-        if (newNotify == null) {
-            return false;
-        }
-        if (TextUtils.isEmpty(newNotify.message)) {
-            return false;
-        }
-        return !(oldNotify.notificationtype != null
-                && oldNotify.message != null);
+        return newNotify != null && !TextUtils.isEmpty(newNotify.message) && !(oldNotify.notificationtype != null && oldNotify.message != null);
     }
 
     private long upgrade(NotificationGD newNotify) {
@@ -112,14 +108,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (val == null) {
             return -1;
         }
+
         try {
             //  Timber.d("Put item message [%s]", val.message);
             return getDaoSession().getNotificationGDDao().insert(val);
         } catch (Exception e) {
+            Timber.d(e, "insert notification failed [id: %s, mtuid: %s, mtaid: %s]", val.id, val.mtuid, val.mtaid);
             if (e instanceof SQLiteConstraintException) {
                 return upgrade(val);
             } else {
-                Timber.d(e, "Insert notify error");
                 return -1;
             }
         }
