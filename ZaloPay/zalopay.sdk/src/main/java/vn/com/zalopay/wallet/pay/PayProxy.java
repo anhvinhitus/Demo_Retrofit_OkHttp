@@ -86,30 +86,27 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<Throwable> transStatusException = throwable -> {
+        if (networkException(throwable)) {
+            return;
+        }
+        try {
+            if (showRetryDialogCount < MAX_RETRY_GETSTATUS) {
+                askToRetryGetStatus();
+            } else {
+                moveToResultScreen();
+            }
+        } catch (Exception e) {
+            startChannelActivity();
+        }
+        Timber.d(throwable, "trans status on error");
+    };
     private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
         try {
             processStatus(statusResponse);
         } catch (Exception e) {
             Log.e(this, e);
             markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
-    private Action1<Throwable> transStatusException = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            if (networkException(throwable)) {
-                return;
-            }
-            try {
-                if (showRetryDialogCount < MAX_RETRY_GETSTATUS) {
-                    askToRetryGetStatus();
-                } else {
-                    moveToResultScreen();
-                }
-            } catch (Exception e) {
-                startChannelActivity();
-            }
-            Timber.d(throwable, "trans status on error");
         }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
@@ -306,6 +303,7 @@ public class PayProxy extends SingletonBase {
                     } else {
                         showPassword(getActivity());
                         setError(mStatusResponse.returnmessage);
+                        getView().updateDefaultTitle();
                         retryPassword++;
                     }
                     break;
@@ -587,6 +585,15 @@ public class PayProxy extends SingletonBase {
         }
     }
 
+    public void showPassword() {
+        try {
+            showPassword(getActivity());
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    }
+
     private void showPassword(Activity pActivity) {
         try {
             mAuthenActor.showPasswordPopup(pActivity, mChannel);
@@ -598,7 +605,7 @@ public class PayProxy extends SingletonBase {
 
     private void showFingerPrint(Activity pActivity) {
         try {
-            mAuthenActor.showFingerPrint(pActivity, mChannel);
+            mAuthenActor.showFingerPrint(pActivity);
         } catch (Exception e) {
             Log.e(this, e);
             showPassword(pActivity);

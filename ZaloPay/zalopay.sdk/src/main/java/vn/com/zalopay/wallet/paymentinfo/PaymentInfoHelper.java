@@ -293,13 +293,13 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public String getTitlePassword(Context context) {
-        String title = context.getString(R.string.pin_code_pay_title_text);
+        String title = context.getString(R.string.sdk_pay_password_title_text);
         if (isTopupTrans()) {
-            title = context.getString(R.string.pin_code_topup_title_text);
+            title = context.getString(R.string.sdk_topup_password_title_text);
         } else if (isMoneyTranferTrans()) {
-            title = context.getString(R.string.pin_code_pay_title_text);
+            title = context.getString(R.string.sdk_transfer_password_title_text);
         } else if (isWithDrawTrans()) {
-            title = context.getString(R.string.pin_code_withdraw_title_text);
+            title = context.getString(R.string.sdk_withdraw_password_title_text);
         }
         return title;
     }

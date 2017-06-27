@@ -134,8 +134,4 @@
     <string name="pin_code_fingerprint_text">Fingerprint</string>
     <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
     <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
-
-    <string name="pin_code_pay_title_text">Nhập mật khẩu để thanh toán bằng</string>
-    <string name="pin_code_topup_title_text">Nhập mật khẩu thanh toán để nạp tiền từ</string>
-    <string name="pin_code_withdraw_title_text">Nhập mật khẩu thanh toán để rút tiền về</string>
 </resources>

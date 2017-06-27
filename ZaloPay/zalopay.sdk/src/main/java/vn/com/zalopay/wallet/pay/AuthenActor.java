@@ -28,8 +28,6 @@ public class AuthenActor {
     private String popupPassword;//password input on popup
     private boolean useFPPassword = true;//user check checkbox
     private PasswordManager mPassword;
-    private PaymentChannel mPaymentChannel;
-    private Activity mActivity;
     private IPinCallBack mPasswordCallback = new IPinCallBack() {
         @Override
         public void onError(String pError) {
@@ -77,12 +75,10 @@ public class AuthenActor {
         @Override
         public void showPassword() {
             Timber.d("showPassword()");
-            if (mPaymentChannel != null && mActivity != null) {
-                try {
-                    showPasswordPopup(mActivity, mPaymentChannel);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                getProxy().showPassword();
+            } catch (Exception e) {
+                Timber.w("show password on error %s", e);
             }
         }
 
@@ -158,10 +154,7 @@ public class AuthenActor {
         mPassword.show();
     }
 
-    public void showFingerPrint(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
-        mPaymentChannel = pPaymentChannel;
-        mActivity = pActivity;
-
+    public void showFingerPrint(Activity pActivity) throws Exception {
         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
         if (mFingerPrintDialog != null) {
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
