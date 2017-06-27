@@ -1032,7 +1032,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             //prevent capture screen
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             setVisible(R.id.money_tranfer_useravatar_linearlayout, true);
-            UserInfo destinationUser = mPaymentInfoHelper.getDestinationUser();
+            UserInfo destinationUser = mPaymentInfoHelper.getMoneyTransferReceiver();
             if (destinationUser != null) {
                 findViewAndLoadUri(R.id.img_avatarTo, destinationUser.avatar);
             }

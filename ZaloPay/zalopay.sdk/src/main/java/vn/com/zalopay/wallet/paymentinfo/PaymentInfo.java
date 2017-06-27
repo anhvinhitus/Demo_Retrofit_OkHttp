@@ -39,12 +39,12 @@ public final class PaymentInfo implements IPaymentInfo {
     }
 
     @Override
-    public UserInfo getDestinationUser() {
+    public UserInfo getMoneyTransferReceiverInfo() {
         return builder != null ? builder.getDestinationUser() : null;
     }
 
     @Override
-    public LinkAccInfo getLinkAccoutInfo() {
+    public LinkAccInfo getLinkAccountInfo() {
         return builder != null ? builder.getLinkAccountInfo() : null;
     }
 

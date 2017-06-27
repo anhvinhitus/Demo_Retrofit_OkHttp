@@ -130,8 +130,8 @@ public class PaymentInfoHelper extends SingletonBase {
         return paymentInfo != null ? paymentInfo.getUser() : null;
     }
 
-    public UserInfo getDestinationUser() {
-        return paymentInfo != null ? paymentInfo.getDestinationUser() : null;
+    public UserInfo getMoneyTransferReceiverInfo() {
+        return paymentInfo != null ? paymentInfo.getMoneyTransferReceiverInfo() : null;
     }
 
     public String getLinkAccBankCode() {
@@ -142,7 +142,7 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     private LinkAccInfo getLinkAccountInfo() {
-        return paymentInfo != null ? paymentInfo.getLinkAccoutInfo() : null;
+        return paymentInfo != null ? paymentInfo.getLinkAccountInfo() : null;
     }
 
     // set transaction result to notify to app

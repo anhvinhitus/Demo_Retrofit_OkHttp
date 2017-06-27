@@ -32,7 +32,7 @@ public class LinkAccValidation implements IValidate {
     public String onValidate(IPaymentInfo paymentInfo) {
         String error = onValidateUser(paymentInfo.getUser());
         if (TextUtils.isEmpty(error)) {
-            if (paymentInfo.getLinkAccoutInfo() == null || TextUtils.isEmpty(paymentInfo.getLinkAccoutInfo().getBankCode())) {
+            if (paymentInfo.getLinkAccountInfo() == null || TextUtils.isEmpty(paymentInfo.getLinkAccountInfo().getBankCode())) {
                 error = GlobalData.getStringResource(RS.string.sdk_invalid_missing_linkaccInfo);
             }
         }

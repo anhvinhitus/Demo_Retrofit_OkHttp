@@ -20,9 +20,15 @@ public interface IPaymentInfo {
 
     UserInfo getUser();
 
-    UserInfo getDestinationUser();// whom tranfer to
+    /**
+     * whom tranfer to
+    */
+    UserInfo getMoneyTransferReceiverInfo();
 
-    LinkAccInfo getLinkAccoutInfo(); // info about link/unlink bank account
+    /**
+     * info about link/unlink bank account
+     */
+    LinkAccInfo getLinkAccountInfo();
 
     BaseMap getMapBank();
 

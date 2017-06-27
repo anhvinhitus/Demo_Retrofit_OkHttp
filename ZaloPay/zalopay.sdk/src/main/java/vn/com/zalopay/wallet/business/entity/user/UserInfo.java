@@ -19,7 +19,8 @@ public class UserInfo {
     public String accesstoken;
     public int level;
     public long balance;
-    /***
+
+    /**
      * user level,map table
      * list contain policy for allowing pay which channel by which level.
      */
@@ -34,7 +35,7 @@ public class UserInfo {
         return !TextUtils.isEmpty(profile);
     }
 
-    /***
+    /**
      * check whether user is allowed payment this channel.
      */
     public int getPermissionByChannelMap(int pChannelID, @TransactionType int pTranstype) {
@@ -66,14 +67,15 @@ public class UserInfo {
         if (pResponse == null || TextUtils.isEmpty(pResponse.accesstoken)) {
             return false;
         }
+
         Timber.d("old token = %s", accesstoken);
         Timber.d("new token = %s", pResponse.accesstoken);
-        if (GlobalData.getPaymentListener() != null && !accesstoken.equals(pResponse.accesstoken)) {
-            //callback to app to update new access token
-            GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);
-            accesstoken = pResponse.accesstoken;
-            return true;
+        if (GlobalData.getPaymentListener() == null || accesstoken.equals(pResponse.accesstoken)) {
+            return false;
         }
-        return false;
+
+        GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);
+        accesstoken = pResponse.accesstoken;
+        return true;
     }
 }

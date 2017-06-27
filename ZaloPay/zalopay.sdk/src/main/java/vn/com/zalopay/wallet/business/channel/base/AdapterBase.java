@@ -1207,11 +1207,11 @@ public abstract class AdapterBase {
         try {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             boolean isTransfer = mPaymentInfoHelper.isMoneyTranferTrans();
-            UserInfo destUser = mPaymentInfoHelper.getDestinationUser();
+            UserInfo receiverInfo = mPaymentInfoHelper.getMoneyTransferReceiverInfo();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(GlobalData.getAppContext());
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             boolean hideAmount = isLink;
-            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, destUser, title);
+            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, receiverInfo, title);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1226,13 +1226,13 @@ public abstract class AdapterBase {
                 getView().showToast(R.layout.layout_update_password_toast);
             }
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
         }
         PaymentSnackBar.getInstance().dismiss();
         try {
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
         }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
@@ -1539,7 +1539,7 @@ public abstract class AdapterBase {
                 SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
             }
         } catch (Exception ex) {
-            Timber.d(ex != null ? ex.getMessage() : "Exception");
+            Timber.d(ex.getMessage());
         }
     }
 
@@ -1550,7 +1550,7 @@ public abstract class AdapterBase {
                 SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
-            Timber.d(ex != null ? ex.getMessage() : "Exception");
+            Timber.d(ex.getMessage());
         }
     }
 
@@ -1566,7 +1566,7 @@ public abstract class AdapterBase {
                 TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
-            Timber.d(ex != null ? ex.getMessage() : "Exception");
+            Timber.d(ex.getMessage());
         }
     }
 }
