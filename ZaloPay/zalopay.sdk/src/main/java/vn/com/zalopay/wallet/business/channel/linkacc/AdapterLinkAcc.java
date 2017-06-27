@@ -1089,7 +1089,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
                 }
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
 
             // Unregister Complete page

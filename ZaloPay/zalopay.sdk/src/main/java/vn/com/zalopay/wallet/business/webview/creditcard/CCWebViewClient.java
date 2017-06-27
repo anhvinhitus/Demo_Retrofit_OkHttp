@@ -143,8 +143,8 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void executeJs(String pJsFileName, String pJsInput, WebView pView) {
         if (!TextUtils.isEmpty(pJsFileName)) {
             String jsContent;
-            Log.d("executeJs", pJsFileName);
-            Log.d("executeJs", pJsInput);
+            Timber.d(pJsFileName);
+            Timber.d(pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
                 jsContent = String.format(jsContent, pJsInput);

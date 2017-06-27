@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 
@@ -48,7 +49,7 @@ public class CFontManager extends SingletonBase {
                     fontMap.put(pFontName, tf);
                 }
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e.getMessage());
             }
         }
         return tf;

@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.entity.user;
 
 import android.text.TextUtils;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -65,8 +66,8 @@ public class UserInfo {
         if (pResponse == null || TextUtils.isEmpty(pResponse.accesstoken)) {
             return false;
         }
-        Log.d("checkForUpdateAccessTokenToApp", "old token = " + accesstoken);
-        Log.d("checkForUpdateAccessTokenToApp", "new token = " + pResponse.accesstoken);
+        Timber.d("old token = %s", accesstoken);
+        Timber.d("new token = %s", pResponse.accesstoken);
         if (GlobalData.getPaymentListener() != null && !accesstoken.equals(pResponse.accesstoken)) {
             //callback to app to update new access token
             GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);

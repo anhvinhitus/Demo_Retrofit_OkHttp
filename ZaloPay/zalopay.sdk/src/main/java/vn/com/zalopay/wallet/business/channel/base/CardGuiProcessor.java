@@ -617,7 +617,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return TextUtils.isEmpty(getCardCVVView().getText().toString()) || getCardCVVView().isValidPattern() && (getCardCVVView().getText().toString().length() == 3);
 
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
 
         return true;
@@ -637,7 +637,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return isValidCardCVV;
 
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
 
         return true;
@@ -648,7 +648,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return TextUtils.isEmpty(getCardDateView().getText().toString()) || getCardDateView().isValidPattern() && (getCardDateView().getText().toString().length() == 5);
 
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
 
         return true;
@@ -668,7 +668,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return isValidCardDate;
 
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
 
         return true;
@@ -1740,7 +1740,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean validateInputOnTextChange() throws Exception {
         if (getAdapter() == null || getAdapter().getActivity() == null) {
-            Log.d("validateInputOnTextChange", "getAdapter() == null || getAdapter().getActivity() == null");
+            Timber.d("getAdapter() == null || getAdapter().getActivity() == null");
             return true;
         }
 

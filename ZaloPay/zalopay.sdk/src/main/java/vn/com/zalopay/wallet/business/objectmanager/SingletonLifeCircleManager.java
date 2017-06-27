@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.api.ServiceManager;
@@ -72,7 +73,7 @@ public class SingletonLifeCircleManager {
                     field.set(null, null);
                     Log.i("RELEASE_STATIC_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
-                    Log.d("RELEASE_STATIC_OBJ", e);
+                    Timber.d("RELEASE_STATIC_OBJ: %s", e.getMessage());
                 }
             }
         }
@@ -90,7 +91,7 @@ public class SingletonLifeCircleManager {
                     field.set(null, null);
                     Log.i("RELEASE_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
-                    Log.d("RELEASE_OBJ", e);
+                    Timber.d("RELEASE_OBJ: %s", e.getMessage());
                 }
             }
         }

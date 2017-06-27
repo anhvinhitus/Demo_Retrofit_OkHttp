@@ -41,7 +41,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
                     @Override
                     public void call(Throwable throwable) {
                         onRequestFail(throwable);
-                        Log.d(this, throwable);
+                        Timber.d(throwable != null ? throwable.getMessage() : "Exception") ;
                     }
                 });
     }
@@ -90,7 +90,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
         } else {
             Log.e(this, "mListener = NULL");
         }
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override

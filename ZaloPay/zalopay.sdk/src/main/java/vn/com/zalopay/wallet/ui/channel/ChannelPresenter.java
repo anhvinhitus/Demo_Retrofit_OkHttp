@@ -123,7 +123,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         if (mPaymentInfoHelper == null) {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
@@ -137,7 +137,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -157,7 +157,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             getViewOrThrow().showError(message);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -173,7 +173,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -506,7 +506,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             mAdapter.init();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
             return;
         }
         if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
@@ -646,7 +646,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             int errorcode = mAdapter.getResponseStatus() != null ? mAdapter.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
             feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAdapter.getTransactionID(), errorcode);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         } finally {
             return feedBack;
         }
@@ -660,7 +660,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             collector.setScreenShot(feedBack.imgByteArray);
             collector.setTransaction(feedBack.category, feedBack.transID, feedBack.errorCode, feedBack.description);
         } else {
-            Log.d("support_button", "IFeedBack == null");
+            Timber.d("IFeedBack == null");
         }
         feedBackCollector.showDialog(getViewOrThrow().getActivity());
     }
@@ -730,13 +730,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                         try {
                             startLink();
                         } catch (Exception e) {
-                            Log.d(this, e);
+                            Timber.d(e != null ? e.getMessage() : "Exception");
                         }
                     }, throwable -> {
                         try {
                             getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
                         } catch (Exception e) {
-                            Log.d(this, e);
+                            Timber.d(e != null ? e.getMessage() : "Exception");
                         }
                         Log.e("load card and bank account error", throwable.getMessage());
                     });
@@ -753,7 +753,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 if (!TextUtils.isEmpty(resPath))
                     StorageUtil.deleteRecursive(new File(resPath));
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
             String message = pMessage.message;
             if (TextUtils.isEmpty(message)) {
@@ -764,13 +764,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 try {
                     getViewOrThrow().showError(message);
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             } else {
                 try {
                     getViewOrThrow().callbackThenTerminate();
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             }
         }
@@ -803,7 +803,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 }, throwable -> {
                     SdkResourceInitMessage message = new SdkResourceInitMessage(false, GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download));
                     mBus.post(message);
-                    Log.d("init resource fail", throwable);
+                    Timber.d("init resource fail: %s", throwable.getMessage());
                 });
         addSubscription(subscription);
     }

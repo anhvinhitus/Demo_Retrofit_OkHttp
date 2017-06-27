@@ -42,7 +42,7 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
             statusResponse.returnmessage = getDefaulErrorNetwork();
             mAdapter.onEvent(EEventType.ON_SUBMIT_LINKACC_COMPLETED, statusResponse);
         }
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override

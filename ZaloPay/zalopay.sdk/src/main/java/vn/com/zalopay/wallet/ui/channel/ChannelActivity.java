@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.PermissionUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -46,10 +47,10 @@ public class ChannelActivity extends ToolbarActivity {
             case Constants.REQUEST_CODE_SMS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //granted
-                    Log.d(getClass().getName(), "permission granted");
+                    Timber.d("permission granted");
                 } else {
                     //not granted
-                    Log.d(getClass().getName(), "permission not granted");
+                    Timber.d("permission not granted");
                 }
                 break;
             default:

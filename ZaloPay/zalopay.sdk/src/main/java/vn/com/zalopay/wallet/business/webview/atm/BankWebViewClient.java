@@ -250,7 +250,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         try {
             getAdapter().getActivity().runOnUiThread(() -> {
                 DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-                Log.d("onJsPaymentResult", scriptOutput);
+                Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
 

@@ -127,7 +127,7 @@ public class PlatformInfoLoader extends SingletonBase {
                 Timber.d("resource not found - start retry load plaform info");
                 retryLoadInfo();
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
                 throw e;
             }
         }

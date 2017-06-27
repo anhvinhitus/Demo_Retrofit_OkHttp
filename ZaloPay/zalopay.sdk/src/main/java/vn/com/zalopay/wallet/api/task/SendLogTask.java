@@ -37,7 +37,7 @@ public class SendLogTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestFail(Throwable e) {
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override

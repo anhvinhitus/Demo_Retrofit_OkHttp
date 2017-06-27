@@ -52,7 +52,7 @@ public class AbstractOrder {
                 items = Strings.parseNameValues(itemExt);
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         /*List<NameValuePair> expected = new ArrayList<>();
         expected.add(new NameValuePair("Nhà mạng", "Viettel"));

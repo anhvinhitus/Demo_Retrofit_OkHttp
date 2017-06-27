@@ -563,7 +563,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                     .setOnCloseListener(pOnCloseListener)
                     .show();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 

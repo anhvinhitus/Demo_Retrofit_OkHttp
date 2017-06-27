@@ -406,7 +406,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     .setOnCloseListener(pOnCloseListener)
                     .show();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 

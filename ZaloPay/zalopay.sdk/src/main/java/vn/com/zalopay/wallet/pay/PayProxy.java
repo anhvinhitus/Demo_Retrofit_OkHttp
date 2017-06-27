@@ -162,7 +162,7 @@ public class PayProxy extends SingletonBase {
             try {
                 getView().hideLoading();
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
         }
     };
@@ -367,7 +367,7 @@ public class PayProxy extends SingletonBase {
             }
             return mValidActor.validate(channel);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         return false;
     }
@@ -512,7 +512,7 @@ public class PayProxy extends SingletonBase {
                 getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
                 return true;
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
         }
         return false;
@@ -525,7 +525,7 @@ public class PayProxy extends SingletonBase {
             try {
                 getView().showInfoDialog(message);
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
             return false;
         }

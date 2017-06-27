@@ -114,7 +114,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 Log.d(this, "save app info to cache and update new checksum", pResponse.info);
             }
         } catch (Exception ex) {
-            Log.d(this, ex);
+            Timber.d(ex != null ? ex.getMessage() : "Exception");
         }
     }
 

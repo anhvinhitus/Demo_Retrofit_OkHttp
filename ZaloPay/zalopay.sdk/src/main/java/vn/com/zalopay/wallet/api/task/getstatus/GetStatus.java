@@ -198,7 +198,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestFail(Throwable e) {
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
         cancelTimer();
         showProgress(false);
         //can not get status response from server

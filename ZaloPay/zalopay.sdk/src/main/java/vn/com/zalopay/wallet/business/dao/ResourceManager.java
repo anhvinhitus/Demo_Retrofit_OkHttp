@@ -164,7 +164,7 @@ public class ResourceManager extends SingletonBase {
     public static synchronized Completable initResource() {
         return Completable.create(completableSubscriber -> {
             try {
-                Log.d(TAG, "initializing resource");
+                Timber.d("initializing resource");
                 String json = loadResourceFile(null, CONFIG_FILE);
                 if (TextUtils.isEmpty(json)) {
                     mResourceCreated = false;

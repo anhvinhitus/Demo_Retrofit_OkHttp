@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import java.util.Map;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -91,7 +92,7 @@ public class DataParameter {
             params.put(ConstantParams.EXCEPTION, !TextUtils.isEmpty(pException) ? pException : "");
             return true;
         } catch (Exception ex) {
-            Log.d("prepareSDKReport", ex);
+            Timber.d("prepareSDKReport: %s", ex.getMessage());
             return false;
         }
     }

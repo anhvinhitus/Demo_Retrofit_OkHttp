@@ -94,7 +94,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
                 return text.substring(2);
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         return null;
     }

@@ -56,7 +56,7 @@ public class CShareData extends SingletonBase {
      */
     public static void dispose() {
         SingletonLifeCircleManager.disposeMerchant();
-        Log.d("CShareData", "dispose merchant");
+        Timber.d("dispose merchant");
     }
 
     /***

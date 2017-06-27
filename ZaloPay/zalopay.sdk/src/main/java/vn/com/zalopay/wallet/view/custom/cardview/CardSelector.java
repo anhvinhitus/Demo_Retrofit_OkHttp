@@ -7,6 +7,7 @@ import android.util.ArrayMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
@@ -76,7 +77,7 @@ public class CardSelector {
             CardSelector selector = detectCardType(GlobalData.mTranstype);
             return selector;
         }
-        Log.d("selectCard=====", "Return DEFAULT ");
+        Timber.d("Return DEFAULT ");
         return DEFAULT;
     }
 

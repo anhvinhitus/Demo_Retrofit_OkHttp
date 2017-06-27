@@ -29,6 +29,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
@@ -174,7 +175,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 v.startAnimation(hyperspaceJumpAnimation);
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e.getMessage());
         }
 
     }

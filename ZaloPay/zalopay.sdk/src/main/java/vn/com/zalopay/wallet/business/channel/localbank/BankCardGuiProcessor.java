@@ -357,7 +357,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void populateBankCode() {
         if (!getCardFinder().isDetected()) {
-            Log.d("populateLocalCard.not found", "not detect yet");
+            Timber.d("populateLocalCard.not found. Not detect yet");
 
             return;
         }

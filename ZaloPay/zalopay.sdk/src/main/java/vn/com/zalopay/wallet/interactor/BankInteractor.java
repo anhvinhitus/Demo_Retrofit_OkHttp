@@ -177,14 +177,14 @@ public class BankInteractor implements IBank {
     public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
                 .flatMap(supportBanks(appVersion))
-                .doOnError(throwable -> Log.d(this, throwable));
+                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
     @Override
     public Observable<List<BankConfig>> getWithdrawBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
                 .flatMap(withDrawBank)
-                .doOnError(throwable -> Log.d(this, throwable));
+                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
     protected String supportBankLogo(String pBankCode) {

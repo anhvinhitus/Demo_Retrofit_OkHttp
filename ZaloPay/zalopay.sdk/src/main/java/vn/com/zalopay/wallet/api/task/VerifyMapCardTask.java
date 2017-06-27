@@ -53,7 +53,7 @@ public class VerifyMapCardTask extends BaseTask<StatusResponse> {
             statusResponse.returnmessage = getDefaulErrorNetwork();
             mAdapter.onEvent(EEventType.ON_VERIFY_MAPCARD_COMPLETE, statusResponse);
         }
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override

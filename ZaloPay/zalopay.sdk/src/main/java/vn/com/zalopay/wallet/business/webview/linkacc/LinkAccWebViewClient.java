@@ -132,7 +132,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        Log.d("onLoadResource", url);
+        Timber.d(url);
         if (shouldOnCheckMatchOnLoadResouce(url)) {
             onPageFinishedAuto(url);
         }
@@ -140,7 +140,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d("shouldOverrideUrlLoading", url);
+        Timber.d("shouldOverrideUrlLoading: %s", url);
         view.loadUrl(url);
         isRedirected = true;
         return true;
@@ -148,9 +148,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, final String url) {
-        Log.d("load page finish ", url);
+        Timber.d("load page finish %s", url);
         if (!isRedirected) {
-            Log.d("load page finish on the first", url);
+            Timber.d("load page finish on the first %s", url);
             if (GlobalData.shouldNativeWebFlow() && url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_auto_select_service))) {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
@@ -197,7 +197,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
+        Timber.d("errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
         if (failingUrl.contains(HTTP_EXCEPTION)) {
             Timber.d("skip process fail on url " + failingUrl);
             return;
@@ -307,7 +307,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url) && !mIsRefreshCaptcha) {
                 mCurrentUrl = url;
-                Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
+                Timber.d("url: " + url + " ,type: " + pType);
                 isMatched = true;
                 if (bankScript.pageCode.equals(VCB_REGISTER_PAGE)) {
                     mAdapter.mUrlReload = url;
@@ -340,7 +340,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 // break loop for
                 break;
             } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(VCB_REFRESH_CAPTCHA)) {
-                Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
+                Timber.d("url: " + url + " ,type: " + pType);
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
@@ -369,8 +369,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void executeJs(String pJsFileName, String pJsInput) {
         if (!TextUtils.isEmpty(pJsFileName)) {
             String jsContent;
-            Log.d("executeJs", pJsFileName);
-            Log.d("executeJs", pJsInput);
+            Timber.d(pJsFileName);
+            Timber.d(pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
                 jsContent = String.format(jsContent, pJsInput);
@@ -381,7 +381,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void logDebug(String msg) {
-        Log.d("Js", "****** Debug webview: " + msg);
+        Timber.d("****** Debug webview: " + msg);
     }
 
     /***
@@ -412,14 +412,14 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
      */
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
-        Log.d("Js", "==== onJsPaymentResult: " + pResult);
+        Timber.d("==== onJsPaymentResult: " + pResult);
         final String result = pResult;
         try {
             getAdapter().getActivity().runOnUiThread(() -> {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = genResponse(eventType, scriptOutput);
-                Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
+                Timber.d("==== onJsPaymentResult: " + mEventID + "==" + pResult);
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;

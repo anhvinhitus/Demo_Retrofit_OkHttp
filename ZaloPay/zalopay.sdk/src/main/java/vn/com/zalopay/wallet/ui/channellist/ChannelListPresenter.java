@@ -131,7 +131,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             getViewOrThrow().showError(message);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -141,7 +141,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
             loadChannels();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -151,7 +151,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -176,7 +176,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 getViewOrThrow().callbackThenTerminate();
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -198,7 +198,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -215,7 +215,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     try {
                         getViewOrThrow().terminate();
                     } catch (Exception e) {
-                        Log.d(this, e);
+                        Timber.d(e != null ? e.getMessage() : "Exception");
                     }
                     break;
                 case Activity.RESULT_CANCELED:
@@ -226,7 +226,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                             try {
                                 getViewOrThrow().showInfoDialog(message);
                             } catch (Exception e) {
-                                Log.d(this, e);
+                                Timber.d(e != null ? e.getMessage() : "Exception");
                             }
                         } else {
                             exitHasOneChannel();
@@ -351,7 +351,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         return channel;
     }
@@ -413,7 +413,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             //check app info whether this transaction is allowed or not
             loadAppInfo();
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -471,7 +471,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showWarningLinkCardBeforeWithdraw();
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             } else {
                 String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
@@ -481,7 +481,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showError(alertMessage);
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             }
         }
@@ -530,7 +530,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().hideLoading();
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             }
 
@@ -540,7 +540,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
                 } catch (Exception e1) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             }
 
@@ -586,7 +586,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             try {
                 getViewOrThrow().callbackThenTerminate();
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
         }
     }
@@ -612,7 +612,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             getViewOrThrow().showError(eventMessge.message);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -621,7 +621,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             getViewOrThrow().showLoading(pMessage.message);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 
@@ -641,13 +641,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_END);
                             readyForPayment();
                         } catch (Exception e) {
-                            Log.d(this, e);
+                            Timber.d(e != null ? e.getMessage() : "Exception");
                         }
                     }, throwable -> {
                         try {
                             getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
                         } catch (Exception e) {
-                            Log.d(this, e);
+                            Timber.d(e != null ? e.getMessage() : "Exception");
                         }
                         Log.e("load card and bank account error", throwable.getMessage());
                     });
@@ -664,7 +664,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 if (!TextUtils.isEmpty(resPath))
                     StorageUtil.deleteRecursive(new File(resPath));
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
             String message = pMessage.message;
             if (TextUtils.isEmpty(message)) {
@@ -675,13 +675,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showError(message);
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             } else {
                 try {
                     getViewOrThrow().callbackThenTerminate();
                 } catch (Exception e) {
-                    Log.d(this, e);
+                    Timber.d(e != null ? e.getMessage() : "Exception");
                 }
             }
         }
@@ -715,7 +715,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 }, throwable -> {
                     SdkResourceInitMessage message = new SdkResourceInitMessage(false, GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download));
                     mBus.post(message);
-                    Log.d("init resource fail", throwable);
+                    Timber.d("init resource fail: %s", throwable.getMessage());
                 });
         addSubscription(subscription);
     }

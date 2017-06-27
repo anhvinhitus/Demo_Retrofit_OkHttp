@@ -4,6 +4,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -47,7 +48,7 @@ public class ValidationActor extends SingletonBase {
             try {
                 getView().callbackThenTerminate();
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e.getMessage());
             }
         }
     };
@@ -153,7 +154,7 @@ public class ValidationActor extends SingletonBase {
         try {
             getView().showSupportBankVersionDialog(pMessage);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
     }
 

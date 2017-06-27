@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -52,7 +53,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
         } else {
             Log.e(this, "mAdapter = NULL");
         }
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception") ;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
             statusResponse.returnmessage = getDefaulErrorNetwork();
             mAdapter.onEvent(EEventType.ON_SUBMIT_ORDER_COMPLETED, statusResponse);
         }
-        Log.d(this, e);
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override

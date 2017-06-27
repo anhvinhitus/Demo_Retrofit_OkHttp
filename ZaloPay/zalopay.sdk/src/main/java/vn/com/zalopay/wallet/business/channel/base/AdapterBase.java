@@ -533,7 +533,7 @@ public abstract class AdapterBase {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
                 }
             } catch (Exception e) {
-                Log.d(this, e);
+                Timber.d(e != null ? e.getMessage() : "Exception");
             }
 
             //server is maintenance
@@ -896,7 +896,7 @@ public abstract class AdapterBase {
     }
 
     private boolean shouldSendLogToServer() {
-        Log.d("sendLogTransaction===time loading site", "captcha " + (mCaptchaEndTime - mCaptchaBeginTime) + " ms" + ", otp " + (mOtpEndTime - mOtpBeginTime) + " ms");
+        Timber.d("captcha " + (mCaptchaEndTime - mCaptchaBeginTime) + " ms" + ", otp " + (mOtpEndTime - mOtpBeginTime) + " ms");
         return ((mCaptchaEndTime - mCaptchaBeginTime) >= 0) || ((mOtpEndTime - mOtpBeginTime) > 0);
     }
 
@@ -1226,13 +1226,13 @@ public abstract class AdapterBase {
                 getView().showToast(R.layout.layout_update_password_toast);
             }
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         PaymentSnackBar.getInstance().dismiss();
         try {
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
@@ -1475,7 +1475,7 @@ public abstract class AdapterBase {
 
     protected boolean existPaymentCardOnCache() {
         if (getGuiProcessor() == null) {
-            Log.d("existPaymentCardOnCache", "getGuiProcessor() = null");
+            Timber.d("getGuiProcessor() = null");
             return false;
         }
         String cardNumber = getGuiProcessor().getCardNumber();
@@ -1489,7 +1489,7 @@ public abstract class AdapterBase {
         try {
             strMappedCard = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
         } catch (Exception e) {
-            Log.d(this, e);
+            Timber.d(e != null ? e.getMessage() : "Exception");
         }
         return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, MapCard.class) != null;
     }
@@ -1539,7 +1539,7 @@ public abstract class AdapterBase {
                 SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
             }
         } catch (Exception ex) {
-            Log.d(this, ex);
+            Timber.d(ex != null ? ex.getMessage() : "Exception");
         }
     }
 
@@ -1550,7 +1550,7 @@ public abstract class AdapterBase {
                 SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
-            Log.d(this, ex);
+            Timber.d(ex != null ? ex.getMessage() : "Exception");
         }
     }
 
@@ -1566,7 +1566,7 @@ public abstract class AdapterBase {
                 TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
             }
         } catch (Exception ex) {
-            Log.d(this, ex);
+            Timber.d(ex != null ? ex.getMessage() : "Exception");
         }
     }
 }
