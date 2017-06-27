@@ -48,6 +48,11 @@ public class HomeAdapter extends EpoxyAdapter {
         return epoxyModel.isShown() ? epoxyModel : null;
     }
 
+    @Override
+    public void notifyModelsChanged() {
+        super.notifyModelsChanged();
+    }
+
     public void setAppItems(@NonNull List<AppResource> list) {
         Timber.d("set app items size [%s]", list.size());
 

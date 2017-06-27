@@ -221,6 +221,6 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
 
     @Override
     public void refreshApps() {
-        mHomeAdapter.notifyDataSetChanged();
+        mHomeAdapter.notifyModelsChanged();
     }
 }
