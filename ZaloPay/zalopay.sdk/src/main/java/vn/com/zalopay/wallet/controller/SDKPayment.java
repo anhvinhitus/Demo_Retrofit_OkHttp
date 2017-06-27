@@ -236,7 +236,7 @@ public class SDKPayment {
         //this is link card , go to channel directly
         if (paymentInfoHelper.isCardLinkTrans() || paymentInfoHelper.isBankAccountTrans()) {
             intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
-            int layoutId = !paymentInfoHelper.isCardLinkTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
+            int layoutId = paymentInfoHelper.isBankAccountTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
             intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
             pmcTransType = SDKApplication
                     .getApplicationComponent()
