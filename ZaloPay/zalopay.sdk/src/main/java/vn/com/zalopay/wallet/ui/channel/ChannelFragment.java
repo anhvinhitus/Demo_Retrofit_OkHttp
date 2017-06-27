@@ -187,7 +187,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     protected void onDataBound(View view) {
-        mPresenter.startFlow();
+        mPresenter.startPayment();
     }
 
     @Override

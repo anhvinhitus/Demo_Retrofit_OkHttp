@@ -93,10 +93,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public IAppInfo mAppInfoInteractor;
     public boolean hasAtm;
     public boolean hasCC;
-    protected CountDownTimer mExpireTransTimer;
-    protected boolean mTimerRunning = false;
+    private CountDownTimer mExpireTransTimer;
+    private boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
-    protected onCloseSnackBar mOnCloseSnackBarListener = () -> {
+    private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAdapter != null) {
             mAdapter.openSettingNetworking();
         }
@@ -119,6 +119,14 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     };
 
     public ChannelPresenter() {
+        try {
+            mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
+        if (mPaymentInfoHelper != null) {
+            mPaymentInfoHelper = GlobalData.paymentInfoHelper;
+        }
         SDKApplication.getApplicationComponent().inject(this);
         Log.d(this, "call constructor ChannelPresenter");
     }
@@ -170,19 +178,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public AdapterBase getAdapter() {
         return mAdapter;
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentInfoEvent(PaymentInfoHelper paymentInfoHelper) {
-        mBus.removeStickyEvent(PaymentInfoHelper.class);
-        mPaymentInfoHelper = paymentInfoHelper;
-        try {
-            startPayment();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        prepareLink();
-        Log.d(this, "got event payment info from bus", paymentInfoHelper);
     }
 
     private boolean hasChannelList() {
@@ -324,46 +319,37 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         mStatusResponse = bundle.getParcelable(STATUS_RESPONSE);
     }
 
-    public void startFlow() {
+    public void startPayment() {
         Log.d(this, "start payment channel", mMiniPmcTransType);
-        if (mMiniPmcTransType == null) {
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
-            return;
-        }
-        try {
-            mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
         if (mPaymentInfoHelper == null) {
-            Log.d(this, "this channel not start from gateway channel list");
+            onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
             return;
         }
         try {
-            startPayment();
+            mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            if (mAdapter == null) {
+                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+                return;
+            }
+            initTimer();
+            getViewOrThrow().marginSubmitButtonTop(false);
+            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
+            //hide header if this is link card
+            if (mPaymentInfoHelper.isCardLinkTrans()) {
+                getViewOrThrow().visiableOrderInfo(false);
+            } else {
+                getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
+            }
+            initChannel();
+            if (mPaymentInfoHelper.isCardLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
+                prepareLink();
+            } else if (mMiniPmcTransType == null) {
+                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            }
         } catch (Exception e) {
             Log.e(this, e);
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
         }
-    }
-
-    private void startPayment() throws Exception {
-        Log.d(this, "start payment");
-        mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
-        if (mAdapter == null) {
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
-            return;
-        }
-        initTimer();
-        getViewOrThrow().marginSubmitButtonTop(false);
-        getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
-        //hide header if this is link card.
-        if (mPaymentInfoHelper.isCardLinkTrans()) {
-            getViewOrThrow().visiableOrderInfo(false);
-        } else {
-            getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
-        }
-        initChannel();
     }
 
     private void prepareLink() {
@@ -483,7 +469,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                         }
                     }
                 }, 300);
-            } else if(!GlobalData.shouldNativeWebFlow()){
+            } else if (!GlobalData.shouldNativeWebFlow()) {
                 getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
         }
@@ -714,7 +700,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private void startLink() {
-        Log.d(this, "ready for payment");
+        Log.d(this, "start link channel");
         try {
             getViewOrThrow().renderByResource(mAdapter.getPageName());
             getViewOrThrow().hideLoading();

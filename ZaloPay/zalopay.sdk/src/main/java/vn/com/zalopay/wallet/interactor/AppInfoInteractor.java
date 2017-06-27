@@ -78,7 +78,7 @@ public class AppInfoInteractor implements IAppInfo {
             if (appInfoResponse == null) {
                 return Observable.error(new RequestException(RequestException.NULL, null));
             } else if (appInfoResponse.returncode == 1) {
-                //success, load appinfo from cache
+                //success, load app info from cache
                 return mAppInfoRepository.getLocalStorage().get(appId);
             } else {
                 return Observable.error(new RequestException(appInfoResponse.returncode, appInfoResponse.returnmessage));

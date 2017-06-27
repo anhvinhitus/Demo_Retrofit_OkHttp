@@ -32,7 +32,6 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     @Override
     public void put(long pAppId, AppInfoResponse pResponse) {
         try {
-            Log.d(this, "start save app info", pResponse);
             if (pResponse == null || pResponse.returncode != 1) {
                 Log.d(this, "request not success...stopping saving response to cache");
                 return;
@@ -40,6 +39,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setExpiredTimeAppChannel(String.valueOf(pAppId), expiredTime);
             if (pResponse.hasTranstypes()) {
+                Log.d(this, "start update pmc trans type on cache");
                 long minValue, maxValue, bankMinValueSupport;
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
                     int transtype = miniPmcTransTypeResponse.transtype;

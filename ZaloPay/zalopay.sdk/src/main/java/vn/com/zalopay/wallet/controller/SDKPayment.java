@@ -251,7 +251,9 @@ public class SDKPayment {
         if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
         } else {
-            SDKApplication.getApplicationComponent().eventBus().postSticky(paymentInfoHelper);
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
+            GlobalData.paymentInfoHelper = paymentInfoHelper;
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pOwner.startActivity(intent);
         }

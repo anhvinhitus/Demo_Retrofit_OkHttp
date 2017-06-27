@@ -158,6 +158,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     protected void onDataBound(View view) {
+        mPresenter.onPaymentReady();
     }
 
     @Override

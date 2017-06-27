@@ -83,11 +83,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public IBank mBankInteractor;
     @Inject
     public IAppInfo mAppInfoInteractor;
-
+    protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     ZPMonitorEventTiming mEventTiming;
-
-    protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
@@ -106,6 +104,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     };
 
     public ChannelListPresenter() {
+        mPaymentInfoHelper = GlobalData.paymentInfoHelper;
         SDKApplication.getApplicationComponent().inject(this);
         Log.d(this, "call constructor ChannelListPresenter");
     }
@@ -113,6 +112,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     protected void loadBankListOnProgress() {
         try {
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START);
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         } catch (Exception e) {
             Log.e(this, e);
@@ -136,6 +136,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     protected void loadBankListOnComplete(BankConfigResponse bankConfigResponse) {
         try {
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
             loadChannels();
         } catch (Exception e) {
             Log.d(this, e);
@@ -145,6 +146,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     protected void loadAppInfoOnProcess() {
         try {
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
             Log.d(this, e);
@@ -155,7 +157,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     protected void loadAppInfoOnError(Throwable throwable) {
         Log.d(this, "load app info on error", throwable);
         try {
-            getViewOrThrow().hideLoading();
             //update payment status depend on api code from server
             if (throwable instanceof RequestException) {
                 RequestException requestException = (RequestException) throwable;
@@ -169,6 +170,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (showDialog) {
                 getViewOrThrow().showError(message);
             } else {
+                getViewOrThrow().hideLoading();
                 getViewOrThrow().callbackThenTerminate();
             }
         } catch (Exception e) {
@@ -180,6 +182,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     protected void loadAppInfoOnComplete(AppInfo appInfo) {
         try {
             Log.d(this, "load app info success", appInfo);
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END);
             if (appInfo == null || !appInfo.isAllow()) {
                 getViewOrThrow().showAppInfoNotFoundDialog();
                 return;
@@ -290,14 +293,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentInfoEvent(PaymentInfoHelper paymentInfoHelper) {
-        mBus.removeStickyEvent(PaymentInfoHelper.class);
-        mPaymentInfoHelper = paymentInfoHelper;
-        onPaymentReady();
-        Log.d(this, "got event payment info", mPaymentInfoHelper);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
         onSelectedChannel(pMessage.position);
@@ -397,7 +392,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    private void onPaymentReady() {
+    public void onPaymentReady() {
         try {
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
@@ -638,8 +633,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .linkInteractor()
                     .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(() -> SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_START))
                     .subscribe(aBoolean -> {
                         try {
+                            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_END);
                             readyForPayment();
                         } catch (Exception e) {
                             Log.d(this, e);
@@ -689,8 +686,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
+    public void OnDownloadResourceEvent(SdkDownloadResourceMessage result) {
         Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE);
         if (result.success) {
             SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
             mBus.post(message);

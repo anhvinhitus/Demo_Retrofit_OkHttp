@@ -12,10 +12,10 @@ import java.util.Map;
 import rx.Observable;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -74,38 +74,40 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
 
     @Override
     public void put(BankConfigResponse pResponse) {
-        Log.d(this, "start save bank list to cache", pResponse);
         if (pResponse == null || pResponse.returncode != 1) {
             Log.d(this, "request not success, stopping saving bank list to cache");
             return;
         }
         long time_to_live = System.currentTimeMillis() + pResponse.expiredtime;
         mSharedPreferences.setExpiredBankList(time_to_live);
-        if (isCheckSumChanged(pResponse.checksum)) {
-            //save check sum
-            mSharedPreferences.setCheckSumBankList(pResponse.checksum);
-            //sort by order
-            List<BankConfig> bankConfigList = pResponse.banklist;
-            Collections.sort(bankConfigList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
-            StringBuilder stringBuilder = new StringBuilder();
-            for (BankConfig bankConfig : bankConfigList) {
-                //for testing
+        if (!isCheckSumChanged(pResponse.checksum)) {
+            Log.d(this, "bank list on cache is valid - skip udpate");
+            return;
+        }
+        Log.d(this, "start update bank list to cache");
+        //save check sum
+        mSharedPreferences.setCheckSumBankList(pResponse.checksum);
+        //sort by order
+        List<BankConfig> bankConfigList = pResponse.banklist;
+        Collections.sort(bankConfigList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
+        StringBuilder stringBuilder = new StringBuilder();
+        for (BankConfig bankConfig : bankConfigList) {
+            //for testing
                 /*if (bankConfig.code.equals(CardType.PVTB)) {
                    *//* bankConfig.status = BankStatus.MAINTENANCE;
                     bankConfig.maintenanceto = Long.parseLong("1480063794000");
                     bankConfig.maintenancemsg = "NH VietinBank bảo trì tới %s, vui lòng chọn ngân hàng khác hoặc quay lại sau";*//*
                     bankConfig.functions.get(0).status = BankStatus.MAINTENANCE;
                 }*/
-                //save bank config
-                mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
-                stringBuilder.append(bankConfig.code).append(Constants.COMMA);
-            }
-            //save bank code list in order sort
-            mSharedPreferences.setBankCodeList(stringBuilder.toString());
-            //save bank prefix number (use to detect card type)
-            String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
-            mSharedPreferences.setBankConfigMap(hashMapBank);
+            //save bank config
+            mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
+            stringBuilder.append(bankConfig.code).append(Constants.COMMA);
         }
+        //save bank code list in order sort
+        mSharedPreferences.setBankCodeList(stringBuilder.toString());
+        //save bank prefix number (use to detect card type)
+        String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
+        mSharedPreferences.setBankConfigMap(hashMapBank);
     }
 
     @Override

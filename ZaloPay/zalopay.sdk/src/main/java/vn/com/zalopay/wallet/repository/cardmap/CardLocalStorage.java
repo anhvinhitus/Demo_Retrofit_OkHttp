@@ -83,9 +83,11 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     @Override
     public void put(String pUserId, String checkSum, List<MapCard> cardList) {
         if (!needUpdate(checkSum)) {
+            Log.d(this,"map card list cache is valid - skip update");
             return;
         }
         try {
+            Log.d(this,"start update map card list on cache");
             mSharedPreferences.setCardInfoCheckSum(checkSum);
             if (cardList != null && cardList.size() > 0) {
                 StringBuilder mappCardID = new StringBuilder();

@@ -17,13 +17,6 @@
     <application
         android:allowBackup="true"
         android:theme="@style/WalletTheme">
-
-        <!--<activity
-            android:name=".ui.channel.ChannelActivity"
-            android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />-->
         <activity
             android:name=".ui.channellist.ChannelListActivity"
             android:configChanges="orientation|screenSize"

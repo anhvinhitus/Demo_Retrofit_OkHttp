@@ -6,11 +6,11 @@ import java.util.List;
 
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -25,9 +25,11 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     @Override
     public void put(String pUserId, String checkSum, List<BankAccount> bankAccountList) {
         if (!needUpdate(checkSum)) {
+            Log.d(this, "bank account list in cache is valid - skip update");
             return;
         }
         try {
+            Log.d(this, "start update bank account list on cache");
             //update checksum
             mSharedPreferences.setBankAccountCheckSum(checkSum);
             if (bankAccountList != null && bankAccountList.size() > 0) {

@@ -53,11 +53,11 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     @Override
     public void put(String userId, PlatformInfoResponse pResponse) {
         try {
-            Log.d(this, "start save platform info to cache", pResponse);
             if (pResponse == null || pResponse.returncode != 1) {
                 Log.d(this, "request not success...stopping saving response to cache");
                 return;
             }
+            Log.d(this, "start update platform info to cache", pResponse);
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setPlatformInfoExpriedTime(expiredTime);
             mSharedPreferences.setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
@@ -70,7 +70,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             maintenance.maintainwithdrawfrom = pResponse.maintainwithdrawfrom;
             maintenance.maintainwithdrawto = pResponse.maintainwithdrawto;
             mSharedPreferences.setMaintenanceWithDraw(GsonUtils.toJsonString(maintenance));
-            Log.d(this, "save ismaintainwithdraw to cache", maintenance);
+            Log.d(this, "save maintain withdraw to cache", maintenance);
             // need to update cache data if chechsum is changed.
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
