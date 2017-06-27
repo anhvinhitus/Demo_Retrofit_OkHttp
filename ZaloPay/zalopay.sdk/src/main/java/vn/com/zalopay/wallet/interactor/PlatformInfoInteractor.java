@@ -12,10 +12,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
@@ -103,7 +103,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             resrcVer = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
             repository.getLocalStorage().setBankAccountCheckSum(null);
-            Log.d(this, "checksum =null resrVer=null - reset card check sum, bank checksum");
+            Timber.d("checksum =null resrVer=null - reset card check sum, bank checksum");
         }
         String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
         String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
@@ -169,7 +169,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                     repository.getLocalStorage().setResourceVersion(pResponse.resource.rsversion);
                     repository.getLocalStorage().setResourceDownloadUrl(pResponse.resource.rsurl);
                     getSDKResource(pResponse.resource.rsurl, pResponse.resource.rsversion)
-                            .subscribe(aBoolean -> Log.d(this, "download resource on complete"),
+                            .subscribe(aBoolean -> Timber.d("download resource on complete"),
                                     throwable -> Log.d(this, "download resource on error", throwable));
                 }
             }

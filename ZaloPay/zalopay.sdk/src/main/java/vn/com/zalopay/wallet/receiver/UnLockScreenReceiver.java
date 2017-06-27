@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -17,7 +18,7 @@ public class UnLockScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
-            Log.d(this, "unlock event");
+            Timber.d("unlock event");
             SDKApplication.getApplicationComponent().eventBus().post(new SdkUnlockScreenMessage());
         }
 

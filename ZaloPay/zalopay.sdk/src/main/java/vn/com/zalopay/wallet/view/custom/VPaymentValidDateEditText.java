@@ -9,6 +9,7 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdittext;
@@ -132,11 +133,11 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
             try {
                 if ((year < SdkUtils.getYear())
                         || ((year == SdkUtils.getYear()) && (month < SdkUtils.getMonth()))) {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + "NOW NOT MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + "NOW NOT MATCH ****");
 
                     return false;
                 } else {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + " NOW MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + " NOW MATCH ****");
                 }
 
             } catch (Exception e) {
@@ -151,10 +152,10 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
             try {
                 if ((year > SdkUtils.getYear())
                         || ((year == SdkUtils.getYear()) && (month > SdkUtils.getMonth()))) {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + "PASS NOT MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + "PASS NOT MATCH ****");
                     return false;
                 } else {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + " PASS MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + " PASS MATCH ****");
                 }
 
             } catch (Exception e) {
@@ -197,10 +198,10 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
                 String text = getString();
 
                 if (text.matches(mPattern)) {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + " MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + " MATCH ****");
                     return true;
                 } else {
-                    Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + " NOT MATCH ****");
+                    Timber.d("**** " + mEditTextConfig.id + " NOT MATCH ****");
                 }
             }
             return false;

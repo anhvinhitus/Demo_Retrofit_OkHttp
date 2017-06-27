@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -83,11 +84,11 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     @Override
     public void put(String pUserId, String checkSum, List<MapCard> cardList) {
         if (!needUpdate(checkSum)) {
-            Log.d(this,"map card list cache is valid - skip update");
+            Timber.d("map card list cache is valid - skip update");
             return;
         }
         try {
-            Log.d(this,"start update map card list on cache");
+            Timber.d("start update map card list on cache");
             mSharedPreferences.setCardInfoCheckSum(checkSum);
             if (cardList != null && cardList.size() > 0) {
                 StringBuilder mappCardID = new StringBuilder();
@@ -106,7 +107,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
             } else {
                 //clear map card list
                 mSharedPreferences.resetMapCardListOnCache(pUserId);
-                Log.d(this, "clear map card list");
+                Timber.d("clear map card list");
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -117,7 +118,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     public void saveResponse(String pUserId, CardInfoListResponse pResponse) {
         Log.d(this, "start save card info to cache", pResponse);
         if (pResponse == null || pResponse.returncode != 1) {
-            Log.d(this, "stop save card info cache because result fail");
+            Timber.d("stop save card info cache because result fail");
             return;
         }
         put(pUserId, pResponse.cardinfochecksum, pResponse.cardinfos);

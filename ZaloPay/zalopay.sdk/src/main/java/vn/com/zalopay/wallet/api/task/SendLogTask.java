@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -31,7 +32,7 @@ public class SendLogTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestSuccess(BaseResponse pResponse) {
-        Log.d(this, "onRequestSuccess");
+        Timber.d("onRequestSuccess");
     }
 
     @Override
@@ -41,7 +42,7 @@ public class SendLogTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestInProcess() {
-        Log.d(this, "onRequestInProcess");
+        Timber.d("onRequestInProcess");
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -115,7 +116,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         boolean isMatched = false;
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
-                Log.d(this, "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
+                Timber.d("$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
 
                 mCurrentUrl = url;
@@ -148,8 +149,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     public void executeJs(String pJsFileName, String pJsInput) {
         if (!TextUtils.isEmpty(pJsFileName)) {
-            Log.d(this, pJsFileName);
-            Log.d(this, pJsInput);
+            Timber.d(pJsFileName);
+            Timber.d(pJsInput);
 
             String jsContent = null;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
@@ -187,7 +188,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d(this, "///// shouldOverrideUrlLoading: " + url);
+        Timber.d("///// shouldOverrideUrlLoading: " + url);
 
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
@@ -207,7 +208,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void logDebug(String msg) {
-        Log.d(this, "****** Debug webview: " + msg);
+        Timber.d("****** Debug webview: " + msg);
     }
 
     @Override
@@ -217,7 +218,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
 
         if (mIsLoadingFinished && !mIsRedirect) {
-            Log.d(this, "onPageFinished" + url);
+            Timber.d("onPageFinished" + url);
 
             onPageFinished(url);
         } else {
@@ -231,7 +232,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Log.d(this, "++++ Current error SSL on page: " + mStartedtUrl);
+        Timber.d("++++ Current error SSL on page: " + mStartedtUrl);
 
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {

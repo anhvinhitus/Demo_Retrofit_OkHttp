@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -88,7 +89,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private synchronized void askToRetryGetStatus(String pMessage) {
         showProgress(false);
         if (mAdapter != null && mAdapter.isFinalScreen()) {
-            Log.d(this, "user in fail screen, don't need show retry dialog again");
+            Timber.d("user in fail screen, don't need show retry dialog again");
             return;
         }
 
@@ -178,7 +179,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             mAdapter.setLoadWebTimeout(false);
             cancelTimer();
             onPostResult(pResponse);
-            Log.d(this, "load website timeout");
+            Timber.d("load website timeout");
             return;
         }
         //flow 3ds
@@ -214,7 +215,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     @Override
     public void onRequestInProcess() {
         showProgress(true);
-        Log.d(this, "onRequestInProcess");
+        Timber.d("onRequestInProcess");
     }
 
     @Override

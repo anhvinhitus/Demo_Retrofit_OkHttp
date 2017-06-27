@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -31,7 +32,7 @@ public class PlatformInfoLoader extends SingletonBase {
     private Observer<PlatformInfoCallback> platformInfoSubscriber = new Observer<PlatformInfoCallback>() {
         @Override
         public void onCompleted() {
-            Log.d(this, "load platform info oncomplete");
+            Timber.d("load platform info oncomplete");
         }
 
         @Override
@@ -58,7 +59,7 @@ public class PlatformInfoLoader extends SingletonBase {
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END);
             if (platformInfoCallback instanceof UpversionCallback) {
                 UpversionCallback upversionCallback = (UpversionCallback) platformInfoCallback;
-                Log.d(PlatformInfoLoader.this, "need to up version from get platform info");
+                Timber.d("need to up version from get platform info");
                 if (!upversionCallback.forceupdate) {
                     SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
                     SDKApplication.getApplicationComponent().eventBus().post(message);
@@ -67,7 +68,7 @@ public class PlatformInfoLoader extends SingletonBase {
                         upversionCallback.newestappversion);
                 SDKApplication.getApplicationComponent().eventBus().post(message);
             } else {
-                Log.d(PlatformInfoLoader.this, "get platforminfo success, continue initialize resource to memory");
+                Timber.d("get platforminfo success, continue initialize resource to memory");
                 SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
                 SDKApplication.getApplicationComponent().eventBus().post(message);
             }
@@ -115,7 +116,7 @@ public class PlatformInfoLoader extends SingletonBase {
         }
         if (needReload) {
             try {
-                Log.d(this, "start retry platform info");
+                Timber.d("start retry platform info");
                 loadPlatformInfo(false, false);
             } catch (Exception e) {
                 Log.e(this, e);
@@ -123,7 +124,7 @@ public class PlatformInfoLoader extends SingletonBase {
             }
         } else if (!mPlatformInteractor.isValidConfig()) {
             try {
-                Log.d(this, "resource not found - start retry load plaform info");
+                Timber.d("resource not found - start retry load plaform info");
                 retryLoadInfo();
             } catch (Exception e) {
                 Log.d(this, e);
@@ -132,7 +133,7 @@ public class PlatformInfoLoader extends SingletonBase {
         }
         //resource existed  and need to load into memory
         else if (!ResourceManager.isInit()) {
-            Log.d(this, "resource was downloaded but not init - init resource now");
+            Timber.d("resource was downloaded but not init - init resource now");
             SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
             SDKApplication.getApplicationComponent().eventBus().post(message);
         }
@@ -159,14 +160,14 @@ public class PlatformInfoLoader extends SingletonBase {
     }
 
     private Subscription downloadResource(String pUrl, String pResourceVersion) {
-        Log.d(this, "starting retry download resource " + pUrl);
+        Timber.d("starting retry download resource " + pUrl);
         return mPlatformInteractor.getSDKResource(pUrl, pResourceVersion)
-                .subscribe(aBoolean -> Log.d(this, "download resource on complete"),
+                .subscribe(aBoolean -> Timber.d("download resource on complete"),
                         throwable -> Log.d(this, "download resource on error", throwable));
     }
 
     private Subscription loadPlatformInfo(boolean pForceReload, boolean downloadResource) {
-        Log.d(this, "need to retry load platforminfo again force " + pForceReload);
+        Timber.d("need to retry load platforminfo again force " + pForceReload);
         long currentTime = System.currentTimeMillis();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START);

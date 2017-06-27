@@ -8,6 +8,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import java.util.List;
 
 import rx.Subscription;
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -60,7 +61,7 @@ public class AdapterBankCard extends AdapterBase {
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {
-                Log.d(this, "start reload pmc transtype " + pBankCode);
+                Timber.d("start reload pmc transtype " + pBankCode);
                 long appId = mPaymentInfoHelper.getAppId();
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(appId, mPaymentInfoHelper.getTranstype(), pBankCode), MiniPmcTransType.class);
                 Log.d(this, "new pmc transype", mMiniPmcTransType);
@@ -117,9 +118,9 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        Log.d(this, "sender " + pSender + " otp " + pOtp);
+        Timber.d("sender " + pSender + " otp " + pOtp);
         if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
-            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            Timber.d("user is not in otp phase, skip auto fill otp");
             return;
         }
         try {
@@ -172,7 +173,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
                         //clear whitespace and - character
                         String otp = PaymentUtils.clearOTP(validOtp);
-                        Log.d(this, "otp after split by space " + validOtp);
+                        Timber.d("otp after split by space " + validOtp);
                         //check it whether length match length of otp in config
                         if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
                             continue;
@@ -209,7 +210,7 @@ public class AdapterBankCard extends AdapterBase {
                 } else if (mResponseStatus != null) {
                     showTransactionFailView(mResponseStatus.returnmessage);
                 } else if (shouldCheckStatusAgain()) {
-                    Log.d(this, "continue get status because response is null after authen payer");
+                    Timber.d("continue get status because response is null after authen payer");
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
                     showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
@@ -248,7 +249,7 @@ public class AdapterBankCard extends AdapterBase {
             //render webview flow
             else if (pEventType == EEventType.ON_REQUIRE_RENDER) {
                 if (isFinalScreen()) {
-                    Log.d(this, "EEventType.ON_REQUIRE_RENDER but in final screen now");
+                    Timber.d("EEventType.ON_REQUIRE_RENDER but in final screen now");
                     return null;
                 }
                 DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];
@@ -418,7 +419,7 @@ public class AdapterBankCard extends AdapterBase {
     public boolean hasBidvBankInMapCardList(String pCardNumber) {
         try {
             if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {
-                Log.d(this, "===hasBidvBankInMapCardList()===pCardNumber.length() < 6====" + pCardNumber);
+                Timber.d("===hasBidvBankInMapCardList()===pCardNumber.length() < 6====" + pCardNumber);
                 return false;
             }
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -75,16 +76,16 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
     @Override
     public void put(BankConfigResponse pResponse) {
         if (pResponse == null || pResponse.returncode != 1) {
-            Log.d(this, "request not success, stopping saving bank list to cache");
+            Timber.d("request not success, stopping saving bank list to cache");
             return;
         }
         long time_to_live = System.currentTimeMillis() + pResponse.expiredtime;
         mSharedPreferences.setExpiredBankList(time_to_live);
         if (!isCheckSumChanged(pResponse.checksum)) {
-            Log.d(this, "bank list on cache is valid - skip udpate");
+            Timber.d("bank list on cache is valid - skip udpate");
             return;
         }
-        Log.d(this, "start update bank list to cache");
+        Timber.d("start update bank list to cache");
         //save check sum
         mSharedPreferences.setCheckSumBankList(pResponse.checksum);
         //sort by order

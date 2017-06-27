@@ -27,6 +27,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import java.lang.ref.WeakReference;
 
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -237,7 +238,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         @Override
         public void afterTextChanged(Editable s) {
             if (!isInputValidWithWhiteSpace) {
-                Log.d(this, "!isInputValidWithWhiteSpace");
+                Timber.d("!isInputValidWithWhiteSpace");
                 return;
             }
             updateCardInfoAfterTextChange(s.toString());
@@ -301,7 +302,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected Action1<Boolean> mDetectCardSubscriber = new Action1<Boolean>() {
         @Override
         public void call(Boolean detected) {
-            Log.d(this, "card number " + getCardNumber() + " detected " + detected);
+            Timber.d("card number " + getCardNumber() + " detected " + detected);
             if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                 return;
             }
@@ -486,7 +487,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void initPager() throws Exception {
-        Log.d(this, "init viewpager");
+        Timber.d("init viewpager");
         if (getViewPager() == null) {
             mViewPager = (ViewPager) getAdapter().getView().findViewById(R.id.card_field_container_pager);
         }
@@ -773,7 +774,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         showKeyBoardOnCardNumberView();
         moveScrollViewToCurrentFocusView();
 
-        Log.d(this, "showKeyBoardAndResizeButtons");
+        Timber.d("showKeyBoardAndResizeButtons");
     }
 
     public void setDetectedCard() {
@@ -851,7 +852,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected void showWarningBankVersionSupport() throws Exception {
         BankConfig bankConfig = getCardFinder().getDetectBankConfig();
         if (bankConfig == null) {
-            Log.d(this, "bank config is null");
+            Timber.d("bank config is null");
             return;
         }
         String pMessage = mPaymentInfoHelper.isLinkTrans() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
@@ -1080,11 +1081,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public void updateDots() {
         if (mDotView == null) {
-            Log.d(this, "===mDotView=null===");
+            Timber.d("===mDotView=null===");
             return;
         }
         if (mDotView.getChildCount() == mCardAdapter.getCount()) {
-            Log.d(this, "===updateDots===no update dot again");
+            Timber.d("===updateDots===no update dot again");
             return;
         }
         mDotView.removeAllViews();
@@ -1282,7 +1283,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (currentIndex == 0 && !validateCardNumberLuhn()) {
             try {
                 showHintError(getCardNumberView(), GlobalData.getStringResource(RS.string.zpw_string_card_error_luhn));
-                Log.d(this, "validdate Luhn fail");
+                Timber.d("validdate Luhn fail");
                 return;
             } catch (Exception e) {
                 Log.e(this, e);
@@ -1511,7 +1512,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
         if (cardNumberView == null) {
-            Log.d(this, "setCardNumberHint::cardNumberView is NULL");
+            Timber.d("setCardNumberHint::cardNumberView is NULL");
             return;
         }
 
@@ -1816,7 +1817,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void onPageSelected(int position) {
         Log.d(this, "onPageSelecte", position);
         if (mCardAdapter == null) {
-            Log.d(this, "mCardAdapter is null");
+            Timber.d("mCardAdapter is null");
             return;
         }
         if (preventNavigateIfHasError(position)) {

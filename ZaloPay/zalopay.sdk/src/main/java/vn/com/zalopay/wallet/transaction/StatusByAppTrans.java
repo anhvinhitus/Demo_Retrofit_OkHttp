@@ -4,6 +4,7 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -41,7 +42,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     }
 
     private boolean shouldStop(StatusResponse pResponse) {
-        Log.d(this, "start check trans status by app trans");
+        Timber.d("start check trans status by app trans");
         if (pResponse == null) {
             return false;
         }

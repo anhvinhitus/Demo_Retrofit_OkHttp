@@ -15,6 +15,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -198,7 +199,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
         if (failingUrl.contains(HTTP_EXCEPTION)) {
-            Log.d(this, "skip process fail on url " + failingUrl);
+            Timber.d("skip process fail on url " + failingUrl);
             return;
         }
         if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
@@ -253,7 +254,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void runLastScript() {
         if (mLastAutoScriptFile != null) {
             executeJs(mLastAutoScriptFile, mLastAutoScriptInput);
-            Log.d(this, "run script file " + mLastAutoScriptFile + " input " + mLastAutoScriptInput);
+            Timber.d("run script file " + mLastAutoScriptFile + " input " + mLastAutoScriptInput);
         }
     }
 

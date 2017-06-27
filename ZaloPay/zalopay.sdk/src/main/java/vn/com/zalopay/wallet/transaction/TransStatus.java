@@ -3,8 +3,8 @@ package vn.com.zalopay.wallet.transaction;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Func1;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -44,7 +44,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     }
 
     private boolean shouldStop(StatusResponse pResponse) {
-        Log.d(this, "start check should stop check trans status");
+        Timber.d("start check should stop check trans status");
         if (pResponse == null) {
             return false;
         }

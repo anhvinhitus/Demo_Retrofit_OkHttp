@@ -7,6 +7,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
@@ -55,7 +56,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
 
     protected boolean loadStaticResource(UserInfo userInfo) throws Exception {
         try {
-            Log.d(this, "start load static resource");
+            Timber.d("start load static resource");
             PlatformInfoLoader.getInstance(userInfo).checkPlatformInfo();
         } catch (Exception e) {
             Log.e(this, e);
@@ -71,7 +72,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
     }
 
     public void callback() {
-        Log.d(this, "callback presenter");
+        Timber.d("callback presenter");
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
         }

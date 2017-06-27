@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -128,7 +129,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
         }
         SDKApplication.getApplicationComponent().inject(this);
-        Log.d(this, "call constructor ChannelPresenter");
+        Timber.d("call constructor ChannelPresenter");
     }
 
     @Override
@@ -208,7 +209,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
         //order is processing
         if (mAdapter != null && mAdapter.processingOrder) {
-            Log.d(this, "can not back, order still request api");
+            Timber.d("can not back, order still request api");
             return true;
         }
         //get status again if user back when payment in bank's site
@@ -284,7 +285,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     }
                     break;
                 case Activity.RESULT_CANCELED:
-                    Log.d(this, "cancel popup map selection");
+                    Timber.d("cancel popup map selection");
                     if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
                         mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
                     }
@@ -306,7 +307,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void onUserInteraction() {
         if (mTimerRunning && !mAdapter.isFinalScreen()) {
-            Log.d(this, "user tap on UI restart payment transaction countdown");
+            Timber.d("user tap on UI restart payment transaction countdown");
             startTransactionExpiredTimer();
         }
     }
@@ -427,13 +428,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking),
                     TSnackbar.LENGTH_INDEFINITE);
         }
-        Log.d(this, "onResume");
+        Timber.d("onResume");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(this, "onDetach - release adapter - close loading - cancel timer");
+        Timber.d("onDetach - release adapter - close loading - cancel timer");
         if (mAdapter != null) {
             mAdapter.onFinish();
             mAdapter = null;
@@ -480,7 +481,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private boolean createChannelAdapter(int pChannelId) {
         try {
-            Log.d(this, "create new adapter pmc id = " + pChannelId);
+            Timber.d("create new adapter pmc id = " + pChannelId);
             //release old adapter
             if (mAdapter != null) {
                 mAdapter.onFinish();
@@ -501,7 +502,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private void initChannel() throws Exception {
-        Log.d(this, "init channel");
+        Timber.d("init channel");
         try {
             mAdapter.init();
         } catch (Exception e) {
@@ -566,11 +567,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
             public void onFinish() {
                 mTimerRunning = false;
-                Log.d(this, "Timer is onFinish");
+                Timber.d("Timer is onFinish");
                 if (mAdapter != null && !mAdapter.isFinalScreen()) {
                     DialogManager.closeAllDialog();
                     mAdapter.showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
-                    Log.d(this, "Moving to expired transaction screen because expiration");
+                    Timber.d("Moving to expired transaction screen because expiration");
                 }
             }
         };
@@ -700,7 +701,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private void startLink() {
-        Log.d(this, "start link channel");
+        Timber.d("start link channel");
         try {
             getViewOrThrow().renderByResource(mAdapter.getPageName());
             getViewOrThrow().hideLoading();
@@ -717,7 +718,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage) {
-        Log.d(this, "OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
+        Timber.d("OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
         if (pMessage.success) {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
@@ -741,7 +742,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     });
             addSubscription(subscription);
         } else {
-            Log.d(this, "init resource error " + pMessage);
+            Timber.d("init resource error " + pMessage);
             /***
              * delete folder resource to download again.
              * this prevent case file resource downloaded but was damaged on the wire so
@@ -777,7 +778,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
-        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
+        Timber.d("OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
         if (result.success) {
             SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
             mBus.post(message);
@@ -790,7 +791,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnInitialResourceCompleteEvent(SdkStartInitResourceMessage pMessage) {
         if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
-            Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
+            Timber.d("call init resource but not ready for now, waiting for downloading resource");
             return;
         }
         Subscription subscription = ResourceManager.initResource()
@@ -823,13 +824,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             getAdapter().autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
-        Log.d(this, "on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
+        Timber.d("on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnNetworkEvent(SdkNetworkEvent networkEvent) {
         if (mAdapter.isFinalScreen()) {
-            Log.d(this, "onNetworkMessageEvent user is on fail screen...");
+            Timber.d("onNetworkMessageEvent user is on fail screen...");
             return;
         }
         Log.d(this, "networking is changed ", networkEvent.online);
@@ -837,7 +838,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (networkEvent.origin == API) {
             showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_not_stable),
                     GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG);
-            Log.d(this, "networking is not stable");
+            Timber.d("networking is not stable");
         } else if (!networkEvent.online) {
             showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_offline),
                     GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking),

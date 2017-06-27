@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
@@ -21,7 +20,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,6 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
@@ -351,7 +348,7 @@ public class NotificationHelper {
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
         if (notify == null) {
-            Log.d(this, "notification is null - skip update trans and balance");
+            Timber.d("notification is null - skip update trans and balance");
             return;
         }
         if (NotificationType.needReloadBalanceAndTransaction((int) notify.notificationtype)) {

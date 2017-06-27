@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.codetail.animation.ViewAnimationUtils;
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.ViewUtils;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -425,7 +425,7 @@ public class CreditCardView extends FrameLayout {
         CardSelector card = selectCard();
 
         if (card == null) {
-            Log.d(this, "===card=NULL===");
+            Timber.d("===card=NULL===");
             return;
         }
 

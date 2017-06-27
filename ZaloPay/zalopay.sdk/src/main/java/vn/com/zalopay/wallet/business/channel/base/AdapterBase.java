@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -152,7 +153,7 @@ public abstract class AdapterBase {
         }
     };
     private Action1<Boolean> loadCardSubscriber = aBoolean -> {
-        Log.d(this, "load card list finish");
+        Timber.d("load card list finish");
         try {
             getView().hideLoading();
         } catch (Exception e) {
@@ -316,7 +317,7 @@ public abstract class AdapterBase {
     }
 
     public void onFinish() {
-        Log.d(this, "onFinish - release gui processor - release pmc config");
+        Timber.d("onFinish - release gui processor - release pmc config");
         if (getGuiProcessor() != null) {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
@@ -735,17 +736,17 @@ public abstract class AdapterBase {
     }
 
     private void handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
-        Log.d(this, "processing result payment from notification");
+        Timber.d("processing result payment from notification");
         if (isTransactionSuccess()) {
-            Log.d(this, "transaction is finish, skipping process notification");
+            Timber.d("transaction is finish, skipping process notification");
             return;
         }
         if (!isTransactionInProgress()) {
-            Log.d(this, "transaction is ending, skipping process notification");
+            Timber.d("transaction is ending, skipping process notification");
             return;
         }
         if (pAdditionParams == null || pAdditionParams.length <= 0) {
-            Log.d(this, "stopping processing result payment from notification because of empty pAdditionParams");
+            Timber.d("stopping processing result payment from notification because of empty pAdditionParams");
             return;
         }
 
@@ -756,7 +757,7 @@ public abstract class AdapterBase {
             Log.e(this, ex);
         }
         if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
-            Log.d(this, "notification type is not accepted for this kind of transaction");
+            Timber.d("notification type is not accepted for this kind of transaction");
             return;
         }
         try {
@@ -777,14 +778,14 @@ public abstract class AdapterBase {
                     try {
                         Long paymentTime = Long.parseLong(pAdditionParams[2].toString());
                         mPaymentInfoHelper.getOrder().apptime = paymentTime;
-                        Log.d(this, "update transaction time from notification");
+                        Timber.d("update transaction time from notification");
                     } catch (Exception ex) {
                         Log.e(this, ex);
                     }
                 }
                 showTransactionSuccessView();
             } else {
-                Log.d(this, "transId is null");
+                Timber.d("transId is null");
             }
         } catch (Exception ex) {
             Log.e(this, ex);
@@ -792,9 +793,9 @@ public abstract class AdapterBase {
     }
 
     private boolean handleEventPromotion(Object[] pAdditionParams) {
-        Log.d(this, "got promotion from notification");
+        Timber.d("got promotion from notification");
         if (pAdditionParams == null || pAdditionParams.length <= 0) {
-            Log.d(this, "stopping processing promotion from notification because of empty pAdditionParams");
+            Timber.d("stopping processing promotion from notification because of empty pAdditionParams");
             return true;
         }
 
@@ -808,7 +809,7 @@ public abstract class AdapterBase {
             return true;
         }
         if (promotionEvent == null) {
-            Log.d(this, "stopping processing promotion from notification because promotion event is null");
+            Timber.d("stopping processing promotion from notification because promotion event is null");
             return true;
         }
         if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
@@ -824,14 +825,14 @@ public abstract class AdapterBase {
             }
         }
         if (transId == -1) {
-            Log.d(this, "stopping processing promotion from notification because transid is not same");
+            Timber.d("stopping processing promotion from notification because transid is not same");
             if (mPromotionResult != null) {
                 mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
             }
             return true;
         }
         if (!isTransactionSuccess()) {
-            Log.d(this, "transaction is not success, skipping process promotion notification");
+            Timber.d("transaction is not success, skipping process promotion notification");
             return true;
         }
 
@@ -1095,7 +1096,7 @@ public abstract class AdapterBase {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(this, "continue check transtatus by client id after 1s - because response submit order is null");
+                        Timber.d("continue check transtatus by client id after 1s - because response submit order is null");
                         makeRequestCheckStatusAfterSubmitFail(pAppTransID);
                     }
                 }, 1000);
@@ -1337,7 +1338,7 @@ public abstract class AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        Log.d(this, "callback transaction");
+        Timber.d("callback transaction");
     }
 
     protected void showDialogWithCallBack(String pMessage, String pButtonText, ZPWOnEventDialogListener pCallBack) {
@@ -1376,7 +1377,7 @@ public abstract class AdapterBase {
             Log.e(this, e);
         }
         if (isFinalScreen()) {
-            Log.d(this, "user in fail screen - skip retry get status");
+            Timber.d("user in fail screen - skip retry get status");
             return;
         }
         String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);

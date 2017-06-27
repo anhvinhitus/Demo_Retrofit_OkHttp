@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
@@ -29,7 +30,7 @@ public class AppInfoInteractor implements IAppInfo {
     @Inject
     public AppInfoInteractor(AppInfoStore.Repository appInfoRepository) {
         this.mAppInfoRepository = appInfoRepository;
-        Log.d(this, "call constructor AppInfoInteractor");
+        Timber.d("call constructor AppInfoInteractor");
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardCVVFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardExpiryFragment;
@@ -148,7 +149,7 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         int pos = getIndexOfFragment(pTag);
         if (pos != -1) {
             cardFragments.remove(pos);
-            Log.d(this, "===removeFragment===pos=" + pos);
+            Timber.d("===removeFragment===pos=" + pos);
         }
     }
 
@@ -161,7 +162,7 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
 
             addFragment(mCardIssueFragment, 1);
 
-            Log.d(this, "===addIssueDateFragment===");
+            Timber.d("===addIssueDateFragment===");
         }
     }
 
@@ -176,7 +177,7 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
 
             addFragment(mCardExpiryFragment, 1);
 
-            Log.d(this, "===addExpireDateFragment===");
+            Timber.d("===addExpireDateFragment===");
         }
     }
 

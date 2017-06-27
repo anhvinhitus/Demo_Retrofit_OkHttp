@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.Date;
 
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -33,11 +34,11 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
 
     public void trackUserCancel(boolean isFinish) {
         if (mZPApptransidLog.status == 1 || TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
-            Log.d(this, "skip tracking because status is finish");
+            Timber.d("skip tracking because status is finish");
             return;
         }
         if (isFinish) {
-            Log.d(this, "finish tracking when back to app");
+            Timber.d("finish tracking when back to app");
             mZPApptransidLog.status = 1;
         }
         mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
@@ -56,11 +57,11 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
      */
     public void track(Object... params) {
         if (params == null || params.length <= 0 || TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
-            Log.d(this, "skip tracking because params is empty");
+            Timber.d("skip tracking because params is empty");
             return;
         }
         if (mZPApptransidLog.status == 1) {
-            Log.d(this, "skip tracking because status is finish");
+            Timber.d("skip tracking because status is finish");
             return;
         }
         for (int i = 0; i < params.length; i++) {

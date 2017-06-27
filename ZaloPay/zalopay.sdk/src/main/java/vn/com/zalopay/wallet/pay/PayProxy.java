@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.FingerprintUtils;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -108,7 +109,7 @@ public class PayProxy extends SingletonBase {
             } catch (Exception e) {
                 startChannelActivity();
             }
-            Log.d(this, "trans status on error", throwable);
+            Timber.d(throwable, "trans status on error");
         }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
@@ -399,7 +400,7 @@ public class PayProxy extends SingletonBase {
                 mAuthenActor.closeAuthen();
                 return;
             }
-            Log.d(this, "start submit order");
+            Timber.d("start submit order");
             int channelId = mPaymentInfoHelper.isWithDrawTrans() ? BuildConfig.channel_zalopay : mChannel.pmcid;
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
             mRequestApi = getSubmitTransRequest();
@@ -440,7 +441,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private Subscription transStatus() {
-        Log.d(this, "start check order status");
+        Timber.d("start check order status");
         mRequestApi = getTransStatusRequest();
         return ((TransStatus) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
@@ -455,7 +456,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private Subscription appTransStatus() {
-        Log.d(this, "start app trans status");
+        Timber.d("start app trans status");
         mRequestApi = getTransStatusAppTransRequest();
         return ((StatusByAppTrans) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
@@ -601,7 +602,7 @@ public class PayProxy extends SingletonBase {
         } catch (Exception e) {
             Log.e(this, e);
             showPassword(pActivity);
-            Log.d(this, "use password instead of fingerprint");
+            Timber.d("use password instead of fingerprint");
         }
     }
 
@@ -617,7 +618,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private IRequest getTransStatusAppTransRequest() {
-        Log.d(this, "start check order by app trans id");
+        Timber.d("start check order by app trans id");
         return new StatusByAppTrans(mTransService,
                 getPaymentInfoHelper().getAppId(), getPaymentInfoHelper().getUserId(), getPaymentInfoHelper().getAppTransId());
     }
@@ -625,7 +626,7 @@ public class PayProxy extends SingletonBase {
     public void OnTransEvent(Object... pEventData) throws Exception {
         Log.d(this, "on trans event", pEventData);
         if (pEventData == null || pEventData.length < 2) {
-            Log.d(this, "trans event invalid");
+            Timber.d("trans event invalid");
             return;
         }
         EEventType event_type = (EEventType) pEventData[0];
@@ -644,7 +645,7 @@ public class PayProxy extends SingletonBase {
             return;
         }
         if (pEvent.transid != Long.parseLong(mTransId)) {
-            Log.d(this, "invalid trans id");
+            Timber.d("invalid trans id");
             return;
         }
         //make sure api get trans status is running
@@ -652,16 +653,16 @@ public class PayProxy extends SingletonBase {
             //cancel running request
             if (mSubscription != null && !mSubscription.isUnsubscribed()) {
                 mSubscription.unsubscribe();
-                Log.d(this, "cancel api trans status");
+                Timber.d("cancel api trans status");
             }
             if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
                 mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
-                Log.d(this, "update transaction time from notification");
+                Timber.d("update transaction time from notification");
             }
             //mark trans as success
             mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
             moveToResultScreen();
-            Log.d(this, "trans success from notification");
+            Timber.d("trans success from notification");
         }
     }
 
@@ -679,7 +680,7 @@ public class PayProxy extends SingletonBase {
 
     public void onCompletePasswordPopup(String pHashPassword) {
         if (preventSubmitOrder()) {
-            Log.d(this, "order is submit - skip");
+            Timber.d("order is submit - skip");
             return;
         }
         if (!TextUtils.isEmpty(pHashPassword)) {
@@ -696,7 +697,7 @@ public class PayProxy extends SingletonBase {
 
     public void onComleteFingerPrint(String pHashPassword) {
         if (preventSubmitOrder()) {
-            Log.d(this, "order is submit - skip");
+            Timber.d("order is submit - skip");
             return;
         }
         //user don't setting use fingerprint for payment
@@ -734,7 +735,7 @@ public class PayProxy extends SingletonBase {
     }
 
     public void release() {
-        Log.d(this, "start release pay proxy factors");
+        Timber.d("start release pay proxy factors");
         mActivity = null;
         mValidActor = null;
         mRequestApi = null;

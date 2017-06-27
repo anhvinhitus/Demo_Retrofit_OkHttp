@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -40,7 +41,7 @@ public class AbstractOrder {
 
     public List<NameValuePair> parseItems() {
         if (TextUtils.isEmpty(item)) {
-            Log.d(this, "item is empty - skip render item detail");
+            Timber.d("item is empty - skip render item detail");
             return null;
         }
         List<NameValuePair> items = new ArrayList<>();

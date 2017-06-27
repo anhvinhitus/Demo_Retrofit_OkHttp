@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -25,11 +26,11 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     @Override
     public void put(String pUserId, String checkSum, List<BankAccount> bankAccountList) {
         if (!needUpdate(checkSum)) {
-            Log.d(this, "bank account list in cache is valid - skip update");
+            Timber.d("bank account list in cache is valid - skip update");
             return;
         }
         try {
-            Log.d(this, "start update bank account list on cache");
+            Timber.d("start update bank account list on cache");
             //update checksum
             mSharedPreferences.setBankAccountCheckSum(checkSum);
             if (bankAccountList != null && bankAccountList.size() > 0) {
@@ -49,7 +50,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
             } else {
                 //clear back account list
                 mSharedPreferences.resetBankListOnCache(pUserId);
-                Log.d(this, "clear bank account list");
+                Timber.d("clear bank account list");
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -60,7 +61,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     public void saveResponse(String pUserId, BankAccountListResponse pResponse) {
         Log.d(this, "start save bank account list", pResponse);
         if (pResponse == null || pResponse.returncode != 1) {
-            Log.d(this, "stop save bank account cache because result fail");
+            Timber.d("stop save bank account cache because result fail");
             return;
         }
         put(pUserId, pResponse.bankaccountchecksum, pResponse.bankaccounts);

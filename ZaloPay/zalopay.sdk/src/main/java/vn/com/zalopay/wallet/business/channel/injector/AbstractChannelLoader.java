@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.subjects.ReplaySubject;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -139,10 +140,10 @@ public abstract class AbstractChannelLoader {
             //get list of mapped bank account from cached.
             String mapBankAccountKeyList = SharedPreferencesManager.getInstance().getBankAccountKeyList(mUserId);
             if (TextUtils.isEmpty(mapBankAccountKeyList)) {
-                Log.d(this, "get map bank account from cache is empty");
+                Timber.d("get map bank account from cache is empty");
                 return;
             }
-            Log.d(this, "get map bank account from cache" + mapBankAccountKeyList);
+            Timber.d("get map bank account from cache" + mapBankAccountKeyList);
             for (String mapCardID : mapBankAccountKeyList.split(Constants.COMMA)) {
                 if (TextUtils.isEmpty(mapCardID)) {
                     continue;
@@ -218,10 +219,10 @@ public abstract class AbstractChannelLoader {
             //get list of mapped card from cached.
             String mappCardIdList = SharedPreferencesManager.getInstance().getMapCardKeyList(mUserId);
             if (TextUtils.isEmpty(mappCardIdList)) {
-                Log.d(this, "get map card is null");
+                Timber.d("get map card is null");
                 return;
             }
-            Log.d(this, "map card list " + mappCardIdList);
+            Timber.d("map card list " + mappCardIdList);
             for (String mapCardID : mappCardIdList.split(Constants.COMMA)) {
                 if (TextUtils.isEmpty(mapCardID)) {
                     continue;

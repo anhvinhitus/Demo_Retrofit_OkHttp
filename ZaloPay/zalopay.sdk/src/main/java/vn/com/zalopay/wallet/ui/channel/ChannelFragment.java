@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
@@ -215,7 +216,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void terminate() {
-        Log.d(this, "recycle activity");
+        Timber.d("recycle activity");
         if (getActivity() != null) {
             getActivity().finish();
         }
@@ -353,7 +354,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void renderOrderInfo(AbstractOrder order) {
         if (order == null) {
-            Log.d(this, "order is null - skip render order info");
+            Timber.d("order is null - skip render order info");
             return;
         }
         //order desc
@@ -389,10 +390,10 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                     mResourceRender.render();
                     mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
                 } else {
-                    Log.d(this, "resource render is null");
+                    Timber.d("resource render is null");
                 }
             } else {
-                Log.d(this, "resource manager is null");
+                Timber.d("resource manager is null");
             }
             Log.d(this, "render resource: Total time:", (System.currentTimeMillis() - time));
         } catch (Exception e) {
@@ -415,7 +416,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 }
             });
         } else {
-            Log.d(this, "reader resource after delaying 500ms");
+            Timber.d("reader resource after delaying 500ms");
             new Handler().postDelayed(() -> renderByResource(screenName), 500);
         }
     }
@@ -482,7 +483,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 authenInputCardView.setPadding(0, 0, 0, paddingButtom);
                 authenInputCardView.requestLayout();
             }
-            Log.d(this, "setMarginSubmitButtonTop  Phone");
+            Timber.d("setMarginSubmitButtonTop  Phone");
         } else {
             if (submitButton != null) {
                 if (viewEnd)
@@ -492,7 +493,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
-            Log.d(this, "setMarginSubmitButtonTop  Tab");
+            Timber.d("setMarginSubmitButtonTop  Tab");
         }
     }
 

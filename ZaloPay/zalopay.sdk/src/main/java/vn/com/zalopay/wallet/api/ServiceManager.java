@@ -8,6 +8,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -99,7 +100,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
 
     public synchronized void loadData(IRequest pRequest, Map<String, String> pParams) {
         if (haveRequestRunning()) {
-            Log.d(this, mTask.toString() + " there're a task is running...");
+            Timber.d(mTask.toString() + " there're a task is running...");
             return;
         }
         getData(pRequest, pParams);
@@ -116,7 +117,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
 
     public synchronized void postData(final IRequest pRequest, Map<String, String> pParams) {
         if (haveRequestRunning()) {
-            Log.d(this, mTask.toString() + "there're a task is running...");
+            Timber.d(mTask.toString() + "there're a task is running...");
             return;
         }
         mSubscription = pRequest.getRequest(mDataSource, pParams)
@@ -138,13 +139,13 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
     protected void releaseLock() {
         mIsRequesting = false;
         unSubscribe();
-        Log.d(this, "released lock requesting...");
+        Timber.d("released lock requesting...");
     }
 
     protected void unSubscribe() {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
-            Log.d(this, "un subscribe...");
+            Timber.d("un subscribe...");
         }
     }
 }

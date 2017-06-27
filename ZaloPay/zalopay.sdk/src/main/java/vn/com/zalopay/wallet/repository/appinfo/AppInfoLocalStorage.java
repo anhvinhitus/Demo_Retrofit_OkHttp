@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -33,13 +34,13 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     public void put(long pAppId, AppInfoResponse pResponse) {
         try {
             if (pResponse == null || pResponse.returncode != 1) {
-                Log.d(this, "request not success...stopping saving response to cache");
+                Timber.d("request not success...stopping saving response to cache");
                 return;
             }
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             mSharedPreferences.setExpiredTimeAppChannel(String.valueOf(pAppId), expiredTime);
             if (pResponse.hasTranstypes()) {
-                Log.d(this, "start update pmc trans type on cache");
+                Timber.d("start update pmc trans type on cache");
                 long minValue, maxValue, bankMinValueSupport;
                 for (MiniPmcTransTypeResponse miniPmcTransTypeResponse : pResponse.pmctranstypes) {
                     int transtype = miniPmcTransTypeResponse.transtype;
@@ -91,16 +92,16 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                     mSharedPreferences.setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
                     mSharedPreferences.setBankMinAmountSupport(appInfoTranstypeKey, bankMinValueSupport);
                     Log.d(this, "save bank min value support", bankMinValueSupport);
-                    Log.d(this, "save ids channel list to cache " + transtypePmcIdList.toString());
+                    Timber.d("save ids channel list to cache " + transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used when user input amount
                     if (transtype == TransactionType.MONEY_TRANSFER || transtype == TransactionType.TOPUP || transtype == TransactionType.WITHDRAW) {
                         if (minValue != MIN_VALUE_CHANNEL) {
                             mSharedPreferences.setMinValueChannel(String.valueOf(transtype), minValue);
-                            Log.d(this, "save min value " + minValue + " transtype " + transtype);
+                            Timber.d("save min value " + minValue + " transtype " + transtype);
                         }
                         if (maxValue != MAX_VALUE_CHANNEL) {
                             mSharedPreferences.setMaxValueChannel(String.valueOf(transtype), maxValue);
-                            Log.d(this, "save max value " + maxValue + " transtype " + transtype);
+                            Timber.d("save max value " + maxValue + " transtype " + transtype);
                         }
                     }
                 }

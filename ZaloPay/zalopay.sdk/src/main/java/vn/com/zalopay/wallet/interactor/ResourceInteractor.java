@@ -10,6 +10,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -105,7 +106,7 @@ public class ResourceInteractor {
         eventMessage.success = pIsSuccess;
         eventMessage.message = pMessage;
         SDKApplication.getApplicationComponent().eventBus().post(eventMessage);
-        Log.d(this, "posting to result download resource task");
+        Timber.d("posting to result download resource task");
     }
 
     private String getDefaulErrorNetwork() {

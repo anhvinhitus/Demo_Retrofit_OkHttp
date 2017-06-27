@@ -6,26 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.schedulers.Schedulers;
-import vn.com.zalopay.utility.GsonUtils;
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.SDKResource;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
-import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 
 public abstract class CardCheck extends SingletonBase {
     public String mCardNumber;
@@ -112,7 +106,7 @@ public abstract class CardCheck extends SingletonBase {
         if (!TextUtils.isEmpty(pCardNumber)) {
             this.mValidLuhn = SdkUtils.validateCardNumberByLuhn(pCardNumber.trim());
         }
-        Log.d(this, "card number " + pCardNumber + " match luhn " + mValidLuhn);
+        Timber.d("card number " + pCardNumber + " match luhn " + mValidLuhn);
         return this.mValidLuhn;
     }
 

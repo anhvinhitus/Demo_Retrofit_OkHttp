@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.api.task;
 
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -40,7 +41,7 @@ public class TrustSDKReportTask extends SDKReportTask {
     @Override
     protected void doRequest() {
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            Log.d(this, "can not send log report error because networking is offline");
+            Timber.d("can not send log report error because networking is offline");
             return;
         }
         newDataRepository().setTask(this).postData(new SDKReportImpl(), getDataParams());

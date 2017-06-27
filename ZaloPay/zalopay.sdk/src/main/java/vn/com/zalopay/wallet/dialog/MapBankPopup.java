@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -79,7 +80,7 @@ public class MapBankPopup extends BasePaymentDialogActivity {
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
         Log.d(this, "select at position", pMessage.position);
         if (mChannelList == null || mChannelList.size() <= 0) {
-            Log.d(this, "channel list is empty");
+            Timber.d("channel list is empty");
             return;
         }
         if (pMessage.position >= 0) {

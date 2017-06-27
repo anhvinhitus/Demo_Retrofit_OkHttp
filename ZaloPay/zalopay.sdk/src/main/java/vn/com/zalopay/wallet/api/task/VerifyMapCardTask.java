@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -31,7 +32,7 @@ public class VerifyMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onDoTaskOnResponse(StatusResponse pResponse) {
-        Log.d(this, "onDoTaskOnResponse nothing");
+        Timber.d("onDoTaskOnResponse nothing");
     }
 
     @Override
@@ -57,7 +58,7 @@ public class VerifyMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestInProcess() {
-        Log.d(this, "onRequestInProcess");
+        Timber.d("onRequestInProcess");
     }
 
     @Override

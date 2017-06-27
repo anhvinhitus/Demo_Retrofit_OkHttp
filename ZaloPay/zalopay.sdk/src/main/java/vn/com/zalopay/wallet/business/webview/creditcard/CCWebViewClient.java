@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -48,7 +49,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d(this, "load url " + url);
+        Timber.d("load url " + url);
         if ((url.contains(mMerchantPrefix) || url.contains(BuildConfig.HOST_COMPLETE)) && getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_PAYMENT_RESULT_BROWSER, new Object());
             return true;
@@ -67,7 +68,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        Log.d(this, "load resource " + url);
+        Timber.d("load resource " + url);
         if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.zpw_string_pay_domain)) && getAdapter() != null) {
             try {
                 getAdapter().getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
@@ -80,7 +81,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Log.d(this, "load page finish " + url);
+        Timber.d("load page finish " + url);
         if (getAdapter() != null) {
             try {
                 getAdapter().getView().hideLoading();
@@ -106,7 +107,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-        Log.d(this, "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
+        Timber.d("errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
     }
 
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -154,7 +155,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent, WebView pView) {
-        Log.d(this, "runScript: " + scriptContent);
+        Timber.d("runScript: " + scriptContent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             pView.evaluateJavascript(scriptContent, null);
         } else {

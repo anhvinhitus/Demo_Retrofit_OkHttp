@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -235,7 +236,7 @@ public class VPaymentEditText extends TextInputEditText {
             adapterBase = activity.getAdapter();
         }
         if ((keyCode == KeyEvent.KEYCODE_BACK) && adapterBase != null && adapterBase.isInputStep()) {
-            Log.d(this, "can not back,you have to input card info");
+            Timber.d("can not back,you have to input card info");
             return true;
         }
         return false;

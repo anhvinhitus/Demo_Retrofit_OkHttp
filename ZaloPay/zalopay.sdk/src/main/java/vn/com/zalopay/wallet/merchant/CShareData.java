@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import java.util.List;
 
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -78,7 +79,7 @@ public class CShareData extends SingletonBase {
         boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
         if (!isUiThread) {
-            Log.d(this, "notification promotion event coming from background, switching thread to main thread...");
+            Timber.d("notification promotion event coming from background, switching thread to main thread...");
             new Handler(Looper.getMainLooper()).post(() -> {
                 //this runs on the UI thread
                 sendNotifyPromotionEventToAdapter(pObjects);
@@ -96,7 +97,7 @@ public class CShareData extends SingletonBase {
         boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
         if (!isUiThread) {
-            Log.d(this, "notification coming from background, switching thread to main thread...");
+            Timber.d("notification coming from background, switching thread to main thread...");
             new Handler(Looper.getMainLooper()).post(() -> {
                 //this runs on the UI thread
                 sendNotifyBankAccountFinishToAdapter(pObjects);
@@ -118,7 +119,7 @@ public class CShareData extends SingletonBase {
         boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
         if (!isUiThread) {
-            Log.d(this, "notification coming from background, switching thread to main thread...");
+            Timber.d("notification coming from background, switching thread to main thread...");
             new Handler(Looper.getMainLooper()).post(() -> {
                 //this runs on the UI thread
                 sendNotifyTransactionFinishIntoSDK(pObject);
@@ -145,7 +146,7 @@ public class CShareData extends SingletonBase {
                             .subscribe(new Action1<Boolean>() {
                                 @Override
                                 public void call(Boolean aBoolean) {
-                                    Log.d(this, "reload bank account finish");
+                                    Timber.d("reload bank account finish");
                                 }
                             }, new Action1<Throwable>() {
                                 @Override
@@ -174,7 +175,7 @@ public class CShareData extends SingletonBase {
                             .getApplicationComponent()
                             .eventBus()
                             .post(successTransEvent);
-                    Log.d(this, "send event notification into event bus");
+                    Timber.d("send event notification into event bus");
                 }
             } catch (Exception e) {
                 Log.e(this, e);
@@ -207,7 +208,7 @@ public class CShareData extends SingletonBase {
             IPromotionResult promotionResult = (IPromotionResult) pObject[1];
             promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available
         } else {
-            Log.d(this, "skip post notification promotion event because user quit sdk");
+            Timber.d("skip post notification promotion event because user quit sdk");
         }
     }
 

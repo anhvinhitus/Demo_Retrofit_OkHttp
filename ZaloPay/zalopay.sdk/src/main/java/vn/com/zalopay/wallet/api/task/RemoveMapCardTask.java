@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.api.task;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -53,7 +54,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onDoTaskOnResponse(BaseResponse pResponse) {
-        Log.d(this, "onDoTaskOnResponse do nothing");
+        Timber.d("onDoTaskOnResponse do nothing");
     }
 
     @Override
@@ -73,7 +74,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
         } else {
             Log.e(this, "mListener = NULL");
         }
-        Log.d(this, "onRequestSuccess");
+        Timber.d("onRequestSuccess");
     }
 
     @Override
@@ -94,7 +95,7 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestInProcess() {
-        Log.d(this, "onRequestInProcess " + GsonUtils.toJsonString(mMapCardParams));
+        Timber.d("onRequestInProcess " + GsonUtils.toJsonString(mMapCardParams));
     }
 
     @Override

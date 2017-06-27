@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -52,7 +52,7 @@ public class CardNumberFragment extends CreditCardFragment {
             Bitmap bmBankSupportHelp = ResourceManager.getImage(RS.drawable.ic_bank_support_help);
 
             if (bmBankSupportHelp == null) {
-                Log.d(this, "===bmBankSupportHelp=null===");
+                Timber.d("===bmBankSupportHelp=null===");
             }
 
             if (bmBankSupportHelp != null) {

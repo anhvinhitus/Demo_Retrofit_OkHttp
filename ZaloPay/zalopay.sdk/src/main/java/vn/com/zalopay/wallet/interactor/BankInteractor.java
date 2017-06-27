@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -57,7 +58,7 @@ public class BankInteractor implements IBank {
     private Func1<BankConfigResponse, Observable<List<BankConfig>>> withDrawBank = new Func1<BankConfigResponse, Observable<List<BankConfig>>>() {
         @Override
         public Observable<List<BankConfig>> call(BankConfigResponse bankConfigResponse) {
-            Log.d(this, "start load withdraw banks");
+            Timber.d("start load withdraw banks");
             try {
                 List<BankConfig> withDrawBanks = new ArrayList<>();
                 String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
@@ -86,14 +87,14 @@ public class BankInteractor implements IBank {
     @Inject
     public BankInteractor(BankStore.Repository bankListRepository) {
         this.mBankListRepository = bankListRepository;
-        Log.d(this, "call constructor BankInteractor");
+        Timber.d("call constructor BankInteractor");
     }
 
     private Func1<BankConfigResponse, Observable<List<ZPBank>>> supportBanks(String appVersion) {
         return new Func1<BankConfigResponse, Observable<List<ZPBank>>>() {
             @Override
             public Observable<List<ZPBank>> call(BankConfigResponse bankConfigResponse) {
-                Log.d(this, "start load support banks");
+                Timber.d("start load support banks");
                 try {
                     List<ZPBank> supportBank = new ArrayList<>();
                     //cc must be hardcode

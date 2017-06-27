@@ -20,6 +20,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
@@ -29,7 +30,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -107,7 +107,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public ChannelListPresenter() {
         mPaymentInfoHelper = GlobalData.paymentInfoHelper;
         SDKApplication.getApplicationComponent().inject(this);
-        Log.d(this, "call constructor ChannelListPresenter");
+        Timber.d("call constructor ChannelListPresenter");
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_START_CHANNEL_LIST_PRESENTER);
     }
 
@@ -241,7 +241,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     public boolean onBackPressed() {
-        Log.d(this, "onBackPressed");
+        Timber.d("onBackPressed");
         if (mPayProxy == null) {
             return false;
         }
@@ -319,7 +319,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private PaymentChannel onSelectedChannel(int pPosition) {
         Log.d(this, "select at position", pPosition);
         if (mChannelList == null || mChannelList.size() <= 0) {
-            Log.d(this, "channel list is empty");
+            Timber.d("channel list is empty");
             return null;
         }
         PaymentChannel channel = null;
@@ -330,11 +330,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
         }
         if (channel == null) {
-            Log.d(this, "channel is null");
+            Timber.d("channel is null");
             return null;
         }
         if (!changedChannel(channel)) {
-            Log.d(this, "click same channel");
+            Timber.d("click same channel");
             return null;
         }
         //check networking
@@ -362,11 +362,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void markSelectChannel(PaymentChannel channel, int position) throws Exception {
         if (channel == null) {
-            Log.d(this, "channel is null");
+            Timber.d("channel is null");
             return;
         }
         if (!changedChannel(channel)) {
-            Log.d(this, "click same channel");
+            Timber.d("click same channel");
             return;
         }
         //update total amount and fee
@@ -525,7 +525,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return new Observer<PaymentChannel>() {
             @Override
             public void onCompleted() {
-                Log.d(ChannelListPresenter.this, "load channels on complete");
+                Timber.d("load channels on complete");
                 doCompleteLoadChannel();
                 try {
                     getViewOrThrow().hideLoading();
@@ -548,7 +548,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             public void onNext(PaymentChannel paymentChannel) {
                 Log.d(ChannelListPresenter.this, "load channel on next", paymentChannel);
                 if (mPaymentInfoHelper.shouldIgnore(paymentChannel.pmcid)) {
-                    Log.d(this, "this channel is not in filter list");
+                    Timber.d("this channel is not in filter list");
                     return;
                 }
                 send(paymentChannel);
@@ -559,7 +559,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private synchronized void loadChannels() throws Exception {
         getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
-            Log.d(this, "preparing channels");
+            Timber.d("preparing channels");
             mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
                     mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getAmount(), mPaymentInfoHelper.getBalance(),
                     mPaymentInfoHelper.getTranstype());
@@ -574,7 +574,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void readyForPayment() {
         loadBankList(mBankInteractor);
-        Log.d(this, "ready for payment");
+        Timber.d("ready for payment");
     }
 
     public boolean isUniqueChannel() {
@@ -627,7 +627,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage) {
-        Log.d(this, "OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
+        Timber.d("OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
         if (pMessage.success) {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
@@ -653,7 +653,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     });
             addSubscription(subscription);
         } else {
-            Log.d(this, "init resource error " + pMessage);
+            Timber.d("init resource error " + pMessage);
             /***
              * delete folder resource to download again.
              * this prevent case file resource downloaded but was damaged on the wire so
@@ -689,7 +689,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnDownloadResourceEvent(SdkDownloadResourceMessage result) {
-        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
+        Timber.d("OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE);
         if (result.success) {
             SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
@@ -703,7 +703,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnInitialResourceCompleteEvent(SdkStartInitResourceMessage pMessage) {
         if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
-            Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
+            Timber.d("call init resource but not ready for now, waiting for downloading resource");
             return;
         }
         Subscription subscription = ResourceManager.initResource()

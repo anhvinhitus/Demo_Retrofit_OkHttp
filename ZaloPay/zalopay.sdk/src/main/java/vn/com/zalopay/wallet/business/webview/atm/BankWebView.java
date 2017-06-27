@@ -9,6 +9,7 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 
@@ -54,7 +55,7 @@ public class BankWebView extends PaymentWebView {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent) {
-        Log.d(this, "##### runScript: " + scriptContent);
+        Timber.d("##### runScript: " + scriptContent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript(scriptContent, null);

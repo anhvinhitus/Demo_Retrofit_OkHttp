@@ -4,12 +4,10 @@ import android.text.TextUtils;
 
 import java.util.Map;
 
-import vn.com.zalopay.utility.GsonUtils;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class BankCardCheck extends CardCheck {
@@ -72,7 +70,7 @@ public class BankCardCheck extends CardCheck {
         }
         mTempCardNumber = pCardNumber;
         if (bankPrefix == null) {
-            Log.d(this, "bank prefix is null");
+            Timber.d("bank prefix is null");
             return false;
         }
         //get bank code in bank map

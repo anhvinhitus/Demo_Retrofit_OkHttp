@@ -69,7 +69,7 @@ public class Log {
         }
     }
 
-    public static void d(Object pObject, String pMessage) {
+    public static void debug(Object pObject, String pMessage) {
         if (IS_LOG_ENABLE) {
             Timber.tag((pObject != null) ? pObject.getClass().getSimpleName() : TAG).d("%s", !TextUtils.isEmpty(pMessage) ? pMessage : DEFAULT_ERROR);
         }

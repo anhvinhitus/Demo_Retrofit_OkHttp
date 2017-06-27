@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Completable;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -320,7 +321,7 @@ public class ResourceManager extends SingletonBase {
     //get otp pattern for each of bank.
     public DCardIdentifier getBankIdentifier(String pCode) {
         if (mConfigFromServer == null || mConfigFromServer.BankIdentifier == null) {
-            Log.d(this, "mConfigFromServer is null");
+            Timber.d("mConfigFromServer is null");
             return null;
         }
         DCardIdentifier cardIdentifier = null;
@@ -335,7 +336,7 @@ public class ResourceManager extends SingletonBase {
 
     public List<DKeyBoardConfig> getKeyBoardConfig() {
         if (mConfigFromServer == null) {
-            Log.d(this, "mConfigFromServer is null");
+            Timber.d("mConfigFromServer is null");
             return null;
         }
         return mConfigFromServer.keyboard;

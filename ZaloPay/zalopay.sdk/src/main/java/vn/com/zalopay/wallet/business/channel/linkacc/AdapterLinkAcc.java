@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.HashMapUtils;
@@ -105,7 +106,7 @@ public class AdapterLinkAcc extends AdapterBase {
         @Override
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
-                Log.d(this, "refreshCaptcha()");
+                Timber.d("refreshCaptcha()");
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
                     try {
                         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
@@ -148,7 +149,7 @@ public class AdapterLinkAcc extends AdapterBase {
     private Action1<Boolean> loadBankAccountSubscriber = new Action1<Boolean>() {
         @Override
         public void call(Boolean aBoolean) {
-            Log.d(this, "load bank account finish");
+            Timber.d("load bank account finish");
             hideLoadingDialog();
             try {
                 loadBankAccountSuccess();
@@ -205,7 +206,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
                     return;
                 }
-                Log.d(this, "refreshCaptcha()");
+                Timber.d("refreshCaptcha()");
                 mIsLoadingCaptcha = true;
                 mWebViewProcessor.refreshCaptcha();
                 COUNT_REFRESH_CAPTCHA_REGISTER++;
@@ -283,7 +284,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void startFlow() throws Exception {
-        Log.d(this, "start flow link account");
+        Timber.d("start flow link account");
         String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
         BankConfig bankConfig = SDKApplication.getApplicationComponent()
                 .bankListInteractor()
@@ -337,19 +338,19 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        Log.d(this, "on process phase " + mPageName);
+        Timber.d("on process phase " + mPageName);
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             try {
                 getView().showOpenSettingNetwokingDialog(closeSettingNetworkingListener);
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            Log.d(this, "networking is offline, stop processing click event");
+            Timber.d("networking is offline, stop processing click event");
             return;
         }
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
-            Log.d(this, "hit " + mPageName);
+            Timber.d("hit " + mPageName);
         }
 
 
@@ -412,7 +413,7 @@ public class AdapterLinkAcc extends AdapterBase {
     // call API,get bankAccount
     private void checkBankAccount() {
         if (isFinalScreen()) {
-            Log.d(this, "stopping reload bank account because user in result screen");
+            Timber.d("stopping reload bank account because user in result screen");
             return;
         }
         visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
@@ -508,9 +509,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        Log.d(this, "sender " + pSender + " otp " + pOtp);
+        Timber.d("sender " + pSender + " otp " + pOtp);
         if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
-            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            Timber.d("user is not in otp phase, skip auto fill otp");
             return;
         }
         try {
@@ -538,7 +539,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                         if (GlobalData.shouldNativeWebFlow()) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
-                            Log.d(this, "fill otp into website vcb directly");
+                            Timber.d("fill otp into website vcb directly");
                         } else {
                             linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
                         }
@@ -603,7 +604,7 @@ public class AdapterLinkAcc extends AdapterBase {
             stringBuffer.append(phoneZalopay.substring(3));
             phoneZalopay = stringBuffer.toString();
         }
-        Log.d(this, "phone in zalopay " + phoneZalopay);
+        Timber.d("phone in zalopay " + phoneZalopay);
         for (String numberphone : pPhoneListVcb) {
             try {
                 int numberOfPrefix = Integer.parseInt(GlobalData.getStringResource(RS.string.prefix_numberphone_vcb));
@@ -681,7 +682,7 @@ public class AdapterLinkAcc extends AdapterBase {
              * to prevent switch view if have a callback from website parser
              */
             if (isFinalScreen()) {
-                Log.d(this, "call back from parsing website but user in final screen now");
+                Timber.d("call back from parsing website but user in final screen now");
                 return null;
             }
             if (pAdditionParams == null || pAdditionParams.length == 0) {
@@ -692,12 +693,12 @@ public class AdapterLinkAcc extends AdapterBase {
             String page = (String) pAdditionParams[1];
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
-                Log.d(this, "event login page");
+                Timber.d("event login page");
                 hideLoadingDialog(); // close process dialog
                 mPageName = PAGE_VCB_LOGIN;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 if (GlobalData.shouldNativeWebFlow()) {
-                    Log.d(this, "user following web flow, skip event login vcb");
+                    Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
                 // set captcha
@@ -711,7 +712,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
-                    Log.d(this, response.message);
+                    Timber.d(response.message);
                     switch (VcbUtils.getVcbType(response.message)) {
                         case EMPTY_USERNAME:
                             break;
@@ -765,7 +766,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
-                Log.d(this, "event register page");
+                Timber.d("event register page");
 
                 // TrackApptransidEvent confirm stage
                 if (GlobalData.analyticsTrackerWrapper != null) {
@@ -778,7 +779,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 if (GlobalData.shouldNativeWebFlow()) {
-                    Log.d(this, "user following web flow, skip event login vcb");
+                    Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
                 // set captcha
@@ -815,7 +816,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (response.phoneNumList.size() <= 0 && COUNT_RETRY_GET_NUMBERPHONE < Constants.VCB_MAX_RETRY_GET_NUMBERPHONE) {
                         mWebViewProcessor.runLastScript();
                         COUNT_RETRY_GET_NUMBERPHONE++;
-                        Log.d(this, "run last script again to get number phone list");
+                        Timber.d("run last script again to get number phone list");
                         return null;
                     } else if (response.phoneNumList.size() <= 0) {
                         // don't have account link
@@ -902,7 +903,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                         public void run() {
                                             try {
                                                 SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
-                                                Log.d(this, "mOnFocusChangeListener Link Acc");
+                                                Timber.d("mOnFocusChangeListener Link Acc");
                                             } catch (Exception e) {
                                                 Log.e(this, e);
                                             }
@@ -939,7 +940,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 // get bankaccount from cache callback to app
-                Log.d(this, "event on unregister page complete");
+                Timber.d("event on unregister page complete");
 
                 // TrackApptransidEvent AuthenType
                 if (GlobalData.analyticsTrackerWrapper != null) {
@@ -978,7 +979,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 COUNT_UNREGISTER++;
 
                 if (GlobalData.shouldNativeWebFlow()) {
-                    Log.d(this, "user following web flow, skip event login vcb");
+                    Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
                 // set wallet unregister
@@ -990,7 +991,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 if ((response.phoneNumUnRegList == null || response.phoneNumUnRegList.size() <= 0) && COUNT_RETRY_GET_NUMBERPHONE < Constants.VCB_MAX_RETRY_GET_NUMBERPHONE) {
                     mWebViewProcessor.runLastScript();
                     COUNT_RETRY_GET_NUMBERPHONE++;
-                    Log.d(this, "run last script again to get number phone list");
+                    Timber.d("run last script again to get number phone list");
                     return null;
                 } else if ((response.phoneNumUnRegList == null || response.phoneNumUnRegList.size() <= 0)) {
                     // don't have account link
@@ -1023,7 +1024,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Register complete page
             if (page.equals(VCB_REGISTER_COMPLETE_PAGE)) {
-                Log.d(this, "event on register page complete");
+                Timber.d("event on register page complete");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -1115,7 +1116,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: FAIL
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
-            Log.d(this, "event on fail");
+            Timber.d("event on fail");
             hideLoadingDialog();
             //networking is offline
             if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
@@ -1133,7 +1134,7 @@ public class AdapterLinkAcc extends AdapterBase {
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
             if (isFinalScreen() && isTransactionSuccess()) {
-                Log.d(this, "stopping reload bank account from notification because user in success screen");
+                Timber.d("stopping reload bank account from notification because user in success screen");
                 return pAdditionParams;
             }
             mNotification = (ZPWNotification) pAdditionParams[0];
@@ -1141,7 +1142,7 @@ public class AdapterLinkAcc extends AdapterBase {
             if (mNotification != null) {
                 if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyLink);
-                    Log.d(this, "cancelling current notify after getting notify from app...");
+                    Timber.d("cancelling current notify after getting notify from app...");
                 }
                 runnableWaitingNotifyLink.run();
             } else {

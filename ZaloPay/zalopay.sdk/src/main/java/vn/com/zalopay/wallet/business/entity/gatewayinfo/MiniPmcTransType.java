@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
@@ -268,7 +269,7 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public boolean isVersionSupport(String pAppVersion) {
-        Log.d(this, "start check support channel version");
+        Timber.d("start check support channel version");
         if (TextUtils.isEmpty(pAppVersion)) {
             return true;
         }

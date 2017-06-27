@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -54,7 +55,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public synchronized SharedPreferences getSharedPreferences() {
         if (mContext == null || mContext.get() == null) {
-            Log.d(this, "mContext is null");
+            Timber.d("mContext is null");
             return null;
         }
         if (mCommonSharedPreferences != null) {
@@ -545,17 +546,17 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public String getBankAccountChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
-        Log.d(this, "get cache bank account channel config, bankcode " + pBankCode);
+        Timber.d("get cache bank account channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_bankaccount, pBankCode);
     }
 
     public String getATMChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
-        Log.d(this, "get cache atm channel config, bankcode " + pBankCode);
+        Timber.d("get cache atm channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_atm, pBankCode);
     }
 
     public String getCreditCardChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
-        Log.d(this, "get cache credit card channel config, bankcode " + pBankCode);
+        Timber.d("get cache credit card channel config, bankcode " + pBankCode);
         return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_credit_card, pBankCode);
     }
 

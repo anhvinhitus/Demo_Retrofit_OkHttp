@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -24,7 +25,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onDoTaskOnResponse(StatusResponse pResponse) {
-        Log.d(this, "onDoTaskOnResponse nothing");
+        Timber.d("onDoTaskOnResponse nothing");
     }
 
     @Override
@@ -50,7 +51,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestInProcess() {
-        Log.d(this, "onRequestInProcess");
+        Timber.d("onRequestInProcess");
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.StringUtil;
@@ -189,7 +190,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void terminate() {
-        Log.d(this, "recycle activity");
+        Timber.d("recycle activity");
         if (getActivity() != null) {
             getActivity().finish();
         }
@@ -245,7 +246,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void renderOrderInfo(AbstractOrder order) {
         if (order == null) {
-            Log.d(this, "order is null - skip render order info");
+            Timber.d("order is null - skip render order info");
             return;
         }
         //order desc

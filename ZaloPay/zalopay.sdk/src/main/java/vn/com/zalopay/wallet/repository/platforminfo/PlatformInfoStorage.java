@@ -2,16 +2,13 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import rx.Observable;
 import rx.functions.Func0;
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
@@ -54,7 +51,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     public void put(String userId, PlatformInfoResponse pResponse) {
         try {
             if (pResponse == null || pResponse.returncode != 1) {
-                Log.d(this, "request not success...stopping saving response to cache");
+                Timber.d("request not success...stopping saving response to cache");
                 return;
             }
             Log.d(this, "start update platform info to cache", pResponse);

@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.repository.appinfo;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
@@ -17,7 +18,7 @@ public class AppInfoRepository implements AppInfoStore.Repository {
     public AppInfoRepository(AppInfoStore.AppInfoService appInfoService, AppInfoStore.LocalStorage localStorage) {
         this.mAppInfoService = appInfoService;
         this.mLocalStorage = localStorage;
-        Log.d(this, "create AppInfoRepository");
+        Timber.d("create AppInfoRepository");
     }
 
     @Override

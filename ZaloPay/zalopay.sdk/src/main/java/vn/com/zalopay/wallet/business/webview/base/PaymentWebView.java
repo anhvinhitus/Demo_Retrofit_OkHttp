@@ -5,16 +5,12 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
-
-import static android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
@@ -75,14 +71,14 @@ public class PaymentWebView extends WebView {
     }
 
     public void loadPaymentUrl(String pUrl) {
-        Log.d(this, "load url " + pUrl);
+        Timber.d("load url " + pUrl);
         mRecentLoadingUrl = pUrl;
         loadUrl(pUrl);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent) {
-        Log.d(this, "runScript: " + scriptContent);
+        Timber.d("runScript: " + scriptContent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript(scriptContent, null);
         } else {

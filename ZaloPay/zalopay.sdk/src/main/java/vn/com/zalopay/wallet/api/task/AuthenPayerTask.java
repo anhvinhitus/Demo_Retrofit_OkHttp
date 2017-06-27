@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenPayerImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -53,7 +54,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
                 Log.e(this, e);
             }
         }
-        Log.d(this, "onRequestInProcess");
+        Timber.d("onRequestInProcess");
     }
 
     @Override

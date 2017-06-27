@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -99,7 +100,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         boolean isMatch = false;
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && pUrl.matches(bankScript.url)) {
-                Log.d(this, "$$$$$$ matchAndRunJs: " + pUrl);
+                Timber.d("$$$$$$ matchAndRunJs: " + pUrl);
 
                 mCurrentUrl = pUrl;
                 mCurrentBankScript = bankScript;
@@ -134,8 +135,8 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     public void executeJs(String pJsFileName, String pJsInput) {
         if (!TextUtils.isEmpty(pJsFileName)) {
-            Log.d(this, pJsFileName);
-            Log.d(this, pJsInput);
+            Timber.d(pJsFileName);
+            Timber.d(pJsInput);
 
             String jsContent = null;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
@@ -162,7 +163,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d(this, "===shouldOverrideUrlLoading: ===" + url);
+        Timber.d("===shouldOverrideUrlLoading: ===" + url);
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
         }
@@ -182,12 +183,12 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     protected void intervalCheck() {
         if (countIntervalCheck >= MAX_INTERVAL_CHECK_COUNT) {
-            Log.d(this, "===intervalCheck===stop");
+            Timber.d("===intervalCheck===stop");
             return;
         }
 
         countIntervalCheck++;
-        Log.d(this, "===intervalCheck===" + countIntervalCheck);
+        Timber.d("===intervalCheck===" + countIntervalCheck);
         mIsRunningScript = true;
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -198,10 +199,10 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     }
 
     public void onLoadResource(WebView view, final String url) {
-        Log.d(this, "===onLoadResource: ===" + url);
+        Timber.d("===onLoadResource: ===" + url);
         if (!loadingStaticResource(url) && isMatchUrl(url)) {
             if (mIsRunningScript) {
-                Log.d(this, "===there're a script is runing===");
+                Timber.d("===there're a script is runing===");
                 return;
             }
             intervalCheck();
@@ -210,12 +211,12 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void logDebug(String msg) {
-        Log.d(this, "****** Debug webview: " + msg);
+        Timber.d("****** Debug webview: " + msg);
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Log.d(this, "===onPageFinished===" + url);
+        Timber.d("===onPageFinished===" + url);
 
         if (!mIsRedirect) {
             mIsLoadingFinished = true;
@@ -236,7 +237,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Log.d(this, "++++ Current error SSL on page: " + mStartedtUrl);
+        Timber.d("++++ Current error SSL on page: " + mStartedtUrl);
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {
                 handler.proceed(); // Ignore SSL certificate errors

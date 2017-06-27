@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -62,7 +63,7 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestSuccess(BaseResponse pResponse) {
-        Log.d(this, "onRequestSuccess");
+        Timber.d("onRequestSuccess");
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
@@ -54,7 +55,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     }
 
     public void continueDetectCardForLinkCard() {
-        Log.d(this, "card number=" + getCardNumber() + "===preparing to detect bank");
+        Timber.d("card number=" + getCardNumber() + "===preparing to detect bank");
         Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber(), new Action1<Boolean>() {
             @Override
             public void call(Boolean detected) {
@@ -63,7 +64,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                 if (detected) {
                     setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
                     checkAutoMoveCardNumberFromBundle = true;
-                    Log.d(this, "card number=" + getCardNumber() + " detected=" + detected + " bank=" + getBankCardFinder().getBankName());
+                    Timber.d("card number=" + getCardNumber() + " detected=" + detected + " bank=" + getBankCardFinder().getBankName());
 
                 } else {
                     setDetectedCard();
@@ -220,7 +221,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void switchChannel() {
-        Log.d(this, "===switchChannel===");
+        Timber.d("===switchChannel===");
         try {
             getAdapter().getPresenter().switchChannel(BuildConfig.channel_atm, getCardNumber());
         } catch (Exception e) {

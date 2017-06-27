@@ -9,6 +9,7 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -103,10 +104,10 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
                     String text = getString();
 
                     if (text.matches(mPattern)) {
-                        Log.d(VPaymentDrawableEditText.this, "===" + mEditTextConfig.id + "===is match");
+                        Timber.d("===" + mEditTextConfig.id + "===is match");
                         return true;
                     } else {
-                        Log.d(VPaymentDrawableEditText.this, "===" + mEditTextConfig.id + "===not match");
+                        Timber.d("===" + mEditTextConfig.id + "===not match");
                     }
                 }
 
