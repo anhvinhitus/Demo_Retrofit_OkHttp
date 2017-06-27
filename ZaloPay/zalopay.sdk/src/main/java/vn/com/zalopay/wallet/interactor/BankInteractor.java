@@ -66,7 +66,7 @@ public class BankInteractor implements IBank {
                     for (int i = 0; i < arrayBankCode.length; i++) {
                         String bankCode = arrayBankCode[i];
                         BankConfig bankConfig = mBankListRepository.getLocalStorage().getBankConfig(bankCode);
-                        bankConfig.bankLogo = getBankLogo(bankCode);
+                        bankConfig.bankLogo = withDrawBankLogo(bankCode);
                         if (bankConfig == null) {
                             continue;
                         }
@@ -108,7 +108,7 @@ public class BankInteractor implements IBank {
                     visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
 
                     ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    masterCard.bankLogo = getBankLogo(bankCodeMaster);
+                    masterCard.bankLogo = supportBankLogo(bankCodeMaster);
                     masterCard.bankCode = bankCodeMaster;
                     masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
 
@@ -124,7 +124,7 @@ public class BankInteractor implements IBank {
                                 if (zpBank == null) {
                                     continue;
                                 }
-                                zpBank.bankLogo = getBankLogo(bankCode);
+                                zpBank.bankLogo = supportBankLogo(bankCode);
                                 zpBank.isBankAccount = isBankAccount;
                                 if (!supportBank.contains(zpBank)) {
                                     supportBank.add(zpBank);
@@ -186,10 +186,13 @@ public class BankInteractor implements IBank {
                 .doOnError(throwable -> Log.d(this, throwable));
     }
 
-    protected String getBankLogo(String pBankCode) {
+    protected String supportBankLogo(String pBankCode) {
         return String.format("%s%s", pBankCode, BITMAP_EXTENSION);
     }
 
+    protected String withDrawBankLogo(String pBankCode) {
+        return String.format("bank_%s%s", pBankCode, BITMAP_EXTENSION);
+    }
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {
         if (TextUtils.isEmpty(bankCode)) {
             return null;
