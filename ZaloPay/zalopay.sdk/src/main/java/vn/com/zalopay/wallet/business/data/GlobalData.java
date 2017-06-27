@@ -6,6 +6,7 @@ import android.content.Context;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
@@ -180,9 +181,9 @@ public class GlobalData {
         return mListener;
     }
 
-    public static String getTransProcessingMessage(@TransactionType int pTranstype) {
+    public static int getTransProcessingMessage(@TransactionType int pTranstype) {
         return pTranstype == TransactionType.LINK ?
-                RS.string.sdk_fail_trans_status_link : RS.string.sdk_fail_trans_status;
+                R.string.sdk_fail_trans_status_link : R.string.sdk_fail_trans_status;
     }
 
     public static String getStringResource(String pResourceID) {

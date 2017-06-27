@@ -123,7 +123,7 @@ public class TransactionHelper {
 
     public static String getSubmitExceptionMessage(Context context) {
         boolean online = ConnectionUtil.isOnline(context);
-        return online ? context.getString(R.string.zpw_alert_network_error_submitorder) :
+        return online ? context.getString(R.string.sdk_error_generic_submitorder) :
                 context.getString(R.string.sdk_alert_network_onfline_submitorder);
     }
 

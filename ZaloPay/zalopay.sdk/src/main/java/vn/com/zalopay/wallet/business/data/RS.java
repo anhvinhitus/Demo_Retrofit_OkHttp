@@ -66,7 +66,7 @@ public class RS {
 
         public static final String sdk_alert_network_onfline_submitorder = "sdk_alert_network_onfline_submitorder";
         public static final String zpw_alert_network_error_loadmapbankaccountlist = "zpw_alert_network_error_loadmapbankaccountlist";
-        public static final String zpw_alert_network_error_submitorder = "zpw_alert_network_error_submitorder";
+        public static final String sdk_error_generic_submitorder = "sdk_error_generic_submitorder";
         public static final String zpw_alert_network_error_verifymapcard = "zpw_alert_network_error_verifymapcard";
         public static final String zpw_alert_network_error_submitbankaccount = "zpw_alert_network_error_submitbankaccount";
         public static final String zpw_alert_network_error_removemapcard = "zpw_alert_network_error_removemapcard";
