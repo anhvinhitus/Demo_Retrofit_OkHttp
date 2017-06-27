@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.service.UserSession;
 
 
@@ -111,7 +112,8 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     @Override
     public void onError(Throwable e) {
         Timber.d("show password error [%s]", e);
-        mPassword.setErrorMessage(e.getMessage());
+        String message = ErrorMessageFactory.create(mContext, e);
+        mPassword.setErrorMessage(message);
         if (mAuthenticationCallback != null) {
             mAuthenticationCallback.onAuthenticationFailure();
         }
