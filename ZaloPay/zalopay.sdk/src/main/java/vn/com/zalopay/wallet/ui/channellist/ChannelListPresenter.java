@@ -29,6 +29,7 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -107,12 +108,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mPaymentInfoHelper = GlobalData.paymentInfoHelper;
         SDKApplication.getApplicationComponent().inject(this);
         Log.d(this, "call constructor ChannelListPresenter");
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_START_CHANNEL_LIST_PRESENTER);
     }
 
     @Override
     protected void loadBankListOnProgress() {
         try {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START);
+            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START);
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         } catch (Exception e) {
             Log.e(this, e);
@@ -523,7 +525,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return new Observer<PaymentChannel>() {
             @Override
             public void onCompleted() {
-                Log.d(this, "load channels on complete");
+                Log.d(ChannelListPresenter.this, "load channels on complete");
                 doCompleteLoadChannel();
                 try {
                     getViewOrThrow().hideLoading();
@@ -544,7 +546,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
             @Override
             public void onNext(PaymentChannel paymentChannel) {
-                Log.d(this, "load channel on next", paymentChannel);
+                Log.d(ChannelListPresenter.this, "load channel on next", paymentChannel);
                 if (mPaymentInfoHelper.shouldIgnore(paymentChannel.pmcid)) {
                     Log.d(this, "this channel is not in filter list");
                     return;

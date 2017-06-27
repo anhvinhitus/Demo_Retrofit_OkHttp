@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -54,9 +55,10 @@ public class PlatformInfoLoader extends SingletonBase {
 
         @Override
         public void onNext(PlatformInfoCallback platformInfoCallback) {
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END);
             if (platformInfoCallback instanceof UpversionCallback) {
                 UpversionCallback upversionCallback = (UpversionCallback) platformInfoCallback;
-                Log.d(this, "need to up version from get platform info");
+                Log.d(PlatformInfoLoader.this, "need to up version from get platform info");
                 if (!upversionCallback.forceupdate) {
                     SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
                     SDKApplication.getApplicationComponent().eventBus().post(message);
@@ -65,7 +67,7 @@ public class PlatformInfoLoader extends SingletonBase {
                         upversionCallback.newestappversion);
                 SDKApplication.getApplicationComponent().eventBus().post(message);
             } else {
-                Log.d(this, "get platforminfo success, continue initialize resource to memory");
+                Log.d(PlatformInfoLoader.this, "get platforminfo success, continue initialize resource to memory");
                 SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
                 SDKApplication.getApplicationComponent().eventBus().post(message);
             }
@@ -167,6 +169,7 @@ public class PlatformInfoLoader extends SingletonBase {
         Log.d(this, "need to retry load platforminfo again force " + pForceReload);
         long currentTime = System.currentTimeMillis();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START);
         return mPlatformInteractor
                 .loadPlatformInfo(mUserInfo.zalopay_userid, mUserInfo.accesstoken, pForceReload, downloadResource, currentTime, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
