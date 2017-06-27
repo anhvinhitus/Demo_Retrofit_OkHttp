@@ -638,7 +638,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         }
         //desc
         String desc = descLinkAccount;
-        if (!TextUtils.isEmpty(desc)) {
+        if (TextUtils.isEmpty(desc)) {
             desc = order != null ? order.description : null;
         }
         boolean hasDesc = !TextUtils.isEmpty(desc);
