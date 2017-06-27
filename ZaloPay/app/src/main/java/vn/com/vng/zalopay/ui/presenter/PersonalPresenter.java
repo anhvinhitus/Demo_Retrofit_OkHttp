@@ -34,10 +34,10 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.pw.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
@@ -226,7 +226,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private void checkLinkCardStatus() {
         List<MapCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
         List<BankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser);
-        int nAccounts;
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
@@ -235,7 +234,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         } else if (!Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Đã liên kết thẻ, chưa liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_CARD_LINKED);
-            setAccounts(mapAccList.size());
+            setAccounts(mapCardList.size());
         } else if (Lists.isEmptyOrNull(mapCardList) && !Lists.isEmptyOrNull(mapAccList)) {
             // Chưa liên kết thẻ, đã liên kết tài khoản
             setLinkBankStatus(Constants.LINK_BANK_ACCOUNT_LINKED);
@@ -257,7 +256,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 //            paymentWrapper = getPaymentWrapper();
 //        }
 //
-//        paymentWrapper.linkCard(activity);
+//        paymentWrapper.linkCard(getActivity());
 
         mNavigator.startLinkCardActivityForResult(getActivity(), "123PVTB");
     }

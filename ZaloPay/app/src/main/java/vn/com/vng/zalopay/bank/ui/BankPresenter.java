@@ -118,6 +118,12 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mLinkAccountWithBankCode = bundle.getString(Constants.ARG_LINK_ACCOUNT_WITH_BANK_CODE);
     }
 
+    @Override
+    public void resume() {
+        super.resume();
+        getLinkedBank();
+    }
+
     void initPageStart() {
         if (!TextUtils.isEmpty(mLinkCardWithBankCode)) {
             linkCard();
