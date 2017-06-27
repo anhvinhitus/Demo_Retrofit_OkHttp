@@ -8,7 +8,6 @@ import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -20,10 +19,10 @@ import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPIDResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPNameResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
-import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
@@ -114,6 +113,8 @@ public interface AccountStore {
     interface Repository {
 
         Observable<String> validatePin(String pin);
+
+        Observable<String> validatePinSha256(String pin);
 
         Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
 

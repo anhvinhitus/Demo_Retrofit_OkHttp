@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
@@ -130,13 +131,14 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         if (mView == null) {
             return;
         }
-
-        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(),callback);
+        authenticationPassword.initialize();
+      /*  AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD);
         fragment.setMessagePassword(message);
         fragment.setAuthenticationCallback(callback);
 
-        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
+        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);*/
     }
 
     private void disableFingerprint() {

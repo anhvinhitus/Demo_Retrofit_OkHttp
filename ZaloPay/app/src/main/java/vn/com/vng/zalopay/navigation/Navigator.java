@@ -37,7 +37,9 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
+import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
@@ -71,6 +73,7 @@ import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webapp.WebAppActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -737,17 +740,37 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(Context context, Intent pendingIntent, boolean isFinish) {
-        AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-        dialog.setPendingIntent(pendingIntent);
-        dialog.setFinishActivity(isFinish);
-        dialog.setAuthenticationCallback(new AuthenticationCallback() {
-            @Override
-            public void onAuthenticated(String password) {
-                UserSession.mHashPassword = password;
-                UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
-            }
-        });
-        dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+
+        if (PasswordUtil.detectShowFingerPrint(context, mUserConfig)) {
+            AuthenticationDialog dialog = AuthenticationDialog.newInstance();
+            dialog.setPendingIntent(pendingIntent);
+            dialog.setFinishActivity(isFinish);
+            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
+            dialog.setAuthenticationCallback(new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    UserSession.mHashPassword = password;
+                    UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                }
+
+                @Override
+                public void onShowPassword() {
+                    //show password view
+                    showPassWord(context, pendingIntent, isFinish);
+                }
+            });
+            dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+        } else {
+
+            //show password view
+            showPassWord(context, pendingIntent, isFinish);
+        }
+
+    }
+
+    private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword(context, pendingIntent, isFinish);
+        authenticationPassword.initialize();
     }
 
     private void showPinDialog(final Context context, final Promise promise) {
@@ -911,7 +934,6 @@ public class Navigator implements INavigator {
         if (!shouldShowSuggestDialog()) {
             return;
         }
-
         FingerprintSuggestDialog dialog = new FingerprintSuggestDialog();
         dialog.setPassword(UserSession.mHashPassword);
         dialog.show(activity.getFragmentManager(), FingerprintSuggestDialog.TAG);

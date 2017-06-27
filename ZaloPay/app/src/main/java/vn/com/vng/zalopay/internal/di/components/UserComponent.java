@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
@@ -180,6 +181,8 @@ public interface UserComponent {
     void inject(WithdrawConditionFragment f);
 
     void inject(ChangePinContainerFragment f);
+
+    void inject(AuthenticationPassword f);
 
     void inject(ChangePinVerifyFragment f);
 

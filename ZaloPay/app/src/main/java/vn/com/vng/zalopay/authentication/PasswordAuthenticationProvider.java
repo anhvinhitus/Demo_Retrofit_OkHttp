@@ -28,7 +28,7 @@ class PasswordAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public void verify(String password) {
-        Subscription subscription = mAccountRepository.validatePin(password)
+        Subscription subscription = mAccountRepository.validatePinSha256(password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ValidatePinSubscriber());

@@ -326,6 +326,12 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .flatMap(this::validateHashPassword);
     }
 
+    @Override
+    public Observable<String> validatePinSha256(String pin) {
+        return ObservableHelper.makeObservable(() -> (pin))
+                .flatMap(this::validateHashPassword);
+    }
+
     private Observable<String> validateHashPassword(String hashPassword) {
         return mRequestService.validatePin(hashPassword, mUser.zaloPayId, mUser.accesstoken)
                 .map(BaseResponse::isSuccessfulResponse)
