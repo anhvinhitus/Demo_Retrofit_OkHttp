@@ -93,7 +93,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         if (mRetryCount == Constants.MAX_RETRY_GETSTATUS) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
+            onPostResult(createReponse(-1,  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
             return;
         }
 
@@ -101,7 +101,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
-                    onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
+                    onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
                 }
 
                 @Override
@@ -112,7 +112,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             });
         } catch (Exception e) {
             Log.e(this, e);
-            onPostResult(createReponse(-1, GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype))));
+            onPostResult(createReponse(-1,  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
         }
     }
 
@@ -173,7 +173,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         if (mAdapter.isLoadWebTimeout() && pResponse.isprocessing) {
             pResponse.isprocessing = false;
             pResponse.returncode = -1;
-            pResponse.returnmessage = GlobalData.getStringResource(GlobalData.getTransProcessingMessage(transtype));
+            pResponse.returnmessage =  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype));
 
             mAdapter.setLoadWebTimeout(false);
             cancelTimer();

@@ -55,7 +55,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     public String getDefaulErrorNetwork() {
-        return GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitorder);
+        return GlobalData.getStringResource(RS.string.sdk_error_generic_submitorder);
     }
 
     @Override

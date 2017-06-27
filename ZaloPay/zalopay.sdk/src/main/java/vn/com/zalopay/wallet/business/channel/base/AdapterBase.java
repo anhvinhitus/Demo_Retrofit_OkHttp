@@ -80,7 +80,6 @@ import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
-import static vn.com.zalopay.wallet.constants.Constants.GETSTATUS_APPTRANS_MAX_RETRY;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
@@ -89,6 +88,7 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
+import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.isTransNetworkError;
 
 public abstract class AdapterBase {
@@ -586,7 +586,7 @@ public abstract class AdapterBase {
                 if (PaymentStatusHelper.isTransactionNotSubmit(mResponseStatus)) {
                     try {
                         mCountCheckStatus++;
-                        if (mCountCheckStatus == GETSTATUS_APPTRANS_MAX_RETRY) {
+                        if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
                             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit));
                         } else if (order != null) {
                             //retry again
@@ -1252,8 +1252,9 @@ public abstract class AdapterBase {
     }
 
     public boolean isTransactionProcessing(String pMessage) {
-        return pMessage.equalsIgnoreCase(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
+        return pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
+                || pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(R.string.zpw_string_transaction_expired))
+                || pMessage.equals(GlobalData.getAppContext().getString(R.string.sdk_error_generic_submitorder));
     }
 
     public boolean isTransactionInProgress() {
@@ -1382,7 +1383,7 @@ public abstract class AdapterBase {
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                showTransactionFailView(GlobalData.getStringResource(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
+                showTransactionFailView(GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
             }
 
             @Override
