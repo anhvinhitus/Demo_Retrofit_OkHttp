@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
@@ -52,36 +50,29 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected void setupActivityComponent() {
+    protected void setupActivityComponent(ApplicationComponent applicationComponent) {
     }
 
     public abstract BaseFragment getFragmentToHost();
 
     protected final String TAG = getClass().getSimpleName();
+    protected final EventBus eventBus = getAppComponent().eventBus();
+    protected final Navigator navigator = getAppComponent().navigator();
 
     private Unbinder unbinder;
-
-    protected final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-
-    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-
-    boolean mResumed;
-
-    public Activity getActivity() {
-        return this;
-    }
+    private boolean mResumed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("onCreate [%s]", TAG);
-        createUserComponent();
-        setupActivityComponent();
+        setupActivityComponent(getAppComponent());
         setContentView(getResLayoutId());
 
         if (savedInstanceState == null) {
             hostFragment(getFragmentToHost());
         }
+
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         this.logActionLaunch();
     }
@@ -100,21 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void hostFragment(BaseFragment fragment) {
         hostFragment(fragment, R.id.fragment_container);
-    }
-
-    private void createUserComponent() {
-
-        Timber.d(" user component %s", getUserComponent());
-
-        if (getUserComponent() != null)
-            return;
-
-        UserConfig userConfig = getAppComponent().userConfig();
-        Timber.d(" mUserConfig %s", userConfig.isSignIn());
-        if (userConfig.isSignIn()) {
-            userConfig.loadConfig();
-            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
-        }
     }
 
     @Override
@@ -203,12 +179,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         ToastUtil.showToast(this, message);
     }
 
-    public ApplicationComponent getAppComponent() {
+    protected ApplicationComponent getAppComponent() {
         return AndroidApplication.instance().getAppComponent();
-    }
-
-    public UserComponent getUserComponent() {
-        return AndroidApplication.instance().getUserComponent();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -277,14 +249,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showNetworkErrorDialog(ZPWOnSweetDialogListener listener) {
-        DialogHelper.showNetworkErrorDialog(getActivity(), listener);
+        DialogHelper.showNetworkErrorDialog(this, listener);
     }
 
     public void showCustomDialog(String message,
                                  String cancelBtnText,
                                  int dialogType,
                                  final ZPWOnEventDialogListener listener) {
-        DialogHelper.showCustomDialog(getActivity(),
+        DialogHelper.showCustomDialog(this,
                 message,
                 cancelBtnText,
                 dialogType,
@@ -298,13 +270,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showWarningDialog(String message,
                                   final ZPWOnEventDialogListener cancelListener) {
-        DialogHelper.showWarningDialog(getActivity(),
+        DialogHelper.showWarningDialog(this,
                 message,
                 cancelListener);
     }
 
     public void showErrorDialog(String message) {
-        DialogHelper.showNotificationDialog(getActivity(), message, null);
+        DialogHelper.showNotificationDialog(this, message, null);
     }
 
     @Override
