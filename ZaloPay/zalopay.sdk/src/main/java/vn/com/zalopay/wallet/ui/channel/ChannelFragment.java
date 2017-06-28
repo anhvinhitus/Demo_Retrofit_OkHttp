@@ -50,6 +50,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
+import vn.com.zalopay.wallet.helper.FormatHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -599,8 +600,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         boolean hasTransId = !TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0;
         TextView transaction_id_txt = (TextView) viewContainer.findViewById(R.id.transaction_id_txt);
         if (hasTransId) {
-            String newTransID = pTransID.substring(0, 6) + "-" + pTransID.substring(6, pTransID.length());
-            transaction_id_txt.setText(newTransID);
+            transaction_id_txt.setText(FormatHelper.formatTransID(pTransID));
         } else {
             transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_label));
         }
