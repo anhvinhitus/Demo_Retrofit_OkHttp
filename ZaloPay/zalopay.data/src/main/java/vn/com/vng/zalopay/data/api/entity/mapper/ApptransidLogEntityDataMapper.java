@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.api.entity.mapper;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -173,7 +175,7 @@ public class ApptransidLogEntityDataMapper {
     }
 
     public ApptransidLogApiCallGD transformApiCall(ZPApptransidLogApiCall data) {
-        if (data.apiid == 0 || data.apptransid.isEmpty()) {
+        if (data.apiid == 0 || TextUtils.isEmpty(data.apptransid)) {
             return null;
         }
 
