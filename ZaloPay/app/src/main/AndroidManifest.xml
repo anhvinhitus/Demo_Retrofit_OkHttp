@@ -246,6 +246,7 @@
 
         <activity
             android:name=".webapp.WebAppPromotionActivity"
+            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize" />
 
         <!-- Tích hợp Crashlytics -->
