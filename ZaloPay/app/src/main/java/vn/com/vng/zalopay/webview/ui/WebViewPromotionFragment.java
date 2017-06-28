@@ -59,6 +59,8 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     @BindView(R.id.promotion_refresh_layout)
     MultiSwipeRefreshLayout refreshLayout;
 
+    View rootView;
+
     public static WebViewPromotionFragment newInstance(Bundle bundle) {
         WebViewPromotionFragment fragment = new WebViewPromotionFragment();
         fragment.setArguments(bundle);
@@ -85,9 +87,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated start");
-        initRetryView(view);
-        initWebView(view);
-        loadDefaultWebView();
+        rootView = view;
     }
 
     protected void loadDefaultWebView() {
@@ -256,16 +256,19 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     @Override
     public void onResume() {
         super.onResume();
-
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onResume();
-        }
+        initRetryView(rootView);
+        initWebView(rootView);
+        loadDefaultWebView();
+//        if (mWebViewProcessor != null) {
+//            mWebViewProcessor.onResume();
+//        }
     }
 
     @Override
     public void onPause() {
         if (mWebViewProcessor != null) {
-            mWebViewProcessor.onPause();
+//            mWebViewProcessor.onPause();
+            mWebViewProcessor = null;
         }
         super.onPause();
     }
