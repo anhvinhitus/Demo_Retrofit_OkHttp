@@ -24,7 +24,7 @@ public interface ITransService {
      * @return
      */
     @GET(Constants.URL_GET_STATUS)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_GETTRANSSTATUS, ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS})
     Observable<StatusResponse> getStatus(@QueryMap Map<String, String> params);
 
     /***
@@ -34,7 +34,7 @@ public interface ITransService {
      * @return
      */
     @GET(Constants.URL_CHECK_SUBMIT_ORDER_STATUS)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT})
     Observable<StatusResponse> getStatusByAppTransClient(@QueryMap Map<String, String> params);
 
     /**
@@ -48,7 +48,7 @@ public interface ITransService {
      * @return
      */
     @POST(Constants.URL_ATM_AUTHEN)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_ATMAUTHENPAYER, ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER})
     Observable<StatusResponse> atmAuthen(@Query(ConstantParams.USER_ID) String userID,
                                          @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                          @Query(ConstantParams.ZP_TRANSID) String zpTransid,
@@ -58,7 +58,7 @@ public interface ITransService {
 
 
     @POST(Constants.URL_REPORT_ERROR)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_SDKERRORREPORT, ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT})
     Observable<SaveCardResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
                                            @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                            @Query(ConstantParams.TRANSID) String transid,
@@ -78,7 +78,7 @@ public interface ITransService {
      * @return
      */
     @POST(Constants.URL_REMOVE_MAPCARD)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_REMOVEMAPCARD, ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD})
     Observable<BaseResponse> removeCard(@Query(ConstantParams.USER_ID) String userID,
                                         @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                         @Query(ConstantParams.CARD_NAME) String cardName,
@@ -101,7 +101,7 @@ public interface ITransService {
      * @return
      */
     @POST(Constants.URL_TRACKING_LOG)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_SDKWRITEATMTIME, ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME})
     Observable<BaseResponse> sendLog(@Query(ConstantParams.USER_ID) String userID,
                                      @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                      @Query(ConstantParams.PMC_ID) String pmcID,
@@ -143,7 +143,7 @@ public interface ITransService {
      * @return
      */
     @POST(Constants.URL_SUBMIT_ORDER)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_SUBMITTRANS, ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS})
     Observable<StatusResponse> submitOrder(@Query(ConstantParams.APP_ID) String appID,
                                            @Query(ConstantParams.ZALO_ID) String zaloID,
                                            @Query(ConstantParams.APP_TRANS_ID) String appTransaction,
@@ -174,7 +174,7 @@ public interface ITransService {
                                            @Query(ConstantParams.ORDER_SOURCE) String ordersource);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_VERIFYCARDFORMAPPING, ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING})
     Observable<StatusResponse> verfiyCardMap(
             @Query(ConstantParams.USER_ID) String userId,
             @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
@@ -190,11 +190,11 @@ public interface ITransService {
             @Query(ConstantParams.APP_VERSION) String appver);
 
     @GET(Constants.URL_GET_STATUS_MAPCARD)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSMAPCARD)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_GETSTATUSMAPCARD, ZPEvents.CONNECTOR_V001_TPE_GETSTATUSMAPCARD})
     Observable<StatusResponse> getMapCardStatus(@QueryMap Map<String, String> params);
 
     @POST(Constants.URL_AUTHEN_CARD_MAP)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_AUTHCARDHOLDERFORMAPPING, ZPEvents.CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING})
     Observable<StatusResponse> authenMapCard(@Query(ConstantParams.USER_ID) String userID,
                                              @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                              @Query(ConstantParams.ZP_TRANSID) String zpTransid,
@@ -220,7 +220,7 @@ public interface ITransService {
      * @return
      */
     @POST(Constants.URL_SUBMIT_MAP_ACCOUNT)
-    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITMAPACCOUNT)
+    @API_NAME(value = {ZPEvents.API_V001_TPE_SUBMITMAPACCOUNT, ZPEvents.CONNECTOR_V001_TPE_SUBMITMAPACCOUNT})
     Observable<StatusResponse> submitMapAccount(@Query(ConstantParams.USER_ID) String userID,
                                                 @Query(ConstantParams.ZALO_ID) String zaloID,
                                                 @Query(ConstantParams.ACCESS_TOKEN) String accessToken,

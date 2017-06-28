@@ -79,7 +79,7 @@ public interface FriendStore {
 
     interface RequestService {
 
-        @API_NAME(ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
+        @API_NAME(value = {ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT, ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT})
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
     }

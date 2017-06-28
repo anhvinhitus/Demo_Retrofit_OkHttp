@@ -47,7 +47,7 @@ public interface AppResourceStore {
 
     interface RequestService {
 
-        @API_NAME(ZPEvents.API_V001_TPE_GETINSIDEAPPRESOURCE)
+        @API_NAME(value = {ZPEvents.API_V001_TPE_GETINSIDEAPPRESOURCE, ZPEvents.CONNECTOR_V001_TPE_GETINSIDEAPPRESOURCE})
         @GET(Constants.TPE_API.GETINSIDEAPPRESOURCE)
         Observable<AppResourceResponse> getinsideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                              @Query(value = "checksumlist", encoded = true) String checksumlist,
@@ -76,6 +76,7 @@ public interface AppResourceStore {
         Observable<List<AppResource>> fetchListAppHome();
 
         Observable<Void> resetStateResource(long appId);
+
         Boolean existAppResource(long appid);
 
         Exception exception(Exception pException);

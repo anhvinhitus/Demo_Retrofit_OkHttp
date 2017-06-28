@@ -43,7 +43,7 @@ public class CardStore {
 
     public interface CardMapService {
         @GET(Constants.URL_LISTCARDINFO)
-        @API_NAME(ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT)
+        @API_NAME(value = {ZPEvents.API_UM_LISTCARDINFOFORCLIENT, ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT})
         Observable<CardInfoListResponse> fetch(@Query("userid") String userid, @Query("accesstoken") String accesstoken,
                                                @Query("cardinfochecksum") String cardinfochecksum, @Query("appversion") String appversion);
     }
