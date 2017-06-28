@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.withdraw.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -35,6 +39,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @BindView(R.id.tvEnoughMoney)
     View mEnoughView;
+
+    @BindView(R.id.background)
+    SimpleDraweeView mBackgroundView;
 
     public static WithdrawFragment newInstance() {
 
@@ -73,7 +80,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
         listview.setLayoutManager(gridLayoutManager);
         listview.setAdapter(mAdapter);
-
+        mBackgroundView
+                .getHierarchy()
+                .setPlaceholderImageFocusPoint(new PointF(0.5f, 0f));
     }
 
     @Override

@@ -1,41 +1,40 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
-             android:layout_height="match_parent">
+             android:layout_height="match_parent"
+             android:background="@color/white">
 
-    <vn.com.vng.zalopay.ui.widget.ZPImageView
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/background"
         style="@style/CoverDraweeView"
         android:layout_width="match_parent"
         android:layout_height="102dp"
         android:layout_gravity="bottom"
-        app:failureImage="@color/transparent"
-        app:fileName="app_bg_withdraw"
-        app:placeholderImage="@color/transparent"/>
+        app:failureImage="@color/white"
+        app:placeholderImage="@drawable/cover_large"
+        app:placeholderImageScaleType="focusCrop"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.zalopay.ui.widget.IconFontTextView
+        <TextView
             android:id="@+id/tvEnoughMoney"
             style="@style/TextView.Item.Main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#d4eefe"
+            android:layout_height="40dp"
+            android:background="@color/background_snackbar"
             android:drawablePadding="12dp"
-            android:gravity="center_vertical"
-            android:paddingBottom="0dp"
+            android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="0dp"
             android:text="@string/not.enough.to.withdraw.money"
             android:textColor="@color/txt_title_check_internet"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:visibility="gone"
-            app:iconLeftColor="@color/blue.008fe5"
-            app:iconLeftName="linkaccount_info"
-            app:iconLeftSize="22dp"/>
+            />
 
         <android.support.design.widget.CoordinatorLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
