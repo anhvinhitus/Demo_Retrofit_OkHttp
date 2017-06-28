@@ -491,7 +491,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         String embeddata = generateEmbeddata(transid, message, displayName, zalopayid, time);
         Subscription subscription = mNotificationRepository.sendNotification(receiverId, embeddata)
-                .flatMap(aBoolean -> mTransactionRepository.updateThankMessage(transid, embeddata))
+                .flatMap(aBoolean -> mTransactionRepository.updateThankMessage(transid, message))
                 .doOnError(throwable -> {
                     Timber.d(throwable);
                     Helpers.promiseResolve(promise, -1);
