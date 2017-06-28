@@ -22,19 +22,17 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -264,7 +262,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showNotificationDialog(String message) {
-        DialogHelper.showNotificationDialog(getActivity(),
+        DialogHelper.showNotificationDialog(this,
                 message);
     }
 

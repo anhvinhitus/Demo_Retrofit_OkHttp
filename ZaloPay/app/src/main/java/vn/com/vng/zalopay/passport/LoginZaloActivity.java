@@ -5,19 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import butterknife.OnClick;
-
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
+import javax.inject.Inject;
+
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.DialogHelper;
-
-import javax.inject.Inject;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
@@ -25,8 +24,9 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     private SweetAlertDialog mErrorDialog = null;
     private SweetAlertDialog mProgressDialog = null;
 
-    public void setupActivityComponent() {
-        getAppComponent().inject(this);
+    @Override
+    protected void setupActivityComponent(ApplicationComponent applicationComponent) {
+        applicationComponent.inject(this);
     }
 
     public int getResLayoutId() {

@@ -107,15 +107,17 @@ public interface ApplicationComponent {
 
     void inject(SplashScreenFragment f);
 
-    void inject(LoginZaloActivity a);
+    void inject(OnboardingFragment f);
 
     void inject(DownloadService service);
 
     void inject(InvitationCodeFragment f);
 
-    void inject(ExternalCallSplashScreenActivity a);
+    void inject(LoginZaloActivity activity);
 
-    void inject(IntentHandlerActivity a);
+    void inject(ExternalCallSplashScreenActivity activity);
 
-    void inject(OnboardingFragment f);
+    void inject(IntentHandlerActivity activity);
+
+
 }

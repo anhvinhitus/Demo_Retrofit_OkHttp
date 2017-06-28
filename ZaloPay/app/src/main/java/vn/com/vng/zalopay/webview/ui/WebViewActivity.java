@@ -10,11 +10,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class WebViewActivity extends BaseToolBarActivity {
-
+public class WebViewActivity extends UserBaseToolBarActivity {
 
     @BindView(R.id.iv_logo)
     SimpleDraweeView mLogoView;

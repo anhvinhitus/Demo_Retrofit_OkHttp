@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -18,10 +19,11 @@ import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
+public class ProfileActivity extends UserBaseToolBarActivity implements IProfileInfoView {
 
     @Inject
     ProfileInfoPresenter presenter;
@@ -71,13 +73,13 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     }
 
     @Override
-    protected void setupActivityComponent() {
-        getUserComponent().inject(this);
+    protected int getResLayoutId() {
+        return R.layout.activity_profile;
     }
 
     @Override
-    protected int getResLayoutId() {
-        return R.layout.activity_profile;
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        userComponent.inject(this);
     }
 
     @Override

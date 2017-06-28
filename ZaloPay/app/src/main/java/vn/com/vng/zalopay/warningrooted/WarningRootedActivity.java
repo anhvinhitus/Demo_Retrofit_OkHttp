@@ -1,20 +1,9 @@
 package vn.com.vng.zalopay.warningrooted;
 
-import android.os.Bundle;
-
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseActivity;
 
-public class WarningRootedActivity extends BaseToolBarActivity {
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
-    }
+public class WarningRootedActivity extends UserBaseActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {

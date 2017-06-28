@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -57,18 +60,23 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     @Override
-    public BaseFragment getFragmentToHost() {
-        return null;
+    public Activity getActivity() {
+        return this;
     }
 
     @Override
-    protected void setupActivityComponent() {
-        getUserComponent().inject(this);
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        userComponent.inject(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isUserSessionStarted()) {
+            return;
+        }
+
         mPresenter.attachView(this);
         mPresenter.initialize();
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
@@ -145,6 +153,12 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @Override
     protected void onDestroy() {
+
+        if (!isUserSessionStarted()) {
+            super.onDestroy();
+            return;
+        }
+
         mPresenter.detachView();
         mPresenter.destroy();
         super.onDestroy();

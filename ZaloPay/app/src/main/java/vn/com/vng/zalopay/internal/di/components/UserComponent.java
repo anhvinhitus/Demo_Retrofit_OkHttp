@@ -7,7 +7,6 @@ import javax.inject.Named;
 
 import dagger.Subcomponent;
 import retrofit2.Retrofit;
-import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinContainerFragment;
@@ -21,9 +20,7 @@ import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
-import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
-import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionFragment;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
@@ -33,7 +30,6 @@ import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.feedback.FeedbackFragment;
 import vn.com.vng.zalopay.internal.di.modules.QRCodeModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -115,8 +111,6 @@ public interface UserComponent {
 
     AccountStore.Repository accountRepository();
 
-    ZaloPayRepository zaloPayRepository();
-
     BalanceStore.Repository balanceRepository();
 
     TransactionStore.Repository transactionRepository();
@@ -153,25 +147,9 @@ public interface UserComponent {
 
     void inject(WebAppPromotionFragment f);
 
-    void inject(WebViewPromotionFragment f);
-
-    /* inject activity */
-
-    void inject(BalanceTopupActivity activity);
-
-    void inject(MiniApplicationActivity activity);
-
-    void inject(PaymentApplicationActivity activity);
-
     void inject(ScanNFCFragment fragment);
 
     void inject(CounterBeaconFragment fragment);
-
-    void inject(ProfileActivity a);
-
-    void inject(UpdateProfileLevel2Activity a);
-
-    void inject(ChangePinActivity a);
 
     void inject(QRCodeFragment f);
 
@@ -227,8 +205,6 @@ public interface UserComponent {
 
     void inject(ExternalReactFragment f);
 
-    void inject(HomeActivity activity);
-
     void inject(SearchCategoryFragment f);
 
     void inject(HomeListAppFragment f);
@@ -239,10 +215,20 @@ public interface UserComponent {
 
     void inject(PaymentWrapper paymentWrapper);
 
-    void inject(BankActivity a);
-
     void inject(BankFragment f);
 
     void inject(BankSupportSelectionFragment f);
+
+      /* inject activity */
+
+    void inject(MiniApplicationActivity activity);
+
+    void inject(PaymentApplicationActivity activity);
+
+    void inject(ProfileActivity activity);
+
+    void inject(UpdateProfileLevel2Activity activity);
+
+    void inject(HomeActivity activity);
 
 }

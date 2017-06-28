@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,35 +19,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import butterknife.BindView;
-
-import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-
-import vn.com.vng.zalopay.data.util.PhoneUtil;
-import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.passport.widget.CustomKeyboardView;
-
 import com.zalopay.ui.widget.util.TimeUtils;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
 import timber.log.Timber;
-
-import static com.zing.zalo.zalosdk.facebook.Facebook.getApplicationContext;
-import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
-import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
-
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
+import vn.com.vng.zalopay.passport.widget.CustomKeyboardView;
 import vn.com.vng.zalopay.passport.widget.InputEnteredListener;
 import vn.com.vng.zalopay.passport.widget.OnboardingEditTextView;
 import vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView;
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.VNPhoneValidate;
 
-import javax.inject.Inject;
+import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
+import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 
 
 /**
@@ -482,7 +475,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     }
 
     private void setDisplayHomeAsUpEnabled(Boolean isShow) {
-        ActionBar actionbar = ((BaseToolBarActivity) getActivity()).getSupportActionBar();
+        ActionBar actionbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(isShow);
         }

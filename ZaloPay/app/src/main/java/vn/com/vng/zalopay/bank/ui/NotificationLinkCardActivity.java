@@ -1,9 +1,9 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class NotificationLinkCardActivity extends BaseToolBarActivity {
+public class NotificationLinkCardActivity extends UserBaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
