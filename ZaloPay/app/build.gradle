@@ -49,6 +49,7 @@ android {
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', "\"" + cfg.applicationId + "\""
+        buildConfigField "boolean", "GA_DEBUG", "false"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

@@ -55,7 +55,7 @@ public class GoogleAnalyticsModule {
     @Named("okHttpClientGA")
     OkHttpClient provideOkHttpClientGA() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && BuildConfig.GA_DEBUG) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
