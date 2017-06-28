@@ -31,6 +31,7 @@ public interface ZPTracker {
      */
     void trackApptransidEvent(ZPApptransidLog log);
 
+    void trackApptransidApiCall(ZPApptransidLogApiCall log);
 
     void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode);
 

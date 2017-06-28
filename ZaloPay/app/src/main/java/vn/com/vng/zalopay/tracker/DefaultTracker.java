@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.tracker;
 
 import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPApptransidLogApiCall;
 import vn.com.zalopay.analytics.ZPTracker;
 
 /**
@@ -26,6 +27,11 @@ abstract class DefaultTracker implements ZPTracker {
 
     @Override
     public void trackApptransidEvent(ZPApptransidLog zpApptransidLog) {
+
+    }
+
+    @Override
+    public void trackApptransidApiCall(ZPApptransidLogApiCall log) {
 
     }
 

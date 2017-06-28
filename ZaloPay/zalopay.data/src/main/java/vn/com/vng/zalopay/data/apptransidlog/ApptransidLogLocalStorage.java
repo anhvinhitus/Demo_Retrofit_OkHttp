@@ -40,7 +40,7 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
     }
 
     @Override
-    public List<ApptransidLogGD> getAll() {
+    public List<ApptransidLogGD> getWithStatusDone() {
         try {
             List<ApptransidLogGD> ret = daoSession.getApptransidLogGDDao()
                     .queryBuilder()
@@ -99,7 +99,7 @@ public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorag
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteWithStatusDone() {
         try {
             ApptransidLogGDDao logGDDao = daoSession.getApptransidLogGDDao();
             List<ApptransidLogGD> logGDList = logGDDao.queryBuilder()

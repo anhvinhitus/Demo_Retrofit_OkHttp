@@ -121,7 +121,7 @@ public class FileLogHelper {
     }
 
     public static Observable<Boolean> uploadApptransidFileLog(FileLogStore.Repository fileLogRepository, ApptransidLogStore.Repository apptransidLogRepository) {
-        return apptransidLogRepository.getAll()
+        return apptransidLogRepository.getWithStatusDone()
                 .filter(logs -> logs != null && logs.length() > 0)
                 .map(logs -> ApptransidFileLog.Instance.append(new ApptransidLogData(logs)))
                 .flatMap(FileLogHelper::zipFileLog) // Zip file
@@ -132,7 +132,7 @@ public class FileLogHelper {
                     String txtFile = s.replace(ZIP_SUFFIX, ".txt");
                     FileUtils.deleteFileAtPathSilently(txtFile);
                 }) // Remove .txt
-                .flatMap(s -> apptransidLogRepository.removeAll()) // Clear data in db
+                .flatMap(s -> apptransidLogRepository.removeWithStatusDone()) // Clear data in db
                 ;
     }
 

@@ -48,6 +48,12 @@ public class ZPAnalytics {
         }
     }
 
+    public static void trackApptransidApiCall(ZPApptransidLogApiCall log) {
+        for (ZPTracker tracker : sTrackerList) {
+            tracker.trackApptransidApiCall(log);
+        }
+    }
+
     public static void trackAPIError(String apiName, int httpCode, int serverCode, int networkCode) {
         for (ZPTracker tracker : sTrackerList) {
             tracker.trackAPIError(apiName, httpCode, serverCode, networkCode);
@@ -111,6 +117,12 @@ public class ZPAnalytics {
             Timber.tag("ZPAnalytics").d("Apptransid Log [%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s]",
                     log.apptransid, log.appid, log.step, log.step_result, log.pcmid, log.transtype, log.transid,
                     log.sdk_result, log.server_result, log.source, log.start_time, log.finish_time, log.bank_code, log.status);
+        }
+
+        @Override
+        public void trackApptransidApiCall(ZPApptransidLogApiCall log) {
+            Timber.tag("ZPAnalytics").d("Apptransid Log Api Call [%s-%s-%s-%s-%s]",
+                    log.apptransid, log.apiid, log.time_begin, log.time_end, log.return_code);
         }
 
         @Override

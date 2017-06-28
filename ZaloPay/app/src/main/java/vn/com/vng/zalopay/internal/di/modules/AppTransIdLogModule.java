@@ -6,11 +6,11 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogApiCallLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogRepository;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogTimingLocalStorage;
-import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogTimingStore;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**
@@ -29,16 +29,23 @@ public class AppTransIdLogModule {
 
     @Singleton
     @Provides
-    ApptransidLogTimingStore.LocalStorage provideApptransidLogTimingLocalStorage(@Named("globaldaosession") DaoSession session) {
+    ApptransidLogStore.TimingLocalStorage provideApptransidLogTimingLocalStorage(@Named("globaldaosession") DaoSession session) {
         return new ApptransidLogTimingLocalStorage(session);
     }
 
     @Singleton
     @Provides
+    ApptransidLogStore.ApiCallLocalStorage provideApptransidLogApiCallLocalStorage(@Named("globaldaosession") DaoSession session) {
+        return new ApptransidLogApiCallLocalStorage(session);
+    }
+
+    @Singleton
+    @Provides
     ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.LocalStorage localStorage,
-                                                                 ApptransidLogTimingStore.LocalStorage timingLocalStorage,
+                                                                 ApptransidLogStore.TimingLocalStorage timingLocalStorage,
+                                                                 ApptransidLogStore.ApiCallLocalStorage apiCallLocalStorage,
                                                                  ApptransidLogEntityDataMapper mapper) {
-        return new ApptransidLogRepository(localStorage, timingLocalStorage, mapper);
+        return new ApptransidLogRepository(localStorage, timingLocalStorage, apiCallLocalStorage, mapper);
     }
 
 }

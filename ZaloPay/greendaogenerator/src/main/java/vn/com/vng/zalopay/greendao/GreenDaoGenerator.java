@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 59;
-    private static final int GLOBAL_DB_VERSION = 3;
+    private static final int GLOBAL_DB_VERSION = 4;
 
     /**
      * ./gradlew :greendaogenerator:run
@@ -35,6 +35,7 @@ public class GreenDaoGenerator {
         addGlobalKeyValue(globalSchema);
         addApptransidLog(globalSchema);
         addApptransidLogTiming(globalSchema);
+        addApptransidLogApiCall(globalSchema);
         addGoogleAnalytics(globalSchema);
 
         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
@@ -258,6 +259,17 @@ public class GreenDaoGenerator {
         entity.addStringProperty("apptransid");
         entity.addIntProperty("step");
         entity.addLongProperty("timestamp").notNull().unique().primaryKey();
+    }
+
+    private static void addApptransidLogApiCall(Schema schema) {
+        Entity entity = schema.addEntity("ApptransidLogApiCallGD");
+        entity.setConstructors(false);
+        entity.addIdProperty().primaryKey().autoincrement();
+        entity.addStringProperty("apptransid");
+        entity.addLongProperty("apiid");
+        entity.addLongProperty("timebegin");
+        entity.addLongProperty("timeend");
+        entity.addIntProperty("returncode");
     }
 
     private static void addGlobalKeyValue(Schema schema) {

@@ -11,9 +11,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.global.ApptransidLogApiCallGD;
 import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
 import vn.com.vng.zalopay.data.cache.global.ApptransidLogTimingGD;
 import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPApptransidLogApiCall;
 
 /**
  * Created by khattn on 1/25/17.
@@ -38,13 +40,18 @@ public class ApptransidLogEntityDataMapper {
     final private String VALUE_TIMESTAMP = "timestamp";
     final private String VALUE_BANK_CODE = "bank_code";
     final private String VALUE_STATUS = "status";
+    final private String VALUE_API_CALL = "api_calls";
+    final private String VALUE_APIID = "api";
+    final private String VALUE_API_TIME_BEGIN = "time_begin";
+    final private String VALUE_API_TIME_END = "time_end";
+    final private String VALUE_API_RETURN_CODE = "return_code";
 
     @Inject
     public ApptransidLogEntityDataMapper() {
 
     }
 
-    public JSONObject transform(ApptransidLogGD data, List<ApptransidLogTimingGD> timingData) {
+    public JSONObject transform(ApptransidLogGD data, List<ApptransidLogTimingGD> timingData, List<ApptransidLogApiCallGD> apiCallData) {
         if (data == null) {
             return null;
         }
@@ -64,13 +71,23 @@ public class ApptransidLogEntityDataMapper {
             value.put(VALUE_SOURCE, data.source);
             value.put(VALUE_START_TIME, data.start_time);
             JSONArray array = new JSONArray();
-            for(int i = 0; i < timingData.size(); i++) {
+            for (int i = 0; i < timingData.size(); i++) {
                 JSONObject object = new JSONObject();
                 object.put(VALUE_STEP, timingData.get(i).step);
                 object.put(VALUE_TIMESTAMP, timingData.get(i).timestamp);
                 array.put(object);
             }
             value.put(VALUE_TIMING, array);
+            JSONArray apiCallArray = new JSONArray();
+            for (int i = 0; i < apiCallData.size(); i++) {
+                JSONObject object = new JSONObject();
+                object.put(VALUE_APIID, apiCallData.get(i).apiid);
+                object.put(VALUE_API_TIME_BEGIN, apiCallData.get(i).timebegin);
+                object.put(VALUE_API_TIME_END, apiCallData.get(i).timeend);
+                object.put(VALUE_API_RETURN_CODE, apiCallData.get(i).returncode);
+                apiCallArray.put(object);
+            }
+            value.put(VALUE_API_CALL, apiCallArray);
             value.put(VALUE_FINISH_TIME, data.finish_time);
             value.put(VALUE_BANK_CODE, data.bank_code);
         } catch (JSONException e) {
@@ -144,7 +161,7 @@ public class ApptransidLogEntityDataMapper {
     }
 
     public ApptransidLogTimingGD transformTiming(ZPApptransidLog data) {
-        if(data.step == 0 || data.finish_time == 0) {
+        if (data.step == 0 || data.finish_time == 0) {
             return null;
         }
 
@@ -152,6 +169,20 @@ public class ApptransidLogEntityDataMapper {
         log.apptransid = data.apptransid;
         log.step = data.step;
         log.timestamp = data.finish_time;
+        return log;
+    }
+
+    public ApptransidLogApiCallGD transformApiCall(ZPApptransidLogApiCall data) {
+        if (data.apiid == 0) {
+            return null;
+        }
+
+        ApptransidLogApiCallGD log = new ApptransidLogApiCallGD();
+        log.apptransid = data.apptransid;
+        log.apiid = data.apiid;
+        log.timebegin = data.time_begin;
+        log.timeend = data.time_end;
+        log.returncode = data.return_code;
         return log;
     }
 

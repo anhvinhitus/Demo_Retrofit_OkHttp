@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.util.Lists;
  * Apptransid log timing local storage
  */
 
-public class ApptransidLogTimingLocalStorage implements ApptransidLogTimingStore.LocalStorage {
+public class ApptransidLogTimingLocalStorage implements ApptransidLogStore.TimingLocalStorage {
     private final DaoSession daoSession;
 
     public ApptransidLogTimingLocalStorage(DaoSession daoSession) {
