@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.ui.activity.HomeActivity;
  */
 public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    private static HashMap<String, Integer> activities;
+    public static HashMap<String, Integer> activities;
     private static String mLastActivity;
 
     private final EventBus mEventBus;
