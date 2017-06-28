@@ -68,7 +68,7 @@ public class PaymentWrapper {
     TransactionStore.Repository transactionRepository;
     @Inject
     Navigator mNavigator;
-    User mCurrentUser;
+    private User mCurrentUser;
     Activity mActivity;
     boolean mShowNotificationLinkCard;
     private AbstractOrder mPendingOrder;
@@ -366,7 +366,7 @@ public class PaymentWrapper {
         return mUserInfo;
     }
 
-    private UserInfo assignBaseUserInfo(@NonNull UserInfo userInfo) {
+    private UserInfo assignBaseUserInfo(UserInfo userInfo) {
         if (mCurrentUser == null) {
             return null;
         }
@@ -383,10 +383,9 @@ public class PaymentWrapper {
         return userInfo;
     }
 
-    private void invokePayAPI(@NonNull Activity owner, IBuilder pPaymentInfoBuilder) {
+    private void invokePayAPI(Activity owner, IBuilder pPaymentInfoBuilder) {
         mActivity = owner;
         if (pPaymentInfoBuilder == null || owner == null) {
-            mActivity = null;
             return;
         }
 
@@ -426,7 +425,7 @@ public class PaymentWrapper {
         mPendingOrder = order;
         mPendingTransaction = transtype;
 
-        if(transtype != TransactionType.LINK){
+        if (transtype != TransactionType.LINK) {
             ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
             ZPAnalytics.trackApptransidEvent(log);
         }
@@ -515,7 +514,7 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfile2ForResult(mActivity);
     }
 
-    void startUpdateProfile3(){
+    void startUpdateProfile3() {
         if (mActivity == null) {
             return;
         }
