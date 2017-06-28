@@ -263,6 +263,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     public void onResume() {
         super.onResume();
         mPresenter.resume();
+        mPresenter.initWebView(webView);
     }
 
     @Override

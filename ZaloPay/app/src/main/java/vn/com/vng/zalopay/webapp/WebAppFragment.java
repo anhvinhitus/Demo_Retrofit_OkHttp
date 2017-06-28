@@ -202,6 +202,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     public void onResume() {
         super.onResume();
         mPresenter.resume();
+        mPresenter.initWebView(webView);
     }
 
     @Override

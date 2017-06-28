@@ -44,6 +44,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     private ImageView imgError;
     private TextView tvError;
     private WebBottomSheetDialogFragment mBottomSheetDialog;
+    private View rootView;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -74,10 +75,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated start");
-        initPresenter(view);
-        initRetryView(view);
-        initWebView(view);
-        loadDefaultWebView();
+        rootView = view;
     }
 
     protected void initPresenter(View view) {
@@ -251,15 +249,21 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     public void onResume() {
         super.onResume();
 
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onResume();
-        }
+        initPresenter(rootView);
+        initRetryView(rootView);
+        initWebView(rootView);
+        loadDefaultWebView();
+
+//        if (mWebViewProcessor != null) {
+//            mWebViewProcessor.onResume();
+//        }
     }
 
     @Override
     public void onPause() {
         if (mWebViewProcessor != null) {
-            mWebViewProcessor.onPause();
+//            mWebViewProcessor.onPause();
+            mWebViewProcessor = null;
         }
         super.onPause();
     }
