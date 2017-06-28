@@ -20,19 +20,19 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public interface PassportService {
 
-    @API_NAME(ZPEvents.API_UM_CREATEACCESSTOKEN)
+    @API_NAME(https = ZPEvents.API_UM_CREATEACCESSTOKEN, connector = ZPEvents.CONNECTOR_UM_CREATEACCESSTOKEN)
     @FormUrlEncoded
     @POST(Constants.UM_API.LOGINVIAZALO)
     Observable<LoginResponse> login(@Field("appid") long appid, @Field("zaloid") long zaloid, @Field("oauthcode") String oauthcode);
 
 
-    @API_NAME(ZPEvents.API_UM_REMOVEACCESSTOKEN)
+    @API_NAME(https = ZPEvents.API_UM_REMOVEACCESSTOKEN, connector = ZPEvents.CONNECTOR_UM_REMOVEACCESSTOKEN)
     @FormUrlEncoded
     @POST(Constants.UM_API.REMOVEACCESSTOKEN)
     Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") String uid, @Field("accesstoken") String accesstoken);
 
 
-    @API_NAME(ZPEvents.API_UM_VERIFYCODETEST)
+    @API_NAME(https = ZPEvents.API_UM_VERIFYCODETEST, connector = ZPEvents.CONNECTOR_UM_VERIFYCODETEST)
     @FormUrlEncoded
     @POST(Constants.UM_API.VERIFYCODETEST)
     Observable<VerifyInvitationCodeResponse> verifyCode(@Field("userid") String uid, @Field("accesstoken") String accesstoken, @Field("codetest") String codetest);

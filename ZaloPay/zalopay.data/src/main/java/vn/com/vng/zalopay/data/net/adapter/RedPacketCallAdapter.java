@@ -21,8 +21,8 @@ import vn.com.vng.zalopay.data.exception.TokenException;
  */
 final class RedPacketCallAdapter extends BaseCallAdapter {
 
-    RedPacketCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler) {
-        super(context, apiEventId, responseType, scheduler);
+    RedPacketCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
+        super(context, httpsApiId, connectorApiId, responseType, scheduler);
     }
 
     @NonNull

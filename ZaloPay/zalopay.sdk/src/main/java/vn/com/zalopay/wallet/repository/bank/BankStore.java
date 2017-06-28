@@ -44,7 +44,7 @@ public class BankStore {
 
     public interface BankListService {
         @GET(Constants.URL_GET_BANKLIST)
-        @API_NAME(value = {ZPEvents.API_V001_TPE_GETBANKLIST, ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST})
+        @API_NAME(https = ZPEvents.API_V001_TPE_GETBANKLIST, connector = ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)
         Observable<BankConfigResponse> fetch(@Query("platform") String platform, @Query("checksum") String checksum, @Query("appversion") String appversion);
     }
 }

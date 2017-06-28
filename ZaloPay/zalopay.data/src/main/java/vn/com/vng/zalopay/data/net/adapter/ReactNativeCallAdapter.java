@@ -18,12 +18,12 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 
 final class ReactNativeCallAdapter extends BaseCallAdapter {
 
-    ReactNativeCallAdapter(Context context, int[] apiClientId, Type responseType, Scheduler scheduler) {
-        super(context, apiClientId, responseType, scheduler, 0);
+    ReactNativeCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
+        super(context, httpsApiId, connectorApiId, responseType, scheduler, 0);
     }
 
-    ReactNativeCallAdapter(Context context, int[] apiClientId, Type responseType, Scheduler scheduler, int retryNumber) {
-        super(context, apiClientId, responseType, scheduler, retryNumber);
+    ReactNativeCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler, int retryNumber) {
+        super(context, httpsApiId, connectorApiId, responseType, scheduler, retryNumber);
     }
 
     @NonNull

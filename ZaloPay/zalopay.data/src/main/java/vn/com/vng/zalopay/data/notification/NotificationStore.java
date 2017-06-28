@@ -74,7 +74,7 @@ public interface NotificationStore {
          * @param embededdata stringify of json data sent to another user
          * @return basic response
          */
-        @API_NAME(value = {ZPEvents.API_UM_SENDNOTIFICATION, ZPEvents.CONNECTOR_UM_SENDNOTIFICATION})
+        @API_NAME(https = ZPEvents.API_UM_SENDNOTIFICATION, connector = ZPEvents.CONNECTOR_UM_SENDNOTIFICATION)
         @GET(Constants.UM_API.SENDNOTIFICATION)
         Observable<BaseResponse> sendNotification(@Query("userid") String uid,
                                                   @Query("accesstoken") String accesstoken,

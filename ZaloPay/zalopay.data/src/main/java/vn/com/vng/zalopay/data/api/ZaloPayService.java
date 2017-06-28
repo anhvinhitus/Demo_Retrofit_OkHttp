@@ -18,14 +18,14 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public interface ZaloPayService {
 
-    @API_NAME(value = {ZPEvents.API_V001_TPE_GETORDERINFO, ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO})
+    @API_NAME(https = ZPEvents.API_V001_TPE_GETORDERINFO, connector = ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO)
     @GET(Constants.TPE_API.GETORDERINFO)
     Observable<GetOrderResponse> getorder(@Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken,
                                           @Query(Constants.APPID) long appId,
                                           @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
-    @API_NAME(value = {ZPEvents.API_V001_TPE_CREATEWALLETORDER, ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER})
+    @API_NAME(https = ZPEvents.API_V001_TPE_CREATEWALLETORDER, connector = ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER)
     @FormUrlEncoded
     @POST(Constants.TPE_API.CREATEWALLETORDER)
     Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,

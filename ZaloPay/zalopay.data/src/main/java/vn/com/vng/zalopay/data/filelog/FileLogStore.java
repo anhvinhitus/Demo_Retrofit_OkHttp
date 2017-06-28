@@ -20,7 +20,7 @@ public interface FileLogStore {
 
     interface RequestService {
         @Multipart
-        @API_NAME(ZPEvents.API_V001_ZP_UPLOAD_CLIENTLOGS)
+        @API_NAME(https = ZPEvents.API_V001_ZP_UPLOAD_CLIENTLOGS, connector = 0)
         @POST(Constants.UMUPLOAD_API.FILE_LOG)
         Observable<BaseResponse> uploadFileLog(@Part("userid") RequestBody userid, @Part MultipartBody.Part file);
     }

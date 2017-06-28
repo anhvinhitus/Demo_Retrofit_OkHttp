@@ -48,7 +48,7 @@ public class AppInfoStore {
 
     public interface AppInfoService {
         @GET(Constants.URL_APP_INFO)
-        @API_NAME(value = {ZPEvents.API_V001_TPE_GETAPPINFO, ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO})
+        @API_NAME(https = ZPEvents.API_V001_TPE_GETAPPINFO, connector = ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
         Observable<AppInfoResponse> fetch(@Query("appid") String appid, @Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken, @Query("appinfochecksum") String appinfochecksum,
                                           @Query("transtypes") String transtypes, @Query("transtypechecksums") String transtypechecksums,

@@ -17,11 +17,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface API_NAME {
-
-    /**
-     * index 0 for default (HTTP/HTTPS)
-     * index 1 for Payment Connector
-     */
     @Keep
-    int[] value();
+    int https();
+
+    @Keep
+    int connector();
 }

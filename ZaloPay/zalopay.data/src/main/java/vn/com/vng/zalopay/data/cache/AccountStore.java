@@ -53,43 +53,43 @@ public interface AccountStore {
 
     interface RequestService {
 
-        @API_NAME(value = {ZPEvents.API_UM_UPDATEPROFILE, ZPEvents.CONNECTOR_UM_UPDATEPROFILE})
+        @API_NAME(https = ZPEvents.API_UM_UPDATEPROFILE, connector = ZPEvents.CONNECTOR_UM_UPDATEPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEPROFILE)
         Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
-        @API_NAME(value = {ZPEvents.API_UM_VERIFYOTPPROFILE, ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE})
+        @API_NAME(https = ZPEvents.API_UM_VERIFYOTPPROFILE, connector = ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.VERIFYOTPPROFILE)
         Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
-        @API_NAME(value = {ZPEvents.API_UM_RECOVERYPIN, ZPEvents.CONNECTOR_UM_RECOVERYPIN})
+        @API_NAME(https = ZPEvents.API_UM_RECOVERYPIN, connector = ZPEvents.CONNECTOR_UM_RECOVERYPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.RECOVERYPIN)
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
 
-        @API_NAME(value = {ZPEvents.API_UM_GETUSERPROFILELEVEL, ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL})
+        @API_NAME(https = ZPEvents.API_UM_GETUSERPROFILELEVEL, connector = ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL)
         @GET(Constants.UM_API.GETUSERPROFILELEVEL)
         Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(value = {ZPEvents.API_UM_GETUSERINFOBYZALOPAYNAME, ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME})
+        @API_NAME(https = ZPEvents.API_UM_GETUSERINFOBYZALOPAYNAME, connector = ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYNAME)
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(value = {ZPEvents.API_UM_GETUSERINFOBYZALOPAYID, ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID})
+        @API_NAME(https = ZPEvents.API_UM_GETUSERINFOBYZALOPAYID, connector = ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYID)
         Observable<GetUserInfoByZPIDResponse> getUserInfoByZaloPayId(@Query("requestid") String zalopayid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(value = {ZPEvents.API_UM_CHECKZALOPAYNAMEEXIST, ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST})
+        @API_NAME(https = ZPEvents.API_UM_CHECKZALOPAYNAMEEXIST, connector = ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST)
         @GET(Constants.UM_API.CHECKZALOPAYNAMEEXIST)
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(value = {ZPEvents.API_UM_UPDATEZALOPAYNAME, ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME})
+        @API_NAME(https = ZPEvents.API_UM_UPDATEZALOPAYNAME, connector = ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEZALOPAYNAME)
         Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
-        @API_NAME(value = {ZPEvents.API_UM_VALIDATEPIN, ZPEvents.CONNECTOR_UM_VALIDATEPIN})
+        @API_NAME(https = ZPEvents.API_UM_VALIDATEPIN, connector = ZPEvents.CONNECTOR_UM_VALIDATEPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.VALIDATEPIN)
         Observable<BaseResponse> validatePin(@Field("pin") String pin, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
@@ -97,7 +97,7 @@ public interface AccountStore {
     }
 
     interface UploadPhotoService {
-        @API_NAME(ZPEvents.API_UMUPLOAD_PREUPDATEPROFILELEVEL3)
+        @API_NAME(https = ZPEvents.API_UMUPLOAD_PREUPDATEPROFILELEVEL3, connector = ZPEvents.CONNECTOR_UMUPLOAD_PREUPDATEPROFILELEVEL3)
         @Multipart
         @POST(Constants.UMUPLOAD_API.PREUPDATEPROFILELEVEL3)
         Observable<BaseResponse> updateProfile3(@Part("userid") RequestBody userid,

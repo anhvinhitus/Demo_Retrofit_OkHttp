@@ -25,12 +25,14 @@ import vn.com.zalopay.analytics.ZPEvents;
 public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     private final Context mContext;
     private final Call<T> mOriginalCall;
-    private final int[] mApiClientId;
+    private final int mHttpsApiId;
+    private final int mConnectorApiId;
 
-    public CallOnSubscribe(Context context, Call<T> originalCall, int[] apiClientId) {
+    public CallOnSubscribe(Context context, Call<T> originalCall, int httpsApiId, int connectorApiId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
-        mApiClientId = apiClientId;
+        this.mHttpsApiId = httpsApiId;
+        this.mConnectorApiId = connectorApiId;
     }
 
     @Override
@@ -45,7 +47,7 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
             Response<T> response = call.execute();
             long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
             if (response != null && response.isSuccessful()) {
-                Timber.d("API request %s took %s ms", mApiClientId, tookMs);
+                Timber.d("API request [%s, %s] took %s ms", mHttpsApiId, mConnectorApiId, tookMs);
                 logTiming(response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis(), call.request());
             } else {
                 errorHandler(call.request(), response, subscriber);
@@ -131,16 +133,10 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
     }
 
     private int getEventId(boolean isPaymentCall) {
-        int length = mApiClientId.length;
-        switch (length) {
-            case 0:
-                return -1;
-            case 1:
-                return mApiClientId[0];
-            case 2:
-                return isPaymentCall ? mApiClientId[1] : mApiClientId[0];
-            default:
-                return mApiClientId[0];
+        if (isPaymentCall) {
+            return mConnectorApiId;
+        } else {
+            return mHttpsApiId;
         }
     }
 
@@ -149,7 +145,7 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
         boolean isPaymentCall = NetworkConstants.CONNECTOR.equals(request.tag());
 
         int eventId = getEventId(isPaymentCall);
-        Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(eventId), duration);
+        Timber.d("API Request [%s, %s] (%s), duration: %s (ms)", mHttpsApiId, mConnectorApiId, ZPEvents.actionFromEventId(eventId), duration);
         if (eventId <= 0) {
             String path = request.url().encodedPath();
             Timber.d("API Request: %s", path);

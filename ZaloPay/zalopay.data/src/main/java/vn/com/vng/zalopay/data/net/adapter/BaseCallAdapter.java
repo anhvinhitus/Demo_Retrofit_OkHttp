@@ -33,18 +33,20 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
 
     private final int mMaxRetries;
     protected final Context mContext;
-    private final int[] mApiEventId;
+    private final int mHttpsApiId;
+    private final int mConnectorApiId;
     private final Type mResponseType;
     private final Scheduler mScheduler;
     private int mRestRetryCount;
 
-    BaseCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler) {
-        this(context, apiEventId, responseType, scheduler, Constants.NUMBER_RETRY_REST);
+    BaseCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
+        this(context, httpsApiId, connectorApiId, responseType, scheduler, Constants.NUMBER_RETRY_REST);
     }
 
-    BaseCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
+    BaseCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler, int retryNumber) {
         this.mContext = context;
-        this.mApiEventId = apiEventId;
+        this.mHttpsApiId = httpsApiId;
+        this.mConnectorApiId = connectorApiId;
         this.mResponseType = responseType;
         this.mScheduler = scheduler;
         this.mMaxRetries = retryNumber >= 0 ? retryNumber : 0;
@@ -58,7 +60,7 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
         mRestRetryCount = mMaxRetries;
-        Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call, mApiEventId))
+        Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call, mHttpsApiId, mConnectorApiId))
                 .retryWhen(errors -> errors.flatMap(error -> {
                     if (!call.request().method().equalsIgnoreCase("GET")) {
                         return Observable.error(error);

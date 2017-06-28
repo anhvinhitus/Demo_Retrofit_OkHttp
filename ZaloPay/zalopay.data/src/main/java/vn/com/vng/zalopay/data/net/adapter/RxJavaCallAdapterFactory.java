@@ -63,13 +63,15 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        int[] apiEventId = new int[]{};
         int maxRetries = Constants.NUMBER_RETRY_REST;
+        int httpsApiId = 0;
+        int connectorApiId = 0;
 
         for (Annotation annotation : annotations) {
 
             if (annotation instanceof API_NAME) {
-                apiEventId = ((API_NAME) annotation).value();
+                httpsApiId = ((API_NAME) annotation).https();
+                connectorApiId = ((API_NAME) annotation).connector();
                 continue;
             }
 
@@ -78,10 +80,10 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
             }
         }
 
-        return getCallAdapter(returnType, scheduler, apiEventId, maxRetries);
+        return getCallAdapter(returnType, scheduler, httpsApiId, connectorApiId, maxRetries);
     }
 
-    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int[] apiEventId, int maxRetries) {
+    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int httpsApiId, int connectorApiId, int maxRetries) {
         Class<?> rawType = getRawType(returnType);
         if (rawType != Observable.class) {
             return null;
@@ -90,13 +92,13 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
         Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
         switch (mAdapterType) {
             case ZaloPay:
-                return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
+                return new ZaloPayCallAdapter(mApplicationContext, httpsApiId, connectorApiId, observableType, scheduler);
             case RedPacket:
-                return new RedPacketCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
+                return new RedPacketCallAdapter(mApplicationContext, httpsApiId, connectorApiId, observableType, scheduler);
             case React:
-                return new ReactNativeCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, maxRetries);
+                return new ReactNativeCallAdapter(mApplicationContext, httpsApiId, connectorApiId, observableType, scheduler, maxRetries);
             default:
-                return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
+                return new ZaloPayCallAdapter(mApplicationContext, httpsApiId, connectorApiId, observableType, scheduler);
         }
     }
 }

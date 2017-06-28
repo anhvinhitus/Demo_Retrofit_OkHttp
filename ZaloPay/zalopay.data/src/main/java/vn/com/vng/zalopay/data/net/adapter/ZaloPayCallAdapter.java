@@ -24,8 +24,8 @@ import vn.com.vng.zalopay.data.exception.TokenException;
  */
 class ZaloPayCallAdapter extends BaseCallAdapter {
 
-    ZaloPayCallAdapter(Context context, int[] apiEventId, Type responseType, Scheduler scheduler) {
-        super(context, apiEventId, responseType, scheduler);
+    ZaloPayCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
+        super(context, httpsApiId, connectorApiId, responseType, scheduler);
     }
 
     @NonNull

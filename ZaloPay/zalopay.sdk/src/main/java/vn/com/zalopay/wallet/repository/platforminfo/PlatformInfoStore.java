@@ -66,7 +66,7 @@ public class PlatformInfoStore {
 
     public interface PlatformInfoService {
         @GET(Constants.URL_PLATFORM_INFO)
-        @API_NAME(value = {ZPEvents.API_V001_TPE_V001GETPLATFORMINFO, ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO})
+        @API_NAME(https = ZPEvents.API_V001_TPE_V001GETPLATFORMINFO, connector = ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO)
         Observable<PlatformInfoResponse> fetch(@QueryMap Map<String, String> params);
     }
 }

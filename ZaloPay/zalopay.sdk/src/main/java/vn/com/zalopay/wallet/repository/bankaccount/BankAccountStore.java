@@ -41,7 +41,7 @@ public class BankAccountStore {
 
     public interface BankAccountService {
         @GET(Constants.URL_LISTBANKACCCOUNT)
-        @API_NAME(value = {ZPEvents.API_UM_LISTBANKACCOUNTFORCLIENT, ZPEvents.CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT})
+        @API_NAME(https = ZPEvents.API_UM_LISTBANKACCOUNTFORCLIENT, connector = ZPEvents.CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT)
         Observable<BankAccountListResponse> fetch(@Query("userid") String userid, @Query("accesstoken") String accesstoken,
                                                   @Query("bankaccountchecksum") String bankaccountchecksum, @Query("appversion") String appversion);
     }
