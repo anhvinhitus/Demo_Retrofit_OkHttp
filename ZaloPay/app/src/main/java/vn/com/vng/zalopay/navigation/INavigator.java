@@ -45,6 +45,8 @@ public interface INavigator {
 
     void startLinkAccountActivity(Context context);
 
+    Intent intentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions);
+
     Intent intentProfile(Context context);
 
     Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);

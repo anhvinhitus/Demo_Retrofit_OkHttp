@@ -17,6 +17,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.JsonObject;
+import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -414,7 +415,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
                             Helpers.promiseResolveSuccess(promise, "");
-                            startPaymentApp(appid, transid);
+                            startReactNativeApp(appid, transid);
                         } else {
                             Helpers.promiseResolveError(promise, -1, "App disabled");
                         }
@@ -423,7 +424,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private void startPaymentApp(int appid, String transid) {
+    private void startReactNativeApp(int appid, String transid) {
         Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
@@ -433,7 +434,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         options.put("view", "history");
         options.put("transid", transid);
 
-        Intent intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
+        Intent intent;
+        if (appid == 1) {
+            intent = mNavigator.intentMiniAppActivity(activity, ModuleName.TRANSACTION_LOGS, options);
+        } else {
+            intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
+        }
+
         if (intent != null) {
             activity.startActivity(intent);
         }

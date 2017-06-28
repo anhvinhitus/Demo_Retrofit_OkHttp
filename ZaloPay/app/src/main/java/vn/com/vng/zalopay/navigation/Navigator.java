@@ -278,7 +278,7 @@ public class Navigator implements INavigator {
                 }
             }
         }
-        Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<>());
+        Intent intent = intentMiniAppActivity(activity, moduleName, new HashMap<>());
         activity.startActivity(intent);
     }
 
@@ -645,23 +645,23 @@ public class Navigator implements INavigator {
         launchOptions.put("view", "history");
         launchOptions.put("transid", transid);
         launchOptions.put("notificationid", notificationid);
-        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, launchOptions);
+        Intent intent = intentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, launchOptions);
         context.startActivity(intent);
     }
 
     public void startTransactionHistoryList(Context context) {
-        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<>());
+        Intent intent = intentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<>());
         context.startActivity(intent);
     }
 
     public void startTermActivity(Context context) {
         Map<String, String> option = new HashMap<>();
         option.put("view", "termsOfUse");
-        Intent intent = getIntentMiniAppActivity(context, ModuleName.ABOUT, option);
+        Intent intent = intentMiniAppActivity(context, ModuleName.ABOUT, option);
         context.startActivity(intent);
     }
 
-    private Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
+    public Intent intentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
         Intent intent;
         if (moduleName.equals(ModuleName.RED_PACKET)) {
             intent = new Intent(context, RedPacketApplicationActivity.class);
