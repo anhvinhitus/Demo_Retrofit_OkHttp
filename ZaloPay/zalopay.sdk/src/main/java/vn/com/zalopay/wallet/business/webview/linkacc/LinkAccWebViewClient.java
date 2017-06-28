@@ -77,7 +77,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private WebChromeClient wcClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(final WebView view, int newProgress) {
-            Log.i("load in progress...", String.valueOf(newProgress) + "%");
+            Timber.d("load in progress... %s", String.valueOf(newProgress) + "%");
             mAdapter.onEvent(EEventType.ON_PROGRESSING, newProgress);
         }
     };

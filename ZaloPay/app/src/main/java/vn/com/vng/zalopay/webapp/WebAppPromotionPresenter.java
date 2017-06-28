@@ -33,7 +33,6 @@ class WebAppPromotionPresenter extends AbstractWebAppPresenter<IWebAppPromotionV
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                Timber.d("WebLoading progress: %s", progress);
                 mView.updateLoadProgress(progress);
 
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
