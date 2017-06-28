@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -49,13 +50,17 @@ public abstract class UserBaseActivity extends BaseActivity {
     private void setupUserComponent(ApplicationComponent applicationComponent) {
         isUserSessionStarted = createUserComponent(applicationComponent);
 
-        if (!isUserSessionStarted) {
-            navigator.startLoginActivity(this, true);
-            finish();
+        if (isUserSessionStarted) {
+            onUserComponentSetup(getUserComponent());
             return;
         }
 
-        onUserComponentSetup(getUserComponent());
+        if (!AppLifeCycle.isLastActivity(LoginZaloActivity.class.getSimpleName())) {
+            navigator.startLoginActivity(this, true);
+        }
+
+        finish();
+
     }
 
     private boolean createUserComponent(ApplicationComponent applicationComponent) {
@@ -71,7 +76,6 @@ public abstract class UserBaseActivity extends BaseActivity {
         }
 
         Timber.e("Create UserComponent is NPE in %s. @Injected dependencies can be null - Application restarted [%s] - activities size [%s]", TAG, restarted, AppLifeCycle.activities.size());
-
         return getUserComponent() != null;
     }
 
