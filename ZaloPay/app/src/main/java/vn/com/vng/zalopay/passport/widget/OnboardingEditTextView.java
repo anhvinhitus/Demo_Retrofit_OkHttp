@@ -134,4 +134,8 @@ public class OnboardingEditTextView extends OnboardingView {
     public NumberEditable getNumberEditable() {
         return mInputView;
     }
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        mInputView.addTextChangedListener(watcher);
+    }
 }
