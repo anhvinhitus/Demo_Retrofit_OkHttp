@@ -147,6 +147,8 @@ public interface UserComponent {
 
     void inject(WebAppPromotionFragment f);
 
+    void inject(WebViewPromotionFragment f);
+
     void inject(ScanNFCFragment fragment);
 
     void inject(CounterBeaconFragment fragment);
