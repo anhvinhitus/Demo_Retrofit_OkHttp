@@ -356,7 +356,7 @@ public class AndroidUtils {
         if (context == null) {
             return;
         }
-        
+
         if (TextUtils.isEmpty(url)) {
             return;
         }
@@ -1132,9 +1132,10 @@ public class AndroidUtils {
         return ua;
     }
 
-    public static Drawable getDrawable(Context context, @DrawableRes int id, @ColorRes int color) {
+    public static Drawable getTintedDrawable(Context context, @DrawableRes int id, @ColorRes int color) {
         Drawable drawable = ContextCompat.getDrawable(context, id);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(context, color));
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable.mutate(), ContextCompat.getColor(context, color));
         return drawable;
     }
 }

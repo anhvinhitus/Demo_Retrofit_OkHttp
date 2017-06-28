@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -137,7 +135,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         if (TextUtils.isEmpty(user.zalopayname)) {
             mTvAccountName.setHint(accountLabel);
             mTvAccountName.setClickable(true);
-            mTvAccountName.setCompoundDrawablesWithIntrinsicBounds(null, null, AndroidUtils.getDrawable(getContext(), R.drawable.ic_arrow_right, R.color.blue_008fe5), null);
+            mTvAccountName.setCompoundDrawablesWithIntrinsicBounds(null, null, AndroidUtils.getTintedDrawable(getContext(), R.drawable.ic_arrow_right, R.color.blue_008fe5), null);
         } else {
             mTvAccountName.setText(accountLabel);
             mTvAccountName.setClickable(false);
