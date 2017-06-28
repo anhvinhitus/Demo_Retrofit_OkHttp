@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 public class TransactionLocalStorage extends SqlBaseScopeImpl implements TransactionStore.LocalStorage {
 
     private final static int TRANSFER_TYPE = 4;
+    private final static int CASHINMERCHANT_TYPE = 11;
 
     public TransactionLocalStorage(DaoSession daoSession) {
         super(daoSession);
@@ -75,14 +76,22 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
             return queryList(offset, limit, where);
         }
 
-        if (!transTypes.contains(TRANSFER_TYPE) || sign == 0) {
+        if (!transTypes.contains(TRANSFER_TYPE) || !transTypes.contains(CASHINMERCHANT_TYPE) || sign == 0) {
             where = queryBuilder.and(where, TransactionLogDao.Properties.Type.in(transTypes));
             return queryList(offset, limit, where);
         }
 
-        WhereCondition whereType = queryBuilder.and(TransactionLogDao.Properties.Type.eq(TRANSFER_TYPE), TransactionLogDao.Properties.Sign.eq(sign));
+        WhereCondition whereType = TransactionLogDao.Properties.Type.in(TRANSFER_TYPE, CASHINMERCHANT_TYPE);
+        if (sign == 1) {
+            Timber.d("queryList: %s", sign);
+            whereType = queryBuilder.and(whereType, TransactionLogDao.Properties.Sign.eq(1));
+            Timber.d("queryList: %s", whereType.toString());
+        } else {
+            whereType = queryBuilder.and(whereType, TransactionLogDao.Properties.Sign.notEq(1));
+        }
+
         for (int i = 0; i < transTypes.size(); i++) {
-            if (transTypes.get(i) != TRANSFER_TYPE) {
+            if (transTypes.get(i) != TRANSFER_TYPE && transTypes.get(i) != CASHINMERCHANT_TYPE) {
                 whereType = queryBuilder.or(whereType, TransactionLogDao.Properties.Type.eq(transTypes.get(i)));
             }
         }
