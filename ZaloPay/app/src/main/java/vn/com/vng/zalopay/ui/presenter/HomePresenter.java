@@ -69,7 +69,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
-import vn.com.zalopay.wallet.interactor.UpversionCallback;
+import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -113,11 +113,11 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
             if (mView == null) {
                 return;
             }
-            if (platformInfoCallback instanceof UpversionCallback) {
-                updateHomePage(((UpversionCallback) platformInfoCallback).forceupdate);
+            if (platformInfoCallback instanceof VersionCallback) {
+                updateHomePage(((VersionCallback) platformInfoCallback).forceupdate);
                 AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
-                        ((UpversionCallback) platformInfoCallback).forceupdate, ((UpversionCallback) platformInfoCallback).newestappversion,
-                        ((UpversionCallback) platformInfoCallback).forceupdatemessage);
+                        ((VersionCallback) platformInfoCallback).forceupdate, ((VersionCallback) platformInfoCallback).newestappversion,
+                        ((VersionCallback) platformInfoCallback).forceupdatemessage);
             } else {
                 updateHomePage(false);
             }

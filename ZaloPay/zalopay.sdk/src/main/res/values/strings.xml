@@ -83,6 +83,7 @@
     <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định, không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="zpw_alert_network_error_authenpayer">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="sdk_alert_generic_error">Lỗi khởi tạo dữ liệu. Vui lòng thực hiện lại giao dịch!</string>
+    <string name="sdk_alert_generic_init_resource">Lỗi khởi tạo nguồn thông tin. Vui lòng thực hiện lại giao dịch!</string>
     <string name="sdk_alert_networking_off_generic">Mạng đã tắt, không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
 
     <string name="sdk_error_generic_submitorder">Không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
@@ -599,4 +600,6 @@
     <string name="sdk_topup_password_title_text">Nhập mật khẩu thanh toán để nạp tiền bằng</string>
     <string name="sdk_withdraw_password_title_text">Nhập mật khẩu thanh toán để rút tiền về</string>
     <string name="sdk_transfer_password_title_text">Nhập mật khẩu thanh toán để chuyển tiền bằng</string>
+
+    <string name="sdk_loading_timeout">Quá trình xử lý hết  hiệu lực, vui lòng thực hiện lại giao dịch!</string>
 </resources>

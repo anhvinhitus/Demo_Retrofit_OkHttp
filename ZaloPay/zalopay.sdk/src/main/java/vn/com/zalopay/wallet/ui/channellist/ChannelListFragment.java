@@ -164,7 +164,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showLoading(String pTitle) {
         if (getActivity() != null) {
             getActivity().setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.zingpaysdk_alert_network_error)));
+            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
         }
     }
 

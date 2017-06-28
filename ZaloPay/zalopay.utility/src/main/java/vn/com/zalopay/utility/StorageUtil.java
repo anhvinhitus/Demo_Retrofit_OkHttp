@@ -3,15 +3,19 @@ package vn.com.zalopay.utility;
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -54,6 +58,36 @@ public class StorageUtil {
         return formatSize(availableBlocks * blockSize);
     }
 
+    public static String loadAbsolutePath(String path) throws Exception {
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+        String result = null;
+        File file = new File(path);
+        if (file.exists()) {
+            InputStream inputStream = new FileInputStream(file);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append("\r\n");
+            }
+
+            bufferedReader.close();
+            inputStreamReader.close();
+            inputStream.close();
+
+            result = stringBuilder.toString();
+        }
+        if (!TextUtils.isEmpty(result)) {
+            result = result.trim();
+        }
+        return result;
+    }
 
     /***
      * internal folder to extract resource file

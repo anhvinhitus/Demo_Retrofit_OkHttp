@@ -53,10 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public static int getActivityCount() {
-        if (mActivityStack != null) {
-            return mActivityStack.size();
-        }
-        return 0;
+        return mActivityStack != null ? mActivityStack.size() : 0;
     }
 
     @CallSuper
@@ -97,7 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     public void onBackPressed() {

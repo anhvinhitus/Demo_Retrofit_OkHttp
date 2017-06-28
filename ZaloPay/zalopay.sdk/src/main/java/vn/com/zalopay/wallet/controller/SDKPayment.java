@@ -135,9 +135,9 @@ public class SDKPayment {
             return;
         }
 
-        if (!bypassBankAccount(paymentInfoHelper)) {
+       /* if (!bypassBankAccount(paymentInfoHelper)) {
             return;
-        }
+        }*/
 
         //set listener and data payment to global static
         try {
@@ -168,7 +168,57 @@ public class SDKPayment {
         startGateway(paymentInfoHelper);
     }
 
-    private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
+    private static void startGateway(PaymentInfoHelper paymentInfoHelper) {
+        Activity pOwner = GlobalData.getMerchantActivity();
+        if (pOwner == null || pOwner.isFinishing()) {
+            Log.e("startGateway", "merchant activity is null");
+            terminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            return;
+        }
+        Intent intent;
+        MiniPmcTransType pmcTransType = null;
+        int transtype = paymentInfoHelper.getTranstype();
+        //this is link , go to channel directly
+        if (paymentInfoHelper.isLinkTrans()) {
+            intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
+            int layoutId = paymentInfoHelper.isBankAccountTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
+            intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
+            pmcTransType = SDKApplication
+                    .getApplicationComponent()
+                    .appInfoInteractor()
+                    .getPmcTranstype(BuildConfig.ZALOAPP_ID, transtype, paymentInfoHelper.isBankAccountTrans(), null);
+            if (pmcTransType != null) {
+                intent.putExtra(PMC_CONFIG, pmcTransType);
+            }
+        } else {
+            intent = new Intent(pOwner, ChannelListActivity.class);
+        }
+        if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
+            terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
+        } else {
+            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
+            GlobalData.paymentInfoHelper = paymentInfoHelper;
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pOwner.startActivity(intent);
+        }
+        Log.d("startGateway", intent.getComponent().getShortClassName(), pmcTransType);
+    }
+
+    /***
+     * show dialog and dispose sdk in error cases
+     * @param pMessage
+     */
+    private static void terminateSession(final String pMessage, @PaymentError int pPayError) {
+        DialogManager.closeProcessDialog();
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
+        }
+        SingletonLifeCircleManager.disposeAll();
+    }
+
+     /*private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
         BankConfig bankConfig = SDKApplication
                 .getApplicationComponent()
                 .bankListInteractor()
@@ -221,55 +271,5 @@ public class SDKPayment {
             return true;
         }
         return false;
-    }
-
-    private static void startGateway(PaymentInfoHelper paymentInfoHelper) {
-        Activity pOwner = GlobalData.getMerchantActivity();
-        if (pOwner == null || pOwner.isFinishing()) {
-            Log.e("startGateway", "merchant activity is null");
-            terminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
-            return;
-        }
-        Intent intent;
-        MiniPmcTransType pmcTransType = null;
-        int transtype = paymentInfoHelper.getTranstype();
-        //this is link , go to channel directly
-        if (paymentInfoHelper.isLinkTrans()) {
-            intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
-            int layoutId = paymentInfoHelper.isBankAccountTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
-            intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
-            pmcTransType = SDKApplication
-                    .getApplicationComponent()
-                    .appInfoInteractor()
-                    .getPmcTranstype(BuildConfig.ZALOAPP_ID, transtype, paymentInfoHelper.isBankAccountTrans(), null);
-            if (pmcTransType != null) {
-                intent.putExtra(PMC_CONFIG, pmcTransType);
-            }
-        } else {
-            intent = new Intent(pOwner, ChannelListActivity.class);
-        }
-        if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
-            terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
-        } else {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
-            GlobalData.paymentInfoHelper = paymentInfoHelper;
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pOwner.startActivity(intent);
-        }
-        Log.d("startGateway", intent.getComponent().getShortClassName(), pmcTransType);
-    }
-
-    /***
-     * show dialog and dispose sdk in error cases
-     * @param pMessage
-     */
-    private static void terminateSession(final String pMessage, @PaymentError int pPayError) {
-        DialogManager.closeProcessDialog();
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
-        }
-        SingletonLifeCircleManager.disposeAll();
-    }
+    }*/
 }

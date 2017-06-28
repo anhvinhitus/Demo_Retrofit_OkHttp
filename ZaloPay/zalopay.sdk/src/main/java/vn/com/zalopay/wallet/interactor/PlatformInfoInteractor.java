@@ -75,16 +75,11 @@ public class PlatformInfoInteractor implements IPlatformInfo {
      */
     @Override
     public boolean isValidConfig() {
-        try {
-            String path = getUnzipPath();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(path).append(File.separator).append(ResourceManager.CONFIG_FILE);
-            File file = new File(stringBuilder.toString());
-            return !TextUtils.isEmpty(path) && file.exists();//Check if res is missing
-        } catch (Exception e) {
-            Log.e("isValidConfig", e);
-        }
-        return false;
+        String path = getUnzipPath();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(path).append(File.separator).append(ResourceManager.CONFIG_FILE);
+        File file = new File(stringBuilder.toString());
+        return !TextUtils.isEmpty(path) && file.exists();
     }
 
 
@@ -145,7 +140,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     @Override
     public Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion) {
-        Log.d(this, "start download sdk resource", pUrl);
+        Timber.d("start download sdk resource %s", pUrl);
         Context context = GlobalData.getAppContext();
         IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
         ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(), pUrl, pResourceVersion);
@@ -162,7 +157,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                  1.server return isupdateresource = true;
                  2.resource version on cached client and resource version server return is different.This case user no need to update app.
                  */
-                Log.d(this,"start download resource - should download ", shouldDownloadResource);
+                Log.d(this, "start download resource - should download ", shouldDownloadResource);
                 String resrcVer = repository.getLocalStorage().getResourceVersion();
                 if (shouldDownloadResource && pResponse.resource != null && (pResponse.isupdateresource ||
                         (!TextUtils.isEmpty(resrcVer) && !resrcVer.equals(pResponse.resource.rsversion)))) {
@@ -184,12 +179,12 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 return Observable.error(new RequestException(RequestException.NULL, null));
             } else if (platformInfoResponse.forceappupdate) {
                 //notify force user update new app on store
-                UpversionCallback upversionCallback = new UpversionCallback(platformInfoResponse.forceappupdate, platformInfoResponse.newestappversion,
+                VersionCallback upversionCallback = new VersionCallback(platformInfoResponse.forceappupdate, platformInfoResponse.newestappversion,
                         platformInfoResponse.forceupdatemessage, expiretime);
                 return Observable.just(upversionCallback);
             } else if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
                 //notify user  have a new version on store but not force user update
-                UpversionCallback upversionCallback = new UpversionCallback(false, platformInfoResponse.newestappversion,
+                VersionCallback upversionCallback = new VersionCallback(false, platformInfoResponse.newestappversion,
                         platformInfoResponse.forceupdatemessage, expiretime);
                 return Observable.just(upversionCallback);
             } else if (platformInfoResponse.returncode == 1) {
@@ -222,7 +217,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public String getCheckSum() {
+    public String getAppVersion() {
         return repository.getLocalStorage().getAppVersion();
     }
 
@@ -234,5 +229,10 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public String getResourceVersion() {
         return repository.getLocalStorage().getResourceVersion();
+    }
+
+    @Override
+    public String getPlatformInfoCheckSum() {
+        return repository.getLocalStorage().getPlatformInfoCheckSum();
     }
 }

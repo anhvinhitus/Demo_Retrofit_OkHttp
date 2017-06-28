@@ -15,7 +15,9 @@ public interface IPlatformInfo {
 
     long getExpireTime();
 
-    String getCheckSum();
+    String getAppVersion();
+
+    String getPlatformInfoCheckSum();
 
     String getUserId();
 

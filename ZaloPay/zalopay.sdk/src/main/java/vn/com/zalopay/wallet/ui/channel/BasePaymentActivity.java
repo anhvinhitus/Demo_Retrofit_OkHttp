@@ -429,7 +429,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void loadStaticReload() {
         try {
             Log.d(this, "check static resource start");
-            PlatformInfoLoader.getInstance(mPaymentInfoHelper.getUserInfo()).checkPlatformInfo();
+            ResourceLoader.getInstance(mPaymentInfoHelper.getUserInfo()).validateResouce();
         } catch (Exception e) {
             showDialogAndExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);   //notify error and close sdk
             Log.e(this, e);

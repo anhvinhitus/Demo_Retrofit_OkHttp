@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -66,7 +65,7 @@ public class CShareData extends SingletonBase {
     public static DConfigFromServer loadConfigBundle() {
         if (mConfigFromServer == null || mConfigFromServer.CCIdentifier == null) {
             try {
-                String json = ResourceManager.loadResourceFile();
+                String json = ResourceManager.loadJsonConfig();
                 mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
             } catch (Exception e) {
                 Log.e("===loadConfigBundle===", e);
@@ -143,16 +142,8 @@ public class CShareData extends SingletonBase {
                     SDKApplication.getApplicationComponent()
                             .linkInteractor()
                             .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
-                            .subscribe(new Action1<Boolean>() {
-                                @Override
-                                public void call(Boolean aBoolean) {
-                                    Timber.d("reload bank account finish");
-                                }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    Log.d(this, "reload bank account error", throwable);
-                                }
+                            .subscribe(aBoolean -> Timber.d("reload bank account finish"), throwable -> {
+                                Timber.d("reload bank account error %s", throwable);
                             });
                 }
             } catch (Exception ex) {

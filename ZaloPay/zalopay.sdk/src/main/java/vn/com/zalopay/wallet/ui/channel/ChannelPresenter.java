@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
@@ -38,7 +37,6 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -50,7 +48,6 @@ import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -58,9 +55,7 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
-import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
-import vn.com.zalopay.wallet.event.SdkStartInitResourceMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -363,7 +358,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 loadStaticResource(mPaymentInfoHelper.getUserInfo());
             } catch (Exception ex) {
                 Log.e(this, ex);
-                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
             }
             return;
         }
@@ -403,7 +398,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 loadAppInfo(mAppInfoInteractor, appId, TransactionType.LINK, userInfo);
             } catch (Exception ex) {
                 Log.e(this, ex);
-                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
             }
         }
     }
@@ -446,17 +441,17 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     @Override
-    protected void onUpdateVersion(SdkUpVersionMessage pMessage) {
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onUpVersion(pMessage.forceupdate, pMessage.version, pMessage.message);
-        }
+    public void onUpdateVersion(SdkUpVersionMessage pMessage) {
+        super.onUpdateVersion(pMessage);
         if (pMessage.forceupdate) {
             callBackThenTerminate();
         }
     }
 
+    /***
+     * focus on current view
+     */
     private void showKeyBoardOnFocusingViewAgain() {
-        //focus on editting view again after user resume
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
             //auto show keyboard
             if (getAdapter().isInputStep() || getAdapter().shouldFocusAfterCloseQuitDialog()) {
@@ -716,100 +711,69 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage) {
-        Timber.d("OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
-        if (pMessage.success) {
-            UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-            Subscription subscription = SDKApplication.getApplicationComponent()
-                    .linkInteractor()
-                    .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aBoolean -> {
-                        try {
-                            startLink();
-                        } catch (Exception e) {
-                            Timber.d(e != null ? e.getMessage() : "Exception");
-                        }
-                    }, throwable -> {
-                        try {
-                            getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
-                        } catch (Exception e) {
-                            Timber.d(e != null ? e.getMessage() : "Exception");
-                        }
-                        Log.e("load card and bank account error", throwable.getMessage());
-                    });
-            addSubscription(subscription);
-        } else {
-            Timber.d("init resource error " + pMessage);
-            /***
-             * delete folder resource to download again.
-             * this prevent case file resource downloaded but was damaged on the wire so
-             * can not parse json file.
-             */
-            try {
-                String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
-                if (!TextUtils.isEmpty(resPath))
-                    StorageUtil.deleteRecursive(new File(resPath));
-            } catch (Exception e) {
-                Timber.d(e != null ? e.getMessage() : "Exception");
-            }
-            String message = pMessage.message;
-            if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-            }
-            boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
-            if (showDialog) {
-                try {
-                    getViewOrThrow().showError(message);
-                } catch (Exception e) {
-                    Timber.d(e != null ? e.getMessage() : "Exception");
-                }
-            } else {
-                try {
-                    getViewOrThrow().callbackThenTerminate();
-                } catch (Exception e) {
-                    Timber.d(e != null ? e.getMessage() : "Exception");
-                }
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
-        Timber.d("OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
-        if (result.success) {
-            SdkStartInitResourceMessage message = new SdkStartInitResourceMessage();
-            mBus.post(message);
-        } else {
-            SdkResourceInitMessage message = new SdkResourceInitMessage(result.success, result.message);
-            mBus.post(message);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnInitialResourceCompleteEvent(SdkStartInitResourceMessage pMessage) {
-        if (!SDKApplication.getApplicationComponent().platformInfoInteractor().isValidConfig()) {
-            Timber.d("call init resource but not ready for now, waiting for downloading resource");
-            return;
-        }
-        Subscription subscription = ResourceManager.initResource()
-                .subscribeOn(Schedulers.io())
+    @Override
+    public void onResourceReady() {
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    SdkResourceInitMessage message = new SdkResourceInitMessage(true);
-                    mBus.post(message);
+                .subscribe(aBoolean -> {
+                    try {
+                        startLink();
+                    } catch (Exception e) {
+                        Timber.d(e != null ? e.getMessage() : "Exception");
+                    }
                 }, throwable -> {
-                    SdkResourceInitMessage message = new SdkResourceInitMessage(false, GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download));
-                    mBus.post(message);
-                    Timber.d("init resource fail: %s", throwable.getMessage());
+                    try {
+                        getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
+                    } catch (Exception e) {
+                        Timber.d(e != null ? e.getMessage() : "Exception");
+                    }
+                    Log.e("load card and bank account error", throwable.getMessage());
                 });
         addSubscription(subscription);
     }
 
+    @Override
+    public void onResourceError(Throwable throwable) {
+        Timber.w("init resource error", throwable);
+        /***
+         * delete folder resource to download again.
+         * this prevent case file resource downloaded but was damaged on the wire so
+         * can not parse json file.
+         */
+        try {
+            String resPath = platformInteractor.getUnzipPath();
+            if (!TextUtils.isEmpty(resPath)) {
+                StorageUtil.deleteRecursive(new File(resPath));
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        String message = throwable.getMessage();
+        if (TextUtils.isEmpty(message)) {
+            message = GlobalData.getAppContext().getString(R.string.sdk_alert_generic_init_resource);
+        }
+        try {
+            onExit(message, true);
+        } catch (Exception e1) {
+            Timber.w(e1);
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnUnLockScreenEvent(SdkUnlockScreenMessage pUnlockScreenEventMessage) {
+    public void OnDownloadResource(SdkDownloadResourceMessage result) {
+        if (result.success) {
+            onResourceInit();
+        } else {
+            onExit(result.message, true);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnUnLockScreen(SdkUnlockScreenMessage message) {
         if (getAdapter() != null && mAdapter.isCardFlow()) {
             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
@@ -817,29 +781,29 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentSmsEvent(SdkSmsMessage pSmsEventMessage) {
-        String sender = pSmsEventMessage.sender;
-        String body = pSmsEventMessage.message;
+    public void OnPaymentSms(SdkSmsMessage message) {
+        String sender = message.sender;
+        String body = message.message;
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
             getAdapter().autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
-        Timber.d("on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
+        Timber.d("on payment otp event " + GsonUtils.toJsonString(message));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnNetworkEvent(SdkNetworkEvent networkEvent) {
+    public void OnNetworkChanged(SdkNetworkEvent message) {
         if (mAdapter.isFinalScreen()) {
             Timber.d("onNetworkMessageEvent user is on fail screen...");
             return;
         }
-        Log.d(this, "networking is changed ", networkEvent.online);
+        Log.d(this, "networking is changed ", message.online);
         //come from api request fail with handshake
-        if (networkEvent.origin == API) {
+        if (message.origin == API) {
             showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_not_stable),
                     GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG);
             Timber.d("networking is not stable");
-        } else if (!networkEvent.online) {
+        } else if (!message.online) {
             showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_offline),
                     GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking),
                     TSnackbar.LENGTH_INDEFINITE);

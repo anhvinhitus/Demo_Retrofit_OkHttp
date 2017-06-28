@@ -9,17 +9,13 @@ import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rx.Completable;
+import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
@@ -33,6 +29,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.ui.channel.ResourceRender;
+
+import static vn.com.zalopay.utility.StorageUtil.loadAbsolutePath;
 
 public class ResourceManager extends SingletonBase {
     public static final String CONFIG_FILE = "config.json";
@@ -87,39 +85,15 @@ public class ResourceManager extends SingletonBase {
         return mUnzipPath;
     }
 
-    private static String loadResourceFile(String pPathNamePrefix, String pFileName) throws Exception {
-        String result = "";
-        String path = getUnzipFolderPath() + File.separator
-                + ((pPathNamePrefix != null) ? (pPathNamePrefix + pFileName) : pFileName);
-        File file = new File(path);
-
-        if (file.exists()) {
-            try {
-                InputStream inputStream = new FileInputStream(file);
-                if (inputStream != null) {
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                    String line;
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                        stringBuilder.append("\r\n");
-                    }
-
-                    bufferedReader.close();
-                    inputStreamReader.close();
-                    inputStream.close();
-
-                    result = stringBuilder.toString();
-                }
-            } catch (Exception ex) {
-                Log.e("loadResourceFile", ex);
-            }
+    private static String loadFile(String pathPrefix, String fileName) throws Exception {
+        StringBuilder path = new StringBuilder();
+        path.append(getUnzipFolderPath())
+                .append(File.separator);
+        if (!TextUtils.isEmpty(pathPrefix)) {
+            path.append(pathPrefix);
         }
-        result = result.trim();
-        return result;
+        path.append(fileName);
+        return loadAbsolutePath(path.toString());
     }
 
     /***
@@ -127,48 +101,26 @@ public class ResourceManager extends SingletonBase {
      * @return
      * @throws Exception
      */
-    public static String loadResourceFile() throws Exception {
-        String result = "";
-        String path = getUnzipFolderPath() + File.separator + ResourceManager.CONFIG_FILE;
-
-        File file = new File(path);
-
-        if (file.exists()) {
-            InputStream inputStream = new FileInputStream(file);
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            String line;
-            StringBuilder stringBuilder = new StringBuilder();
-
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-                stringBuilder.append("\r\n");
-            }
-
-            bufferedReader.close();
-            inputStreamReader.close();
-            inputStream.close();
-
-            result = stringBuilder.toString();
-        }
-
-        result = result.trim();
-        return result;
+    public static String loadJsonConfig() throws Exception {
+        StringBuilder path = new StringBuilder();
+        path.append(getUnzipFolderPath())
+                .append(File.separator)
+                .append(ResourceManager.CONFIG_FILE);
+        return loadAbsolutePath(path.toString());
     }
 
     public static boolean isInit() {
         return (mResourceCreated) && (mConfigFromServer != null);
     }
 
-    public static synchronized Completable initResource() {
-        return Completable.create(completableSubscriber -> {
+    public static synchronized Observable<Boolean> initResource() {
+        return Observable.defer(() -> {
             try {
-                Timber.d("initializing resource");
-                String json = loadResourceFile(null, CONFIG_FILE);
+                Timber.d("initializing SDK resource");
+                String json = loadJsonConfig();
                 if (TextUtils.isEmpty(json)) {
                     mResourceCreated = false;
-                    completableSubscriber.onError(new Exception("Lỗi đọc file resource"));
+                    Timber.w("Lỗi đọc file resource");
                 } else {
                     mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
                     ResourceManager commonResourceManager = getInstance(null);
@@ -181,20 +133,21 @@ public class ResourceManager extends SingletonBase {
                         }
                     }
                     mResourceCreated = true;
-                    completableSubscriber.onCompleted();
                 }
             } catch (Exception e) {
                 mResourceCreated = false;
-                completableSubscriber.onError(e);
+                return Observable.error(e);
             }
+            return Observable.just(mResourceCreated);
         });
     }
 
     public static String getJavascriptContent(String pJsName) {
         try {
-            return loadResourceFile(PREFIX_JS, pJsName);
+            String content = loadFile(PREFIX_JS, pJsName);
+            return !TextUtils.isEmpty(content) ? content : "";
         } catch (Exception e) {
-            Log.e("getJavascriptContent", e);
+            Timber.w("getJavascriptContent on error %s", e);
         }
         return null;
     }
@@ -202,7 +155,7 @@ public class ResourceManager extends SingletonBase {
    /* public static Single<String> getJavascriptContent(String pJsName) {
         return Single.create(singleSubscriber -> {
             try {
-                singleSubscriber.onSuccess(loadResourceFile(PREFIX_JS, pJsName));
+                singleSubscriber.onSuccess(loadJsonConfig(PREFIX_JS, pJsName));
             } catch (Exception e) {
                 singleSubscriber.onError(e);
             }

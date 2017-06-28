@@ -168,7 +168,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
      * apply font bold for some view
      */
     private void makeFont() {
-        //applyFont(findViewById(R.id.zpsdk_btn_submit), GlobalData.getStringResource(RS.string.zpw_font_regular));
         applyFont(findViewById(R.id.order_amount_total_txt), GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
@@ -196,7 +195,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     public void showLoading(String pTitle) {
         if (getActivity() != null) {
             getActivity().setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.zingpaysdk_alert_network_error)));
+            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
         }
     }
 
