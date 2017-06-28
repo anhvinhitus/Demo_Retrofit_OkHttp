@@ -76,6 +76,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webapp.WebAppActivity;
+import vn.com.vng.zalopay.webapp.WebAppPromotionActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
@@ -694,6 +695,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    @Override
+    public void startWebPromotionDetailActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebAppPromotionActivity.class);
+        intent.putExtra(Constants.ARG_URL, url);
+        context.startActivity(intent);
+    }
 
     public void startWebViewActivity(Context context, String url) {
         Intent intent = new Intent(context, WebViewActivity.class);

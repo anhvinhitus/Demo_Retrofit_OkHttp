@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.webview.config;
 
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.utils.RootUtils;
 
 public class WebViewConfig {
@@ -27,6 +28,8 @@ public class WebViewConfig {
     public static final String URL_PAY = "zalopay-1://post";
 
     public static final String URL_LOGIN_ZALO = "https://oauth.zaloapp.com/v2/auth";
+
+    public static final String URL_PROMOTION = BuildConfig.PROMOTION_URL;
 
     public static final String COOKIE_LOGIN_ZALO = "oauth.zaloapp.com";
 

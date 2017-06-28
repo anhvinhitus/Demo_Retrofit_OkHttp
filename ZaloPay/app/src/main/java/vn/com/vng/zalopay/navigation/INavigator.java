@@ -53,4 +53,6 @@ public interface INavigator {
 
     void startWebAppActivity(Context context, String url);
 
+    void startWebPromotionDetailActivity(Context context, String url);
+
 }

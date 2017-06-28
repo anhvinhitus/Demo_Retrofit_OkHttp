@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.webapp.WebAppFragment;
 import vn.com.vng.zalopay.webapp.WebAppPromotionFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewPromotionFragment;
 
 /**
  * Created by hieuvm on 2/28/17.
@@ -42,7 +43,8 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case TAB_TRANSACTION_INDEX:
                 return InternalReactFragment.newInstance(ModuleName.TRANSACTION_LOGS);
             case TAB_PROMOTION_INDEX:
-                return WebAppPromotionFragment.newInstance(bundlePromotion);
+                return WebViewPromotionFragment.newInstance(bundlePromotion);
+//                return WebAppPromotionFragment.newInstance(bundlePromotion);
 //                return WebAppFragment.newInstance(bundlePromotion);
             case TAB_PERSONAL_INDEX:
                 return PersonalFragment.newInstance();

@@ -5,19 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
@@ -64,27 +68,27 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @BindView(R.id.webview)
     ZPWebViewApp webView;
 
-    @BindView(R.id.promotion_btn_back)
-    View btnBack;
-
-    @BindView(R.id.promotion_btn_share)
-    View btnShare;
-
-    @BindView(R.id.promotion_tv_title)
-    TextView tvTitle;
+//    @BindView(R.id.promotion_btn_back)
+//    View btnBack;
+//
+//    @BindView(R.id.promotion_btn_share)
+//    View btnShare;
+//
+//    @BindView(R.id.promotion_tv_title)
+//    TextView tvTitle;
 
     @BindView(R.id.promotion_refresh_layout)
     MultiSwipeRefreshLayout refreshLayout;
 
-    @OnClick(R.id.promotion_btn_back)
-    public void onClickBack() {
-        onBackPressed();
-    }
-
-    @OnClick(R.id.promotion_btn_share)
-    public void onClickShare() {
-        showBottomSheetDialog();
-    }
+//    @OnClick(R.id.promotion_btn_back)
+//    public void onClickBack() {
+//        onBackPressed();
+//    }
+//
+//    @OnClick(R.id.promotion_btn_share)
+//    public void onClickShare() {
+//        showBottomSheetDialog();
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,17 +99,17 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initPresenter(view);
+        initPresenter();
         initRetryView(view);
         loadDefaultWebView();
     }
 
-    protected void initPresenter(View view) {
+    protected void initPresenter() {
         mPresenter.attachView(WebAppPromotionFragment.this);
         mPresenter.initWebView(webView);
         refreshLayout.setSwipeableChildren(R.id.webview);
         refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.back_ground_blue));
+        refreshLayout.setColorSchemeResources(R.color.back_ground_blue);
     }
 
     protected void loadDefaultWebView() {
@@ -126,12 +130,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
         mErrorImageView = (ImageView) rootView.findViewById(R.id.imgError);
         mErrorTextView = (TextView) rootView.findViewById(R.id.tvError);
         View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickRetryWebView();
-            }
-        });
+        btnRetry.setOnClickListener(v -> onClickRetryWebView());
         hideError();
     }
 
@@ -200,33 +199,33 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
 
     @Override
     public void onReceivedTitle(String title) {
-        tvTitle.setText(title);
+//        tvTitle.setText(title);
     }
 
     @Override
     public void setHiddenBackButton(boolean hide) {
-        if (btnBack == null) {
-            return;
-        }
-
-        if (hide) {
-            btnBack.setVisibility(View.GONE);
-        } else {
-            btnBack.setVisibility(View.VISIBLE);
-        }
+//        if (btnBack == null) {
+//            return;
+//        }
+//
+//        if (hide) {
+//            btnBack.setVisibility(View.GONE);
+//        } else {
+//            btnBack.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
     public void setHiddenShareButton(boolean hide) {
-        if (btnShare == null) {
-            return;
-        }
-
-        if (hide) {
-            btnShare.setVisibility(View.GONE);
-        } else {
-            btnShare.setVisibility(View.VISIBLE);
-        }
+//        if (btnShare == null) {
+//            return;
+//        }
+//
+//        if (hide) {
+//            btnShare.setVisibility(View.GONE);
+//        } else {
+//            btnShare.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -286,6 +285,24 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
 
     public boolean onBackPressed() {
         return mPresenter.onBackPressed();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.webapp_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+        View view = menuItem.getActionView();
+        IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
+        mIcon.setIcon(R.string.webapp_3point_android);
+        mIcon.setIconColor(R.color.white);
+        view.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                showBottomSheetDialog();
+            }
+        });
     }
 
     @Override

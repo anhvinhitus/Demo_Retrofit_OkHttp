@@ -5,60 +5,60 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/webapp_header"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/back_ground_blue">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/webapp_header"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:background="@color/back_ground_blue">-->
 
-        <LinearLayout
-            android:id="@+id/promotion_btn_back"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:visibility="gone">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/promotion_btn_back"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:visibility="gone">-->
 
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:textColor="@color/white"
-                app:iconName="@string/general_backandroid"
-                app:iconSize="@dimen/font_size_toolbar_icon" />
-        </LinearLayout>
+            <!--<com.zalopay.ui.widget.IconFont-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/spacing.medium"-->
+                <!--android:textColor="@color/white"-->
+                <!--app:iconName="@string/general_backandroid"-->
+                <!--app:iconSize="@dimen/font_size_toolbar_icon" />-->
+        <!--</LinearLayout>-->
 
-        <TextView
-            android:id="@+id/promotion_tv_title"
-            style="@style/Toolbar.TitleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/promotion_btn_share"
-            android:layout_toRightOf="@+id/promotion_btn_back"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:text="@string/promotion_title" />
+        <!--<TextView-->
+            <!--android:id="@+id/promotion_tv_title"-->
+            <!--style="@style/Toolbar.TitleText"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_toLeftOf="@+id/promotion_btn_share"-->
+            <!--android:layout_toRightOf="@+id/promotion_btn_back"-->
+            <!--android:ellipsize="end"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:maxLines="1"-->
+            <!--android:text="@string/promotion_title" />-->
 
-        <LinearLayout
-            android:id="@+id/promotion_btn_share"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center_vertical|right"
-            android:visibility="gone">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/promotion_btn_share"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:gravity="center_vertical|right"-->
+            <!--android:visibility="gone">-->
 
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/spacing.medium"
-                android:textColor="@color/white"
-                app:iconName="@string/webapp_3point_android"
-                app:iconSize="@dimen/font_size_toolbar_icon" />
-        </LinearLayout>
+            <!--<com.zalopay.ui.widget.IconFont-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="@dimen/spacing.medium"-->
+                <!--android:textColor="@color/white"-->
+                <!--app:iconName="@string/webapp_3point_android"-->
+                <!--app:iconSize="@dimen/font_size_toolbar_icon" />-->
+        <!--</LinearLayout>-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -87,7 +87,8 @@
             <com.zalopay.ui.widget.MultiSwipeRefreshLayout
                 android:id="@+id/promotion_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:colorScheme="@color/back_ground_blue">
 
                 <vn.com.vng.webapp.framework.ZPWebViewApp
                     android:id="@+id/webview"
