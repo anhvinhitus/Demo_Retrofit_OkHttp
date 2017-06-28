@@ -232,7 +232,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
 
         SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
                 .setBackgroundDrawable(R.color.red)
-                .setText(getString(R.string.delete))
+                .setText(getString(R.string.cancel))
                 .setImage(iconFontDrawable)
                 .setTextColor(Color.WHITE)
                 .setWidth(width)
