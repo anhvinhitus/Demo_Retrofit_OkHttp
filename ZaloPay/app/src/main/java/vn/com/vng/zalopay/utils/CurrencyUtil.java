@@ -45,15 +45,15 @@ public class CurrencyUtil {
     }
 
     public static SpannableString spanFormatCurrency(double money, boolean isBold) {
-        String moneyString = CurrencyUtil.formatCurrency(money, true);
+        String moneyString = (money <= 0) ? CurrencyUtil.formatCurrency(money, false) : CurrencyUtil.formatCurrency(money, true);
         SpannableString span = new SpannableString(moneyString);
-
         int indexSuffix = moneyString.indexOf(CurrencyUtil.CURRENCY_UNIT);
-
-        span.setSpan(new RelativeSizeSpan(0.8f),
-                indexSuffix,
-                moneyString.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (indexSuffix > 0) {
+            span.setSpan(new RelativeSizeSpan(0.8f),
+                    indexSuffix,
+                    moneyString.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
 
         if (isBold) {
             span.setSpan(new StyleSpan(Typeface.BOLD),
