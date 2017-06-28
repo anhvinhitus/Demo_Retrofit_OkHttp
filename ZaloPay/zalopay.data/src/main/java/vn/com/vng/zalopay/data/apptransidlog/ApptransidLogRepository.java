@@ -38,7 +38,11 @@ public class ApptransidLogRepository implements ApptransidLogStore.Repository {
     @Override
     public Observable<Boolean> putApiCall(ZPApptransidLogApiCall val) {
         return ObservableHelper.makeObservable(() -> {
-            mApiCallLocalStorage.put(mMapper.transformApiCall(val));
+            ApptransidLogApiCallGD apiCallGD = mMapper.transformApiCall(val);
+            if (apiCallGD == null) {
+                return Boolean.FALSE;
+            }
+            mApiCallLocalStorage.put(apiCallGD);
             return Boolean.TRUE;
         });
     }

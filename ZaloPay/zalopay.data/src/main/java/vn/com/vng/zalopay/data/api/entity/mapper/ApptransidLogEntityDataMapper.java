@@ -173,7 +173,7 @@ public class ApptransidLogEntityDataMapper {
     }
 
     public ApptransidLogApiCallGD transformApiCall(ZPApptransidLogApiCall data) {
-        if (data.apiid == 0) {
+        if (data.apiid == 0 || data.apptransid.isEmpty()) {
             return null;
         }
 
