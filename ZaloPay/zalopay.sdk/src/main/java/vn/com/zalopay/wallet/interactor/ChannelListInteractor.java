@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -140,7 +141,13 @@ public class ChannelListInteractor {
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
-        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENTINFO_READY);
+        boolean waitDownloadResource = !ResourceManager.isInit();
+        if(waitDownloadResource){
+            Timber.d("wait for downloading resource");
+            cleanup();
+            return;
+        }
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_INFO_READY);
         mPaymentInfoReadyMessage = message;
         if (mPaymentReadyListener != null) {
             postReadyMessage();

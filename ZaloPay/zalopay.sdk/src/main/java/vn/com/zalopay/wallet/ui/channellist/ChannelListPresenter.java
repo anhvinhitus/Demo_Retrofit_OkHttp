@@ -24,7 +24,6 @@ import rx.Observer;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
-import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -405,15 +404,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void onPaymentReady() {
         try {
+            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
             initAdapter();
-            //init channel proxy
-            mPayProxy = PayProxy.shared().initialize((BaseActivity) getViewOrThrow().getActivity())
-                    .setChannelListPresenter(this)
-                    .setPaymentInfo(mPaymentInfoHelper);
             //validate user level
             if (!mPaymentInfoHelper.userLevelValid()) {
                 getViewOrThrow().showForceUpdateLevelDialog();
@@ -422,6 +418,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             //check app info whether this transaction is allowed or not
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
             startSubscribePaymentReadyMessage();
+
+            //init channel proxy
+            mPayProxy = PayProxy.shared().initialize((BaseActivity) getViewOrThrow().getActivity())
+                    .setChannelListPresenter(this)
+                    .setPaymentInfo(mPaymentInfoHelper);
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
@@ -775,6 +776,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
      */
     private void startSubscribePaymentReadyMessage() {
         Timber.d("start loading appinfo");
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_SUBSCRIBE_START);
         ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
         interactor.subscribeOnPaymentReady(message -> {
             try {
