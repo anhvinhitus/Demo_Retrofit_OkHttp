@@ -330,7 +330,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private Item buildItem(){
-        String ext = String.format(Item.tranferExtFormat(),mTransferObject.displayName);
+        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName:
+                mTransferObject.displayName;
+        String ext = String.format(Item.tranferExtFormat(),receiverName);
         return new Item(TransactionType.MONEY_TRANSFER,ext);
     }
 
