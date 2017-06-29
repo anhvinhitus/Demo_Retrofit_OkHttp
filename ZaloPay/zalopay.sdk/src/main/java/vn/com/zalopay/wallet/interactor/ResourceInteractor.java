@@ -30,7 +30,7 @@ import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 public class ResourceInteractor {
     private Context mContext;
     private String mResourceZipFileURL;
-    private String mResrcVer;
+    private String mResourceVersion;
     private ReentrantLock mLock;
     private PlatformInfoStore.LocalStorage mPlatformStorage;
     private IDownloadService mDownloadService;
@@ -41,7 +41,7 @@ public class ResourceInteractor {
         this.mDownloadService = downloadService;
         this.mPlatformStorage = pPlatformStorage;
         this.mResourceZipFileURL = pResourceZipFileURL;
-        this.mResrcVer = pResrcVer;
+        this.mResourceVersion = pResrcVer;
         this.mLock = new ReentrantLock();
     }
 
@@ -71,22 +71,21 @@ public class ResourceInteractor {
             ResponseBody responseBody = pResponse.body();
             // Prepare unzip folder
             mLock.lock();
-            if (TextUtils.isEmpty(mResrcVer)) {
-                mResrcVer = mPlatformStorage.getResourceVersion();
+            if (TextUtils.isEmpty(mResourceVersion)) {
+                mResourceVersion = mPlatformStorage.getResourceVersion();
             }
             String unzipFolder = StorageUtil.prepareUnzipFolder(mContext, BuildConfig.FOLDER_RESOURCE);
             //can not create folder storage for resource.
             if (TextUtils.isEmpty(unzipFolder)) {
-                Log.e(this, "error create folder resource on device. Maybe your device memory run out of now.");
+                Timber.w("error create folder resource on device. Maybe your device memory run out of now");
                 onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
-            } else if (mResourceZipFileURL == null || mResrcVer == null) {
-                Log.e(this, "mResourceZipFileURL == null || resrcVer == null");
+            } else if (mResourceZipFileURL == null || mResourceVersion == null) {
                 onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
             } else {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
-                Log.d(this, "decompressed file zip to ", unzipFolder);
+                Timber.d( "decompressed file zip to %s", unzipFolder);
                 //everything is ok, save version to cache
-                mPlatformStorage.setUnzipPath(unzipFolder + mResrcVer);
+                mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
                 mPlatformStorage.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
                 onPostResult(true, null);//post signal success
             }

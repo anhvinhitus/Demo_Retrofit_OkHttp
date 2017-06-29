@@ -38,25 +38,24 @@ public class ChannelListInteractor {
     private final IAppInfo mAppInfoInteractor;
     private final ILink mLinkInteractor;
     private final IBank mBankInteractor;
+    private final IPlatformInfo mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
-    private PaymentInfoHelper mPaymentInfoHelper;
     protected CompositeSubscription mSubscription = new CompositeSubscription();
+    private PaymentInfoHelper mPaymentInfoHelper;
     private OnPaymentReadyListener mPaymentReadyListener = null;
     private SdkPaymentInfoReadyMessage mPaymentInfoReadyMessage = null;
     private Handler mApplicationHandler;
 
-    public interface OnPaymentReadyListener {
-        void onPaymentInfoReady(SdkPaymentInfoReadyMessage message);
-    }
-
     @Inject
     public ChannelListInteractor(Application application,
+                                 IPlatformInfo platformInteractor,
                                  IAppInfo appInfoInteractor,
                                  ILink linkInteractor,
                                  IBank bankInteractor,
                                  ZPMonitorEventTiming eventTiming) {
         mApplicationHandler = new Handler(application.getMainLooper());
 
+        mPlatformInteractor = platformInteractor;
         mAppInfoInteractor = appInfoInteractor;
         mLinkInteractor = linkInteractor;
         mBankInteractor = bankInteractor;
@@ -66,6 +65,7 @@ public class ChannelListInteractor {
     /**
      * Start collect payment information for ChannelListPresenter to use
      * When done, post a event to ChannelListPresenter
+     *
      * @param paymentInfoHelper
      */
     public void collectPaymentInfo(PaymentInfoHelper paymentInfoHelper) {
@@ -107,7 +107,9 @@ public class ChannelListInteractor {
                 .doOnSubscribe(this::loadBankListOnProgress)
                 .doOnNext(this::loadBankListOnComplete);
 
-        Subscription subscription = Observable.zip(appInfoObservable, linkObservable, bankObservable, this::zipData)
+        Observable<Boolean> platformObservable = mPlatformInteractor.initSDKResource(userInfo.zalopay_userid, userInfo.accesstoken);
+
+        Subscription subscription = Observable.zip(appInfoObservable, linkObservable, bankObservable, platformObservable, this::zipData)
                 .observeOn(Schedulers.io())
                 .subscribe(this::loadInfoCompleted, this::loadInfoError);
         mSubscription.add(subscription);
@@ -127,12 +129,11 @@ public class ChannelListInteractor {
         mPaymentInfoReadyMessage = null;
     }
 
-    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, boolean finishLoadMap, BankConfigResponse bankConfigResponse) {
+    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, boolean finishLoadMap, BankConfigResponse bankConfigResponse, boolean finish) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
         return message;
     }
-
 
     private void loadInfoError(Throwable throwable) {
 
@@ -246,5 +247,9 @@ public class ChannelListInteractor {
             mPaymentReadyListener = null;
             mPaymentInfoReadyMessage = null;
         });
+    }
+
+    public interface OnPaymentReadyListener {
+        void onPaymentInfoReady(SdkPaymentInfoReadyMessage message);
     }
 }

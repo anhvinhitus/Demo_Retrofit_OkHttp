@@ -16,9 +16,12 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -38,10 +41,12 @@ import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
 public class PlatformInfoInteractor implements IPlatformInfo {
     private PlatformInfoStore.Repository repository;
+    private ZPMonitorEventTiming mEventTiming;
 
     @Inject
-    public PlatformInfoInteractor(PlatformInfoStore.Repository repository) {
+    public PlatformInfoInteractor(PlatformInfoStore.Repository repository, ZPMonitorEventTiming eventTiming) {
         this.repository = repository;
+        this.mEventTiming = eventTiming;
     }
 
     public PlatformInfoStore.LocalStorage getLocalStorage() {
@@ -63,6 +68,68 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     public boolean isNewUser(String userId) {
         String userIdOnCache = getUserId();
         return TextUtils.isEmpty(userIdOnCache) || !userIdOnCache.equals(userId);
+    }
+
+    /***
+     * rule for retry call get platform info in SDK
+     * 1.api platform info never run (checksum is empty)
+     * 2.setup newer version
+     * 3.login new user
+     * 4. miss resource info version
+     * @return
+     */
+    private boolean needReloadPlatformInfo(String pUserId) throws Exception {
+        String checkSum = getPlatformInfoCheckSum();
+        String appVersionCache = getAppVersion();
+        String resourceVersion = getResourceVersion();
+        boolean isNewUser = isNewUser(pUserId);
+        return TextUtils.isEmpty(checkSum) || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(appVersionCache) ||
+                isNewUser || TextUtils.isEmpty(resourceVersion);
+    }
+
+    public Observable<Boolean> reloadPlatform(String userId, String accessToken) {
+        try {
+            boolean reloadPlatform = needReloadPlatformInfo(userId);
+            if (!reloadPlatform) {
+                return Observable.just(false);
+            }
+            Timber.d("force reload platform info and download resource");
+            long currentTime = System.currentTimeMillis();
+            String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+            return loadPlatformInfo(userId, accessToken, true, true, currentTime, appVersion)
+                    .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
+                    .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END))
+                    .flatMap(new Func1<PlatformInfoCallback, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(PlatformInfoCallback platformInfoCallback) {
+                            return Observable.just(true);
+                        }
+                    });
+        } catch (Exception e) {
+            return Observable.error(e);
+        }
+    }
+
+    private Observable<Boolean> shouldDownloadResource() {
+        if (isValidConfig()) {
+            return Observable.just(false);
+        }
+        String resVersion = getResourceVersion();
+        String resUrl = getResourceDownloadUrl();
+        Timber.d("start download SDK resource %s - %s", resUrl, resVersion);
+        return getSDKResource(resUrl, resVersion)
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_START))
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_END));
+    }
+
+    private Observable<Boolean> initResourceConfig() {
+        Timber.d("start init SDK resource");
+        if (ResourceManager.isInit()) {
+            return Observable.just(true);
+        }
+        return ResourceManager.initResource()
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END));
     }
 
     @Override
@@ -88,6 +155,14 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         return !TextUtils.isEmpty(path) && file.exists();
     }
 
+    @Override
+    public Observable<Boolean> initSDKResource(String userId, String accessToken) {
+        Observable<Boolean> reloadPlatform = reloadPlatform(userId, accessToken);
+        Observable<Boolean> downloadResource = shouldDownloadResource();
+        Observable<Boolean> loadSDKResource = initResourceConfig();
+        return Observable.concat(reloadPlatform, downloadResource, loadSDKResource)
+                .first(stopStream -> stopStream);
+    }
 
     @Override
     public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
@@ -165,9 +240,9 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                  2.resource version on cached client and resource version server return is different.This case user no need to update app.
                  */
                 Log.d(this, "start download resource - should download ", shouldDownloadResource);
-                String resrcVer = repository.getLocalStorage().getResourceVersion();
+                String resourceVersion = repository.getLocalStorage().getResourceVersion();
                 if (shouldDownloadResource && pResponse.resource != null && (pResponse.isupdateresource ||
-                        (!TextUtils.isEmpty(resrcVer) && !resrcVer.equals(pResponse.resource.rsversion)))) {
+                        (!TextUtils.isEmpty(resourceVersion) && !resourceVersion.equals(pResponse.resource.rsversion)))) {
                     repository.getLocalStorage().setResourceVersion(pResponse.resource.rsversion);
                     repository.getLocalStorage().setResourceDownloadUrl(pResponse.resource.rsurl);
                     getSDKResource(pResponse.resource.rsurl, pResponse.resource.rsversion)

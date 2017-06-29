@@ -780,9 +780,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             try {
                 mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_SUBSCRIBE);
                 loadAppInfoOnComplete(message.mAppInfo);
-                if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
-                    getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
-                }
+                loadChannels();
             } catch (Exception e) {
                 Timber.d(e, "Exception when loading payment info");
             }
