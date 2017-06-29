@@ -111,6 +111,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
 
     @Override
     public void put(String pUserId, String checkSum, List<MapCard> cardList) {
+        setExpireTime(System.currentTimeMillis() + BuildConfig.cache_timeout);
         if (!needUpdate(checkSum)) {
             Timber.d("map card list cache is valid - skip update");
             return;
@@ -118,7 +119,6 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         try {
             Timber.d("start update map card list on cache");
             mSharedPreferences.setCardInfoCheckSum(checkSum);
-            setExpireTime(System.currentTimeMillis() + BuildConfig.cache_timeout);
             if (cardList != null && cardList.size() > 0) {
                 StringBuilder keyListBuilder = new StringBuilder();
                 int count = 0;

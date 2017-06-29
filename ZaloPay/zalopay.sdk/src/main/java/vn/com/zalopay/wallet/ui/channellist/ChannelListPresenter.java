@@ -405,19 +405,20 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public void onPaymentReady() {
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
+            startSubscribePaymentReadyMessage();
+            initAdapter();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
-            initAdapter();
             //validate user level
             if (!mPaymentInfoHelper.userLevelValid()) {
                 getViewOrThrow().showForceUpdateLevelDialog();
                 return;
             }
             //check app info whether this transaction is allowed or not
-            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-            startSubscribePaymentReadyMessage();
+            //getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
+
 
             //init channel proxy
             mPayProxy = PayProxy.shared().initialize((BaseActivity) getViewOrThrow().getActivity())
