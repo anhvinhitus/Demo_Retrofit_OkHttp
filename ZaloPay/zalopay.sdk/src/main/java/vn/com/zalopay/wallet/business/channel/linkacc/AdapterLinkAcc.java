@@ -427,11 +427,13 @@ public class AdapterLinkAcc extends AdapterBase {
             String descLink = getDescLinkAccount();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, GlobalData.getAppContext().getString(R.string.sdk_link_acc_success_title));
+            getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
                 getView().setVisible(R.id.ll_test_rootview, true);
             }
+
             // get bankaccount from cache callback to app
             List<BankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             if (dBankAccountList != null && dBankAccountList.size() > 0) {
@@ -474,8 +476,8 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
         getView().renderByResource(mPageName);
-        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service),
-                getDescLinkAccount(), true, false, null, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_success_title));
+        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service), getDescLinkAccount(), true, false, null, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_success_title));
+        getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
