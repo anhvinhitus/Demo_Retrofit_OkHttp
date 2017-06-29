@@ -668,7 +668,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         }
         //anim success icon
         ViewUtils.animIcon(getActivity(), R.id.success_imageview);
-        changeSubmitButtonBackground((int) order.appid);
+        changeSubmitButtonBackground(order);
         //update title
         setTitle(pToolbarTitle);
         updateToolBar();
@@ -706,7 +706,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             }
         }
         ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
-        changeSubmitButtonBackground((int) order.appid);
+        changeSubmitButtonBackground(order);
         //update title
         setTitle(pToolBarTitle);
         updateToolBar();
@@ -726,7 +726,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         toast.show();
     }
 
-    private void changeSubmitButtonBackground(int appID) {
+    private void changeSubmitButtonBackground(AbstractOrder order) {
+        int appID = (order != null) ? (int) order.appid : 0;
         Button close_btn = (Button) findViewById(R.id.zpsdk_btn_submit);
         switch (appID) {
             case 12:
