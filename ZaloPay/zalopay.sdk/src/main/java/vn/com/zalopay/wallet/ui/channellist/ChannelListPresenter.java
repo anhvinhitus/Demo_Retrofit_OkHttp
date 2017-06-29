@@ -24,6 +24,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.SdkUtils;
@@ -354,7 +356,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return null;
         }
         try {
-
+        
+            trackingPaymentChannel(channel.pmcid);
             markSelectChannel(channel, pPosition);
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
@@ -746,5 +749,22 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public String getQuitMessage() {
         return mPaymentInfoHelper.getQuitMessByTrans(GlobalData.getAppContext());
+    }
+
+    private void trackingPaymentChannel(int pmcid) {
+        switch (pmcid) {
+            case Constants.PMC.PMC_36:
+                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_36);
+                break;
+            case Constants.PMC.PMC_37:
+                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_37);
+                break;
+            case Constants.PMC.PMC_38:
+                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_38);
+                break;
+            case Constants.PMC.PMC_39:
+                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_39);
+                break;
+        }
     }
 }

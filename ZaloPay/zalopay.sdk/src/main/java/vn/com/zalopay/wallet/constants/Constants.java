@@ -136,7 +136,14 @@ public class Constants {
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
 
-    public interface CHANNEL_CONST{
+    public interface CHANNEL_CONST {
         String layout = "layout";
+    }
+
+    public static class PMC {
+        public static final int PMC_36 = 36;
+        public static final int PMC_37 = 37;
+        public static final int PMC_38 = 38;
+        public static final int PMC_39 = 39;
     }
 }
