@@ -96,6 +96,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
             return;
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
+        originalUrl += "?userid=" + getUserComponent().currentUser().zaloPayId;
         loadUrl(originalUrl);
     }
 
