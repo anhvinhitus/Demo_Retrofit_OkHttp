@@ -99,6 +99,9 @@ public interface Constants {
     int LINK_BANK_ACCOUNT_LINKED = 2;
     int LINK_BANK_CARD_ACCOUNT_LINKED = 3;
 
+    // Bank result status
+    int RESULT_DO_LINK_CARD = 10;
+
     String ARGUMENT_KEY_ZALOPROFILE = "zaloprofile";
     String ARGUMENT_KEY_OAUTHTOKEN = "oauthtoken";
 

@@ -165,7 +165,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                 if (data != null) {
                     mPresenter.onAddBankSuccess(data.getParcelableExtra(Constants.BANK_DATA_RESULT_AFTER_LINK));
                 }
-            } else if (resultCode == 10000) {
+            } else if (resultCode == Constants.RESULT_DO_LINK_CARD) {
                 mPresenter.linkCard();
             }
             return;

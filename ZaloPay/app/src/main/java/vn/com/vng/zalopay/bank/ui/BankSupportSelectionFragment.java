@@ -64,7 +64,6 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.initData(getArguments());
 
         mAdapter = new BankSupportSelectionAdapter(getContext(), this);
 

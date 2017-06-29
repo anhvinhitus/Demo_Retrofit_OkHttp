@@ -72,6 +72,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
+        mPaymentWrapper.initializeComponents();
     }
 
     @Override
@@ -113,7 +114,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_BANK);
         mWithdrawAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_WITHDRAW_AFTER_LINK_BANK);
         mGotoSelectBank = bundle.getBoolean(Constants.ARG_GOTO_SELECT_BANK_IN_LINK_BANK);
-//        mLinkCardWithBankCode = bundle.getBoolean(Constants.ARG_LINK_CARD_WITH_BANK_CODE);
         mLinkCardWithBankCode = bundle.getString(Constants.ARG_LINK_CARD_WITH_BANK_CODE);
         mLinkAccountWithBankCode = bundle.getString(Constants.ARG_LINK_ACCOUNT_WITH_BANK_CODE);
     }
@@ -122,6 +122,45 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     public void resume() {
         super.resume();
         getLinkedBank();
+    }
+
+    @Override
+    void onAddBankCardSuccess(MapCard bankCard) {
+        if (bankCard != null) {
+            mView.onAddBankSuccess(bankCard);
+        }
+        if (mPayAfterLinkBank) {
+            showConfirmPayAfterLinkBank(bankCard);
+        } else if (mWithdrawAfterLinkBank) {
+            showConfirmWithdrawAfterLinkBank(bankCard);
+        }
+    }
+
+    @Override
+    void onAddBankAccountSuccess(BankAccount bankAccount) {
+        if (bankAccount != null) {
+            mView.onAddBankSuccess(bankAccount);
+        }
+        if (mPayAfterLinkBank) {
+            showConfirmPayAfterLinkBank(bankAccount);
+        } else if (mWithdrawAfterLinkBank) {
+            showConfirmWithdrawAfterLinkBank(bankAccount);
+        }
+    }
+
+    @Override
+    void onUnLinkBankAccountSuccess(BankAccount bankAccount) {
+        if (mView != null) {
+            mView.removeLinkedBank(bankAccount);
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        if (mView != null) {
+            mView.refreshLinkedBankList();
+        }
     }
 
     void initPageStart() {
@@ -134,14 +173,8 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    public void linkCard() {
+    protected void linkCard() {
         mPaymentWrapper.linkCard(getActivity());
-    }
-
-    void AddMoreBank() {
-        if (mView != null) {
-            mNavigator.startBankSupportSelectionActivity(mView.getFragment());
-        }
     }
 
     private void removeLinkedCard(MapCard mappedCard) {
@@ -285,10 +318,81 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
+    void AddMoreBank() {
+        if (mView != null) {
+            mNavigator.startBankSupportSelectionActivity(mView.getFragment());
+        }
+    }
+
     User getCurrentUser() {
         return mUser;
     }
 
+    private void showConfirmPayAfterLinkBank(BaseMap bankInfo) {
+        if (mView == null) {
+            return;
+        }
+        String message = getString(R.string.confirm_continue_pay_after_link_card);
+        if (bankInfo instanceof BankAccount) {
+            message = getString(R.string.confirm_continue_pay_after_link_account);
+        }
+        mView.showConfirmDialogAfterLinkBank(message);
+    }
+
+    private void showConfirmWithdrawAfterLinkBank(BaseMap bankInfo) {
+        if (mView == null) {
+            return;
+        }
+        String message = getString(R.string.confirm_continue_withdraw_after_link_card);
+        if (bankInfo instanceof BankAccount) {
+            message = getString(R.string.confirm_continue_withdraw_after_link_account);
+        }
+        mView.showConfirmDialogAfterLinkBank(message);
+    }
+
+    void onAddBankSuccess(BankInfo bankInfo) {
+        if (bankInfo == null) {
+            return;
+        }
+        if (bankInfo.mBankAction == BankAction.LINK_CARD) {
+            MapCard mappedCard = new MapCard();
+            mappedCard.bankcode = bankInfo.mBankCode;
+            mappedCard.first6cardno = bankInfo.mFirstNumber;
+            mappedCard.last4cardno = bankInfo.mLastNumber;
+            onAddBankCardSuccess(mappedCard);
+        } else if (bankInfo.mBankAction == BankAction.LINK_ACCOUNT) {
+            BankAccount dBankAccount = new BankAccount();
+            dBankAccount.bankcode = bankInfo.mBankCode;
+            dBankAccount.firstaccountno = bankInfo.mFirstNumber;
+            dBankAccount.lastaccountno = bankInfo.mLastNumber;
+            onAddBankAccountSuccess(dBankAccount);
+        }
+    }
+
+    private void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
+        if (bankInfo == null) {
+            return;
+        }
+        Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
+        List<BankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser);
+        if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
+            String bankName = BankUtils.getBankName(bankInfo.bankcode);
+            String message;
+            if (!TextUtils.isEmpty(bankName)) {
+                message = String.format(getString(R.string.bank_account_has_linked),
+                        bankName);
+            } else {
+                message = getString(R.string.bank_account_has_linked_this_bank);
+            }
+            showErrorView(message);
+        } else {
+            linkAccount(bankInfo.bankcode);
+        }
+    }
+
+    /*
+    * Listener classes
+    * */
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(MapCard mapCard) {
@@ -362,99 +466,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    private void showConfirmPayAfterLinkBank(BaseMap bankInfo) {
-        if (mView == null) {
-            return;
-        }
-        String message = getString(R.string.confirm_continue_pay_after_link_card);
-        if (bankInfo instanceof BankAccount) {
-            message = getString(R.string.confirm_continue_pay_after_link_account);
-        }
-        mView.showConfirmDialogAfterLinkBank(message);
-    }
-
-    private void showConfirmWithdrawAfterLinkBank(BaseMap bankInfo) {
-        if (mView == null) {
-            return;
-        }
-        String message = getString(R.string.confirm_continue_withdraw_after_link_card);
-        if (bankInfo instanceof BankAccount) {
-            message = getString(R.string.confirm_continue_withdraw_after_link_account);
-        }
-        mView.showConfirmDialogAfterLinkBank(message);
-    }
-
-    @Override
-    void onAddBankCardSuccess(MapCard bankCard) {
-        if (bankCard != null) {
-            mView.onAddBankSuccess(bankCard);
-        }
-        if (mPayAfterLinkBank) {
-            showConfirmPayAfterLinkBank(bankCard);
-        } else if (mWithdrawAfterLinkBank) {
-            showConfirmWithdrawAfterLinkBank(bankCard);
-        }
-    }
-
-    @Override
-    void onAddBankAccountSuccess(BankAccount bankAccount) {
-        if (bankAccount != null) {
-            mView.onAddBankSuccess(bankAccount);
-        }
-        if (mPayAfterLinkBank) {
-            showConfirmPayAfterLinkBank(bankAccount);
-        } else if (mWithdrawAfterLinkBank) {
-            showConfirmWithdrawAfterLinkBank(bankAccount);
-        }
-    }
-
-    @Override
-    void onUnLinkBankAccountSuccess(BankAccount bankAccount) {
-        if (mView != null) {
-            mView.removeLinkedBank(bankAccount);
-        }
-    }
-
-    void onAddBankSuccess(BankInfo bankInfo) {
-        if (bankInfo == null) {
-            return;
-        }
-        if (bankInfo.mBankAction == BankAction.LINK_CARD) {
-            MapCard mappedCard = new MapCard();
-            mappedCard.bankcode = bankInfo.mBankCode;
-            mappedCard.first6cardno = bankInfo.mFirstNumber;
-            mappedCard.last4cardno = bankInfo.mLastNumber;
-            onAddBankCardSuccess(mappedCard);
-        } else if (bankInfo.mBankAction == BankAction.LINK_ACCOUNT) {
-            BankAccount dBankAccount = new BankAccount();
-            dBankAccount.bankcode = bankInfo.mBankCode;
-            dBankAccount.firstaccountno = bankInfo.mFirstNumber;
-            dBankAccount.lastaccountno = bankInfo.mLastNumber;
-            onAddBankAccountSuccess(dBankAccount);
-        }
-    }
-
-    private void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
-        if (bankInfo == null) {
-            return;
-        }
-        Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        List<BankAccount> bankAccounts = CShareDataWrapper.getMapBankAccountList(mUser);
-        if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
-            String bankName = BankUtils.getBankName(bankInfo.bankcode);
-            String message;
-            if (!TextUtils.isEmpty(bankName)) {
-                message = String.format(getString(R.string.bank_account_has_linked),
-                        bankName);
-            } else {
-                message = getString(R.string.bank_account_has_linked_this_bank);
-            }
-            showErrorView(message);
-        } else {
-            linkAccount(bankInfo.bankcode);
-        }
-    }
-
     private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
 
         WeakReference<BankPresenter> mWeakReference;
@@ -470,14 +481,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             }
 
             mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
-        }
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
-            mView.refreshLinkedBankList();
         }
     }
 
