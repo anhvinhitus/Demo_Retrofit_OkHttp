@@ -418,7 +418,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Override
     public void onResume() {
-        showKeyBoardOnFocusingViewAgain();
+        if (!getAdapter().isFinalScreen()) {
+            showKeyBoardOnFocusingViewAgain();
+        }
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             PaymentSnackBar.getInstance().dismiss();
         } else if (!mAdapter.isFinalScreen()) {
