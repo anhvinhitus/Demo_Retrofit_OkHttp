@@ -1,15 +1,15 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
@@ -20,12 +20,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -106,7 +103,9 @@ public class HandleInAppPayment {
         PaymentWrapper wrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new AbsPWResponseListener(mActivity) {
 
-                    private String mTransactionId;
+                    private String mTransactionId = "";
+                    boolean mIsSuccessful;
+                    private String mAppTransId = "";
 
                     @Override
                     protected ILoadDataView getView() {
@@ -117,7 +116,7 @@ public class HandleInAppPayment {
                     public void onError(PaymentWrapperException exception) {
                         Timber.d("pay order error %s", exception);
                         if (shouldRedirectToWeb()) {
-                            redirectToWeb(mAppId);
+                            redirectToWeb(mAppId, mIsSuccessful, mTransactionId, mAppTransId);
                             return;
                         }
 
@@ -140,7 +139,7 @@ public class HandleInAppPayment {
                         Timber.d("pay order completed");
 
                         if (shouldRedirectToWeb()) {
-                            redirectToWeb(mAppId);
+                            redirectToWeb(mAppId, mIsSuccessful, mTransactionId, mAppTransId);
                             return;
                         }
 
@@ -159,7 +158,9 @@ public class HandleInAppPayment {
 
                     @Override
                     public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-                        mTransactionId = pTransId;
+                        mTransactionId = pTransId == null ? "" : pTransId;
+                        mAppTransId = pAppTransId == null ? "" : pAppTransId;
+                        mIsSuccessful = isSuccessful;
                     }
                 }).build();
         wrapper.initializeComponents();
@@ -174,18 +175,19 @@ public class HandleInAppPayment {
 
     }
 
-    private void redirectToWeb(long appId) {
+    private void redirectToWeb(long appId, boolean isSuccessful, @NonNull String transId, @NonNull String appTransId) {
         Subscription subscription = ObservableHelper
                 .makeObservable(() -> SDKApplication.getApplicationComponent()
                         .appInfoInteractor()
                         .get(appId))
                 .filter(appInfo -> appInfo != null && !TextUtils.isEmpty(appInfo.webredirecturl))
-                .subscribe(new DefaultSubscriber<AppInfo>() {
+                .map(appInfo -> createRedirectUrl(appInfo, appId, transId, appTransId))
+                .subscribe(new DefaultSubscriber<String>() {
                     @Override
-                    public void onNext(AppInfo appInfo) {
+                    public void onNext(String redirectUrl) {
                         Activity activity = mActivity.get();
                         if (activity != null && !activity.isFinishing()) {
-                            startBrowser(mActivity.get(), mBrowser, appInfo.webredirecturl);
+                            startBrowser(mActivity.get(), mBrowser, redirectUrl);
                         }
                     }
 
@@ -198,6 +200,35 @@ public class HandleInAppPayment {
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private String createRedirectUrl(@NonNull AppInfo appInfo, long appId, @NonNull String transId, @NonNull String appTransId) {
+        if (TextUtils.isEmpty(appInfo.webredirecturl)) {
+            return "";
+        }
+
+        try {
+            String appendQueryFormat = "apptransid=%s&zptransid=%s&appid=%s";
+            URI uri = appendUri(appInfo.webredirecturl, String.format(appendQueryFormat, appTransId, transId, appId));
+            return uri.toString();
+        } catch (Exception e) {
+            return "";
+        }
+
+    }
+
+    private URI appendUri(String uri, String appendQuery) throws URISyntaxException {
+        URI oldUri = new URI(uri);
+
+        String newQuery = oldUri.getQuery();
+        if (newQuery == null) {
+            newQuery = appendQuery;
+        } else {
+            newQuery += "&" + appendQuery;
+        }
+
+        return new URI(oldUri.getScheme(), oldUri.getAuthority(),
+                oldUri.getPath(), newQuery, oldUri.getFragment());
     }
 
     private void startBrowser(Context context, String browser, String redirectUrl) {
