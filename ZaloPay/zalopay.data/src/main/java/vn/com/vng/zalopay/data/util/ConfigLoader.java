@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.domain.model.Config;
  * Using to load config from assert or resource app 1.
  */
 
-public class ConfigUtil {
+public class ConfigLoader {
     private final static String CONFIG_FILE_PATH = "config/zalopay_config.json";
     private static Config mConfig;
 

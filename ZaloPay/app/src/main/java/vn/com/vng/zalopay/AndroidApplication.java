@@ -27,7 +27,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -130,7 +130,7 @@ public class AndroidApplication extends Application {
     }
 
     private void initConfig() {
-        ConfigUtil.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
+        ConfigLoader.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
     }
 
     public void initIconFont(boolean postEvent) {

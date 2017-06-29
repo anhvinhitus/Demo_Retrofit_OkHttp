@@ -4,7 +4,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.Strings;
 
 /**
@@ -24,7 +24,7 @@ public class PaymentConnectorCallFactory implements Call.Factory {
 
     @Override
     public Call newCall(Request request) {
-        if (ConfigUtil.isHttpsRoute()) {
+        if (ConfigLoader.isHttpsRoute()) {
             return mOkHttpClient.newCall(request);
         }
 
@@ -34,7 +34,7 @@ public class PaymentConnectorCallFactory implements Call.Factory {
         }
 
         String apiName = Strings.joinWithDelimiter("/", request.url().pathSegments());
-        if (ConfigUtil.containsApi(apiName)) {
+        if (ConfigLoader.containsApi(apiName)) {
             return new PaymentConnectorCall(mConnectorService, request);
         } else {
             Timber.d("[SKIP] Reroute to https for request: %s", request.url().encodedPath());

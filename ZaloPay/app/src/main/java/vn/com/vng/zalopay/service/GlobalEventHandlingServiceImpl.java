@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.service;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -23,7 +22,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.ExceptionEvent;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -137,7 +136,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         }
         Timber.d("begin load config");
 
-        ConfigUtil.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
+        ConfigLoader.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
         AndroidApplication.instance().initIconFont(true);
     }
     @Subscribe

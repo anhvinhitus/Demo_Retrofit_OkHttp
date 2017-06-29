@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.exception.UserInputException;
-import vn.com.vng.zalopay.data.util.ConfigUtil;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -60,7 +60,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     private final Context mContext;
     private final EventBus mEventBus;
 
-    private final List<Long> mDenominationMoney = ConfigUtil.getDenominationWithdraw();
+    private final List<Long> mDenominationMoney = ConfigLoader.getDenominationWithdraw();
 
     private long minWithdrawAmount;
     private long maxWithdrawAmount;
