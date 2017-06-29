@@ -51,6 +51,7 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.react.model.TransactionResult;
+import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_FAIL;
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_SUCCESS;
@@ -347,6 +348,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND, sticky = true)
     public void onGetTransactionComplete(TransactionChangeEvent event) {
+        if (getCurrentActivity() instanceof RedPacketApplicationActivity) {
+            return;
+        }
         Timber.d("send event zalopayTransactionsUpdated");
         WritableMap item = Arguments.createMap();
         item.putInt("statusType", event.typeSuccess);
