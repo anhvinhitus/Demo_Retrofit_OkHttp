@@ -357,7 +357,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         try {
         
-            trackingPaymentChannel(channel.pmcid);
             markSelectChannel(channel, pPosition);
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
@@ -538,6 +537,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             int btnTextId = ChannelHelper.btnConfirmText(channel, mPaymentInfoHelper.getTranstype());
             int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
             getViewOrThrow().enableConfirmButton(btnTextId, btnBgDrawableId);
+            trackingPaymentChannel(channel.pmcid);
         }
     }
 
