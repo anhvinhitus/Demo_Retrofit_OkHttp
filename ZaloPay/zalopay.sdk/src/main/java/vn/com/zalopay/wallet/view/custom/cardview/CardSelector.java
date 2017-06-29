@@ -74,7 +74,7 @@ public class CardSelector {
 
     public CardSelector selectCard(String pCardNumber) {
         if (!TextUtils.isEmpty(pCardNumber) && pCardNumber.length() >= 1) {
-            CardSelector selector = detectCardType(GlobalData.mTranstype);
+            CardSelector selector = detectCardType(GlobalData.transtype());
             return selector;
         }
         Timber.d("Return DEFAULT ");

@@ -16,7 +16,7 @@ public class GetStatusShare extends SingletonBase implements IGetPaymentStatus {
     public GetStatusShare() {
         super();
 
-        if (GlobalData.mTranstype == TransactionType.LINK) {
+        if (GlobalData.transtype() == TransactionType.LINK) {
             mIGetPaymentStatus = new GetMapCardStatus();
         } else {
             mIGetPaymentStatus = new GetPaymentStatus();

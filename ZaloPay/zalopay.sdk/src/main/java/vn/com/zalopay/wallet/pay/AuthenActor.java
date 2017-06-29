@@ -47,6 +47,12 @@ public class AuthenActor {
 
         @Override
         public void onCancel() {
+            Timber.d("user close password - reset some payment data");
+            try {
+                getProxy().resetResponse();
+            } catch (Exception e) {
+                Timber.w(e);
+            }
         }
 
         @Override

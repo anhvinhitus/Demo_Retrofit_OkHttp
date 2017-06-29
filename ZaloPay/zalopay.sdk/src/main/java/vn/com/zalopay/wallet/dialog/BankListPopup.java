@@ -69,8 +69,7 @@ public class BankListPopup extends BasePaymentDialogActivity {
         if (getAdapter() != null) {
             mGridViewBank.setAdapter(getAdapter());
         }
-        //set text label
-        if (GlobalData.mTranstype == TransactionType.LINK) {
+        if (GlobalData.transtype() == TransactionType.LINK) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
         } else if (getAdapter() instanceof CreditCardSupportGridViewAdapter) {
             txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));

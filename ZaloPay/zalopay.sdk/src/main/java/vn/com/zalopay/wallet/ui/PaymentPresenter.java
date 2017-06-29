@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
@@ -79,7 +80,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
             Timber.d("resource still not exist - skip init resource - wait for finish loading");
             return;
         }
-        if(ResourceManager.isInit()){
+        if (ResourceManager.isInit()) {
             return;
         }
 
@@ -110,10 +111,17 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
         return true;
     }
 
+    protected boolean manualRelease() {
+        return false;
+    }
+
     public void callback() {
         Timber.d("callback presenter");
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
+        }
+        if (manualRelease()) {
+            SingletonLifeCircleManager.disposeAll();
         }
     }
 

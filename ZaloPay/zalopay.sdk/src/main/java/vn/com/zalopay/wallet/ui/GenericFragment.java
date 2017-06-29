@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.ui;
 
+import android.content.Intent;
 import android.support.annotation.CallSuper;
 import android.view.View;
 
@@ -10,6 +11,12 @@ import android.view.View;
 public abstract class GenericFragment<P extends IPresenter> extends BaseFragment {
 
     protected P mPresenter;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
 
     @CallSuper
     @Override

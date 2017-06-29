@@ -459,7 +459,7 @@ public class AdapterBankCard extends AdapterBase {
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && hasBidvBankInMapCardList(pCardNumber))) {
             Intent intentBidv = MapBankPopup.createBidvIntent(getActivity(), getGuiProcessor().getCardNumber(),
                     mPaymentInfoHelper.getAmountTotal(), mPaymentInfoHelper.getLevel());
-            getActivity().startActivityForResult(intentBidv, MAP_POPUP_REQUEST_CODE);
+            getView().startActivityForResult(intentBidv, MAP_POPUP_REQUEST_CODE);
             return true;
         }
         //have some card bidv in map card list and but don't have this card

@@ -67,7 +67,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private LinearLayout item_detail_linearlayout;
     private Button confirm_button;
     private View view_top_linearlayout;
-    private TextView toolbar_title;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -99,12 +98,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     protected int getLayoutId() {
         return R.layout.fragment_channellist;
     }
@@ -112,7 +105,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onViewBound(View view) {
         super.onViewBound(view);
-        toolbar_title = (TextView) view.findViewById(R.id.toolbar_title);
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);

@@ -756,4 +756,8 @@ public class PayProxy extends SingletonBase {
             mSubscription.unsubscribe();
         }
     }
+
+    public void resetResponse() {
+        mStatusResponse = null;
+    }
 }

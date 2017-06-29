@@ -602,4 +602,5 @@
     <string name="sdk_transfer_password_title_text">Nhập mật khẩu thanh toán để chuyển tiền bằng</string>
 
     <string name="sdk_loading_timeout">Quá trình xử lý hết  hiệu lực, vui lòng thực hiện lại giao dịch!</string>
+    <string name="sdk_warning_no_channel">Không hỗ trợ mệnh giá thanh toán này</string>
 </resources>

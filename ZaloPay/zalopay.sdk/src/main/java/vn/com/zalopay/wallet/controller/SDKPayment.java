@@ -141,7 +141,7 @@ public class SDKPayment {
 
         //set listener and data payment to global static
         try {
-            GlobalData.setSDKData(pMerchantActivity, pPaymentListener, paymentInfoHelper.getTranstype());
+            GlobalData.setSDKData(pMerchantActivity, pPaymentListener);
         } catch (Exception e) {
             terminateSession(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             return;

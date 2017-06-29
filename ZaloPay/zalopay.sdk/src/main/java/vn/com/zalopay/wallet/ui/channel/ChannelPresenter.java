@@ -118,7 +118,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
         if (mPaymentInfoHelper == null) {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
@@ -132,7 +132,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
@@ -152,7 +152,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             getViewOrThrow().showError(message);
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
@@ -267,13 +267,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MAP_POPUP_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     if (data != null) {
                         try {
+                            Timber.d("onActivityResult data %s",data);
                             setResult(MAP_POPUP_RESULT_CODE, data);
+                            getViewOrThrow().terminate();
                         } catch (Exception e) {
                             Log.e(this, e);
                         }

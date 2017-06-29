@@ -68,7 +68,6 @@ import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
-import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
@@ -414,11 +413,11 @@ public abstract class AdapterBase {
     }
 
     public ChannelActivity getActivity() throws Exception {
-        ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity == null || activity.isFinishing()) {
+        try {
+            return (ChannelActivity) getPresenter().getViewOrThrow().getActivity();
+        } catch (Exception e) {
             throw new IllegalStateException("activity host invalid");
         }
-        return activity;
     }
 
     public ChannelPresenter getPresenter() throws Exception {

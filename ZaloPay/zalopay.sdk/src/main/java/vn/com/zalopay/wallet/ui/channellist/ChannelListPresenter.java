@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,6 +66,8 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -134,7 +137,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
             loadChannels();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
@@ -144,7 +147,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
@@ -169,7 +172,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 getViewOrThrow().callbackThenTerminate();
             }
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
@@ -191,7 +194,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
             }
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.w(e);
         }
     }
 
@@ -199,16 +202,28 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return mChannelList;
     }
 
+    @Override
+    protected boolean manualRelease() {
+        switch (mPaymentInfoHelper.getStatus()) {
+            case DIRECT_LINKCARD:
+            case DIRECT_LINKCARD_AND_PAYMENT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHANNEL_PAYMENT_REQUEST_CODE) {
-            Log.d(this, "onActivityResult resultCode", resultCode);
+            Timber.d("onActivityResult resultCode %s", resultCode);
             switch (resultCode) {
                 case Activity.RESULT_OK:
-                    callback();
                     try {
+                        callback();
                         getViewOrThrow().terminate();
                     } catch (Exception e) {
-                        Timber.d(e != null ? e.getMessage() : "Exception");
+                        Timber.w(e);
                     }
                     break;
                 case Activity.RESULT_CANCELED:
@@ -219,7 +234,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                             try {
                                 getViewOrThrow().showInfoDialog(message);
                             } catch (Exception e) {
-                                Timber.d(e != null ? e.getMessage() : "Exception");
+                                Timber.w(e);
                             }
                         } else {
                             exitHasOneChannel();
@@ -281,6 +296,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     public void onDetach() {
         super.onDetach();
+        Timber.d("onDetach - release channel adapter - payment proxy");
         mChannelAdapter = null;
         mChannelList = null;
         if (mPayProxy != null) {
@@ -289,7 +305,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
+    public void OnSelectChannel(SdkSelectedChannelMessage pMessage) {
         onSelectedChannel(pMessage.position);
     }
 
@@ -464,7 +480,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showWarningLinkCardBeforeWithdraw();
                 } catch (Exception e) {
-                    Timber.d(e != null ? e.getMessage() : "Exception");
+                    Timber.d(e);
                 }
             } else {
                 String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
@@ -474,7 +490,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     getViewOrThrow().showError(alertMessage);
                 } catch (Exception e) {
-                    Timber.d(e != null ? e.getMessage() : "Exception");
+                    Timber.d(e);
                 }
             }
         }
@@ -500,6 +516,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
         } catch (Exception e) {
             Log.e(this, e);
+        }
+        if (mSelectChannel == null) {
+            try {
+                getViewOrThrow().showSnackBar(GlobalData.getAppContext().getString(R.string.sdk_warning_no_channel), null,
+                        Snackbar.LENGTH_INDEFINITE, null);
+            } catch (Exception e) {
+                Timber.w(e);
+            }
         }
     }
 

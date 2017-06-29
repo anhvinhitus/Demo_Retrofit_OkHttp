@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import java.util.Stack;
 
+import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -77,6 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             hostFragment(getFragmentToHost(getIntent().getExtras()));
         }
+        Timber.d("onCreate");
     }
 
     @CallSuper
@@ -93,6 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 SingletonLifeCircleManager.disposeAll();
             }
         }
+        Timber.d("onDestroy");
     }
 
     @Override

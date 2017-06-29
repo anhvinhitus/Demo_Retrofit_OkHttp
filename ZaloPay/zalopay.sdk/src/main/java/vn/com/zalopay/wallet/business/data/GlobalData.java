@@ -32,14 +32,15 @@ public class GlobalData {
     @CardChannel
     public static int cardChannelType = CardChannel.ATM;
     public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
-    @TransactionType
-    public static int mTranstype;
+    public static PaymentInfoHelper paymentInfoHelper;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
 
-    public static PaymentInfoHelper paymentInfoHelper;
+    public static @TransactionType int transtype() {
+        return paymentInfoHelper != null ? paymentInfoHelper.getTranstype() : TransactionType.PAY;
+    }
 
     /***
      * prevent cross call pay
@@ -56,7 +57,7 @@ public class GlobalData {
     }
 
     public static boolean isUserInSDK() {
-        return BaseActivity.getActivityCount() > 0 || BaseActivity.getActivityCount() > 0;
+        return BaseActivity.getActivityCount() > 0;
     }
 
     public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
@@ -149,13 +150,12 @@ public class GlobalData {
     /***
      * alwaw call this to set static listener and info.
      */
-    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, @TransactionType int pTranstype) throws Exception {
+    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener) throws Exception {
         if (!isAccessRight()) {
             throw new Exception("Violate Design Pattern! Only 'pay' static method of ZingPayService class can set application!");
         }
         GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
-        GlobalData.mTranstype = pTranstype;
     }
 
     public static void setIFingerPrint(IPaymentFingerPrint pFingerPrintFromMerchant) {

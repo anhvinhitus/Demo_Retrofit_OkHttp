@@ -142,12 +142,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public int getLayoutId() {
         return mLayoutId;
     }
@@ -563,7 +557,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                     .setOnCloseListener(pOnCloseListener)
                     .show();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
