@@ -90,6 +90,10 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isUserSessionStarted()) {
+            return;
+        }
+
         initView();
         navigator.showSuggestionDialog(this);
     }
@@ -98,7 +102,6 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         presenter.attachView(this);
         mZaloSdkApi.getProfile();
         icfontRightArrow.setVisibility(View.GONE);
-//        getSupportActionBar().setPmName(getString(R.string.title_activity_profile));
         tvToolbarTitle.setText(getString(R.string.title_activity_profile));
     }
 
@@ -114,31 +117,14 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         presenter.pause();
     }
 
-    boolean isVisible = true;
-    int scrollRange = -1;
-
-//    @Override
-//    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//        if (isFinishing()) {
-//            return;
-//        }
-//
-//        float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
-//        layoutUser.setAlpha(alpha);
-//        if (scrollRange == -1) {
-//            scrollRange = appBarLayout.getTotalScrollRange();
-//        }
-//        if (scrollRange + verticalOffset == 0) {
-//            getToolbar().setTitleTextColor(Color.WHITE);
-//            isVisible = true;
-//        } else if (isVisible) {
-//            getToolbar().setTitleTextColor(Color.TRANSPARENT);
-//            isVisible = false;
-//        }
-//    }
-
     @Override
     public void onDestroy() {
+
+        if (!isUserSessionStarted()) {
+            super.onDestroy();
+            return;
+        }
+
         presenter.destroy();
         super.onDestroy();
     }
@@ -148,144 +134,4 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         super.showToast(message);
     }
 }
-
-//public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView, AppBarLayout.OnOffsetChangedListener {
-//
-//    @BindView(R.id.collapsing_toolbar)
-//    CollapsingToolbarLayout mCollapsingToolbarLayout;
-//
-//    @BindView(R.id.appbar)
-//    AppBarLayout mAppBarLayout;
-//
-//    @Inject
-//    ProfileInfoPresenter presenter;
-//
-//    @BindView(R.id.layoutUser)
-//    View layoutUser;
-//
-//    @BindView(R.id.imgAvatar)
-//    SimpleDraweeView imgAvatar;
-//
-//    @BindView(R.id.tv_name)
-//    TextView tvName;
-//
-//    @BindView(R.id.tvZaloPayName)
-//    TextView tvZaloPayName;
-//
-//    @Inject
-//    User user;
-//
-//    @Inject
-//    ZaloSdkApi mZaloSdkApi;
-//
-//    @OnClick(R.id.layoutProfileInfo)
-//    public void onClickHeaderProfile() {
-//        if (!TextUtils.isEmpty(user.zalopayname)) {
-//            return;
-//        }
-//        if (getUserComponent().currentUser().profilelevel < 2) {
-//            navigator.startUpdateProfileLevel2Activity(this);
-//        } else {
-//            navigator.startEditAccountActivity(this);
-//            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
-//        }
-//    }
-//
-//    public void updateUserInfo(User user) {
-//        if (user == null) {
-//            return;
-//        }
-//        tvName.setText(user.displayName);
-//        imgAvatar.setImageURI(user.avatar);
-//        setZaloPayName(user.zalopayname);
-//    }
-//
-//    @Override
-//    public void setZaloPayName(String zaloPayName) {
-//        if (TextUtils.isEmpty(zaloPayName)) {
-//            tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
-//        } else {
-//            tvZaloPayName.setText(String.format(getString(R.string.account_format), zaloPayName));
-//        }
-//    }
-//
-//    @Override
-//    protected void setupActivityComponent() {
-//        getUserComponent().inject(this);
-//    }
-//
-//    @Override
-//    protected int getResLayoutId() {
-//        return R.layout.activity_profile;
-//    }
-//
-//    @Override
-//    public BaseFragment getFragmentToHost() {
-//        return ProfileFragment.newInstance();
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        initView();
-//        navigator.showSuggestionDialog(this);
-//    }
-//
-//    private void initView() {
-//        presenter.attachView(this);
-//        mZaloSdkApi.getProfile();
-//        getToolbar().setTitleTextColor(Color.TRANSPARENT);
-//
-//        mCollapsingToolbarLayout.setTitleEnabled(false);
-//        mAppBarLayout.addOnOffsetChangedListener(this);
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        presenter.resume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        presenter.pause();
-//    }
-//
-//    boolean isVisible = true;
-//    int scrollRange = -1;
-//
-//    @Override
-//    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//        if (isFinishing()) {
-//            return;
-//        }
-//
-//        float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
-//        layoutUser.setAlpha(alpha);
-//        if (scrollRange == -1) {
-//            scrollRange = appBarLayout.getTotalScrollRange();
-//        }
-//        if (scrollRange + verticalOffset == 0) {
-//            getToolbar().setTitleTextColor(Color.WHITE);
-//            isVisible = true;
-//        } else if (isVisible) {
-//            getToolbar().setTitleTextColor(Color.TRANSPARENT);
-//            isVisible = false;
-//        }
-//    }
-//
-//
-//    @Override
-//    public void onDestroy() {
-//        mAppBarLayout.removeOnOffsetChangedListener(this);
-//        presenter.destroy();
-//        super.onDestroy();
-//    }
-//
-//    @Override
-//    public void showError(String message) {
-//        super.showToast(message);
-//    }
-//}
 
