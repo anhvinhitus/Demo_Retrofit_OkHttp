@@ -57,7 +57,6 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
@@ -384,9 +383,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 if (mResourceRender != null) {
                     mResourceRender.render();
                     mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
-                    if (screenName.equals(PAGE_SUCCESS)) {
-                        mPresenter.setTextSubmitButton();
-                    }
                 } else {
                     Timber.d("resource render is null");
                 }
@@ -398,7 +394,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Log.e(this, e);
             showError(getString(R.string.zpw_string_error_layout));
         }
-        Timber.d("renderSuccess() renderByResource= " + screenName);
     }
 
     @Override

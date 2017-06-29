@@ -1234,6 +1234,15 @@ public abstract class AdapterBase {
             Timber.d(e.getMessage());
         }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
+
+        Timber.d(" set TextSubmitBtn after delaying 100ms");
+        new Handler().postDelayed(() -> {
+            try {
+                getView().setTextSubmitBtn(mPaymentInfoHelper.getOrder().appid, getActivity().getString(R.string.sdk_button_show_info_txt));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 100);
     }
 
     protected void trackingTransactionEvent(int pResult) {
