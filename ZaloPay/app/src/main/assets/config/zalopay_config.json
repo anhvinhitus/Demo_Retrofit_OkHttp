@@ -46,14 +46,6 @@
       "icon_color": "#f6b501"
     },
     {
-      "inside_app_id": 5,
-      "app_type": -2,
-      "app_name": "Lịch sử thanh toán",
-      "icon_name": "menu_history",
-      "icon_color": "#de4438",
-      "module_name": "TransactionLogs"
-    },
-    {
       "inside_app_id": 6,
       "app_type": -2,
       "app_name": "Trung tâm hỗ trợ",
