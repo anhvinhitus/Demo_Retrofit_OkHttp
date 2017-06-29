@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.notification.NotificationType;
 
 /**
  * Created by huuhoa on 11/26/16.
@@ -31,7 +32,7 @@ class TransferNotificationHelper {
 
     Subscription sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", Constants.AppP2PNotificationType.QR_TRANSFER);
+        jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.QR_TRANSFER);
         jsonObject.addProperty("displayname", mUser.displayName);
         jsonObject.addProperty("avatar", mUser.avatar);
         jsonObject.addProperty("mt_progress", stage);

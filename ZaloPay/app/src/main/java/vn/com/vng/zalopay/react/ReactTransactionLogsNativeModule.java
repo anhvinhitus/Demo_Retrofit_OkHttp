@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.react.model.TransactionResult;
 
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_FAIL;
@@ -514,7 +515,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     private String generateEmbeddata(long transId, String message, String displayName, String zalopayid, long timestamp) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", Constants.AppP2PNotificationType.SEND_THANK_MESSAGE);
+        jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE);
         jsonObject.addProperty("message", message);
         jsonObject.addProperty("timestamp", timestamp);
         jsonObject.addProperty("transid", transId);
