@@ -103,7 +103,7 @@ public class Navigator implements INavigator {
 
     private SharedPreferences mPreferences;
 
-    private   AuthenticationPassword authenticationPassword;
+    private AuthenticationPassword authenticationPassword;
 
     @Inject
     public Navigator(UserConfig userConfig, SharedPreferences preferences) {
@@ -741,9 +741,8 @@ public class Navigator implements INavigator {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-                dialog.setAuthenticationCallback(callback);
-                dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+                authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+                authenticationPassword.initialize();
             }
         }, 200);
     }
@@ -770,17 +769,16 @@ public class Navigator implements INavigator {
             });
             dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
         } else {
-
             //show password view
             showPassWord(context, pendingIntent, isFinish);
         }
 
     }
+
     private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
-        authenticationPassword = new AuthenticationPassword(context,PasswordUtil.detectSuggestFingerprint(context,mUserConfig), pendingIntent, isFinish);
+        authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
         authenticationPassword.initialize();
     }
-
     private void showPinDialog(final Context context, final Promise promise) {
         AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
