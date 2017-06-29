@@ -149,6 +149,10 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
 
         doInjection();
 
+        if (nativeInstanceManager() == null) {
+            return;
+        }
+
         if (getUseDeveloperSupport() && Build.VERSION.SDK_INT >= 23) {
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(this)) {
@@ -187,7 +191,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         mLifecycleState = LifecycleState.BEFORE_RESUME;
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause(this);
+            mReactInstanceManager.onHostPause();
         }
     }
 
@@ -204,6 +208,12 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
 
     @Override
     public void onDestroy() {
+
+        if (nativeInstanceManager() == null) {
+            super.onDestroy();
+            return;
+        }
+
         if (mReactRootView != null) {
             mReactRootView.unmountReactApplication();
             ViewParent view = mReactRootView.getParent();

@@ -1,4 +1,4 @@
-package com.zalopay.apploader;
+package vn.com.vng.zalopay.react;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import timber.log.Timber;
  * Created by huuhoa on 4/26/16.
  * Load react native view
  */
-public abstract class MiniApplicationBaseActivity extends ReactBasedActivity {
+public abstract class MiniApplicationBaseActivity extends UserReactBasedActivity {
     public MiniApplicationBaseActivity() {
     }
 

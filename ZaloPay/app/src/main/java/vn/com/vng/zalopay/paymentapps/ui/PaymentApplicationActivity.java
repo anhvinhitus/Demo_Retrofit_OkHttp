@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -12,15 +13,12 @@ import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.zalopay.apploader.BundleReactConfig;
-import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.apploader.network.NetworkService;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
@@ -32,22 +30,14 @@ import javax.inject.Named;
 
 import cl.json.RNSharePackage;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.react.UserReactBasedActivity;
 import vn.com.vng.zalopay.react.analytics.GoogleAnalyticsBridgePackage;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
@@ -56,9 +46,7 @@ import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
  * Created by huuhoa on 5/16/16.
  * Activity for hosting payment app
  */
-public class PaymentApplicationActivity extends ReactBasedActivity {
-
-    protected final String TAG = getClass().getSimpleName();
+public class PaymentApplicationActivity extends UserReactBasedActivity {
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
 
@@ -94,13 +82,17 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     @Override
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        userComponent.inject(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
             getWindow().setBackgroundDrawable(null);
         } catch (Exception e) {
             Timber.e(e, "Caught exception while initializing Payment App");
         }
-
         super.onCreate(savedInstanceState);
     }
 
@@ -141,20 +133,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         launchOption.putInt("environment", BuildConfig.ENVIRONMENT);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mEventBus.unregister(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!mEventBus.isRegistered(this)) {
-            mEventBus.register(this);
-        }
-    }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -165,11 +143,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         }
 
         outState.putBundle("launchOptions", mLaunchOptions);
-    }
-
-    protected void doInjection() {
-        createUserComponent();
-        AndroidApplication.instance().getUserComponent().inject(this);
     }
 
     @Override
@@ -266,59 +239,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                         mNavigator,
                         mReactNativeHostable)
         );
-    }
-
-    private void createUserComponent() {
-        Timber.d(" user component %s", getUserComponent());
-        if (getUserComponent() != null) {
-            return;
-        }
-
-        UserConfig userConfig = getAppComponent().userConfig();
-        Timber.d(" mUserConfig %s", userConfig.isSignIn());
-        if (userConfig.isSignIn()) {
-            userConfig.loadConfig();
-            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
-        }
-    }
-
-    public ApplicationComponent getAppComponent() {
-        return AndroidApplication.instance().getAppComponent();
-    }
-
-    public UserComponent getUserComponent() {
-        return AndroidApplication.instance().getUserComponent();
-    }
-
-    @Subscribe
-    public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
-        reactInstanceCaughtError();
-        handleException(event.getInnerException());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
-        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
-        User user = getAppComponent().userConfig().getCurrentUser();
-        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
-        Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        clearUserSession(getString(R.string.exception_token_expired_message));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onForceUpdateApp(ForceUpdateAppEvent event) {
-        Timber.i("Force update app in Screen %s", TAG);
-        clearUserSession(null);
-    }
-
-    protected boolean clearUserSession(String message) {
-        getAppComponent().applicationSession().setMessageAtLogin(message);
-        getAppComponent().applicationSession().clearUserSession();
-        return true;
     }
 
     @Override

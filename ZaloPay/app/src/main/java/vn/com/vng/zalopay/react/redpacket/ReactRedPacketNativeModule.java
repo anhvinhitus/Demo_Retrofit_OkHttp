@@ -16,7 +16,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.internal.ModuleName;
 
 import java.util.Arrays;
@@ -42,6 +41,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
