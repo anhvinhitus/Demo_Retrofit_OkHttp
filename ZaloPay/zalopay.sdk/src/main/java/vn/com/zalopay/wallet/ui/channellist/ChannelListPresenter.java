@@ -53,7 +53,6 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkInvalidDataMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
-import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
@@ -157,16 +156,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     @Override
-    protected void loadAppInfoOnProcess() {
-        try {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
-            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-    }
-
-    @Override
     protected void loadAppInfoOnError(Throwable throwable) {
         Log.d(this, "load app info on error", throwable);
         try {
@@ -195,7 +184,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     protected void loadAppInfoOnComplete(AppInfo appInfo) {
         try {
             Log.d(this, "load app info success", appInfo);
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END);
             if (appInfo == null || !appInfo.isAllow()) {
                 getViewOrThrow().showAppInfoNotFoundDialog();
                 return;
@@ -440,10 +428,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 return;
             }
             //check app info whether this transaction is allowed or not
+            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
 //            loadAppInfo();
             startSubscribePaymentReadyMessage();
         } catch (Exception e) {
-            Timber.d(e);
+            Timber.d(e.getMessage());
         }
     }
 

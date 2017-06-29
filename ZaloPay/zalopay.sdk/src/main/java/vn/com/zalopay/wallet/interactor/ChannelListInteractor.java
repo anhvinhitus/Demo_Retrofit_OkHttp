@@ -162,7 +162,7 @@ public class ChannelListInteractor {
 
     private void loadAppInfoOnProcess() {
         try {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
+            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
             // getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
         } catch (Exception e) {
             Timber.d(e.getMessage());
@@ -195,6 +195,7 @@ public class ChannelListInteractor {
 
     private void loadAppInfoOnComplete(AppInfo appInfo) {
         Log.d(this, "load app info success", appInfo);
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END);
 //        mPaymentInfoReadyMessage = new SdkPaymentInfoReadyMessage();
 //        mPaymentInfoReadyMessage.mAppInfo = appInfo;
 //
