@@ -273,7 +273,6 @@ public class TransactionRepository implements TransactionStore.Repository {
                 .doOnNext(data -> {
                     boolean recurseWithTranstype = false;
                     if (data.size() != 0) {
-                        updateTransactionFragment(timestamp, statusType, timestamp > data.get(0).reqdate ? timestamp : data.get(0).reqdate, data.get(data.size() - 1).reqdate, sortOrder);
                         recurseWithTranstype = (sortOrder == TRANSACTION_ORDER_OLDEST) && !Lists.isEmptyOrNull(transTypes);
                         if (recurseWithTranstype) {
                             List<TransactionFragmentEntity> reqdate = mFragmentLocalStorage.get(timestamp, statusType);
@@ -370,7 +369,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
-                    this.writeTransactionEntity(data, statusType);
+                    this.writeTransactionEntity(data, statusType, timestamp, sortOrder);
                     int size = data.size();
                     if (size < TRANSACTION_LENGTH) {
                         boolean hasData = (size == 0 && timestamp == 0) // Update Ui cho lần đâu tiên.
@@ -394,12 +393,13 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
     }
 
-    private void writeTransactionEntity(List<TransHistoryEntity> data, int statusType) {
+    private void writeTransactionEntity(List<TransHistoryEntity> data, int statusType, long timestamp, int sortOrder) {
         int size = data.size();
         if (size > 0) {
             for (TransHistoryEntity transHistoryEntity : data) {
                 transHistoryEntity.statustype = statusType;
             }
+            updateTransactionFragment(timestamp, statusType, timestamp > data.get(0).reqdate ? timestamp : data.get(0).reqdate, data.get(data.size() - 1).reqdate, sortOrder);
             mLocalStorage.put(data);
         }
     }

@@ -83,9 +83,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
         WhereCondition whereType = TransactionLogDao.Properties.Type.in(TRANSFER_TYPE, CASHINMERCHANT_TYPE);
         if (sign == 1) {
-            Timber.d("queryList: %s", sign);
             whereType = queryBuilder.and(whereType, TransactionLogDao.Properties.Sign.eq(1));
-            Timber.d("queryList: %s", whereType.toString());
         } else {
             whereType = queryBuilder.and(whereType, TransactionLogDao.Properties.Sign.notEq(1));
         }
