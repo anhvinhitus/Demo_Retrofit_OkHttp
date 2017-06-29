@@ -298,11 +298,11 @@ public class ZPEvents {
     public static final int TRANSACTIONLOG_FILTER_TOUCHOUTSIDE = 2905;
     public static final int TRANSACTIONLOG_FILTER_DONE = 2906;
     public static final int TRANSACTIONLOG_FILTER_RESET = 2907;
-    public static final int USER_SELECT_PAYMENT_CHANNEL_36 = 2911;
-    public static final int USER_SELECT_PAYMENT_CHANNEL_37 = 2912;
-    public static final int USER_SELECT_PAYMENT_CHANNEL_38 = 2913;
-    public static final int USER_SELECT_PAYMENT_CHANNEL_39 = 2914;
-    public static final int USER_ACTION_NUMBER = 2915;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_36 = 3000;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_37 = 3001;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_38 = 3002;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_39 = 3003;
+    public static final int USER_ACTION_NUMBER = 3004;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {

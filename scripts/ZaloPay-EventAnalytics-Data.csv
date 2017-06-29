@@ -293,8 +293,8 @@ EventId,Category,Action
 2905,Transaction Logs,TransactionLog_Filter_TouchOutside
 2906,Transaction Logs,TransactionLog_Filter_Done
 2907,Transaction Logs,TransactionLog_Filter_Reset
-2911,Payment Channel,User_Select_Payment_Channel_36
-2912,Payment Channel,User_Select_Payment_Channel_37
-2913,Payment Channel,User_Select_Payment_Channel_38
-2914,Payment Channel,User_Select_Payment_Channel_39
-2915,Payment Channel,User_Action_Number
+3000,Payment Channel,User_Select_Payment_Channel_36
+3001,Payment Channel,User_Select_Payment_Channel_37
+3002,Payment Channel,User_Select_Payment_Channel_38
+3003,Payment Channel,User_Select_Payment_Channel_39
+3004,Payment Channel,User_Action_Number
