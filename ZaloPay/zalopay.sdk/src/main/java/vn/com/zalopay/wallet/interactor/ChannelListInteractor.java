@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.interactor;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -74,6 +75,18 @@ public class ChannelListInteractor {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
         }
 
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                loadPaymentInfo();
+                return null;
+            }
+        };
+
+        task.execute();
+    }
+
+    private void loadPaymentInfo() {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
