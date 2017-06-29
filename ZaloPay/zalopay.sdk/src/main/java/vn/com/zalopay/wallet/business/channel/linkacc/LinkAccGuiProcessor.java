@@ -683,7 +683,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     @Override
     public String getDetectedBankCode() {
-        return mPaymentInfoHelper.getLinkAccBankCode();
+        return (mPaymentInfoHelper != null) ? mPaymentInfoHelper.getLinkAccBankCode() : "";
     }
 
     /***
