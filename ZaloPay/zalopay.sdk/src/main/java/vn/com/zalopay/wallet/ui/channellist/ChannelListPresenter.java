@@ -21,8 +21,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
@@ -31,7 +29,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -91,8 +88,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Inject
     public IAppInfo mAppInfoInteractor;
     protected PaymentInfoHelper mPaymentInfoHelper;
-    @Inject
-    ZPMonitorEventTiming mEventTiming;
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
@@ -193,9 +188,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 appName = appInfo.appname;
             }
             getViewOrThrow().renderAppInfo(appName);
-//            if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
-//                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
-//            }
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -357,7 +349,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return null;
         }
         try {
-
+            trackingPaymentChannel(channel.pmcid);
             markSelectChannel(channel, pPosition);
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
@@ -429,7 +421,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
             //check app info whether this transaction is allowed or not
             getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-//            loadAppInfo();
             startSubscribePaymentReadyMessage();
         } catch (Exception e) {
             Timber.d(e.getMessage());
@@ -787,8 +778,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
         interactor.subscribeOnPaymentReady(message -> {
             try {
+                mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_SUBSCRIBE);
                 loadAppInfoOnComplete(message.mAppInfo);
-                loadChannels();
+                if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
+                    getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
+                }
             } catch (Exception e) {
                 Timber.d(e, "Exception when loading payment info");
             }
@@ -858,33 +852,17 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Override
     public void onResourceReady() {
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        Subscription subscription = SDKApplication.getApplicationComponent()
-                .linkInteractor()
-                .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .compose(SchedulerHelper.applySchedulers())
-                .doOnSubscribe(() -> SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_START))
-                .subscribe(aBoolean -> {
-                    try {
-                        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_END);
-                        readyForPayment();
-                    } catch (Exception e) {
-                        Timber.w("load map list on error %s", e);
-                    }
-                }, throwable -> {
-                    try {
-                        getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
-                    } catch (Exception ignored) {
-                    }
-                    Timber.w("load card and bank account error %s", throwable);
-                });
-        addSubscription(subscription);
+        super.onResourceReady();
+        try {
+            loadChannels();
+        } catch (Exception e) {
+            setPaymentStatusAndCallback(PaymentStatus.FAILURE);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadResource(SdkDownloadResourceMessage result) {
-        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE);
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_END);
         if (result.success) {
             Timber.d("download resource success - start init resource");
             onResourceInit();

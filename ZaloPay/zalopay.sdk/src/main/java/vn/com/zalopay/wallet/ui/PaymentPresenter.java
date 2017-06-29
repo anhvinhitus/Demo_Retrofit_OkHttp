@@ -7,6 +7,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
@@ -32,6 +34,7 @@ import vn.com.zalopay.wallet.interactor.ResourceLoader;
 
 public abstract class PaymentPresenter<T extends IContract> extends AbstractPresenter<T> {
     public Action1<Throwable> bankListException = this::loadBankListOnError;
+    protected ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
     protected Action1<Boolean> onResourceComplete = initialized -> {
         if (initialized) {
             onResourceReady();
@@ -84,7 +87,9 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
             return;
         }
 
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START);
         Subscription subscription = ResourceManager.initResource()
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(onResourceComplete, onResourceException);
         addSubscription(subscription);
@@ -97,7 +102,9 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
 
     }
 
+    @CallSuper
     public void onResourceReady() {
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END);
     }
 
     protected boolean loadStaticResource(UserInfo userInfo) throws Exception {

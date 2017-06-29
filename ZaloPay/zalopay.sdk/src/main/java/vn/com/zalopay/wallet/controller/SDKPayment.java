@@ -108,7 +108,6 @@ public class SDKPayment {
      */
     public synchronized static void pay(final Activity pMerchantActivity, IPaymentInfo pPaymentInfo, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START);
-
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {
             if (pPaymentListener != null) {

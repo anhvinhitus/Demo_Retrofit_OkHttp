@@ -9,6 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -29,9 +30,10 @@ public class ResourceLoader extends SingletonBase {
     private IPlatformInfo mPlatformInteractor;
     private WeakReference<PaymentPresenter> mPresenterWeakReference;
     private boolean forceDownloadResource;
+    private ZPMonitorEventTiming mEventTiming;
 
     private Action1<PlatformInfoCallback> platformInfoSubscriber = platformInfoCallback -> {
-        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END);
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END);
         if (platformInfoCallback instanceof VersionCallback) {
             try {
                 VersionCallback upversionCallback = (VersionCallback) platformInfoCallback;
@@ -74,6 +76,7 @@ public class ResourceLoader extends SingletonBase {
 
     public ResourceLoader() {
         super();
+        mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
     }
 
     public static ResourceLoader get() {
@@ -186,6 +189,7 @@ public class ResourceLoader extends SingletonBase {
     }
 
     private Subscription downloadResource(String pUrl, String pResourceVersion) {
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_START);
         return mPlatformInteractor.getSDKResource(pUrl, pResourceVersion)
                 .subscribe(aBoolean -> Timber.d("download resource on complete"),
                         throwable -> Log.d(this, "download resource on error", throwable));
@@ -195,7 +199,7 @@ public class ResourceLoader extends SingletonBase {
         Timber.d("load platform info again force reload:%s download resource:%s", pForceReload, downloadResource);
         long currentTime = System.currentTimeMillis();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START);
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START);
         return mPlatformInteractor
                 .loadPlatformInfo(mUserInfo.zalopay_userid, mUserInfo.accesstoken, pForceReload, downloadResource, currentTime, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())

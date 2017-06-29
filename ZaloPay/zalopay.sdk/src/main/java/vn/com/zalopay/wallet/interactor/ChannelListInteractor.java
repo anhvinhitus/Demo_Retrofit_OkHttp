@@ -127,7 +127,7 @@ public class ChannelListInteractor {
         mPaymentInfoReadyMessage = null;
     }
 
-    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, Boolean aBoolean, BankConfigResponse bankConfigResponse) {
+    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, boolean finishLoadMap, BankConfigResponse bankConfigResponse) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
         return message;
@@ -139,6 +139,7 @@ public class ChannelListInteractor {
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENTINFO_READY);
         mPaymentInfoReadyMessage = message;
         if (mPaymentReadyListener != null) {
             postReadyMessage();
@@ -231,7 +232,7 @@ public class ChannelListInteractor {
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
 //            loadChannels();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e);
         }
     }
 
