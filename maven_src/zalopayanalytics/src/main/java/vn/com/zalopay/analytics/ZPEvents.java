@@ -166,6 +166,9 @@ public class ZPEvents {
     public static final int API_V001_TPE_SUBMITMAPACCOUNT = 2049;
     public static final int API_V001_ZP_UPLOAD_CLIENTLOGS = 2050;
     public static final int API_UM_LISTBANKACCOUNTFORCLIENT = 2051;
+    public static final int API_UM_LOGINVIAZALO = 2052;
+    public static final int API_UM_REGISTERPHONENUMBER = 2053;
+    public static final int API_UM_AUTHENPHONENUMBER = 2054;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -273,6 +276,9 @@ public class ZPEvents {
     public static final int CONNECTOR_UM_LISTCARDINFOFORCLIENT = 2747;
     public static final int CONNECTOR_V001_TPE_SUBMITMAPACCOUNT = 2749;
     public static final int CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT = 2750;
+    public static final int CONNECTOR_UM_LOGINVIAZALO = 2751;
+    public static final int CONNECTOR_UM_REGISTERPHONENUMBER = 2752;
+    public static final int CONNECTOR_UM_AUTHENPHONENUMBER = 2753;
     public static final int TOUCH_ME_PROFILE = 2800;
     public static final int TOUCH_ME_BALANCE = 2801;
     public static final int TOUCH_ME_BANK = 2802;
@@ -292,6 +298,11 @@ public class ZPEvents {
     public static final int TRANSACTIONLOG_FILTER_TOUCHOUTSIDE = 2905;
     public static final int TRANSACTIONLOG_FILTER_DONE = 2906;
     public static final int TRANSACTIONLOG_FILTER_RESET = 2907;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_36 = 2911;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_37 = 2912;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_38 = 2913;
+    public static final int USER_SELECT_PAYMENT_CHANNEL_39 = 2914;
+    public static final int USER_ACTION_NUMBER = 2915;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -619,6 +630,12 @@ public class ZPEvents {
                 return "api_v001_zp_upload_clientlogs";
             case API_UM_LISTBANKACCOUNTFORCLIENT:
                 return "api_um_listbankaccountforclient";
+            case API_UM_LOGINVIAZALO:
+                return "api_um_loginviazalo";
+            case API_UM_REGISTERPHONENUMBER:
+                return "api_um_registerphonenumber";
+            case API_UM_AUTHENPHONENUMBER:
+                return "api_um_authenphonenumber";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -833,6 +850,12 @@ public class ZPEvents {
                 return "connector_v001_tpe_submitmapaccount";
             case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
                 return "connector_um_listbankaccountforclient";
+            case CONNECTOR_UM_LOGINVIAZALO:
+                return "connector_um_loginviazalo";
+            case CONNECTOR_UM_REGISTERPHONENUMBER:
+                return "connector_um_registerphonenumber";
+            case CONNECTOR_UM_AUTHENPHONENUMBER:
+                return "connector_um_authenphonenumber";
             case TOUCH_ME_PROFILE:
                 return "Touch_Me_Profile";
             case TOUCH_ME_BALANCE:
@@ -871,6 +894,16 @@ public class ZPEvents {
                 return "TransactionLog_Filter_Done";
             case TRANSACTIONLOG_FILTER_RESET:
                 return "TransactionLog_Filter_Reset";
+            case USER_SELECT_PAYMENT_CHANNEL_36:
+                return "User_Select_Payment_Channel_36";
+            case USER_SELECT_PAYMENT_CHANNEL_37:
+                return "User_Select_Payment_Channel_37";
+            case USER_SELECT_PAYMENT_CHANNEL_38:
+                return "User_Select_Payment_Channel_38";
+            case USER_SELECT_PAYMENT_CHANNEL_39:
+                return "User_Select_Payment_Channel_39";
+            case USER_ACTION_NUMBER:
+                return "User_Action_Number";
             default:
                 return "DefaultAction";
         }
@@ -1202,6 +1235,12 @@ public class ZPEvents {
                 return "Timing TPE";
             case API_UM_LISTBANKACCOUNTFORCLIENT:
                 return "Timing UM";
+            case API_UM_LOGINVIAZALO:
+                return "Timing UM";
+            case API_UM_REGISTERPHONENUMBER:
+                return "Timing UM";
+            case API_UM_AUTHENPHONENUMBER:
+                return "Timing UM";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -1416,6 +1455,12 @@ public class ZPEvents {
                 return "Timing TPE";
             case CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT:
                 return "Timing UM";
+            case CONNECTOR_UM_LOGINVIAZALO:
+                return "Timing UM";
+            case CONNECTOR_UM_REGISTERPHONENUMBER:
+                return "Timing UM";
+            case CONNECTOR_UM_AUTHENPHONENUMBER:
+                return "Timing UM";
             case TOUCH_ME_PROFILE:
                 return "Tab Me";
             case TOUCH_ME_BALANCE:
@@ -1454,6 +1499,16 @@ public class ZPEvents {
                 return "Transaction Logs";
             case TRANSACTIONLOG_FILTER_RESET:
                 return "Transaction Logs";
+            case USER_SELECT_PAYMENT_CHANNEL_36:
+                return "Payment Channel";
+            case USER_SELECT_PAYMENT_CHANNEL_37:
+                return "Payment Channel";
+            case USER_SELECT_PAYMENT_CHANNEL_38:
+                return "Payment Channel";
+            case USER_SELECT_PAYMENT_CHANNEL_39:
+                return "Payment Channel";
+            case USER_ACTION_NUMBER:
+                return "Payment Channel";
             default:
                 return "DefaultCategory";
         }

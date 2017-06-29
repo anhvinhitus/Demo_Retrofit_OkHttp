@@ -161,6 +161,9 @@ EventId,Category,Action
 2049,Timing TPE,api_v001_tpe_submitmapaccount
 2050,Timing TPE,api_v001_zp_upload_clientlogs
 2051,Timing UM,api_um_listbankaccountforclient
+2052,Timing UM,api_um_loginviazalo
+2053,Timing UM,api_um_registerphonenumber
+2054,Timing UM,api_um_authenphonenumber
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
@@ -268,6 +271,9 @@ EventId,Category,Action
 2747,Timing UM,connector_um_listcardinfoforclient
 2749,Timing TPE,connector_v001_tpe_submitmapaccount
 2750,Timing UM,connector_um_listbankaccountforclient
+2751,Timing UM,connector_um_loginviazalo
+2752,Timing UM,connector_um_registerphonenumber
+2753,Timing UM,connector_um_authenphonenumber
 2800,Tab Me,Touch_Me_Profile
 2801,Tab Me,Touch_Me_Balance
 2802,Tab Me,Touch_Me_Bank
@@ -287,3 +293,8 @@ EventId,Category,Action
 2905,Transaction Logs,TransactionLog_Filter_TouchOutside
 2906,Transaction Logs,TransactionLog_Filter_Done
 2907,Transaction Logs,TransactionLog_Filter_Reset
+2911,Payment Channel,User_Select_Payment_Channel_36
+2912,Payment Channel,User_Select_Payment_Channel_37
+2913,Payment Channel,User_Select_Payment_Channel_38
+2914,Payment Channel,User_Select_Payment_Channel_39
+2915,Payment Channel,User_Action_Number
