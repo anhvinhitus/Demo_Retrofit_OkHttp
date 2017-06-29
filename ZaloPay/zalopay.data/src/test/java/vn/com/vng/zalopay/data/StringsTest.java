@@ -8,7 +8,10 @@ import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.data.util.Strings;
@@ -219,4 +222,21 @@ public class StringsTest {
         Assert.assertEquals(v1, v2);
     }
 
+    @Test
+    public void testAddUrlQueryParams() {
+        Map<String, String> map = new TreeMap<>();
+        map.put("appid", "10");
+        map.put("apptransid", "17061800001");
+        map.put("zptransid", "170618100000");
+
+        String url = "https://www.tiki.vn/showitem?from=zalopay";
+        String expected = "https://www.tiki.vn/showitem?from=zalopay&appid=10&apptransid=17061800001&zptransid=170618100000";
+        String actual = Strings.addUrlQueryParams(url, map);
+        Assert.assertEquals(expected, actual);
+
+        url = "https://www.tiki.vn/showitem?from=zalopay#abc";
+        expected = "https://www.tiki.vn/showitem?from=zalopay&appid=10&apptransid=17061800001&zptransid=170618100000#abc";
+        actual = Strings.addUrlQueryParams(url, map);
+        Assert.assertEquals(expected, actual);
+    }
 }

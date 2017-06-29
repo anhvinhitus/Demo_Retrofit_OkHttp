@@ -8,7 +8,9 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import okhttp3.HttpUrl;
 import timber.log.Timber;
 
 
@@ -191,5 +193,18 @@ public final class Strings {
         }
 
         return result;
+    }
+
+    public static String addUrlQueryParams(String originUrl, Map<String, String> params) {
+        HttpUrl url = HttpUrl.parse(originUrl);
+        if (url == null) {
+            return originUrl;
+        }
+
+        HttpUrl.Builder builder = url.newBuilder();
+        for (Map.Entry<String, String> item : params.entrySet()) {
+            builder.addQueryParameter(item.getKey(), item.getValue());
+        }
+        return builder.build().toString();
     }
 }

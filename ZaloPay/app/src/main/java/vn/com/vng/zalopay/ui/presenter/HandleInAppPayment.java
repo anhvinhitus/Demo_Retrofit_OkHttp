@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
@@ -208,27 +209,16 @@ public class HandleInAppPayment {
         }
 
         try {
-            String appendQueryFormat = "apptransid=%s&zptransid=%s&appid=%s";
-            URI uri = appendUri(appInfo.webredirecturl, String.format(appendQueryFormat, appTransId, transId, appId));
-            return uri.toString();
+            Map<String, String> params = new HashMap<>();
+            params.put("appid", String.valueOf(appId));
+            params.put("apptransid", appTransId);
+            params.put("zptransid", transId);
+
+            return Strings.addUrlQueryParams(appInfo.webredirecturl, params);
         } catch (Exception e) {
             return "";
         }
 
-    }
-
-    private URI appendUri(String uri, String appendQuery) throws URISyntaxException {
-        URI oldUri = new URI(uri);
-
-        String newQuery = oldUri.getQuery();
-        if (newQuery == null) {
-            newQuery = appendQuery;
-        } else {
-            newQuery += "&" + appendQuery;
-        }
-
-        return new URI(oldUri.getScheme(), oldUri.getAuthority(),
-                oldUri.getPath(), newQuery, oldUri.getFragment());
     }
 
     private void startBrowser(Context context, String browser, String redirectUrl) {
