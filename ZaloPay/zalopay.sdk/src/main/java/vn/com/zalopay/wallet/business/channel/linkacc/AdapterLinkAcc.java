@@ -232,17 +232,17 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     private void loadBankAccountSuccess() throws Exception {
-        if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
+        if (BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
             } else {
-                unlinkAccSuccess();
+                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
             }
         } else {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
             } else {
-                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                unlinkAccSuccess();
             }
         }
     }
