@@ -55,7 +55,6 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
         this.mSuggestFingerprint = pSuggestFingerprint;
         initPassword();
     }
-
     private void initPassword() {
         mPassword = new PasswordManager((Activity) mContext, mContext.getString(R.string.input_pin_to_access), null, null, mSuggestFingerprint, new IPinCallBack() {
             @Override

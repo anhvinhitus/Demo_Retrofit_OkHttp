@@ -783,25 +783,55 @@ public class Navigator implements INavigator {
         authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
         authenticationPassword.initialize();
     }
-    private void showPinDialog(final Context context, final Promise promise) {
-        AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-        dialog.setAuthenticationCallback(new AuthenticationCallback() {
-            @Override
-            public void onAuthenticated(String password) {
-                UserSession.mHashPassword = password;
-                UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
-                Timber.d("onPinSuccess resolve true");
-                Helpers.promiseResolveSuccess(promise, null);
-                showSuggestionDialog(((Activity) context));
-            }
 
-            @Override
-            public void onAuthenticationFailure() {
-                Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
-            }
-        });
-        dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+    private void showPinDialog(final Context context, final Promise promise) {
+
+        if (PasswordUtil.detectShowFingerPrint(context, mUserConfig)) {
+            AuthenticationDialog dialog = AuthenticationDialog.newInstance();
+            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
+            dialog.setAuthenticationCallback(new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    UserSession.mHashPassword = password;
+                    UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                    Helpers.promiseResolveSuccess(promise, null);
+                }
+
+                @Override
+                public void onShowPassword() {
+                    //show password view
+                    authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticated(String password) {
+                            Helpers.promiseResolveSuccess(promise, null);
+                        }
+
+                        @Override
+                        public void onAuthenticationFailure() {
+                            Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
+                        }
+                    });
+                    authenticationPassword.initialize();
+                }
+            });
+            dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+        } else {
+            //show password view
+            authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    Helpers.promiseResolveSuccess(promise, null);
+                }
+
+                @Override
+                public void onAuthenticationFailure() {
+                    Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
+                }
+            });
+            authenticationPassword.initialize();
+        }
     }
+
 
     @Override
     public boolean promptPIN(Context context, int channel, final Promise promise) {
