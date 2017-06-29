@@ -405,9 +405,7 @@ public class SharedPreferencesManager extends SingletonBase {
      */
     public List<MapCard> getMapCardList(String pUserID) {
         List<MapCard> mappedCardList = new ArrayList<>();
-
         String keyList = getMapCardKeyList(pUserID);
-
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
                 String strMappedCard = getMap(pUserID, key);
@@ -420,68 +418,46 @@ public class SharedPreferencesManager extends SingletonBase {
                 }
             }
         }
-
         return mappedCardList;
     }
 
     public List<BankAccount> getBankAccountList(String pUserID) {
         List<BankAccount> bankAccountList = new ArrayList<>();
-
         String keyList = getBankAccountKeyList(pUserID);
-
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
                 String strMappedCard = getMap(pUserID, key);
-
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     BankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, BankAccount.class);
-
                     if (bankAccount != null) {
                         bankAccountList.add(bankAccount);
                     }
                 }
             }
         }
-
         return bankAccountList;
     }
 
-    /***
-     * clear map card list on cache
-     * @param pUserId
-     * @return
-     */
-    public boolean resetMapCardListOnCache(String pUserId) {
-        //remove all card info
+    public boolean resetMapCardListCache(String pUserId) {
         String keyList = getMapCardKeyList(pUserId);
-
-        if (!TextUtils.isEmpty(keyList)) {
-            for (String key : keyList.split(Constants.COMMA)) {
-                setMap(pUserId, key, null);
-            }
-        }
-
-        //remove card id list
+        resetMap(pUserId, keyList);
         setMapCardList(pUserId, null);
-
         return true;
     }
 
-    /***
-     * clear bank list map on cache
-     * @param pUserId
-     * @return
-     */
-    public boolean resetBankListOnCache(String pUserId) {
+    public boolean resetBankAccountListCache(String pUserId) {
         String keyList = getBankAccountKeyList(pUserId);
-        if (!TextUtils.isEmpty(keyList)) {
-            for (String key : keyList.split(Constants.COMMA)) {
+        resetMap(pUserId, keyList);
+        setBankAccountKeyList(pUserId, null);
+        return true;
+    }
+
+    private void resetMap(String pUserId, String pKeyList) {
+        if (!TextUtils.isEmpty(pKeyList)) {
+            for (String key : pKeyList.split(Constants.COMMA)) {
                 setMap(pUserId, key, null);
             }
         }
-        //remove bank id list
-        setBankAccountKeyList(pUserId, null);
-        return true;
     }
 
     public boolean setApp(String pId, String pConfig) {

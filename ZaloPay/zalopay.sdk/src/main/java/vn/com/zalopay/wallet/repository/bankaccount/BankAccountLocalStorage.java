@@ -24,6 +24,33 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     }
 
     @Override
+    public void resetBankAccountCacheList(String userId) {
+        mSharedPreferences.resetBankAccountListCache(userId);
+    }
+
+    @Override
+    public void resetBankAccountCache(String userId, String first6cardno, String last4cardno) {
+        String cardKey = first6cardno + last4cardno;
+        mSharedPreferences.setMap(userId, cardKey, null);
+        String keyList = mSharedPreferences.getBankAccountKeyList(userId);
+        if (!TextUtils.isEmpty(keyList)) {
+            String[] keys = keyList.split(Constants.COMMA);
+            StringBuilder keyBuilder = new StringBuilder();
+            if (keyList.length() > 0) {
+                for (int i = 0; i < keys.length; i++) {
+                    if (!keys[i].equals(cardKey)) {
+                        keyBuilder.append(keys[i]);
+                        if (i < keys.length) {
+                            keyBuilder.append(Constants.COMMA);
+                        }
+                    }
+                }
+            }
+            setBankAccountKeyList(userId, keyBuilder.toString());
+        }
+    }
+
+    @Override
     public void put(String pUserId, String checkSum, List<BankAccount> bankAccountList) {
         if (!needUpdate(checkSum)) {
             Timber.d("bank account list in cache is valid - skip update");
@@ -31,25 +58,22 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
         }
         try {
             Timber.d("start update bank account list on cache");
-            //update checksum
             mSharedPreferences.setBankAccountCheckSum(checkSum);
             if (bankAccountList != null && bankAccountList.size() > 0) {
                 StringBuilder keyList = new StringBuilder();
                 int count = 0;
                 for (BaseMap bankAccount : bankAccountList) {
                     count++;
-                    setAccount(pUserId, bankAccount);
+                    setBankAccount(pUserId, bankAccount);
                     keyList.append(bankAccount.getKey());
                     if (count < bankAccountList.size()) {
                         keyList.append(Constants.COMMA);
                     }
                 }
                 //cache map list
-                setKeyList(pUserId, keyList.toString());
-                Log.d(this, "save map bank account key list", keyList.toString());
+                setBankAccountKeyList(pUserId, keyList.toString());
             } else {
-                //clear back account list
-                mSharedPreferences.resetBankListOnCache(pUserId);
+                resetBankAccountCacheList(pUserId);
                 Timber.d("clear bank account list");
             }
         } catch (Exception e) {
@@ -90,7 +114,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     }
 
     @Override
-    public void setAccount(String userid, BaseMap bankAccount) {
+    public void setBankAccount(String userid, BaseMap bankAccount) {
         if (bankAccount == null) {
             return;
         }
@@ -99,7 +123,17 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     }
 
     @Override
-    public void setKeyList(String userid, String keyList) {
+    public BankAccount getBankAccount(String userid, String key) {
+        String map = mSharedPreferences.getMap(userid, key);
+        BankAccount bankAccount = null;
+        if (!TextUtils.isEmpty(map)) {
+            bankAccount = GsonUtils.fromJsonString(map, BankAccount.class);
+        }
+        return bankAccount;
+    }
+
+    @Override
+    public void setBankAccountKeyList(String userid, String keyList) {
         mSharedPreferences.setBankAccountKeyList(userid, keyList);
     }
 

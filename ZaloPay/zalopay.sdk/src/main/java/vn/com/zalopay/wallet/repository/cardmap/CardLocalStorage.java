@@ -7,11 +7,11 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -21,6 +21,33 @@ import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 public class CardLocalStorage extends AbstractLocalStorage implements CardStore.LocalStorage {
     public CardLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
         super(sharedPreferencesManager);
+    }
+
+    @Override
+    public void resetMapCardCache(String userId, String first6cardno, String last4cardno) {
+        String cardKey = first6cardno + last4cardno;
+        mSharedPreferences.setMap(userId, cardKey, null);
+        String keyList = getCardKeyList(userId);
+        if (!TextUtils.isEmpty(keyList)) {
+            String[] keys = keyList.split(Constants.COMMA);
+            StringBuilder keyBuilder = new StringBuilder();
+            if (keyList.length() > 0) {
+                for (int i = 0; i < keys.length; i++) {
+                    if (!keys[i].equals(cardKey)) {
+                        keyBuilder.append(keys[i]);
+                        if (i < keys.length) {
+                            keyBuilder.append(Constants.COMMA);
+                        }
+                    }
+                }
+            }
+            setCardKeyList(userId, keyBuilder.toString());
+        }
+    }
+
+    @Override
+    public void resetMapCardCacheList(String userId) {
+        mSharedPreferences.resetMapCardListCache(userId);
     }
 
     @Override
@@ -91,22 +118,20 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
             Timber.d("start update map card list on cache");
             mSharedPreferences.setCardInfoCheckSum(checkSum);
             if (cardList != null && cardList.size() > 0) {
-                StringBuilder mappCardID = new StringBuilder();
+                StringBuilder keyListBuilder = new StringBuilder();
                 int count = 0;
                 for (BaseMap card : cardList) {
                     count++;
                     setCard(pUserId, card);
-                    mappCardID.append(card.getKey());
+                    keyListBuilder.append(card.getKey());
                     if (count < cardList.size()) {
-                        mappCardID.append(Constants.COMMA);
+                        keyListBuilder.append(Constants.COMMA);
                     }
                 }
                 //key map list
-                setCardKeyList(pUserId, mappCardID.toString());
-                Log.d(this, "save map card list", mappCardID.toString());
+                setCardKeyList(pUserId, keyListBuilder.toString());
             } else {
-                //clear map card list
-                mSharedPreferences.resetMapCardListOnCache(pUserId);
+                resetMapCardCacheList(pUserId);
                 Timber.d("clear map card list");
             }
         } catch (Exception e) {

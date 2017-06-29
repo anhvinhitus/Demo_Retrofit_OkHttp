@@ -1,11 +1,15 @@
 package vn.com.zalopay.wallet.interactor;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Func1;
+import timber.log.Timber;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -25,6 +29,51 @@ public class LinkInteractor implements ILink {
     public LinkInteractor(CardStore.Repository cardRepository, BankAccountStore.Repository bankAccountRepository) {
         this.cardRepository = cardRepository;
         this.bankAccountRepository = bankAccountRepository;
+    }
+
+    @Override
+    public Subscription refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
+        if (TextUtils.isEmpty(first6cardno) || TextUtils.isEmpty(last4cardno)) {
+            return refreshAll(appVersion, userId, accessToken);
+        } else {
+            return refreshMap(appVersion, userId, accessToken, first6cardno, last4cardno);
+        }
+    }
+
+    private Subscription refreshAll(String appVersion, String userId, String accessToken) {
+        this.bankAccountRepository.getLocalStorage().resetBankAccountCacheList(userId);
+        this.cardRepository.getLocalStorage().resetMapCardCacheList(userId);
+        return getMap(userId, accessToken, true, appVersion)
+                .subscribe(aBoolean -> Timber.d("reload card and bank account"),
+                        throwable -> Timber.d("reload card and bank account on error %s", throwable));
+    }
+
+    /***
+     * refesh map list depend on bank code
+     * @param appVersion
+     * @param userId
+     * @param accessToken
+     * @param first6cardno
+     * @param last4cardno
+     * @return
+     */
+    private Subscription refreshMap(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
+        String key = first6cardno + last4cardno;
+        MapCard mapCard = getCard(userId, key);
+        BankAccount bankAccount = getBankAccount(userId, key);
+        if (mapCard != null && !TextUtils.isEmpty(mapCard.bankcode)) {
+            this.cardRepository.getLocalStorage().resetMapCardCache(userId, first6cardno, last4cardno);
+            return getCards(userId, accessToken, true, appVersion)
+                    .subscribe(aBoolean -> Timber.d("reload card list"),
+                            throwable -> Timber.d("reload card list on error %s", throwable));
+        } else if (bankAccount != null && !TextUtils.isEmpty(bankAccount.bankcode)) {
+            this.bankAccountRepository.getLocalStorage().resetBankAccountCache(userId, first6cardno, last4cardno);
+            return getBankAccounts(userId, accessToken, true, appVersion)
+                    .subscribe(aBoolean -> Timber.d("reload bank account"),
+                            throwable -> Timber.d("reload bank account on error %s", throwable));
+        } else {
+            return refreshAll(appVersion, userId, accessToken);
+        }
     }
 
     @Override
@@ -88,5 +137,10 @@ public class LinkInteractor implements ILink {
     @Override
     public MapCard getCard(String userid, String cardKey) {
         return cardRepository.getLocalStorage().getCard(userid, cardKey);
+    }
+
+    @Override
+    public BankAccount getBankAccount(String userid, String key) {
+        return bankAccountRepository.getLocalStorage().getBankAccount(userid, key);
     }
 }

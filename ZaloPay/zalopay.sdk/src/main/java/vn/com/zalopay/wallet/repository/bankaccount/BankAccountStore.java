@@ -7,10 +7,10 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
+import vn.com.zalopay.wallet.constants.Constants;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -26,9 +26,15 @@ public class BankAccountStore {
 
         List<BankAccount> getBankAccountList(String userid);
 
-        void setAccount(String userid, BaseMap bankAccount);
+        void resetBankAccountCache(String userId, String first6cardno, String last4cardno);
 
-        void setKeyList(String userid, String keyList);
+        void resetBankAccountCacheList(String userId);
+
+        void setBankAccount(String userid, BaseMap bankAccount);
+
+        BankAccount getBankAccount(String userid, String key);
+
+        void setBankAccountKeyList(String userid, String keyList);
 
         void clearCheckSum();
     }

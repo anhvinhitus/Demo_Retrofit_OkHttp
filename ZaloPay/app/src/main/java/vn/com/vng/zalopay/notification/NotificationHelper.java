@@ -35,7 +35,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -71,6 +70,7 @@ import vn.zalopay.promotion.PromotionEvent;
  */
 
 public class NotificationHelper {
+    private static final int AREA_SKIP = 6;
     private final int NOTIFICATION_ID = 1;
     private final NotificationStore.Repository mNotifyRepository;
     private final AccountStore.Repository mAccountRepository;
@@ -81,14 +81,10 @@ public class NotificationHelper {
     private final User mUser;
     private final EventBus mEventBus;
     private final UserConfig mUserConfig;
-
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private List<Long> mListPacketIdToRecovery = new ArrayList<>();
-
     private IResourceLoader mResourceLoader;
     private PromotionHelper mPromotionHelper;
-
-    private static final int AREA_SKIP = 6;
 
     @Inject
     NotificationHelper(Context applicationContext, User user,
@@ -173,7 +169,7 @@ public class NotificationHelper {
                 resetPaymentPassword();
                 break;
             case NotificationType.LINK_CARD_EXPIRED:
-                reloadMapCardList(notify);
+                refreshMapList(notify);
                 break;
             case NotificationType.APP_P2P_NOTIFICATION:
                 skipStorage = processAppP2PNotification(notify, isRecovery);
@@ -221,6 +217,24 @@ public class NotificationHelper {
             this.putNotification(notify);
         }
 
+    }
+
+    private void refreshMapList(NotificationData notify) {
+        JsonObject embeddata = notify.getEmbeddata();
+        String first6cardno = null;
+        String last4cardno = null;
+        try {
+            if (embeddata != null) {
+                first6cardno = embeddata.get("first6cardno").getAsString();
+                last4cardno = embeddata.get("last4cardno").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.d("parse notification 112 on error %s", e.getMessage());
+        }
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .refreshMapList(BuildConfig.VERSION_NAME, mUser.zaloPayId, mUser.accesstoken, first6cardno, last4cardno);
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -441,15 +455,6 @@ public class NotificationHelper {
             Timber.d(ex, "Extract RedPacket error");
         }
 
-    }
-
-    private void reloadMapCardList(NotificationData data) {
-        Subscription subscription = SDKApplication.getApplicationComponent()
-                .linkInteractor()
-                .getMap(mUser.zaloPayId, mUser.accesstoken, true, BuildConfig.VERSION_NAME)
-                .subscribe(aBoolean -> Timber.d("reload card and bank account"),
-                        throwable -> Timber.d("reload card and bank account on error %s", throwable));
-        mCompositeSubscription.add(subscription);
     }
 
     private void payOrderFromNotify(NotificationData notify) {

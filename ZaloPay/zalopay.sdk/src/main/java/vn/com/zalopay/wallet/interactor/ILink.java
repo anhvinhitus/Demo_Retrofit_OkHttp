@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.interactor;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscription;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
@@ -21,7 +22,11 @@ public interface ILink {
 
     MapCard getCard(String userid, String cardKey);
 
+    BankAccount getBankAccount(String userid, String key);
+
     List<BankAccount> getBankAccountList(String userid);
+
+    Subscription refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);
 
     void putBankAccounts(String userid, String checksum, List<BankAccount> bankAccountList);
 }
