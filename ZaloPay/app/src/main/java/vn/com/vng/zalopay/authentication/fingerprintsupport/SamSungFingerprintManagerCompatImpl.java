@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.authentication.fingerprintsupport;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.os.CancellationSignal;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ final class SamSungFingerprintManagerCompatImpl implements FingerprintManagerCom
     private WeakReference<FingerprintManagerCompat.AuthenticationCallback> mCallbackFingerprint;
 
     SamSungFingerprintManagerCompatImpl(Context context) {
-        mHandler = new Handler(mCallback);
+        mHandler = new Handler(Looper.getMainLooper(), mCallback);
         Spass s;
         try {
             s = new Spass();
