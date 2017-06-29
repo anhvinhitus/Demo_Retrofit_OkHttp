@@ -175,6 +175,9 @@ public class NotificationHelper {
             case NotificationType.LINK_CARD_EXPIRED:
                 reloadMapCardList(notify);
                 break;
+            case NotificationType.APP_P2P_NOTIFICATION:
+                skipStorage = processAppP2PNotification(notify, isRecovery);
+                break;
         }
 
         if (isRecovery) {
@@ -195,10 +198,6 @@ public class NotificationHelper {
                 if (!notify.isRead()) {
                     mEventBus.post(notify);
                 }
-                break;
-            case NotificationType.APP_P2P_NOTIFICATION:
-                mEventBus.post(notify);
-                skipStorage = processAppP2PNotification(notify);
                 break;
             case NotificationType.MERCHANT_BILL:
                 payOrderFromNotify(notify);
@@ -247,8 +246,9 @@ public class NotificationHelper {
         }
 
         return skipStorage;
-}
-    private boolean processAppP2PNotification(NotificationData notify) {
+    }
+
+    private boolean processAppP2PNotification(NotificationData notify, boolean isRecovery) {
         try {
             JsonObject embeddata = notify.getEmbeddata();
             int type = embeddata.get("type").getAsInt();
@@ -256,9 +256,13 @@ public class NotificationHelper {
 
             switch (type) {
                 case Constants.AppP2PNotificationType.QR_TRANSFER:
+                    if (!isRecovery) {
+                        mEventBus.post(notify);
+                    }
                     skipStorage = true;
                     break;
                 case Constants.AppP2PNotificationType.SEND_THANK_MESSAGE:
+                    mEventBus.post(notify);
                     String message = embeddata.get("message").getAsString();
                     String displayName = embeddata.get("displayname").getAsString();
                     long transId = embeddata.get("transid").getAsLong();
