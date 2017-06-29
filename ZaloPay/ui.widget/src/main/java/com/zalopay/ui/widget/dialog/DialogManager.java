@@ -355,8 +355,9 @@ public class DialogManager {
                 return;
             }
 
+            final WeakReference<Activity> activity = new WeakReference<Activity>(pActivity);
             if (mConfirmSweetDialog == null) {
-                mConfirmSweetDialog = new SweetAlertDialog(pActivity);
+                mConfirmSweetDialog = new SweetAlertDialog(activity.get());
             }
 
             if (mConfirmSweetDialog.isShowing()) {
@@ -372,7 +373,7 @@ public class DialogManager {
             mConfirmSweetDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null && !pActivity.isFinishing() && sDialog != null) {
+                    if (activity.get() != null && !activity.get().isFinishing() && sDialog != null) {
                         sDialog.dismiss();
                     }
                     if (mConfirmSweetDialog != null) {
@@ -387,7 +388,7 @@ public class DialogManager {
             }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (pActivity != null && !pActivity.isFinishing() && sDialog != null) {
+                    if (activity.get() != null && !activity.get().isFinishing() && sDialog != null) {
                         sDialog.dismiss();
                     }
                     if (mConfirmSweetDialog != null) {
