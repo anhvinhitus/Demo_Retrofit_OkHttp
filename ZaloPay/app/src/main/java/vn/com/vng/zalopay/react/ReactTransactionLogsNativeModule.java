@@ -414,10 +414,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                            Helpers.promiseResolveSuccess(promise, "");
                             startReactNativeApp(appid, transid);
                         } else {
-                            Helpers.promiseResolveError(promise, -1, "App disabled");
+                            startReactNativeApp(1, transid);
                         }
                     }
                 });
