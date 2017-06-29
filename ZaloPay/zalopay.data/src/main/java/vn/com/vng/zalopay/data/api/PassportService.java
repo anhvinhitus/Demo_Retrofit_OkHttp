@@ -20,7 +20,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public interface PassportService {
 
-    @API_NAME(https = ZPEvents.API_UM_CREATEACCESSTOKEN, connector = ZPEvents.CONNECTOR_UM_CREATEACCESSTOKEN)
+    @API_NAME(https = ZPEvents.API_UM_LOGINVIAZALO, connector = ZPEvents.CONNECTOR_UM_LOGINVIAZALO)
     @FormUrlEncoded
     @POST(Constants.UM_API.LOGINVIAZALO)
     Observable<LoginResponse> login(@Field("appid") long appid, @Field("zaloid") long zaloid, @Field("oauthcode") String oauthcode);
@@ -37,10 +37,12 @@ public interface PassportService {
     @POST(Constants.UM_API.VERIFYCODETEST)
     Observable<VerifyInvitationCodeResponse> verifyCode(@Field("userid") String uid, @Field("accesstoken") String accesstoken, @Field("codetest") String codetest);
 
+    @API_NAME(https = ZPEvents.API_UM_REGISTERPHONENUMBER, connector = ZPEvents.CONNECTOR_UM_REGISTERPHONENUMBER)
     @FormUrlEncoded
     @POST(Constants.UM_API.REGISTERPHONENUMBER)
     Observable<BaseResponse> registerPhoneNumber(@Query("zaloid") long zaloid, @Query("oauthcode") String oauthcode, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
+    @API_NAME(https = ZPEvents.API_UM_AUTHENPHONENUMBER, connector = ZPEvents.CONNECTOR_UM_AUTHENPHONENUMBER)
     @FormUrlEncoded
     @POST(Constants.UM_API.AUTHENPHONENUMBER)
     Observable<LoginResponse> authenticatePhoneNumber(@Query("zaloid") long zaloid, @Query("oauthcode") String oauthcode, @Field("otp") String otp);
