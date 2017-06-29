@@ -271,5 +271,7 @@ public class SDKPayment {
             return true;
         }
         return false;
+<<<<<<< Updated upstream
     }*/
+
 }

@@ -274,7 +274,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 case Activity.RESULT_OK:
                     if (data != null) {
                         try {
-                            Timber.d("onActivityResult data %s",data);
+                            Timber.d("onActivityResult data %s", data);
                             setResult(MAP_POPUP_RESULT_CODE, data);
                             getViewOrThrow().terminate();
                         } catch (Exception e) {
@@ -739,6 +739,12 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         addSubscription(subscription);
     }
 
+    public void setTextSubmitButton() {
+        if (getAdapter() != null) {
+            getView().setTextSubmitBtn(getAdapter().getPaymentInfoHelper().getAppId(), GlobalData.getAppContext().getString(R.string.sdk_button_show_info_txt));
+        }
+    }
+
     @Override
     public void onResourceError(Throwable throwable) {
         Timber.w("init resource error", throwable);
@@ -751,6 +757,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             String resPath = platformInteractor.getUnzipPath();
             if (!TextUtils.isEmpty(resPath)) {
                 StorageUtil.deleteRecursive(new File(resPath));
+
             }
         } catch (Exception e) {
             Timber.d(e);

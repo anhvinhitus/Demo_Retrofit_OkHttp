@@ -600,7 +600,8 @@
     <string name="sdk_topup_password_title_text">Nhập mật khẩu thanh toán để nạp tiền bằng</string>
     <string name="sdk_withdraw_password_title_text">Nhập mật khẩu thanh toán để rút tiền về</string>
     <string name="sdk_transfer_password_title_text">Nhập mật khẩu thanh toán để chuyển tiền bằng</string>
-
     <string name="sdk_loading_timeout">Quá trình xử lý hết  hiệu lực, vui lòng thực hiện lại giao dịch!</string>
     <string name="sdk_warning_no_channel">Không hỗ trợ mệnh giá thanh toán này</string>
+    <string name="sdk_button_show_info_txt">Xem Chi Tiết</string>
+
 </resources>

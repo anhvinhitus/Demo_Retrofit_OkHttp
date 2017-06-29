@@ -57,6 +57,7 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
+import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
@@ -383,6 +384,9 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 if (mResourceRender != null) {
                     mResourceRender.render();
                     mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
+                    if (screenName.equals(PAGE_SUCCESS)) {
+                        mPresenter.setTextSubmitButton();
+                    }
                 } else {
                     Timber.d("resource render is null");
                 }
@@ -394,6 +398,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Log.e(this, e);
             showError(getString(R.string.zpw_string_error_layout));
         }
+        Timber.d("renderSuccess() renderByResource= " + screenName);
     }
 
     @Override
@@ -407,6 +412,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                     ViewTreeObserver obs = buttonWrapper.getViewTreeObserver();
                     obs.removeGlobalOnLayoutListener(this);
                     renderByResource(screenName);
+                    Timber.d("renderSuccess() renderResourceAfterDelay");
                 }
             });
         } else {
@@ -667,12 +673,13 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         }
         //anim success icon
         ViewUtils.animIcon(getActivity(), R.id.success_imageview);
-        changeSubmitButtonBackground();
+        changeSubmitButtonBackground((int) order.appid);
         //update title
         setTitle(pToolbarTitle);
         updateToolBar();
         enableSubmitBtn();
     }
+
 
     public void renderFail(boolean isLink, String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
                            boolean visibleTrans, String pToolBarTitle) {
@@ -704,7 +711,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             }
         }
         ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
-        changeSubmitButtonBackground();
+        changeSubmitButtonBackground((int) order.appid);
         //update title
         setTitle(pToolBarTitle);
         updateToolBar();
@@ -724,11 +731,30 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         toast.show();
     }
 
-    private void changeSubmitButtonBackground() {
+    private void changeSubmitButtonBackground(int appID) {
         Button close_btn = (Button) findViewById(R.id.zpsdk_btn_submit);
-        if (close_btn != null) {
-            close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_grey));
-            close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
+        switch (appID) {
+            case 12:
+                if (close_btn != null) {
+                    close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.button_text_color));
+                    close_btn.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
+                    return;
+                }
+                break;
+            default:
+                if (close_btn != null) {
+                    close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_grey));
+                    close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
+                    return;
+                }
+        }
+    }
+
+    @Override
+    public void setTextSubmitBtn(Long appID, String pText) {
+        Button button = (Button) findViewById(R.id.zpsdk_btn_submit);
+        if (button != null && appID == 12) {
+            button.setText(pText);
         }
     }
 
