@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -115,6 +116,13 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             return null;
         }
         return mView.getActivity();
+    }
+
+    public Fragment getFragment() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getFragment();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -232,7 +240,8 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     public void addLinkCard() {
-        mNavigator.startLinkCardActivityForResult(getActivity(), "123PVTB");
+//        mNavigator.startLinkCardActivityForResult(getActivity(), "123PVTB");
+        mNavigator.startBankSupportSelectionActivityWithoutBank(getContext());
     }
 }
 

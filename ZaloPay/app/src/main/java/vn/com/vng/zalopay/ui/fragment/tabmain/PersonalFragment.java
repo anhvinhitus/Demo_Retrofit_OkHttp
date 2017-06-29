@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -150,6 +151,11 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
                 tvBankLink.setText(getString(R.string.personal_link_now_text));
             }
         }
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
 //    @Override

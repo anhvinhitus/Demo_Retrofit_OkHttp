@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -26,4 +27,6 @@ public interface IPersonalView {
     Context getContext();
 
     Activity getActivity();
+
+    Fragment getFragment();
 }

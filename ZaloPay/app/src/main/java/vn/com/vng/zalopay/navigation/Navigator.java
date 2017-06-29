@@ -287,6 +287,10 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANK);
     }
 
+    public void startBankSupportSelectionActivityWithoutBank(Context context) {
+        startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, true, false, false, false);
+    }
+
     @Override
     public void startLinkCardActivity(Context context) {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false, false);

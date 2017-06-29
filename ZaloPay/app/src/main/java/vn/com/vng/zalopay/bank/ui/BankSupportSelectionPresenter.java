@@ -140,8 +140,12 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
     }
 
-    void linkCard() {
+    protected void linkCard() {
         setResultDoLinkCard();
+    }
+
+    protected void linkAccount(String cardCode) {
+        setResultDoLinkAccount(cardCode);
     }
 
     private void setResultActivity(BankAction bankAction, BaseMap bankInfo) {
@@ -160,6 +164,15 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
 
     private void setResultDoLinkCard() {
         getActivity().setResult(Constants.RESULT_DO_LINK_CARD);
+        getActivity().finish();
+    }
+
+    private void setResultDoLinkAccount(String cardCode) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent();
+        bundle.putString(Constants.BANK_DATA_RESULT_AFTER_LINK, cardCode);
+        intent.putExtras(bundle);
+        getActivity().setResult(Constants.RESULT_DO_LINK_ACCOUNT, intent);
         getActivity().finish();
     }
 

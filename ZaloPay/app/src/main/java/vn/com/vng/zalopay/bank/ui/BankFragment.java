@@ -167,6 +167,12 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                 }
             } else if (resultCode == Constants.RESULT_DO_LINK_CARD) {
                 mPresenter.linkCard();
+            } else if (resultCode == Constants.RESULT_DO_LINK_ACCOUNT) {
+                String cardCode = "";
+                if (data != null) {
+                    cardCode = data.getStringExtra(Constants.BANK_DATA_RESULT_AFTER_LINK);
+                }
+                mPresenter.linkAccount(cardCode);
             }
             return;
         }
