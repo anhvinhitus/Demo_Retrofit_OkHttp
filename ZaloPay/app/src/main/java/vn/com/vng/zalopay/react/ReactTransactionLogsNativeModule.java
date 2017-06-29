@@ -423,6 +423,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                         } else {
                             startReactNativeApp(1, transid);
                         }
+                        Helpers.promiseResolve(promise, 1);
                     }
                 });
         mCompositeSubscription.add(subscription);
