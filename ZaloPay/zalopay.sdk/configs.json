@@ -1,12 +1,12 @@
 {
   "configs": {
-    "build_version" : "1.0.21",
-    "host_complete" : "payment-complete",
-    "resource_folder" : "/wallet/",
-    "platform_code" : "android",
+    "build_version": "1.0.21",
+    "host_complete": "payment-complete",
+    "resource_folder": "/wallet/",
+    "platform_code": "android",
     "package_playstore": "vn.com.vng.zalopay",
-    "zalopay_id" : "1",
-    "withdrawapp_id" : "2",
+    "zalopay_id": "1",
+    "withdrawapp_id": "2",
     "level_allow_use_zalopay": "2",
     "level_allow_cardmap": "2",
     "level_allow_withdraw": "2",
@@ -17,6 +17,7 @@
     "channel_bankaccount": "37",
     "channel_credit_card": "36",
     "channel_atm": "39",
-    "cc_code": "123PCC"
+    "cc_code": "123PCC",
+    "cache_timeout": "600000"
   }
 }

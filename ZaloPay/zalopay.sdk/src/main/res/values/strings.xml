@@ -160,6 +160,8 @@
 
     <string name="zpw_conf_gwinfo_bank_account_list">bank_account_list_</string>
 
+    <string name="zpw_conf_gwinfo_map_expire_time">map_expire_time</string>
+
     <string name="sdk_pay_title">Thanh toán</string>
     <string name="sdk_topup_title">Nạp tiền</string>
     <string name="sdk_transfer_title">Chuyển tiền</string>

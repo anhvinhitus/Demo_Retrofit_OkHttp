@@ -352,9 +352,14 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
 
-    /***
-     * save map card
-     */
+    public boolean setMapExpireTime(long timestamp){
+        return setLong(mContext.get().getResources().getString(R.string.zpw_conf_gwinfo_map_expire_time), timestamp);
+    }
+
+    public long getMapExpireTime(){
+        return getLong(mContext.get().getResources().getString(R.string.zpw_conf_gwinfo_map_expire_time));
+    }
+
     public boolean setMap(String pUserId, String pKey, String pConfig) {
         try {
             StringBuilder stringBuilder = new StringBuilder();

@@ -6,6 +6,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
@@ -39,6 +40,15 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     @Override
     public void resetMapCardCacheList(String userId) {
         mSharedPreferences.resetMapCardListCache(userId);
+    }
+
+    public long expireTime() {
+        return mSharedPreferences.getMapExpireTime();
+    }
+
+    @Override
+    public void setExpireTime(long time) {
+        mSharedPreferences.setMapExpireTime(time);
     }
 
     @Override
@@ -108,6 +118,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         try {
             Timber.d("start update map card list on cache");
             mSharedPreferences.setCardInfoCheckSum(checkSum);
+            setExpireTime(System.currentTimeMillis() + BuildConfig.cache_timeout);
             if (cardList != null && cardList.size() > 0) {
                 StringBuilder keyListBuilder = new StringBuilder();
                 int count = 0;

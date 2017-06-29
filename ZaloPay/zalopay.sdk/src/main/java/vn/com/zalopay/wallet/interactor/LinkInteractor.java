@@ -144,9 +144,11 @@ public class LinkInteractor implements ILink {
 
     @Override
     public Observable<Boolean> getMap(String userid, String accesstoken, boolean pReload, String appversion) {
-        return Observable.zip(getCards(userid, accesstoken, pReload, appversion),
+        Observable<Boolean> mapObservable = Observable.zip(getCards(userid, accesstoken, pReload, appversion),
                 getBankAccounts(userid, accesstoken, pReload, appversion),
                 (finishLoadCard, finishLoadBankAccount) -> finishLoadCard && finishLoadBankAccount);
+        return Observable.concat(expireObservable(),mapObservable)
+                .first(stopStream -> stopStream);
     }
 
     @Override
@@ -167,5 +169,10 @@ public class LinkInteractor implements ILink {
     @Override
     public BankAccount getBankAccount(String userid, String key) {
         return bankAccountRepository.getLocalStorage().getBankAccount(userid, key);
+    }
+
+    private Observable<Boolean> expireObservable(){
+        boolean expire = cardRepository.getLocalStorage().expireTime() > System.currentTimeMillis();
+        return Observable.just(expire);
     }
 }

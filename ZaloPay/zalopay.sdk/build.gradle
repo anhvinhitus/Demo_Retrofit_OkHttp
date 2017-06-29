@@ -48,6 +48,8 @@ android {
         buildConfigField 'int', 'channel_bankaccount', configJson.configs.channel_bankaccount
         buildConfigField 'int', 'channel_credit_card', configJson.configs.channel_credit_card
         buildConfigField 'int', 'channel_atm', configJson.configs.channel_atm
+
+        buildConfigField 'long', 'cache_timeout', configJson.configs.cache_timeout
     }
 
     compileOptions {
