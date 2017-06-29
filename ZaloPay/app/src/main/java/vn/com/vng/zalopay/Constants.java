@@ -158,8 +158,4 @@ public interface Constants {
         String SECURED = "Secured/";
     }
 
-    interface AppP2PNotificationType {
-        int QR_TRANSFER = 1;
-        int SEND_THANK_MESSAGE = 2;
-    }
 }

@@ -239,7 +239,7 @@ public class NotificationHelper {
 
         try {
             int type = embeddata.get("type").getAsInt();
-            if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            if (type == NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE) {
                 skipStorage = false;
             }
         } catch (Exception ignore) {
@@ -255,14 +255,13 @@ public class NotificationHelper {
             boolean skipStorage = false;
 
             switch (type) {
-                case Constants.AppP2PNotificationType.QR_TRANSFER:
+                case NotificationType.AppP2PNotificationType.QR_TRANSFER:
                     if (!isRecovery) {
                         mEventBus.post(notify);
                     }
                     skipStorage = true;
                     break;
-                case Constants.AppP2PNotificationType.SEND_THANK_MESSAGE:
-                    mEventBus.post(notify);
+                case NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE:
                     String message = embeddata.get("message").getAsString();
                     String displayName = embeddata.get("displayname").getAsString();
                     long transId = embeddata.get("transid").getAsLong();
