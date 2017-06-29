@@ -1,13 +1,2 @@
-Zalo Pay (Staging v2.14.0 - build 292) - Released on 2017-06-29 09:46
-+ [React] Update flow new usercomponent by hieuvm (#2b785cb)
-+ [Profile] Update flow new usercomponent by hieuvm (#aaf9ae6)
-+ [Notification] Task#646 : Recovery notification 109 - type 2 by hieuvm (#d073d15)
-+ [Analytics] Task#642 : Update analytics events for flow thanh toán by hieuvm (#2c79d5f)
-+ [Analytics] Task#638 : Update timing api passport by hieuvm (#d2a7172)
-+ [Analytics] Update Analytics 1.28 by hieuvm (#7a92126)
-+ [SDK] Clear code by lytm (#1a37b0f)
-+ [Dialog] update weakreference Activity DialogConfirm by lytm (#29d10e5)
-+ [Password] Show password khi vào danh sách thẻ liên kết by lytm (#a0d76ae)
-+ [SDK] Update title when input password fail by lytm (#e46cb6e)
-+ [SDK] Update color submit button by lytm (#1499b2b)
-+ [SDK] Update screen success view by lytm (#a192771)
+Zalo Pay (Sandbox v2.14.0 - build 293) - Released on 2017-06-29 09:46
+
