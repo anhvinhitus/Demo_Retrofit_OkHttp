@@ -4,9 +4,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
-import java.util.List;
-
-import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -47,6 +44,8 @@ public interface ChannelContract extends IContract {
         void renderResourceAfterDelay(String screenName);
 
         void enableSubmitBtn();
+
+        void setTextSubmitBtn(Long appID, String pText);
 
         void disableSubmitBtn();
 
