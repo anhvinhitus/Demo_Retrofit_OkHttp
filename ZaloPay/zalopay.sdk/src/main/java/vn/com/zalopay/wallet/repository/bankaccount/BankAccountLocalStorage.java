@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.helper.ListUtils;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -30,24 +31,14 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
 
     @Override
     public void resetBankAccountCache(String userId, String first6cardno, String last4cardno) {
-        String cardKey = first6cardno + last4cardno;
-        mSharedPreferences.setMap(userId, cardKey, null);
+        String accountKey = first6cardno + last4cardno;
+        mSharedPreferences.setMap(userId, accountKey, null);
         String keyList = mSharedPreferences.getBankAccountKeyList(userId);
-        if (!TextUtils.isEmpty(keyList)) {
-            String[] keys = keyList.split(Constants.COMMA);
-            StringBuilder keyBuilder = new StringBuilder();
-            if (keyList.length() > 0) {
-                for (int i = 0; i < keys.length; i++) {
-                    if (!keys[i].equals(cardKey)) {
-                        keyBuilder.append(keys[i]);
-                        if (i < keys.length) {
-                            keyBuilder.append(Constants.COMMA);
-                        }
-                    }
-                }
-            }
-            setBankAccountKeyList(userId, keyBuilder.toString());
+        if (TextUtils.isEmpty(keyList)) {
+            return;
         }
+        String accountKeyList = ListUtils.filterMapKey(keyList, accountKey);
+        setBankAccountKeyList(userId, accountKeyList);
     }
 
     @Override

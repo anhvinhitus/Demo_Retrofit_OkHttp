@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.helper.ListUtils;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -28,21 +29,11 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         String cardKey = first6cardno + last4cardno;
         mSharedPreferences.setMap(userId, cardKey, null);
         String keyList = getCardKeyList(userId);
-        if (!TextUtils.isEmpty(keyList)) {
-            String[] keys = keyList.split(Constants.COMMA);
-            StringBuilder keyBuilder = new StringBuilder();
-            if (keyList.length() > 0) {
-                for (int i = 0; i < keys.length; i++) {
-                    if (!keys[i].equals(cardKey)) {
-                        keyBuilder.append(keys[i]);
-                        if (i < keys.length) {
-                            keyBuilder.append(Constants.COMMA);
-                        }
-                    }
-                }
-            }
-            setCardKeyList(userId, keyBuilder.toString());
+        if (TextUtils.isEmpty(keyList)) {
+            return;
         }
+        String cardKeyList = ListUtils.filterMapKey(keyList, cardKey);
+        setCardKeyList(userId, cardKeyList);
     }
 
     @Override
