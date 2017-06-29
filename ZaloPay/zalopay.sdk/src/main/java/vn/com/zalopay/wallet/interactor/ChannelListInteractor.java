@@ -100,6 +100,20 @@ public class ChannelListInteractor {
         mSubscription.add(subscription);
     }
 
+    public void subscribeOnPaymentReady(OnPaymentReadyListener listener) {
+        if (mPaymentInfoReadyMessage == null) {
+            mPaymentReadyListener = listener;
+        } else {
+            mPaymentReadyListener = listener;
+            postReadyMessage();
+        }
+    }
+
+    public void cleanup() {
+        cancelCurrentTask(null);
+        mPaymentInfoReadyMessage = null;
+    }
+
     private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, Boolean aBoolean, BankConfigResponse bankConfigResponse) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
@@ -124,15 +138,6 @@ public class ChannelListInteractor {
 //            readyForPayment();
         } catch (Exception e) {
             Timber.d(e.getMessage());
-        }
-    }
-
-    public void subscribeOnPaymentReady(OnPaymentReadyListener listener) {
-        if (mPaymentInfoReadyMessage == null) {
-            mPaymentReadyListener = listener;
-        } else {
-            mPaymentReadyListener = listener;
-            postReadyMessage();
         }
     }
 

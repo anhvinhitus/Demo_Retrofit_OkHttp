@@ -221,6 +221,7 @@ public class SDKPayment {
             GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
         }
         SingletonLifeCircleManager.disposeAll();
+        SDKApplication.getApplicationComponent().channelListInteractor().cleanup();
     }
 
      /*private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
