@@ -53,6 +53,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkInvalidDataMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
+import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
@@ -60,6 +61,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -203,9 +205,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 appName = appInfo.appname;
             }
             getViewOrThrow().renderAppInfo(appName);
-            if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
-                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
-            }
+//            if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
+//                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
+//            }
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -438,7 +440,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 return;
             }
             //check app info whether this transaction is allowed or not
-            loadAppInfo();
+//            loadAppInfo();
+            startSubscribePaymentReadyMessage();
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -785,6 +788,22 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 Timber.d(e != null ? e.getMessage() : "Exception");
             }
         }
+    }
+
+    /***
+     * load app info from cache or api
+     */
+    private void startSubscribePaymentReadyMessage() {
+        Timber.d("start loading appinfo");
+        ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+        interactor.subscribeOnPaymentReady(message -> {
+            try {
+                loadAppInfoOnComplete(message.mAppInfo);
+                loadChannels();
+            } catch (Exception e) {
+                Timber.d(e, "Exception when loading payment info");
+            }
+        });
     }
 
     /***

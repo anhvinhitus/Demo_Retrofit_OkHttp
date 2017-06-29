@@ -1,11 +1,15 @@
 package vn.com.zalopay.wallet.di.module;
 
+import android.app.Application;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.interactor.AppInfoInteractor;
 import vn.com.zalopay.wallet.interactor.BankInteractor;
+import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.ILink;
@@ -43,7 +47,18 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    ILink provideLinkInteactor(CardStore.Repository cardRepository, BankAccountStore.Repository bankAccountRepository) {
+    ILink provideLinkInteactor(CardStore.Repository cardRepository,
+                               BankAccountStore.Repository bankAccountRepository) {
         return new LinkInteractor(cardRepository, bankAccountRepository);
+    }
+
+    @Provides
+    @Singleton
+    ChannelListInteractor provideChannelListInteractor(Application application,
+                                                       IAppInfo appInfoInteractor,
+                                                       ILink linkInteractor,
+                                                       IBank bankInteractor,
+                                                       ZPMonitorEventTiming eventTiming) {
+        return new ChannelListInteractor(application, appInfoInteractor, linkInteractor, bankInteractor, eventTiming);
     }
 }

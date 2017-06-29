@@ -28,6 +28,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -192,6 +193,10 @@ public class SDKPayment {
             }
         } else {
             intent = new Intent(pOwner, ChannelListActivity.class);
+
+            // here start background task to collect data
+            ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+            interactor.collectPaymentInfo(paymentInfoHelper);
         }
         if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
@@ -271,7 +276,6 @@ public class SDKPayment {
             return true;
         }
         return false;
-<<<<<<< Updated upstream
     }*/
 
 }

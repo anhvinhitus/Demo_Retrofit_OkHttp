@@ -20,6 +20,7 @@ import vn.com.zalopay.wallet.di.module.CardRepositoryModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.di.module.InteractorModule;
 import vn.com.zalopay.wallet.di.module.PlatformInfoRepositoryModule;
+import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.ILink;
@@ -62,4 +63,6 @@ public interface ApplicationComponent {
     IDownloadService downloadService();
 
     ZPMonitorEventTiming monitorEventTiming();
+
+    ChannelListInteractor channelListInteractor();
 }
