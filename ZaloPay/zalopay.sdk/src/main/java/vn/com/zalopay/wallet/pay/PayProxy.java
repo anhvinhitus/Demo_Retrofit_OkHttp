@@ -384,6 +384,7 @@ public class PayProxy extends SingletonBase {
 
     private void hideLoading(String pError) {
         try {
+             getView().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             if (!mAuthenActor.hideLoading(pError)) {
                 getView().hideLoading();
             }
@@ -565,6 +566,7 @@ public class PayProxy extends SingletonBase {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
+            getActivity().finish();
         } catch (Exception e) {
             Log.e(this, e);
         } finally {
