@@ -74,13 +74,18 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
     }
 
     @Override
+    public void setExpireTime(long expireTime) {
+        mSharedPreferences.setExpiredBankList(expireTime);
+    }
+
+    @Override
     public void put(BankConfigResponse pResponse) {
         if (pResponse == null || pResponse.returncode != 1) {
             Timber.d("request not success, stopping saving bank list to cache");
             return;
         }
         long time_to_live = System.currentTimeMillis() + pResponse.expiredtime;
-        mSharedPreferences.setExpiredBankList(time_to_live);
+        setExpireTime(time_to_live);
         if (!isCheckSumChanged(pResponse.checksum)) {
             Timber.d("bank list on cache is valid - skip udpate");
             return;

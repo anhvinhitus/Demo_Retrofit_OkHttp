@@ -21,6 +21,8 @@ public class BankStore {
 
         long getExpireTime();
 
+        void setExpireTime(long expireTime);
+
         Observable<BankConfigResponse> get();
 
         String getCheckSum();

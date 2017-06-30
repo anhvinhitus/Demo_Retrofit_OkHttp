@@ -63,19 +63,20 @@ public class SDKApplication extends Application {
      * clear all cache if this is new user setup
      * @param pAppVersion
      */
-    private static void removeCacheOnSetupOverride(String pAppVersion) {
+    private static void removeCacheOnSetupOverride(String userId, String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
         IAppInfo appInfo = getApplicationComponent().appInfoInteractor();
         IBank bankList = getApplicationComponent().bankListInteractor();
-        if (platformInfo.isNewVersion(pAppVersion) && platformInfo != null && appInfo != null && bankList != null) {
+        if (platformInfo.isNewVersion(pAppVersion) || platformInfo.isNewUser(userId)) {
             Timber.d("removeCacheOnSetupOverride - start clear cache in previous version");
             //clear banklist
             bankList.clearCheckSum();
             bankList.clearConfig();
-            //clear map card checksum
+            bankList.resetExpireTime();
+            //clear checksum
             platformInfo.clearCardMapCheckSum();
-            //clear clear map account checksum
             platformInfo.clearBankAccountMapCheckSum();
+            platformInfo.resetExpireTime();
             //reset expire time app info
             appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
             appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
@@ -98,7 +99,7 @@ public class SDKApplication extends Application {
                 Timber.d("user in sdk - delay load gateway info");
                 return null;
             }
-            removeCacheOnSetupOverride(pAppVersion);
+            removeCacheOnSetupOverride(pUserInfo.zalopay_userid, pAppVersion);
 
             String userId = pUserInfo.zalopay_userid;
             String accessToken = pUserInfo.accesstoken;

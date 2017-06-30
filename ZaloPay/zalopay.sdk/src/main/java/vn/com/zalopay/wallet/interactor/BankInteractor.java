@@ -254,5 +254,10 @@ public class BankInteractor implements IBank {
     public void clearConfig() {
         this.mBankListRepository.getLocalStorage().clearConfig();
     }
+
+    @Override
+    public void resetExpireTime() {
+        this.mBankListRepository.getLocalStorage().setExpireTime(0);
+    }
 }
 

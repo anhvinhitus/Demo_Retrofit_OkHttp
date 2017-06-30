@@ -56,7 +56,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             }
             Log.d(this, "start update platform info to cache", pResponse);
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
-            mSharedPreferences.setPlatformInfoExpriedTime(expiredTime);
+            setExpireTime(expiredTime);
             mSharedPreferences.setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
             mSharedPreferences.setCurrentUserID(userId);
             //enable/disable deposite
@@ -123,6 +123,11 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             Log.e(this, e);
         }
         return expiretime;
+    }
+
+    @Override
+    public void setExpireTime(long expireTime) {
+        mSharedPreferences.setPlatformInfoExpriedTime(expireTime);
     }
 
     @Override

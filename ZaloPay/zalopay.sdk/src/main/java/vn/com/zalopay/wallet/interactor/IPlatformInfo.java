@@ -9,11 +9,15 @@ import rx.Observable;
 public interface IPlatformInfo {
     boolean isNewVersion(String appVersion);
 
+    boolean isNewUser(String userId);
+
     void clearCardMapCheckSum();
 
     void clearBankAccountMapCheckSum();
 
     long getExpireTime();
+
+    void resetExpireTime();
 
     String getAppVersion();
 

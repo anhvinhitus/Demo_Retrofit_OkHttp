@@ -7,8 +7,8 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 
 /**
@@ -21,11 +21,15 @@ public class PlatformInfoStore {
 
         long getExpireTime();
 
+        void setExpireTime(long expireTime);
+
         long getExpireTimeDuration();
 
         String getPlatformInfoCheckSum();
 
         String getAppVersion();
+
+        void setAppVersion(String pAppVersion);
 
         String getResourceVersion();
 
@@ -42,8 +46,6 @@ public class PlatformInfoStore {
         String getUnzipPath();
 
         void setUnzipPath(String pUnzipPath);
-
-        void setAppVersion(String pAppVersion);
 
         String getResourceDownloadUrl();
 

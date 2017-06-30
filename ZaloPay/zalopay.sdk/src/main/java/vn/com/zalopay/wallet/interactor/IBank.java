@@ -17,6 +17,8 @@ public interface IBank {
 
     void clearConfig();
 
+    void resetExpireTime();
+
     Map<String, String> getBankPrefix();
 
     BankConfig getBankConfig(String bankCode);

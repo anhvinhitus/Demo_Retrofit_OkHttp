@@ -49,12 +49,18 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
+    public void resetExpireTime() {
+        this.repository.getLocalStorage().setExpireTime(0);
+    }
+
+    @Override
     public boolean isNewVersion(String appVersion) {
         String checksumSDKV = repository.getLocalStorage().getAppVersion();
         return !TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV);
     }
 
-    private boolean isNewUser(String userId) {
+    @Override
+    public boolean isNewUser(String userId) {
         String userIdOnCache = getUserId();
         return TextUtils.isEmpty(userIdOnCache) || !userIdOnCache.equals(userId);
     }
