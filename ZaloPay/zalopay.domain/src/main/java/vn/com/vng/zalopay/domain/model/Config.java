@@ -38,4 +38,7 @@ public class Config {
     @SerializedName("withdraw_money")
     public List<Long> denominationWithdraw;
 
+    @SerializedName("allow_urls")
+    public List<String> allowUrls;
+
 }

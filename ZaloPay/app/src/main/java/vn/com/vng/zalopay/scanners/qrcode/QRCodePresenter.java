@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -37,6 +39,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.util.ConfigUtil;
+import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.qrcode.QRCodeStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -606,9 +610,29 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 showNetworkErrorAndResumeAfterDismiss();
             } else {
                 if (mView != null && mView.getContext() != null) {
-                    mNavigator.startWebAppActivity(mView.getContext(), mUrl);
+                    if(checkAllowUrls(mUrl)) {
+                        mNavigator.startWebAppActivity(mView.getContext(), mUrl);
+                    } else {
+                        mNavigator.startWebViewActivity(mView.getContext(), mUrl);
+                    }
                 }
             }
         }
+    }
+
+    private boolean checkAllowUrls(String url) {
+        String regex = TextUtils.join("|", ConfigUtil.getAllowUrls());
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(url);
+
+        while (matcher.find()) {
+            System.out.println("URL: " + url);
+            System.out.println("Full match: " + matcher.group(0));
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                System.out.println("Group " + i + ": " + matcher.group(i));
+            }
+        }
+
+        return matcher.matches() ? true : false;
     }
 }

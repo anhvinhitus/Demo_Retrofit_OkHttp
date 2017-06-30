@@ -140,5 +140,16 @@ public class ConfigUtil {
             return mConfig.denominationWithdraw;
         }
     }
+
+    public static List<String> getAllowUrls() {
+        if (mConfig == null || Lists.isEmptyOrNull(mConfig.allowUrls)) {
+            return Arrays.asList("^((.+)\\.)?zalopay\\.vn",
+                    "^((.+)\\.)?zalopay\\.com\\.vn",
+                    "^((.+)\\.)?zalopay\\.zing\\.vn",
+                    "^((.+)\\.)?zpsandbox\\.zing\\.vn");
+        } else {
+            return mConfig.allowUrls;
+        }
+    }
 }
 
