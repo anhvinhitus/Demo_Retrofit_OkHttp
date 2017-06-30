@@ -28,7 +28,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         super(sharedPreferencesManager);
     }
 
-    protected boolean isCheckSumChanged(String pNewCheckSum) {
+    private boolean isCheckSumChanged(String pNewCheckSum) {
         String checkSumOnCache = null;
         try {
             checkSumOnCache = mSharedPreferences.getCheckSumBankList();
@@ -64,13 +64,13 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
 
     @Override
     public long getExpireTime() {
-        long expiretime = 0;
+        long expireTime = 0;
         try {
-            expiretime = mSharedPreferences.getExpiredBankList();
+            expireTime = mSharedPreferences.getExpiredBankList();
         } catch (Exception e) {
             Log.e(this, e);
         }
-        return expiretime;
+        return expireTime;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         long time_to_live = System.currentTimeMillis() + pResponse.expiredtime;
         setExpireTime(time_to_live);
         if (!isCheckSumChanged(pResponse.checksum)) {
-            Timber.d("bank list on cache is valid - skip udpate");
+            Timber.d("bank list on cache is valid - skip update");
             return;
         }
         Timber.d("start update bank list to cache");

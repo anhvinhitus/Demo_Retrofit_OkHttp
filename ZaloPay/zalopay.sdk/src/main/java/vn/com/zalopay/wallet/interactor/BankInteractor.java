@@ -13,7 +13,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -24,6 +23,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -42,7 +42,7 @@ import static vn.com.zalopay.wallet.constants.Constants.BITMAP_EXTENSION;
 public class BankInteractor implements IBank {
     public BankStore.Repository mBankListRepository;
 
-    protected Func1<BankConfigResponse, Observable<BankConfigResponse>> mapResult = bankConfigResponse -> {
+    private Func1<BankConfigResponse, Observable<BankConfigResponse>> mapResult = bankConfigResponse -> {
         if (bankConfigResponse == null) {
             return Observable.error(new RequestException(RequestException.NULL, null));
         } else if (bankConfigResponse.returncode == 1) {
@@ -64,14 +64,10 @@ public class BankInteractor implements IBank {
                 String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
                 if (!TextUtils.isEmpty(bankCodes)) {
                     String[] arrayBankCode = bankCodes.split(Constants.COMMA);
-                    for (int i = 0; i < arrayBankCode.length; i++) {
-                        String bankCode = arrayBankCode[i];
+                    for (String bankCode : arrayBankCode) {
                         BankConfig bankConfig = mBankListRepository.getLocalStorage().getBankConfig(bankCode);
                         bankConfig.bankLogo = withDrawBankLogo(bankCode);
-                        if (bankConfig == null) {
-                            continue;
-                        }
-                        if (bankConfig != null && bankConfig.isWithDrawAllow() && !withDrawBanks.contains(bankConfig)) {
+                        if (bankConfig.isWithDrawAllow() && !withDrawBanks.contains(bankConfig)) {
                             withDrawBanks.add(bankConfig);
                         }
                     }
@@ -97,42 +93,45 @@ public class BankInteractor implements IBank {
                 Timber.d("start load support banks");
                 try {
                     List<ZPBank> supportBank = new ArrayList<>();
-                    //cc must be hardcode
+                    //cc hardcode
                     String bankCodeVisa = CardType.VISA;
                     String bankCodeMaster = CardType.MASTER;
 
                     ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    String bankLogoVisa = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa),
-                            BITMAP_EXTENSION);
-                    visa.bankLogo = bankLogoVisa;
-                    visa.bankCode = bankCodeVisa;
-                    visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+                    if (visa != null) {
+                        visa.bankLogo = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa), BITMAP_EXTENSION);
+                        visa.bankCode = bankCodeVisa;
+                        visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+                    }
 
                     ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    masterCard.bankLogo = supportBankLogo(bankCodeMaster);
-                    masterCard.bankCode = bankCodeMaster;
-                    masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
-
+                    if (masterCard != null) {
+                        masterCard.bankLogo = supportBankLogo(bankCodeMaster);
+                        masterCard.bankCode = bankCodeMaster;
+                        masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
+                    }
                     //build support cards
                     String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
                     if (!TextUtils.isEmpty(bankCodes)) {
                         String[] arrayBankCode = bankCodes.split(Constants.COMMA);
-                        for (int i = 0; i < arrayBankCode.length; i++) {
-                            String bankCode = arrayBankCode[i];
-                            if (!TextUtils.isEmpty(bankCode) && !BuildConfig.CC_CODE.equals(bankCode)) {
-                                boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
-                                ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
-                                if (zpBank == null) {
-                                    continue;
-                                }
-                                zpBank.bankLogo = supportBankLogo(bankCode);
-                                zpBank.isBankAccount = isBankAccount;
-                                if (!supportBank.contains(zpBank)) {
-                                    supportBank.add(zpBank);
-                                }
-                            } else if (!TextUtils.isEmpty(bankCode) && BuildConfig.CC_CODE.equals(bankCode)) {
+                        for (String bankCode : arrayBankCode) {
+                            if (TextUtils.isEmpty(bankCode)) {
+                                continue;
+                            }
+                            if (BuildConfig.CC_CODE.equals(bankCode)) {
                                 supportBank.add(visa);
                                 supportBank.add(masterCard);
+                                continue;
+                            }
+                            boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
+                            ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
+                            if (zpBank == null) {
+                                continue;
+                            }
+                            zpBank.bankLogo = supportBankLogo(bankCode);
+                            zpBank.isBankAccount = isBankAccount;
+                            if (!supportBank.contains(zpBank)) {
+                                supportBank.add(zpBank);
                             }
                         }
                     }
@@ -187,13 +186,14 @@ public class BankInteractor implements IBank {
                 .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
-    protected String supportBankLogo(String pBankCode) {
+    private String supportBankLogo(String pBankCode) {
         return String.format("%s%s", pBankCode, BITMAP_EXTENSION);
     }
 
-    protected String withDrawBankLogo(String pBankCode) {
+    private String withDrawBankLogo(String pBankCode) {
         return String.format("bank_%s%s", pBankCode, BITMAP_EXTENSION);
     }
+
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {
         if (TextUtils.isEmpty(bankCode)) {
             return null;
