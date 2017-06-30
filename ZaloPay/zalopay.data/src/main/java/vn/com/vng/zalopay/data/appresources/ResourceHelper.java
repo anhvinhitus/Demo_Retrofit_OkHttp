@@ -109,7 +109,7 @@ public class ResourceHelper {
         } else if (density <= 4) {
             return "drawable-xxhdpi";
         } else {
-            return "xhdpi";
+            return "drawable-xhdpi";
         }
     }
 }
