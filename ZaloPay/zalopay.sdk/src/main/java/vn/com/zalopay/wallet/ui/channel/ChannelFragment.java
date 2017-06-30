@@ -691,7 +691,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             }
         }
         //anim success icon
-        ViewUtils.animIcon(getActivity(), R.id.success_imageview);
+        //ViewUtils.animIcon(getActivity(), R.id.success_imageview);
         changeSubmitButtonBackground(order);
         //update title
         setTitle(pToolbarTitle);
@@ -729,7 +729,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
             }
         }
-        ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
+       // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
         changeSubmitButtonBackground(order);
         //update title
         setTitle(pToolBarTitle);
