@@ -102,7 +102,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected View.OnClickListener mNextButtonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (getViewPager() == null) {
+            if (getViewPager() == null || getViewPager().getAdapter() == null) {
                 return;
             }
             mMaxPagerCount = getViewPager().getAdapter().getCount();
