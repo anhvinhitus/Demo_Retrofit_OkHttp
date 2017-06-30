@@ -11,7 +11,7 @@
     <com.zalopay.ui.widget.IconFont
         android:layout_width="@dimen/font_size_home_function"
         android:layout_height="@dimen/font_size_home_function"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:textColor="@color/blue.008fe5"
@@ -39,7 +39,7 @@
         android:drawablePadding="6dp"
         android:gravity="center"
         android:hint="@string/zalopayid.not.update.format"
-        android:textColor="@color/grey.c7c7cc"
+        android:textColor="@color/txt_item_sub"
         android:textColorHint="@color/blue.008fe5"
         tools:text="Zalo Pay ID: hieuvm"/>
 
@@ -47,6 +47,7 @@
         android:id="@+id/background"
         style="@style/CoverDraweeView"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/spacing.medium.t"
         android:layout_height="100dp"
         app:failureImage="@color/white"
         app:placeholderImage="@drawable/cover_large"
