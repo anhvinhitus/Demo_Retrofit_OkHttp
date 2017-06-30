@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:paddingTop="16dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="16dp">
 
         <TextView
             android:id="@+id/lbl_edit_account"
@@ -18,13 +19,13 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/lbl.edit.account.name"
-            android:textSize="@dimen/font_size_medium"/>
+            android:textSize="@dimen/font_size_medium" />
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/separate"
             android:layout_marginTop="16dp"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
         <FrameLayout
             style="@style/WrapperEditText"
@@ -39,7 +40,7 @@
                 android:layout_gravity="bottom"
                 android:hint="@string/input.account.zalo.pay"
                 android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
-                android:maxLength="@integer/max_length_zalopay_name"/>
+                android:maxLength="@integer/max_length_zalopay_name" />
 
             <ImageView
                 android:id="@+id/ivCheck"
@@ -50,7 +51,7 @@
                 android:layout_marginRight="18dp"
                 android:clickable="true"
                 android:focusableInTouchMode="true"
-                android:src="@drawable/ic_check_selector"/>
+                android:src="@drawable/ic_check_selector" />
         </FrameLayout>
 
         <TextView
@@ -60,7 +61,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="@dimen/spacing.small"
-            android:text="@string/hint.edit.account"/>
+            android:text="@string/hint.edit.account" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -71,7 +72,7 @@
             android:layout_marginTop="@dimen/spacing.small"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account1"/>
+            android:text="@string/hint.edit.account1" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -82,7 +83,7 @@
             android:layout_marginTop="4dp"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account2"/>
+            android:text="@string/hint.edit.account2" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -93,7 +94,7 @@
             android:layout_marginTop="4dp"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account3"/>
+            android:text="@string/hint.edit.account3" />
 
         <Button
             android:id="@+id/btnCheck"
@@ -102,6 +103,6 @@
             android:layout_height="@dimen/button.height"
             android:layout_marginBottom="16dp"
             android:enabled="false"
-            android:text="@string/check"/>
+            android:text="@string/check" />
     </LinearLayout>
 </ScrollView>
