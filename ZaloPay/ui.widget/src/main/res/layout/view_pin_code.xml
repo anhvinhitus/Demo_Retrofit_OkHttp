@@ -20,17 +20,17 @@
             android:id="@+id/cancel_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/btn_cancel_round_padding"
             android:layout_marginLeft="@dimen/btn_cancel_round_padding"
             android:layout_marginTop="@dimen/btn_cancel_round_padding"
+            android:padding="@dimen/btn_cancel_round_padding"
             android:src="@drawable/cancel" />
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing.large.t"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
@@ -38,8 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:ellipsize="end"
                 android:gravity="center"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:paddingLeft="30dp"
                 android:paddingRight="20dp"
                 android:textColor="@color/dark_grey_color"
@@ -57,8 +58,8 @@
                     android:id="@+id/ic_content"
                     android:layout_width="@dimen/channel_image_size"
                     android:layout_height="wrap_content"
-                    app:actualImageScaleType="centerInside"
                     android:padding="@dimen/spacing.small.t"
+                    app:actualImageScaleType="centerInside"
                     app:viewAspectRatio="1" />
 
                 <TextView
@@ -66,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+                    android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@color/dark_grey_color"
@@ -91,6 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
@@ -114,8 +117,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_message"
                 android:gravity="center"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/checkbox_fingerprint"
