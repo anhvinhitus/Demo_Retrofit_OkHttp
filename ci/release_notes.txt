@@ -1,2 +1,10 @@
-Zalo Pay (Sandbox v2.14.0 - build 295) - Released on 2017-06-30 09:32
-
+Zalo Pay (Staging v2.14.0 - build 296) - Released on 2017-06-30 14:12
++ [App] Update commit d5ccf1f5b34b0c2747be5c5cb90f2cdb00afe0bd [d5ccf1f] by vo van chuc (#8de0ee4)
++ [App] Update detect screen type khi get resource trong ResourceHelper by vo van chuc (#d5ccf1f)
++ [APP] ZPF-167: Liên kết thẻ: List thẻ mất icon bank by lytm (#65dc2c0)
++ [SDK] Reset thông tin khi login user mới by vo van chuc (#340679d)
++ [App] Personal: ZPF-170 Góp ý nhanh: nhấn vào no effect by datnt10 (#450df5f)
++ [App] ZPF-152 Zalo Pay ID: Button bị che by datnt10 (#93c10a4)
++ [WebApp] task#650 [WebApp] Add Close button on Navigation bar by datnt10 (#a64134a)
++ [APP] Update bỏ "VND" phía sau balance trên trang Home by lytm (#928d026)
++ [SDK] Task#620: Update padding submit button in success view by lytm (#06616a8)
