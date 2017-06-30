@@ -91,6 +91,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
     private boolean setInputMethodTitle = false;
+    private int lastSelectPos = -1;
     private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
         @Override
         public void onClose() {
@@ -391,6 +392,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         mSelectChannel = channel;
         mSelectChannel.select = true;
+
+        if(lastSelectPos != -1){
+            mChannelAdapter.notifyBinderItemChanged(lastSelectPos);
+        }
+        lastSelectPos = position;
         mChannelAdapter.notifyBinderItemChanged(position);
         updateButton(channel);
     }
