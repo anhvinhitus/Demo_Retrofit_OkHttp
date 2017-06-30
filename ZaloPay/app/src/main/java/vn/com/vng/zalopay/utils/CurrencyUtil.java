@@ -45,7 +45,7 @@ public class CurrencyUtil {
     }
 
     public static SpannableString spanFormatCurrency(double money, boolean isBold) {
-        String moneyString = (money <= 0) ? CurrencyUtil.formatCurrency(money, false) : CurrencyUtil.formatCurrency(money, true);
+        String moneyString = CurrencyUtil.formatCurrency(money, false);
         SpannableString span = new SpannableString(moneyString);
         int indexSuffix = moneyString.indexOf(CurrencyUtil.CURRENCY_UNIT);
         if (indexSuffix > 0) {
