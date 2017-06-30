@@ -180,6 +180,9 @@ public class AdapterLinkAcc extends AdapterBase {
     };
     protected final Runnable runnableWaitingNotifyLink = () -> {
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        if (userInfo == null) {
+            return;
+        }
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
