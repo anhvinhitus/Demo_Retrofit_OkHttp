@@ -124,7 +124,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/profile_dob_and_gender_edit_hint_text"
                 android:textColor="@color/personal_text_steel_grey"
-                android:textSize="@dimen/personal_link_text" />
+                android:textSize="@dimen/update_profile_text_sub" />
 
             <View
                 android:layout_width="match_parent"
@@ -212,7 +212,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/profile_phone_and_zpid_update_hint_text"
                 android:textColor="@color/personal_text_steel_grey"
-                android:textSize="@dimen/personal_link_text"
+                android:textSize="@dimen/update_profile_text_sub"
                 android:visibility="gone" />
 
             <View

@@ -21,10 +21,10 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_width"
-            android:background="#D4D9DA" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/line_width"-->
+            <!--android:background="#D4D9DA" />-->
 
         <vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView
             android:id="@+id/navigation"

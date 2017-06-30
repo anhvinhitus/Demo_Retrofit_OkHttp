@@ -156,6 +156,8 @@
     <dimen name="personal_margin_12">12dp</dimen>
     <dimen name="personal_margin_18">18dp</dimen>
     <dimen name="personal_dashline_margin_left">50dp</dimen>
+    <dimen name="update_profile_text_main">15sp</dimen>
+    <dimen name="update_profile_text_sub">12sp</dimen>
 
     <dimen name="personal_dashline_height">1dp</dimen>
 

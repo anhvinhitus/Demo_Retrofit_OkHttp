@@ -33,14 +33,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/personal_text_dark_grey"
-            android:textSize="@dimen/personal_name" />
+            android:textSize="@dimen/update_profile_text_main" />
 
         <TextView
             android:id="@+id/profile_tv_zalopay_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/personal_text_steel_grey"
-            android:textSize="@dimen/personal_zalopayid" />
+            android:textSize="@dimen/update_profile_text_sub" />
     </LinearLayout>
 
     <com.zalopay.ui.widget.IconFont
