@@ -1,2 +1,7 @@
-Zalo Pay (Sandbox v2.14.0 - build 297) - Released on 2017-06-30 15:02
-+ [Pasword] Update title 2 lines by lytm (#d84e9dc)
+Zalo Pay (Sandbox v2.14.0 - build 298) - Released on 2017-06-30 18:07
++ [SDK] #ZPF-173, ZPF-175 : Nạp tiền: chỗ thẻ visa, master thiếu dòng Không hỗ trợ bên dưới by vo van chuc (#887bedf)
++ [SDK] Check UserInfo in AdapterLinkAcc by lytm (#cfe2fd2)
++ [SDK] Disable animation icon success and fail view by lytm (#d9b0e26)
++ [App] Edit UI by datnt10 (#38ac9de)
++ [WebApp] task#602 [WebApp] Enable for QR Code URL scanning by datnt10 (#24315bf)
++ [APP] Update UI header balance manager by lytm (#331bb14)
