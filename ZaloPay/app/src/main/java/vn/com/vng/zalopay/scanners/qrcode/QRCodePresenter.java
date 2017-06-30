@@ -625,14 +625,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(url);
 
-        while (matcher.find()) {
-            System.out.println("URL: " + url);
-            System.out.println("Full match: " + matcher.group(0));
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                System.out.println("Group " + i + ": " + matcher.group(i));
-            }
-        }
-
         return matcher.matches() ? true : false;
     }
 }
