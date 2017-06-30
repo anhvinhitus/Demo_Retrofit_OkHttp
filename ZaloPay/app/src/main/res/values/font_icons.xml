@@ -56,6 +56,7 @@
     <string name="webapp_ico_browser">webapp_browser</string>
     <string name="webapp_ico_refresh">webapp_refresh</string>
     <string name="webapp_3point_android">webapp_3point_android</string>
+    <string name="webapp_ico_delete">red_delete</string>
     <!--WebApp END-->
 
     <!--Tab in Home START-->

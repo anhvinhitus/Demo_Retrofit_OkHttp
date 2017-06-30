@@ -3,13 +3,57 @@
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
-        style="@style/Toolbar_White"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        app:contentInsetLeft="16dp"
-        app:contentInsetStart="16dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+        app:contentInsetEndWithActions="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/back_view"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/default_selector">
+
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/close_view"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/default_selector">
+
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/btn_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
 
     <View
         android:layout_width="match_parent"
