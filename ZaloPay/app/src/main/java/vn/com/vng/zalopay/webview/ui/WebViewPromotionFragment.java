@@ -18,13 +18,17 @@ import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -42,12 +46,20 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         WebBottomSheetDialogFragment.BottomSheetEventListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    protected ZPWebView mWebView;
+    @BindView(R.id.webview)
+    ZPWebView mWebView;
+
     protected ZPWebViewPromotionProcessor mWebViewProcessor;
 
-    private View layoutRetry;
-    private ImageView imgError;
-    private TextView tvError;
+    @BindView(R.id.layoutRetry)
+    View layoutRetry;
+
+    @BindView(R.id.imgError)
+    ImageView imgError;
+
+    @BindView(R.id.tvError)
+    TextView tvError;
+
     private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     @Inject
@@ -59,7 +71,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     @BindView(R.id.promotion_refresh_layout)
     MultiSwipeRefreshLayout refreshLayout;
 
-    View rootView;
+    private String mUrl;
 
     public static WebViewPromotionFragment newInstance(Bundle bundle) {
         WebViewPromotionFragment fragment = new WebViewPromotionFragment();
@@ -81,38 +93,25 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
+    }
+
+    private void initArgs(Bundle bundle) {
+        String originalUrl = bundle.getString(Constants.ARG_URL);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userid", getUserComponent().currentUser().zaloPayId);
+        mUrl = Strings.addUrlQueryParams(originalUrl, params);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated start");
-        rootView = view;
-    }
 
-    protected void loadDefaultWebView() {
-        Bundle bundle = getArguments();
-        if (bundle == null) {
-            return;
-        }
-        String originalUrl = bundle.getString(Constants.ARG_URL);
-        originalUrl += "?userid=" + getUserComponent().currentUser().zaloPayId;
-        loadUrl(originalUrl);
-    }
-
-    protected void updateWebViewSettings() {
-
-    }
-
-    private void initWebView(View rootView) {
         refreshLayout.setSwipeableChildren(R.id.webview);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.back_ground_blue);
 
-        mWebView = (ZPWebView) rootView.findViewById(R.id.webview);
-        updateWebViewSettings();
         mWebViewProcessor = new ZPWebViewPromotionProcessor(mWebView, this);
-
         mWebView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
@@ -131,25 +130,22 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         });
     }
 
-    public void loadUrl(final String pUrl) {
-        if (mWebViewProcessor == null) {
-            return;
-        }
-        mWebViewProcessor.start(pUrl, getActivity());
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.ARG_URL, mUrl);
     }
 
-    protected void onClickRetryWebView() {
+    public void loadUrl(final String pUrl) {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.start(pUrl, getActivity());
+        }
+    }
+
+    @OnClick(R.id.btnRetry)
+    public void onClickRetryWebView() {
         hideError();
         refreshWeb();
-    }
-
-    private void initRetryView(View rootView) {
-        layoutRetry = rootView.findViewById(R.id.layoutRetry);
-        imgError = (ImageView) rootView.findViewById(R.id.imgError);
-        tvError = (TextView) rootView.findViewById(R.id.tvError);
-        View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(v -> onClickRetryWebView());
-        hideError();
     }
 
     private void showErrorNoConnection() {
@@ -229,8 +225,6 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         super.hideProgressDialog();
     }
 
-
-
     public void showLoading() {
         super.showProgressDialogWithTimeout();
     }
@@ -250,21 +244,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     @Override
     public void onResume() {
         super.onResume();
-        initRetryView(rootView);
-        initWebView(rootView);
-        loadDefaultWebView();
-//        if (mWebViewProcessor != null) {
-//            mWebViewProcessor.onResume();
-//        }
-    }
-
-    @Override
-    public void onPause() {
-        if (mWebViewProcessor != null) {
-//            mWebViewProcessor.onPause();
-            mWebViewProcessor = null;
-        }
-        super.onPause();
+        loadUrl(mUrl);
     }
 
     @Override
@@ -326,6 +306,8 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
 
     @Override
     public void onRefresh() {
-        mWebViewProcessor.refreshWeb(getActivity());
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.refreshWeb(getActivity());
+        }
     }
 }
