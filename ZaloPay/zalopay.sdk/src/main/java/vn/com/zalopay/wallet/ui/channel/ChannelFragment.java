@@ -491,6 +491,30 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Tab");
         }
     }
+    public void marginSubmitButtonTopSuccess(boolean viewEnd) {
+        View submitButton = findViewById(R.id.zpw_submit_view);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        if (!SdkUtils.isTablet(getActivity())) {
+            params.setMargins(0, 0, 0, 0);
+            if (submitButton != null) {
+                submitButton.setLayoutParams(params);
+                submitButton.requestLayout();
+            }
+            Timber.d("setMarginSubmitButtonTop  Phone");
+        } else {
+            if (submitButton != null) {
+                if (viewEnd)
+                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
+                else
+                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
+                submitButton.setLayoutParams(params);
+                submitButton.requestLayout();
+            }
+            Timber.d("setMarginSubmitButtonTop  Tab");
+        }
+    }
 
     public void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) throws Exception {
         List<View> views = genDynamicItemDetail(getContext(), nameValuePairList);

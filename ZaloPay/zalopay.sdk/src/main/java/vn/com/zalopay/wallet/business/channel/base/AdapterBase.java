@@ -1192,7 +1192,7 @@ public abstract class AdapterBase {
         existTransWithoutConfirm = true;
         mPageName = PAGE_SUCCESS;
         try {
-            getView().marginSubmitButtonTop(true);
+            getView().marginSubmitButtonTopSuccess(true);
             getView().renderByResource(mPageName);
         } catch (Exception e) {
             Log.e(this, e);

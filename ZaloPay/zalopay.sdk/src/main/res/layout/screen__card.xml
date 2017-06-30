@@ -28,8 +28,7 @@
                 android:id="@+id/zpsdk_pay_success"
                 layout="@layout/module__pay__success"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
+                android:layout_height="wrap_content" />
 
             <include
                 android:id="@+id/zpsdk_pay_fail"
