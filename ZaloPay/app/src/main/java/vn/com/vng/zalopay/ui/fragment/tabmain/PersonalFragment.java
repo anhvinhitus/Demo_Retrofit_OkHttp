@@ -248,10 +248,10 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
     }
 
-    @OnClick(R.id.tab_personal_tv_quick_feedback)
-    public void onQuickFeedbackClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
-    }
+//    @OnClick(R.id.tab_personal_tv_quick_feedback)
+//    public void onQuickFeedbackClick() {
+//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
+//    }
 
     @OnClick(R.id.tab_personal_tv_app_info)
     public void onAppInfoClick() {
