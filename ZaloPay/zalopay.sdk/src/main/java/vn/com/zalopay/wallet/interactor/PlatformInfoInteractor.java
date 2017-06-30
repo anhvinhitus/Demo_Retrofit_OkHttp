@@ -123,7 +123,8 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         params.put(ConstantParams.USER_ID, userId);
         params.put(ConstantParams.ACCESS_TOKEN, accessToken);
         params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
-        params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(GlobalData.getAppContext()));
+        float density = GlobalData.getAppContext().getResources().getDisplayMetrics().density;
+        params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(density));
         params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
         params.put(ConstantParams.RESOURCE_VERSION, resrcVer);
         params.put(ConstantParams.APP_VERSION, appVersion);

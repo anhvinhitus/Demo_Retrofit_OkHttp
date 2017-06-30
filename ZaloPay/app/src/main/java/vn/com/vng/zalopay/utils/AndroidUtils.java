@@ -81,6 +81,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.zalopay.utility.DeviceUtil;
+import vn.com.zalopay.utility.DimensionUtil;
 
 /**
  * Created by AnhHieu on 9/14/15.
@@ -111,17 +112,7 @@ public class AndroidUtils {
     }
 
     public static String getScreenType() {
-        if (density <= 1.5) {
-            return "hdpi";
-        } else if (density <= 2) {
-            return "xhdpi";
-        } else if (density <= 3) {
-            return "xxhdpi";
-        } else if (density <= 4) {
-            return "xxhdpi";
-        } else {
-            return "xhdpi";
-        }
+        return DimensionUtil.getScreenType(density);
     }
 
     public static String getCarrierName() {

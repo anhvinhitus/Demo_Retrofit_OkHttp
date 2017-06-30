@@ -95,21 +95,13 @@ public class ResourceHelper {
     }
 
     private static String getScreenType(Context context) {
-        if (context == null) {
-            return "drawable-xhdpi";
-        }
-
         float density = context.getResources().getDisplayMetrics().density;
         if (density <= 1.5) {
             return "drawable-hdpi";
         } else if (density <= 2) {
             return "drawable-xhdpi";
-        } else if (density <= 3) {
-            return "drawable-xxhdpi";
-        } else if (density <= 4) {
-            return "drawable-xxhdpi";
         } else {
-            return "drawable-xhdpi";
+            return "drawable-xxhdpi";
         }
     }
 }
