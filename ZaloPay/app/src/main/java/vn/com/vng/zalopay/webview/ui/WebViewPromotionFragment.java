@@ -128,13 +128,6 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
                     mProgressBar.setVisibility(ProgressBar.GONE);
                 }
             }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-
-                getActivity().setTitle(title);
-            }
         });
     }
 
