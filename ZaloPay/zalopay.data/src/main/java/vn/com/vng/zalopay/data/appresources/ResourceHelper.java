@@ -100,20 +100,16 @@ public class ResourceHelper {
         }
 
         float density = context.getResources().getDisplayMetrics().density;
-        if (density == 0.75) {
-            return "drawable-ldpi";
-        } else if (density == 1) {
-            return "drawable-mdpi";
-        } else if (density == 1.5) {
+        if (density <= 1.5) {
             return "drawable-hdpi";
-        } else if (density == 2) {
+        } else if (density <= 2) {
             return "drawable-xhdpi";
-        } else if (density >= 3 && density < 4) {
+        } else if (density <= 3) {
             return "drawable-xxhdpi";
-        } else if (density == 4) {
+        } else if (density <= 4) {
             return "drawable-xxhdpi";
         } else {
-            return "drawable-xhdpi";
+            return "xhdpi";
         }
     }
 }
