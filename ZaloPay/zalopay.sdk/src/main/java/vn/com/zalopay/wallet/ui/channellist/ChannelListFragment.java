@@ -418,4 +418,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         confirm_button.setEnabled(false);
         confirm_button.setBackgroundResource(R.drawable.bg_btn_silver_border);
     }
+
+    @Override
+    public void scrollToPos(int position) {
+        channel_list_recycler.scrollToPosition(position);
+    }
 }

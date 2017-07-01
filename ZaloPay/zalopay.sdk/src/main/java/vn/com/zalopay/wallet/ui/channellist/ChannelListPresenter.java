@@ -582,7 +582,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     Timber.d(e);
                 }
             }
-        }else{
+        } else {
             try {
                 makeDefaultChannel();
             } catch (Exception e) {
@@ -638,10 +638,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         PaymentChannel selectChannel = getLastPaymentChannel();
         if (selectChannel != null) {
             markSelectChannel(selectChannel, selectChannel.position);
+            getViewOrThrow().scrollToPos(selectChannel.position);
             return;
         }
         boolean hasActiveChannel = false;
-        int pos= -1;
+        int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
             if (object instanceof PaymentChannel) {
@@ -663,8 +664,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         if (selectChannel != null) {
             markSelectChannel(selectChannel, pos);
+            getViewOrThrow().scrollToPos(pos);
         }
-        if(!hasActiveChannel){
+        if (!hasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
             getViewOrThrow().showSnackBar(GlobalData.getAppContext().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
