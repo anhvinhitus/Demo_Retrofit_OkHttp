@@ -78,7 +78,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
             }
-            MapCard mapCard = new MapCard();
+           /* MapCard mapCard = new MapCard();
             mapCard.bankcode = CardType.PVTB;
             mapCard.cardname = "VO VAN CHUC";
             mapCard.last4cardno = "8156";
@@ -114,7 +114,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             mapCard.cardname = "DO NGOC PHI CUONG";
             mapCard.last4cardno = "1195";
             mapCard.first6cardno = "970403";
-            pResponse.cardinfos.add(mapCard);
+            pResponse.cardinfos.add(mapCard);*/
 
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();

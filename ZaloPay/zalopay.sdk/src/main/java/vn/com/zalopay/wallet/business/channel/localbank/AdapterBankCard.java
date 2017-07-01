@@ -292,7 +292,6 @@ public class AdapterBankCard extends AdapterBase {
                     if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank))) {
                         response.message = GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank_update);
                     }
-
                     showDialogWithCallBack(response.message, GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
                         if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
                             //reset otp and show keyboard again
