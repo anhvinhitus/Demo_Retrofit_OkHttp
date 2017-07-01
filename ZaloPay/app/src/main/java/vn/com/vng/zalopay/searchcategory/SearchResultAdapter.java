@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.domain.model.ZPProfile;
  */
 
 class SearchResultAdapter extends EpoxyAdapter {
-    private static final int NUMBER_APP_SHOW = 5;
+    private static final int NUMBER_APP_SHOW = 3;
 
     private List<SearchAppResultModel> listApp = new ArrayList<>();
     private List<SearchFriendResultModel> listFriend = new ArrayList<>();
