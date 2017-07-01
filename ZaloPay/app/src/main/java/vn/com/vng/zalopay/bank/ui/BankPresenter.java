@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -322,6 +323,8 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         if (!Lists.isEmptyOrNull(linkedAccList)) {
             linkedBankList.addAll(linkedAccList);
         }
+
+        Collections.sort(linkedBankList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
 
         mView.setListLinkedBank(linkedBankList);
 //        mView.setListLinkedBank(getFakeData());
