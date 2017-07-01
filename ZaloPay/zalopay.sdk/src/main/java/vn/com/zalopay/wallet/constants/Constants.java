@@ -77,18 +77,6 @@ public class Constants {
     public static final int API = -999;
     public static final String SHOW_DIALOG = "show";
     public static final String MESSAGE = "mess";
-    public static int PAYMENT_INIT = 1;
-    public static int INPUT_CARDINFO_PHARSE = 2;
-    public static int ORDER_SUBMIT = 3;
-    public static int CAPTCHA_PHARSE = 4;
-    public static int OTP_PHARSE = 5;
-    public static int PIN_PHARSE = 6;
-    public static int STATUS_PHARSE = 7;
-    public static int RESULT_PHARSE = 8;
-    public static int UNDEFINE = 9;
-    public static int NULL_ERRORCODE = -747;
-    public static String TRUE = "true";
-
     public static final String SCREEN_CC = RS.layout.screen__card;
     public static final String SCREEN_ATM = RS.layout.screen__card;
     public static final String SCREEN_ZALOPAY = RS.layout.screen__zalopay;
@@ -99,7 +87,6 @@ public class Constants {
     public static final String PAGE_BALANCE_ERROR = RS.layout.screen__zalopay__balance_error;
     public static final String PAGE_AUTHEN = RS.layout.screen__local__card__authen;
     public static final String PAGE_COVER_BANK_AUTHEN = RS.layout.screen__cover__bank__authen;
-
     public static final String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
     public static final String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
     public static final String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
@@ -115,10 +102,8 @@ public class Constants {
     public static final String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
     public static final String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
     public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
-
     public static final String PMC_CONFIG = "config";
     public static final String STATUS_RESPONSE = "status";
-
     public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
     public static final String BANKCODE_EXTRA = "bankcode";
     public static final String CARDNUMBER_EXTRA = "cardnumber";
@@ -126,24 +111,25 @@ public class Constants {
     public static final String AMOUNT_EXTRA = "amount";
     public static final String USER_LEVEL_EXTRA = "level";
     public static final String SELECTED_PMC_POSITION = "pmc_name";
-
     public static final int MAP_POPUP_REQUEST_CODE = 1000;
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
     public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
-
     public static final int MAP_POPUP_RESULT_CODE = 880;
-
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
+    public static int PAYMENT_INIT = 1;
+    public static int INPUT_CARDINFO_PHARSE = 2;
+    public static int ORDER_SUBMIT = 3;
+    public static int CAPTCHA_PHARSE = 4;
+    public static int OTP_PHARSE = 5;
+    public static int PIN_PHARSE = 6;
+    public static int STATUS_PHARSE = 7;
+    public static int RESULT_PHARSE = 8;
+    public static int UNDEFINE = 9;
+    public static int NULL_ERRORCODE = -747;
+    public static String TRUE = "true";
 
     public interface CHANNEL_CONST {
         String layout = "layout";
-    }
-
-    public static class PMC {
-        public static final int PMC_36 = 36;
-        public static final int PMC_37 = 37;
-        public static final int PMC_38 = 38;
-        public static final int PMC_39 = 39;
     }
 }

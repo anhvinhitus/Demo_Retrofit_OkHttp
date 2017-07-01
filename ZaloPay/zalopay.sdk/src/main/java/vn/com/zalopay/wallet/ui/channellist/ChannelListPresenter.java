@@ -33,6 +33,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -933,16 +934,16 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void trackingPaymentChannel(int pmcid) {
         switch (pmcid) {
-            case Constants.PMC.PMC_36:
+            case BuildConfig.channel_credit_card:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_36);
                 break;
-            case Constants.PMC.PMC_37:
+            case BuildConfig.channel_bankaccount:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_37);
                 break;
-            case Constants.PMC.PMC_38:
+            case BuildConfig.channel_zalopay:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_38);
                 break;
-            case Constants.PMC.PMC_39:
+            case BuildConfig.channel_atm:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_39);
                 break;
         }
