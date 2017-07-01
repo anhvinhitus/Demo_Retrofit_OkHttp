@@ -88,6 +88,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         @Override
         public void clearData() {
             mBuilder.showLoadding(false);
+            if (mTextMessage != null) {
+                mTextMessage.setText(null);
+            }
+
         }
 
         @Override
