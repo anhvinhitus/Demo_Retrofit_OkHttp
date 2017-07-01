@@ -49,6 +49,8 @@
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
         android:layout_marginRight="@dimen/sdk_margin_left_right"
         android:gravity="center"
+        android:lines="3"
+        android:ellipsize="end"
         android:textColor="@color/text_color_grey"
         android:textSize="@dimen/zpw_text_size_medium"
         android:textStyle="italic" />
