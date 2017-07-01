@@ -26,6 +26,7 @@ public abstract class PasswordRender implements UIBottomSheetDialog.IRender {
         IPinCallBack IFPinListener = mBuilder.getIFPinCallBack();
         if (IFPinListener != null) {
             IFPinListener.onCancel();
+            mBuilder.clearText();
         }
     }
 
