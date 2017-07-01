@@ -14,10 +14,12 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -411,8 +413,13 @@ public class SharedPreferencesManager extends SingletonBase {
                 String strMappedCard = getMap(pUserID, key);
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
-                    if (mappedCard != null)
+                    if (mappedCard != null) {
+                        BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(mappedCard.bankcode), BankConfig.class);
+                        if (bankConfig != null) {
+                            mappedCard.displayorder = bankConfig.displayorder;
+                        }
                         mappedCardList.add(mappedCard);
+                    }
                 }
             }
         }
@@ -428,6 +435,10 @@ public class SharedPreferencesManager extends SingletonBase {
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     BankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, BankAccount.class);
                     if (bankAccount != null) {
+                        BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(CardType.PVCB), BankConfig.class);
+                        if (bankConfig != null) {
+                            bankAccount.displayorder = bankConfig.displayorder;
+                        }
                         bankAccountList.add(bankAccount);
                     }
                 }

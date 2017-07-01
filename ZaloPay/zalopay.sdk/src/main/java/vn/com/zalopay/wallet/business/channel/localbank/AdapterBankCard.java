@@ -304,7 +304,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
                     });
                 }
-                getView().visiableOrderInfo(false);
+                getView().visiableOrderInfo(true);
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();
