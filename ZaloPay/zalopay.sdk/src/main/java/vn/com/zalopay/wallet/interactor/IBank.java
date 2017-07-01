@@ -19,6 +19,10 @@ public interface IBank {
 
     void resetExpireTime();
 
+    void setPaymentBank(String userId, String cardKey);
+
+    String getPaymentBank(String userId);
+
     Map<String, String> getBankPrefix();
 
     BankConfig getBankConfig(String bankCode);
@@ -28,4 +32,6 @@ public interface IBank {
     Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime);
 
     Observable<BankConfigResponse> getBankList(String appversion, long currentTime);
+
+    String getBankCodeList();
 }

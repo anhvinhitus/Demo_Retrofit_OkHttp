@@ -1233,6 +1233,19 @@ public abstract class AdapterBase {
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
+        //save payment card for show on channe list later
+        String paymentCard = getCard() != null ? getCard().getCardKey() : null;
+        if (TextUtils.isEmpty(paymentCard)) {
+            paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
+        }
+        if (!TextUtils.isEmpty(paymentCard)) {
+            SDKApplication.getApplicationComponent()
+                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), paymentCard);
+        } else {
+            SDKApplication.getApplicationComponent()
+                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), null);
+        }
+
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
 
         Timber.d(" set TextSubmitBtn after delaying 100ms");

@@ -28,6 +28,11 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         super(sharedPreferencesManager);
     }
 
+    @Override
+    public SharedPreferencesManager sharePref() {
+        return mSharedPreferences;
+    }
+
     private boolean isCheckSumChanged(String pNewCheckSum) {
         String checkSumOnCache = null;
         try {
@@ -96,7 +101,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         //sort by order
         List<BankConfig> bankConfigList = pResponse.banklist;
         Collections.sort(bankConfigList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder bankCodeList = new StringBuilder();
         for (BankConfig bankConfig : bankConfigList) {
             //for testing
                 /*if (bankConfig.code.equals(CardType.PVTB)) {
@@ -107,10 +112,10 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
                 }*/
             //save bank config
             mSharedPreferences.setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
-            stringBuilder.append(bankConfig.code).append(Constants.COMMA);
+            bankCodeList.append(bankConfig.code).append(Constants.COMMA);
         }
         //save bank code list in order sort
-        mSharedPreferences.setBankCodeList(stringBuilder.toString());
+        mSharedPreferences.setBankCodeList(bankCodeList.toString());
         //save bank prefix number (use to detect card type)
         String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
         mSharedPreferences.setBankConfigMap(hashMapBank);

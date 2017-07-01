@@ -445,6 +445,17 @@ public class AdapterLinkAcc extends AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
+        String accountInfo = getAccNumValue();
+        if (accountInfo != null) {
+            String first6No;
+            String last4No;
+            first6No = StringUtil.getFirstStringWithSize(accountInfo, 6);
+            last4No = StringUtil.getLastStringWithSize(accountInfo, 4);
+            if (!TextUtils.isEmpty(first6No) && !TextUtils.isEmpty(last4No)) {
+                SDKApplication.getApplicationComponent()
+                        .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), first6No + last4No);
+            }
+        }
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 

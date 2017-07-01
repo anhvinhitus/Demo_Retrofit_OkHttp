@@ -2,18 +2,24 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+
 import rx.Observable;
 import rx.functions.Func0;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+
+import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -72,7 +78,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
             }
-           /* MapCard mapCard = new MapCard();
+            MapCard mapCard = new MapCard();
             mapCard.bankcode = CardType.PVTB;
             mapCard.cardname = "VO VAN CHUC";
             mapCard.last4cardno = "8156";
@@ -81,12 +87,34 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
                 pResponse.cardinfos = new ArrayList<>();
             }
             pResponse.cardinfos.add(mapCard);
+
             mapCard = new MapCard();
             mapCard.bankcode = CardType.PBIDV;
             mapCard.cardname = "DO NGOC PHI CUONG";
             mapCard.last4cardno = "1195";
             mapCard.first6cardno = "970418";
-            pResponse.cardinfos.add(mapCard);*/
+            pResponse.cardinfos.add(mapCard);
+
+            mapCard = new MapCard();
+            mapCard.bankcode = CardType.PSGCB;
+            mapCard.cardname = "NGUYEN THI MAI THANH";
+            mapCard.last4cardno = "1234";
+            mapCard.first6cardno = "970419";
+            pResponse.cardinfos.add(mapCard);
+
+            mapCard = new MapCard();
+            mapCard.bankcode = CC_CODE;
+            mapCard.cardname = "NGUYEN VAN A";
+            mapCard.last4cardno = "1111";
+            mapCard.first6cardno = "411111";
+            pResponse.cardinfos.add(mapCard);
+
+            mapCard = new MapCard();
+            mapCard.bankcode = CardType.PSCB;
+            mapCard.cardname = "DO NGOC PHI CUONG";
+            mapCard.last4cardno = "1195";
+            mapCard.first6cardno = "970403";
+            pResponse.cardinfos.add(mapCard);
 
             // Test in case already linked account Vietcombank
 //        BankAccount dBankAccount = new BankAccount();

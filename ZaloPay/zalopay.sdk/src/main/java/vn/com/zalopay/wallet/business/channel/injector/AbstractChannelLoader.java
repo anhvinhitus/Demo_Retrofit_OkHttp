@@ -357,7 +357,7 @@ public abstract class AbstractChannelLoader {
         if (pChannel == null) {
             return;
         }
-        if (pmcConfigList == null || !pmcConfigList.contains(pChannel.getPmcKey(mAppId, mTranstype, pChannel.pmcid))) {
+        if (pmcConfigList == null || !pmcConfigList.contains(MiniPmcTransType.getPmcKey(mAppId, mTranstype, pChannel.pmcid))) {
             pChannel.setStatus(PaymentChannelStatus.DISABLE);
         }
     }

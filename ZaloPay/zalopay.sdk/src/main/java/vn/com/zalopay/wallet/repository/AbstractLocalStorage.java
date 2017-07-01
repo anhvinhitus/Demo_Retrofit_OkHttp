@@ -15,4 +15,8 @@ public class AbstractLocalStorage {
         this.mSharedPreferences = pSharedPreferencesManager;
         Timber.d("create LocalStorage");
     }
+
+    public interface LocalStorage{
+        SharedPreferencesManager sharePref();
+    }
 }

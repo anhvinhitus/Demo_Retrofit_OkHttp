@@ -65,7 +65,7 @@ public class SharedPreferencesManager extends SingletonBase {
         return mCommonSharedPreferences;
     }
 
-    private String getString(String pKey) {
+    public String getString(String pKey) {
         SharedPreferences sharedPreferences = getSharedPreferences();
         if (sharedPreferences != null)
             return sharedPreferences.getString(pKey, null);
@@ -409,10 +409,8 @@ public class SharedPreferencesManager extends SingletonBase {
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
                 String strMappedCard = getMap(pUserID, key);
-
                 if (!TextUtils.isEmpty(strMappedCard)) {
                     MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
-
                     if (mappedCard != null)
                         mappedCardList.add(mappedCard);
                 }

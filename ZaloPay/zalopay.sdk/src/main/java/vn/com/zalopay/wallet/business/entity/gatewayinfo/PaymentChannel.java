@@ -13,6 +13,10 @@ public class PaymentChannel extends MiniPmcTransType {
     public PaymentChannel() {
     }
 
+    public String cardKey(){
+        return f6no + l4no;
+    }
+
     public PaymentChannel(MiniPmcTransType channel) {
         super(channel);
     }

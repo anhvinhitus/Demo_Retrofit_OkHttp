@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 import static vn.com.zalopay.wallet.constants.Constants.BITMAP_EXTENSION;
+import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
 
 /**
  * Interactor decide which get data from
@@ -61,7 +62,7 @@ public class BankInteractor implements IBank {
             Timber.d("start load withdraw banks");
             try {
                 List<BankConfig> withDrawBanks = new ArrayList<>();
-                String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
+                String bankCodes = getBankCodeList();
                 if (!TextUtils.isEmpty(bankCodes)) {
                     String[] arrayBankCode = bankCodes.split(Constants.COMMA);
                     for (String bankCode : arrayBankCode) {
@@ -111,7 +112,7 @@ public class BankInteractor implements IBank {
                         masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
                     }
                     //build support cards
-                    String bankCodes = mBankListRepository.getLocalStorage().getBankCodeList();
+                    String bankCodes = getBankCodeList();
                     if (!TextUtils.isEmpty(bankCodes)) {
                         String[] arrayBankCode = bankCodes.split(Constants.COMMA);
                         for (String bankCode : arrayBankCode) {
@@ -258,6 +259,35 @@ public class BankInteractor implements IBank {
     @Override
     public void resetExpireTime() {
         this.mBankListRepository.getLocalStorage().setExpireTime(0);
+    }
+
+    @Override
+    public void setPaymentBank(String userId, String cardKey) {
+        this.mBankListRepository.getLocalStorage().sharePref().setString(cacheKeyPayment(userId), cardKey);
+    }
+
+    @Override
+    public String getPaymentBank(String userId) {
+        String lastBankCode = null;
+        try {
+            lastBankCode = this.mBankListRepository.getLocalStorage().sharePref().getString(cacheKeyPayment(userId));
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+        return lastBankCode;
+    }
+
+    private String cacheKeyPayment(String userId) {
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append(userId)
+                .append(UNDERLINE)
+                .append("last_payment");
+        return keyBuilder.toString();
+    }
+
+    @Override
+    public String getBankCodeList() {
+        return mBankListRepository.getLocalStorage().getBankCodeList();
     }
 }
 

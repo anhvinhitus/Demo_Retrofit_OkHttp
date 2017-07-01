@@ -10,13 +10,14 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
  * Created by chucvv on 6/7/17.
  */
 
 public class BankStore {
-    public interface LocalStorage {
+    public interface LocalStorage extends AbstractLocalStorage.LocalStorage{
         void put(BankConfigResponse bankConfigResponse);
 
         long getExpireTime();
