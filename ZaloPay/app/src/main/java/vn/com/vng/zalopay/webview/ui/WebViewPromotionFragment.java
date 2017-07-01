@@ -20,16 +20,13 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.HashMap;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -46,10 +43,17 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         WebBottomSheetDialogFragment.BottomSheetEventListener,
         SwipeRefreshLayout.OnRefreshListener {
 
+    public static WebViewPromotionFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        WebViewPromotionFragment fragment = new WebViewPromotionFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @BindView(R.id.webview)
     ZPWebView mWebView;
-
-    protected ZPWebViewPromotionProcessor mWebViewProcessor;
 
     @BindView(R.id.layoutRetry)
     View layoutRetry;
@@ -60,11 +64,6 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     @BindView(R.id.tvError)
     TextView tvError;
 
-    private WebBottomSheetDialogFragment mBottomSheetDialog;
-
-    @Inject
-    Navigator mNavigator;
-
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
 
@@ -73,11 +72,8 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
 
     private String mUrl;
 
-    public static WebViewPromotionFragment newInstance(Bundle bundle) {
-        WebViewPromotionFragment fragment = new WebViewPromotionFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    private ZPWebViewPromotionProcessor mWebViewProcessor;
+    private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     @Override
     protected void setupFragmentComponent() {
@@ -93,20 +89,12 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
-    }
-
-    private void initArgs(Bundle bundle) {
-        String originalUrl = bundle.getString(Constants.ARG_URL);
-        HashMap<String, String> params = new HashMap<>();
-        params.put("userid", getUserComponent().currentUser().zaloPayId);
-        mUrl = Strings.addUrlQueryParams(originalUrl, params);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mUrl = getUrl();
         refreshLayout.setSwipeableChildren(R.id.webview);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.back_ground_blue);
@@ -130,13 +118,13 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         });
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(Constants.ARG_URL, mUrl);
+    private String getUrl() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userid", getUserComponent().currentUser().zaloPayId);
+        return Strings.addUrlQueryParams(BuildConfig.PROMOTION_URL, params);
     }
 
-    public void loadUrl(final String pUrl) {
+    public void loadUrl(String pUrl) {
         if (mWebViewProcessor != null) {
             mWebViewProcessor.start(pUrl, getActivity());
         }
@@ -183,7 +171,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
 
     @Override
     public void openWebDetail(String url) {
-        mNavigator.startWebPromotionDetailActivity(getActivity(), url);
+        navigator.startWebPromotionDetailActivity(getActivity(), url);
     }
 
     @Override
