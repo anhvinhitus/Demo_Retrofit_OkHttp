@@ -81,6 +81,7 @@ public class AdapterBankCard extends AdapterBase {
         }
         if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
             onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
+
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
     }
@@ -305,6 +306,7 @@ public class AdapterBankCard extends AdapterBase {
                     });
                 }
                 getView().visiableOrderInfo(true);
+                getView().setVisible(R.id.order_info_line_view,false);
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();

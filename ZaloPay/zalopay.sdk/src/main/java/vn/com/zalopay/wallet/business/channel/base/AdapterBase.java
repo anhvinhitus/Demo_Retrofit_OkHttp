@@ -43,6 +43,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
@@ -637,7 +638,15 @@ public abstract class AdapterBase {
                             return null;
                         }
                         //flow cover parse web (vietinbank)
-                        if (isCardFlow() && getGuiProcessor().getCardFinder().isDetected() && getGuiProcessor().getCardFinder().getDetectBankConfig() != null && getGuiProcessor().getCardFinder().getDetectBankConfig().isParseWebsite()) {
+                        BankConfig bankConfig = null;
+                        String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
+                        if (!TextUtils.isEmpty(bankCode)) {
+                            bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(bankCode);
+                        }
+                        if (bankConfig == null && getGuiProcessor().getCardFinder() != null) {
+                            bankConfig = getGuiProcessor().getCardFinder().getDetectBankConfig();
+                        }
+                        if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                             setECardFlowType(BankFlow.PARSEWEB);
                             getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
                             initWebView(dataResponse.redirecturl);

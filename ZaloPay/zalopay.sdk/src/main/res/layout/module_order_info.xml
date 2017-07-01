@@ -127,6 +127,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/order_info_line_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/zpw_line_height"
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
