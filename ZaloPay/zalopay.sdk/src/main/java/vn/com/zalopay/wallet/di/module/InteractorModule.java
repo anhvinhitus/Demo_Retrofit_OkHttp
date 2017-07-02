@@ -58,9 +58,10 @@ public class InteractorModule {
     ChannelListInteractor provideChannelListInteractor(Application application,
                                                        IPlatformInfo platformInteractor,
                                                        IAppInfo appInfoInteractor,
-                                                       ILink linkInteractor,
                                                        IBank bankInteractor,
                                                        ZPMonitorEventTiming eventTiming) {
-        return new ChannelListInteractor(application, platformInteractor, appInfoInteractor, linkInteractor, bankInteractor, eventTiming);
+        return new ChannelListInteractor(application,
+                platformInteractor, appInfoInteractor, bankInteractor,
+                eventTiming);
     }
 }

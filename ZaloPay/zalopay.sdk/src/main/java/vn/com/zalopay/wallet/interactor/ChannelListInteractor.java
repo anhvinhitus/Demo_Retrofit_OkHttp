@@ -37,7 +37,6 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class ChannelListInteractor {
     private final IAppInfo mAppInfoInteractor;
-    private final ILink mLinkInteractor;
     private final IBank mBankInteractor;
     private final IPlatformInfo mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
@@ -52,14 +51,12 @@ public class ChannelListInteractor {
     public ChannelListInteractor(Application application,
                                  IPlatformInfo platformInteractor,
                                  IAppInfo appInfoInteractor,
-                                 ILink linkInteractor,
                                  IBank bankInteractor,
                                  ZPMonitorEventTiming eventTiming) {
         mApplicationHandler = new Handler(application.getMainLooper());
 
         mPlatformInteractor = platformInteractor;
         mAppInfoInteractor = appInfoInteractor;
-        mLinkInteractor = linkInteractor;
         mBankInteractor = bankInteractor;
         mEventTiming = eventTiming;
     }
@@ -99,11 +96,6 @@ public class ChannelListInteractor {
                 userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
                 .doOnSubscribe(this::loadAppInfoOnProcess)
                 .doOnNext(this::loadAppInfoOnComplete);
-
-       /* Observable<Boolean> linkObservable = mLinkInteractor
-                .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_START))
-                .doOnNext(this::loadCardListOnComplete);*/
 
         currentTime = System.currentTimeMillis();
         Observable<BankConfigResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
@@ -160,25 +152,10 @@ public class ChannelListInteractor {
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
-//        boolean waitDownloadResource = !ResourceManager.isInit();
-//        if(waitDownloadResource){
-//            Timber.d("wait for downloading resource");
-//            cleanup();
-//            return;
-//        }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_INFO_READY);
         mPaymentInfoReadyMessage = message;
         if (mPaymentReadyListener != null) {
             postReadyMessage();
-        }
-    }
-
-    private void loadCardListOnComplete(Boolean result) {
-        try {
-            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_END);
-//            readyForPayment();
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
         }
     }
 
