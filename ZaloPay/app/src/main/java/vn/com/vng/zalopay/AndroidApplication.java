@@ -154,6 +154,7 @@ public class AndroidApplication extends Application {
                 .setHttpClientTimeoutLonger(getAppComponent().okHttpClientTimeoutLonger())
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setBaseHostUrl(BuildConfig.HOST)
+                .setRetrofit(getAppComponent().retrofitApi())
                 .build();
         SDKApplication.initialize(this, sdkConfig);
     }

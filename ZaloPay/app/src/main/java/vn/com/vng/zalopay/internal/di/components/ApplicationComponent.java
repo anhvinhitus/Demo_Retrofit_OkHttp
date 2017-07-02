@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 import vn.com.vng.zalopay.passport.OnboardingFragment;
 import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
@@ -102,6 +103,9 @@ public interface ApplicationComponent {
     LocationStore.RepositoryFactory locationRepositoryFactory();
 
     LocationStore.Repository locationRepository();
+
+    @Named("retrofitApi")
+    Retrofit retrofitApi();
 
     /*INJECT*/
 
