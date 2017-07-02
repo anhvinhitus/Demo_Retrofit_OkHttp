@@ -90,10 +90,10 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     public Observable<Boolean> reloadPlatform(String userId, String accessToken, long currentTime) {
         try {
             boolean forceReload = forceReloadPlatformInfo(userId);
-            boolean expireInfo = currentTime >= getExpireTime();
+            boolean isExpired = currentTime >= getExpireTime();
             boolean shouldDownloadRes = !isValidConfig();
-            if ( ! forceReload && !shouldDownloadRes && !expireInfo) {
-                return Observable.just(false);
+            if (!forceReload && !shouldDownloadRes && !isExpired) {
+                return Observable.just(true);
             }
             Timber.d("start reload platform info - force download resource %s", shouldDownloadRes);
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
