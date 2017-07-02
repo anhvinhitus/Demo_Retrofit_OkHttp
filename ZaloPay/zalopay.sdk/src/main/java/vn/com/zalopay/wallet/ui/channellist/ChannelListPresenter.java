@@ -818,6 +818,15 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     @Override
+    public void onPlatformError(Throwable e) {
+        try {
+            getViewOrThrow().showError(e.getMessage());
+        } catch (Exception e1) {
+            Timber.w(e);
+        }
+    }
+
+    @Override
     public void onResourceError(Throwable throwable) {
         Timber.w("init resource error", throwable);
         /***

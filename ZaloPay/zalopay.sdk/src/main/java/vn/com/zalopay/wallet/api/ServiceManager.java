@@ -136,13 +136,13 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
         return mIsRequesting;
     }
 
-    protected void releaseLock() {
+    private void releaseLock() {
         mIsRequesting = false;
         unSubscribe();
         Timber.d("released lock requesting...");
     }
 
-    protected void unSubscribe() {
+    private void unSubscribe() {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             Timber.d("un subscribe...");

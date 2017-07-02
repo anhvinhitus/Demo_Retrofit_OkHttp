@@ -17,7 +17,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -66,8 +65,11 @@ public class ResourceLoader extends SingletonBase {
         if (TextUtils.isEmpty(message)) {
             message = GlobalData.getStringResource(RS.string.sdk_load_generic_error_message);
         }
-        SdkResourceInitMessage errorEvent = new SdkResourceInitMessage(false, message);
-        SDKApplication.getApplicationComponent().eventBus().post(errorEvent);
+        try {
+            getPresenter().onPlatformError(new Exception(message));
+        } catch (Exception e) {
+            Timber.w(e);
+        }
     };
 
     public ResourceLoader() {

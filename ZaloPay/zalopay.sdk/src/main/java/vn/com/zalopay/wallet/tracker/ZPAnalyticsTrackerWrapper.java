@@ -7,6 +7,7 @@ import java.util.Date;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
+import vn.com.zalopay.analytics.ZPApptransidLogApiCall;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -32,6 +33,11 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         mZPApptransidLog.transtype = pTransType;
     }
 
+    public void trackApiTiming(ZPApptransidLogApiCall data) {
+        ZPAnalytics.trackApptransidApiCall(data);
+        Timber.d("tracking call api timing %s", data);
+    }
+
     public void trackUserCancel(boolean isFinish) {
         if (mZPApptransidLog.status == 1 || TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
             Timber.d("skip tracking because status is finish");
@@ -43,8 +49,9 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         }
         mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
         ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
-        Log.d(this, "tracking translogid ", mZPApptransidLog);
+        Timber.d("tracking trans log id %s", mZPApptransidLog);
     }
+
     /***
      * The params order mush be
      * @param step
@@ -97,6 +104,6 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
             }
         }
         ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
-        Log.d(this, "tracking translogid ", mZPApptransidLog);
+        Timber.d("tracking trans log %s", mZPApptransidLog);
     }
 }

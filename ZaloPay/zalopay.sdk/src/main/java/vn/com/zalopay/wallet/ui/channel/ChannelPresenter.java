@@ -172,6 +172,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
+    @Override
+    public void onPlatformError(Throwable e) {
+        onExit(e.getMessage(), true);
+    }
+
     public AdapterBase getAdapter() {
         return mAdapter;
     }

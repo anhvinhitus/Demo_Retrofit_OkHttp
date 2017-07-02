@@ -93,6 +93,10 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
     public void onResourceError(Throwable e) {
     }
 
+    public void onPlatformError(Throwable e){
+
+    }
+
     public void onResourceReady() {
     }
 
