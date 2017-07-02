@@ -35,8 +35,8 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    IBank provideBankListInteractor(BankStore.Repository bankListRepository) {
-        return new BankInteractor(bankListRepository);
+    IBank provideBankListInteractor(BankStore.LocalStorage localStorage, BankStore.BankListService bankListService, MemoryCache memoryCache) {
+        return new BankInteractor(localStorage, bankListService, memoryCache);
     }
 
     @Provides

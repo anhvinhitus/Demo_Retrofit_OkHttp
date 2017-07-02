@@ -8,7 +8,6 @@ import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.repository.bank.BankLocalStorage;
-import vn.com.zalopay.wallet.repository.bank.BankRepository;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 /**
@@ -26,11 +25,5 @@ public class BankListRepositoryModule {
     @Singleton
     public BankStore.LocalStorage provideBankListLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
         return new BankLocalStorage(sharedPreferencesManager);
-    }
-
-    @Provides
-    @Singleton
-    public BankStore.Repository provideBankListRepository(BankStore.BankListService bankListService, BankStore.LocalStorage localStorage) {
-        return new BankRepository(bankListService, localStorage);
     }
 }

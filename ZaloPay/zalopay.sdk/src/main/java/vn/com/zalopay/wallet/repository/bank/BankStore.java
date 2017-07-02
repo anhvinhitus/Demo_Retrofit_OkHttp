@@ -39,12 +39,6 @@ public class BankStore {
         void clearConfig();
     }
 
-    public interface Repository {
-        Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion);
-
-        BankStore.LocalStorage getLocalStorage();
-    }
-
     public interface BankListService {
         @GET(Constants.URL_GET_BANKLIST)
         @API_NAME(https = ZPEvents.API_V001_TPE_GETBANKLIST, connector = ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)

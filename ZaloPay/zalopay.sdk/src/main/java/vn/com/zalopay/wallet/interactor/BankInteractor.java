@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.interactor;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.api.RetryWithDelay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -41,129 +43,101 @@ import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
  */
 
 public class BankInteractor implements IBank {
-    public BankStore.Repository mBankListRepository;
+    private final BankStore.LocalStorage mLocalStorage;
+    private final BankStore.BankListService mBankListService;
 
-    private Func1<BankConfigResponse, Observable<BankConfigResponse>> mapResult = bankConfigResponse -> {
-        if (bankConfigResponse == null) {
-            return Observable.error(new RequestException(RequestException.NULL, null));
-        } else if (bankConfigResponse.returncode == 1) {
-            bankConfigResponse.expiredtime = mBankListRepository.getLocalStorage().getExpireTime();
-            if (bankConfigResponse.bankcardprefixmap == null) {
-                bankConfigResponse.bankcardprefixmap = getBankPrefix();
-            }
-            return Observable.just(bankConfigResponse);
-        } else {
-            return Observable.error(new RequestException(bankConfigResponse.returncode, bankConfigResponse.returnmessage));
-        }
-    };
-    private Func1<BankConfigResponse, Observable<List<BankConfig>>> withDrawBank = new Func1<BankConfigResponse, Observable<List<BankConfig>>>() {
-        @Override
-        public Observable<List<BankConfig>> call(BankConfigResponse bankConfigResponse) {
-            Timber.d("start load withdraw banks");
-            try {
-                List<BankConfig> withDrawBanks = new ArrayList<>();
-                String bankCodes = getBankCodeList();
-                if (!TextUtils.isEmpty(bankCodes)) {
-                    String[] arrayBankCode = bankCodes.split(Constants.COMMA);
-                    for (String bankCode : arrayBankCode) {
-                        BankConfig bankConfig = mBankListRepository.getLocalStorage().getBankConfig(bankCode);
-                        bankConfig.bankLogo = withDrawBankLogo(bankCode);
-                        if (bankConfig.isWithDrawAllow() && !withDrawBanks.contains(bankConfig)) {
-                            withDrawBanks.add(bankConfig);
-                        }
-                    }
-                }
-                return Observable.just(withDrawBanks);
-            } catch (Exception e) {
-                Log.e(this, e);
-                return Observable.error(e);
-            }
-        }
-    };
-
-    @Inject
-    public BankInteractor(BankStore.Repository bankListRepository) {
-        this.mBankListRepository = bankListRepository;
+    public BankInteractor(BankStore.LocalStorage localStorage,
+                          BankStore.BankListService bankListService,
+                          MemoryCache memoryCache) {
+        this.mLocalStorage = localStorage;
+        this.mBankListService = bankListService;
+        this.mMemoryCache = memoryCache;
         Timber.d("call constructor BankInteractor");
     }
 
-    private Func1<BankConfigResponse, Observable<List<ZPBank>>> supportBanks(String appVersion) {
-        return new Func1<BankConfigResponse, Observable<List<ZPBank>>>() {
-            @Override
-            public Observable<List<ZPBank>> call(BankConfigResponse bankConfigResponse) {
-                Timber.d("start load support banks");
-                try {
-                    List<ZPBank> supportBank = new ArrayList<>();
-                    //cc hardcode
-                    String bankCodeVisa = CardType.VISA;
-                    String bankCodeMaster = CardType.MASTER;
+    private Observable<List<ZPBank>> supportBanks(String appVersion) {
+        Timber.d("start load support banks");
+        try {
+            List<ZPBank> supportBank = new ArrayList<>();
+            //cc hardcode
+            String bankCodeVisa = CardType.VISA;
+            String bankCodeMaster = CardType.MASTER;
 
-                    ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    if (visa != null) {
-                        visa.bankLogo = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa), BITMAP_EXTENSION);
-                        visa.bankCode = bankCodeVisa;
-                        visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
-                    }
+            ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
+            if (visa != null) {
+                visa.bankLogo = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa), BITMAP_EXTENSION);
+                visa.bankCode = bankCodeVisa;
+                visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+            }
 
-                    ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-                    if (masterCard != null) {
-                        masterCard.bankLogo = supportBankLogo(bankCodeMaster);
-                        masterCard.bankCode = bankCodeMaster;
-                        masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
-                    }
-                    //build support cards
-                    String bankCodes = getBankCodeList();
-                    if (!TextUtils.isEmpty(bankCodes)) {
-                        String[] arrayBankCode = bankCodes.split(Constants.COMMA);
-                        for (String bankCode : arrayBankCode) {
-                            if (TextUtils.isEmpty(bankCode)) {
-                                continue;
-                            }
-                            if (BuildConfig.CC_CODE.equals(bankCode)) {
-                                supportBank.add(visa);
-                                supportBank.add(masterCard);
-                                continue;
-                            }
-                            boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
-                            ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
-                            if (zpBank == null) {
-                                continue;
-                            }
-                            zpBank.bankLogo = supportBankLogo(bankCode);
-                            zpBank.isBankAccount = isBankAccount;
-                            if (!supportBank.contains(zpBank)) {
-                                supportBank.add(zpBank);
-                            }
-                        }
-                    }
-                    return Observable.just(supportBank);
-                } catch (Exception e) {
-                    Log.e(this, e);
-                    return Observable.error(e);
+            ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
+            if (masterCard != null) {
+                masterCard.bankLogo = supportBankLogo(bankCodeMaster);
+                masterCard.bankCode = bankCodeMaster;
+                masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
+            }
+            //build support cards
+            String bankCodes = getBankCodeList();
+            if (TextUtils.isEmpty(bankCodes)) {
+                return Observable.just(supportBank);
+            }
+
+            String[] arrayBankCode = bankCodes.split(Constants.COMMA);
+            for (String bankCode : arrayBankCode) {
+                if (TextUtils.isEmpty(bankCode)) {
+                    continue;
+                }
+                if (BuildConfig.CC_CODE.equals(bankCode)) {
+                    supportBank.add(visa);
+                    supportBank.add(masterCard);
+                    continue;
+                }
+                boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
+                ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
+                if (zpBank == null) {
+                    continue;
+                }
+                zpBank.bankLogo = supportBankLogo(bankCode);
+                zpBank.isBankAccount = isBankAccount;
+                if (!supportBank.contains(zpBank)) {
+                    supportBank.add(zpBank);
                 }
             }
-        };
+            return Observable.just(supportBank);
+        } catch (Exception e) {
+            Log.e(this, e);
+            return Observable.error(e);
+        }
     }
 
     @Override
     public Observable<BankConfigResponse> getBankList(String appVersion, long currentTime) {
-        String checksum = mBankListRepository.getLocalStorage().getCheckSum();
+        String checksum = mLocalStorage.getCheckSum();
         String platform = BuildConfig.PAYMENT_PLATFORM;
-        Observable<BankConfigResponse> bankListCache = mBankListRepository
-                .getLocalStorage()
+
+        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable("SdkBankList")
+                .map(object -> {
+                    if (object.equals(MemoryCache.EmptyObject)) {
+                        return null;
+                    } else if (object instanceof BankConfigResponse) {
+                        return (BankConfigResponse) object;
+                    } else {
+                        return null;
+                    }
+                });
+        Observable<BankConfigResponse> bankListCache = mLocalStorage
                 .get()
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
-        Observable<BankConfigResponse> bankListCloud = mBankListRepository
-                .fetchCloud(platform, checksum, appVersion)
-                .flatMap(mapResult);
-        return Observable.concat(bankListCache, bankListCloud)
+        Observable<BankConfigResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
+                .flatMap(this::convertToBankConfigResponseObservable);
+        return Observable.concat(memoryCache, bankListCache, bankListCloud)
                 .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
     }
 
     @Override
     public BankConfig getBankConfig(String bankCode) {
-        return mBankListRepository.getLocalStorage().getBankConfig(bankCode);
+        return mLocalStorage.getBankConfig(bankCode);
     }
 
     /***
@@ -176,14 +150,14 @@ public class BankInteractor implements IBank {
     @Override
     public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
-                .flatMap(supportBanks(appVersion))
+                .flatMap(a -> supportBanks(appVersion))
                 .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
     @Override
     public Observable<List<BankConfig>> getWithdrawBanks(String appVersion, long currentTime) {
         return getBankList(appVersion, currentTime)
-                .flatMap(withDrawBank)
+                .flatMap(this::convertToListBankConfigObservable)
                 .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
@@ -201,7 +175,7 @@ public class BankInteractor implements IBank {
         }
         //get bank status and message in maintenance or need up version for link transtype
         @BankFunctionCode int bankFunctionCode = isBankAccount ? BankFunctionCode.LINK_BANK_ACCOUNT : BankFunctionCode.LINK_CARD;
-        BankConfig bankConfig = this.mBankListRepository.getLocalStorage().getBankConfig(bankCode);
+        BankConfig bankConfig = this.mLocalStorage.getBankConfig(bankCode);
         if (bankConfig == null) {
             return null;
         }
@@ -243,34 +217,34 @@ public class BankInteractor implements IBank {
 
     @Override
     public Map<String, String> getBankPrefix() {
-        return this.mBankListRepository.getLocalStorage().getBankPrefix();
+        return this.mLocalStorage.getBankPrefix();
     }
 
     @Override
     public void clearCheckSum() {
-        this.mBankListRepository.getLocalStorage().clearCheckSum();
+        this.mLocalStorage.clearCheckSum();
     }
 
     @Override
     public void clearConfig() {
-        this.mBankListRepository.getLocalStorage().clearConfig();
+        this.mLocalStorage.clearConfig();
     }
 
     @Override
     public void resetExpireTime() {
-        this.mBankListRepository.getLocalStorage().setExpireTime(0);
+        this.mLocalStorage.setExpireTime(0);
     }
 
     @Override
     public void setPaymentBank(String userId, String cardKey) {
-        this.mBankListRepository.getLocalStorage().sharePref().setString(cacheKeyPayment(userId), cardKey);
+        this.mLocalStorage.sharePref().setString(cacheKeyPayment(userId), cardKey);
     }
 
     @Override
     public String getPaymentBank(String userId) {
         String lastBankCode = null;
         try {
-            lastBankCode = this.mBankListRepository.getLocalStorage().sharePref().getString(cacheKeyPayment(userId));
+            lastBankCode = this.mLocalStorage.sharePref().getString(cacheKeyPayment(userId));
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -287,7 +261,53 @@ public class BankInteractor implements IBank {
 
     @Override
     public String getBankCodeList() {
-        return mBankListRepository.getLocalStorage().getBankCodeList();
+        return mLocalStorage.getBankCodeList();
+    }
+
+    private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
+        return mBankListService.fetch(platform, checksum, appversion)
+                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
+                .doOnNext(bankConfigResponse -> mLocalStorage.put(bankConfigResponse));
+    }
+
+    @NonNull
+    private Observable<BankConfigResponse> convertToBankConfigResponseObservable(BankConfigResponse bankConfigResponse) {
+        if (bankConfigResponse == null) {
+            return Observable.error(new RequestException(RequestException.NULL, null));
+        } else if (bankConfigResponse.returncode == 1) {
+            bankConfigResponse.expiredtime = mLocalStorage.getExpireTime();
+            if (bankConfigResponse.bankcardprefixmap == null) {
+                bankConfigResponse.bankcardprefixmap = getBankPrefix();
+            }
+            return Observable.just(bankConfigResponse);
+        } else {
+            return Observable.error(new RequestException(bankConfigResponse.returncode, bankConfigResponse.returnmessage));
+        }
+    }
+
+    @NonNull
+    private Observable<List<BankConfig>> convertToListBankConfigObservable(BankConfigResponse bankConfigResponse) {
+        Timber.d("start load withdraw banks");
+        try {
+            List<BankConfig> withDrawBanks = new ArrayList<>();
+            String bankCodes = getBankCodeList();
+            if (TextUtils.isEmpty(bankCodes)) {
+                return Observable.just(withDrawBanks);
+            }
+
+            String[] arrayBankCode = bankCodes.split(Constants.COMMA);
+            for (String bankCode : arrayBankCode) {
+                BankConfig bankConfig = mLocalStorage.getBankConfig(bankCode);
+                bankConfig.bankLogo = withDrawBankLogo(bankCode);
+                if (bankConfig.isWithDrawAllow() && !withDrawBanks.contains(bankConfig)) {
+                    withDrawBanks.add(bankConfig);
+                }
+            }
+            return Observable.just(withDrawBanks);
+        } catch (Exception e) {
+            Log.e(this, e);
+            return Observable.error(e);
+        }
     }
 }
 
