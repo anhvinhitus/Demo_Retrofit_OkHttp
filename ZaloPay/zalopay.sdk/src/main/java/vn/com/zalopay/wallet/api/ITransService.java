@@ -65,28 +65,6 @@ public interface ITransService {
                                            @Query(ConstantParams.BANK_CODE) String bankCode,
                                            @Query(ConstantParams.EXINFO) String exinfo,
                                            @Query(ConstantParams.EXCEPTION) String exception);
-
-    /**
-     * Api ramove card
-     *
-     * @param userID
-     * @param accessToken
-     * @param cardName
-     * @param first6Cardno
-     * @param last4Cardno
-     * @param bankCode
-     * @return
-     */
-    @POST(Constants.URL_REMOVE_MAPCARD)
-    @API_NAME(https = ZPEvents.API_V001_TPE_REMOVEMAPCARD, connector = ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)
-    Observable<BaseResponse> removeCard(@Query(ConstantParams.USER_ID) String userID,
-                                        @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                        @Query(ConstantParams.CARD_NAME) String cardName,
-                                        @Query(ConstantParams.FIRST6_CARDNO) String first6Cardno,
-                                        @Query(ConstantParams.LAST4_CARDNO) String last4Cardno,
-                                        @Query(ConstantParams.BANK_CODE) String bankCode,
-                                        @Query(ConstantParams.APP_VERSION) String appver);
-
     /**
      * Api Send Log
      *

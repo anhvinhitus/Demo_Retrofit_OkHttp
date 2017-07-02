@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -40,12 +42,10 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
@@ -55,15 +55,27 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 class BankPresenter extends AbstractBankPresenter<IBankView> {
 
+    protected EventBus mEventBus;
     private User mUser;
     private Navigator mNavigator;
     private PaymentWrapper mPaymentWrapper;
-    protected EventBus mEventBus;
     private boolean mPayAfterLinkBank;
     private boolean mWithdrawAfterLinkBank;
     private boolean mGotoSelectBank = false;
     private String mLinkCardWithBankCode = "";
     private String mLinkAccountWithBankCode = "";
+    private Action1<Throwable> removeMapCardException = throwable -> {
+        Timber.d("Remove map card error : message [%s]", throwable);
+        if (mView == null) {
+            return;
+        }
+        hideLoadingView();
+        if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
+            showErrorView(mView.getContext().getString(R.string.error_message_link_card_unknown_error));
+        } else {
+            showNetworkErrorDialog();
+        }
+    };
 
     @Inject
     BankPresenter(User user,
@@ -77,6 +89,31 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
         mPaymentWrapper.initializeComponents();
+    }
+
+    private Action1<BaseResponse> removeCardSuccess(MapCard mapCard) {
+        return response -> {
+            if (response != null && response.returncode == 1) {
+                Timber.d("removed map card: %s", mapCard);
+                hideLoadingView();
+                if (mView == null || mapCard == null) {
+                    return;
+                }
+                mView.removeLinkedBank(mapCard);
+                showNotificationDialog(R.string.txt_remove_link_successfully);
+            } else if (response != null && !TextUtils.isEmpty(response.returnmessage)) {
+                showErrorView(response.returnmessage);
+                if (response.returncode == ServerErrorMessage.TOKEN_INVALID) {
+                    mEventBus.postSticky(new TokenPaymentExpiredEvent());
+                }
+            } else {
+                if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
+                    showErrorView(mView.getContext().getString(R.string.error_message_link_card_unknown_error));
+                } else {
+                    showNetworkErrorDialog();
+                }
+            }
+        };
     }
 
     @Override
@@ -181,26 +218,21 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         mPaymentWrapper.linkCard(getActivity());
     }
 
-    private void removeLinkedCard(MapCard mappedCard) {
-        showLoadingView();
-
-        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
-        MapCard mapCard = new MapCard();
-        mapCard.cardname = mappedCard.cardname;
-        mapCard.first6cardno = mappedCard.first6cardno;
-        mapCard.last4cardno = mappedCard.last4cardno;
-        mapCard.bankcode = mappedCard.bankcode;
-
+    private void removeLinkedCard(MapCard mappCard) {
         if (mUser == null) {
             showErrorView("Thông tin người dùng không hợp lệ.");
             return;
         }
-        params.accessToken = mUser.accesstoken;
-        params.userID = String.valueOf(mUser.zaloPayId);
-        params.mapCard = mapCard;
-        params.appVersion = BuildConfig.VERSION_NAME;
-
-        SDKApplication.removeCardMap(params, new RemoveMapCardListener());
+        if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
+            showNetworkErrorDialog();
+            return;
+        }
+        showLoadingView();
+        SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .removeMap(mUser.zaloPayId, mUser.accesstoken, mappCard.cardname, mappCard.first6cardno, mappCard.last4cardno, mappCard.bankcode, BuildConfig.VERSION_NAME)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(removeCardSuccess(mappCard), removeMapCardException);
     }
 
     private void removeLinkedAccount(BankAccount bankAccount) {
@@ -442,41 +474,21 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         }
     }
 
-    /*
-    * Listener classes
-    * */
-    private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
-        @Override
-        public void onSuccess(MapCard mapCard) {
-            Timber.d("removed map card: %s", mapCard);
-            hideLoadingView();
-            if (mView == null || mapCard == null) {
-                return;
-            }
-            mView.removeLinkedBank(mapCard);
-            showNotificationDialog(R.string.txt_remove_link_successfully);
+    private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+
+        WeakReference<BankPresenter> mWeakReference;
+
+        LinkCardListener(BankPresenter presenter) {
+            mWeakReference = new WeakReference<>(presenter);
         }
 
         @Override
-        public void onError(BaseResponse pMessage) {
-            Timber.d("Remove map card error : message [%s]", pMessage);
-            if (mView == null) {
+        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
+            if (mWeakReference.get() == null) {
                 return;
             }
 
-            hideLoadingView();
-            if (pMessage == null) {
-                if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                    showErrorView(mView.getContext().getString(R.string.error_message_link_card_unknown_error));
-                } else {
-                    showNetworkErrorDialog();
-                }
-            } else if (pMessage.returncode == ServerErrorMessage.TOKEN_INVALID) {
-                mEventBus.postSticky(new TokenPaymentExpiredEvent());
-            } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
-                Timber.d("err removed map card %s", pMessage.returnmessage);
-                showErrorView(pMessage.returnmessage);
-            }
+            mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
         }
     }
 
@@ -515,24 +527,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         @Override
         public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
             Timber.d("onPreComplete payment, transactionId %s isSuccessful [%s] pAppTransId [%s]", tId, isSuccessful, pAppTransId);
-        }
-    }
-
-    private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
-
-        WeakReference<BankPresenter> mWeakReference;
-
-        LinkCardListener(BankPresenter presenter) {
-            mWeakReference = new WeakReference<>(presenter);
-        }
-
-        @Override
-        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
-            if (mWeakReference.get() == null) {
-                return;
-            }
-
-            mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
         }
     }
 

@@ -10,11 +10,8 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.api.task.RemoveMapCardTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -25,7 +22,6 @@ import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
-import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 
 public class SDKApplication extends Application {
     protected static ApplicationComponent mApplicationComponent;
@@ -48,17 +44,6 @@ public class SDKApplication extends Application {
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
         //System.exit(1); // kill off the crashed app
     }
-
-    /***
-     * this call by app to delete map card.
-     * @param pParams
-     * @param pListener
-     */
-    public synchronized static void removeCardMap(ZPWRemoveMapCardParams pParams, ZPWRemoveMapCardListener pListener) {
-        BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
-        removeMapCardTask.makeRequest();
-    }
-
     /***
      * clear all cache if this is new user setup
      * @param pAppVersion

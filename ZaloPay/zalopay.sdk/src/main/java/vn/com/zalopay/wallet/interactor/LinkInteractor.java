@@ -10,7 +10,10 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import timber.log.Timber;
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -46,6 +49,28 @@ public class LinkInteractor implements ILink {
         return getMap(userId, accessToken, true, appVersion)
                 .subscribe(aBoolean -> Timber.d("reload card and bank account"),
                         throwable -> Timber.d("reload card and bank account on error %s", throwable));
+    }
+
+    @Override
+    public Observable<BaseResponse> removeMap(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion) {
+        Observable<BaseResponse> removeMapObser = cardRepository
+                .removeCard(userid, accessToken, cardname, first6cardno, last4cardno, bankCode, appVersion)
+                .onErrorReturn(throwable -> {
+                    BaseResponse baseResponse = new BaseResponse();
+                    baseResponse.returncode = -1;
+                    baseResponse.returnmessage = GlobalData.getStringResource(RS.string.zpw_alert_network_error_removemapcard);
+                    return baseResponse;
+                });
+        Observable<BaseResponse> reloadCard = getCards(userid, accessToken, true, accessToken)
+                .flatMap(new Func1<Boolean, Observable<BaseResponse>>() {
+                    @Override
+                    public Observable<BaseResponse> call(Boolean success) {
+                        BaseResponse response = new BaseResponse();
+                        response.returncode = 1;
+                        return Observable.just(response);
+                    }
+                });
+        return Observable.concat(removeMapObser, reloadCard);
     }
 
     /***

@@ -4,6 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
@@ -29,4 +30,6 @@ public interface ILink {
     Subscription refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);
 
     void putBankAccounts(String userid, String checksum, List<BankAccount> bankAccountList);
+
+    Observable<BaseResponse> removeMap(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion);
 }
