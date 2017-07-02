@@ -34,13 +34,22 @@ public class ZPBank implements Parcelable {
         this.bankCode = pCardCode;
     }
 
-    protected ZPBank(Parcel in) {
+    private ZPBank(Parcel in) {
         this.bankCode = in.readString();
         this.bankLogo = in.readString();
         this.isBankAccount = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.bankName = in.readString();
         this.bankStatus = in.readInt();
         this.bankMessage = in.readString();
+    }
+
+    public ZPBank(ZPBank clone) {
+        this.bankCode = clone.bankCode;
+        this.bankLogo = clone.bankLogo;
+        this.isBankAccount = clone.isBankAccount;
+        this.bankName = clone.bankName;
+        this.bankStatus = clone.bankStatus;
+        this.bankMessage = clone.bankMessage;
     }
 
     public void setBankStatus(@BankStatus int bankStatus) {
@@ -62,7 +71,7 @@ public class ZPBank implements Parcelable {
         if (object != null && object instanceof ZPBank) {
             ZPBank other = (ZPBank) object;
 
-            if (object != null && !TextUtils.isEmpty(((ZPBank) object).bankCode))
+            if (!TextUtils.isEmpty(((ZPBank) object).bankCode))
                 sameSame = this.bankCode.equals(other.bankCode);
         }
 

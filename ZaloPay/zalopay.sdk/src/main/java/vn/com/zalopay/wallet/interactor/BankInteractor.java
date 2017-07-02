@@ -128,18 +128,18 @@ public class BankInteractor implements IBank {
             String bankCodeMaster = CardType.MASTER;
 
             ZPBank visa = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
+            ZPBank masterCard = null;
             if (visa != null) {
                 visa.bankLogo = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa), BITMAP_EXTENSION);
                 visa.bankCode = bankCodeVisa;
                 visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
-            }
 
-            ZPBank masterCard = prepareBankFromConfig(appVersion, BuildConfig.CC_CODE, false);
-            if (masterCard != null) {
+                masterCard = new ZPBank(visa);
                 masterCard.bankLogo = supportBankLogo(bankCodeMaster);
                 masterCard.bankCode = bankCodeMaster;
                 masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
             }
+
             //build support cards
             String bankCodes = getBankCodeList();
             if (TextUtils.isEmpty(bankCodes)) {
