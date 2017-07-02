@@ -248,11 +248,17 @@ public class BankInteractor implements IBank {
         Observable<BankConfigResponse> bankListCache = mLocalStorage
                 .get()
                 .subscribeOn(Schedulers.io())
-                .onErrorReturn(null);
+                .onErrorReturn(null)
+                .doOnNext(this::cacheBankResponseOnMemory);
         Observable<BankConfigResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
-                .flatMap(this::convertToBankConfigResponseObservable);
+                .flatMap(this::convertToBankConfigResponseObservable)
+                .doOnNext(this::cacheBankResponseOnMemory);
         return Observable.concat(memoryCache, bankListCache, bankListCloud)
                 .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
+    }
+
+    private void cacheBankResponseOnMemory(BankConfigResponse response) {
+        mMemoryCache.put("SdkBankList", response);
     }
 
     @Override
