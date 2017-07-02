@@ -100,19 +100,22 @@ public class ChannelListInteractor {
                 .doOnSubscribe(this::loadAppInfoOnProcess)
                 .doOnNext(this::loadAppInfoOnComplete);
 
-        Observable<Boolean> linkObservable = mLinkInteractor
+       /* Observable<Boolean> linkObservable = mLinkInteractor
                 .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_START))
-                .doOnNext(this::loadCardListOnComplete);
+                .doOnNext(this::loadCardListOnComplete);*/
 
         currentTime = System.currentTimeMillis();
         Observable<BankConfigResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
                 .doOnSubscribe(this::loadBankListOnProgress)
                 .doOnNext(this::loadBankListOnComplete);
 
-        Observable<Boolean> platformObservable = mPlatformInteractor.initSDKResource(userInfo.zalopay_userid, userInfo.accesstoken);
+        currentTime = System.currentTimeMillis();
+        Observable<Boolean> platformObservable = mPlatformInteractor.loadSDKPlatform(userInfo.zalopay_userid, userInfo.accesstoken, currentTime)
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
+                .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END));
 
-        Subscription subscription = Observable.zip(appInfoObservable, linkObservable, bankObservable, platformObservable, this::zipData)
+        Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, this::zipData)
                 .observeOn(Schedulers.io())
                 .subscribe(this::loadInfoCompleted, this::loadInfoError);
         mSubscription.add(subscription);
@@ -132,7 +135,7 @@ public class ChannelListInteractor {
         mPaymentInfoReadyMessage = null;
     }
 
-    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, boolean finishLoadMap, BankConfigResponse bankConfigResponse, boolean finish) {
+    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, BankConfigResponse bankConfigResponse, boolean finish) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
         message.mErrorType = SdkPaymentInfoReadyMessage.ErrorType.SUCCESS;

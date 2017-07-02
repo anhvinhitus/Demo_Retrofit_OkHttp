@@ -35,7 +35,7 @@ public interface IPlatformInfo {
 
     Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion);
 
-    Observable<Boolean> initSDKResource(String userId, String accessToken);
+    Observable<Boolean> loadSDKPlatform(String userId, String accessToken, long currentTime);
 
     /***
      * Platform info expire time,unix time to exprired time (in milisecond)

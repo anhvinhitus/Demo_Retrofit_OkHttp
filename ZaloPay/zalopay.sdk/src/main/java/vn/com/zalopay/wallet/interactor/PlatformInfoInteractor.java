@@ -71,14 +71,14 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     /***
-     * rule for retry call get platform info in SDK
+     * rule for forcing reload get platform info in SDK
      * 1.api platform info never run (checksum is empty)
      * 2.setup newer version
      * 3.login new user
      * 4. miss resource info version
      * @return
      */
-    private boolean needReloadPlatformInfo(String pUserId) throws Exception {
+    private boolean forceReloadPlatformInfo(String pUserId) throws Exception {
         String checkSum = getPlatformInfoCheckSum();
         String appVersionCache = getAppVersion();
         String resourceVersion = getResourceVersion();
@@ -87,39 +87,26 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 isNewUser || TextUtils.isEmpty(resourceVersion);
     }
 
-    public Observable<Boolean> reloadPlatform(String userId, String accessToken) {
+    public Observable<Boolean> reloadPlatform(String userId, String accessToken, long currentTime) {
         try {
-            boolean reloadPlatform = needReloadPlatformInfo(userId);
-            if (!reloadPlatform) {
+            boolean forceReload = forceReloadPlatformInfo(userId);
+            boolean expireInfo = currentTime >= getExpireTime();
+            boolean shouldDownloadRes = !isValidConfig();
+            if ( ! forceReload && !shouldDownloadRes && !expireInfo) {
                 return Observable.just(false);
             }
-            Timber.d("force reload platform info and download resource");
-            long currentTime = System.currentTimeMillis();
+            Timber.d("start reload platform info - force download resource %s", shouldDownloadRes);
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-            return loadPlatformInfo(userId, accessToken, true, true, currentTime, appVersion)
-                    .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
-                    .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END))
+            return loadPlatformInfo(userId, accessToken, forceReload, shouldDownloadRes, currentTime, appVersion)
                     .flatMap(new Func1<PlatformInfoCallback, Observable<Boolean>>() {
                         @Override
                         public Observable<Boolean> call(PlatformInfoCallback platformInfoCallback) {
-                            return Observable.just(true);
+                            return Observable.just(shouldDownloadRes);
                         }
                     });
         } catch (Exception e) {
             return Observable.error(e);
         }
-    }
-
-    private Observable<Boolean> shouldDownloadResource() {
-        if (isValidConfig()) {
-            return Observable.just(false);
-        }
-        String resVersion = getResourceVersion();
-        String resUrl = getResourceDownloadUrl();
-        Timber.d("start download SDK resource %s - %s", resUrl, resVersion);
-        return getSDKResource(resUrl, resVersion)
-                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_START))
-                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_DOWNLOAD_RESOURCE_END));
     }
 
     private Observable<Boolean> initResourceConfig() {
@@ -156,30 +143,24 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public Observable<Boolean> initSDKResource(String userId, String accessToken) {
-        Observable<Boolean> reloadPlatform = reloadPlatform(userId, accessToken);
-        Observable<Boolean> downloadResource = shouldDownloadResource();
+    public Observable<Boolean> loadSDKPlatform(String userId, String accessToken, long currentTime) {
+        Observable<Boolean> reloadPlatform = reloadPlatform(userId, accessToken, currentTime);
         Observable<Boolean> loadSDKResource = initResourceConfig();
-        return Observable.concat(reloadPlatform, downloadResource, loadSDKResource)
+        return Observable.concat(reloadPlatform, loadSDKResource)
                 .first(stopStream -> stopStream);
     }
 
     @Override
     public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
-        //build params
-        Log.d(this, "prepare param to get platform info from server - should download resurce", shouldDownloadResource);
+        Log.d(this, "prepare param to get platform info from server - should download resource", shouldDownloadResource);
         String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
-        String appVersionCache = repository.getLocalStorage().getAppVersion();
         String resrcVer = repository.getLocalStorage().getResourceVersion();
-        //is this new user ?
-        boolean isNewUser = isNewUser(userId);
-        //mForceReload :: refresh gateway info from app
-        if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(appVersionCache)) || !isValidConfig() || isNewUser || forceReload) {
-            checksum = null;   //server will see this is new install, so return new resource to download
+        if (forceReload) {
+            checksum = null;
             resrcVer = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
             repository.getLocalStorage().setBankAccountCheckSum(null);
-            Timber.d("checksum =null resrVer=null - reset card check sum, bank checksum");
+            Timber.d("reset platform checksum for forcing reload");
         }
         String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
         String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
@@ -226,8 +207,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         Context context = GlobalData.getAppContext();
         IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
         ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(), pUrl, pResourceVersion);
-        return downloadResourceTask
-                .getResource();
+        return downloadResourceTask.getResource();
     }
 
     private Action1<PlatformInfoResponse> downloadResource(boolean shouldDownloadResource) {
