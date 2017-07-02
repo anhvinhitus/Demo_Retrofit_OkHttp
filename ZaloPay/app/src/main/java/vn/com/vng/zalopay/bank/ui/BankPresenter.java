@@ -93,9 +93,9 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
 
     private Action1<BaseResponse> removeCardSuccess(MapCard mapCard) {
         return response -> {
+            hideLoadingView();
             if (response != null && response.returncode == 1) {
                 Timber.d("removed map card: %s", mapCard);
-                hideLoadingView();
                 if (mView == null || mapCard == null) {
                     return;
                 }
