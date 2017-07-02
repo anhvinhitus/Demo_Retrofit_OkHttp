@@ -57,6 +57,68 @@ public class BankInteractor implements IBank {
         Timber.d("call constructor BankInteractor");
     }
 
+    @Override
+    public void clearCheckSum() {
+        this.mLocalStorage.clearCheckSum();
+    }
+
+    @Override
+    public void clearConfig() {
+        this.mLocalStorage.clearConfig();
+    }
+
+    @Override
+    public void resetExpireTime() {
+        this.mLocalStorage.setExpireTime(0);
+    }
+
+    @Override
+    public void setPaymentBank(String userId, String cardKey) {
+        this.mLocalStorage.sharePref().setString(cacheKeyPayment(userId), cardKey);
+    }
+
+    @Override
+    public String getPaymentBank(String userId) {
+        String lastBankCode = null;
+        try {
+            lastBankCode = this.mLocalStorage.sharePref().getString(cacheKeyPayment(userId));
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+        return lastBankCode;
+    }
+
+    @Override
+    public Map<String, String> getBankPrefix() {
+        return this.mLocalStorage.getBankPrefix();
+    }
+
+    @Override
+    public BankConfig getBankConfig(String bankCode) {
+        return mLocalStorage.getBankConfig(bankCode);
+    }
+
+    @Override
+    public Observable<List<BankConfig>> getWithdrawBanks(String appVersion, long currentTime) {
+        return getBankList(appVersion, currentTime)
+                .flatMap(this::convertToListBankConfigObservable)
+                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
+    }
+
+    /***
+     * reload bank list
+     * and return support card list
+     * @param appVersion
+     * @param currentTime
+     * @return
+     */
+    @Override
+    public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
+        return getBankList(appVersion, currentTime)
+                .flatMap(a -> supportBanks(appVersion))
+                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
+    }
+
     private Observable<List<ZPBank>> supportBanks(String appVersion) {
         Timber.d("start load support banks");
         try {
@@ -112,63 +174,10 @@ public class BankInteractor implements IBank {
         }
     }
 
-    @Override
-    public Observable<BankConfigResponse> getBankList(String appVersion, long currentTime) {
-        String checksum = mLocalStorage.getCheckSum();
-        String platform = BuildConfig.PAYMENT_PLATFORM;
-
-        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable("SdkBankList")
-                .map(object -> {
-                    if (object.equals(MemoryCache.EmptyObject)) {
-                        return null;
-                    } else if (object instanceof BankConfigResponse) {
-                        return (BankConfigResponse) object;
-                    } else {
-                        return null;
-                    }
-                });
-        Observable<BankConfigResponse> bankListCache = mLocalStorage
-                .get()
-                .subscribeOn(Schedulers.io())
-                .onErrorReturn(null);
-        Observable<BankConfigResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
-                .flatMap(this::convertToBankConfigResponseObservable);
-        return Observable.concat(memoryCache, bankListCache, bankListCloud)
-                .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
-    }
-
-    @Override
-    public BankConfig getBankConfig(String bankCode) {
-        return mLocalStorage.getBankConfig(bankCode);
-    }
-
-    /***
-     * reload bank list
-     * and return support card list
-     * @param appVersion
-     * @param currentTime
-     * @return
-     */
-    @Override
-    public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {
-        return getBankList(appVersion, currentTime)
-                .flatMap(a -> supportBanks(appVersion))
-                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
-    }
-
-    @Override
-    public Observable<List<BankConfig>> getWithdrawBanks(String appVersion, long currentTime) {
-        return getBankList(appVersion, currentTime)
-                .flatMap(this::convertToListBankConfigObservable)
-                .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
-    }
-
-    private String supportBankLogo(String pBankCode) {
-        return String.format("%s%s", pBankCode, BITMAP_EXTENSION);
-    }
-
-    private String withDrawBankLogo(String pBankCode) {
-        return String.format("bank_%s%s", pBankCode, BITMAP_EXTENSION);
+    private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
+        return mBankListService.fetch(platform, checksum, appversion)
+                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
+                .doOnNext(bankConfigResponse -> mLocalStorage.put(bankConfigResponse));
     }
 
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {
@@ -217,40 +226,38 @@ public class BankInteractor implements IBank {
         return bank;
     }
 
-    @Override
-    public Map<String, String> getBankPrefix() {
-        return this.mLocalStorage.getBankPrefix();
+    private String supportBankLogo(String pBankCode) {
+        return String.format("%s%s", pBankCode, BITMAP_EXTENSION);
     }
 
     @Override
-    public void clearCheckSum() {
-        this.mLocalStorage.clearCheckSum();
+    public Observable<BankConfigResponse> getBankList(String appVersion, long currentTime) {
+        String checksum = mLocalStorage.getCheckSum();
+        String platform = BuildConfig.PAYMENT_PLATFORM;
+
+        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable("SdkBankList")
+                .map(object -> {
+                    if (object.equals(MemoryCache.EmptyObject)) {
+                        return null;
+                    } else if (object instanceof BankConfigResponse) {
+                        return (BankConfigResponse) object;
+                    } else {
+                        return null;
+                    }
+                });
+        Observable<BankConfigResponse> bankListCache = mLocalStorage
+                .get()
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(null);
+        Observable<BankConfigResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
+                .flatMap(this::convertToBankConfigResponseObservable);
+        return Observable.concat(memoryCache, bankListCache, bankListCloud)
+                .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
     }
 
     @Override
-    public void clearConfig() {
-        this.mLocalStorage.clearConfig();
-    }
-
-    @Override
-    public void resetExpireTime() {
-        this.mLocalStorage.setExpireTime(0);
-    }
-
-    @Override
-    public void setPaymentBank(String userId, String cardKey) {
-        this.mLocalStorage.sharePref().setString(cacheKeyPayment(userId), cardKey);
-    }
-
-    @Override
-    public String getPaymentBank(String userId) {
-        String lastBankCode = null;
-        try {
-            lastBankCode = this.mLocalStorage.sharePref().getString(cacheKeyPayment(userId));
-        } catch (Exception e) {
-            Timber.w(e);
-        }
-        return lastBankCode;
+    public String getBankCodeList() {
+        return mLocalStorage.getBankCodeList();
     }
 
     private String cacheKeyPayment(String userId) {
@@ -259,17 +266,6 @@ public class BankInteractor implements IBank {
                 .append(UNDERLINE)
                 .append("last_payment");
         return keyBuilder.toString();
-    }
-
-    @Override
-    public String getBankCodeList() {
-        return mLocalStorage.getBankCodeList();
-    }
-
-    private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
-        return mBankListService.fetch(platform, checksum, appversion)
-                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
-                .doOnNext(bankConfigResponse -> mLocalStorage.put(bankConfigResponse));
     }
 
     @NonNull
@@ -310,6 +306,10 @@ public class BankInteractor implements IBank {
             Log.e(this, e);
             return Observable.error(e);
         }
+    }
+
+    private String withDrawBankLogo(String pBankCode) {
+        return String.format("bank_%s%s", pBankCode, BITMAP_EXTENSION);
     }
 }
 
