@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.data.cache.MemoryCache;
+import vn.com.vng.zalopay.data.cache.MemoryCacheLru;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -57,5 +59,11 @@ public class ApplicationModule {
     @Singleton
     public ZPMonitorEventTiming provideEventTiming() {
         return new ZPMonitorEventTimingDefault();
+    }
+
+    @Provides
+    @Singleton
+    MemoryCache provideMemoryCache() {
+        return new MemoryCacheLru();
     }
 }

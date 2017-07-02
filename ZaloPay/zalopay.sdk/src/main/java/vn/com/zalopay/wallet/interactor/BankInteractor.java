@@ -13,6 +13,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -45,6 +46,7 @@ import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
 public class BankInteractor implements IBank {
     private final BankStore.LocalStorage mLocalStorage;
     private final BankStore.BankListService mBankListService;
+    private final MemoryCache mMemoryCache;
 
     public BankInteractor(BankStore.LocalStorage localStorage,
                           BankStore.BankListService bankListService,

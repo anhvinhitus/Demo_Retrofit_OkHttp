@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.interactor.AppInfoInteractor;
 import vn.com.zalopay.wallet.interactor.BankInteractor;

@@ -7,6 +7,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -65,4 +66,6 @@ public interface ApplicationComponent {
     ZPMonitorEventTiming monitorEventTiming();
 
     ChannelListInteractor channelListInteractor();
+
+    MemoryCache memoryCache();
 }
