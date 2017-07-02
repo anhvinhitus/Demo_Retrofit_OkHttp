@@ -767,7 +767,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             try {
                 getViewOrThrow().callbackThenTerminate();
             } catch (Exception e) {
-                Timber.d(e != null ? e.getMessage() : "Exception");
+                Timber.d(e.getMessage());
             }
         }
     }

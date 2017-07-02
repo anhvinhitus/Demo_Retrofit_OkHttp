@@ -44,7 +44,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
                 try {
                     Long expireTime = getExpireTime();
                     PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expireTime);
-                    Log.d(this, "load app info from cache", expireTime);
+                    Timber.d("load app info from cache: %s", expireTime);
                     return Observable.just(platformInfoCallback);
                 } catch (Exception e) {
                     return Observable.error(e);
