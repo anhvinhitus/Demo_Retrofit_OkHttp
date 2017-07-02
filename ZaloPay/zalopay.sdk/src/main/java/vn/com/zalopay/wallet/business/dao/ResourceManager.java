@@ -53,26 +53,29 @@ public class ResourceManager extends SingletonBase {
 
     public static synchronized ResourceManager getInstance(String pPageName) {
         if (pPageName == null) {
-            if (mCommonResourceManager == null)
+            if (mCommonResourceManager == null) {
                 mCommonResourceManager = new ResourceManager();
-            return mCommonResourceManager;
-        } else {
-            if (mResourceManagerMap == null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    mResourceManagerMap = new ArrayMap<>();
-                } else {
-                    mResourceManagerMap = new HashMap<>();
-                }
-            }
-            ResourceManager resourceManager = mResourceManagerMap.get(pPageName);
-            if (resourceManager != null) {
-                return resourceManager;
             }
 
-            resourceManager = new ResourceManager();
-            mResourceManagerMap.put(pPageName, resourceManager);
+            return mCommonResourceManager;
+        }
+
+        if (mResourceManagerMap == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                mResourceManagerMap = new ArrayMap<>();
+            } else {
+                mResourceManagerMap = new HashMap<>();
+            }
+        }
+
+        ResourceManager resourceManager = mResourceManagerMap.get(pPageName);
+        if (resourceManager != null) {
             return resourceManager;
         }
+
+        resourceManager = new ResourceManager();
+        mResourceManagerMap.put(pPageName, resourceManager);
+        return resourceManager;
     }
 
     private static String getUnzipFolderPath() throws Exception {
