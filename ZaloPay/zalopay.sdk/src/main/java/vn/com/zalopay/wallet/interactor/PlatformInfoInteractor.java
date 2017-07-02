@@ -145,9 +145,10 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public Observable<Boolean> loadSDKPlatform(String userId, String accessToken, long currentTime) {
         Observable<Boolean> reloadPlatform = reloadPlatform(userId, accessToken, currentTime);
-        Observable<Boolean> loadSDKResource = initResourceConfig();
-        return Observable.concat(reloadPlatform, loadSDKResource)
-                .first(stopStream -> stopStream);
+        return reloadPlatform;
+//        Observable<Boolean> loadSDKResource = initResourceConfig();
+//        return Observable.concat(reloadPlatform, loadSDKResource)
+//                .first(stopStream -> stopStream);
     }
 
     @Override

@@ -114,6 +114,10 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static synchronized Observable<Boolean> initResource() {
+        if (isInit()) {
+            return Observable.just(true);
+        }
+
         return Observable.defer(() -> {
             try {
                 Timber.d("initializing SDK resource");

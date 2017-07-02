@@ -115,7 +115,11 @@ public class ChannelListInteractor {
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
                 .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END));
 
-        Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, this::zipData)
+        Observable<Boolean> initResource = ResourceManager.initResource()
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END));
+
+        Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, initResource, this::zipData)
                 .observeOn(Schedulers.io())
                 .subscribe(this::loadInfoCompleted, this::loadInfoError);
         mSubscription.add(subscription);
@@ -135,7 +139,10 @@ public class ChannelListInteractor {
         mPaymentInfoReadyMessage = null;
     }
 
-    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, BankConfigResponse bankConfigResponse, boolean finish) {
+    private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo,
+                                               BankConfigResponse bankConfigResponse,
+                                               boolean finish,
+                                               boolean resourceInitialized) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
         message.mErrorType = SdkPaymentInfoReadyMessage.ErrorType.SUCCESS;
@@ -153,12 +160,12 @@ public class ChannelListInteractor {
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
-        boolean waitDownloadResource = !ResourceManager.isInit();
-        if(waitDownloadResource){
-            Timber.d("wait for downloading resource");
-            cleanup();
-            return;
-        }
+//        boolean waitDownloadResource = !ResourceManager.isInit();
+//        if(waitDownloadResource){
+//            Timber.d("wait for downloading resource");
+//            cleanup();
+//            return;
+//        }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_INFO_READY);
         mPaymentInfoReadyMessage = message;
         if (mPaymentReadyListener != null) {
