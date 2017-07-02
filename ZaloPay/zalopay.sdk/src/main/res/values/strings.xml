@@ -80,7 +80,7 @@
     <string name="zpw_alert_network_error_loadmapbankaccountlist">Mạng không ổn định, không tải được thông tin tài khoản ngân hàng đã liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_verifymapcard">Mạng không ổn định, không thể liên kết thẻ.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_submitbankaccount">Mạng không ổn định, không thể liên kết tài khoản.\nVui lòng kiểm tra lại kết nối mạng</string>
-    <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định, không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
+    <string name="zpw_alert_network_error_removemapcard">Xóa liên kết không thành công. Vui lòng thử lại sau ít phút!</string>
     <string name="zpw_alert_network_error_authenpayer">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="sdk_alert_generic_error">Lỗi khởi tạo dữ liệu. Vui lòng thực hiện lại giao dịch!</string>
     <string name="sdk_alert_generic_init_resource">Lỗi khởi tạo nguồn thông tin. Vui lòng thực hiện lại giao dịch!</string>

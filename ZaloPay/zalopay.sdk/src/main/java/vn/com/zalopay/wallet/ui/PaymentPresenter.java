@@ -137,7 +137,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
         long currentTime = System.currentTimeMillis();
         Subscription subscription = appInfoInteractor.loadAppInfo(appId, new int[]{transtype},
                 userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(appInfoInProcess)
                 .subscribe(appInfoSubscriber, appInfoException);
         addSubscription(subscription);
@@ -154,7 +154,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
         Subscription subscription = bankInteractor.getBankList(appVersion, currentTime)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(loadBankInProcess)
                 .subscribe(bankListSubscriber, bankListException);
         addSubscription(subscription);

@@ -58,6 +58,7 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
@@ -860,7 +861,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_CARDLIST_START))
                 .subscribe(aBoolean -> {
                     try {

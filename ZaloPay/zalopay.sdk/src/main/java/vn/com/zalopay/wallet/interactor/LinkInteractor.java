@@ -53,7 +53,16 @@ public class LinkInteractor implements ILink {
 
     @Override
     public Observable<BaseResponse> removeMap(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion) {
-        Observable<BaseResponse> removeMapObser = cardRepository
+        Observable<BaseResponse> reloadCardObservable = getCards(userid, accessToken, true, accessToken)
+                .flatMap(new Func1<Boolean, Observable<BaseResponse>>() {
+                    @Override
+                    public Observable<BaseResponse> call(Boolean aBoolean) {
+                        BaseResponse baseResponse = new BaseResponse();
+                        baseResponse.returncode = 0;
+                        return Observable.just(baseResponse);
+                    }
+                });
+        Observable<BaseResponse> removeMapObservable = cardRepository
                 .removeCard(userid, accessToken, cardname, first6cardno, last4cardno, bankCode, appVersion)
                 .onErrorReturn(throwable -> {
                     BaseResponse baseResponse = new BaseResponse();
@@ -61,16 +70,7 @@ public class LinkInteractor implements ILink {
                     baseResponse.returnmessage = GlobalData.getStringResource(RS.string.zpw_alert_network_error_removemapcard);
                     return baseResponse;
                 });
-        Observable<BaseResponse> reloadCard = getCards(userid, accessToken, true, accessToken)
-                .flatMap(new Func1<Boolean, Observable<BaseResponse>>() {
-                    @Override
-                    public Observable<BaseResponse> call(Boolean success) {
-                        BaseResponse response = new BaseResponse();
-                        response.returncode = 1;
-                        return Observable.just(response);
-                    }
-                });
-        return Observable.concat(removeMapObser, reloadCard);
+        return Observable.concat(removeMapObservable, reloadCardObservable).first(baseResponse -> baseResponse != null && baseResponse.returncode != 1);
     }
 
     /***

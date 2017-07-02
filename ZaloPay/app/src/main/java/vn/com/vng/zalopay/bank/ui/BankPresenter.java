@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 /**
@@ -94,7 +95,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     private Action1<BaseResponse> removeCardSuccess(MapCard mapCard) {
         return response -> {
             hideLoadingView();
-            if (response != null && response.returncode == 1) {
+            if (response != null && response.returncode == 0) {
                 Timber.d("removed map card: %s", mapCard);
                 if (mView == null || mapCard == null) {
                     return;
@@ -231,7 +232,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .removeMap(mUser.zaloPayId, mUser.accesstoken, mappCard.cardname, mappCard.first6cardno, mappCard.last4cardno, mappCard.bankcode, BuildConfig.VERSION_NAME)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .subscribe(removeCardSuccess(mappCard), removeMapCardException);
     }
 
