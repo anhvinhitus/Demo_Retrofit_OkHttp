@@ -1,10 +1,2 @@
-Zalo Pay (Staging v2.14.0 - build 301) - Released on 2017-07-02 08:54
-+ [Bank] Refactor remove thẻ lưu by vo van chuc (#c9ae486)
-+ [SDK] Clear code by vo van chuc (#882e8f0)
-+ [Analytics] Task#642 : Update analytics events for flow thanh toán : Refactor by vo van chuc (#c30a0a1)
-+ [React-native] update internal resource by phucpv (#b87fd00)
-+ [WebApp] Refactor WebView Promotion by hieuvm (#82efb74)
-+ [SDK] Scroll to default select channel by vo van chuc (#2cc485f)
-+ [Password] Update clear error message by lytm (#fd33414)
-+ [Search] ZPF-184: Trang tìm kiếm hiển thị 3 kết quả by lytm (#346ad70)
-+ [Password] ZPF-187: Clear error message by lytm (#ead7c73)
+Zalo Pay (Sandbox v2.14.0 - build 302) - Released on 2017-07-02 09:13
++ [Bank] Refactor remove thẻ lưu : hide loading by vo van chuc (#2696d49)
