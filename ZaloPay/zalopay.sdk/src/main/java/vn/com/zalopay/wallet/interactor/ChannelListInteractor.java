@@ -41,11 +41,12 @@ public class ChannelListInteractor {
     private final IBank mBankInteractor;
     private final IPlatformInfo mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
-    protected CompositeSubscription mSubscription = new CompositeSubscription();
-    private PaymentInfoHelper mPaymentInfoHelper;
+    private final Handler mApplicationHandler;
+
+    private CompositeSubscription mSubscription = new CompositeSubscription();
+    private PaymentInfoHelper mPaymentInfoHelper = null;
     private OnPaymentReadyListener mPaymentReadyListener = null;
     private SdkPaymentInfoReadyMessage mPaymentInfoReadyMessage = null;
-    private Handler mApplicationHandler;
 
     @Inject
     public ChannelListInteractor(Application application,
@@ -84,6 +85,7 @@ public class ChannelListInteractor {
             }
         };
 
+        // TODO: Call in MainThread
         task.execute();
     }
 
@@ -133,11 +135,18 @@ public class ChannelListInteractor {
     private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo, boolean finishLoadMap, BankConfigResponse bankConfigResponse, boolean finish) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
+        message.mErrorType = SdkPaymentInfoReadyMessage.ErrorType.SUCCESS;
         return message;
     }
 
     private void loadInfoError(Throwable throwable) {
+        mPaymentInfoReadyMessage = new SdkPaymentInfoReadyMessage();
+        mPaymentInfoReadyMessage.mError = throwable;
+        mPaymentInfoReadyMessage.mErrorType = SdkPaymentInfoReadyMessage.ErrorType.LOAD_PAYMENT_INFO_ERROR;
 
+        if (mPaymentReadyListener != null) {
+            postReadyMessage();
+        }
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
