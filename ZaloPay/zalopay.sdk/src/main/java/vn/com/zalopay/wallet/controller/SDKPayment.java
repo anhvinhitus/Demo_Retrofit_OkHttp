@@ -200,6 +200,8 @@ public class SDKPayment {
         if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
         } else {
+            DialogManager.showProcessDialog(pOwner, null);
+
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
             GlobalData.paymentInfoHelper = paymentInfoHelper;
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
