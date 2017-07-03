@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.ui.channellist;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
 
@@ -41,5 +42,7 @@ public interface ChannelListContract extends IContract {
         void showQuitConfirm();
 
         void scrollToPos(int position);
+
+        ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }
 }

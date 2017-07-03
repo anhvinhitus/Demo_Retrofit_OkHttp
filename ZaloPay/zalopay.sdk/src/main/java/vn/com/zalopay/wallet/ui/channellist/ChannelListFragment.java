@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
@@ -194,6 +196,19 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             mPresenter.callback();
         }
         terminate();
+    }
+
+    @Override
+    public ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype) {
+        ChannelListAdapter channelAdapter = new ChannelListAdapter();
+        Context context = getContext();
+        channelAdapter.addZaloPayBinder(context, amount, userInfo, transtype);
+        channelAdapter.addMapBinder(context, amount, userLevel);
+        channelAdapter.addTitle();
+        channelAdapter.addInputBinder(context, amount, userInfo, transtype);
+        onBindingChannel(channelAdapter);
+
+        return channelAdapter;
     }
 
     @Override

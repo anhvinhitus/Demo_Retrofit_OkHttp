@@ -54,7 +54,6 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
@@ -81,11 +80,12 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_
 
 public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
     @Inject
-    public EventBus mBus;
+    EventBus mBus;
     @Inject
     public IBank mBankInteractor;
     @Inject
-    public IAppInfo mAppInfoInteractor;
+    IAppInfo mAppInfoInteractor;
+
     protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
@@ -95,8 +95,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private Map<String, Object> mCCMapChannel = new HashMap<>();
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
-    private boolean setInputMethodTitle = false;
-    private int lastSelectPos = -1;
+    private boolean mSetInputMethodTitle = false;
+    private int mLastSelectPosition = -1;
     private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
         @Override
         public void onClose() {
@@ -198,47 +198,49 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Override
     protected boolean manualRelease() {
-        switch (mPaymentInfoHelper.getStatus()) {
-            case DIRECT_LINKCARD:
-            case DIRECT_LINKCARD_AND_PAYMENT:
-                return true;
-            default:
-                return false;
-        }
+        int status = mPaymentInfoHelper.getStatus();
+        return status == DIRECT_LINKCARD || status == DIRECT_LINKCARD_AND_PAYMENT;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CHANNEL_PAYMENT_REQUEST_CODE) {
-            Timber.d("onActivityResult resultCode %s", resultCode);
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    try {
-                        callback();
-                        getViewOrThrow().terminate();
-                    } catch (Exception e) {
-                        Timber.w(e);
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    if (data != null) {
-                        boolean showDialog = data.getBooleanExtra(Constants.SHOW_DIALOG, false);
-                        String message = data.getStringExtra(Constants.MESSAGE);
-                        if (showDialog && !TextUtils.isEmpty(message)) {
-                            try {
-                                getViewOrThrow().showInfoDialog(message);
-                            } catch (Exception e) {
-                                Timber.w(e);
-                            }
-                        } else {
-                            exitHasOneChannel();
-                        }
-                    }
-                    break;
-                case MAP_POPUP_RESULT_CODE:
-                    selectChannelFromPopup(data);
-                    break;
-            }
+        Timber.d("onActivityResult resultCode %s", resultCode);
+        if (requestCode != CHANNEL_PAYMENT_REQUEST_CODE) {
+            return;
+        }
+
+        switch (resultCode) {
+            case Activity.RESULT_OK:
+                try {
+                    callback();
+                    getViewOrThrow().terminate();
+                } catch (Exception e) {
+                    Timber.w(e);
+                }
+                break;
+            case Activity.RESULT_CANCELED:
+                if (data != null) {
+                    OnActivityResultPaymentRequestCanceled(data);
+                }
+                break;
+            case MAP_POPUP_RESULT_CODE:
+                selectChannelFromPopup(data);
+                break;
+        }
+    }
+
+    private void OnActivityResultPaymentRequestCanceled(Intent data) {
+        boolean showDialog = data.getBooleanExtra(Constants.SHOW_DIALOG, false);
+        String message = data.getStringExtra(Constants.MESSAGE);
+        if (!showDialog || TextUtils.isEmpty(message)) {
+            exitHasOneChannel();
+            return;
+        }
+
+        try {
+            getViewOrThrow().showInfoDialog(message);
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
@@ -247,25 +249,24 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPayProxy == null) {
             return false;
         }
-        @OrderState int orderState = mPayProxy.orderProcessing();
-        switch (orderState) {
-            case OrderState.SUBMIT:
-            case OrderState.QUERY_STATUS:
-                return true;
-            default:
-                return false;
-        }
+
+        int orderState = mPayProxy.orderProcessing();
+        return orderState == OrderState.SUBMIT || orderState == OrderState.QUERY_STATUS;
     }
 
     private void selectChannelFromPopup(Intent data) {
-        if (data != null) {
-            int position = data.getIntExtra(SELECTED_PMC_POSITION, -1);
-            PaymentChannel channel = onSelectedChannel(position);
-            if (channel != null) {
-                //delay waiting for destroy popup
-                new Handler().postDelayed(this::startPayment, 300);
-            }
+        if (data == null) {
+            return;
         }
+
+        int position = data.getIntExtra(SELECTED_PMC_POSITION, -1);
+        PaymentChannel channel = onSelectedChannel(position);
+        if (channel == null) {
+            return;
+        }
+
+        //delay waiting for destroy popup
+        new Handler().postDelayed(this::startPayment, 300);
     }
 
     @Override
@@ -384,10 +385,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mSelectChannel = channel;
         mSelectChannel.select = true;
 
-        if (lastSelectPos != -1) {
-            mChannelAdapter.notifyBinderItemChanged(lastSelectPos);
+        if (mLastSelectPosition != -1) {
+            mChannelAdapter.notifyBinderItemChanged(mLastSelectPosition);
         }
-        lastSelectPos = position;
+        mLastSelectPosition = position;
         mChannelAdapter.notifyBinderItemChanged(position);
         updateButton(channel);
     }
@@ -430,18 +431,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private void initAdapter() throws Exception {
-        mChannelAdapter = new ChannelListAdapter();
-        Context context = getViewOrThrow().getContext();
         long amount = mPaymentInfoHelper.getAmount();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
         int userLevel = mPaymentInfoHelper.getLevel();
         @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
-        mChannelAdapter.addZaloPayBinder(context, amount, userInfo, transtype);
-        mChannelAdapter.addMapBinder(context, amount, userLevel);
-        mChannelAdapter.addTitle();
-        mChannelAdapter.addInputBinder(context, amount, userInfo, transtype);
-        getViewOrThrow().onBindingChannel(mChannelAdapter);
+        mChannelAdapter = getViewOrThrow().initChannelListAdapter(amount, userInfo, userLevel, transtype);
     }
+
 
     private void renderItemDetail() throws Exception {
         List<NameValuePair> items = mPaymentInfoHelper.getOrder().parseItems();
@@ -457,9 +453,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             itemType = ChannelListAdapter.ItemType.MAP;
         } else {
             itemType = ChannelListAdapter.ItemType.INPUT;
-            if (!setInputMethodTitle) {
+            if (!mSetInputMethodTitle) {
                 mChannelAdapter.setTitle(mPaymentInfoHelper.getPaymentMethodTitleByTrans());
-                setInputMethodTitle = true;
+                mSetInputMethodTitle = true;
             }
         }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ADD_PAYMENTCHANNEL);
@@ -489,13 +485,15 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         String[] pmcNameList = pmcNames.split(COMMA);
-        if (pmcNameList.length > 0) {
-            for (String name : pmcNameList) {
-                if (TextUtils.isEmpty(name)) {
-                    continue;
-                }
-                send((PaymentChannel) mCCMapChannel.get(name));
+        if (pmcNameList.length <= 0) {
+            return;
+        }
+
+        for (String name : pmcNameList) {
+            if (TextUtils.isEmpty(name)) {
+                continue;
             }
+            send((PaymentChannel) mCCMapChannel.get(name));
         }
     }
 
@@ -548,9 +546,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void loadChannelOnDoLast() {
         // have no channel
         if (mChannelList.size() <= 0 || (mChannelList.size() == 1 && !(mChannelList.get(0) instanceof PaymentChannel))) {
-            /***
-             * this is withdraw link card and no mapp card.
-             * need remind user go to link card to can withdraw
+            /*
+              this is withdraw link card and no mapp card.
+              need remind user go to link card to can withdraw
              */
             if (mPaymentInfoHelper.isWithDrawTrans()) {
                 try {
@@ -624,34 +622,39 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void makeDefaultChannel() throws Exception {
         PaymentChannel selectChannel = getLastPaymentChannel();
         if (selectChannel != null) {
-            markSelectChannel(selectChannel, selectChannel.position);
-            getViewOrThrow().scrollToPos(selectChannel.position);
+            selectAndScrollToChannel(selectChannel, selectChannel.position);
             return;
         }
         boolean hasActiveChannel = false;
         int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
-            if (object instanceof PaymentChannel) {
-                PaymentChannel channel = (PaymentChannel) object;
-                if (!channel.meetPaymentCondition()) {
-                    continue;
-                }
-                hasActiveChannel = true;
-                pos = position;
-                selectChannel = channel;
-                break;
+            if (!(object instanceof PaymentChannel)) {
+                continue;
             }
+
+            PaymentChannel channel = (PaymentChannel) object;
+            if (!channel.meetPaymentCondition()) {
+                continue;
+            }
+            hasActiveChannel = true;
+            pos = position;
+            selectChannel = channel;
+            break;
         }
         if (selectChannel != null) {
-            markSelectChannel(selectChannel, pos);
-            getViewOrThrow().scrollToPos(pos);
+            selectAndScrollToChannel(selectChannel, pos);
         }
         if (!hasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
             getViewOrThrow().showSnackBar(GlobalData.getAppContext().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
         }
+    }
+
+    private void selectAndScrollToChannel(PaymentChannel selectChannel, int position) throws Exception {
+        markSelectChannel(selectChannel, position);
+        getViewOrThrow().scrollToPos(position);
     }
 
     private void updateButton(PaymentChannel channel) throws Exception {
@@ -788,16 +791,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 Timber.d(e, "Exception when loading payment info");
             }
         });
-    }
-
-    /***
-     * load app info from cache or api
-     */
-    private void loadAppInfo() {
-        long appId = mPaymentInfoHelper.getAppId();
-        @TransactionType int transtype = mPaymentInfoHelper.getTranstype();
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        loadAppInfo(mAppInfoInteractor, appId, transtype, userInfo);
     }
 
     public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
