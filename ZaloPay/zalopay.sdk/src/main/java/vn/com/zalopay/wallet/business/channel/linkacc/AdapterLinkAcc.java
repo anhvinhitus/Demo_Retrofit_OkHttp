@@ -1154,7 +1154,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 return pAdditionParams;
             }
             mNotification = (ZPWNotification) pAdditionParams[0];
-
             if (mNotification != null) {
                 if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyLink);
@@ -1162,7 +1161,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 runnableWaitingNotifyLink.run();
             } else {
-                Log.d(this, "notification=", mNotification);
+                Log.d(this, "notification", mNotification);
                 hideLoadingDialog();
             }
         }
