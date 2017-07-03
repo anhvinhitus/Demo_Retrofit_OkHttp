@@ -142,9 +142,7 @@ public class CShareData extends SingletonBase {
                     SDKApplication.getApplicationComponent()
                             .linkInteractor()
                             .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
-                            .subscribe(aBoolean -> Timber.d("reload bank account finish"), throwable -> {
-                                Timber.d("reload bank account error %s", throwable);
-                            });
+                            .subscribe(aBoolean -> Timber.d("reload bank account finish"), throwable -> Timber.d("reload bank account error %s", throwable));
                 }
             } catch (Exception ex) {
                 Timber.w(ex);
