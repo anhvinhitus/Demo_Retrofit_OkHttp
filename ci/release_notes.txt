@@ -1,3 +1,3 @@
-Zalo Pay (Staging v2.14.0 - build 303) - Released on 2017-07-03 08:45
-+ [Bank] Refactor remove thẻ lưu by vo van chuc (#f900130)
-+ [App] Set default retrofit for sdk by hieuvm (#2d10c44)
+Zalo Pay (Sandbox v2.14.0 - build 304) - Released on 2017-07-03 09:10
++ [App] Refactor code by hieuvm (#0efbace)
++ [GA] Fabric#117 (sb1) : Crash when get default useragain by hieuvm (#6c36090)
