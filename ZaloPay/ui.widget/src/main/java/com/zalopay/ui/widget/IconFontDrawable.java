@@ -22,7 +22,6 @@ import timber.log.Timber;
 
 /**
  * Created by khattn on 2/24/17.
- *
  */
 
 public class IconFontDrawable extends Drawable {
@@ -44,22 +43,6 @@ public class IconFontDrawable extends Drawable {
         mPaint.setAntiAlias(true);
 
         setTypefaceDefault();
-    }
-
-    public IconFontDrawable(Context context, String fontAsset) {
-        this.mContext = context;
-        mPaint = new TextPaint();
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setUnderlineText(false);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setAntiAlias(true);
-
-        if (!TextUtils.isEmpty(fontAsset)) {
-            setTypefaceFromAsset(fontAsset);
-        } else {
-            setTypefaceDefault();
-        }
     }
 
     public IconFontDrawable setResourcesSize(int dimenRes) {
@@ -91,7 +74,15 @@ public class IconFontDrawable extends Drawable {
 
     public IconFontDrawable setColor(String color) {
         if (!TextUtils.isEmpty(color)) {
-            mPaint.setColor(Color.parseColor(color));
+            int colorInt = Color.BLACK;
+
+            try {
+                colorInt = Color.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                Timber.w("Unknown color [%s] [%s]", color, e.toString());
+            }
+
+            mPaint.setColor(colorInt);
             invalidateSelf();
         }
 
