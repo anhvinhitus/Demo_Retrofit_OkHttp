@@ -1,12 +1,12 @@
 package vn.com.vng.zalopay.data.net.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Type;
 
+import okhttp3.Request;
 import rx.Observable;
 import rx.Scheduler;
 import vn.com.vng.zalopay.data.RedPacketNetworkErrorEnum;
@@ -25,9 +25,9 @@ final class RedPacketCallAdapter extends BaseCallAdapter {
         super(context, httpsApiId, connectorApiId, responseType, scheduler);
     }
 
-    @NonNull
     @Override
-    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse) {
+    <R> Observable<? extends R> handleServerResponseError(Request request, BaseResponse baseResponse) {
+        trackAPIError(request.url().encodedPath().replaceFirst("/", ""), baseResponse.err);
         if (baseResponse.err == RedPacketNetworkErrorEnum.INVALID_ACCESS_TOKEN.getValue()) {
             TokenException exception = new TokenException(baseResponse.err, baseResponse.message);
             EventBus.getDefault().postSticky(new ThrowToLoginScreenEvent(exception));

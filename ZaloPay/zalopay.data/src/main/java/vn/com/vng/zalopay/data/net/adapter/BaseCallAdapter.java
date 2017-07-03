@@ -91,13 +91,16 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         }
 
         if (!baseResponse.isSuccessfulResponse()) {
-            ZPAnalytics.trackAPIError(request.url().encodedPath().replaceFirst("/", ""), 0, baseResponse.err, 0);
-            return handleServerResponseError(baseResponse);
+            return handleServerResponseError(request, baseResponse);
         }
 
         // Happy case
         return Observable.just(body);
     }
 
-    protected abstract <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse);
+    abstract <R> Observable<? extends R> handleServerResponseError(Request request, BaseResponse baseResponse);
+
+    void trackAPIError(String apiName, int serverCode) {
+        ZPAnalytics.trackAPIError(apiName, 0, serverCode, 0);
+    }
 }

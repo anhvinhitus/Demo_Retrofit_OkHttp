@@ -18,10 +18,6 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 
 final class ReactNativeCallAdapter extends BaseCallAdapter {
 
-    ReactNativeCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
-        super(context, httpsApiId, connectorApiId, responseType, scheduler, 0);
-    }
-
     ReactNativeCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler, int retryNumber) {
         super(context, httpsApiId, connectorApiId, responseType, scheduler, retryNumber);
     }
@@ -32,7 +28,8 @@ final class ReactNativeCallAdapter extends BaseCallAdapter {
     }
 
     @Override
-    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse baseResponse) {
+    <R> Observable<? extends R> handleServerResponseError(Request request, BaseResponse baseResponse) {
+        trackAPIError(request.url().encodedPath().replaceFirst("/", ""), baseResponse.err);
         return null;
     }
 }
