@@ -94,8 +94,8 @@
       "inside_app_id": 12,
       "app_type": -1,
       "app_name": "Thiết lập bảo vệ tài khoản",
-      "icon_name": "",
-      "icon_color": ""
+      "icon_name": "personal_settingaccount",
+      "icon_color": "#53718b"
     }
   ],
   "withdraw_money": [100000, 200000, 500000, 1000000, 2000000, 5000000]
