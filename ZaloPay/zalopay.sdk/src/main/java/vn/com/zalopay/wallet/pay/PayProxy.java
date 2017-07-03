@@ -80,6 +80,7 @@ public class PayProxy extends SingletonBase {
     private Subscription mSubscription;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
+    private IBank mBankInteractor;
     private String mTransId = "0";
     private boolean transStatusStart = false;
     private int showRetryDialogCount = 1;
@@ -120,6 +121,7 @@ public class PayProxy extends SingletonBase {
             }
         }
     };
+
     private void onOrderSubmitedFailed(Throwable throwable) {
         Log.d(this, "submit order on error", throwable);
         if (!networkException(throwable)) {
@@ -145,7 +147,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    public PayProxy() {
+    private PayProxy() {
         super();
     }
 
@@ -168,6 +170,7 @@ public class PayProxy extends SingletonBase {
         mAuthenActor = AuthenActor.get().plant(this);
         mTransService = SDKApplication.getApplicationComponent().transService();
         mContext = SDKApplication.getApplication();
+        mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
         return this;
     }
 
@@ -341,10 +344,7 @@ public class PayProxy extends SingletonBase {
     public boolean validate(PaymentChannel channel) {
         try {
             if (mValidActor == null) {
-                IBank bankInteractor = SDKApplication
-                        .getApplicationComponent()
-                        .bankListInteractor();
-                mValidActor = new ValidationActor(mPaymentInfoHelper, bankInteractor, getPresenter());
+                mValidActor = new ValidationActor(mPaymentInfoHelper, mBankInteractor, getPresenter());
             }
             return mValidActor.validate(channel);
         } catch (Exception e) {
@@ -471,9 +471,7 @@ public class PayProxy extends SingletonBase {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             getView().showLoading(mContext.getString(R.string.zpw_string_alert_loading_bank));
             ChannelListPresenter presenter = getPresenter();
-            IBank bank = SDKApplication.getApplicationComponent()
-                    .bankListInteractor();
-            presenter.loadBankList(bank, this::onLoadBankConfig);
+            presenter.loadBankList(mBankInteractor, this::onLoadBankConfig);
         } else {
             startFlow();
         }
@@ -502,48 +500,48 @@ public class PayProxy extends SingletonBase {
         }
 
         int bankFunction = GlobalData.getCurrentBankFunction();
-        BankConfig bankConfig = SDKApplication
-                .getApplicationComponent()
-                .bankListInteractor()
-                .getBankConfig(pBankCode);
-        if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-            try {
-                getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
-                return true;
-            } catch (Exception e) {
-                Timber.d(e.getMessage());
-            }
+        BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
+        if (bankConfig == null || !bankConfig.isBankMaintenence(bankFunction)) {
+            return false;
+        }
+
+        try {
+            getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
+            return true;
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
         return false;
     }
 
     private boolean isBankSupport(String pBankCode) {
-        BankConfig bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(pBankCode);
-        if (bankConfig == null || !bankConfig.isActive()) {
-            String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
-            try {
-                getView().showInfoDialog(message);
-            } catch (Exception e) {
-                Timber.d(e.getMessage());
-            }
-            return false;
+        BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
+        if (bankConfig != null && bankConfig.isActive()) {
+            return true;
         }
-        return true;
+
+        String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
+        try {
+            getView().showInfoDialog(message);
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+        return false;
     }
 
     private void startFlow() throws Exception {
         //password flow
-        if (mChannel.isZaloPayChannel() || mChannel.isMapCardChannel() || mChannel.isBankAccountMap()) {
-            if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
-                startPasswordFlow(getActivity());
-            } else {
-                //submit order without password
-                submitOrder("");
-            }
-        } else {
-            //input card info flow
+        if (!mChannel.isZaloPayChannel() && !mChannel.isMapCardChannel() && !mChannel.isBankAccountMap()) {
             startChannelActivity();
+            return;
         }
+
+        if (TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
+            startPasswordFlow(getActivity());
+            return;
+        }
+
+        submitOrder("");
     }
 
     private boolean shouldCloseChannelList() {
