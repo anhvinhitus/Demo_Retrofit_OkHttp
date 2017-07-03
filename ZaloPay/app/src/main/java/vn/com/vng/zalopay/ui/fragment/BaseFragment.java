@@ -91,15 +91,6 @@ public abstract class BaseFragment extends Fragment {
         super.onLowMemory();
     }
 
-    public void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        Timber.d("forceUpdate [%s] latestVersion [%s] message [%s]",
-                forceUpdate, latestVersion, message);
-        if (!isAdded()) {
-            return;
-        }
-        AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
-    }
-
     public void showSnackbar(int message, View.OnClickListener listener) {
         hideSnackbar();
         mSnackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);

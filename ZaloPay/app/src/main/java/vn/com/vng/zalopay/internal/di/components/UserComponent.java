@@ -127,7 +127,6 @@ public interface UserComponent {
     NotificationService notificationService();
 
     /* inject Fragment */
-    void inject(ZaloPayFragment f);
 
     void inject(BalanceTopupFragment f);
 

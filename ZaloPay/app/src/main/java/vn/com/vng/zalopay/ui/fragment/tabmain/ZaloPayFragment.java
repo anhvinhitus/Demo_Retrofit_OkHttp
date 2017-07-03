@@ -51,7 +51,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
+
     }
 
     @Override
