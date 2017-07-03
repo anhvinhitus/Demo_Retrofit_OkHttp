@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.pay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -119,14 +120,15 @@ public class PayProxy extends SingletonBase {
             }
         }
     };
-    private Action1<Throwable> submitOrderException = throwable -> {
+    private void onOrderSubmitedFailed(Throwable throwable) {
         Log.d(this, "submit order on error", throwable);
         if (!networkException(throwable)) {
             //check trans status by app trans id
             getTransStatusByAppTrans();
         }
     };
-    private Action1<StatusResponse> submitOrderSubscriber = statusResponse -> {
+
+    private void onOrderSubmittedSuccess(StatusResponse statusResponse) {
         Log.d(this, "submit order on complete", statusResponse);
         if (statusResponse == null) {
             //check trans status by app trans id
@@ -141,26 +143,7 @@ public class PayProxy extends SingletonBase {
                 markTransFail(getGenericExceptionMessage(mContext));
             }
         }
-    };
-    private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
-        @Override
-        public void call(BankConfigResponse bankConfigResponse) {
-            String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
-            if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
-                try {
-                    startFlow();
-                } catch (Exception e) {
-                    Log.e(this, e);
-                    markTransFail(getGenericExceptionMessage(mContext));
-                }
-            }
-            try {
-                getView().hideLoading();
-            } catch (Exception e) {
-                Timber.d(e != null ? e.getMessage() : "Exception");
-            }
-        }
-    };
+    }
 
     public PayProxy() {
         super();
@@ -258,54 +241,56 @@ public class PayProxy extends SingletonBase {
         }
         if (pResponse == null) {
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-        } else {
-            mStatusResponse = pResponse;
-            if (TextUtils.isEmpty(mTransId) || mTransId.equals("0")) {
-                mTransId = mStatusResponse.zptransid;
-            }
-            @PaymentState int status = TransactionHelper.paymentState(mStatusResponse);
-            switch (status) {
-                case PaymentState.SUCCESS:
-                    mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-                    moveToResultScreen();
-                    break;
-                case PaymentState.SECURITY:
-                    mAuthenActor.closeAuthen();
-                    startChannelActivity();
-                    break;
-                case PaymentState.PROCESSING:
-                    mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
-                    //continue get trans status
-                    if (transStatusStart && showRetryDialogCount < MAX_RETRY_GETSTATUS) {
-                        try {
-                            askToRetryGetStatus();
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                            moveToResultScreen();
-                        }
-                    } else if (transStatusStart) {
+            return;
+
+        }
+
+        mStatusResponse = pResponse;
+        if (TextUtils.isEmpty(mTransId) || mTransId.equals("0")) {
+            mTransId = mStatusResponse.zptransid;
+        }
+        @PaymentState int status = TransactionHelper.paymentState(mStatusResponse);
+        switch (status) {
+            case PaymentState.SUCCESS:
+                mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+                moveToResultScreen();
+                break;
+            case PaymentState.SECURITY:
+                mAuthenActor.closeAuthen();
+                startChannelActivity();
+                break;
+            case PaymentState.PROCESSING:
+                mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
+                //continue get trans status
+                if (transStatusStart && showRetryDialogCount < MAX_RETRY_GETSTATUS) {
+                    try {
+                        askToRetryGetStatus();
+                    } catch (Exception e) {
+                        Log.e(this, e);
                         moveToResultScreen();
-                    } else {
-                        getTransStatus();
-                        transStatusStart = true;
                     }
-                    break;
-                case PaymentState.FAILURE:
-                    mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
-                    mPaymentInfoHelper.updateTransactionResult(mStatusResponse.returncode);
+                } else if (transStatusStart) {
                     moveToResultScreen();
-                    break;
-                case PaymentState.INVALID_PASSWORD:
-                    if (retryPassword >= RETRY_PASSWORD_MAX) {
-                        moveToResultScreen();
-                    } else {
-                        showPassword(getActivity());
-                        setError(mStatusResponse.returnmessage);
-                        getView().updateDefaultTitle();
-                        retryPassword++;
-                    }
-                    break;
-            }
+                } else {
+                    getTransStatus();
+                    transStatusStart = true;
+                }
+                break;
+            case PaymentState.FAILURE:
+                mPaymentInfoHelper.setResult(PaymentStatus.FAILURE);
+                mPaymentInfoHelper.updateTransactionResult(mStatusResponse.returncode);
+                moveToResultScreen();
+                break;
+            case PaymentState.INVALID_PASSWORD:
+                if (retryPassword >= RETRY_PASSWORD_MAX) {
+                    moveToResultScreen();
+                } else {
+                    showPassword(getActivity());
+                    setError(mStatusResponse.returnmessage);
+                    getView().updateDefaultTitle();
+                    retryPassword++;
+                }
+                break;
         }
     }
 
@@ -409,7 +394,7 @@ public class PayProxy extends SingletonBase {
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
                             .doOnNext(statusResponse -> showLoading(mContext.getString(R.string.zpw_string_alert_submit_order)))
-                            .subscribe(submitOrderSubscriber, submitOrderException);
+                            .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Log.e(this, e);
@@ -488,9 +473,26 @@ public class PayProxy extends SingletonBase {
             ChannelListPresenter presenter = getPresenter();
             IBank bank = SDKApplication.getApplicationComponent()
                     .bankListInteractor();
-            presenter.loadBankList(bank, bankListSubscriber);
+            presenter.loadBankList(bank, this::onLoadBankConfig);
         } else {
             startFlow();
+        }
+    }
+
+    private void onLoadBankConfig(BankConfigResponse bankConfigResponse) {
+        String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
+        if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
+            try {
+                startFlow();
+            } catch (Exception e) {
+                Log.e(this, e);
+                markTransFail(getGenericExceptionMessage(mContext));
+            }
+        }
+        try {
+            getView().hideLoading();
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
     }
 
@@ -509,7 +511,7 @@ public class PayProxy extends SingletonBase {
                 getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
                 return true;
             } catch (Exception e) {
-                Timber.d(e != null ? e.getMessage() : "Exception");
+                Timber.d(e.getMessage());
             }
         }
         return false;
@@ -670,21 +672,23 @@ public class PayProxy extends SingletonBase {
             return;
         }
         //make sure api get trans status is running
-        if (mRequestApi instanceof TransStatus && mRequestApi.isRunning()) {
-            //cancel running request
-            if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-                mSubscription.unsubscribe();
-                Timber.d("cancel api trans status");
-            }
-            if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
-                mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
-                Timber.d("update transaction time from notification");
-            }
-            //mark trans as success
-            mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
-            moveToResultScreen();
-            Timber.d("trans success from notification");
+        if (!(mRequestApi instanceof TransStatus) || !mRequestApi.isRunning()) {
+            return;
         }
+
+        //cancel running request
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+            Timber.d("cancel api trans status");
+        }
+        if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
+            mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
+            Timber.d("update transaction time from notification");
+        }
+        //mark trans as success
+        mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+        moveToResultScreen();
+        Timber.d("trans success from notification");
     }
 
     public
