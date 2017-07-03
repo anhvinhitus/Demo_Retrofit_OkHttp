@@ -654,14 +654,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 }
                 hasActiveChannel = true;
                 pos = position;
-                if (channel.isZaloPayChannel()) {
-                    selectChannel = channel;
-                    break;
-                }
-                if (channel.isMapValid()) {
-                    selectChannel = channel;
-                    break;
-                }
+                selectChannel = channel;
+                break;
             }
         }
         if (selectChannel != null) {
