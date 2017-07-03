@@ -75,8 +75,11 @@ public abstract class UserBaseActivity extends BaseActivity {
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
         }
 
-        Timber.e("Create UserComponent is NPE in %s. @Injected dependencies can be null - Application restarted [%s] - activities size [%s]", TAG, restarted, AppLifeCycle.activities.size());
-        return getUserComponent() != null;
+        boolean isUserSessionStarted = getUserComponent() != null;
+        if (!isUserSessionStarted) {
+            Timber.e("Create UserComponent is NPE in %s. @Injected dependencies can be null - Application restarted [%s] - activities size [%s]", TAG, restarted, AppLifeCycle.activities.size());
+        }
+        return isUserSessionStarted;
     }
 
     protected UserComponent getUserComponent() {
