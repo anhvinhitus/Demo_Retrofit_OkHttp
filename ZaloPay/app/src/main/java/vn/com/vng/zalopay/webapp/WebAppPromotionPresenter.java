@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.webview.widget.ZPWebView;
 
 /**
  * Created by datnt10 on 6/22/17.
@@ -26,8 +27,12 @@ class WebAppPromotionPresenter extends AbstractWebAppPresenter<IWebAppPromotionV
         super(accountRepository, navigator, appResourceRepository, merchantRepository);
     }
 
-    void initWebView(ZPWebViewApp webView) {
+    void initProcesssor(ZPWebViewApp webView) {
         mWebViewProcessor = new ZPWebViewAppProcessor(webView, mView);
+    }
+
+    void initWebView(ZPWebViewApp webView) {
+        initProcesssor(webView);
         mWebViewProcessor.registerNativeModule(new WebAppNativeModule(mProcessMessageListener));
 
         webView.setWebChromeClient(new WebChromeClient() {

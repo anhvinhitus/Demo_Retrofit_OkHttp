@@ -52,7 +52,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
         return fragment;
     }
 
-    @BindView(R.id.webview)
+    @BindView(R.id.promotion_webview)
     ZPWebView mWebView;
 
     @BindView(R.id.layoutRetry)

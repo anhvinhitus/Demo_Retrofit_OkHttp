@@ -90,7 +90,7 @@
                 android:layout_height="match_parent">
 
                 <vn.com.vng.zalopay.webview.widget.ZPWebView
-                    android:id="@+id/webview"
+                    android:id="@+id/promotion_webview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </com.zalopay.ui.widget.MultiSwipeRefreshLayout>

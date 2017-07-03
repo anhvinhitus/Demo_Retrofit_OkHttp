@@ -19,6 +19,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
@@ -54,9 +55,15 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     private WebBottomSheetDialogFragment mBottomSheetDialog;
-    private View mLayoutRetry;
-    private ImageView mErrorImageView;
-    private TextView mErrorTextView;
+
+    @BindView(R.id.layoutRetry)
+    View mLayoutRetry;
+
+    @BindView(R.id.imgError)
+    ImageView mErrorImageView;
+
+    @BindView(R.id.tvError)
+    TextView mErrorTextView;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -67,6 +74,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @BindView(R.id.webview)
     ZPWebViewApp webView;
 
+    @OnClick(R.id.btnRetry)
+    public void onRetryClick() {
+        onClickRetryWebView();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +88,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initPresenter(view);
-        initRetryView(view);
+        initPresenter();
         loadDefaultWebView();
     }
 
-    protected void initPresenter(View view) {
+    protected void initPresenter() {
         mPresenter.attachView(WebAppFragment.this);
         mPresenter.initWebView(webView);
     }
@@ -93,19 +104,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
         mPresenter.loadUrl(originalUrl);
+        hideError();
     }
 
     protected void onClickRetryWebView() {
         mPresenter.onRequestRefreshPage();
-    }
-
-    private void initRetryView(View rootView) {
-        mLayoutRetry = rootView.findViewById(R.id.layoutRetry);
-        mErrorImageView = (ImageView) rootView.findViewById(R.id.imgError);
-        mErrorTextView = (TextView) rootView.findViewById(R.id.tvError);
-        View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(v -> onClickRetryWebView());
-        hideError();
     }
 
     private void showErrorNoConnection() {
@@ -202,7 +205,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     public void onResume() {
         super.onResume();
         mPresenter.resume();
-        mPresenter.initWebView(webView);
+        mPresenter.initProcesssor(webView);
     }
 
     @Override

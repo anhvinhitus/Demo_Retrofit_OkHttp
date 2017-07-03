@@ -47,8 +47,12 @@ class WebAppPresenter extends AbstractWebAppPresenter<IWebAppView> {
         super(accountRepository, navigator, appResourceRepository, merchantRepository);
     }
 
-    void initWebView(ZPWebViewApp webView) {
+    void initProcesssor(ZPWebViewApp webView) {
         mWebViewProcessor = new ZPWebViewAppProcessor(webView, mView);
+    }
+
+    void initWebView(ZPWebViewApp webView) {
+        initProcesssor(webView);
         mWebViewProcessor.registerNativeModule(new WebAppNativeModule(mProcessMessageListener));
 
         webView.setWebChromeClient(new WebChromeClient() {

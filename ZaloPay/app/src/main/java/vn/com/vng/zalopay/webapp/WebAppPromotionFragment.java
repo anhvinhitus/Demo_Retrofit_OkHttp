@@ -21,6 +21,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
@@ -44,20 +45,16 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
         return fragment;
     }
 
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(WebAppPromotionFragment.this);
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.webapp_fragment_promotion;
-    }
-
     private WebBottomSheetDialogFragment mBottomSheetDialog;
-    private View mLayoutRetry;
-    private ImageView mErrorImageView;
-    private TextView mErrorTextView;
+
+    @BindView(R.id.layoutRetry)
+    View mLayoutRetry;
+
+    @BindView(R.id.imgError)
+    ImageView mErrorImageView;
+
+    @BindView(R.id.tvError)
+    TextView mErrorTextView;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -90,6 +87,11 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
 //        showBottomSheetDialog();
 //    }
 
+    @OnClick(R.id.btnRetry)
+    public void onRetryClicked() {
+        onClickRetryWebView();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +102,17 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initPresenter();
-        initRetryView(view);
         loadDefaultWebView();
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.webapp_fragment_promotion;
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(WebAppPromotionFragment.this);
     }
 
     protected void initPresenter() {
@@ -119,19 +130,11 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
         mPresenter.loadUrl(originalUrl);
+        hideError();
     }
 
     protected void onClickRetryWebView() {
         mPresenter.onRequestRefreshPage();
-    }
-
-    private void initRetryView(View rootView) {
-        mLayoutRetry = rootView.findViewById(R.id.layoutRetry);
-        mErrorImageView = (ImageView) rootView.findViewById(R.id.imgError);
-        mErrorTextView = (TextView) rootView.findViewById(R.id.tvError);
-        View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(v -> onClickRetryWebView());
-        hideError();
     }
 
     private void showErrorNoConnection() {
@@ -263,7 +266,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     public void onResume() {
         super.onResume();
         mPresenter.resume();
-        mPresenter.initWebView(webView);
+        mPresenter.initProcesssor(webView);
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
@@ -37,17 +38,26 @@ import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener,
         WebBottomSheetDialogFragment.BottomSheetEventListener {
 
-    protected ZPWebView mWebView;
     protected ZPWebViewProcessor mWebViewProcessor;
+    protected ZPWebView mWebView;
 
-    private View layoutRetry;
-    private ImageView imgError;
-    private TextView tvError;
+    @BindView(R.id.layoutRetry)
+    View layoutRetry;
+
+    @BindView(R.id.imgError)
+    ImageView imgError;
+
+    @BindView(R.id.tvError)
+    TextView tvError;
     private WebBottomSheetDialogFragment mBottomSheetDialog;
-    private View rootView;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
+
+    @OnClick(R.id.btnRetry)
+    public void onRetryClicked() {
+        onClickRetryWebView();
+    }
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -75,7 +85,10 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated start");
-        rootView = view;
+        initPresenter(view);
+        mWebView = (ZPWebView) view.findViewById(R.id.webview);
+        initWebView();
+        loadDefaultWebView();
     }
 
     protected void initPresenter(View view) {
@@ -102,8 +115,8 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     }
 
-    private void initWebView(View rootView) {
-        mWebView = (ZPWebView) rootView.findViewById(R.id.webview);
+    private void initWebView() {
+        hideError();
         updateWebViewSettings();
         mWebViewProcessor = new ZPWebViewProcessor(mWebView, this);
 
@@ -142,20 +155,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     protected void onClickRetryWebView() {
         hideError();
         refreshWeb();
-    }
-
-    private void initRetryView(View rootView) {
-        layoutRetry = rootView.findViewById(R.id.layoutRetry);
-        imgError = (ImageView) rootView.findViewById(R.id.imgError);
-        tvError = (TextView) rootView.findViewById(R.id.tvError);
-        View btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickRetryWebView();
-            }
-        });
-        hideError();
     }
 
     private void showErrorNoConnection() {
@@ -248,12 +247,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     @Override
     public void onResume() {
         super.onResume();
-
-        initPresenter(rootView);
-        initRetryView(rootView);
-        initWebView(rootView);
-        loadDefaultWebView();
-
+        mWebViewProcessor = new ZPWebViewProcessor(mWebView, this);
 //        if (mWebViewProcessor != null) {
 //            mWebViewProcessor.onResume();
 //        }
