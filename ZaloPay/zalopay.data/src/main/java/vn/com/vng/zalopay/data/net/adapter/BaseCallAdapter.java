@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 import okhttp3.Request;
@@ -20,7 +19,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.network.CallOnSubscribe;
 import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -37,7 +35,6 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     private final int mConnectorApiId;
     private final Type mResponseType;
     private final Scheduler mScheduler;
-    private int mRestRetryCount;
 
     BaseCallAdapter(Context context, int httpsApiId, int connectorApiId, Type responseType, Scheduler scheduler) {
         this(context, httpsApiId, connectorApiId, responseType, scheduler, Constants.NUMBER_RETRY_REST);
@@ -59,33 +56,8 @@ abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
 
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
-        mRestRetryCount = mMaxRetries;
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call, mHttpsApiId, mConnectorApiId))
-                .retryWhen(errors -> errors.flatMap(error -> {
-                    if (!call.request().method().equalsIgnoreCase("GET")) {
-                        return Observable.error(error);
-                    }
-
-                    Timber.d("adapt mRestRetryCount [%s] error [%s]", mRestRetryCount, error);
-                    boolean needRetry = false;
-                    if (mRestRetryCount >= 1) {
-                        if (error instanceof IOException) {
-                            needRetry = true;
-                        } else if (error instanceof HttpException) {
-                            Timber.d("adapt ((HttpException) error).code() [%s]", ((HttpException) error).code());
-                            if (((HttpException) error).code() > 404) {
-                                needRetry = true;
-                            }
-                        }
-                    }
-
-                    if (needRetry) {
-                        mRestRetryCount--;
-                        return Observable.just(null);
-                    } else {
-                        return Observable.error(error);
-                    }
-                }))
+                .retryWhen(new RetryNetworkHandler(call.request(), mMaxRetries, 0))
                 .flatMap(response -> makeObservableFromResponse(call.request(), response));
         if (mScheduler == null) {
             return observable;
