@@ -129,7 +129,7 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
             Timber.w("Error with http_code [%s] on request: %s", response == null ? NetworkErrorCode.NO_NETWORK_CONNECTION : response.code(), string);
         }
 
-        ZPAnalytics.trackAPIError(request.url().encodedPath().replaceFirst("/", ""), httpCode, 0, networkCode);
+        trackingError(request.url().encodedPath().replaceFirst("/", ""), httpCode, 0, networkCode);
     }
 
     private int getEventId(boolean isPaymentCall) {
@@ -138,6 +138,10 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
         } else {
             return mHttpsApiId;
         }
+    }
+
+    private void trackingError(String apiName, int httpCode, int serverCode, int networkCode) {
+        ZPAnalytics.trackAPIError(apiName, httpCode, serverCode, networkCode);
     }
 
     private void logTiming(long duration, Request request) {
