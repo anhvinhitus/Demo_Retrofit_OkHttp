@@ -173,17 +173,19 @@ public class PhoneUtil {
         }
     }
 
-    public static String formatPhoneNumberWithSpace(long number) {
-        String formattedNumber = formatPhoneNumber(number);
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 3) + " " + formattedNumber.substring(formattedNumber.length() - 3, formattedNumber.length());
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + " " + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
-        return formattedNumber;
-    }
-
     public static String formatPhoneNumberWithDot(long number) {
         String formattedNumber = formatPhoneNumber(number);
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 3) + "." + formattedNumber.substring(formattedNumber.length() - 3, formattedNumber.length());
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + "." + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
+
+        if (TextUtils.isEmpty(formattedNumber)) {
+            return formattedNumber;
+        }
+
+        try {
+            formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 3) + "." + formattedNumber.substring(formattedNumber.length() - 3, formattedNumber.length());
+            formattedNumber = formattedNumber.substring(0, formattedNumber.length() - 7) + "." + formattedNumber.substring(formattedNumber.length() - 7, formattedNumber.length());
+        } catch (StringIndexOutOfBoundsException e) {
+            Timber.w(" Format Phone Number Error [%s]", number);
+        }
         return formattedNumber;
     }
 
