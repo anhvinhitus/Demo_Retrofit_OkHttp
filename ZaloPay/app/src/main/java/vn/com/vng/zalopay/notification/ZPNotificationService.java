@@ -150,11 +150,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
         }
     }
 
-    private void disconnectServer() {
-        Timber.d("Request to disconnect connection with notification server");
-        mWsConnection.disconnect();
-    }
-
     @Override
     public void onReceivedPushMessage(PushMessage pushMessage) {
         Timber.d("onReceived PushMessage : [mtuid: %s] [msgType: %s]", pushMessage.mtuid, pushMessage.msgType);
@@ -306,16 +301,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
         mIsSubscribeGcm = true;
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onNetworkChange(NetworkChangeEvent event) {
-        Timber.d("onNetworkChange : online [%s]", event.isOnline);
-        if (event.isOnline) {
-            this.connectToServer();
-        } else {
-            this.disconnectServer();
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadNotify(ReadNotifyEvent event) {
         if (mNotificationHelper != null) {
@@ -345,7 +330,10 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
             // "Consume" the sticky event
             mEventBus.removeStickyEvent(stickyEvent);
             mIsSubscribeGcm = false;
-            disconnectServer();
+
+            if (mWsConnection != null) {
+                mWsConnection.disconnect();
+            }
             start();
         }
     }
