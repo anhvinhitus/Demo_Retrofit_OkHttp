@@ -1102,18 +1102,19 @@ public class AndroidUtils {
     public static String getUserAgent(Context context) {
 
         String ua = null;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                ua = WebSettings.getDefaultUserAgent(context);
+            } else {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            ua = WebSettings.getDefaultUserAgent(context);
-        } else {
-            try {
                 final Class<?> webSettingsClassicClass = Class.forName("android.webkit.WebSettingsClassic");
                 final Constructor<?> constructor = webSettingsClassicClass.getDeclaredConstructor(Context.class, Class.forName("android.webkit.WebViewClassic"));
                 constructor.setAccessible(true);
                 final Method method = webSettingsClassicClass.getMethod("getUserAgentString");
                 ua = (String) method.invoke(constructor.newInstance(context, null));
-            } catch (Exception ignore) {
             }
+        } catch (Exception e) {
+            Timber.d(e, "exception");
         }
 
         if (TextUtils.isEmpty(ua)) {
