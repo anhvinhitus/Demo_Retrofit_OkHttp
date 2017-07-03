@@ -9,6 +9,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -32,7 +33,10 @@ public class BankListPopup extends BasePaymentDialogActivity {
         return BankListPopup.mCloseCardSupportDialogListener.get();
     }
 
-    public CardSupportAdapter getAdapter() {
+    public CardSupportAdapter getAdapter() throws Exception {
+        if (BankListPopup.mCardSupportGridViewAdapter.get() == null) {
+            throw new IllegalAccessException("mCardSupportGridViewAdapter is null");
+        }
         return BankListPopup.mCardSupportGridViewAdapter.get();
     }
 
@@ -66,15 +70,20 @@ public class BankListPopup extends BasePaymentDialogActivity {
 
     @Override
     protected void initData() {
-        if (getAdapter() != null) {
-            mGridViewBank.setAdapter(getAdapter());
-        }
-        if (GlobalData.transtype() == TransactionType.LINK) {
-            txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
-        } else if (getAdapter() instanceof CreditCardSupportGridViewAdapter) {
-            txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
-        } else {
-            txtLabel.setText(GlobalData.getStringResource(RS.string.zpw_string_title_select_bank));
+        try {
+            if (getAdapter() != null) {
+                mGridViewBank.setAdapter(getAdapter());
+            }
+
+            if (GlobalData.transtype() == TransactionType.LINK) {
+                txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
+            } else if (getAdapter() instanceof CreditCardSupportGridViewAdapter) {
+                txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
+            } else {
+                txtLabel.setText(GlobalData.getStringResource(RS.string.zpw_string_title_select_bank));
+            }
+        } catch (Exception e) {
+            Timber.d("get card support Adapter: [%s]", e);
         }
 
     }
