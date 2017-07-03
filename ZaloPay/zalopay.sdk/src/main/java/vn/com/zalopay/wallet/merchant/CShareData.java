@@ -136,8 +136,8 @@ public class CShareData extends SingletonBase {
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
-                if (pObject.length >= 2) {
-                    UserInfo userInfo = (UserInfo) pObject[1];
+                if (pObject.length >= 3) {
+                    UserInfo userInfo = (UserInfo) pObject[2];
                     String appVersion = SdkUtils.getAppVersion(SDKApplication.getContext());
                     SDKApplication.getApplicationComponent()
                             .linkInteractor()
@@ -147,6 +147,7 @@ public class CShareData extends SingletonBase {
                             });
                 }
             } catch (Exception ex) {
+                Timber.w(ex);
                 Log.e(this, ex);
             }
         }
