@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
@@ -297,53 +296,53 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
                 getActivity().getString(R.string.link_account_empty_bank_support_balance_require_hint);
     }
 
-    /*private List<BaseMap> getFakeData() {
-        List<BaseMap> linkedBankList = new ArrayList<>();
-
-        MapCard visaCard = new MapCard();
-        visaCard.first6cardno = "445093";
-        visaCard.last4cardno = "0161";
-        visaCard.bankcode = vn.com.zalopay.wallet.business.data.Constants.CCCode;
-        linkedBankList.add(visaCard);
-
-        MapCard vtbCard = new MapCard();
-        vtbCard.bankcode = CardType.PVTB.toString();
-        vtbCard.first6cardno = "970415";
-        vtbCard.last4cardno = "3538";
-        linkedBankList.add(vtbCard);
-
-        MapCard vcbCard = new MapCard();
-        vcbCard.bankcode = CardType.PVCB.toString();
-        vcbCard.first6cardno = "686868";
-        vcbCard.last4cardno = "1231";
-        linkedBankList.add(vcbCard);
-
-        MapCard sCard = new MapCard();
-        sCard.bankcode = CardType.PSCB.toString();
-        sCard.first6cardno = "970403";
-        sCard.last4cardno = "1234";
-        linkedBankList.add(sCard);
-
-        MapCard sgCard = new MapCard();
-        sgCard.bankcode = CardType.PSGCB.toString();
-        sgCard.first6cardno = "157979";
-        sgCard.last4cardno = "9999";
-        linkedBankList.add(sgCard);
-
-        MapCard bivdCard = new MapCard();
-        bivdCard.first6cardno = "970418";
-        bivdCard.last4cardno = "1231";
-        bivdCard.bankcode = CardType.PBIDV.toString();
-        linkedBankList.add(bivdCard);
-
-        BankAccount vcbAccount = new BankAccount();
-        vcbAccount.firstaccountno = "098765";
-        vcbAccount.lastaccountno = "4321";
-        vcbAccount.bankcode = CardType.PVCB.toString();
-        linkedBankList.add(vcbAccount);
-
-        return linkedBankList;
-    }*/
+//    private List<BaseMap> getFakeData() {
+//        List<BaseMap> linkedBankList = new ArrayList<>();
+//
+//        MapCard visaCard = new MapCard();
+//        visaCard.first6cardno = "445093";
+//        visaCard.last4cardno = "0161";
+//        visaCard.bankcode = CardType.MASTER.toString();
+//        linkedBankList.add(visaCard);
+//
+//        MapCard vtbCard = new MapCard();
+//        vtbCard.bankcode = CardType.PVTB.toString();
+//        vtbCard.first6cardno = "970415";
+//        vtbCard.last4cardno = "3538";
+//        linkedBankList.add(vtbCard);
+//
+//        MapCard vcbCard = new MapCard();
+//        vcbCard.bankcode = CardType.PVCB.toString();
+//        vcbCard.first6cardno = "686868";
+//        vcbCard.last4cardno = "1231";
+//        linkedBankList.add(vcbCard);
+//
+//        MapCard sCard = new MapCard();
+//        sCard.bankcode = CardType.PSCB.toString();
+//        sCard.first6cardno = "970403";
+//        sCard.last4cardno = "1234";
+//        linkedBankList.add(sCard);
+//
+//        MapCard sgCard = new MapCard();
+//        sgCard.bankcode = CardType.PSGCB.toString();
+//        sgCard.first6cardno = "157979";
+//        sgCard.last4cardno = "9999";
+//        linkedBankList.add(sgCard);
+//
+//        MapCard bivdCard = new MapCard();
+//        bivdCard.first6cardno = "970418";
+//        bivdCard.last4cardno = "1231";
+//        bivdCard.bankcode = CardType.PBIDV.toString();
+//        linkedBankList.add(bivdCard);
+//
+//        BankAccount vcbAccount = new BankAccount();
+//        vcbAccount.firstaccountno = "098765";
+//        vcbAccount.lastaccountno = "4321";
+//        vcbAccount.bankcode = CardType.PVCB.toString();
+//        linkedBankList.add(vcbAccount);
+//
+//        return linkedBankList;
+//    }
 
     void getLinkedBank() {
         List<BaseMap> linkedBankList = new ArrayList<>();
@@ -361,6 +360,10 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
 
         mView.setListLinkedBank(linkedBankList);
 //        mView.setListLinkedBank(getFakeData());
+    }
+
+    void smoothOpenItemMenu(int position) {
+        mView.smoothOpenItemMenu(position);
     }
 
     private String getString(@StringRes int stringResource) {
