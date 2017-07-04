@@ -12,4 +12,6 @@ public class RedPacketStatusEntity {
     public long packageID;
     @SerializedName("status")
     public long status;
+    @SerializedName("amount")
+    public long amount;
 }

@@ -87,6 +87,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 continue;
             }
             receivePackageGD.status = entity.status;
+            receivePackageGD.amount = entity.amount;
             getDaoSession().insertOrReplace(receivePackageGD);
         }
     }

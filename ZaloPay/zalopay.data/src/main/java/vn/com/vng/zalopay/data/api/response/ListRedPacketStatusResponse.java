@@ -14,4 +14,7 @@ public class ListRedPacketStatusResponse extends BaseResponse {
 
     @SerializedName("listpackagestatus")
     public List<RedPacketStatusEntity> listpackagestatus;
+
+    @SerializedName("amount")
+    public long amount;
 }

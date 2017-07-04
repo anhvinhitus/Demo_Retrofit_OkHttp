@@ -46,7 +46,7 @@ class DataMapper {
         writableMap.putString("sendername", packet.senderFullName);
         writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
-//        writableMap.putDouble("amount", packet.amount);
+        writableMap.putDouble("amount", packet.amount);
         writableMap.putDouble("opentime", packet.openedTime != null ? packet.openedTime.doubleValue() : 0);
         return writableMap;
     }
