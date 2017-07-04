@@ -17,7 +17,6 @@ import rx.Subscription;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
-import vn.com.zalopay.utility.FingerprintUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
@@ -33,7 +32,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -547,7 +545,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private boolean shouldCloseChannelList() {
-        switch (mPaymentInfoHelper.getStatus()){
+        switch (mPaymentInfoHelper.getStatus()) {
             case PaymentStatus.SUCCESS:
             case PaymentStatus.FAILURE:
                 return true;
@@ -589,11 +587,12 @@ public class PayProxy extends SingletonBase {
 
     private void startPasswordFlow(Activity pActivity) {
         try {
-            if (FingerprintUtils.deviceSupportFingerPrint(pActivity.getApplicationContext()) && PaymentFingerPrint.isAllowFingerPrintFeature()) {
-                showFingerPrint(pActivity);
-            } else {
+
+            boolean isShowFingerprint = showFingerPrint(pActivity);
+            if (!isShowFingerprint) {
                 showPassword(pActivity);
             }
+
         } catch (Exception ex) {
             showPassword(pActivity);
             Log.e(this, ex);
@@ -618,13 +617,13 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    private void showFingerPrint(Activity pActivity) {
+    private boolean showFingerPrint(Activity pActivity) {
         try {
-            mAuthenActor.showFingerPrint(pActivity);
+            return mAuthenActor.showFingerPrint(pActivity);
         } catch (Exception e) {
             Log.e(this, e);
-            showPassword(pActivity);
             Timber.d("use password instead of fingerprint");
+            return false;
         }
     }
 

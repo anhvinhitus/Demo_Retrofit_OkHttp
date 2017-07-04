@@ -160,12 +160,13 @@ public class AuthenActor {
         mPassword.show();
     }
 
-    public void showFingerPrint(Activity pActivity) throws Exception {
+    public boolean showFingerPrint(Activity pActivity) throws Exception {
         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
         if (mFingerPrintDialog != null) {
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
+            return true;
         } else {
-            throw new Exception("fingerprint is not ready");
+            return false;
         }
     }
 
