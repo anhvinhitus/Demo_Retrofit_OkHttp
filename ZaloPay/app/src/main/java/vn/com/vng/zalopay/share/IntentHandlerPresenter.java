@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
@@ -355,6 +356,10 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
     private boolean shouldSignIn(Context context, Uri data, long sender, String accesstoken) {
         if (mUserConfig.hasCurrentUser()) {
+            if (AndroidApplication.instance().getUserComponent() == null) {
+                Timber.w("has current user but user component is Null");
+                AndroidApplication.instance().createUserComponent(mUserConfig.getCurrentUser());
+            }
             return false;
         }
 

@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.cache;
 
-import org.json.JSONObject;
-
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
