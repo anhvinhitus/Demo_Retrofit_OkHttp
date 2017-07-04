@@ -258,8 +258,8 @@
     <string name="input.pin.old">Nhập mật khẩu thanh toán cũ</string>
     <string name="input.pin.new">Nhập mật khẩu thanh toán mới</string>
     <string name="pin">Mật khẩu thanh toán</string>
-    <string name="input.pin.to.access">Nhập mật khẩu thanh toán để truy cập</string>
-    <string name="input.pin.to.confirm">Nhập mật khẩu thanh toán để thiết lập</string>
+    <string name="input.pin.to.access">Nhập mật khẩu để truy cập</string>
+    <string name="input.pin.to.confirm">Nhập mật khẩu để thiết lập</string>
     <string name="reset_pin_success">Tạo lại mật khẩu thanh toán thành công.</string>
 
     <!--WebView Resource Start-->
