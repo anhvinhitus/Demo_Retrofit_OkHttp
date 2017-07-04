@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.ui.channellist;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
@@ -20,9 +21,12 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
+import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -31,6 +35,7 @@ import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -40,6 +45,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -53,15 +59,19 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.IPlatformInfo;
+import vn.com.zalopay.wallet.interactor.PlatformInfoInteractor;
+import vn.com.zalopay.wallet.interactor.ResourceLoader;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.AbstractPresenter;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -70,7 +80,8 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
  * Created by chucvv on 6/12/17.
  */
 
-public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
+public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
+        implements ResourceLoader.ResourceLoaderListener {
     @Inject
     public IBank mBankInteractor;
     protected PaymentInfoHelper mPaymentInfoHelper;
@@ -78,6 +89,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     EventBus mBus;
     @Inject
     IAppInfo mAppInfoInteractor;
+    @Inject
+    IPlatformInfo mPlatformInteractor;
+
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
@@ -106,7 +120,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_START_CHANNEL_LIST_PRESENTER);
     }
 
-    @Override
     protected void loadBankListOnProgress() {
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START);
@@ -116,7 +129,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     protected void loadBankListOnError(Throwable throwable) {
         Log.d(this, "load bank list error", throwable);
         String message = TransactionHelper.getMessage(throwable);
@@ -130,7 +142,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     protected void loadBankListOnComplete(BankConfigResponse bankConfigResponse) {
         try {
             SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
@@ -140,7 +151,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     protected void loadAppInfoOnError(Throwable throwable) {
         Log.d(this, "load app info on error", throwable);
         try {
@@ -165,7 +175,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     protected void loadAppInfoOnComplete(AppInfo appInfo) {
         try {
             Log.d(this, "load app info success", appInfo);
@@ -187,7 +196,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return mChannelList;
     }
 
-    @Override
     protected boolean manualRelease() {
         int status = mPaymentInfoHelper.getStatus();
         return status == PaymentStatus.DIRECT_LINKCARD || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
@@ -747,11 +755,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     }
 
-    private void readyForPayment() {
-        loadBankList(mBankInteractor);
-        Timber.d("ready for payment");
-    }
-
     public boolean isUniqueChannel() {
         return mChannelList == null || mChannelList.size() <= 1;
     }
@@ -808,7 +811,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     public void onResourceError(Throwable throwable) {
         Timber.w("init resource error", throwable);
         /***
@@ -817,7 +819,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
          * can not parse json file.
          */
         try {
-            String resPath = platformInteractor.getUnzipPath();
+            String resPath = mPlatformInteractor.getUnzipPath();
             if (!TextUtils.isEmpty(resPath)) {
                 StorageUtil.deleteRecursive(new File(resPath));
             }
@@ -837,7 +839,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Override
     public void onResourceReady() {
-        super.onResourceReady();
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END);
         try {
             loadChannels();
         } catch (Exception e) {
@@ -891,9 +893,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    @Override
     public void onUpdateVersion(SdkUpVersionMessage pMessage) {
-        super.onUpdateVersion(pMessage);
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onUpVersion(pMessage.forceupdate, pMessage.version, pMessage.message);
+        }
+
         if (pMessage.forceupdate) {
             try {
                 getViewOrThrow().terminate();
@@ -922,5 +926,65 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_39);
                 break;
         }
+    }
+
+    // Copied from PaymentPresenter
+    private ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
+    private Action1<Boolean> onResourceComplete = initialized -> {
+        if (initialized) {
+            onResourceReady();
+        } else {
+            onResourceError(new Throwable(GlobalData.getAppContext().getString(R.string.sdk_alert_generic_init_resource)));
+        }
+    };
+
+    protected void callBackThenTerminate() {
+    }
+
+
+    public synchronized void onResourceInit() {
+        if (!mPlatformInteractor.isValidConfig()) {
+            Timber.d("resource still not exist - skip init resource - wait for finish loading");
+            return;
+        }
+        if (ResourceManager.isInit()) {
+            return;
+        }
+
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START);
+        Subscription subscription = ResourceManager.initResource()
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(onResourceComplete, throwable -> onResourceError(throwable));
+        addSubscription(subscription);
+    }
+
+    protected boolean loadStaticResource(UserInfo userInfo) throws Exception {
+        try {
+            Timber.d("start validate resource");
+            ResourceLoader.get()
+                    .presenter(this)
+                    .platformInteractor(mPlatformInteractor)
+                    .userInfo(userInfo)
+                    .checkResource();
+        } catch (Exception e) {
+            Log.e(this, e);
+            return false;
+        }
+        return true;
+    }
+
+    public void callback() {
+        Timber.d("callback presenter");
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onComplete();
+        }
+        if (manualRelease()) {
+            SingletonLifeCircleManager.disposeAll();
+        }
+    }
+
+    public void loadBankList(IBank bankInteractor, Action1<BankConfigResponse> bankListSubscriber) {
+
     }
 }

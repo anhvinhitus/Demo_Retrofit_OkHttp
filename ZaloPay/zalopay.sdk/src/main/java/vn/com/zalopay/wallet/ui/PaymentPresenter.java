@@ -32,7 +32,7 @@ import vn.com.zalopay.wallet.interactor.ResourceLoader;
  * Created by chucvv on 6/24/17.
  */
 
-public abstract class PaymentPresenter<T extends IContract> extends AbstractPresenter<T> {
+public abstract class PaymentPresenter<T extends IContract> extends AbstractPresenter<T> implements ResourceLoader.ResourceLoaderListener {
     public Action1<Throwable> bankListException = this::loadBankListOnError;
     protected ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
     protected Action1<Boolean> onResourceComplete = initialized -> {

@@ -87,7 +87,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 isNewUser || TextUtils.isEmpty(resourceVersion);
     }
 
-    public Observable<Boolean> reloadPlatform(String userId, String accessToken, long currentTime) {
+    private Observable<Boolean> reloadPlatform(String userId, String accessToken, long currentTime) {
         try {
             boolean forceReload = forceReloadPlatformInfo(userId);
             boolean isExpired = currentTime >= getExpireTime();
@@ -97,13 +97,8 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             }
             Timber.d("start reload platform info - force download resource %s", shouldDownloadRes);
             String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-            return loadPlatformInfo(userId, accessToken, forceReload, shouldDownloadRes, currentTime, appVersion)
-                    .flatMap(new Func1<PlatformInfoCallback, Observable<Boolean>>() {
-                        @Override
-                        public Observable<Boolean> call(PlatformInfoCallback platformInfoCallback) {
-                            return Observable.just(shouldDownloadRes);
-                        }
-                    });
+            return loadPlatformInfoFromCloud(userId, accessToken, forceReload, currentTime, appVersion)
+                    .map(c -> true);
         } catch (Exception e) {
             return Observable.error(e);
         }
@@ -196,10 +191,90 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 .subscribeOn(Schedulers.io());
         Observable<PlatformInfoCallback> infoOnCloud = repository
                 .fetchCloud(params)
-                .doOnNext(downloadResource(shouldDownloadResource))
+                .doOnNext(downloadResource())
                 .flatMap(mapResult(params.get(ConstantParams.APP_VERSION)));
         return Observable.concat(infoOnCache, infoOnCloud)
                 .first(platformInfoCallback -> platformInfoCallback != null && (platformInfoCallback.expire_time > currentTime));
+    }
+
+    /**
+     * Called from reloadPlatform
+     */
+    private Observable<PlatformInfoCallback> loadPlatformInfoFromCloud(String userId, String accessToken, boolean forceReload, long currentTime, String appVersion) {
+        Timber.d("prepare param to get platform info from server - should download resource");
+        String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
+        String resrcVer = repository.getLocalStorage().getResourceVersion();
+        if (forceReload) {
+            checksum = null;
+            resrcVer = null;
+            repository.getLocalStorage().setCardInfoCheckSum(null);
+            repository.getLocalStorage().setBankAccountCheckSum(null);
+            Timber.d("reset platform checksum for forcing reload");
+        }
+        String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
+        String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
+        //format data
+        cardInfoCheckSum = cardInfoCheckSum != null ? cardInfoCheckSum : "";
+        checksum = checksum != null ? checksum : "";
+        resrcVer = resrcVer != null ? resrcVer : "";
+        bankAccountChecksum = bankAccountChecksum != null ? bankAccountChecksum : "";
+
+        Map<String, String> params;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            params = new ArrayMap<>();
+        } else {
+            params = new HashMap<>();
+        }
+        params.put(ConstantParams.USER_ID, userId);
+        params.put(ConstantParams.ACCESS_TOKEN, accessToken);
+        params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
+        float density = GlobalData.getAppContext().getResources().getDisplayMetrics().density;
+        params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(density));
+        params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
+        params.put(ConstantParams.RESOURCE_VERSION, resrcVer);
+        params.put(ConstantParams.APP_VERSION, appVersion);
+        params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
+        params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
+        params.put(ConstantParams.CARDINFO_CHECKSUM, cardInfoCheckSum);
+        params.put(ConstantParams.BANKACCOUNT_CHECKSUM, bankAccountChecksum);
+
+        Observable<PlatformInfoCallback> infoOnCloud = repository
+                .fetchCloud(params)
+                .concatMap(this::tryDownloadResource)
+                .flatMap(mapResult(params.get(ConstantParams.APP_VERSION)));
+        return infoOnCloud;
+    }
+
+    private Observable<PlatformInfoResponse> tryDownloadResource(PlatformInfoResponse platformInfoResponse) {
+        /**
+         need to download new resource if
+         1.server return isupdateresource = true;
+         2.resource version on cached client and resource version server return is different.This case user no need to update app.
+         */
+        Timber.d("start download resource - should download ");
+        String resourceVersion = repository.getLocalStorage().getResourceVersion();
+        if (platformInfoResponse.resource == null) {
+            return Observable.just(platformInfoResponse);
+        }
+
+        if (!TextUtils.isEmpty(resourceVersion) &&
+                !platformInfoResponse.isupdateresource &&
+                resourceVersion.equals(platformInfoResponse.resource.rsversion)) {
+            return Observable.just(platformInfoResponse);
+        }
+
+//        repository.getLocalStorage().setResourceVersion(platformInfoResponse.resource.rsversion);
+        repository.getLocalStorage().setResourceDownloadUrl(platformInfoResponse.resource.rsurl);
+
+        Timber.d("start download sdk resource %s", platformInfoResponse.resource.rsurl);
+        Context context = GlobalData.getAppContext();
+        IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
+        ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService,
+                repository.getLocalStorage(),
+                platformInfoResponse.resource.rsurl,
+                platformInfoResponse.resource.rsversion);
+        return downloadResourceTask.fetchResource()
+                .map(b -> platformInfoResponse);
     }
 
     @Override
@@ -211,7 +286,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         return downloadResourceTask.getResource();
     }
 
-    private Action1<PlatformInfoResponse> downloadResource(boolean shouldDownloadResource) {
+    private Action1<PlatformInfoResponse> downloadResource() {
         return new Action1<PlatformInfoResponse>() {
             @Override
             public void call(PlatformInfoResponse pResponse) {
@@ -220,9 +295,9 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                  1.server return isupdateresource = true;
                  2.resource version on cached client and resource version server return is different.This case user no need to update app.
                  */
-                Log.d(this, "start download resource - should download ", shouldDownloadResource);
+                Timber.d("start download resource - should download ");
                 String resourceVersion = repository.getLocalStorage().getResourceVersion();
-                if (shouldDownloadResource && pResponse.resource != null && (pResponse.isupdateresource ||
+                if (pResponse.resource != null && (pResponse.isupdateresource ||
                         (!TextUtils.isEmpty(resourceVersion) && !resourceVersion.equals(pResponse.resource.rsversion)))) {
                     repository.getLocalStorage().setResourceVersion(pResponse.resource.rsversion);
                     repository.getLocalStorage().setResourceDownloadUrl(pResponse.resource.rsurl);
@@ -233,7 +308,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             }
         };
     }
-
 
     private Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>> mapResult(String appVersion) {
         return platformInfoResponse -> {

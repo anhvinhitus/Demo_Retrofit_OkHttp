@@ -21,14 +21,13 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 public class ResourceLoader extends SingletonBase {
     private static ResourceLoader _object;
     protected UserInfo mUserInfo;
     private IPlatformInfo mPlatformInteractor;
-    private WeakReference<PaymentPresenter> mPresenterWeakReference;
+    private WeakReference<ResourceLoaderListener> mPresenterWeakReference;
     private boolean forceDownloadResource;
     private ZPMonitorEventTiming mEventTiming;
 
@@ -107,12 +106,12 @@ public class ResourceLoader extends SingletonBase {
         return this;
     }
 
-    public ResourceLoader presenter(PaymentPresenter paymentPresenter) {
+    public ResourceLoader presenter(ResourceLoaderListener paymentPresenter) {
         mPresenterWeakReference = new WeakReference<>(paymentPresenter);
         return this;
     }
 
-    private PaymentPresenter getPresenter() throws Exception {
+    private ResourceLoaderListener getPresenter() throws Exception {
         if (mPresenterWeakReference == null || mPresenterWeakReference.get() == null) {
             throw new IllegalStateException("invalid payment presenter");
         }
@@ -204,5 +203,15 @@ public class ResourceLoader extends SingletonBase {
                 .loadPlatformInfo(mUserInfo.zalopay_userid, mUserInfo.accesstoken, pForceReload, downloadResource, currentTime, appVersion)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(platformInfoSubscriber, platformInfoException);
+    }
+
+    public interface ResourceLoaderListener {
+        void onResourceInit();
+        void onResourceReady();
+        void addSubscription(Subscription subscription);
+
+        void onPlatformError(Throwable e);
+
+        void onUpdateVersion(SdkUpVersionMessage message);
     }
 }
