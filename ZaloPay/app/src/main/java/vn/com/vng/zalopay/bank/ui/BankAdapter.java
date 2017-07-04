@@ -34,8 +34,7 @@ import vn.com.zalopay.wallet.constants.CardType;
  * Created by longlv on 5/25/17.
  * Adapter of recycleView in BankFragment
  */
-class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<BaseMap, RecyclerView.ViewHolder> {
-
+public class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<BaseMap, RecyclerView.ViewHolder> {
     private class ViewType {
         static final int UNKNOWN = 0;
         //static final int HEADER = 1;
@@ -183,7 +182,8 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<BaseMap, RecyclerView
 
         @OnClick(R.id.root)
         public void onItemClickListener() {
-            smoothOpenRightMenu();
+//            smoothOpenRightMenu();
+            mListener.onItemClicked(getAdapterPosition());
         }
 
         BankViewHolder(View itemView) {
@@ -306,5 +306,6 @@ class BankAdapter extends AbstractSwipeMenuRecyclerAdapter<BaseMap, RecyclerView
 
     interface IBankListener {
         void onClickAddMoreBank();
+        void onItemClicked(int position);
     }
 }

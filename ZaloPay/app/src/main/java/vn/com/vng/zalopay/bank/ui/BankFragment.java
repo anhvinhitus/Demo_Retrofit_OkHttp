@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,9 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    private long mLastClickTime = 0;
+    private final long TIME_PREVENT_RAPID_CLICK = 500;
 
     @Inject
     BankPresenter mPresenter;
@@ -318,11 +322,27 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     }
 
     @Override
+    public void smoothOpenItemMenu(int position) {
+        mRecyclerView.smoothCloseMenu();
+        // Prevent rapid click
+        if (SystemClock.elapsedRealtime() - mLastClickTime < TIME_PREVENT_RAPID_CLICK){
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+        mRecyclerView.smoothOpenRightMenu(position);
+    }
+
+    @Override
     public void onClickAddMoreBank() {
         if (mPresenter != null) {
             mPresenter.AddMoreBank();
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_TAPADDCARD);
         }
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        mPresenter.smoothOpenItemMenu(position);
     }
 
     @Override

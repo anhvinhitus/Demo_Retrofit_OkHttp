@@ -29,4 +29,6 @@ interface IBankView extends ILoadDataView {
     void showConfirmDialogAfterLinkBank(String message);
 
     void onAddBankSuccess(BaseMap bankInfo);
+
+    void smoothOpenItemMenu(int position);
 }
