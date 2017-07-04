@@ -10,7 +10,9 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -77,7 +79,7 @@ public class AppInfoInteractor implements IAppInfo {
     protected Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {
         return appInfoResponse -> {
             if (appInfoResponse == null) {
-                return Observable.error(new RequestException(RequestException.NULL, null));
+                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
             } else if (appInfoResponse.returncode == 1) {
                 //success, load app info from cache
                 return mAppInfoRepository.getLocalStorage().get(appId);

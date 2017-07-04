@@ -277,7 +277,7 @@ public class BankInteractor implements IBank {
     @NonNull
     private Observable<BankConfigResponse> convertToBankConfigResponseObservable(BankConfigResponse bankConfigResponse) {
         if (bankConfigResponse == null) {
-            return Observable.error(new RequestException(RequestException.NULL, null));
+            return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
         } else if (bankConfigResponse.returncode == 1) {
             bankConfigResponse.expiredtime = mLocalStorage.getExpireTime();
             if (bankConfigResponse.bankcardprefixmap == null) {

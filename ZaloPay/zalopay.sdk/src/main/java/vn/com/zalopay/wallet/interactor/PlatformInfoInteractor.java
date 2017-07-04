@@ -27,6 +27,7 @@ import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -313,7 +314,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         return platformInfoResponse -> {
             long expiretime = repository.getLocalStorage().getExpireTime();
             if (platformInfoResponse == null) {
-                return Observable.error(new RequestException(RequestException.NULL, null));
+                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
             } else if (platformInfoResponse.forceappupdate) {
                 //notify force user update new app on store
                 VersionCallback upversionCallback = new VersionCallback(platformInfoResponse.forceappupdate, platformInfoResponse.newestappversion,

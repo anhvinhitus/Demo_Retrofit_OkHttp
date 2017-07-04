@@ -52,6 +52,7 @@ import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -163,7 +164,7 @@ public class AdapterLinkAcc extends AdapterBase {
         public void call(Throwable throwable) {
             hideLoadingDialog();
             Log.d(this, "load bank account error", throwable);
-            String message = mPaymentInfoHelper.getMessage(throwable);
+            String message = TransactionHelper.getMessage(throwable);
             if (TextUtils.isEmpty(message)) {
                 message = GlobalData.getStringResource(RS.string.zpw_alert_network_error_loadmapbankaccountlist);
             }

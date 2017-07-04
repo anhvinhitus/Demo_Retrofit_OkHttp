@@ -19,8 +19,8 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
@@ -32,19 +32,16 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 
 public class TransactionHelper {
     public static String getMessage(Throwable throwable) {
-        String message = null;
-        if (throwable instanceof RequestException) {
-            RequestException requestException = (RequestException) throwable;
-            message = requestException.getMessage();
-            switch (requestException.code) {
-                case RequestException.NULL:
-                    message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-                    break;
-            }
-        } else if (throwable instanceof NetworkConnectionException) {
-            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        if (throwable == null) {
+            return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
-        return message;
+        if (throwable instanceof RequestException || throwable instanceof SdkResourceException) {
+            return throwable.getMessage();
+        }
+        if (throwable instanceof NetworkConnectionException) {
+            return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        }
+        return GlobalData.getStringResource(RS.string.zpw_string_error_system);
     }
 
     public static String getAppNameByTranstype(Context context, @TransactionType int transtype) {
