@@ -134,6 +134,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         if (getActivity() != null) {
             ((ChannelListActivity)getActivity()).setToolbarTitle(title);
         }
+        Timber.d("set title %s", title);
     }
 
     protected void setupRecyclerView() {
@@ -157,7 +158,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void showLoading(String pTitle) {
         if (getActivity() != null) {
-            getActivity().setTitle(pTitle);
+            setTitle(pTitle);
             DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
         }
     }
@@ -166,6 +167,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void updateDefaultTitle() {
         if (getActivity() != null) {
             getActivity().setTitle(mOriginTitle);
+            Timber.d("set default title %s", mOriginTitle);
         }
     }
 

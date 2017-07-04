@@ -343,6 +343,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
                 getViewOrThrow().showForceUpdateLevelDialog();
                 return;
             }
+
             //init channel proxy
             mPayProxy = PayProxy.shared().initialize((BaseActivity) getViewOrThrow().getActivity())
                     .setChannelListPresenter(this)
@@ -594,11 +595,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             public void onCompleted() {
                 Timber.d("load channels on complete");
                 loadChannelOnCompleted();
-                try {
-                    getViewOrThrow().hideLoading();
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
             }
 
             @Override
@@ -660,7 +656,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     private synchronized void loadChannels() throws Exception {
-        getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_process_view));
         try {
             Timber.d("preparing channels");
             mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
@@ -694,6 +689,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
      */
     private void startSubscribePaymentReadyMessage() {
         Timber.d("Start subscribe payment data");
+        try {
+            getViewOrThrow().showLoading(GlobalData.getAppContext().getString(R.string.sdk_loading_payment_info_title));
+        } catch (Exception e) {
+            Timber.w(e.getMessage());
+        }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_SUBSCRIBE_START);
         ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
         interactor.subscribeOnPaymentReady(message -> {
@@ -707,6 +707,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     private void processPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception {
+        getViewOrThrow().hideLoading();
         if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
             loadAppInfoOnComplete(message.mAppInfo);
             loadChannels();
@@ -717,7 +718,6 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
             if (showDialog) {
                 getViewOrThrow().showError(error);
             } else {
-                getViewOrThrow().hideLoading();
                 getViewOrThrow().callbackThenTerminate();
             }
         }
@@ -730,11 +730,11 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInvalidData(SdkInvalidDataMessage eventMessge) {
-        mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
         try {
+            mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
             getViewOrThrow().showError(eventMessge.message);
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.w(e, "onInvalidData on error");
         }
     }
 

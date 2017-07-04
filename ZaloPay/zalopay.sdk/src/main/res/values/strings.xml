@@ -606,4 +606,6 @@
     <string name="sdk_warning_no_channel">Không hỗ trợ mệnh giá thanh toán này</string>
     <string name="sdk_button_show_info_txt">Xem Chi Tiết</string>
 
+    <string name="sdk_loading_payment_info_title">Tải thông tin</string>
+
 </resources>
