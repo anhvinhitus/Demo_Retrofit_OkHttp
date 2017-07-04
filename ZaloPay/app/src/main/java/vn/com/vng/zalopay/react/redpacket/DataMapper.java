@@ -12,6 +12,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 
@@ -42,11 +43,11 @@ class DataMapper {
 
         WritableMap writableMap = Arguments.createMap();
         writableMap.putString("packageid", String.valueOf(packet.id));
-        writableMap.putString("bundleid", String.valueOf(packet.bundleID));
+        writableMap.putString("bundleid", String.valueOf(ConvertHelper.unboxValue(packet.bundleID, 0)));
         writableMap.putString("sendername", packet.senderFullName);
         writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
-        writableMap.putDouble("amount", packet.amount);
+        writableMap.putDouble("amount", ConvertHelper.unboxValue(packet.amount, 0));
         writableMap.putDouble("opentime", packet.openedTime != null ? packet.openedTime.doubleValue() : 0);
         return writableMap;
     }
