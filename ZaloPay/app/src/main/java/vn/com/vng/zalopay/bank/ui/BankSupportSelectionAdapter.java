@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
@@ -25,7 +26,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  * adapter list bank support
  */
 
-public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankSupportSelectionAdapter.ViewHolder> {
+final class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankSupportSelectionAdapter.ViewHolder> {
     private OnClickBankSupportListener listener;
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
@@ -87,13 +88,13 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, Bank
         return list.indexOf(item) >= 0;
     }
 
-    public interface OnClickBankSupportListener {
+    interface OnClickBankSupportListener {
         void onClickBankSupportListener(ZPBank card, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.row_bank_support_selection_iv_logo)
-        ImageView mLogoView;
+        SimpleDraweeView mLogoView;
         @BindView(R.id.row_bank_support_selection_iv_next)
         ImageView ivNext;
         @BindView(R.id.row_bank_support_selection_tv_bank_name)
@@ -127,11 +128,9 @@ public class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, Bank
                 mDashLine.setVisibility(View.GONE);
             }
 
-            mLogoView.setImageBitmap(ResourceManager.getImage(card.bankLogo));
+            mLogoView.setImageURI(ResourceManager.getAbsoluteImagePath(card.bankLogo));
             mLogoView.setVisibility(View.VISIBLE);
             tvBankName.setText(card.bankName);
-            ivNext.setImageBitmap(ResourceManager.getImage("ic_next.png"));
-
             setBankStatus(card.bankStatus);
         }
 
