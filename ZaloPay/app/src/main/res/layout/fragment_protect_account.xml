@@ -11,12 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_line_top_and_bottom"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:background="@drawable/bg_line_top_and_bottom">
 
         <TextView
-            style="@style/TextView.Title"
+            style="@style/TextView.Personal.Item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
@@ -27,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="12dp"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />
@@ -35,16 +34,14 @@
 
     <TextView
         android:id="@+id/lblTouchId"
-        style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:paddingTop="8dp"
-        android:singleLine="false"
         android:text="@string/use.fingerprint.description"
-        android:textSize="@dimen/font_size_medium" />
+        android:textSize="@dimen/personal_general_text_sub" />
 
 
     <FrameLayout
@@ -52,12 +49,10 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_line_top_and_bottom"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:background="@drawable/bg_line_top_and_bottom">
 
         <TextView
-            style="@style/TextView.Title"
+            style="@style/TextView.Personal.Item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
@@ -68,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="12dp"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />
@@ -76,16 +72,15 @@
 
     <TextView
         android:id="@+id/tvProtectDesc"
-        style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:paddingTop="8dp"
         android:singleLine="false"
         android:text="@string/protection.information.description"
-        android:textSize="@dimen/font_size_medium" />
+        android:textSize="@dimen/personal_general_text_sub" />
 
 
     <FrameLayout
@@ -93,12 +88,10 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_line_top_and_bottom"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:background="@drawable/bg_line_top_and_bottom">
 
         <TextView
-            style="@style/TextView.Title"
+            style="@style/TextView.Personal.Item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
@@ -108,20 +101,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="12dp"
             android:src="@drawable/ic_arrow_right" />
 
     </FrameLayout>
 
     <TextView
-        style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:paddingTop="8dp"
         android:singleLine="false"
         android:text="@string/change.password.description"
-        android:textSize="@dimen/font_size_medium" />
+        android:textSize="@dimen/personal_general_text_sub" />
 
 </LinearLayout>

@@ -297,7 +297,7 @@
                     android:text="@string/txt_leftmenu_sigout"
                     android:textColor="@color/personal_text_dark_grey"
                     android:gravity="center_vertical"
-                    android:textSize="@dimen/personal_iconfont_text"
+                    android:textSize="@dimen/personal_general_text_main"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_logout"
                     app:iconLeftPadding="@dimen/personal_margin_12"
