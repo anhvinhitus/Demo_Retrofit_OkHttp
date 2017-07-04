@@ -24,12 +24,10 @@
             android:layout_marginTop="@dimen/btn_cancel_round_padding"
             android:padding="@dimen/btn_cancel_round_padding"
             android:src="@drawable/cancel" />
-
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.large.t"
+            android:layout_marginTop="@dimen/spacing.large"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -41,8 +39,8 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="2"
-                android:paddingLeft="30dp"
-                android:paddingRight="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:textColor="@color/dark_grey_color"
                 android:textSize="@dimen/pin_code_step_text_size" />
 
