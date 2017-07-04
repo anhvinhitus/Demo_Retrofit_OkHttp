@@ -113,7 +113,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             //  Timber.d("Put item message [%s]", val.message);
             return getDaoSession().getNotificationGDDao().insert(val);
         } catch (Exception e) {
-            Timber.d(e, "insert notification failed [id: %s, mtuid: %s, mtaid: %s]", val.id, val.mtuid, val.mtaid);
+           // Timber.d("insert notification failed [id: %s, mtuid: %s, mtaid: %s]", val.id, val.mtuid, val.mtaid);
             if (e instanceof SQLiteConstraintException) {
                 return upgrade(val);
             } else {
