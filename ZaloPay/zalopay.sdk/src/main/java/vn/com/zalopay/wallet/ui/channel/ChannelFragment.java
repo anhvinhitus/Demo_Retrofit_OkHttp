@@ -26,6 +26,7 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import java.util.Arrays;
@@ -66,9 +67,7 @@ import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 public class ChannelFragment extends RenderFragment<ChannelPresenter> implements ChannelContract.IView {
 
-    private final View.OnClickListener updateInfoClick = v -> {
-        mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
-    };
+    private final View.OnClickListener updateInfoClick = v -> mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
     @LayoutRes
     int mLayoutId = R.layout.screen__card;
     private String mOriginTitle;
@@ -152,7 +151,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         mRootView = view;
         findViewById(R.id.zpsdk_btn_submit).setOnClickListener(onSubmitClick);
         findViewById(R.id.zpw_payment_fail_rl_support).setOnClickListener(supportClick);
-        findViewById(R.id.zpw_payment_fail_rl_update_info).setOnClickListener(updateInfoClick);
+        //findViewById(R.id.zpw_payment_fail_rl_update_info).setOnClickListener(updateInfoClick);
         mPresenter.pushArgument(mData);
 
         makeFont();
@@ -187,9 +186,14 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showLoading(String pTitle) {
+        showLoading(pTitle, () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
+    }
+
+    @Override
+    public void showLoading(String pTitle, ZPWOnProgressDialogTimeoutListener timeoutListener) {
         if (getActivity() != null) {
-            getActivity().setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
+            setTitle(pTitle);
+            DialogManager.showProcessDialog(getActivity(), timeoutListener);
         }
     }
 
@@ -725,13 +729,12 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 setText(R.id.sdk_sugguest_action_message_textview, statusResponse.suggestmessage);
             }
             setVisible(R.id.sdk_sugguest_action_message_textview, hasSuggestActionMessage);
-            if (statusResponse.hasSuggestAction()) {
+            /*if (statusResponse.hasSuggestAction()) {
                 setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
-            }
+            }*/
         }
        // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
         changeSubmitButtonBackground(order);
-        //update title
         setTitle(pToolBarTitle);
         updateToolBar();
         enableSubmitBtn();

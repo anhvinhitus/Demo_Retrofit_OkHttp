@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.ui.channel;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
@@ -16,6 +17,8 @@ import vn.com.zalopay.wallet.ui.IContract;
 public interface ChannelContract extends IContract {
     interface IView extends IContract {
         void setTitle(String title);
+
+        void showLoading(String pTitle, ZPWOnProgressDialogTimeoutListener timeoutListener);
 
         void showDialogManyOption(ZPWOnSweetDialogListener pListener);
 
