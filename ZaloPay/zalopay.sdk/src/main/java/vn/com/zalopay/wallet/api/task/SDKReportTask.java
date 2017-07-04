@@ -2,12 +2,12 @@ package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.wallet.api.DataParameter;
+import vn.com.zalopay.wallet.api.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.DataParameter;
-import vn.com.zalopay.wallet.api.implement.SDKReportImpl;
 
 
 public class SDKReportTask extends BaseTask<BaseResponse> {
@@ -87,7 +87,7 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
             Log.e(this, "can not send log report error because networking is offline");
             return;
         }
-        shareDataRepository().setTask(this).postData(new SDKReportImpl(), getDataParams());
+        newDataRepository().setTask(this).postData(new SDKReportImpl(), getDataParams());
     }
 
     @Override

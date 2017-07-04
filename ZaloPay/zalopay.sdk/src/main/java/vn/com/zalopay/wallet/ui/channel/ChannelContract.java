@@ -48,7 +48,7 @@ public interface ChannelContract extends IContract {
 
         void enableSubmitBtn();
 
-        void setTextSubmitBtn(Long appID, String pText);
+        void setTextSubmitBtn(String pText);
 
         void disableSubmitBtn();
 

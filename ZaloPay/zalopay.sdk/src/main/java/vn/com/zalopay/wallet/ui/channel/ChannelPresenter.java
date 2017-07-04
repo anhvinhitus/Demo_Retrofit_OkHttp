@@ -127,6 +127,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         Timber.d("call constructor ChannelPresenter");
     }
 
+    public AdapterBase getAdapter() {
+        return mAdapter;
+    }
+
     @Override
     protected void loadAppInfoOnProcess() {
         try {
@@ -168,17 +172,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
             }
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
         }
     }
 
     @Override
     public void onPlatformError(Throwable e) {
         onExit(e.getMessage(), true);
-    }
-
-    public AdapterBase getAdapter() {
-        return mAdapter;
     }
 
     private boolean hasChannelList() {
@@ -326,7 +326,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void startPayment() {
         Log.d(this, "start payment channel", mMiniPmcTransType);
         if (mPaymentInfoHelper == null) {
-            onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+            callBackThenTerminate();
             return;
         }
         if (mMiniPmcTransType == null) {
@@ -423,7 +423,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Override
     public void onResume() {
-        if (!getAdapter().isFinalScreen()) {
+        if (mAdapter == null) {
+            return;
+        }
+        if (!mAdapter.isFinalScreen()) {
             showKeyBoardOnFocusingViewAgain();
         }
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
@@ -462,16 +465,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
      * focus on current view
      */
     private void showKeyBoardOnFocusingViewAgain() {
-        if (getAdapter() != null && getAdapter().getGuiProcessor() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
+        if (mAdapter != null && mAdapter.getGuiProcessor() != null && (mAdapter.isCardFlow() || mAdapter.isLinkAccFlow())) {
             //auto show keyboard
-            if (getAdapter().isInputStep() || getAdapter().shouldFocusAfterCloseQuitDialog()) {
+            if (mAdapter.isInputStep() || mAdapter.shouldFocusAfterCloseQuitDialog()) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            getAdapter().getGuiProcessor().onFocusView();
-                            if (!getAdapter().isLinkAccFlow()) {
-                                getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
+                            mAdapter.getGuiProcessor().onFocusView();
+                            if (!mAdapter.isLinkAccFlow()) {
+                                mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
                             }
                         } catch (Exception e) {
                             Log.e(this, e);
@@ -479,7 +482,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     }
                 }, 300);
             } else if (!GlobalData.shouldNativeWebFlow()) {
-                getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
+                mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
         }
     }
@@ -623,19 +626,21 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void callBackThenTerminate() {
-        Log.d(this, "call back result and end sdk - status ", mPaymentInfoHelper.getStatus());
         try {
+            Timber.d("call back result and end sdk");
             setCallBack(Activity.RESULT_OK);
             getViewOrThrow().terminate();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e.getMessage());
         }
     }
 
     public void onSubmitClick() {
-        if (mAdapter != null) {
-            mAdapter.onClickSubmission();
+        if (mAdapter == null) {
+            callBackThenTerminate();
+            return;
         }
+        mAdapter.onClickSubmission();
     }
 
     public Feedback collectFeedBack() {
@@ -651,7 +656,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             int errorcode = mAdapter.getResponseStatus() != null ? mAdapter.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
             feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAdapter.getTransactionID(), errorcode);
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
         } finally {
             return feedBack;
         }
@@ -746,12 +751,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         addSubscription(subscription);
     }
 
-    public void setTextSubmitButton() {
-        if (getAdapter() != null) {
-            getView().setTextSubmitBtn(getAdapter().getPaymentInfoHelper().getAppId(), GlobalData.getAppContext().getString(R.string.sdk_button_show_info_txt));
-        }
-    }
-
     @Override
     public void onResourceError(Throwable throwable) {
         Timber.w("init resource error", throwable);
@@ -791,18 +790,21 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {
-        if (getAdapter() != null && mAdapter.isCardFlow()) {
-            getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
+        if (mAdapter != null && mAdapter.isCardFlow()) {
+            mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
         mBus.removeStickyEvent(SdkUnlockScreenMessage.class);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void OnPaymentSms(SdkSmsMessage message) {
+        if (mAdapter == null) {
+            return;
+        }
         String sender = message.sender;
         String body = message.message;
-        if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
-            getAdapter().autoFillOtp(sender, body);
+        if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
+            mAdapter.autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
         Timber.d("on payment otp event " + GsonUtils.toJsonString(message));

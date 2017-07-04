@@ -13,6 +13,7 @@ import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 
 import java.lang.ref.WeakReference;
 
@@ -31,7 +32,6 @@ import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
-import vn.com.zalopay.wallet.api.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -48,7 +48,7 @@ import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.base.WebViewError;
+import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
@@ -81,6 +81,9 @@ import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.API_ERROR;
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.GENERAL_EXCEPTION;
+import static vn.com.zalopay.wallet.api.task.SDKReportTask.TIMEOUT_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
@@ -125,6 +128,7 @@ public abstract class AdapterBase {
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
+
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -135,7 +139,73 @@ public abstract class AdapterBase {
         public void onOpenSettingDialogClicked() {
         }
     };
+    /*
+     * loading website so long,over timeout 40s
+     */
+    int numberOfRetryTimeout = 1;
     private SDKTransactionAdapter mTransactionAdapter;
+    public ZPWOnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new ZPWOnProgressDialogTimeoutListener() {
+        @Override
+        public void onProgressTimeout() {
+            try {
+                WeakReference<Activity> activity = new WeakReference<>(getView().getActivity());
+                if (activity.get() == null || activity.get().isFinishing()) {
+                    Timber.d("onProgressTimeout - activity is finish");
+                    return;
+                }
+                if (isFinalScreen()) {
+                    return;
+                }
+                //retry load website cc
+                if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isCCFlow() && isLoadWeb() && hasTransId()) {
+                    //max retry 3
+                    if (numberOfRetryTimeout > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_load_web_retry))) {
+                        getOneShotTransactionStatus();
+                        return;
+                    }
+                    numberOfRetryTimeout++;
+                    DialogManager.showSweetDialogOptionNotice(activity.get(),
+                            GlobalData.getStringResource(RS.string.zpw_string_load_website_timeout_message),
+                            GlobalData.getStringResource(RS.string.dialog_continue_load_button),
+                            GlobalData.getStringResource(RS.string.dialog_cancel_button),
+                            new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+                                    getOneShotTransactionStatus();
+                                }
+
+                                @Override
+                                public void onOKevent() {
+                                    DialogManager.showProcessDialog(activity.get(), mProgressDialogTimeoutListener);
+                                    try {
+                                        getGuiProcessor().reloadUrl();
+                                    } catch (Exception e) {
+                                        Log.e(this, e);
+                                    }
+                                }
+                            });
+                }
+                //load web timeout, need to get oneshot to server to check status again
+                else if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isParseWebFlow() && hasTransId()) {
+                    getOneShotTransactionStatus();
+                } else if (mPaymentInfoHelper.isBankAccountTrans() && AdapterBase.this instanceof AdapterLinkAcc && isFinalStep()) {
+                    ((AdapterLinkAcc) AdapterBase.this).verifyServerAfterParseWebTimeout();
+                    Timber.d("load website timeout, continue to verify server again to ask for new data list");
+                } else if (!isFinalScreen()) {
+                    getView().showInfoDialog(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), () -> showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+                }
+                sdkReportError(TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
+            } catch (Exception ex) {
+                Timber.w(ex.getMessage());
+                showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                try {
+                    sdkReportError(GENERAL_EXCEPTION, ex.getMessage());
+                } catch (Exception e) {
+                    Timber.w(e.getMessage());
+                }
+            }
+        }
+    };
     private Action1<Throwable> loadCardException = throwable -> {
         Log.d(this, "load card list on error", throwable);
         String message = null;
@@ -194,6 +264,14 @@ public abstract class AdapterBase {
         }
         if (TextUtils.isEmpty(mPageName)) {
             mPageName = pPageName;
+        }
+    }
+
+    public void showLoadindTimeout(String pTitle) {
+        try {
+            getView().showLoading(pTitle, mProgressDialogTimeoutListener);
+        } catch (Exception e) {
+            Timber.w(e.getMessage());
         }
     }
 
@@ -444,7 +522,7 @@ public abstract class AdapterBase {
             mTransactionAdapter.startTransaction();
         } catch (Exception e) {
             Log.e(this, e);
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
@@ -551,26 +629,30 @@ public abstract class AdapterBase {
             //callback load site error from webview
             //need to get status again if use submit otp or cc flow
             else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
+                if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+                    showTransactionFailView(GlobalData.getAppContext().getString(R.string.zingpaysdk_alert_network_error));
+                    return pAdditionParams;
+                }
                 //ending timer loading site
                 mOtpEndTime = System.currentTimeMillis();
                 mCaptchaEndTime = System.currentTimeMillis();
 
-                WebViewError webViewError = null;
-                if (pAdditionParams[0] instanceof WebViewError) {
-                    webViewError = (WebViewError) pAdditionParams[0];
+                WebViewHelper webViewError = null;
+                if (pAdditionParams[0] instanceof WebViewHelper) {
+                    webViewError = (WebViewHelper) pAdditionParams[0];
                 }
 
-                if (webViewError != null && webViewError.code == WebViewError.SSL_ERROR) {
+                if (webViewError != null && webViewError.code == WebViewHelper.SSL_ERROR) {
                     showTransactionFailView(webViewError.getFriendlyMessage());
                     return null;
                 }
 
                 if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
+                    isLoadWebTimeout = true;
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
-                } else if (webViewError != null) {
-                    showTransactionFailView(webViewError.getFriendlyMessage());
                 } else {
-                    showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_friendlymessage_end_transaction));
+                    String mess = (webViewError != null) ? webViewError.getFriendlyMessage() : GlobalData.getStringResource(RS.string.zpw_string_error_friendlymessage_end_transaction);
+                    showTransactionFailView(mess);
                 }
             }
             //submit order response
@@ -648,7 +730,7 @@ public abstract class AdapterBase {
                         }
                         if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                             setECardFlowType(BankFlow.PARSEWEB);
-                            getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+                            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
                             initWebView(dataResponse.redirecturl);
                             endingCountTimeLoadCaptchaOtp();
                         }
@@ -1101,12 +1183,9 @@ public abstract class AdapterBase {
             getView().showLoading(TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
             if (shouldDelay) {
                 //delay 1s before continue check
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Timber.d("continue check transtatus by client id after 1s - because response submit order is null");
-                        makeRequestCheckStatusAfterSubmitFail(pAppTransID);
-                    }
+                new Handler().postDelayed(() -> {
+                    Timber.d("continue check transtatus by client id after 1s - because response submit order is null");
+                    makeRequestCheckStatusAfterSubmitFail(pAppTransID);
                 }, 1000);
             } else {
                 makeRequestCheckStatusAfterSubmitFail(pAppTransID);
@@ -1144,7 +1223,7 @@ public abstract class AdapterBase {
             return false;
         }
         if (needReloadCardMapAfterPayment()) {
-            reloadMapCard(true);
+            reloadMapCard(false);
         } else {
             getView().hideLoading();
         }
@@ -1159,7 +1238,7 @@ public abstract class AdapterBase {
     protected boolean processResultForRedPackage() {
         if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
             if (needReloadCardMapAfterPayment()) {
-                reloadMapCard(true);
+                reloadMapCard(false);
             } else {
                 onClickSubmission();
             }
@@ -1257,14 +1336,15 @@ public abstract class AdapterBase {
 
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
 
-        Timber.d(" set TextSubmitBtn after delaying 100ms");
-        new Handler().postDelayed(() -> {
-            try {
-                getView().setTextSubmitBtn(mPaymentInfoHelper.getOrder().appid, getActivity().getString(R.string.sdk_button_show_info_txt));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 100);
+        if(mPaymentInfoHelper.getOrder().appid == 12){
+            new Handler().postDelayed(() -> {
+                try {
+                    getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, 100);
+        }
     }
 
     protected void trackingTransactionEvent(int pResult) {
@@ -1542,61 +1622,45 @@ public abstract class AdapterBase {
 
     public void sdkReportErrorOnPharse(int pPharse, String pMessage) {
         String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-        if (!TextUtils.isEmpty(paymentError)) {
-            paymentError = String.format(paymentError, pPharse, 200, pMessage);
-            try {
-                sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+        if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            return;
+        }
+        paymentError = String.format(paymentError, pPharse, 200, pMessage);
+        try {
+            sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
     }
 
     public void sdkReportErrorOnTransactionFail() throws Exception {
-        if (PaymentPermission.allowSendLogOnTransactionFail()) {
-            String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-            if (!TextUtils.isEmpty(paymentError)) {
-                paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
-                sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
-            }
+        if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            return;
+        }
+        String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+        if (!TextUtils.isEmpty(paymentError)) {
+            paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
+            sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
         }
     }
 
-    public void sdkReportError(int pErrorCode, String pMessage) throws Exception {
-        try {
-            if (getGuiProcessor() != null) {
-                String bankCode = getGuiProcessor().getDetectedBankCode();
-                SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
-            }
-        } catch (Exception ex) {
-            Timber.d(ex.getMessage());
+    public void sdkReportError(int pErrorCode, String pMessage) {
+        if (getGuiProcessor() == null || !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            return;
         }
-    }
-
-    public void sdkReportError(int pErrorCode) throws Exception {
         try {
-            if (getGuiProcessor() != null) {
-                String bankCode = getGuiProcessor().getDetectedBankCode();
-                SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
-            }
+            String bankCode = getGuiProcessor().getDetectedBankCode();
+            SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
         } catch (Exception ex) {
             Timber.d(ex.getMessage());
         }
     }
 
     /***
-     * send log to sever no check duplicate request
-     * @param pErrorCode
-     * @throws Exception
-     */
-    public void sdkTrustReportError(int pErrorCode) throws Exception {
-        try {
-            if (getGuiProcessor() != null) {
-                String bankCode = getGuiProcessor().getDetectedBankCode();
-                TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
-            }
-        } catch (Exception ex) {
-            Timber.d(ex.getMessage());
-        }
+     * * get status 1 oneshot to check status again in load website is timeout
+     * */
+    private void getOneShotTransactionStatus() {
+        isLoadWebTimeout = true;
+        getStatusStrategy(mTransactionID, false, null);
     }
 }

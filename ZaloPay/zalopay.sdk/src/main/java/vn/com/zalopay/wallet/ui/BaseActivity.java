@@ -57,6 +57,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mActivityStack != null ? mActivityStack.size() : 0;
     }
 
+    public static void release() {
+        for (Activity activity : mActivityStack) {
+            activity.finish();
+        }
+    }
+
     @CallSuper
     @Override
     protected void onStart() {

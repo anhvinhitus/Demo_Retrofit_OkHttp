@@ -644,11 +644,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     private void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.isShowingProgressDialog()) {
-            try {
-                getView().showLoading(pMessage);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+            showLoadindTimeout(pMessage);
         }
     }
 

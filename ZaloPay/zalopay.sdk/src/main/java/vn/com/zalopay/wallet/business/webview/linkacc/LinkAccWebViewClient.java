@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.base.WebViewError;
+import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
@@ -34,7 +34,6 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.helper.WebViewHelper;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
@@ -203,18 +202,14 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             return;
         }
         if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
-            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
+            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewHelper(errorCode, description));
         }
         if (getAdapter() != null) {
             StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
             errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
-            try {
-                getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+            getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
         }
         try {
             getAdapter().getView().hideLoading();

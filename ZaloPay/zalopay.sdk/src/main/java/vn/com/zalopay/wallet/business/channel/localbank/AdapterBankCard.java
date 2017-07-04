@@ -61,10 +61,10 @@ public class AdapterBankCard extends AdapterBase {
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {
-                Timber.d("start reload pmc transtype " + pBankCode);
+                Timber.d("start reload pmc trans type " + pBankCode);
                 long appId = mPaymentInfoHelper.getAppId();
                 mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(appId, mPaymentInfoHelper.getTranstype(), pBankCode), MiniPmcTransType.class);
-                Log.d(this, "new pmc transype", mMiniPmcTransType);
+                Log.d(this, "new pmc trans type", mMiniPmcTransType);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -375,7 +375,7 @@ public class AdapterBankCard extends AdapterBase {
     public void onProcessPhrase() throws Exception {
         //authen payer atm
         if (isAuthenPayerPharse()) {
-            getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
+            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
             processingOrder = true;
             SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
             if (mOtpEndTime == 0)
@@ -387,7 +387,7 @@ public class AdapterBankCard extends AdapterBase {
             if (!openSettingNetworking()) {
                 return;
             }
-            getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -420,16 +420,12 @@ public class AdapterBankCard extends AdapterBase {
     public boolean hasBidvBankInMapCardList(String pCardNumber) {
         try {
             if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {
-                Timber.d("===hasBidvBankInMapCardList()===pCardNumber.length() < 6====" + pCardNumber);
                 return false;
             }
-
             List<MapCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
-
             MapCard bidvCard = new MapCard();
             bidvCard.first6cardno = pCardNumber.substring(0, 6);
             bidvCard.last4cardno = pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
-
             return mappedCardList != null && mappedCardList.contains(bidvCard);
         } catch (Exception e) {
             Log.e(this, e);

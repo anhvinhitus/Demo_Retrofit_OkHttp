@@ -140,7 +140,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             getViewOrThrow().showError(message);
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.w(e.getMessage());
         }
     }
 

@@ -37,7 +37,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
-import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -166,10 +165,10 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void setTitle(String title) {
-        if (TextUtils.isEmpty(mOriginTitle)) {
+        if (TextUtils.isEmpty(mOriginTitle) && !TextUtils.isEmpty(title)) {
             mOriginTitle = title;
         }
-        if (getActivity() != null) {
+        if (getActivity() != null && !TextUtils.isEmpty(title)) {
             ((ChannelActivity) getActivity()).setToolbarTitle(title);
         }
     }
@@ -191,6 +190,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showLoading(String pTitle, ZPWOnProgressDialogTimeoutListener timeoutListener) {
+        Timber.w("pTitle %s", pTitle);
         if (getActivity() != null) {
             setTitle(pTitle);
             DialogManager.showProcessDialog(getActivity(), timeoutListener);
@@ -203,6 +203,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         if (getActivity() != null) {
             getActivity().setTitle(mOriginTitle);
         }
+        Timber.w("mOriginTitle %s", mOriginTitle);
     }
 
     @Override
@@ -495,6 +496,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Tab");
         }
     }
+
     public void marginSubmitButtonTopSuccess(boolean viewEnd) {
         View submitButton = findViewById(R.id.zpw_submit_view);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -733,7 +735,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
             }*/
         }
-       // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
+        // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
         changeSubmitButtonBackground(order);
         setTitle(pToolBarTitle);
         updateToolBar();
@@ -774,11 +776,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void setTextSubmitBtn(Long appID, String pText) {
-        Button button = (Button) findViewById(R.id.zpsdk_btn_submit);
-        if (button != null && appID == 12) {
-            button.setText(pText);
-        }
+    public void setTextSubmitBtn(String pText) {
+        setText(R.id.zpsdk_btn_submit, pText);
     }
 
     private void setLayoutBasedOnSuggestActions(int[] suggestActions) {

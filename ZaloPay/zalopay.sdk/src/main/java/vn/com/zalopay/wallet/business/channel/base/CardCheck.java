@@ -139,9 +139,7 @@ public abstract class CardCheck extends SingletonBase {
 
     public Subscription detectOnAsync(String pCardNumber, Action1<Boolean> detectCardSubscriber) {
         return detectObservable(pCardNumber)
-                .doOnNext(aBoolean -> {
-                    Log.d(this, "start detect card number", pCardNumber);
-                })
+                .doOnNext(aBoolean -> Log.d(this, "start detect card number", pCardNumber))
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(detectCardSubscriber, new Action1<Throwable>() {
                     @Override
