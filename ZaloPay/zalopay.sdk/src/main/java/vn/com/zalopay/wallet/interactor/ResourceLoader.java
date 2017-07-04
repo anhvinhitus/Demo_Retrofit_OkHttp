@@ -102,7 +102,7 @@ public class ResourceLoader extends SingletonBase {
 
     public ResourceLoader platformInteractor(IPlatformInfo pPlatformInteractor) {
         mPlatformInteractor = pPlatformInteractor;
-        forceDownloadResource = !mPlatformInteractor.isValidConfig();
+        forceDownloadResource = !mPlatformInteractor.validFileConfig();
         return this;
     }
 

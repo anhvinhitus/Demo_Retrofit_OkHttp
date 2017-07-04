@@ -56,8 +56,6 @@ public class ChannelListInteractor {
     /**
      * Start collect payment information for ChannelListPresenter to use
      * When done, post a event to ChannelListPresenter
-     *
-     * @param paymentInfoHelper
      */
     public void collectPaymentInfo(PaymentInfoHelper paymentInfoHelper) {
         cancelCurrentTask(paymentInfoHelper);

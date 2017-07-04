@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.ui;
 import android.support.annotation.CallSuper;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -79,7 +78,7 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
     }
 
     public synchronized void onResourceInit() {
-        if (!platformInteractor.isValidConfig()) {
+        if (!platformInteractor.validFileConfig()) {
             Timber.d("resource still not exist - skip init resource - wait for finish loading");
             return;
         }

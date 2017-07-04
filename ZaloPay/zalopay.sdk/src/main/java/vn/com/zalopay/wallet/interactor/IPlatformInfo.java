@@ -31,7 +31,7 @@ public interface IPlatformInfo {
 
     String getResourceVersion();
 
-    boolean isValidConfig();
+    boolean validFileConfig();
 
     Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion);
 

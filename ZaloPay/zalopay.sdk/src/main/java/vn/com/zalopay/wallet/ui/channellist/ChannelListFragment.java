@@ -28,7 +28,6 @@ import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -76,7 +75,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     public static BaseFragment newInstance(Bundle args) {
         BaseFragment fragment = newInstance();
-        if(args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -132,7 +131,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             mOriginTitle = title;
         }
         if (getActivity() != null) {
-            ((ChannelListActivity)getActivity()).setToolbarTitle(title);
+            ((ChannelListActivity) getActivity()).setToolbarTitle(title);
         }
         Timber.d("set title %s", title);
     }
@@ -352,6 +351,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void showQuitConfirm() {
         String mess = mPresenter.getQuitMessage();
+        if (TextUtils.isEmpty(mess)) {
+            terminate();
+        }
         DialogManager.showSweetDialogConfirm(getActivity(), mess,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), new ZPWOnEventConfirmDialogListener() {
@@ -415,7 +417,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     .setOnCloseListener(pOnCloseListener)
                     .show();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e, "show snack bar exception");
         }
     }
 

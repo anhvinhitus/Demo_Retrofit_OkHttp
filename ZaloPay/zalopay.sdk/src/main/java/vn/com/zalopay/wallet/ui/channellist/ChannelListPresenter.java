@@ -27,6 +27,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
@@ -125,6 +126,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     private boolean manualRelease() {
+        if (mPaymentInfoHelper == null) {
+            return true;
+        }
         int status = mPaymentInfoHelper.getStatus();
         return status == PaymentStatus.DIRECT_LINKCARD || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
     }
@@ -171,6 +175,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     }
 
     public String getQuitMessage() {
+        if (mPaymentInfoHelper == null) {
+            return null;
+        }
         return mPaymentInfoHelper.getQuitMessByTrans(GlobalData.getAppContext());
     }
 
@@ -333,6 +340,10 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void onPaymentReady() {
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
+            if(mPaymentInfoHelper == null){
+                callback();
+                return;
+            }
             startSubscribePaymentReadyMessage();
             initAdapter();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
