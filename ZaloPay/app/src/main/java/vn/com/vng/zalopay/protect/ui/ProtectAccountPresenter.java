@@ -10,9 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
-import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
-import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -132,8 +130,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         if (mView == null) {
             return;
         }
-        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), PasswordUtil.detectSuggestFingerprint(mView.getContext(),mUserConfig),callback);
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), PasswordUtil.detectSuggestFingerprint(mView.getContext(), mUserConfig), callback);
         authenticationPassword.initialize();
+        if (authenticationPassword != null && authenticationPassword.getPasswordManager() != null) {
+            authenticationPassword.getPasswordManager().setTitle(mContext.getString(R.string.input_pin_to_confirm));
+        }
       /*  AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD);
         fragment.setMessagePassword(message);

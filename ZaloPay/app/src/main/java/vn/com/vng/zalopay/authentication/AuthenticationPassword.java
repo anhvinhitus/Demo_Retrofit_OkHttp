@@ -83,6 +83,10 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
         mPassword.show();
     }
 
+    public PasswordManager getPasswordManager() {
+        return mPassword;
+    }
+
     private void checkPassword(String pPass) {
         mAuthenticationProvider = new PasswordAuthenticationProvider(mContext, accountRepository, this);
         mAuthenticationProvider.verify(pPass);
