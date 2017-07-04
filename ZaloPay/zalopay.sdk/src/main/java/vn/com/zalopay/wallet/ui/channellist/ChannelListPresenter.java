@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -80,13 +79,12 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_
 
 public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
     @Inject
+    public IBank mBankInteractor;
+    protected PaymentInfoHelper mPaymentInfoHelper;
+    @Inject
     EventBus mBus;
     @Inject
-    public IBank mBankInteractor;
-    @Inject
     IAppInfo mAppInfoInteractor;
-
-    protected PaymentInfoHelper mPaymentInfoHelper;
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
