@@ -8,7 +8,9 @@ import rx.Observable;
 import rx.functions.Func0;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
@@ -38,17 +40,14 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
 
     @Override
     public Observable<PlatformInfoCallback> get() {
-        return Observable.defer(new Func0<Observable<PlatformInfoCallback>>() {
-            @Override
-            public Observable<PlatformInfoCallback> call() {
-                try {
-                    Long expireTime = getExpireTime();
-                    PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expireTime);
-                    Timber.d("load app info from cache: %s", expireTime);
-                    return Observable.just(platformInfoCallback);
-                } catch (Exception e) {
-                    return Observable.error(e);
-                }
+        return Observable.defer(() -> {
+            try {
+                Long expireTime = getExpireTime();
+                PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expireTime);
+                Timber.d("load app info from cache: %s", expireTime);
+                return Observable.just(platformInfoCallback);
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         });
     }
@@ -63,6 +62,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             Log.d(this, "start update platform info to cache", pResponse);
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             setExpireTime(expiredTime);
+            mSharedPreferences.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
             mSharedPreferences.setPlatformInfoExpriedTimeDuration(pResponse.expiredtime);
             mSharedPreferences.setCurrentUserID(userId);
             //enable/disable deposite

@@ -9,7 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
@@ -71,9 +70,6 @@ public class ResourceInteractor {
             ResponseBody responseBody = pResponse.body();
             // Prepare unzip folder
             mLock.lock();
-            if (TextUtils.isEmpty(mResourceVersion)) {
-                mResourceVersion = mPlatformStorage.getResourceVersion();
-            }
             String unzipFolder = StorageUtil.prepareUnzipFolder(mContext, BuildConfig.FOLDER_RESOURCE);
             //can not create folder storage for resource.
             if (TextUtils.isEmpty(unzipFolder)) {
@@ -83,7 +79,7 @@ public class ResourceInteractor {
                 onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
             } else {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
-                Timber.d( "decompressed file zip to %s", unzipFolder);
+                Timber.d("decompressed file zip to %s", unzipFolder);
                 //everything is ok, save version to cache
                 mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
                 mPlatformStorage.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
@@ -136,34 +132,33 @@ public class ResourceInteractor {
              * 4.save version to cache.
              */
             ResponseBody responseBody = pResponse.body();
-            // Prepare unzip folder
             mLock.lock();
-            if (TextUtils.isEmpty(mResourceVersion)) {
-                mResourceVersion = mPlatformStorage.getResourceVersion();
-            }
             String unzipFolder = StorageUtil.prepareUnzipFolder(mContext, BuildConfig.FOLDER_RESOURCE);
             //can not create folder storage for resource.
             if (TextUtils.isEmpty(unzipFolder)) {
                 Timber.w("error create folder resource on device. Maybe your device memory run out of now");
-                return Observable.error(new SdkResourceException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+                return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
             } else if (mResourceZipFileURL == null || mResourceVersion == null) {
-                return Observable.error(new SdkResourceException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+                return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
             } else {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
-                Timber.d( "decompressed file zip to %s", unzipFolder);
-                //everything is ok, save version to cache
+                Timber.d("decompressed file zip to %s", unzipFolder);
+                mPlatformStorage.setResourceVersion(mResourceVersion);
                 mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
-                mPlatformStorage.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
                 return Observable.just(new SdkDownloadResourceMessage(true, null));//post signal success
             }
         } catch (IOException e) {
-            Log.e(this, e);
-            return Observable.error(new SdkResourceException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+            Timber.w(e, "Exception IO");
+            return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
         } catch (Exception e) {
-            Log.e(this, e);
-            return Observable.error(new SdkResourceException(getDefaultError()));
+            Timber.w(e, "Exception on save resource");
+            return Observable.error(getMessException(getDefaultError()));
         } finally {
             mLock.unlock();
         }
+    }
+
+    private SdkResourceException getMessException(String error) {
+        return new SdkResourceException(error);
     }
 }

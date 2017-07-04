@@ -30,8 +30,8 @@ import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 public class InteractorModule {
     @Provides
     @Singleton
-    IPlatformInfo providePlatformInteractor(PlatformInfoStore.Repository platformInfoRepository, ZPMonitorEventTiming eventTiming) {
-        return new PlatformInfoInteractor(platformInfoRepository, eventTiming);
+    IPlatformInfo providePlatformInteractor(PlatformInfoStore.Repository platformInfoRepository) {
+        return new PlatformInfoInteractor(platformInfoRepository);
     }
 
     @Provides
