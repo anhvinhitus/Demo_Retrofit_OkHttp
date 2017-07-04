@@ -27,12 +27,8 @@ class WebAppPromotionPresenter extends AbstractWebAppPresenter<IWebAppPromotionV
         super(accountRepository, navigator, appResourceRepository, merchantRepository);
     }
 
-    void initProcesssor(ZPWebViewApp webView) {
-        mWebViewProcessor = new ZPWebViewAppProcessor(webView, mView);
-    }
-
     void initWebView(ZPWebViewApp webView) {
-        initProcesssor(webView);
+        mWebViewProcessor = new ZPWebViewAppProcessor(webView, mView);
         mWebViewProcessor.registerNativeModule(new WebAppNativeModule(mProcessMessageListener));
 
         webView.setWebChromeClient(new WebChromeClient() {

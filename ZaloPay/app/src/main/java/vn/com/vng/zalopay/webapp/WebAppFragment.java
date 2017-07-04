@@ -89,7 +89,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initPresenter();
-        loadDefaultWebView();
     }
 
     protected void initPresenter() {
@@ -204,14 +203,8 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     @Override
     public void onResume() {
         super.onResume();
+        loadDefaultWebView();
         mPresenter.resume();
-        mPresenter.initProcesssor(webView);
-    }
-
-    @Override
-    public void onPause() {
-        mPresenter.pause();
-        super.onPause();
     }
 
     @Override

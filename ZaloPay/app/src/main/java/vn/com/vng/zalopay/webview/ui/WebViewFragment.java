@@ -88,7 +88,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         initPresenter(view);
         mWebView = (ZPWebView) view.findViewById(R.id.webview);
         initWebView();
-        loadDefaultWebView();
     }
 
     protected void initPresenter(View view) {
@@ -247,19 +246,10 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     @Override
     public void onResume() {
         super.onResume();
-        mWebViewProcessor = new ZPWebViewProcessor(mWebView, this);
-//        if (mWebViewProcessor != null) {
-//            mWebViewProcessor.onResume();
-//        }
-    }
-
-    @Override
-    public void onPause() {
+        loadDefaultWebView();
         if (mWebViewProcessor != null) {
-//            mWebViewProcessor.onPause();
-            mWebViewProcessor = null;
+            mWebViewProcessor.onResume();
         }
-        super.onPause();
     }
 
     @Override

@@ -215,9 +215,9 @@ abstract class AbstractWebAppPresenter<View extends IWebAppView> extends Abstrac
     @Override
     public void resume() {
         super.resume();
-//        if (mWebViewProcessor != null) {
-//            mWebViewProcessor.onResume();
-//        }
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onResume();
+        }
     }
 
     /**
@@ -255,8 +255,8 @@ abstract class AbstractWebAppPresenter<View extends IWebAppView> extends Abstrac
     public void pause() {
         super.pause();
         if (mWebViewProcessor != null) {
-            mWebViewProcessor = null;
-//            mWebViewProcessor.onPause();
+            mWebViewProcessor.onPause();
+//            mWebViewProcessor = null;
         }
     }
 

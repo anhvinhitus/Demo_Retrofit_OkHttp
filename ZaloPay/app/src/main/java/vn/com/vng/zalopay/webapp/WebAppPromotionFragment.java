@@ -102,7 +102,6 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initPresenter();
-        loadDefaultWebView();
     }
 
     @Override
@@ -265,14 +264,8 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @Override
     public void onResume() {
         super.onResume();
+        loadDefaultWebView();
         mPresenter.resume();
-        mPresenter.initProcesssor(webView);
-    }
-
-    @Override
-    public void onPause() {
-        mPresenter.pause();
-        super.onPause();
     }
 
     @Override

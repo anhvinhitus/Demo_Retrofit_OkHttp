@@ -616,6 +616,10 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean checkAllowUrls(String url) {
+        if(!url.startsWith("https")) {
+            return false;
+        }
+
         String regex = TextUtils.join("|", ConfigLoader.getAllowUrls());
         final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(url);
@@ -629,6 +633,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             }
             isMatched = true;
         }
+
         return isMatched;
     }
 }
