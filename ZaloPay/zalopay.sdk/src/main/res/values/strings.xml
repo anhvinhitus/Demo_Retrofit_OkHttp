@@ -13,6 +13,7 @@
     <string name="zpw_string_error_code_name_not_resolved">net::ERR_NAME_NOT_RESOLVED</string>
     <string name="zpw_string_error_code_timeout">net::ERR_TIMED_OUT</string>
     <string name="zpw_string_error_code_disconnected">net::ERR_INTERNET_DISCONNECTED</string>
+    <string name="zpw_string_error_code_timeout_connection">net::ERR_CONNECTION_TIMED_OUT</string>
 
     <string name="zpw_string_error_friendlymessage_name_not_resolved">Lỗi không phân giải được domain.\n Vui lòng thử lại!</string>
     <string name="zpw_string_error_friendlymessage_timeout">Lỗi tải trang timeout.\n Vui lòng thử lại!</string>

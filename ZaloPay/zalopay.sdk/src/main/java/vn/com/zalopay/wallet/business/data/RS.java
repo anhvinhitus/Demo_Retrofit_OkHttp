@@ -110,6 +110,7 @@ public class RS {
         public static final String zpw_string_error_code_name_not_resolved = "zpw_string_error_code_name_not_resolved";
         public static final String zpw_string_error_code_timeout = "zpw_string_error_code_timeout";
         public static final String zpw_string_error_code_disconnected = "zpw_string_error_code_disconnected";
+        public static final String zpw_string_error_code_timeout_connection = "zpw_string_error_code_timeout_connection";
 
         public static final String zpw_string_error_friendlymessage_name_not_resolved = "zpw_string_error_friendlymessage_name_not_resolved";
         public static final String zpw_string_error_friendlymessage_timeout = "zpw_string_error_friendlymessage_timeout";
