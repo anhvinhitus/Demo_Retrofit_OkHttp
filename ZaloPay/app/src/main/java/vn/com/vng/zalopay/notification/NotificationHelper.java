@@ -56,7 +56,6 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.zalopay.promotion.IPromotionResult;
@@ -417,13 +416,10 @@ public class NotificationHelper {
                         mPromotionHelper.navigate(pContext, pPromotionEvent);
                     }
                 }, mResourceLoader);
-                Log.d(this, "post promotion event from notification to sdk", promotionEvent);
+                Timber.d("post promotion event from notification to sdk");
             } else {
-                /***
-                 * send to subscriber on {@link vn.com.vng.zalopay.ui.presenter.MainPresenter}
-                 * */
                 mEventBus.postSticky(promotionEvent);
-                Log.d(this, "post promotion event from notification to subscriber", promotionEvent);
+                Timber.d("post promotion event from notification to subscriber");
             }
         } catch (Exception ex) {
             Timber.e(ex, "Extract PromotionEvent data error");
@@ -619,7 +615,19 @@ public class NotificationHelper {
                 .filter(notify -> !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid))
                 .doOnNext(this::processRecoveryNotification)
                 .lastOrDefault(new NotificationData())
-                .flatMap(notify -> mNotifyRepository.recoveryNotify(listMessage));
+                .flatMap(notify -> mNotifyRepository.recoveryNotify(filterNotification(listMessage)));
+    }
+
+    private List<NotificationData> filterNotification(List<NotificationData> listMessage) {
+        List<NotificationData> notifications = new ArrayList<>();
+        for (NotificationData ntf : listMessage) {
+            boolean skip = skipStorage(ntf);
+            if (skip) {
+                continue;
+            }
+            notifications.add(ntf);
+        }
+        return notifications;
     }
 
     void recoveryRedPacketStatus() {
