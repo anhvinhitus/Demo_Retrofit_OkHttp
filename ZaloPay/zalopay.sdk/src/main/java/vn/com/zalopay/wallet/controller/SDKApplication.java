@@ -44,24 +44,20 @@ public class SDKApplication extends Application {
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
         //System.exit(1); // kill off the crashed app
     }
+
     /***
      * clear all cache if this is new user setup
-     * @param pAppVersion
      */
-    private static void removeCacheOnSetupOverride(String userId, String pAppVersion) {
+    private static void clearCache(String userId, String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
         IAppInfo appInfo = getApplicationComponent().appInfoInteractor();
         IBank bankList = getApplicationComponent().bankListInteractor();
         if (platformInfo.isNewVersion(pAppVersion) || platformInfo.isNewUser(userId)) {
-            Timber.d("removeCacheOnSetupOverride - start clear cache in previous version");
+            Timber.d("clearCache - start clear cache in previous version");
             //clear banklist
             bankList.clearCheckSum();
             bankList.clearConfig();
             bankList.resetExpireTime();
-            //clear checksum
-            platformInfo.clearCardMapCheckSum();
-            platformInfo.clearBankAccountMapCheckSum();
-            platformInfo.resetExpireTime();
             //reset expire time app info
             appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
             appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
@@ -84,7 +80,7 @@ public class SDKApplication extends Application {
                 Timber.d("user in sdk - delay load gateway info");
                 return null;
             }
-            removeCacheOnSetupOverride(pUserInfo.zalopay_userid, pAppVersion);
+            clearCache(pUserInfo.zalopay_userid, pAppVersion);
 
             String userId = pUserInfo.zalopay_userid;
             String accessToken = pUserInfo.accesstoken;
@@ -92,7 +88,7 @@ public class SDKApplication extends Application {
             Subscription[] subscription = new Subscription[3];
             //load platform info
             getApplicationComponent().platformInfoInteractor()
-                    .loadPlatformInfo(userId, accessToken, false, true, currentTime, pAppVersion)
+                    .loadSDKPlatform(userId, accessToken, currentTime)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(pObserver);
             //load bank list
@@ -121,22 +117,12 @@ public class SDKApplication extends Application {
     }
 
     /***
-     * app need to call this to update user's info on cache(channels,map cards) after user reset PIN
-     * @param pUserInfo
-     * @param pObserver
+     * update user's info on cache(channels,map cards) after user reset PIN
      */
-    public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, String pAppVersion, Observer pObserver) {
-        try {
-            long currentTime = System.currentTimeMillis();
-            //load platform info
-            return getApplicationComponent().platformInfoInteractor()
-                    .loadPlatformInfo(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false, currentTime, pAppVersion)
-                    .subscribe(pObserver);
-        } catch (Exception e) {
-            if (pObserver != null)
-                pObserver.onError(e);
-        }
-        return null;
+    public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, Observer pObserver) {
+        return getApplicationComponent().platformInfoInteractor()
+                .loadSDKPlatformFromCloud(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false)
+                .subscribe(pObserver);
     }
 
     public static Application getApplication() {

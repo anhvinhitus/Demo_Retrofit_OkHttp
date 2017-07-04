@@ -35,7 +35,9 @@ public interface IPlatformInfo {
 
     Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion);
 
-    Observable<Boolean> loadSDKPlatform(String userId, String accessToken, long currentTime);
+    Observable<PlatformInfoCallback> loadSDKPlatform(String userId, String accessToken, long currentTime);
+
+    Observable<PlatformInfoCallback> loadSDKPlatformFromCloud(String userId, String accessToken, boolean forceReloadApi, boolean forceDownloadResource);
 
     /***
      * Platform info expire time,unix time to exprired time (in milisecond)
@@ -43,6 +45,4 @@ public interface IPlatformInfo {
      * @return
      */
     long getPlatformInfoDurationExpire();
-
-    Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean downloadResource, long currentTime, String appVersion);
 }

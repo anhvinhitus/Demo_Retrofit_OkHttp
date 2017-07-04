@@ -9,8 +9,7 @@ public class VersionCallback extends PlatformInfoCallback {
     public String newestappversion;
     public String forceupdatemessage;
 
-    public VersionCallback(boolean forceupdate, String newestappversion, String forceupdatemessage, long expiretime) {
-        super(expiretime);
+    public VersionCallback(boolean forceupdate, String newestappversion, String forceupdatemessage) {
         this.forceupdate = forceupdate;
         this.newestappversion = newestappversion;
         this.forceupdatemessage = forceupdatemessage;

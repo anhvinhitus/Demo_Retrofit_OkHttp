@@ -56,8 +56,6 @@ public class PlatformInfoStore {
         void clearCardMapCheckSum();
 
         void clearBankAccountMapCheckSum();
-
-        Observable<PlatformInfoCallback> get();//return expire time
     }
 
     public interface Repository {

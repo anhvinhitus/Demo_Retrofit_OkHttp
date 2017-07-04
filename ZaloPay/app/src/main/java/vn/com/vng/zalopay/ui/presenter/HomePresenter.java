@@ -350,8 +350,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         UserInfo userInfo = new UserInfo();
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
-        String appVersion = BuildConfig.VERSION_NAME;
-        Subscription subscription = SDKApplication.refreshSDKData(userInfo, appVersion, new DefaultSubscriber());
+        Subscription subscription = SDKApplication.refreshSDKData(userInfo, new DefaultSubscriber());
         mSubscription.add(subscription);
     }
 

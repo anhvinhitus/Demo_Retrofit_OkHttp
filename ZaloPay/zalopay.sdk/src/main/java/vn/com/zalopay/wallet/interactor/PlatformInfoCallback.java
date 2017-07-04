@@ -5,9 +5,4 @@ package vn.com.zalopay.wallet.interactor;
  */
 
 public class PlatformInfoCallback {
-    public long expire_time;
-
-    public PlatformInfoCallback(long expire_time) {
-        this.expire_time = expire_time;
-    }
 }

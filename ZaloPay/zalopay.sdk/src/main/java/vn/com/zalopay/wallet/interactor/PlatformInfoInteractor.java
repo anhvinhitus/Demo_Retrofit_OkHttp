@@ -12,9 +12,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
@@ -24,7 +22,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
@@ -44,6 +41,34 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Inject
     public PlatformInfoInteractor(PlatformInfoStore.Repository repository) {
         this.repository = repository;
+    }
+
+    private Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>> mapResult(String appVersion) {
+        return platformInfoResponse -> {
+            if (platformInfoResponse == null) {
+                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+            }
+            if (platformInfoResponse.forceappupdate) {
+                //notify force user update new app on store
+                VersionCallback upversionCallback = new VersionCallback(true,
+                        platformInfoResponse.newestappversion,
+                        platformInfoResponse.forceupdatemessage);
+                return Observable.just(upversionCallback);
+            }
+            if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
+                //notify user  have a new version on store but not force user update
+                VersionCallback upversionCallback = new VersionCallback(false,
+                        platformInfoResponse.newestappversion,
+                        platformInfoResponse.forceupdatemessage);
+                return Observable.just(upversionCallback);
+            }
+            if (platformInfoResponse.returncode == 1) {
+                PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback();
+                return Observable.just(platformInfoCallback);
+            } else {
+                return Observable.error(new RequestException(platformInfoResponse.returncode, platformInfoResponse.returnmessage));
+            }
+        };
     }
 
     public PlatformInfoStore.LocalStorage getLocalStorage() {
@@ -72,7 +97,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
      * 1.api platform info never run (checksum is empty)
      * 2.setup newer version
      * 3.login new user
-     * 4. miss resource info version
+     * 4.miss resource info version
      */
     private boolean forceReloadPlatformInfo(String pUserId) throws Exception {
         String checkSum = getPlatformInfoCheckSum();
@@ -83,18 +108,15 @@ public class PlatformInfoInteractor implements IPlatformInfo {
                 isNewUser || TextUtils.isEmpty(resourceVersion);
     }
 
-    private Observable<Boolean> reloadPlatform(String userId, String accessToken, long currentTime) {
+    private Observable<PlatformInfoCallback> reloadPlatform(String userId, String accessToken, long currentTime) {
         try {
-            boolean forceReload = forceReloadPlatformInfo(userId);
+            boolean forceReloadApi = forceReloadPlatformInfo(userId);
             boolean isExpired = currentTime >= getExpireTime();
-            boolean validResource = !validFileConfig();
-            if (!forceReload && !validResource && !isExpired) {
-                return Observable.just(true);
+            boolean validResource = validFileConfig();
+            if (!forceReloadApi && validResource && !isExpired) {
+                return Observable.just(new PlatformInfoCallback());
             }
-            Timber.d("start reload platform info - force reload %s", forceReload);
-            String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-            return loadPlatformInfoFromCloud(userId, accessToken, forceReload, appVersion)
-                    .map(c -> true);
+            return loadSDKPlatformFromCloud(userId, accessToken, forceReloadApi, !validResource);
         } catch (Exception e) {
             return Observable.error(e);
         }
@@ -123,47 +145,31 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public Observable<Boolean> loadSDKPlatform(String userId, String accessToken, long currentTime) {
+    public Observable<PlatformInfoCallback> loadSDKPlatform(String userId, String accessToken, long currentTime) {
         return reloadPlatform(userId, accessToken, currentTime);
     }
 
     @Override
-    public Observable<PlatformInfoCallback> loadPlatformInfo(String userId, String accessToken, boolean forceReload, boolean shouldDownloadResource, long currentTime, String appVersion) {
-        Log.d(this, "prepare param to get platform info from server - forceReload %s", forceReload);
-        Map<String, String> params = getParams(userId, accessToken, forceReload, appVersion);
-        Observable<PlatformInfoCallback> infoOnCache = repository
-                .getLocalStorage()
-                .get()
-                .subscribeOn(Schedulers.io());
-        Observable<PlatformInfoCallback> infoOnCloud = repository
-                .fetchCloud(params)
-                .doOnNext(downloadResource())
-                .flatMap(mapResult(params.get(ConstantParams.APP_VERSION)));
-        return Observable.concat(infoOnCache, infoOnCloud)
-                .first(platformInfoCallback -> platformInfoCallback != null && (platformInfoCallback.expire_time > currentTime));
-    }
-
-    /**
-     * Called from reloadPlatform
-     */
-    private Observable<PlatformInfoCallback> loadPlatformInfoFromCloud(String userId, String accessToken, boolean forceReload, String appVersion) {
-        Timber.d("prepare param to get platform info from server - should download resource");
-        Map<String, String> params = getParams(userId, accessToken, forceReload, appVersion);
+    public Observable<PlatformInfoCallback> loadSDKPlatformFromCloud(String userId, String accessToken, boolean forceReloadApi, boolean forceDownloadResource) {
+        Timber.d("start get platform info from server - should force reload api %s - force download res %s", forceReloadApi, forceDownloadResource);
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        Map<String, String> params = getParams(userId, accessToken, forceReloadApi, forceDownloadResource, appVersion);
         return repository
                 .fetchCloud(params)
                 .concatMap(this::tryDownloadResource)
                 .flatMap(mapResult(appVersion));
     }
 
-    private Map<String, String> getParams(String userId, String accessToken, boolean forceReload, String appVersion) {
+    private Map<String, String> getParams(String userId, String accessToken, boolean forceReloadPlatform, boolean forceDownloadResource, String appVersion) {
         String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
         String resourceVersion = repository.getLocalStorage().getResourceVersion();
-        if (forceReload) {
+        if (forceReloadPlatform) {
             checksum = null;
-            resourceVersion = null;
             repository.getLocalStorage().setCardInfoCheckSum(null);
             repository.getLocalStorage().setBankAccountCheckSum(null);
-            Timber.d("reset platform checksum for forcing reload");
+        }
+        if (forceDownloadResource) {
+            resourceVersion = null;
         }
         String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
         String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
@@ -232,58 +238,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
         ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(), pUrl, pResourceVersion);
         return downloadResourceTask.getResource();
-    }
-
-    private Action1<PlatformInfoResponse> downloadResource() {
-        return new Action1<PlatformInfoResponse>() {
-            @Override
-            public void call(PlatformInfoResponse pResponse) {
-                /*
-                 need to download new resource if
-                 1.server return isupdateresource = true;
-                 2.resource version on cached client and resource version server return is different.This case user no need to update app.
-                 */
-                Timber.d("start download resource - should download ");
-                String resourceVersion = repository.getLocalStorage().getResourceVersion();
-                if (pResponse.resource != null && (pResponse.isupdateresource ||
-                        (!TextUtils.isEmpty(resourceVersion) && !resourceVersion.equals(pResponse.resource.rsversion)))) {
-                    repository.getLocalStorage().setResourceVersion(pResponse.resource.rsversion);
-                    repository.getLocalStorage().setResourceDownloadUrl(pResponse.resource.rsurl);
-                    getSDKResource(pResponse.resource.rsurl, pResponse.resource.rsversion)
-                            .subscribe(aBoolean -> Timber.d("download resource on complete"),
-                                    throwable -> Log.d(this, "download resource on error", throwable));
-                }
-            }
-        };
-    }
-
-    private Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>> mapResult(String appVersion) {
-        return platformInfoResponse -> {
-            long expiretime = repository.getLocalStorage().getExpireTime();
-            if (platformInfoResponse == null) {
-                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
-            }
-            if (platformInfoResponse.forceappupdate) {
-                //notify force user update new app on store
-                VersionCallback upversionCallback = new VersionCallback(true,
-                        platformInfoResponse.newestappversion,
-                        platformInfoResponse.forceupdatemessage, expiretime);
-                return Observable.just(upversionCallback);
-            }
-            if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
-                //notify user  have a new version on store but not force user update
-                VersionCallback upversionCallback = new VersionCallback(false,
-                        platformInfoResponse.newestappversion,
-                        platformInfoResponse.forceupdatemessage, expiretime);
-                return Observable.just(upversionCallback);
-            }
-            if (platformInfoResponse.returncode == 1) {
-                PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expiretime);
-                return Observable.just(platformInfoCallback);
-            } else {
-                return Observable.error(new RequestException(platformInfoResponse.returncode, platformInfoResponse.returnmessage));
-            }
-        };
     }
 
     @Override

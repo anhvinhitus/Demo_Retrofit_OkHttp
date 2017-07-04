@@ -143,7 +143,7 @@ public class ResourceLoader extends SingletonBase {
         }
         if (reloadPlatform) {
             Timber.d("start reload platform info");
-            Subscription subscription = loadPlatformInfo(true, forceDownloadResource);
+            Subscription subscription = loadPlatformInfo();
             getPresenter().addSubscription(subscription);
         }
         return reloadPlatform;
@@ -163,7 +163,7 @@ public class ResourceLoader extends SingletonBase {
             subscription = downloadResource(resourceDownloadUrl, resourceVersion);
         } else {
             Timber.d("start reload platform info");
-            subscription = loadPlatformInfo(true, true);
+            subscription = loadPlatformInfo();
         }
         getPresenter().addSubscription(subscription);
     }
@@ -194,13 +194,11 @@ public class ResourceLoader extends SingletonBase {
                         throwable -> Log.d(this, "download resource on error", throwable));
     }
 
-    private Subscription loadPlatformInfo(boolean pForceReload, boolean downloadResource) {
-        Timber.d("load platform info again force reload:%s download resource:%s", pForceReload, downloadResource);
+    private Subscription loadPlatformInfo() {
         long currentTime = System.currentTimeMillis();
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START);
         return mPlatformInteractor
-                .loadPlatformInfo(mUserInfo.zalopay_userid, mUserInfo.accesstoken, pForceReload, downloadResource, currentTime, appVersion)
+                .loadSDKPlatform(mUserInfo.zalopay_userid, mUserInfo.accesstoken, currentTime)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(platformInfoSubscriber, platformInfoException);
     }

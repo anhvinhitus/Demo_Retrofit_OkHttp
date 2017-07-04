@@ -2,26 +2,17 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
-import rx.Observable;
-import rx.functions.Func0;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILink;
-import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
-
-import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -36,20 +27,6 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     private boolean isUpdatePlatformInfoOnCache(String pPlatformInfoCheckSum) {
         String checksumOnCache = getPlatformInfoCheckSum();
         return TextUtils.isEmpty(checksumOnCache) || (!TextUtils.isEmpty(checksumOnCache) && !checksumOnCache.equals(pPlatformInfoCheckSum));
-    }
-
-    @Override
-    public Observable<PlatformInfoCallback> get() {
-        return Observable.defer(() -> {
-            try {
-                Long expireTime = getExpireTime();
-                PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expireTime);
-                Timber.d("load app info from cache: %s", expireTime);
-                return Observable.just(platformInfoCallback);
-            } catch (Exception e) {
-                return Observable.error(e);
-            }
-        });
     }
 
     @Override
