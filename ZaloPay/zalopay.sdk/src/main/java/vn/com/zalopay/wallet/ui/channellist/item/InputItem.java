@@ -42,7 +42,7 @@ public class InputItem extends AbstractItem<InputItem.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
-        String fee_desc = channel.getDefaultPmcFee();
+        String fee_desc = getFeeDesc(channel);
         if (channel.isBankAccount() && userInfo.level < BuildConfig.level_allow_bankaccount) {
             //check map table for allow
             int iCheck = userInfo.getPermissionByChannelMap(channel.pmcid, transtype);
