@@ -165,7 +165,7 @@ public class ZPWebViewPromotionProcessor extends WebViewClient implements GetNav
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Timber.d("shouldOverrideUrlLoading url[%s]", url);
         //use case for url
-        if (url.contains(WebViewConfig.URL_PROMOTION + "promotion/detail")) {
+        if (url.contains("detail")) {
             if (mWebViewListener != null) {
                 mWebViewListener.openWebDetail(url);
             }

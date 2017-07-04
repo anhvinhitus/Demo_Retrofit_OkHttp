@@ -174,7 +174,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
         }
 
         sandbox {
@@ -192,7 +192,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sblog.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
         }
 
         staging {
@@ -210,7 +210,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
         }
 
         internalProduction {
@@ -228,7 +228,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
         }
 
         internalSandbox {
@@ -246,7 +246,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
         }
 
         internalStaging {
@@ -264,7 +264,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
         }
 
         iapProduction {
@@ -283,7 +283,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '3'
             applicationIdSuffix ""
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
         }
 
         iapSandbox {
@@ -302,7 +302,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
         }
 
         iapStaging {
@@ -321,7 +321,7 @@ android {
             buildConfigField 'int', 'ENVIRONMENT', '2'
             applicationIdSuffix ".stg1"
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
-            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
         }
     }
 
