@@ -48,7 +48,7 @@ public class AdapterBankCard extends AdapterBase {
 
     public AdapterBankCard(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                            PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(SCREEN_ATM,pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(SCREEN_ATM, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         GlobalData.cardChannelType = CardChannel.ATM;
     }
 
@@ -129,16 +129,7 @@ public class AdapterBankCard extends AdapterBase {
             if (patternList != null && patternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                        int start;
                         pOtp = pOtp.trim();
-                        //read the begining of sms content
-                        if (otpReceiverPattern.begin) {
-                            start = otpReceiverPattern.start;
-                        }
-                        //read otp from the ending of content
-                        else {
-                            start = pOtp.length() - otpReceiverPattern.length - otpReceiverPattern.start;
-                        }
                         /***
                          * vietinbank has 2 type of sms
                          * 1. 6 number otp in the fist of content
@@ -304,8 +295,9 @@ public class AdapterBankCard extends AdapterBase {
                         }
                     });
                 }
-                getView().visiableOrderInfo(true);
-                getView().setVisible(R.id.order_info_line_view,false);
+                boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
+                getView().visiableOrderInfo(visibleOrderInfo);
+                getView().setVisible(R.id.order_info_line_view, false);
                 //set time process for otp and captcha to send log to server.
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();

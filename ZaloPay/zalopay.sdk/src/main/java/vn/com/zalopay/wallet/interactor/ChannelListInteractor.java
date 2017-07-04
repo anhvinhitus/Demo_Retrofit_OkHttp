@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.interactor;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.text.TextUtils;
 
 import javax.inject.Inject;
 
@@ -11,23 +10,16 @@ import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
-import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 /**
@@ -94,13 +86,13 @@ public class ChannelListInteractor {
                 mPaymentInfoHelper.getAppId(),
                 new int[]{mPaymentInfoHelper.getTranstype()},
                 userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
-                .doOnSubscribe(this::loadAppInfoOnProcess)
-                .doOnNext(this::loadAppInfoOnComplete);
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START))
+                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END));
 
         currentTime = System.currentTimeMillis();
         Observable<BankConfigResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
-                .doOnSubscribe(this::loadBankListOnProgress)
-                .doOnNext(this::loadBankListOnComplete);
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START))
+                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END));
 
         currentTime = System.currentTimeMillis();
         Observable<Boolean> platformObservable = mPlatformInteractor.loadSDKPlatform(userInfo.zalopay_userid, userInfo.accesstoken, currentTime)
@@ -163,81 +155,6 @@ public class ChannelListInteractor {
         mSubscription.clear();
         mPaymentInfoHelper = paymentInfoHelper;
         mPaymentReadyListener = null;
-    }
-
-    private void loadAppInfoOnProcess() {
-        try {
-            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START);
-            // getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    private void loadAppInfoOnError(Throwable throwable) {
-        Log.d(this, "load app info on error", throwable);
-        try {
-            //update payment status depend on api code from server
-            if (throwable instanceof RequestException) {
-                RequestException requestException = (RequestException) throwable;
-                mPaymentInfoHelper.updateTransactionResult(requestException.code);
-            }
-            String message = TransactionHelper.getMessage(throwable);
-            if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getStringResource(RS.string.sdk_load_appinfo_error_message);
-            }
-            boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
-//            if (showDialog) {
-//                getViewOrThrow().showError(message);
-//            } else {
-//                getViewOrThrow().hideLoading();
-//                getViewOrThrow().callbackThenTerminate();
-//            }
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    private void loadAppInfoOnComplete(AppInfo appInfo) {
-        Log.d(this, "load app info success", appInfo);
-        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END);
-//        mPaymentInfoReadyMessage = new SdkPaymentInfoReadyMessage();
-//        mPaymentInfoReadyMessage.mAppInfo = appInfo;
-//
-//        if (mPaymentReadyListener != null) {
-//            postReadyMessage();
-//        }
-    }
-
-    private void loadBankListOnProgress() {
-        try {
-            mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START);
-//            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    }
-
-    private void loadBankListOnError(Throwable throwable) {
-        Log.d(this, "load bank list error", throwable);
-        String message = TransactionHelper.getMessage(throwable);
-        if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
-        }
-        try {
-//            getViewOrThrow().showError(message);
-        } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
-        }
-    }
-
-    private void loadBankListOnComplete(BankConfigResponse bankConfigResponse) {
-        try {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END);
-//            loadChannels();
-        } catch (Exception e) {
-            Timber.d(e);
-        }
     }
 
     private void postReadyMessage() {
