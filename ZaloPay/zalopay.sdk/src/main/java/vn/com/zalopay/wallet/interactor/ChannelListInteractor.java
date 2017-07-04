@@ -93,7 +93,7 @@ public class ChannelListInteractor {
                 .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END));
 
         currentTime = System.currentTimeMillis();
-        Observable<Boolean> platformObservable = mPlatformInteractor.loadSDKPlatform(userInfo.zalopay_userid, userInfo.accesstoken, currentTime)
+        Observable<PlatformInfoCallback> platformObservable = mPlatformInteractor.loadSDKPlatform(userInfo.zalopay_userid, userInfo.accesstoken, currentTime)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
                 .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END));
 
@@ -123,10 +123,11 @@ public class ChannelListInteractor {
 
     private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo,
                                                BankConfigResponse bankConfigResponse,
-                                               boolean finish,
+                                               PlatformInfoCallback platformInfoCallback,
                                                boolean resourceInitialized) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
+        message.mPlatformInfoCallback = platformInfoCallback;
         message.mErrorType = SdkPaymentInfoReadyMessage.ErrorType.SUCCESS;
         return message;
     }

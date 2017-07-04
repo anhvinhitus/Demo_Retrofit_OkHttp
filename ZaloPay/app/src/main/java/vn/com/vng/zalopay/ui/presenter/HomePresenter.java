@@ -114,10 +114,11 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 return;
             }
             if (platformInfoCallback instanceof VersionCallback) {
-                updateHomePage(((VersionCallback) platformInfoCallback).forceupdate);
+                VersionCallback versionCallback = (VersionCallback) platformInfoCallback;
+                updateHomePage(versionCallback.forceupdate);
                 AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
-                        ((VersionCallback) platformInfoCallback).forceupdate, ((VersionCallback) platformInfoCallback).newestappversion,
-                        ((VersionCallback) platformInfoCallback).forceupdatemessage);
+                        versionCallback.forceupdate, versionCallback.newestappversion,
+                        versionCallback.forceupdatemessage);
             } else {
                 updateHomePage(false);
             }

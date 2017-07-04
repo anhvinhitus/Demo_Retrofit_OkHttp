@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.event;
 
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 
 /**
  * Created by huuhoa on 6/29/17.
@@ -9,7 +10,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 
 public class SdkPaymentInfoReadyMessage {
     public AppInfo mAppInfo;
+    public PlatformInfoCallback mPlatformInfoCallback;
     public Throwable mError;
+    public ErrorType mErrorType;
 
     public enum ErrorType {
         /**
@@ -42,6 +45,4 @@ public class SdkPaymentInfoReadyMessage {
          */
         LOAD_PAYMENT_INFO_ERROR,
     }
-
-    public ErrorType mErrorType;
 }

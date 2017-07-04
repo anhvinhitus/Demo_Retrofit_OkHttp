@@ -27,7 +27,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
@@ -50,11 +49,11 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
-import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -340,7 +339,7 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
     public void onPaymentReady() {
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
-            if(mPaymentInfoHelper == null){
+            if (mPaymentInfoHelper == null) {
                 callback();
                 return;
             }
@@ -720,6 +719,17 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
 
     private void processPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception {
         getViewOrThrow().hideLoading();
+        if (message == null) {
+            callback();
+            return;
+        }
+        if (message.mPlatformInfoCallback instanceof VersionCallback) {
+            VersionCallback versionCallback = (VersionCallback) message.mPlatformInfoCallback;
+            processUpVersionMessage(versionCallback);
+            if (versionCallback.forceupdate) {
+                return;
+            }
+        }
         if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
             loadAppInfoOnComplete(message.mAppInfo);
             loadChannels();
@@ -735,9 +745,9 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         }
     }
 
-    private void processUpVersionMessage(SdkUpVersionMessage message) {
+    private void processUpVersionMessage(VersionCallback message) {
         if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onUpVersion(message.forceupdate, message.version, message.message);
+            GlobalData.getPaymentListener().onUpVersion(message.forceupdate, message.newestappversion, message.forceupdatemessage);
         }
         if (message.forceupdate) {
             try {
