@@ -108,7 +108,6 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
 
     protected synchronized void getData(IRequest pRequest, Map<String, String> pParams) {
         mSubscription = pRequest.getRequest(mDataSource, pParams)
-                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
                 .doOnNext(doOnNextAction)
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(inProgress)
