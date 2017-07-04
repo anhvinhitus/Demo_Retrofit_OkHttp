@@ -519,12 +519,7 @@ public class Navigator implements INavigator {
         if (!mUserConfig.hasCurrentUser()) {
             return;
         }
-
-        if (shouldShowPinDialog()) {
-            showPinDialog(context, intentProfile(context));
-        } else {
-            context.startActivity(intentProfile(context));
-        }
+        context.startActivity(intentProfile(context));
     }
 
     private Intent intentChangePinActivity(Activity activity) {
