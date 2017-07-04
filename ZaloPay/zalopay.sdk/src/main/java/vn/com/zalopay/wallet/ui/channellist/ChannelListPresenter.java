@@ -49,6 +49,7 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
+import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
@@ -711,14 +712,27 @@ public class ChannelListPresenter extends AbstractPresenter<ChannelListFragment>
         if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
             loadAppInfoOnComplete(message.mAppInfo);
             loadChannels();
+            return;
+        }
+        Timber.d("payment info on error %s", message.mError.getMessage());
+        String error = TransactionHelper.getMessage(message.mError);
+        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+        if (showDialog) {
+            getViewOrThrow().showError(error);
         } else {
-            Timber.d("payment info on error %s", message.mError.getMessage());
-            String error = TransactionHelper.getMessage(message.mError);
-            boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
-            if (showDialog) {
-                getViewOrThrow().showError(error);
-            } else {
-                getViewOrThrow().callbackThenTerminate();
+            getViewOrThrow().callbackThenTerminate();
+        }
+    }
+
+    private void processUpVersionMessage(SdkUpVersionMessage message) {
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onUpVersion(message.forceupdate, message.version, message.message);
+        }
+        if (message.forceupdate) {
+            try {
+                getViewOrThrow().terminate();
+            } catch (Exception e) {
+                Timber.w(e, "Exception");
             }
         }
     }

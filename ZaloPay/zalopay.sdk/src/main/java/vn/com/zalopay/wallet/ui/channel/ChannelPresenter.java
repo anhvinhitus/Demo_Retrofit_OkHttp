@@ -728,6 +728,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Override
     public void onResourceReady() {
+        super.onResourceReady();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         Subscription subscription = SDKApplication.getApplicationComponent()
@@ -738,13 +739,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     try {
                         startLink();
                     } catch (Exception e) {
-                        Timber.d(e != null ? e.getMessage() : "Exception");
+                        Timber.d(e.getMessage());
                     }
                 }, throwable -> {
                     try {
                         getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
                     } catch (Exception e) {
-                        Timber.d(e != null ? e.getMessage() : "Exception");
+                        Timber.d(e.getMessage());
                     }
                     Log.e("load card and bank account error", throwable.getMessage());
                 });

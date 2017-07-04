@@ -16,8 +16,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
-import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
@@ -226,11 +224,10 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
         params.put(ConstantParams.CARDINFO_CHECKSUM, cardInfoCheckSum);
         params.put(ConstantParams.BANKACCOUNT_CHECKSUM, bankAccountChecksum);
-
         Observable<PlatformInfoCallback> infoOnCloud = repository
                 .fetchCloud(params)
                 .concatMap(this::tryDownloadResource)
-                .flatMap(mapResult(params.get(ConstantParams.APP_VERSION)));
+                .flatMap(mapResult(appVersion));
         return infoOnCloud;
     }
 
@@ -302,19 +299,22 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             long expiretime = repository.getLocalStorage().getExpireTime();
             if (platformInfoResponse == null) {
                 return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
-            } else if (platformInfoResponse.forceappupdate) {
+            }
+            if (platformInfoResponse.forceappupdate) {
                 //notify force user update new app on store
-                VersionCallback upversionCallback = new VersionCallback(platformInfoResponse.forceappupdate,
+                VersionCallback upversionCallback = new VersionCallback(true,
                         platformInfoResponse.newestappversion,
                         platformInfoResponse.forceupdatemessage, expiretime);
                 return Observable.just(upversionCallback);
-            } else if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
+            }
+            if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
                 //notify user  have a new version on store but not force user update
                 VersionCallback upversionCallback = new VersionCallback(false,
                         platformInfoResponse.newestappversion,
                         platformInfoResponse.forceupdatemessage, expiretime);
                 return Observable.just(upversionCallback);
-            } else if (platformInfoResponse.returncode == 1) {
+            }
+            if (platformInfoResponse.returncode == 1) {
                 PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback(expiretime);
                 return Observable.just(platformInfoCallback);
             } else {
