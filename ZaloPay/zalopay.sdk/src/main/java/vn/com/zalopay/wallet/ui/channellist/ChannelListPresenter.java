@@ -65,13 +65,6 @@ import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
-import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.COMMA;
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
 
 /**
  * Created by chucvv on 6/12/17.
@@ -197,13 +190,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     protected boolean manualRelease() {
         int status = mPaymentInfoHelper.getStatus();
-        return status == DIRECT_LINKCARD || status == DIRECT_LINKCARD_AND_PAYMENT;
+        return status == PaymentStatus.DIRECT_LINKCARD || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult resultCode %s", resultCode);
-        if (requestCode != CHANNEL_PAYMENT_REQUEST_CODE) {
+        if (requestCode != Constants.CHANNEL_PAYMENT_REQUEST_CODE) {
             return;
         }
 
@@ -221,7 +214,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     OnActivityResultPaymentRequestCanceled(data);
                 }
                 break;
-            case MAP_POPUP_RESULT_CODE:
+            case Constants.MAP_POPUP_RESULT_CODE:
                 selectChannelFromPopup(data);
                 break;
         }
@@ -257,7 +250,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
 
-        int position = data.getIntExtra(SELECTED_PMC_POSITION, -1);
+        int position = data.getIntExtra(Constants.SELECTED_PMC_POSITION, -1);
         PaymentChannel channel = onSelectedChannel(position);
         if (channel == null) {
             return;
@@ -482,7 +475,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (TextUtils.isEmpty(pmcNames)) {
             return;
         }
-        String[] pmcNameList = pmcNames.split(COMMA);
+        String[] pmcNameList = pmcNames.split(Constants.COMMA);
         if (pmcNameList.length <= 0) {
             return;
         }
@@ -500,7 +493,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (TextUtils.isEmpty(bankCode)) {
                 continue;
             }
-            if (CC_CODE.equals(bankCode)) {
+            if (BuildConfig.CC_CODE.equals(bankCode)) {
                 renderCC((String) channels.get(bankCode));
                 continue;
             }
@@ -524,7 +517,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private Observable<Boolean> sortChannels(String bankCodes) {
         return Observable.defer(() -> {
-            String[] sortedBankCode = bankCodes.split(COMMA);
+            String[] sortedBankCode = bankCodes.split(Constants.COMMA);
             renderMapChannels(mActiveMapChannels, sortedBankCode);
             renderMapChannels(mInActiveMapChannels, sortedBankCode);
             return Observable.just(true);
@@ -719,13 +712,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         String key = channel.bankcode;
         Object object = channel;
         boolean active = channel.meetPaymentCondition();
-        if (CC_CODE.equals(key)) {
+        if (BuildConfig.CC_CODE.equals(key)) {
             Object value = active ? mActiveMapChannels.get(key) : mInActiveMapChannels.get(key);
             object = channel.pmcname;
             if (value != null) {
                 StringBuilder valueBuilder = new StringBuilder();
                 valueBuilder.append(object)
-                        .append(COMMA)
+                        .append(Constants.COMMA)
                         .append(value.toString());
                 object = valueBuilder.toString();
             }
