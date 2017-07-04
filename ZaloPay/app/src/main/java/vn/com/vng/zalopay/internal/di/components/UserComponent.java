@@ -77,6 +77,7 @@ import vn.com.vng.zalopay.webapp.WebAppFragment;
 import vn.com.vng.zalopay.webapp.WebAppPromotionFragment;
 import vn.com.vng.zalopay.webapp.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewFromQRScanFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewPromotionFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment;
@@ -219,6 +220,8 @@ public interface UserComponent {
     void inject(BankFragment f);
 
     void inject(BankSupportSelectionFragment f);
+
+    void inject(WebViewFromQRScanFragment f);
 
       /* inject activity */
 

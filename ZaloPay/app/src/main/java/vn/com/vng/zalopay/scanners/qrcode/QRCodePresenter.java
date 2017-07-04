@@ -604,10 +604,11 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 showNetworkErrorAndResumeAfterDismiss();
             } else {
                 if (mView != null && mView.getContext() != null) {
-                    if(checkAllowUrls(mUrl)) {
+                    if (checkAllowUrls(mUrl)) {
                         mNavigator.startWebAppActivity(mView.getContext(), mUrl);
                     } else {
-                        mNavigator.startWebViewActivity(mView.getContext(), mUrl);
+                        mNavigator.startWebViewFromQRScanActivity(mView.getContext(), mUrl);
+//                        mNavigator.startWebViewActivity(mView.getContext(), mUrl);
                     }
                 }
             }
@@ -621,14 +622,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         boolean isMatched = false;
         while (matcher.find()) {
-            Timber.d("URL: " + url);
-            Timber.d("Full match: " + matcher.group(0));
+            Timber.d("URL: %s", url);
+            Timber.d("Full match: %s", matcher.group(0));
             for (int i = 1; i <= matcher.groupCount(); i++) {
-                Timber.d("Group " + i + ": " + matcher.group(i));
+                Timber.d("Group [%s]: %s", i, matcher.group(i));
             }
             isMatched = true;
         }
-
         return isMatched;
     }
 }

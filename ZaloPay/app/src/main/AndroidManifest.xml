@@ -249,6 +249,9 @@
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize" />
 
+        <activity android:name=".webview.ui.WebViewFromQRScanActivity"
+            android:configChanges="orientation|screenSize" />
+
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"

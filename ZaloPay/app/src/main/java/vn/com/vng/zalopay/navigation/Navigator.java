@@ -80,6 +80,7 @@ import vn.com.vng.zalopay.webapp.WebAppPromotionActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
+import vn.com.vng.zalopay.webview.ui.WebViewFromQRScanActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
@@ -708,6 +709,12 @@ public class Navigator implements INavigator {
 
     public void startWebViewActivity(Context context, String url) {
         Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra(Constants.ARG_URL, url);
+        context.startActivity(intent);
+    }
+
+    public void startWebViewFromQRScanActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebViewFromQRScanActivity.class);
         intent.putExtra(Constants.ARG_URL, url);
         context.startActivity(intent);
     }
