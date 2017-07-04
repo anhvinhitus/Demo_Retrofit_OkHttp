@@ -476,7 +476,7 @@
 
     <string name="sdk_no_transid_label">Chưa có mã giao dịch</string>
     <string name="zpw_update_info">Cập nhật thông tin</string>
-    <string name="zpw_support">Bạn cần hỗ trợ ?</string>
+    <string name="zpw_support">Yêu cầu hỗ trợ ?</string>
     <string name="zpw_support_question">Câu Hỏi Thường Gặp</string>
     <string name="zpw_get_support">Gửi Báo Lỗi</string>
     <string name="zpw_support_btn_cancel">Hủy</string>
