@@ -10,8 +10,6 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 
 /**
  * Created by chucvv on 6/5/17.
@@ -31,12 +29,10 @@ public class AbstractOrder {
     public double amount_total;
     public double fee;
 
-    public void populateFee(MiniPmcTransType pmcTransType) {
-        if (pmcTransType != null) {
-            fee = pmcTransType.totalfee;
-            amount_total = amount + fee;
-            Log.d(this, "calculate order fee ", fee);
-        }
+    public void plusChannelFee(double channel_fee) {
+        fee = channel_fee;
+        amount_total = amount + fee;
+        Timber.d("calculate order fee %s", fee);
     }
 
     public List<NameValuePair> parseItems() {

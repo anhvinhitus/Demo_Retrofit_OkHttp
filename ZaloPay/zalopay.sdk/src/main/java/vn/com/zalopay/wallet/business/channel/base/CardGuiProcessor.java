@@ -794,7 +794,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             //check quota amount transaction for each bank
             if (miniPmcTransType != null && !mPaymentInfoHelper.isLinkTrans() && (getAdapter() instanceof AdapterBankCard)) {
                 miniPmcTransType.calculateFee(mPaymentInfoHelper.getAmount());
-                mPaymentInfoHelper.getOrder().populateFee(miniPmcTransType);
+                mPaymentInfoHelper.getOrder().plusChannelFee(miniPmcTransType.totalfee);
                 miniPmcTransType.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
                 if (!miniPmcTransType.isAllowPmcQuota()) {
                     CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();

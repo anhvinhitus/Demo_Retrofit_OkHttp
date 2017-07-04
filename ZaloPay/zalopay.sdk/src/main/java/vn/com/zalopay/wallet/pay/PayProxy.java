@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.pay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -26,7 +25,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -86,14 +84,6 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -109,6 +99,14 @@ public class PayProxy extends SingletonBase {
         }
         Timber.d(throwable, "trans status on error");
     };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
             markTransFail(mContext.getString(R.string.sdk_error_not_submit_order));
@@ -122,13 +120,33 @@ public class PayProxy extends SingletonBase {
         }
     };
 
+    private PayProxy() {
+        super();
+    }
+
+    ;
+
+    public static PayProxy get() throws Exception {
+        if (PayProxy._object == null) {
+            throw new IllegalAccessException("invalid pay proxy");
+        }
+        return PayProxy._object;
+    }
+
+    public static PayProxy shared() {
+        if (PayProxy._object == null) {
+            PayProxy._object = new PayProxy();
+        }
+        return PayProxy._object;
+    }
+
     private void onOrderSubmitedFailed(Throwable throwable) {
         Log.d(this, "submit order on error", throwable);
         if (!networkException(throwable)) {
             //check trans status by app trans id
             getTransStatusByAppTrans();
         }
-    };
+    }
 
     private void onOrderSubmittedSuccess(StatusResponse statusResponse) {
         Log.d(this, "submit order on complete", statusResponse);
@@ -145,24 +163,6 @@ public class PayProxy extends SingletonBase {
                 markTransFail(getGenericExceptionMessage(mContext));
             }
         }
-    }
-
-    private PayProxy() {
-        super();
-    }
-
-    public static PayProxy get() throws Exception {
-        if (PayProxy._object == null) {
-            throw new IllegalAccessException("invalid pay proxy");
-        }
-        return PayProxy._object;
-    }
-
-    public static PayProxy shared() {
-        if (PayProxy._object == null) {
-            PayProxy._object = new PayProxy();
-        }
-        return PayProxy._object;
     }
 
     public PayProxy initialize(BaseActivity activity) {
@@ -467,30 +467,15 @@ public class PayProxy extends SingletonBase {
         } else {
             mPaymentInfoHelper.paymentInfo.setMapBank(null);
         }
-        mPaymentInfoHelper.getOrder().populateFee(mChannel);
-        if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-            getView().showLoading(mContext.getString(R.string.zpw_string_alert_loading_bank));
-            ChannelListPresenter presenter = getPresenter();
-            presenter.loadBankList(mBankInteractor, this::onLoadBankConfig);
-        } else {
-            startFlow();
-        }
-    }
+        mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
 
-    private void onLoadBankConfig(BankConfigResponse bankConfigResponse) {
-        String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
-        if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
-            try {
+        if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
+            startFlow();
+        } else {
+            String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
+            if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
                 startFlow();
-            } catch (Exception e) {
-                Log.e(this, e);
-                markTransFail(getGenericExceptionMessage(mContext));
             }
-        }
-        try {
-            getView().hideLoading();
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
         }
     }
 
