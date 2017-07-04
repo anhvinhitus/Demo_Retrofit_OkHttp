@@ -21,6 +21,9 @@ import android.widget.ViewFlipper;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFontTextView;
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnDialogCustomEventListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.util.TimeUtils;
 
@@ -336,21 +339,25 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     private void previousToPhone() {
         String msg = String.format(getString(R.string.ip_desc_confirm_change_phone), mInputPhoneView.getInputText());
-        showConfirmDialog(msg,
+        DialogManager.showSweetDialogNormal(getActivity(),
+                getString(R.string.confirm),
+                msg,
+                getString(R.string.cancel),
                 getString(R.string.accept),
-                getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
+                SweetAlertDialog.WARNING_TYPE,
+                new ZPWOnDialogCustomEventListener() {
                     @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKevent() {
+                    public void onLeftButtonClick() {
                         if (!isAdded()) {
                             return;
                         }
 
                         previousPage();
+                    }
+
+                    @Override
+                    public void onRightButtonClick() {
+
                     }
                 });
     }
@@ -575,7 +582,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
             if (!isScrollable()) {
                 return;
             }
-            
+
             if (start == 0) {
                 mScrollView.fullScroll(View.FOCUS_DOWN);
             }

@@ -597,6 +597,10 @@ public class DialogManager {
         }
     }
 
+    public synchronized static void showSweetDialogNormal(final Activity pActivity, final String pTitle, final String pMessage, final String pRightButton, final String pLeftButton, final ZPWOnDialogCustomEventListener callback) {
+        showSweetDialogNormal(pActivity, pTitle, pMessage, pRightButton, pLeftButton, SweetAlertDialog.CUSTOM_CONTENT_VIEW, callback);
+    }
+
     /**
      * Dialog custom content view
      *
@@ -607,7 +611,7 @@ public class DialogManager {
      * @param pLeftButton  Text Left button or null
      * @param callback     call back
      */
-    public synchronized static void showSweetDialogNormal(final Activity pActivity, final String pTitle, final String pMessage, final String pRightButton, final String pLeftButton, final ZPWOnDialogCustomEventListener callback) {
+    public synchronized static void showSweetDialogNormal(final Activity pActivity, final String pTitle, final String pMessage, final String pRightButton, final String pLeftButton, int type, final ZPWOnDialogCustomEventListener callback) {
 
         try {
             if (pActivity == null || pActivity.isFinishing()) {
@@ -616,7 +620,7 @@ public class DialogManager {
             }
 
             if (mCustomViewSweetDialog == null)
-                mCustomViewSweetDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.CUSTOM_CONTENT_VIEW, R.style.alert_dialog);
+                mCustomViewSweetDialog = new SweetAlertDialog(pActivity, type, R.style.alert_dialog);
 
             if (mCustomViewSweetDialog.isShowing()) {
                 Log.d("showSweetDialogNormal", "===there're a mCustomViewSweetDialog is showing===");
