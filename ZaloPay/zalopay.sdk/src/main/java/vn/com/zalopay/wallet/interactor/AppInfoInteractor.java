@@ -26,14 +26,14 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  * Created by chucvv on 6/8/17.
  */
 
-public class AppInfoInteractor implements IAppInfo {
-    private AppInfoStore.AppInfoService mAppInfoService;
+public class AppInfoInteractor implements AppInfoStore.Interactor {
+    private AppInfoStore.RequestService mRequestService;
     private AppInfoStore.LocalStorage mLocalStorage;
 
     @Inject
-    public AppInfoInteractor(AppInfoStore.AppInfoService appInfoService, AppInfoStore.LocalStorage localStorage) {
+    public AppInfoInteractor(AppInfoStore.RequestService requestService, AppInfoStore.LocalStorage localStorage) {
         Timber.d("call constructor AppInfoInteractor");
-        this.mAppInfoService = appInfoService;
+        this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
     }
 
@@ -70,7 +70,7 @@ public class AppInfoInteractor implements IAppInfo {
                 .get(appid)
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
-        Observable<AppInfo> appInfoOnCloud = mAppInfoService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
+        Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)

@@ -17,8 +17,8 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 public class AppInfoRepositoryModule {
     @Provides
     @Singleton
-    public AppInfoStore.AppInfoService provideAppInfoService(@Api Retrofit retrofit) {
-        return retrofit.create(AppInfoStore.AppInfoService.class);
+    public AppInfoStore.RequestService provideAppInfoService(@Api Retrofit retrofit) {
+        return retrofit.create(AppInfoStore.RequestService.class);
     }
 
     @Provides

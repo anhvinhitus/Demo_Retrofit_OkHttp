@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
  * Created by huuhoa on 6/29/17.
@@ -28,7 +29,7 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
  */
 
 public class ChannelListInteractor {
-    private final IAppInfo mAppInfoInteractor;
+    private final AppInfoStore.Interactor mAppInfoInteractor;
     private final IBank mBankInteractor;
     private final IPlatformInfo mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
@@ -42,7 +43,7 @@ public class ChannelListInteractor {
     @Inject
     public ChannelListInteractor(Application application,
                                  IPlatformInfo platformInteractor,
-                                 IAppInfo appInfoInteractor,
+                                 AppInfoStore.Interactor appInfoInteractor,
                                  IBank bankInteractor,
                                  ZPMonitorEventTiming eventTiming) {
         mApplicationHandler = new Handler(application.getMainLooper());

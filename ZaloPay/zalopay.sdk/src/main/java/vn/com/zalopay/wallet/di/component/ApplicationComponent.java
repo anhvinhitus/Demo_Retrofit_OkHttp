@@ -22,10 +22,10 @@ import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.di.module.InteractorModule;
 import vn.com.zalopay.wallet.di.module.PlatformInfoRepositoryModule;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
@@ -55,7 +55,7 @@ public interface ApplicationComponent {
 
     IBank bankListInteractor();
 
-    IAppInfo appInfoInteractor();
+    AppInfoStore.Interactor appInfoInteractor();
 
     ILink linkInteractor();
 

@@ -40,13 +40,19 @@ public class AppInfoStore {
         List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
     }
 
-    public interface Repository {
-        Observable<AppInfoResponse> fetchCloud(long appid, String userid, String accesstoken, String appinfochecksum, String transtypes, String transtypechecksums, String appversion);
+    public interface Interactor {
+        void setExpireTime(long appId, long expireTime);
 
-        AppInfoStore.LocalStorage getLocalStorage();
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
+
+        AppInfo get(long appid);
+
+        List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
+
+        Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime);
     }
 
-    public interface AppInfoService {
+    public interface RequestService {
         @GET(Constants.URL_APP_INFO)
         @API_NAME(https = ZPEvents.API_V001_TPE_GETAPPINFO, connector = ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
         Observable<AppInfoResponse> fetch(@Query("appid") String appid, @Query("userid") String userid,

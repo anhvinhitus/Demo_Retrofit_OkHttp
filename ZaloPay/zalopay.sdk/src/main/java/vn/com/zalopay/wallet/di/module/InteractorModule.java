@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.interactor.AppInfoInteractor;
 import vn.com.zalopay.wallet.interactor.BankInteractor;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.interactor.IAppInfo;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.ILink;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
@@ -42,8 +41,8 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    IAppInfo provideAppInfoInteractor(AppInfoStore.Repository appinfoRepository) {
-        return new AppInfoInteractor(appinfoRepository);
+    AppInfoStore.Interactor provideAppInfoInteractor(AppInfoStore.RequestService requestService, AppInfoStore.LocalStorage localStorage) {
+        return new AppInfoInteractor(requestService, localStorage);
     }
 
     @Provides
@@ -57,7 +56,7 @@ public class InteractorModule {
     @Singleton
     ChannelListInteractor provideChannelListInteractor(Application application,
                                                        IPlatformInfo platformInteractor,
-                                                       IAppInfo appInfoInteractor,
+                                                       AppInfoStore.Interactor appInfoInteractor,
                                                        IBank bankInteractor,
                                                        ZPMonitorEventTiming eventTiming) {
         return new ChannelListInteractor(application,
