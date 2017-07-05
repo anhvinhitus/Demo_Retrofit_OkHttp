@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -271,6 +272,17 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT);
         }
         return null;
+    }
+
+    public boolean isVCBMaintenance() {
+        BankConfig bankConfig = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(CardType.PVCB);
+        if (bankConfig.status == BankStatus.MAINTENANCE) {
+            return true;
+        }
+        return false;
     }
 
     private void showVCBWarningDialog() {

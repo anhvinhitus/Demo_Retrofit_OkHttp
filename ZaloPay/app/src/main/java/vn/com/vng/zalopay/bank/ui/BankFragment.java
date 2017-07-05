@@ -222,8 +222,12 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         if (bankInfo instanceof BankAccount) {
             //check vcb maintain
             String maintainMessage = mPresenter.VCBMaintenanceMessage();
-            if (!TextUtils.isEmpty(maintainMessage)) {
-                showNotificationDialog(maintainMessage);
+//            if (!TextUtils.isEmpty(maintainMessage)) {
+//                showNotificationDialog(maintainMessage);
+//                return;
+//            }
+            if(mPresenter.isVCBMaintenance()) {
+                showNotificationDialog(!TextUtils.isEmpty(maintainMessage) ? maintainMessage : getString(R.string.txt_message_vcb_maintenace));
                 return;
             }
             message = getString(R.string.txt_confirm_remove_vcb_account);
