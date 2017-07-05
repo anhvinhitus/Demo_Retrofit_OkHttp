@@ -4,10 +4,8 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 
@@ -127,35 +125,37 @@ public class BankConfig {
     public String getMaintenanceMessage(@BankFunctionCode int bankFunctionCode) {
         String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
         try {
-            String maintenanceTo = null;
-            BankFunction bankFunction = getBankFunction(bankFunctionCode);
+            String maintenanceTo = "";
             //maintenance all function in bank
             if (isMaintenanceAllFunctions()) {
-                message = maintenancemsg;
+                if (!TextUtils.isEmpty(maintenancemsg)) {
+                    message = maintenancemsg;
+                }
                 if (maintenanceto > 0) {
                     maintenanceTo = SdkUtils.convertDateTime(maintenanceto);
                 }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                if (message.contains("%s") && !TextUtils.isEmpty(maintenanceTo)) {
                     message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, name, maintenanceTo);
+                    return message;
                 }
-            } else if (bankFunction != null && bankFunction.isFunctionMaintenance()) {
-                //maintenance some function of bank
-                message = bankFunction.maintenancemsg;
+                return message;
+            }
+            BankFunction bankFunction = getBankFunction(bankFunctionCode);
+            if (bankFunction != null && bankFunction.isFunctionMaintenance()) {
+                if (!TextUtils.isEmpty(bankFunction.maintenancemsg)) {
+                    message = bankFunction.maintenancemsg;
+                }
                 if (bankFunction.maintenanceto > 0) {
                     maintenanceTo = SdkUtils.convertDateTime(bankFunction.maintenanceto);
                 }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                if (message.contains("%s") && !TextUtils.isEmpty(maintenanceTo)) {
                     message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, name, maintenanceTo);
+                    return message;
                 }
+                return message;
             }
         } catch (Exception ex) {
-            Log.e("getMaintenanceMessage", ex);
+            Timber.w(ex, "Exception get bank maintenance message");
         }
         return message;
     }
