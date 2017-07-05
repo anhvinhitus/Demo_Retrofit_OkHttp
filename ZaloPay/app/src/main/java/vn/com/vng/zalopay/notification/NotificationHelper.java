@@ -280,7 +280,11 @@ public class NotificationHelper {
                     break;
                 case NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE:
                     String message = embeddata.get("message").getAsString();
-                    message = new String(Base64.decode(message, Base64.DEFAULT), "UTF-16");
+                    try {
+                        message = new String(Base64.decode(message, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE), "UTF-16");
+                    } catch(UnsupportedEncodingException e) {
+                        message = new String(Base64.decode(message, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE), "UTF-8");
+                    }
                     String displayName = embeddata.get("displayname").getAsString();
                     long transId = embeddata.get("transid").getAsLong();
                     String zalopayid = embeddata.get("zalopayid").getAsString();
