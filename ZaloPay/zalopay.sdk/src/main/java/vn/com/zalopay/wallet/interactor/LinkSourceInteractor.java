@@ -35,7 +35,7 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
     }
 
     @Override
-    public Subscription refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
+    public Observable<Boolean> refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
         if (TextUtils.isEmpty(first6cardno) || TextUtils.isEmpty(last4cardno)) {
             return refreshAll(appVersion, userId, accessToken);
         } else {
@@ -43,12 +43,10 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         }
     }
 
-    private Subscription refreshAll(String appVersion, String userId, String accessToken) {
+    private Observable<Boolean> refreshAll(String appVersion, String userId, String accessToken) {
         this.bankAccountRepository.getLocalStorage().resetBankAccountCacheList(userId);
         this.cardRepository.getLocalStorage().resetMapCardCacheList(userId);
-        return getMap(userId, accessToken, true, appVersion)
-                .subscribe(aBoolean -> Timber.d("reload card and bank account"),
-                        throwable -> Timber.d("reload card and bank account on error %s", throwable));
+        return getMap(userId, accessToken, true, appVersion);
     }
 
     @Override
@@ -75,27 +73,17 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     /***
      * refesh map list depend on bank code
-     * @param appVersion
-     * @param userId
-     * @param accessToken
-     * @param first6cardno
-     * @param last4cardno
-     * @return
      */
-    private Subscription refreshMap(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
+    private Observable<Boolean> refreshMap(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno) {
         String key = first6cardno + last4cardno;
         MapCard mapCard = getCard(userId, key);
         BankAccount bankAccount = getBankAccount(userId, key);
         if (mapCard != null && !TextUtils.isEmpty(mapCard.bankcode)) {
             this.cardRepository.getLocalStorage().resetMapCardCache(userId, first6cardno, last4cardno);
-            return getCards(userId, accessToken, true, appVersion)
-                    .subscribe(aBoolean -> Timber.d("reload card list"),
-                            throwable -> Timber.d("reload card list on error %s", throwable));
+            return getCards(userId, accessToken, true, appVersion);
         } else if (bankAccount != null && !TextUtils.isEmpty(bankAccount.bankcode)) {
             this.bankAccountRepository.getLocalStorage().resetBankAccountCache(userId, first6cardno, last4cardno);
-            return getBankAccounts(userId, accessToken, true, appVersion)
-                    .subscribe(aBoolean -> Timber.d("reload bank account"),
-                            throwable -> Timber.d("reload bank account on error %s", throwable));
+            return getBankAccounts(userId, accessToken, true, appVersion);
         } else {
             return refreshAll(appVersion, userId, accessToken);
         }

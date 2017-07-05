@@ -34,7 +34,7 @@ public interface ILinkSourceInteractor {
 
     List<BankAccount> getBankAccountList(String userid);
 
-    Subscription refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);
+    Observable<Boolean> refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);
 
     void putBankAccounts(String userid, String checksum, List<BankAccount> bankAccountList);
 
