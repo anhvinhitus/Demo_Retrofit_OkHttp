@@ -11,13 +11,7 @@ public interface IPlatformInfo {
 
     boolean isNewUser(String userId);
 
-    void clearCardMapCheckSum();
-
-    void clearBankAccountMapCheckSum();
-
     long getExpireTime();
-
-    void resetExpireTime();
 
     String getAppVersion();
 
@@ -26,8 +20,6 @@ public interface IPlatformInfo {
     String getUserId();
 
     String getUnzipPath();
-
-    String getResourceDownloadUrl();
 
     String getResourceVersion();
 

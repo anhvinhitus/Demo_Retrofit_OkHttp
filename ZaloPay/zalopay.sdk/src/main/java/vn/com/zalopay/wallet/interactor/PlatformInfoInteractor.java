@@ -76,11 +76,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public void resetExpireTime() {
-        this.repository.getLocalStorage().setExpireTime(0);
-    }
-
-    @Override
     public boolean isNewVersion(String appVersion) {
         String checksumSDKV = repository.getLocalStorage().getAppVersion();
         return !TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV);
@@ -232,16 +227,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public void clearCardMapCheckSum() {
-        repository.getLocalStorage().clearCardMapCheckSum();
-    }
-
-    @Override
-    public void clearBankAccountMapCheckSum() {
-        repository.getLocalStorage().clearBankAccountMapCheckSum();
-    }
-
-    @Override
     public long getPlatformInfoDurationExpire() {
         return repository.getLocalStorage().getExpireTimeDuration();
     }
@@ -254,11 +239,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public String getAppVersion() {
         return repository.getLocalStorage().getAppVersion();
-    }
-
-    @Override
-    public String getResourceDownloadUrl() {
-        return repository.getLocalStorage().getResourceDownloadUrl();
     }
 
     @Override
