@@ -1,2 +1,2 @@
-Zalo Pay (Staging v2.14.0 - build 308) - Released on 2017-07-05 10:23
-+ [SDK] Rename IAppInfo to AppInfoStore.Interactor by Nguyen Huu Hoa (#94efe1b)
+Zalo Pay (Sandbox v2.14.0 - build 309) - Released on 2017-07-05 10:36
+
