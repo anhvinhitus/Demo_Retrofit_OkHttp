@@ -6,10 +6,10 @@
 
     <item android:drawable="@color/splash_bg" />
 
-    <item>
 
+    <item android:top="50dp">
         <bitmap
-            android:gravity="center"
+            android:gravity="top|center_horizontal"
             android:src="@drawable/ic_zalopay_with_bg" />
     </item>
 </layer-list>
