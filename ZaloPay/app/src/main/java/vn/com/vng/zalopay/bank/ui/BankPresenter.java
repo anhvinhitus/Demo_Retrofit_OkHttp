@@ -40,10 +40,13 @@ import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -257,6 +260,17 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         } else {
             showVCBConfirmDialog(cardCode);
         }
+    }
+
+    String VCBMaintenanceMessage() {
+        BankConfig bankConfig = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor()
+                .getBankConfig(CardType.PVCB);
+        if (bankConfig != null && bankConfig.isBankMaintenence(BankFunctionCode.LINK_BANK_ACCOUNT)) {
+            return bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT);
+        }
+        return null;
     }
 
     private void showVCBWarningDialog() {

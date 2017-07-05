@@ -52,25 +52,40 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 
 public class BankFragment extends BaseFragment implements IBankView, BankAdapter.IBankListener {
 
+    private final long TIME_PREVENT_RAPID_CLICK = 500;
+    protected SwipeMenuCreator mSwipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
+        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        IconFontDrawable iconFontDrawable = new IconFontDrawable(getContext());
+        iconFontDrawable.setIcon(R.string.general_delete_card);
+        iconFontDrawable.setColor(Color.WHITE);
+        iconFontDrawable.setResourcesSize(R.dimen.font_size_delete);
+
+        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
+                .setBackgroundDrawable(R.color.red)
+                .setText(getString(R.string.cancel))
+                .setImage(iconFontDrawable)
+                .setTextColor(Color.WHITE)
+                .setWidth(width)
+                .setHeight(height);
+        swipeRightMenu.addMenuItem(deleteItem);
+    };
+    @Inject
+    BankPresenter mPresenter;
+    BankAdapter mAdapter;
+    @BindView(R.id.link_card_empty_view)
+    View mEmptyViewImage;
+    @BindView(R.id.listView)
+    SwipeMenuRecyclerView mRecyclerView;
+    private long mLastClickTime = 0;
+    private OnSwipeMenuItemClickListener mMenuItemClickListener = this::showConfirmRemoveSaveCard;
+
     public static BankFragment newInstance(Bundle bundle) {
         BankFragment fragment = new BankFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    private long mLastClickTime = 0;
-    private final long TIME_PREVENT_RAPID_CLICK = 500;
-
-    @Inject
-    BankPresenter mPresenter;
-
-    BankAdapter mAdapter;
-
-    @BindView(R.id.link_card_empty_view)
-    View mEmptyViewImage;
-
-    @BindView(R.id.listView)
-    SwipeMenuRecyclerView mRecyclerView;
 
     @Override
     protected void setupFragmentComponent() {
@@ -199,15 +214,20 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         }
     }
 
-    private OnSwipeMenuItemClickListener mMenuItemClickListener = this::showConfirmRemoveSaveCard;
-
     private void showConfirmRemoveSaveCard(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
         if (mAdapter == null) {
             return;
         }
         String message = getString(R.string.txt_confirm_remove_card);
+
         BaseMap bankInfo = mAdapter.getItem(adapterPosition);
         if (bankInfo instanceof BankAccount) {
+            //check vcb maintain
+            String maintainMessage = mPresenter.VCBMaintenanceMessage();
+            if (!TextUtils.isEmpty(maintainMessage)) {
+                showNotificationDialog(maintainMessage);
+                return;
+            }
             message = getString(R.string.txt_confirm_remove_vcb_account);
         }
         super.showConfirmDialog(message,
@@ -230,25 +250,6 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                     }
                 });
     }
-
-    protected SwipeMenuCreator mSwipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
-        int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        IconFontDrawable iconFontDrawable = new IconFontDrawable(getContext());
-        iconFontDrawable.setIcon(R.string.general_delete_card);
-        iconFontDrawable.setColor(Color.WHITE);
-        iconFontDrawable.setResourcesSize(R.dimen.font_size_delete);
-
-        SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
-                .setBackgroundDrawable(R.color.red)
-                .setText(getString(R.string.cancel))
-                .setImage(iconFontDrawable)
-                .setTextColor(Color.WHITE)
-                .setWidth(width)
-                .setHeight(height);
-        swipeRightMenu.addMenuItem(deleteItem);
-    };
 
     private void setEmptyViewHeight() {
         Window window = getActivity().getWindow();
@@ -325,7 +326,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
     public void smoothOpenItemMenu(int position) {
         mRecyclerView.smoothCloseMenu();
         // Prevent rapid click
-        if (SystemClock.elapsedRealtime() - mLastClickTime < TIME_PREVENT_RAPID_CLICK){
+        if (SystemClock.elapsedRealtime() - mLastClickTime < TIME_PREVENT_RAPID_CLICK) {
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();
