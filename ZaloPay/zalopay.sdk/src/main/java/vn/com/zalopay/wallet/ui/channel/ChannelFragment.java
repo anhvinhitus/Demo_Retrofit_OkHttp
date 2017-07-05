@@ -484,11 +484,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Phone");
         } else {
             if (submitButton != null) {
-                if (viewEnd) {
-                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
-                } else {
-                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
-                }
+                params.setMargins(0, (int) ((viewEnd) ? getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone) : getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab)), 0, 0);
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
@@ -510,11 +506,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Phone");
         } else {
             if (submitButton != null) {
-                if (viewEnd) {
-                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
-                } else {
-                    params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
-                }
+                params.setMargins(0, (int) ((viewEnd) ? getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone) : getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab)), 0, 0);
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
