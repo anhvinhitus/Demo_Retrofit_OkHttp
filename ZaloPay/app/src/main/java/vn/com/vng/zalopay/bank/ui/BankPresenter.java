@@ -226,10 +226,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             showErrorView("Thông tin người dùng không hợp lệ.");
             return;
         }
-        if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            showNetworkErrorDialog();
-            return;
-        }
         showLoadingView();
         SDKApplication.getApplicationComponent()
                 .linkInteractor()
@@ -246,6 +242,10 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     void removeLinkedBank(BaseMap item) {
+        if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
+            showNetworkErrorDialog();
+            return;
+        }
         if (item instanceof MapCard) {
             removeLinkedCard((MapCard) item);
         } else if (item instanceof BankAccount) {
