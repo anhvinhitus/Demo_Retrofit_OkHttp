@@ -1,3 +1,4 @@
+/*
 package vn.com.zalopay.wallet.interactor;
 
 import android.text.TextUtils;
@@ -118,13 +119,15 @@ public class ResourceLoader extends SingletonBase {
         return mPresenterWeakReference.get();
     }
 
-    /***
+    */
+/***
      * rule for retry call get platform info in SDK
      * 1.api platform info never run (checksum is empty)
      * 2.setup newer version
      * 3.login new user
      * @return
-     */
+     *//*
+
     private boolean needReloadPlatformInfo(String pUserId) throws Exception {
         String checkSum = mPlatformInteractor.getPlatformInfoCheckSum();
         String appVersionCache = mPlatformInteractor.getAppVersion();
@@ -149,12 +152,14 @@ public class ResourceLoader extends SingletonBase {
         return reloadPlatform;
     }
 
-    /***
+    */
+/***
      * get platform info already run but download resource fail
      * when into payment, sdk retry download resource
      * @return
-     */
-    private void retryDownloadResouce() throws Exception {
+     *//*
+
+    private void retryDownloadResource() throws Exception {
         String resourceVersion = mPlatformInteractor.getResourceVersion();
         String resourceDownloadUrl = mPlatformInteractor.getResourceDownloadUrl();
         Subscription subscription;
@@ -173,7 +178,7 @@ public class ResourceLoader extends SingletonBase {
             return;
         }
         if (forceDownloadResource) {
-            retryDownloadResouce();
+            retryDownloadResource();
             return;
         }
         //resource existed  and need to load into memory
@@ -213,3 +218,4 @@ public class ResourceLoader extends SingletonBase {
         void onUpdateVersion(SdkUpVersionMessage message);
     }
 }
+*/

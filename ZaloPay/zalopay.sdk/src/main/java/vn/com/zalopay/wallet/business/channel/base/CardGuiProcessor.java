@@ -299,6 +299,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         }
     };
+    private ZPWOnEventDialogListener mBankMaintenanceDialogListener = () -> new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+            //focus to edittext again after closing dialog
+            try {
+                getViewPager().setCurrentItem(0);
+                getCardNumberView().setText(null);
+                SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+    }, 400);
     protected Action1<Boolean> mDetectCardSubscriber = new Action1<Boolean>() {
         @Override
         public void call(Boolean detected) {
@@ -870,7 +883,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     public void onOKevent() {
                         PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                         try {
-                            getAdapter().getPresenter().callBackThenTerminate();
+                            getAdapter().getPresenter().callback();
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -1376,43 +1389,26 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 .getApplicationComponent()
                 .bankListInteractor()
                 .getBankConfig(bankCode);
-        if (isBankDetect && bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-            showMaintenanceBank(null);
-            return true;
+        if (bankConfig == null) {
+            return false;
         }
-        if (isCCDetect && bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-            if (getAdapter().isATMFlow()) {
-                showMaintenanceBank(bankCode);
-            } else {
-                showMaintenanceBank(null);
-            }
+        String mess = bankConfig.getMaintenanceMessage(bankFunction);
+        if (bankConfig.isBankMaintenence(bankFunction)) {
+            showMaintenanceBank(mess);
             return true;
         }
         return false;
     }
 
-    protected void showMaintenanceBank(String pBankCode) {
+    protected void showMaintenanceBank(String messaage) {
         try {
-            getAdapter().getPresenter().showBankMaintenance(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //focus to edittext again after closing dialog
-                            try {
-                                getViewPager().setCurrentItem(0);
-                                getCardNumberView().setText(null);
-                                SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
-                            } catch (Exception e) {
-                                Log.e(this, e);
-                            }
-                        }
-                    }, 400);
-                }
-            }, !TextUtils.isEmpty(pBankCode) ? pBankCode : getDetectedBankCode());
+            getAdapter()
+                    .getView()
+                    .showInfoDialog(messaage,
+                            GlobalData.getAppContext().getString(R.string.dialog_retry_input_card_button),
+                            mBankMaintenanceDialogListener);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e.getMessage());
         }
     }
 

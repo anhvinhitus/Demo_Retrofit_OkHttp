@@ -232,15 +232,6 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     @Override
-    public Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion) {
-        Timber.d("start download sdk resource %s", pUrl);
-        Context context = GlobalData.getAppContext();
-        IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
-        ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService, repository.getLocalStorage(), pUrl, pResourceVersion);
-        return downloadResourceTask.getResource();
-    }
-
-    @Override
     public void clearCardMapCheckSum() {
         repository.getLocalStorage().clearCardMapCheckSum();
     }

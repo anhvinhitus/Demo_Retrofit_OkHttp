@@ -10,16 +10,13 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
@@ -54,63 +51,8 @@ public class ResourceInteractor {
         });
     }
 
-    private void saveResource(Response<ResponseBody> pResponse) {
-        if (pResponse == null || pResponse.body() == null) {
-            onPostResult(false, getDefaultError());
-            return;
-        }
-        try {
-            /***
-             * 0.get folder storage.
-             * 1.download
-             * 2.clear folder.
-             * 3.extract
-             * 4.save version to cache.
-             */
-            ResponseBody responseBody = pResponse.body();
-            // Prepare unzip folder
-            mLock.lock();
-            String unzipFolder = StorageUtil.prepareUnzipFolder(mContext, BuildConfig.FOLDER_RESOURCE);
-            //can not create folder storage for resource.
-            if (TextUtils.isEmpty(unzipFolder)) {
-                Timber.w("error create folder resource on device. Maybe your device memory run out of now");
-                onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
-            } else if (mResourceZipFileURL == null || mResourceVersion == null) {
-                onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
-            } else {
-                StorageUtil.decompress(responseBody.bytes(), unzipFolder);
-                Timber.d("decompressed file zip to %s", unzipFolder);
-                //everything is ok, save version to cache
-                mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
-                mPlatformStorage.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
-                onPostResult(true, null);//post signal success
-            }
-        } catch (IOException e) {
-            onPostResult(false, GlobalData.getStringResource(RS.string.zpw_string_error_storage));
-            Log.e(this, e);
-        } catch (Exception e) {
-            onPostResult(false, getDefaultError());
-            Log.e(this, e);
-        } finally {
-            mLock.unlock();
-        }
-    }
-
-    private void onPostResult(boolean success, String message) {
-        SdkDownloadResourceMessage eventMessage = new SdkDownloadResourceMessage(success, message);
-        SDKApplication.getApplicationComponent().eventBus().post(eventMessage);
-        Timber.d("posting to result download resource task");
-    }
-
     private String getDefaultError() {
         return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error_download_resource);
-    }
-
-    public Observable<Boolean> getResource() {
-        return observableDownload(mResourceZipFileURL)
-                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
-                .doOnNext(this::saveResource)
-                .map(responseBodyResponse -> true);
     }
 
     public Observable<SdkDownloadResourceMessage> fetchResource() {

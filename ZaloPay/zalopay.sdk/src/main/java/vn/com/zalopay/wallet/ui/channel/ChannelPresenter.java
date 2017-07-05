@@ -10,7 +10,6 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,18 +17,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -41,27 +36,23 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
+import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
-import vn.com.zalopay.wallet.event.SdkUpVersionMessage;
-import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.interactor.IAppInfo;
-import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -83,10 +74,6 @@ import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     public EventBus mBus;
-    @Inject
-    public IBank mBankInteractor;
-    @Inject
-    public IAppInfo mAppInfoInteractor;
     public boolean hasAtm;
     public boolean hasCC;
     private CountDownTimer mExpireTransTimer;
@@ -106,7 +93,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             case 0:
                 break;
             case 1:
-                callBackThenTerminate();
+                callback();
                 break;
             case 2:
                 mAdapter.onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
@@ -118,7 +105,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
         } catch (Exception e) {
-            Timber.d(e);
         }
         if (mPaymentInfoHelper == null) {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
@@ -129,56 +115,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public AdapterBase getAdapter() {
         return mAdapter;
-    }
-
-    @Override
-    protected void loadAppInfoOnProcess() {
-        try {
-            getViewOrThrow().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_check_app_info));
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-    }
-
-    @Override
-    protected void loadAppInfoOnError(Throwable throwable) {
-        Log.d(this, "load app info on error", throwable);
-        try {
-            getViewOrThrow().hideLoading();
-            //update payment status depend on api code from server
-            if (throwable instanceof RequestException) {
-                RequestException requestException = (RequestException) throwable;
-                mPaymentInfoHelper.updateTransactionResult(requestException.code);
-            }
-            String message = TransactionHelper.getMessage(throwable);
-            if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getStringResource(RS.string.sdk_load_appinfo_error_message);
-            }
-            getViewOrThrow().showError(message);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-    }
-
-    @Override
-    protected void loadAppInfoOnComplete(AppInfo appInfo) {
-        try {
-            Log.d(this, "load app info success", appInfo);
-            if (appInfo == null || !appInfo.isAllow()) {
-                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_link_not_allow));
-                return;
-            }
-            if (!loadStaticResource(mPaymentInfoHelper.getUserInfo())) {
-                getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.sdk_error_init_data));
-            }
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    @Override
-    public void onPlatformError(Throwable e) {
-        onExit(e.getMessage(), true);
     }
 
     private boolean hasChannelList() {
@@ -197,8 +133,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void setCallBack(int pCode) throws Exception {
         if (hasChannelList()) {
             setResult(pCode, new Intent());
-        } else {
-            callback();
+        } else if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onComplete();
         }
     }
 
@@ -324,9 +260,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void startPayment() {
-        Log.d(this, "start payment channel", mMiniPmcTransType);
+        Timber.d("start payment channel %s", mMiniPmcTransType);
         if (mPaymentInfoHelper == null) {
-            callBackThenTerminate();
+            callback();
             return;
         }
         if (mMiniPmcTransType == null) {
@@ -342,39 +278,31 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             initTimer();
             getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
+            getViewOrThrow().visiableOrderInfo(!mPaymentInfoHelper.isLinkTrans());
             //hide header if this is link card
-            if (mPaymentInfoHelper.isLinkTrans()) {
-                getViewOrThrow().visiableOrderInfo(false);
-            } else {
+            if (!mPaymentInfoHelper.isLinkTrans()) {
                 getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             }
             initChannel();
-            if (mPaymentInfoHelper.isLinkTrans() || mPaymentInfoHelper.isBankAccountTrans()) {
+            if (mPaymentInfoHelper.isLinkTrans()) {
                 prepareLink();
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception on start payment");
             onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
         }
     }
 
     private void prepareLink() {
-        //this is link account and the first call
-        if (mPaymentInfoHelper.isBankAccountTrans()) {
-            try {
-                //check static resource whether ready or not
-                loadStaticResource(mPaymentInfoHelper.getUserInfo());
-            } catch (Exception ex) {
-                Log.e(this, ex);
-                onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
-            }
-            return;
-        }
-        //this is link card channel and the first call.
-        if (mPaymentInfoHelper.isLinkTrans()) {
+        //link card
+        if (mPaymentInfoHelper.isLinkTrans() && !mPaymentInfoHelper.isBankAccountTrans()) {
             //check profile level permission in table map
             try {
                 UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+                if (userInfo == null) {
+                    onExit(GlobalData.getAppContext().getString(R.string.zingpaysdk_missing_app_user), true);
+                    return;
+                }
                 int allowATM = userInfo.getPermissionByChannelMap(BuildConfig.channel_atm, TransactionType.LINK);
                 int allowCC = userInfo.getPermissionByChannelMap(BuildConfig.channel_credit_card, TransactionType.LINK);
                 if (allowATM == Constants.LEVELMAP_INVALID && allowCC == Constants.LEVELMAP_INVALID) {
@@ -383,10 +311,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 }
                 if (allowATM == Constants.LEVELMAP_BAN && allowCC == Constants.LEVELMAP_BAN) {
                     getViewOrThrow().showUpdateLevelDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update),
-                            GlobalData.getStringResource(RS.string.dialog_close_button), new ZPWOnEventConfirmDialogListener() {
+                            GlobalData.getStringResource(RS.string.dialog_close_button),
+                            new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
-                                    callBackThenTerminate();
+                                    callback();
                                 }
 
                                 @Override
@@ -402,13 +331,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 if (!hasAtm && hasCC && createChannelAdapter(BuildConfig.channel_credit_card)) {
                     initChannel();
                 }
-                long appId = BuildConfig.ZALOAPP_ID;
-                loadAppInfo(mAppInfoInteractor, appId, TransactionType.LINK, userInfo);
             } catch (Exception ex) {
                 Log.e(this, ex);
                 onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
+                return;
             }
         }
+        startSubscribePaymentReadyMessage();
     }
 
     @Override
@@ -453,14 +382,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         cancelTransactionExpiredTimer();
     }
 
-    @Override
-    public void onUpdateVersion(SdkUpVersionMessage pMessage) {
-        super.onUpdateVersion(pMessage);
-        if (pMessage.forceupdate) {
-            callBackThenTerminate();
-        }
-    }
-
     /***
      * focus on current view
      */
@@ -489,7 +410,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private boolean createChannelAdapter(int pChannelId) {
         try {
-            Timber.d("create new adapter pmc id = " + pChannelId);
+            Timber.d("create new adapter pmc id = %s", pChannelId);
             //release old adapter
             if (mAdapter != null) {
                 mAdapter.onFinish();
@@ -514,7 +435,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             mAdapter.init();
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
             return;
         }
         if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
@@ -565,7 +486,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     /***
      * transaction expired in 7minutes
      */
-    protected void initTimer() {
+    private void initTimer() {
         int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
         iTimeToLiveTrans *= 60 * 1000;
         mExpireTransTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
@@ -606,7 +527,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
         //just exit without show dialog.
         if (!showDialog) {
-            callBackThenTerminate();
+            callback();
             return;
         }
         //continue to show dialog and quit.
@@ -625,7 +546,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return mAdapter != null ? mAdapter.getTransactionID() : "";
     }
 
-    public void callBackThenTerminate() {
+    @Override
+    public void callback() {
         try {
             Timber.d("call back result and end sdk");
             setCallBack(Activity.RESULT_OK);
@@ -635,15 +557,38 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
+    @Override
+    protected void onProcessPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception {
+        if (message == null) {
+            callback();
+            return;
+        }
+        if (message.mPlatformInfoCallback instanceof VersionCallback) {
+            VersionCallback versionCallback = (VersionCallback) message.mPlatformInfoCallback;
+            onProcessUpVersionMessage(versionCallback);
+            if (versionCallback.forceupdate) {
+                return;
+            }
+        }
+        if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
+            startLink();
+            return;
+        }
+        Timber.d("payment info on error %s", message.mError.getMessage());
+        String error = TransactionHelper.getMessage(message.mError);
+        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+        onExit(error, showDialog);
+    }
+
     public void onSubmitClick() {
         if (mAdapter == null) {
-            callBackThenTerminate();
+            callback();
             return;
         }
         mAdapter.onClickSubmission();
     }
 
-    public Feedback collectFeedBack() {
+    private Feedback collectFeedBack() {
         Feedback feedBack = null;
         try {
             Bitmap mBitmap = SdkUtils.CaptureScreenshot(getViewOrThrow().getActivity());
@@ -657,9 +602,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAdapter.getTransactionID(), errorcode);
         } catch (Exception e) {
             Timber.d(e.getMessage());
-        } finally {
-            return feedBack;
         }
+        return feedBack;
     }
 
     public void startSupportScreen() throws Exception {
@@ -670,36 +614,20 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             collector.setScreenShot(feedBack.imgByteArray);
             collector.setTransaction(feedBack.category, feedBack.transID, feedBack.errorCode, feedBack.description);
         } else {
-            Timber.d("IFeedBack == null");
+            Timber.d("IFeedBack is null");
         }
         feedBackCollector.showDialog(getViewOrThrow().getActivity());
     }
 
     public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
         mPaymentInfoHelper.setResult(pStatus);
-        callBackThenTerminate();
+        callback();
     }
 
-    public void resetCardNumberAndShowKeyBoard() {
+    void resetCardNumberAndShowKeyBoard() {
         if (mAdapter != null) {
             mAdapter.getGuiProcessor().resetCardNumberAndShowKeyBoard();
         }
-    }
-
-    public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
-        try {
-            int bankFunction = GlobalData.getCurrentBankFunction();
-            BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
-            if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
-                getViewOrThrow().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction),
-                        GlobalData.getAppContext().getString(R.string.dialog_retry_input_card_button),
-                        pListener);
-                return true;
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return false;
     }
 
     public boolean isSwitching() {
@@ -726,69 +654,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    @Override
-    public void onResourceReady() {
-        super.onResourceReady();
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
-        Subscription subscription = SDKApplication.getApplicationComponent()
-                .linkInteractor()
-                .getMap(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aBoolean -> {
-                    try {
-                        startLink();
-                    } catch (Exception e) {
-                        Timber.d(e.getMessage());
-                    }
-                }, throwable -> {
-                    try {
-                        getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_generic_error));
-                    } catch (Exception e) {
-                        Timber.d(e.getMessage());
-                    }
-                    Log.e("load card and bank account error", throwable.getMessage());
-                });
-        addSubscription(subscription);
-    }
-
-    @Override
-    public void onResourceError(Throwable throwable) {
-        Timber.w("init resource error", throwable);
-        /***
-         * delete folder resource to download again.
-         * this prevent case file resource downloaded but was damaged on the wire so
-         * can not parse json file.
-         */
-        try {
-            String resPath = platformInteractor.getUnzipPath();
-            if (!TextUtils.isEmpty(resPath)) {
-                StorageUtil.deleteRecursive(new File(resPath));
-
-            }
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-        String message = throwable.getMessage();
-        if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getAppContext().getString(R.string.sdk_alert_generic_init_resource);
-        }
-        try {
-            onExit(message, true);
-        } catch (Exception e1) {
-            Timber.w(e1);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResource(SdkDownloadResourceMessage result) {
-        if (result.success) {
-            onResourceInit();
-        } else {
-            onExit(result.message, true);
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {
         if (mAdapter != null && mAdapter.isCardFlow()) {
@@ -808,7 +673,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mAdapter.autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
-        Timber.d("on payment otp event " + GsonUtils.toJsonString(message));
+        Timber.d("on payment otp event %s", message);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -817,7 +682,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             Timber.d("onNetworkMessageEvent user is on fail screen...");
             return;
         }
-        Log.d(this, "networking is changed ", message.online);
+        Timber.d("networking is changed online : %s", message.online);
         //come from api request fail with handshake
         if (message.origin == API) {
             showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_not_stable),

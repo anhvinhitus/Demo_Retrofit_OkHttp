@@ -33,8 +33,6 @@ public interface IPlatformInfo {
 
     boolean validFileConfig();
 
-    Observable<Boolean> getSDKResource(String pUrl, String pResourceVersion);
-
     Observable<PlatformInfoCallback> loadSDKPlatform(String userId, String accessToken, long currentTime);
 
     Observable<PlatformInfoCallback> loadSDKPlatformFromCloud(String userId, String accessToken, boolean forceReloadApi, boolean forceDownloadResource);

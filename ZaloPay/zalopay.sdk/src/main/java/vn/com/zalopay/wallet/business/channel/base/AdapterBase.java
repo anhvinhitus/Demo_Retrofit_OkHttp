@@ -1336,7 +1336,7 @@ public abstract class AdapterBase {
 
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
 
-        if(mPaymentInfoHelper.getOrder().appid == 12){
+        if(mPaymentInfoHelper.getOrder() != null && mPaymentInfoHelper.getOrder().appid == 12){
             new Handler().postDelayed(() -> {
                 try {
                     getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));

@@ -200,11 +200,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void hideLoading() {
         DialogManager.closeProcessDialog();
-        if (getActivity() != null && mPresenter.getAdapter() != null && mPresenter.getAdapter().isFinalScreen()) {
-            getActivity().setTitle(mOriginTitle);
-        } else {
-            setTitle(mOriginTitle);
-        }
+        setTitle(mOriginTitle);
         Timber.w("mOriginTitle %s", mOriginTitle);
     }
 
@@ -488,10 +484,11 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Phone");
         } else {
             if (submitButton != null) {
-                if (viewEnd)
+                if (viewEnd) {
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
-                else
+                } else {
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
+                }
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
@@ -513,10 +510,11 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             Timber.d("setMarginSubmitButtonTop  Phone");
         } else {
             if (submitButton != null) {
-                if (viewEnd)
+                if (viewEnd) {
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
-                else
+                } else {
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
+                }
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
@@ -701,10 +699,9 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         //anim success icon
         //ViewUtils.animIcon(getActivity(), R.id.success_imageview);
         changeSubmitButtonBackground(order);
-        //update title
-        setTitle(pToolbarTitle);
         updateToolBar();
         enableSubmitBtn();
+        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 100);
     }
 
 
@@ -739,9 +736,9 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         }
         // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
         changeSubmitButtonBackground(order);
-        setTitle(pToolBarTitle);
         updateToolBar();
         enableSubmitBtn();
+        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 100);
     }
 
     private void updateToolBar() {

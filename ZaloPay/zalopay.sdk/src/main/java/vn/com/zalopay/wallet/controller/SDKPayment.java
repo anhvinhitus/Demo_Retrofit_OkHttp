@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -187,22 +188,22 @@ public class SDKPayment {
             }
         } else {
             intent = new Intent(pOwner, ChannelListActivity.class);
-
-            // here start background task to collect data
-            ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
-            interactor.collectPaymentInfo(paymentInfoHelper);
         }
         if (pmcTransType == null && intent.getComponent().getClassName().equals(ChannelActivity.class.getName())) {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
-        } else {
-            SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
-            GlobalData.paymentInfoHelper = paymentInfoHelper;
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pOwner.startActivity(intent);
+            return;
         }
-        Log.d("startGateway", intent.getComponent().getShortClassName(), pmcTransType);
+        // here start background task to collect data
+        ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+        interactor.collectPaymentInfo(paymentInfoHelper);
+
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
+        GlobalData.paymentInfoHelper = paymentInfoHelper;
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        pOwner.startActivity(intent);
+        Timber.d("start screen %s - %s", intent.getComponent().getShortClassName(), pmcTransType);
     }
 
     /***
