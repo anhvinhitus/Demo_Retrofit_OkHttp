@@ -71,6 +71,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private static final int ERR_CODE_OUT_OF_DATA = 2;
+    private static final int INTERNAL_REACT_NATIVE_APPID = 1;
 
     ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, INavigator navigator,
                                      TransactionStore.Repository repository, AppResourceStore.Repository resourceRepository,
@@ -421,7 +422,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                         if (aBoolean) {
                             startReactNativeApp(appid, transid);
                         } else {
-                            startReactNativeApp(1, transid);
+                            startReactNativeApp(INTERNAL_REACT_NATIVE_APPID, transid);
                         }
                         Helpers.promiseResolve(promise, 1);
                     }
@@ -440,7 +441,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         options.put("transid", transid);
 
         Intent intent;
-        if (appid == 1) {
+        if (appid == INTERNAL_REACT_NATIVE_APPID) {
             intent = mNavigator.intentMiniAppActivity(activity, ModuleName.TRANSACTION_LOGS, options);
         } else {
             intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
