@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -519,9 +520,16 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     private String generateEmbeddata(long transId, String message, String displayName, String zalopayid, long timestamp) {
+        String encodedMessage;
+        try {
+            encodedMessage = Base64.encodeToString(message.getBytes("UTF-16BE"), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
+        } catch (UnsupportedEncodingException e) {
+            encodedMessage = Base64.encodeToString(message.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
+        }
+
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE);
-        jsonObject.addProperty("message", message);
+        jsonObject.addProperty("message", encodedMessage);
         jsonObject.addProperty("timestamp", timestamp);
         jsonObject.addProperty("transid", transId);
         jsonObject.addProperty("displayname", displayName);
