@@ -279,21 +279,8 @@ public class NotificationHelper {
                     skipStorage = true;
                     break;
                 case NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE:
-                    String encodedMessage = embeddata.get("message").getAsString();
-                    String message;
-//                    try {
-////                        embedValue = new String(Base64.decode(embedValue, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE), "UTF-8");
-//                        byte[] bytes = Base64.decode(encodedMessage, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
-//
-//                        message = new String(bytes, "UTF-16BE");
-//                    } catch (UnsupportedEncodingException e) {
-//                        byte[] bytes = Base64.decode(encodedMessage, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
-//                        message = new String(bytes, "UTF-16BE");
-//                    }
-                    byte[] bytes = Base64.decode(encodedMessage, Base64.DEFAULT);
-                    message = new String(bytes, "UTF-16");
-//                    message = new String(bytes, "UTF-16BE"); Chinese characters
-
+                    String message = embeddata.get("message").getAsString();
+                    message = new String(Base64.decode(message, Base64.DEFAULT), "UTF-16");
                     String displayName = embeddata.get("displayname").getAsString();
                     long transId = embeddata.get("transid").getAsLong();
                     String zalopayid = embeddata.get("zalopayid").getAsString();
@@ -303,7 +290,6 @@ public class NotificationHelper {
                     notify.notificationstate = (long) (Enums.NotificationState.UNREAD.getId());
                     notify.message = String.format(mContext.getString(R.string.receive_thank_message), name);
                     notify.transid = transId;
-                    embeddata.addProperty(message, "message");
                     Subscription subscription = mTransactionRepository.updateThankMessage(transId, message)
                             .subscribeOn(Schedulers.io())
                             .subscribe(new DefaultSubscriber<>());
