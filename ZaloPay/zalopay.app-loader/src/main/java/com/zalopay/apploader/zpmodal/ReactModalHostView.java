@@ -333,8 +333,12 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
                         new Runnable() {
                             @Override
                             public void run() {
-                                ((ReactContext) getContext()).getNativeModule(UIManagerModule.class)
-                                        .updateNodeSize(getChildAt(0).getId(), w, h);
+                                try {
+                                    ((ReactContext) getContext()).getNativeModule(UIManagerModule.class)
+                                            .updateNodeSize(getChildAt(0).getId(), w, h);
+                                } catch (Exception e) {
+                                    Timber.d(e.getMessage());
+                                }
                             }
                         });
             }
