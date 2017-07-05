@@ -224,7 +224,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser, mZaloPayRepository,
+                mReactNativeHostable, appRepository, mUser,
                 mNetworkServiceWithRetry
         );
     }

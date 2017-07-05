@@ -378,7 +378,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         getViewOrThrow().renderDynamicItemDetail(items);
     }
 
-    private void send(PaymentChannel pChannel) {
+    void send(PaymentChannel pChannel) {
         ChannelListAdapter.ItemType itemType;
         if (pChannel.isZaloPayChannel()) {
             itemType = ChannelListAdapter.ItemType.ZALOPAY;
@@ -643,7 +643,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
      * then key is pmc name instead of bank code
      * @param channel
      */
-    private void queueChannel(PaymentChannel channel) {
+    void queueChannel(PaymentChannel channel) {
         String key = channel.bankcode;
         Object object = channel;
         boolean active = channel.meetPaymentCondition();

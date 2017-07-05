@@ -52,16 +52,16 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
     private User mUser;
-    private RedPacketStore.Repository mRedPacketRepository;
+    RedPacketStore.Repository mRedPacketRepository;
     private FriendStore.Repository mFriendRepository;
     private BalanceStore.Repository mBalanceRepository;
     private final IRedPacketPayService mPaymentService;
     private AlertDialogProvider mDialogProvider;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private CountDownTimer mTimerGetStatus;
-    private boolean isRunningGetStatus;
+    CountDownTimer mTimerGetStatus;
+    boolean isRunningGetStatus;
 
     public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
                                       RedPacketStore.Repository redPackageRepository,
@@ -109,7 +109,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-    private void pay(final BundleOrder bundleOrder, final Promise promise) {
+    void pay(final BundleOrder bundleOrder, final Promise promise) {
         if (bundleOrder == null) {
             return;
         }
@@ -160,7 +160,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         });
     }
 
-    private void stopTaskGetStatus() {
+    void stopTaskGetStatus() {
         if (mTimerGetStatus != null) {
             mTimerGetStatus.cancel();
         }
@@ -173,7 +173,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Helpers.promiseResolveSuccess(promise, writableMap);
     }
 
-    private void onGetBundleStatusFinish(Promise promise, long bundleId, boolean result, int status) {
+    void onGetBundleStatusFinish(Promise promise, long bundleId, boolean result, int status) {
         Timber.d("Get bundle status finish : bundleId [%s] result [%s] status [%s]", bundleId, result, status);
         promiseResolveGetBundleStatus(promise, result);
         stopTaskGetStatus();
@@ -219,14 +219,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-    private Observable<Boolean> updateBalance() {
+    Observable<Boolean> updateBalance() {
         return mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .map(aLong -> Boolean.TRUE)
                 .onErrorResumeNext(throwable -> Observable.empty());
     }
 
-    private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
+    void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("startTaskGetTransactionStatus packetId [%s] transId [%s]", packageId, zpTransId);
         stopTaskGetStatus();
         mTimerGetStatus = new CountDownTimer(30000, 1000) {
@@ -244,7 +244,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }.start();
     }
 
-    private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
+    void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("showDialogRetryGetTranStatus packageId [%s] zpTransId [%s]", packageId, zpTransId);
         if (getCurrentActivity() == null) {
             return;
@@ -267,7 +267,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("showDialogRetryGetTranStatus end");
     }
 
-    private void getPackageStatus(final long packageId, final long zpTransId, final Promise promise) {
+    void getPackageStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("Get package status : isRunningGetStatus [%s]", isRunningGetStatus);
         if (isRunningGetStatus) {
             return;
@@ -294,7 +294,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-    private void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
+    void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
         Subscription subscription = mRedPacketRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue(), null)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());

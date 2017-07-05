@@ -62,9 +62,9 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
-    private INavigator navigator;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    private NotificationStore.Repository mNotificationRepository;
+    final INavigator mNavigator;
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private final NotificationStore.Repository mNotificationRepository;
     private PaymentWrapper paymentWrapper;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
@@ -72,7 +72,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                               NetworkService networkServiceWithRetry
     ) {
         super(reactContext);
-        this.navigator = navigator;
+        this.mNavigator = navigator;
         this.mNotificationRepository = mNotificationRepository;
 
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
@@ -104,7 +104,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void navigateProfile() {
         if (getCurrentActivity() != null) {
-            navigator.startProfileInfoActivity(getCurrentActivity());
+            mNavigator.startProfileInfoActivity(getCurrentActivity());
         }
     }
 
@@ -136,7 +136,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 if (getCurrentActivity() == null) {
                     return;
                 }
-                boolean pinSuccess = navigator.promptPIN(getCurrentActivity(), channel, promise);
+                boolean pinSuccess = mNavigator.promptPIN(getCurrentActivity(), channel, promise);
                 Timber.d("pinSuccess %s", pinSuccess);
             }
         });
@@ -249,7 +249,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        navigator.startLinkAccountActivity(currentActivity);
+        mNavigator.startLinkAccountActivity(currentActivity);
     }
 
     @ReactMethod
@@ -259,7 +259,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        navigator.startLinkCardActivity(currentActivity);
+        mNavigator.startLinkCardActivity(currentActivity);
     }
 
     private void removeNotify(long notifyId) {
@@ -323,7 +323,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private PaymentWrapper getPaymentWrapper() {
         PaymentWrapper wrapper = new PaymentWrapperBuilder()
-                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
                     public Object getContext() {
                         return getCurrentActivity();

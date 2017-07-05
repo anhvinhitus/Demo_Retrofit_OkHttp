@@ -104,7 +104,7 @@ public class InternalReactFragment extends ReactBaseFragment {
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
                 mReactNativeHostable, appRepository, mUser,
-                mZaloPayRepository, mNetworkServiceWithRetry);
+                mNetworkServiceWithRetry);
     }
 
     @Override

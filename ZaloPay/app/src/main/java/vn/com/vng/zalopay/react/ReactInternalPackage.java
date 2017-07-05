@@ -64,7 +64,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 EventBus eventBus,
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,
-                                User user, ZaloPayRepository zaloPayRepository,
+                                User user,
                                 NetworkService networkServiceWithRetry
 
     ) {

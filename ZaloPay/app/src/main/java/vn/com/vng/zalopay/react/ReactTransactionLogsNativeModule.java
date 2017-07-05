@@ -63,7 +63,7 @@ import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_TRANSACTION_N
  */
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private TransactionStore.Repository mTransactionRepository;
+    TransactionStore.Repository mTransactionRepository;
     private INavigator mNavigator;
     private final EventBus mEventBus;
     private final NotificationStore.Repository mNotificationRepository;
@@ -325,7 +325,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
 
-    private WritableArray transform(List<TransHistory> histories) {
+    WritableArray transform(List<TransHistory> histories) {
         WritableArray result = Arguments.createArray();
         for (TransHistory history : histories) {
             WritableMap item = transform(history);
@@ -429,7 +429,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private void startReactNativeApp(int appid, String transid) {
+    void startReactNativeApp(int appid, String transid) {
         Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
@@ -451,7 +451,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         }
     }
 
-    private Observable<TransactionResult> resolveTransactionFail(
+    Observable<TransactionResult> resolveTransactionFail(
             long timestamp, List<Integer> transTypes, int offset, int count, int sign, final Throwable error) {
         return mTransactionRepository.getTransactionsFailLocal(timestamp, transTypes, offset, count, sign)
                 .map(histories -> {
@@ -460,7 +460,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 });
     }
 
-    private Observable<TransactionResult> resolveTransactionSuccess(
+    Observable<TransactionResult> resolveTransactionSuccess(
             long timestamp, List<Integer> transTypes, int offset, int count, int sign, final Throwable error) {
         return mTransactionRepository.getTransactionsLocal(timestamp, transTypes, offset, count, sign)
                 .map(histories -> {

@@ -104,7 +104,7 @@ public class Navigator implements INavigator {
 
     private SharedPreferences mPreferences;
 
-    private AuthenticationPassword authenticationPassword;
+    AuthenticationPassword mAuthenticationPassword;
 
     @Inject
     public Navigator(UserConfig userConfig, SharedPreferences preferences) {
@@ -747,8 +747,8 @@ public class Navigator implements INavigator {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
-                authenticationPassword.initialize();
+                mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+                mAuthenticationPassword.initialize();
             }
         }, 200);
     }
@@ -782,8 +782,8 @@ public class Navigator implements INavigator {
     }
 
     private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
-        authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
-        authenticationPassword.initialize();
+        mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
+        mAuthenticationPassword.initialize();
     }
 
     private void showPinDialog(final Context context, final Promise promise) {
@@ -802,7 +802,7 @@ public class Navigator implements INavigator {
                 @Override
                 public void onShowPassword() {
                     //show password view
-                    authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
+                    mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
                         @Override
                         public void onAuthenticated(String password) {
                             Helpers.promiseResolveSuccess(promise, null);
@@ -813,13 +813,13 @@ public class Navigator implements INavigator {
                             Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
                         }
                     });
-                    authenticationPassword.initialize();
+                    mAuthenticationPassword.initialize();
                 }
             });
             dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
         } else {
             //show password view
-            authenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
+            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
                     Helpers.promiseResolveSuccess(promise, null);
@@ -830,7 +830,7 @@ public class Navigator implements INavigator {
                     Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
                 }
             });
-            authenticationPassword.initialize();
+            mAuthenticationPassword.initialize();
         }
     }
 

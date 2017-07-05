@@ -67,7 +67,7 @@ import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionM
  */
 public class PayProxy extends SingletonBase {
     private static PayProxy _object;
-    private Context mContext;
+    Context mContext;
     private WeakReference<BaseActivity> mActivity;
     private ValidationActor mValidActor;
     private AuthenActor mAuthenActor;
@@ -193,7 +193,7 @@ public class PayProxy extends SingletonBase {
         return networkError;
     }
 
-    private void markTransFail(String pError) {
+    void markTransFail(String pError) {
         if (mStatusResponse == null) {
             mStatusResponse = new StatusResponse(-1, pError);
         } else {
@@ -301,7 +301,7 @@ public class PayProxy extends SingletonBase {
         hideLoading(pError);
     }
 
-    private synchronized void moveToResultScreen() {
+    synchronized void moveToResultScreen() {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
@@ -584,7 +584,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    public void showPassword() {
+    void showPassword() {
         try {
             showPassword(getActivity());
         } catch (Exception e) {
@@ -593,7 +593,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    private void showPassword(Activity pActivity) {
+    void showPassword(Activity pActivity) {
         try {
             mAuthenActor.showPasswordPopup(pActivity, mChannel);
         } catch (Exception e) {
