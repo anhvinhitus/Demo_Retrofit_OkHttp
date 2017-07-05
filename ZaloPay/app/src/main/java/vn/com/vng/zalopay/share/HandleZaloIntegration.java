@@ -57,7 +57,7 @@ public class HandleZaloIntegration {
         userInfo.zalopay_userid = user.zaloPayId;
         userInfo.accesstoken = user.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
-        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber());
+        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber<>());
         if (subscriptions != null) {
             mCompositeSubscription.addAll(subscriptions);
         }

@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.controller;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import rx.Observer;
 import rx.Subscription;
@@ -21,6 +22,7 @@ import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
+import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 public class SDKApplication extends Application {
@@ -71,11 +73,11 @@ public class SDKApplication extends Application {
      * @param pObserver
      * @return
      */
-    public synchronized static Subscription[] loadSDKData(UserInfo pUserInfo, String pAppVersion, Observer pObserver) {
+    public synchronized static Subscription[] loadSDKData(UserInfo pUserInfo, String pAppVersion, @NonNull Observer<PlatformInfoCallback> pObserver) {
         try {
             Log.d("SDKApplication", "start load sdk payment data time", SdkUtils.convertDateTime(System.currentTimeMillis()));
             //prevent load gateway if user in sdk
-            if (GlobalData.isUserInSDK() && pObserver != null) {
+            if (GlobalData.isUserInSDK()) {
                 pObserver.onCompleted();
                 Timber.d("user in sdk - delay load gateway info");
                 return null;
@@ -110,9 +112,7 @@ public class SDKApplication extends Application {
             subscription[2] = subscription2;
             return subscription;
         } catch (Exception e) {
-            if (pObserver != null) {
-                pObserver.onError(e);
-            }
+            pObserver.onError(e);
         }
         return null;
     }
@@ -120,7 +120,7 @@ public class SDKApplication extends Application {
     /***
      * update user's info on cache(channels,map cards) after user reset PIN
      */
-    public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, Observer pObserver) {
+    public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, @NonNull Observer<PlatformInfoCallback> pObserver) {
         return getApplicationComponent().platformInfoInteractor()
                 .loadSDKPlatformFromCloud(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false)
                 .subscribe(pObserver);

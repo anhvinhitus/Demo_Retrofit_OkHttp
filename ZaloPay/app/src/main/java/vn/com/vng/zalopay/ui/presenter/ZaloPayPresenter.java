@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -188,7 +189,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    private void onGetAppResourceSuccess(List<AppResource> resources) {
+    void onGetAppResourceSuccess(List<AppResource> resources) {
         Timber.d("get app resource success - size [%s]", resources.size());
 
         if (mView == null) {
@@ -200,7 +201,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
     }
 
-    private void setRefreshing(boolean value) {
+    void setRefreshing(boolean value) {
         if (mView != null) {
             mView.setRefreshing(value);
         }
@@ -212,25 +213,14 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             return;
         }
 
-        List<Long> listId = toStringListAppId(listAppResource);
-
-        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(listId)
+        Subscription subscription = Observable.from(listAppResource)
+                .filter(appResource -> appResource != null)
+                .map(appResource -> appResource.appid)
+                .toList()
+                .concatMap(mMerchantRepository::getListMerchantUserInfo)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
-    }
-
-    private List<Long> toStringListAppId(List<AppResource> listAppResource) {
-        List<Long> listId = new ArrayList<>();
-
-        for (AppResource appResource : listAppResource) {
-            if (appResource == null) {
-                continue;
-            }
-
-            listId.add(appResource.appid);
-        }
-        return listId;
     }
 
     private void ensureAppResourceAvailable() {
@@ -255,7 +245,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     /*
     * Custom subscribers
     * */
-    private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
+    class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {

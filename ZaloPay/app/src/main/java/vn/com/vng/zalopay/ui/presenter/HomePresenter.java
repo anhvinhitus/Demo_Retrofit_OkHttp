@@ -101,7 +101,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private boolean isInitTransaction;
     private Subscription mRefPlatformSubscription;
     private boolean isLoadedGateWayInfo;
-    private DefaultSubscriber<PlatformInfoCallback> platformInfoSubscriber = new DefaultSubscriber<PlatformInfoCallback>() {
+    private DefaultSubscriber<PlatformInfoCallback> mPlatformInfoSubscriber = new DefaultSubscriber<PlatformInfoCallback>() {
         @Override
         public void onError(Throwable e) {
             Timber.d("load platform info on error %s", e);
@@ -268,15 +268,13 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
-        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, platformInfoSubscriber);
+        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, mPlatformInfoSubscriber);
         if (subscriptions != null && subscriptions.length > 0) {
-            for (int i = 0; i < subscriptions.length; i++) {
-                mSubscription.add(subscriptions[i]);
-            }
+            mSubscription.addAll(subscriptions);
         }
     }
 
-    private void updateHomePage(boolean forceUpdate) {
+    void updateHomePage(boolean forceUpdate) {
         isLoadedGateWayInfo = true;
         refreshBanners();
         if (!forceUpdate) {
@@ -350,7 +348,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         UserInfo userInfo = new UserInfo();
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
-        Subscription subscription = SDKApplication.refreshSDKData(userInfo, new DefaultSubscriber());
+        Subscription subscription = SDKApplication.refreshSDKData(userInfo, new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
