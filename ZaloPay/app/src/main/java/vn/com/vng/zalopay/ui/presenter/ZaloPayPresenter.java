@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
@@ -35,7 +33,6 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -177,7 +174,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 .doOnNext(this::getListMerchantUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResourceSubscriber());
+                .doOnNext(this::onGetAppResourceSuccess)
+                .doOnError(e -> {
+                    Timber.d(e, "Get application resource error");
+                    setRefreshing(false);
+                })
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
@@ -189,7 +191,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    void onGetAppResourceSuccess(List<AppResource> resources) {
+    private void onGetAppResourceSuccess(List<AppResource> resources) {
         Timber.d("get app resource success - size [%s]", resources.size());
 
         if (mView == null) {
@@ -201,7 +203,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
     }
 
-    void setRefreshing(boolean value) {
+    private void setRefreshing(boolean value) {
         if (mView != null) {
             mView.setRefreshing(value);
         }
@@ -239,23 +241,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private void unregisterEvent() {
         if (mEventBus.isRegistered(this)) {
             mEventBus.unregister(this);
-        }
-    }
-
-    /*
-    * Custom subscribers
-    * */
-    class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
-
-        @Override
-        public void onNext(List<AppResource> appResources) {
-            onGetAppResourceSuccess(appResources);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "Get application resource error");
-            setRefreshing(false);
         }
     }
 
