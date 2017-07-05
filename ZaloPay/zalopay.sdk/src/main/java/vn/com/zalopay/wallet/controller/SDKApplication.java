@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -20,6 +19,7 @@ import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.interactor.IBank;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
@@ -91,7 +91,7 @@ public class SDKApplication extends Application {
             //load platform info
             getApplicationComponent().platformInfoInteractor()
                     .loadSDKPlatform(userId, accessToken, currentTime)
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(SchedulerHelper.applySchedulers())
                     .subscribe(pObserver);
             //load bank list
             Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
