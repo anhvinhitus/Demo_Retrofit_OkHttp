@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/app_padding"
         android:paddingLeft="@dimen/app_padding"
         android:paddingTop="@dimen/app_padding"
-        app:iconLeftPadding="@dimen/app_padding"
+        android:drawablePadding="@dimen/app_padding"
         app:iconLeftSize="@dimen/font_size_menu" />
 
     <View

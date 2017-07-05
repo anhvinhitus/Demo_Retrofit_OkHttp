@@ -1,14 +1,11 @@
 package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zalopay.ui.widget.IconFontDrawable;
 import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
@@ -23,18 +20,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 5/25/16.
  * *
  */
-public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, ListAppRecyclerAdapter.ViewHolder> {
+class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, ListAppRecyclerAdapter.ViewHolder> {
 
     private OnClickAppListener listener;
     private final int TYPE_BANNER = 0101;
 
-    public ListAppRecyclerAdapter(Context context, OnClickAppListener listener) {
+    ListAppRecyclerAdapter(Context context, OnClickAppListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -147,51 +143,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         public void bindView(AppResource appResource) {
             tvInsideApp.setText(appResource.appname);
-            setIconFont(tvInsideApp.getTopIcon(), appResource);
-        }
-
-        private void setIconFont(IconFontDrawable iconInsideApp, AppResource appResource) {
-            //  Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
-            if (iconInsideApp == null || appResource == null) {
-                return;
-            }
-
-            try {
-                loadIconFont(iconInsideApp,
-                        appResource.iconName,
-                        appResource.iconColor);
-            } catch (Exception e) {
-                Timber.w(e, "set IconFont for inside app exception.");
-                loadIconFontDefault();
-            }
-        }
-
-        private void loadIconFontDefault() {
-            loadIconFont(tvInsideApp.getLeftIcon(),
-                    R.string.general_icondefault,
-                    AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
-        }
-
-        private void loadIconFont(IconFontDrawable iconInsideApp, String iconName, String iconColor)
-                throws Resources.NotFoundException {
-            iconInsideApp.setIcon(iconName);
-            if (iconInsideApp.hasIcon()) {
-                setColorIconFont(iconInsideApp, iconColor);
-            } else {
-                loadIconFontDefault();
-            }
-        }
-
-        private void loadIconFont(IconFontDrawable iconInsideApp, int resourceId, String iconColor)
-                throws Resources.NotFoundException {
-            iconInsideApp.setIcon(resourceId);
-            setColorIconFont(iconInsideApp, iconColor);
-        }
-
-        private void setColorIconFont(IconFontDrawable iconInsideApp, String color) {
-            if (!TextUtils.isEmpty(color)) {
-                iconInsideApp.setColor(color);
-            }
+            tvInsideApp.setTopIcon(appResource.iconName, appResource.iconColor);
         }
     }
 

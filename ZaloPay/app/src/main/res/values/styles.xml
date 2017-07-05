@@ -103,7 +103,7 @@
     <style name="IconFontText.IconLeft">
         <item name="iconLeftColor">@color/white</item>
         <item name="iconLeftSize">@dimen/font_size_link_card_add</item>
-        <item name="iconLeftPadding">@dimen/spacing.medium.s</item>
+        <item name="android:drawablePadding">@dimen/spacing.medium.s</item>
     </style>
 
     <style name="Button.Default.New">

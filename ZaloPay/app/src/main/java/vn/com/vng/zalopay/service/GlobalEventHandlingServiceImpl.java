@@ -137,7 +137,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         Timber.d("begin load config");
 
         ConfigLoader.loadConfigFromResource(BuildConfig.ZALOPAY_APP_ID);
-        AndroidApplication.instance().initIconFont(true);
+        AndroidApplication.instance().loadFontFromApp1(true);
     }
     @Subscribe
     public void onExceptionEvent(ExceptionEvent event){

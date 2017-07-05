@@ -18,7 +18,7 @@
         android:textSize="@dimen/font_size_normal"
         app:iconTopColor="@color/white"
         app:iconTopName="general_check"
-        app:iconTopPadding="@dimen/spacing.small"
+        android:drawablePadding="@dimen/spacing.small"
         app:iconTopSize="36dp"/>
 
 </FrameLayout>

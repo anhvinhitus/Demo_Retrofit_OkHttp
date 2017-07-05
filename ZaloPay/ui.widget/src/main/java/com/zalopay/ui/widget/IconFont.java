@@ -1,32 +1,23 @@
 package com.zalopay.ui.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
-import com.zalopay.ui.widget.iconfont.IconFontHelper;
-import com.zalopay.ui.widget.iconfont.IconFontInfo;
-import com.zalopay.ui.widget.util.FontHelper;
+import com.shamanland.fonticon.FontIconView;
+import com.zalopay.ui.widget.util.IconFontLoader;
 
-import timber.log.Timber;
+public class IconFont extends FontIconView {
 
-/**
- * Created by longlv on 11/17/16.
- * TextView subclass which allows the user to define a truetype font file to use as the view's typeface.
- */
+    private static final String ICON_DEFAULT = "general_icondefault";
 
-public class IconFont extends android.support.v7.widget.AppCompatTextView {
-
-    private TypefaceEnum mTypefaceEnum;
+    private String mIconDefault = ICON_DEFAULT;
 
     public IconFont(Context context) {
         this(context, null);
@@ -47,58 +38,34 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
         if (typedArray == null) {
             return;
         }
-        try {
-            String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
-            String iconName = typedArray.getString(R.styleable.IconFont_iconName);
-//            Log.d("IconFont", "icon name: " + iconName);
 
-            if (!TextUtils.isEmpty(fontAsset)) {
-                setTypefaceFromAsset(fontAsset);
-            } else {
-                setTypefaceDefault();
-            }
-            setIcon(iconName);
-        } catch (RuntimeException e) {
-            Timber.d(e, "set font and icon name throw RuntimeException");
+        String iconName = typedArray.getString(R.styleable.IconFont_iconName);
+        mIconDefault = typedArray.getString(R.styleable.IconFont_iconDefault);
+        int iconSize = typedArray.getDimensionPixelSize(R.styleable.IconFont_iconSize, -1);
+        if (iconSize >= 0) {
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, iconSize);
         }
 
-        try {
-            int iconSize = typedArray.getDimensionPixelSize(R.styleable.IconFont_iconSize, -1);
-            if (iconSize >= 0) {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, iconSize);
-            }
-        } catch (UnsupportedOperationException e) {
-            Timber.d(e, "get icon size throw UnsupportedOperationException");
-        } catch (RuntimeException e) {
-            Timber.d(e, "get icon size throw RuntimeException");
-        }
-
-        try {
-            typedArray.recycle();
-        } catch (RuntimeException e) {
-            Timber.d(e, "recycle typedArray throw RuntimeException");
-        }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        refreshTypeface();
-        super.onDraw(canvas);
+        typedArray.recycle();
+        setIcon(iconName);
     }
 
     public void setIconColor(@ColorRes int color) {
-        try {
-            super.setTextColor(ResourcesCompat.getColor(getResources(), color, null));
-        } catch (Resources.NotFoundException e) {
-            Timber.w(e, "setIconColor throw NotFoundException");
-        }
+        int colorRes = ContextCompat.getColor(getContext(), color);
+        super.setTextColor(colorRes);
     }
 
     public void setIconColor(String color) {
         if (TextUtils.isEmpty(color)) {
             return;
         }
-        super.setTextColor(Color.parseColor(color));
+        int colorRes = Color.BLACK;
+        try {
+            colorRes = Color.parseColor(color);
+        } catch (Exception ignore) {
+        }
+
+        super.setTextColor(colorRes);
     }
 
     public void setIcon(@StringRes int iconResource) {
@@ -107,60 +74,12 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
     }
 
     public void setIcon(String iconName) {
-        if (TextUtils.isEmpty(iconName)) {
-            setText("");
-        } else {
-            IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
-            if (iconFontInfo == null) {
-                Timber.w("setIcon fail, not found info of iconName: %s", iconName);
-                setText("");
-            } else {
-                setText(iconFontInfo.code);
-            }
-        }
-    }
-
-    private void refreshTypeface() {
-        if (mTypefaceEnum == TypefaceEnum.DEFAULT
-                && getTypeface() != getZaloPayTypeface()) {
-            setTypefaceDefault();
-        }
-    }
-
-    public void setTypefaceFromAsset(String fontAsset) {
-        if (TextUtils.isEmpty(fontAsset)
-                || getContext() == null
-                || getContext().getAssets() == null) {
+        String code = IconFontLoader.getCode(iconName, mIconDefault == null ? ICON_DEFAULT : mIconDefault);
+        if (!TextUtils.isEmpty(code)) {
+            setText(code);
             return;
         }
-        Typeface typeface = FontHelper.getInstance().getFontFromAsset(getContext().getAssets(), fontAsset);
-        if (typeface == null) {
-            Timber.d("Could not create a typeface from asset: %s", fontAsset);
-        } else {
-            setTypefaceWithoutStyle(typeface);
-            mTypefaceEnum = TypefaceEnum.ASSET;
-        }
-    }
 
-    private Typeface getZaloPayTypeface() {
-        return IconFontHelper.getInstance().getCurrentTypeface();
-    }
-
-    private void setTypefaceDefault() {
-        setTypefaceWithoutStyle(getZaloPayTypeface());
-        mTypefaceEnum = TypefaceEnum.DEFAULT;
-    }
-
-    private void setTypefaceWithoutStyle(Typeface typeface) {
-        if (typeface == null) {
-            Timber.w("setTypefaceWithoutStyle typeface null/empty");
-            return;
-        }
-        int style = Typeface.NORMAL;
-
-        if (getTypeface() != null) {
-            style = getTypeface().getStyle();
-        }
-        setTypeface(typeface, style);
+        setText("");
     }
 }

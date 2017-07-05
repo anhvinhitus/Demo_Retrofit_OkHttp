@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.IconFontTextView;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;

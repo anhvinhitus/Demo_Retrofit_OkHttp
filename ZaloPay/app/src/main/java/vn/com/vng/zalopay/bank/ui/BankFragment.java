@@ -20,12 +20,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 
+import com.shamanland.fonticon.FontIconDrawable;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
-import com.zalopay.ui.widget.IconFontDrawable;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
@@ -57,15 +57,13 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
         int width = getResources().getDimensionPixelSize(R.dimen.link_card_remove_width);
         int height = ViewGroup.LayoutParams.MATCH_PARENT;
 
-        IconFontDrawable iconFontDrawable = new IconFontDrawable(getContext());
-        iconFontDrawable.setIcon(R.string.general_delete_card);
-        iconFontDrawable.setColor(Color.WHITE);
-        iconFontDrawable.setResourcesSize(R.dimen.font_size_delete);
+        FontIconDrawable drawable = new FontIconDrawable(getString(R.string.general_delete_card)
+                , Color.WHITE, getResources().getDimensionPixelSize(R.dimen.font_size_delete));
 
         SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
                 .setBackgroundDrawable(R.color.red)
                 .setText(getString(R.string.cancel))
-                .setImage(iconFontDrawable)
+                .setImage(drawable)
                 .setTextColor(Color.WHITE)
                 .setWidth(width)
                 .setHeight(height);

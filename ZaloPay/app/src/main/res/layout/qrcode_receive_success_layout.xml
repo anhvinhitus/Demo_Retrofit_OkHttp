@@ -42,7 +42,7 @@
             android:textColor="@color/green"
             android:textSize="26dp"
             app:iconLeftColor="@color/green"
-            app:iconLeftPadding="@dimen/spacing.small"
+            android:drawablePadding="@dimen/spacing.small"
             app:iconLeftSize="@dimen/font_size_receive_state"
             tools:text="300.000 VND" />
     </LinearLayout>

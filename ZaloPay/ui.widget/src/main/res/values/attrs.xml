@@ -8,28 +8,24 @@
     </declare-styleable>
 
     <declare-styleable name="IconFont">
-        <attr name="typefaceAsset" format="string" />
         <attr name="iconName" format="string" />
+        <attr name="iconDefault" format="string"/>
         <attr name="iconSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="IconFontTextView">
         <attr name="iconLeftName" format="string" />
         <attr name="iconLeftSize" format="dimension" />
-        <attr name="iconLeftColor" format="reference" />
-        <attr name="iconLeftPadding" format="reference" />
+        <attr name="iconLeftColor" format="color" />
         <attr name="iconRightName" format="string" />
         <attr name="iconRightSize" format="dimension" />
-        <attr name="iconRightColor" format="reference" />
-        <attr name="iconRightPadding" format="reference" />
+        <attr name="iconRightColor" format="color" />
         <attr name="iconTopName" format="string" />
         <attr name="iconTopSize" format="dimension" />
-        <attr name="iconTopColor" format="reference" />
-        <attr name="iconTopPadding" format="reference" />
+        <attr name="iconTopColor" format="color" />
         <attr name="iconBottomName" format="string" />
         <attr name="iconBottomSize" format="dimension" />
-        <attr name="iconBottomColor" format="reference" />
-        <attr name="iconBottomPadding" format="reference" />
+        <attr name="iconBottomColor" format="color" />
     </declare-styleable>
 
     <!--ATTR DEFAULT APPLICATION-->
@@ -474,6 +470,10 @@
 
     <declare-styleable name="CustomPassCodeRoundView">
         <attr name="lp_length_pin" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="FontTextView">
+        <attr name="typefaceAsset" format="string"/>
     </declare-styleable>
 
 </resources>

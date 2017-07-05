@@ -282,7 +282,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
             if (tvState != null) {
                 tvState.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
                 tvState.setText(CurrencyUtil.spanFormatCurrency(amount, false));
-                tvState.getLeftIcon().setIcon(success ? R.string.general_success : R.string.general_failed);
+                tvState.setLeftIcon(success ? R.string.general_success : R.string.general_failed);
             }
         }
 

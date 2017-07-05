@@ -1,20 +1,15 @@
 package vn.com.vng.zalopay.searchcategory;
 
-import android.content.res.Resources;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
-import com.zalopay.ui.widget.IconFontDrawable;
 import com.zalopay.ui.widget.IconFontTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.InsideApp;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by khattn on 3/27/17.
@@ -44,7 +39,7 @@ class CommonAppModel extends EpoxyModelWithHolder<CommonAppModel.AppItemHolder> 
     public void bind(AppItemHolder holder) {
         super.bind(holder);
         holder.mIconView.setText(app.appName);
-        setIconFont(holder.mIconView.getTopIcon(), app);
+        holder.mIconView.setTopIcon(app.iconName, app.iconColor);
         holder.mIconView.setOnClickListener(viewClickListener);
     }
 
@@ -70,49 +65,6 @@ class CommonAppModel extends EpoxyModelWithHolder<CommonAppModel.AppItemHolder> 
 
     public InsideApp getApp() {
         return app;
-    }
-
-    private void setIconFont(IconFontDrawable iconInsideApp, InsideApp appResource) {
-        if (iconInsideApp == null || appResource == null) {
-            return;
-        }
-
-        try {
-            loadIconFont(iconInsideApp,
-                    appResource.iconName,
-                    appResource.iconColor);
-        } catch (Exception e) {
-            Timber.w(e, "set IconFont for inside app exception.");
-            loadIconFontDefault(iconInsideApp);
-        }
-    }
-
-    private void loadIconFontDefault(IconFontDrawable iconInsideApp) {
-        loadIconFont(iconInsideApp,
-                R.string.general_icondefault,
-                AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
-    }
-
-    private void loadIconFont(IconFontDrawable iconInsideApp, String iconName, String iconColor)
-            throws Resources.NotFoundException {
-        iconInsideApp.setIcon(iconName);
-        if (iconInsideApp.hasIcon()) {
-            setColorIconFont(iconInsideApp, iconColor);
-        } else {
-            loadIconFontDefault(iconInsideApp);
-        }
-    }
-
-    private void loadIconFont(IconFontDrawable iconInsideApp, int resourceId, String iconColor)
-            throws Resources.NotFoundException {
-        iconInsideApp.setIcon(resourceId);
-        setColorIconFont(iconInsideApp, iconColor);
-    }
-
-    private void setColorIconFont(IconFontDrawable iconInsideApp, String color) {
-        if (!TextUtils.isEmpty(color)) {
-            iconInsideApp.setColor(color);
-        }
     }
 
     static class AppItemHolder extends EpoxyHolder {

@@ -37,8 +37,10 @@ public class FontHelper {
         if (!asset.startsWith("fonts/")) {
             asset = "fonts/" + asset;
         }
-        if (mFonts.containsKey(asset))
+
+        if (mFonts.containsKey(asset)) {
             return mFonts.get(asset);
+        }
 
         Typeface font = null;
 
