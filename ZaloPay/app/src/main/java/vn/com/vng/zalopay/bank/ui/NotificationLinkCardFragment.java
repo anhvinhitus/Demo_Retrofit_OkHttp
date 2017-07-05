@@ -1,10 +1,12 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -35,6 +37,9 @@ public class NotificationLinkCardFragment extends BaseFragment {
 
     @BindView(R.id.txtBankName)
     TextView mTxtBankName;
+
+    @BindView(R.id.scrRootview)
+    ScrollView mScrollView;
 
     @OnClick(R.id.btnCancel)
     public void onCLickCancel() {
@@ -88,6 +93,7 @@ public class NotificationLinkCardFragment extends BaseFragment {
         setLastCardNumber(mLastCardNumber);
         setBankIcon(mImageFilePath);
         setBankName(mBankName);
+        setScrollViewFocusDown();
     }
 
     private void setLastCardNumber(String lastCardNumber) {
@@ -115,5 +121,13 @@ public class NotificationLinkCardFragment extends BaseFragment {
         if (!TextUtils.isEmpty(bankName)) {
             mTxtBankName.setText(bankName);
         }
+    }
+    private void setScrollViewFocusDown()
+    {
+        if(mScrollView == null)
+        {
+            return;
+        }
+        new Handler().postDelayed(() -> mScrollView.fullScroll(View.FOCUS_DOWN), 300);
     }
 }
