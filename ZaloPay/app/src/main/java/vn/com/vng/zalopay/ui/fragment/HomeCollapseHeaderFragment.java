@@ -89,8 +89,8 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
 
     @Override
     public void setBalance(long balance) {
-        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
-//        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
+//        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
+        mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     @Override
