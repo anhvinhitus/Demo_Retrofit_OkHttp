@@ -70,8 +70,8 @@ public class ValidationActor extends SingletonBase {
         mChannel = channel;
         //channel is maintenance
         if (mChannel.isMaintenance()) {
-            if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
-                GlobalData.getPayBankFunction(mChannel);
+            if (GlobalData.shouldUpdateBankFuncbyPayType()) {
+                GlobalData.updateBankFuncByPmc(mChannel);
             }
             int bankFunction = GlobalData.getCurrentBankFunction();
             BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);

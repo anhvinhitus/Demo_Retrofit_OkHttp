@@ -480,8 +480,8 @@ public class PayProxy extends SingletonBase {
     }
 
     private boolean isBankMaintenance(String pBankCode) {
-        if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
-            GlobalData.getBankFunctionPay(mPaymentInfoHelper);
+        if (GlobalData.shouldUpdateBankFuncbyPayType()) {
+            GlobalData.updateBankFuncByPayType();
         }
 
         int bankFunction = GlobalData.getCurrentBankFunction();

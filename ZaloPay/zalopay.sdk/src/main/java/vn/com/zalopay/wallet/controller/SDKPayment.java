@@ -153,8 +153,7 @@ public class SDKPayment {
                 }
             }
         }
-        Log.d("pay", "payment info ", paymentInfoHelper);
-        GlobalData.selectBankFunctionByTransactionType(paymentInfoHelper);
+        Log.d("pay", "payment info", paymentInfoHelper);
         //init tracker event
         long appId = paymentInfoHelper.getAppId();
         int transtype = paymentInfoHelper.getTranstype();
@@ -199,6 +198,7 @@ public class SDKPayment {
 
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
         GlobalData.paymentInfoHelper = paymentInfoHelper;
+        GlobalData.updateBankFuncByTranstype();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

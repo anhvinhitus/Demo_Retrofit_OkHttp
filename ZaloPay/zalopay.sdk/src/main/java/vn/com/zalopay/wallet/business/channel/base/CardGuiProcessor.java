@@ -1369,7 +1369,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean isInputBankMaintenance() {
         boolean isBankDetect = BankCardCheck.getInstance().isDetected();
         boolean isCCDetect = CreditCardCheck.getInstance().isDetected();
-        if (isBankDetect && GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
+        if (isBankDetect && GlobalData.shouldUpdateBankFuncbyPayType()) {
             GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_CARD);
             if (BankCardCheck.getInstance().isBankAccount()) {
                 GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_BANK_ACCOUNT);

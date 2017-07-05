@@ -97,7 +97,19 @@ public class GlobalData {
         return BuildConfig.channel_zalopay == appID;
     }
 
-    public static void selectBankFunctionByTransactionType(PaymentInfoHelper paymentInfoHelper) {
+    @BankFunctionCode
+    public static int updateBankFuncByPayType() {
+        if (paymentInfoHelper.payByBankAccountMap()) {
+            bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
+        } else if (paymentInfoHelper.payByCardMap()) {
+            bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
+        } else {
+            bankFunction = BankFunctionCode.PAY_BY_CARD;
+        }
+        return bankFunction;
+    }
+
+    public static void updateBankFuncByTranstype() {
         if (paymentInfoHelper.isBankAccountTrans()) {
             bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
             return;
@@ -121,26 +133,22 @@ public class GlobalData {
         analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(pAppId, pAppTransID, transactionType);
     }
 
+    public static boolean shouldUpdateBankFuncbyPayType(){
+        return bankFunction == BankFunctionCode.PAY ||
+                bankFunction == BankFunctionCode.PAY_BY_CARD_TOKEN ||
+                bankFunction == BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN||
+                bankFunction == BankFunctionCode.PAY_BY_CARD ||
+                bankFunction == BankFunctionCode.PAY_BY_BANK_ACCOUNT;
+    }
+
     @BankFunctionCode
-    public static int getPayBankFunction(PaymentChannel pChannel) {
+    public static int updateBankFuncByPmc(PaymentChannel pChannel) {
         if (pChannel.isBankAccountMap()) {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (pChannel.isMapCardChannel()) {
             bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else if (pChannel.isBankAccount()) {
             bankFunction = BankFunctionCode.PAY_BY_BANK_ACCOUNT;
-        } else {
-            bankFunction = BankFunctionCode.PAY_BY_CARD;
-        }
-        return bankFunction;
-    }
-
-    @BankFunctionCode
-    public static int getBankFunctionPay(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.payByBankAccountMap()) {
-            bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
-        } else if (paymentInfoHelper.payByCardMap()) {
-            bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else {
             bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
