@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  * Created by chucvv on 6/8/17.
  */
 
-public interface IBank {
+public interface IBankInteractor {
     void clearCheckSum();
 
     void clearConfig();

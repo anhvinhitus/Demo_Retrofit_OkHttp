@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.IBankInteractor;
 
 public abstract class CardCheck extends SingletonBase {
     public String mCardNumber;
@@ -29,7 +29,7 @@ public abstract class CardCheck extends SingletonBase {
     protected BankConfig mSelectBank;
     protected List<DOtpReceiverPattern> mOtpReceiverPatternList;
     protected boolean mValidLuhn; //check card number by Luhn formula
-    protected IBank mBankInteractor;
+    protected IBankInteractor mBankInteractor;
 
     public CardCheck() {
         super();

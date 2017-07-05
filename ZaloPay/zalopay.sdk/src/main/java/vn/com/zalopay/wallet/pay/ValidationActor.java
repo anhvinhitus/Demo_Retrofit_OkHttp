@@ -14,12 +14,11 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
@@ -30,7 +29,7 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 public class ValidationActor extends SingletonBase {
     private PaymentChannel mChannel;
     private PaymentInfoHelper mPaymentInfoHelper;
-    private IBank mBankInteractor;
+    private IBankInteractor mBankInteractor;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private ZPWOnEventConfirmDialogListener mUpdateLevelListener = new ZPWOnEventConfirmDialogListener() {
         @Override
@@ -53,9 +52,9 @@ public class ValidationActor extends SingletonBase {
         }
     };
 
-    public ValidationActor(PaymentInfoHelper paymentInfoHelper, IBank iBank, ChannelListPresenter channelListPresenter) {
+    public ValidationActor(PaymentInfoHelper paymentInfoHelper, IBankInteractor iBankInteractor, ChannelListPresenter channelListPresenter) {
         this.mPaymentInfoHelper = paymentInfoHelper;
-        this.mBankInteractor = iBank;
+        this.mBankInteractor = iBankInteractor;
         this.mChannelListPresenter = new WeakReference<>(channelListPresenter);
     }
 

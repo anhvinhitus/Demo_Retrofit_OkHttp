@@ -24,12 +24,12 @@ import vn.com.zalopay.wallet.repository.cardmap.CardStore;
  * Created by chucvv on 6/10/17.
  */
 
-public class LinkInteractor implements ILink {
+public class LinkSourceInteractor implements ILinkSourceInteractor {
     private CardStore.Repository cardRepository;
     private BankAccountStore.Repository bankAccountRepository;
 
     @Inject
-    public LinkInteractor(CardStore.Repository cardRepository, BankAccountStore.Repository bankAccountRepository) {
+    public LinkSourceInteractor(CardStore.Repository cardRepository, BankAccountStore.Repository bankAccountRepository) {
         this.cardRepository = cardRepository;
         this.bankAccountRepository = bankAccountRepository;
     }

@@ -11,10 +11,10 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.interactor.AppInfoInteractor;
 import vn.com.zalopay.wallet.interactor.BankInteractor;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.interactor.IBank;
-import vn.com.zalopay.wallet.interactor.ILink;
+import vn.com.zalopay.wallet.interactor.IBankInteractor;
+import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
-import vn.com.zalopay.wallet.interactor.LinkInteractor;
+import vn.com.zalopay.wallet.interactor.LinkSourceInteractor;
 import vn.com.zalopay.wallet.interactor.PlatformInfoInteractor;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
@@ -35,7 +35,7 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    IBank provideBankListInteractor(BankStore.LocalStorage localStorage, BankStore.BankListService bankListService, MemoryCache memoryCache) {
+    IBankInteractor provideBankListInteractor(BankStore.LocalStorage localStorage, BankStore.BankListService bankListService, MemoryCache memoryCache) {
         return new BankInteractor(localStorage, bankListService, memoryCache);
     }
 
@@ -47,9 +47,9 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    ILink provideLinkInteactor(CardStore.Repository cardRepository,
-                               BankAccountStore.Repository bankAccountRepository) {
-        return new LinkInteractor(cardRepository, bankAccountRepository);
+    ILinkSourceInteractor provideLinkInteactor(CardStore.Repository cardRepository,
+                                               BankAccountStore.Repository bankAccountRepository) {
+        return new LinkSourceInteractor(cardRepository, bankAccountRepository);
     }
 
     @Provides
@@ -57,7 +57,7 @@ public class InteractorModule {
     ChannelListInteractor provideChannelListInteractor(Application application,
                                                        IPlatformInfo platformInteractor,
                                                        AppInfoStore.Interactor appInfoInteractor,
-                                                       IBank bankInteractor,
+                                                       IBankInteractor bankInteractor,
                                                        ZPMonitorEventTiming eventTiming) {
         return new ChannelListInteractor(application,
                 platformInteractor, appInfoInteractor, bankInteractor,

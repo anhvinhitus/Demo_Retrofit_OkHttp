@@ -2,23 +2,17 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.interactor.ILink;
+import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
-
-import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -106,7 +100,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
 //        dBankAccount.lastaccountno = "9460";
 //        pResponse.bankaccounts.add(dBankAccount);
             //update card and bank account info again on cache
-            ILink linkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
+            ILinkSourceInteractor linkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
             linkInteractor.putCards(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
             linkInteractor.putBankAccounts(userId, pResponse.bankaccountchecksum, pResponse.bankaccounts);
         } catch (Exception e) {

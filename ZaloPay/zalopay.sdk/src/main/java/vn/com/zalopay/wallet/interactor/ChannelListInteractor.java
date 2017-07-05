@@ -30,7 +30,7 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 public class ChannelListInteractor {
     private final AppInfoStore.Interactor mAppInfoInteractor;
-    private final IBank mBankInteractor;
+    private final IBankInteractor mBankInteractor;
     private final IPlatformInfo mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
     private final Handler mApplicationHandler;
@@ -44,7 +44,7 @@ public class ChannelListInteractor {
     public ChannelListInteractor(Application application,
                                  IPlatformInfo platformInteractor,
                                  AppInfoStore.Interactor appInfoInteractor,
-                                 IBank bankInteractor,
+                                 IBankInteractor bankInteractor,
                                  ZPMonitorEventTiming eventTiming) {
         mApplicationHandler = new Handler(application.getMainLooper());
 

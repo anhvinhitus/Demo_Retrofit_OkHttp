@@ -51,7 +51,7 @@ import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
@@ -68,7 +68,7 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
     @Inject
-    public IBank mBankInteractor;
+    public IBankInteractor mBankInteractor;
     protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     EventBus mBus;

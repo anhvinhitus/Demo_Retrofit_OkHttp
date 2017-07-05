@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.MemoryCache;
@@ -43,7 +40,7 @@ import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
  * Created by chucvv on 6/8/17.
  */
 
-public class BankInteractor implements IBank {
+public class BankInteractor implements IBankInteractor {
     private final BankStore.LocalStorage mLocalStorage;
     private final BankStore.BankListService mBankListService;
     private final MemoryCache mMemoryCache;

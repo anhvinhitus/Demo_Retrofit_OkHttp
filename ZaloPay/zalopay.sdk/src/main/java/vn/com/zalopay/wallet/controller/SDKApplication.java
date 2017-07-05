@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.interactor.IBank;
+import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
@@ -53,7 +53,7 @@ public class SDKApplication extends Application {
     private static void clearCache(String userId, String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
         AppInfoStore.Interactor appInfo = getApplicationComponent().appInfoInteractor();
-        IBank bankList = getApplicationComponent().bankListInteractor();
+        IBankInteractor bankList = getApplicationComponent().bankListInteractor();
         if (platformInfo.isNewVersion(pAppVersion) || platformInfo.isNewUser(userId)) {
             Timber.d("clearCache - start clear cache in previous version");
             //clear banklist

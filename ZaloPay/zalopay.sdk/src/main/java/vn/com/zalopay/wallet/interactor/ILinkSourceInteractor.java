@@ -10,11 +10,18 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 /**
  * Created by chucvv on 6/10/17.
+ * Declare methods for managing user link source of funds
  */
 
-public interface ILink {
+public interface ILinkSourceInteractor {
+    /**
+     * Get list of link cards (ATM cards)
+     */
     Observable<Boolean> getCards(String userid, String accesstoken, boolean pReload, String appversion);
 
+    /**
+     * Get list of link bank accounts
+     */
     Observable<Boolean> getBankAccounts(String userid, String accesstoken, boolean pReload, String appversion);
 
     Observable<Boolean> getMap(String userid, String accesstoken, boolean pReload, String appversion);
