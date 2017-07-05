@@ -522,9 +522,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     private String generateEmbeddata(long transId, String message, String displayName, String zalopayid, long timestamp) {
         String encodedMessage;
         try {
-            encodedMessage = Base64.encodeToString(message.getBytes("UTF-16BE"), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
+            encodedMessage = Base64.encodeToString(message.getBytes("UTF-16"), Base64.DEFAULT);
         } catch (UnsupportedEncodingException e) {
-            encodedMessage = Base64.encodeToString(message.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
+            encodedMessage = Base64.encodeToString(message.getBytes(), Base64.DEFAULT);
         }
 
         JsonObject jsonObject = new JsonObject();
