@@ -21,12 +21,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.webview.ui.IWebView;
 
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
@@ -197,7 +195,7 @@ class ProcessMessageListener implements IProcessMessageListener {
     }
 
     private void startExternalApp(AppResource app) {
-        Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.existResource(app.appid)
+        Subscription subscription = mWebAppPresenterWeakReference.get().mAppResourceRepository.isAppResourceAvailable(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new StartPaymentAppSubscriber(mWebAppPresenterWeakReference.get().mNavigator,

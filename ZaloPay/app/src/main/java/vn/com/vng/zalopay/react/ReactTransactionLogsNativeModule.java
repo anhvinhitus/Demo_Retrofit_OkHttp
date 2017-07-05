@@ -36,7 +36,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
@@ -414,7 +413,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     @ReactMethod
     public void showTransactionDetail(final int appid, final String transid, final Promise promise) {
         Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
-        Subscription subscription = mResourceRepository.existResource(appid)
+        Subscription subscription = mResourceRepository.isAppResourceAvailable(appid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override

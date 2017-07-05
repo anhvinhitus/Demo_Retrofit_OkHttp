@@ -39,7 +39,7 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
     }
 
     void checkResourceReady(long appId) {
-        Subscription subscription = mAppResourceRepository.existResource(appId)
+        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResourceReadySubscriber(appId));
@@ -47,7 +47,7 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
     }
 
     void checkResourceReadyWithoutDownload(long appId) {
-        Subscription subscription = mAppResourceRepository.existResource(appId, false)
+        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(appId, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResourceReadySubscriber(appId));

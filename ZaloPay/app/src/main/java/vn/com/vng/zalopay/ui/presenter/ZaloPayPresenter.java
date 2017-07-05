@@ -182,7 +182,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
     private void startExternalApp(AppResource app) {
-        Subscription subscription = mAppResourceRepository.existResource(app.appid)
+        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));

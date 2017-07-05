@@ -271,7 +271,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> existResource(long appId, boolean downloadIfNeed) {
+    public Observable<Boolean> isAppResourceAvailable(long appId, boolean downloadIfNeed) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
             Timber.d("Exist resource : appId [%s] state [%s]", appId, entity.downloadState);
@@ -284,8 +284,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> existResource(long appId) {
-        return existResource(appId, true);
+    public Observable<Boolean> isAppResourceAvailable(long appId) {
+        return isAppResourceAvailable(appId, true);
     }
 
     interface DownloadState {

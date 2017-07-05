@@ -61,9 +61,9 @@ public interface AppResourceStore {
 
         Observable<List<AppResource>> listInsideAppResource();
 
-        Observable<Boolean> existResource(long appId);
+        Observable<Boolean> isAppResourceAvailable(long appId);
 
-        Observable<Boolean> existResource(long appId, boolean downloadIfNeed);
+        Observable<Boolean> isAppResourceAvailable(long appId, boolean downloadIfNeed);
 
         Observable<List<AppResource>> fetchAppResource();
 

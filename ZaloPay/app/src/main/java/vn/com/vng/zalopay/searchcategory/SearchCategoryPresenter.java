@@ -41,7 +41,6 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -331,7 +330,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     }
 
     private void startPaymentApp(AppResource app) {
-        Subscription subscription = mAppResourceRepository.existResource(app.appid)
+        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new StartPaymentAppSubscriber(mNavigator, (Activity) mView.getContext(), app));
