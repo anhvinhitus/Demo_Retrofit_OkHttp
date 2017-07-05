@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp"
-        android:background="@layout/activity_splash_background">
+        android:background="@layout/activity_login_background">
     </FrameLayout>
 
     <LinearLayout
