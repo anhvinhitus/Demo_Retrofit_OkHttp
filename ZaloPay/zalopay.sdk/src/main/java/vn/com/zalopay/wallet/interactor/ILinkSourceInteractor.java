@@ -30,8 +30,6 @@ public interface ILinkSourceInteractor {
 
     MapCard getCard(String userid, String cardKey);
 
-    BankAccount getBankAccount(String userid, String key);
-
     List<BankAccount> getBankAccountList(String userid);
 
     Observable<Boolean> refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);

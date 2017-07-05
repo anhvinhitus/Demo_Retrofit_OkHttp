@@ -18,7 +18,10 @@ public class CardRepository implements CardStore.Repository {
     }
 
     @Override
-    public Observable<BaseResponse> removeCard(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion) {
+    public Observable<BaseResponse> removeCard(String userid, String accessToken,
+                                               String cardname,
+                                               String first6cardno, String last4cardno,
+                                               String bankCode, String appVersion) {
         return cardMapService.removeMapCard(userid, accessToken, cardname, first6cardno, last4cardno, bankCode, appVersion)
                 .doOnSubscribe(() -> mLocalStorage.clearCheckSum())
                 .doOnNext(baseResponse -> mLocalStorage.resetMapCardCache(userid, first6cardno, last4cardno));

@@ -154,8 +154,7 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         return cardRepository.getLocalStorage().getCard(userid, cardKey);
     }
 
-    @Override
-    public BankAccount getBankAccount(String userid, String key) {
+    private BankAccount getBankAccount(String userid, String key) {
         return bankAccountRepository.getLocalStorage().getBankAccount(userid, key);
     }
 

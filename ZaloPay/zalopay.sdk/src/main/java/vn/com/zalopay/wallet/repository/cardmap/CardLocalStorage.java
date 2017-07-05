@@ -85,11 +85,11 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     @Override
     public MapCard getCard(String userid, String cardKey) {
         String map = mSharedPreferences.getMap(userid, cardKey);
-        MapCard mapCard = null;
-        if (!TextUtils.isEmpty(map)) {
-            mapCard = GsonUtils.fromJsonString(map, MapCard.class);
+        if (TextUtils.isEmpty(map)) {
+            return null;
         }
-        return mapCard;
+
+        return GsonUtils.fromJsonString(map, MapCard.class);
     }
 
     @Override
@@ -97,10 +97,13 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         mSharedPreferences.setMapCardList(userid, cardKeyList);
     }
 
-    public boolean needUpdate(String newCheckSum) {
+    private boolean needUpdate(String newCheckSum) {
         try {
             String checkSumOnCache = getCheckSum();
-            if (TextUtils.isEmpty(checkSumOnCache) || (!TextUtils.isEmpty(checkSumOnCache) && !checkSumOnCache.equals(newCheckSum))) {
+            if (TextUtils.isEmpty(checkSumOnCache)) {
+                return true;
+            }
+            if (!checkSumOnCache.equals(newCheckSum)) {
                 return true;
             }
         } catch (Exception e) {
@@ -116,26 +119,26 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
             Timber.d("map card list cache is valid - skip update");
             return;
         }
+        Timber.d("start update map card list on cache");
+        mSharedPreferences.setCardInfoCheckSum(checkSum);
+        if (cardList == null || cardList.size() <= 0) {
+            Timber.d("clear map card list");
+            resetMapCardCacheList(pUserId);
+            return;
+        }
         try {
-            Timber.d("start update map card list on cache");
-            mSharedPreferences.setCardInfoCheckSum(checkSum);
-            if (cardList != null && cardList.size() > 0) {
-                StringBuilder keyListBuilder = new StringBuilder();
-                int count = 0;
-                for (BaseMap card : cardList) {
-                    count++;
-                    setCard(pUserId, card);
-                    keyListBuilder.append(card.getKey());
-                    if (count < cardList.size()) {
-                        keyListBuilder.append(Constants.COMMA);
-                    }
+            StringBuilder keyListBuilder = new StringBuilder();
+            int count = 0;
+            for (BaseMap card : cardList) {
+                count++;
+                setCard(pUserId, card);
+                keyListBuilder.append(card.getKey());
+                if (count < cardList.size()) {
+                    keyListBuilder.append(Constants.COMMA);
                 }
-                //key map list
-                setCardKeyList(pUserId, keyListBuilder.toString());
-            } else {
-                resetMapCardCacheList(pUserId);
-                Timber.d("clear map card list");
             }
+            //key map list
+            setCardKeyList(pUserId, keyListBuilder.toString());
         } catch (Exception e) {
             Log.e(this, e);
         }
