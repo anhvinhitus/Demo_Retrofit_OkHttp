@@ -27,27 +27,29 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  */
 
 public class AppInfoInteractor implements IAppInfo {
-    public AppInfoStore.Repository mAppInfoRepository;
+    private AppInfoStore.AppInfoService mAppInfoService;
+    private AppInfoStore.LocalStorage mLocalStorage;
 
     @Inject
-    public AppInfoInteractor(AppInfoStore.Repository appInfoRepository) {
-        this.mAppInfoRepository = appInfoRepository;
+    public AppInfoInteractor(AppInfoStore.AppInfoService appInfoService, AppInfoStore.LocalStorage localStorage) {
         Timber.d("call constructor AppInfoInteractor");
+        this.mAppInfoService = appInfoService;
+        this.mLocalStorage = localStorage;
     }
 
     @Override
     public List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType) {
-        return this.mAppInfoRepository.getLocalStorage().getPmcTranstypeKeyList(pAppID, pTransType);
+        return this.mLocalStorage.getPmcTranstypeKeyList(pAppID, pTransType);
     }
 
     @Override
     public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
-        return this.mAppInfoRepository.getLocalStorage().getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
+        return this.mLocalStorage.getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
     }
 
     @Override
     public AppInfo get(long appid) {
-        return this.mAppInfoRepository.getLocalStorage().getSync(appid);
+        return this.mLocalStorage.getSync(appid);
     }
 
     /***
@@ -61,16 +63,15 @@ public class AppInfoInteractor implements IAppInfo {
      */
     @Override
     public Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime) {
-        String appInfoCheckSum = mAppInfoRepository.getLocalStorage().getAppInfoCheckSum(appid);
+        String appInfoCheckSum = mLocalStorage.getAppInfoCheckSum(appid);
         String transtypeString = transtypeToString(transtypes);
         String transtypeCheckSum = transtypeCheckSum(appid, transtypes);
-        Observable<AppInfo> appInfoOnCache = mAppInfoRepository
-                .getLocalStorage()
+        Observable<AppInfo> appInfoOnCache = mLocalStorage
                 .get(appid)
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
-        Observable<AppInfo> appInfoOnCloud = mAppInfoRepository
-                .fetchCloud(appid, userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
+        Observable<AppInfo> appInfoOnCloud = mAppInfoService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
+                .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
                 .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));
@@ -82,7 +83,7 @@ public class AppInfoInteractor implements IAppInfo {
                 return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
             } else if (appInfoResponse.returncode == 1) {
                 //success, load app info from cache
-                return mAppInfoRepository.getLocalStorage().get(appId);
+                return mLocalStorage.get(appId);
             } else {
                 return Observable.error(new RequestException(appInfoResponse.returncode, appInfoResponse.returnmessage));
             }
@@ -105,12 +106,12 @@ public class AppInfoInteractor implements IAppInfo {
     protected String transtypeCheckSum(long appId, @TransactionType int[] transtypes) {
         String[] transtypeCheckSum = new String[0];
         try {
-            String appInfoCheckSum = mAppInfoRepository.getLocalStorage().getAppInfoCheckSum(appId);
+            String appInfoCheckSum = mLocalStorage.getAppInfoCheckSum(appId);
             if (!TextUtils.isEmpty(appInfoCheckSum)) {
                 transtypeCheckSum = new String[transtypes.length];
                 for (int i = 0; i < transtypes.length; i++) {
-                    transtypeCheckSum[i] = mAppInfoRepository.getLocalStorage()
-                            .getTranstypeCheckSum(mAppInfoRepository.getLocalStorage().getTranstypeCheckSumKey(appId, transtypes[i]));
+                    transtypeCheckSum[i] = mLocalStorage
+                            .getTranstypeCheckSum(mLocalStorage.getTranstypeCheckSumKey(appId, transtypes[i]));
                 }
             }
         } catch (Exception e) {
@@ -139,6 +140,6 @@ public class AppInfoInteractor implements IAppInfo {
 
     @Override
     public void setExpireTime(long appId, long expireTime) {
-        mAppInfoRepository.getLocalStorage().setExpireTime(appId, expireTime);
+        mLocalStorage.setExpireTime(appId, expireTime);
     }
 }

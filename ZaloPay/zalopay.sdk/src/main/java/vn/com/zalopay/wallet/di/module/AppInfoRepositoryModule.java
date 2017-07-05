@@ -8,7 +8,6 @@ import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoLocalStorage;
-import vn.com.zalopay.wallet.repository.appinfo.AppInfoRepository;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
@@ -26,11 +25,5 @@ public class AppInfoRepositoryModule {
     @Singleton
     public AppInfoStore.LocalStorage provideAppInfoLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
         return new AppInfoLocalStorage(sharedPreferencesManager);
-    }
-
-    @Provides
-    @Singleton
-    public AppInfoStore.Repository provideAppInfoRepository(AppInfoStore.AppInfoService appInfoService, AppInfoStore.LocalStorage localStorage) {
-        return new AppInfoRepository(appInfoService, localStorage);
     }
 }

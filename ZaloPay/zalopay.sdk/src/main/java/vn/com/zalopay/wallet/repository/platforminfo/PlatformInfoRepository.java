@@ -7,10 +7,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
-import vn.com.zalopay.wallet.api.RetryWithDelay;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.constants.ConstantParams;
-import vn.com.zalopay.wallet.constants.Constants;
 
 /**
  * Created by chucvv on 6/7/17.
