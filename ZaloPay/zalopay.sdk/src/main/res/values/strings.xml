@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Zalo Pay</string>
     <string name="zpw_redpackage_app_id">6</string>
+    <string name="app_service_id">15</string>
 
     <string name="allow_use_fingerprint_feature">1</string>
     <string name="allow_use_send_log_on_transactionfail">1</string>
@@ -607,5 +608,7 @@
     <string name="sdk_button_show_info_txt">Xem Chi Tiết</string>
 
     <string name="sdk_loading_payment_info_title">Tải thông tin</string>
+
+    <string name="app_service_name">Thanh toán đơn hàng</string>
 
 </resources>

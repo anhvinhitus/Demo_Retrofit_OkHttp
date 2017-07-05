@@ -55,11 +55,6 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     /***
      *if app info is not expire then use data on local
      * other hand, call api to reload app info
-     * @param appid
-     * @param userid
-     * @param accesstoken
-     * @param currentTime
-     * @return
      */
     @Override
     public Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime) {
@@ -71,13 +66,28 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
+                .map(mapAppName())
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
                 .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));
     }
 
-    protected Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {
+    private Func1<AppInfoResponse, AppInfoResponse> mapAppName() {
+        return appInfoResponse -> {
+            AppInfo appInfo = appInfoResponse.info;
+            if (appInfo == null) {
+                return appInfoResponse;
+            }
+            if (appInfo.appid == Long.parseLong(GlobalData.getStringResource(RS.string.app_service_id))) {
+                appInfo.appname = GlobalData.getStringResource(RS.string.app_service_name);
+                appInfoResponse.info = appInfo;
+            }
+            return appInfoResponse;
+        };
+    }
+
+    private Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {
         return appInfoResponse -> {
             if (appInfoResponse == null) {
                 return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
@@ -90,7 +100,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         };
     }
 
-    protected String transtypeToString(@TransactionType int[] pTranstype) {
+    private String transtypeToString(@TransactionType int[] pTranstype) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
         for (int i = 0; i < pTranstype.length; i++) {
@@ -103,7 +113,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         return stringBuilder.toString();
     }
 
-    protected String transtypeCheckSum(long appId, @TransactionType int[] transtypes) {
+    private String transtypeCheckSum(long appId, @TransactionType int[] transtypes) {
         String[] transtypeCheckSum = new String[0];
         try {
             String appInfoCheckSum = mLocalStorage.getAppInfoCheckSum(appId);
