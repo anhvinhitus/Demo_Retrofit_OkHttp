@@ -82,7 +82,7 @@
             <RelativeLayout
                 android:id="@+id/layout_message"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/pin_error_height"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/pin_code_round_view"
                 android:gravity="center">
 
@@ -92,7 +92,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:gravity="center"
+                    android:maxLines="3"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:textColor="@color/dark_grey_color"
