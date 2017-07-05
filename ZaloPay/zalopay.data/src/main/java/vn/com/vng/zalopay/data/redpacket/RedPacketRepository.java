@@ -167,15 +167,14 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         String listPacketId = listpackageid.toString().replaceAll("\\s", "");
         Timber.d("getListPackageStatus: %s", listPacketId);
         return mRequestService.getListPackageStatus(listPacketId, user.zaloPayId, user.accesstoken)
-                .doOnNext(response -> updateListPackageStatus(response.listpackagestatus, response.amount))
+                .doOnNext(response -> updateListPackageStatus(response.listpackagestatus))
                 .map(BaseResponse::isSuccessfulResponse)
                 ;
     }
 
-    private void updateListPackageStatus(List<RedPacketStatusEntity> listpackagestatus, long amount) {
+    private void updateListPackageStatus(List<RedPacketStatusEntity> listpackagestatus) {
         for (RedPacketStatusEntity entity : listpackagestatus) {
             entity.status = mapRedPacketStatus(entity.status).getValue();
-            entity.amount = amount;
         }
 
         mLocalStorage.updateListPackageStatus(listpackagestatus);
