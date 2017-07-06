@@ -18,7 +18,7 @@ public class BankSupportGridViewAdapter extends CardSupportAdapter {
                 Map.Entry pair = (Map.Entry) o;
                 String bankCode = String.valueOf(pair.getValue());
                 //if( !mBankCode.contains(String.valueOf(pair.getValue())) && !isBankMaintenance(String.valueOf(pair.getValue())))
-                if (!mBankCode.contains(bankCode) && !BankAccountHelper.isBankAccount(bankCode)) {
+                if (!mBankCode.contains(bankCode)) {
                     mBankCode.add(String.valueOf(pair.getValue()));
                 }
             }
