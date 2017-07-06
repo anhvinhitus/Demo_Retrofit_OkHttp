@@ -115,9 +115,7 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
     public Observable<Boolean> getBankAccounts(String userid, String accesstoken, boolean pReload, String appversion) {
         String checksum = "";
         if (pReload) {
-            if (pReload) {
-                bankAccountRepository.getLocalStorage().clearCheckSum();
-            }
+            bankAccountRepository.getLocalStorage().clearCheckSum();
         } else {
             checksum = bankAccountRepository.getLocalStorage().getCheckSum();
         }

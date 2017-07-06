@@ -38,24 +38,18 @@
     <string name="zpw_string_alert_min_amount_input">Số tiền giao dịch tối thiểu là %s VND</string>
     <string name="zpw_string_alert_max_amount_input">Số tiền giao dịch tối đa là %s VND</string>
 
-    <string name="zingpaysdk_alert_transaction_success">Thanh toán thành công</string>
     <string name="zingpaysdk_alert_processing">Xử lý giao dịch</string>
     <string name="zingpaysdk_alert_checking">Kiểm tra giao dịch</string>
     <string name="zingpaysdk_alert_processing_otp">Kiểm tra mật khẩu giao dịch</string>
     <string name="zingpaysdk_alert_processing_bank">Xử lý với ngân hàng</string>
     <string name="zingpaysdk_alert_get_status">Nhận kết quả  giao dịch</string>
-    <string name="zingpaysdk_alert_process_view">Tạo màn hình</string>
     <string name="zingpaysdk_alert_transition_screen">Chuyển trang</string>
-    <string name="zingpaysdk_alert_processing_check_app_info">Kiểm tra thông tin ứng dụng</string>
     <string name="zingpaysdk_alert_processing_loading_resource">Khởi tạo dữ liệu ứng dụng</string>
-    <string name="zingpaysdk_confirm_quit_rescan_qrcode">Giao dịch sẽ bị hủy,cần tạo lại giao dịch từ đầu.\n Bạn thật sự muốn thoát ?</string>
 
     <string name="sdk_quit_pay_confirm_text">Bạn có chắc muốn hủy thanh toán này không?</string>
     <string name="sdk_quit_tranfer_confirm_text">Bạn có chắc muốn hủy chuyển tiền không?</string>
     <string name="sdk_quit_topup_confirm_text">Bạn có chắc muốn hủy nạp tiền không?</string>
     <string name="sdk_quit_withdraw_confirm_text">Bạn có chắc muốn hủy rút tiền không?</string>
-
-    <string name="sdk_confirm_quit_link_account">Bạn có muốn hủy toàn bộ thao tác ?</string>
 
     <string name="zpw_confirm_quit_loadsite">Bạn đã chọn BACK nhưng giao dịch vẫn đang xử lý.\nBạn thật sự muốn thoát?</string>
 
@@ -91,7 +85,6 @@
     <string name="sdk_error_generic_submitorder">Không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
     <string name="sdk_error_not_submit_order">Hóa đơn chưa được gửi đi, vui lòng thực hiện lại giao dịch</string>
 
-    <string name="zpw_generic_error">Có lỗi xảy ra.Vui lòng thử lại</string>
     <string name="sdk_alert_networking_off_in_link_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại liên kết tài khoản</string>
     <string name="sdk_alert_networking_off_in_unlink_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại hủy liên kết tài khoản</string>
 
@@ -192,8 +185,6 @@
     <string name="zpw_string_zalopay_balance_error_label">Số dư không đủ</string>
     <string name="zpw_string_zalopay_balance_label">Số dư</string>
 
-    <string name="zpw_string_atm_method_name">Thẻ nội địa</string>
-    <string name="zpw_string_credit_card_method_name">Thẻ tín dụng</string>
     <string name="sdk_link_title">Liên kết</string>
 
     <string name="zpw_button_submit_text">Tiếp Tục</string>
@@ -220,21 +211,10 @@
     <string name="zpw_string_credit_card_expired_date_hint">Nhập ngày hết hạn (mm/yy)</string>
     <string name="zpw_string_credit_card_cvv_hint">CVV</string>
 
-    <string name="zpw_string_payment_success_label">THANH TOÁN THÀNH CÔNG!</string>
-    <string name="zpw_string_tranfer_success_label">CHUYỂN TIỀN THÀNH CÔNG!</string>
-    <string name="zpw_string_topup_success_label">NẠP TIỀN THÀNH CÔNG!</string>
-    <string name="zpw_string_linkcard_success_label">LIÊN KẾT THẺ THÀNH CÔNG!</string>
-    <string name="zpw_string_lixi_success_label">LÌ XÌ THÀNH CÔNG!</string>
-    <string name="zpw_string_withdraw_success_label">RÚT TIỀN THÀNH CÔNG!</string>
 
-    <string name="zpw_string_payment_fail_transaction">GIAO DỊCH KHÔNG THÀNH CÔNG</string>
-    <string name="zpw_string_payment_fail_linkcard">LIÊN KẾT THẺ KHÔNG THÀNH CÔNG</string>
     <string name="zpw_string_payment_error_label">NẠP TIỀN KHÔNG THÀNH CÔNG!</string>
     <string name="zpw_string_lixi_fail_label">LÌ XÌ KHÔNG THÀNH CÔNG!</string>
     <string name="zpw_string_withdraw_fail_label">RÚT TIỀN KHÔNG THÀNH CÔNG!</string>
-    <string name="zpw_string_transaction_processing">GIAO DỊCH ĐANG XỬ LÝ</string>
-    <string name="zpw_string_linkcard_processing">LIÊN KẾT THẺ ĐANG XỬ LÝ</string>
-    <string name="zpw_string_transaction_networking_error">MẠNG KHÔNG ỔN ĐỊNH</string>
 
     <string name="zpw_string_credit_card_save_label">mã thẻ</string>
     <string name="zpw_string_hidden_character"> ••• </string>
@@ -361,8 +341,6 @@
 
     <string name="zpw_string_format_balance">(số dư %s VND)</string>
 
-    <string name="zpw_string_bank_maitenance"><![CDATA[ <b>%1$s</b> bảo trì tới <b>%2$s</b>, bạn vui lòng chọn ngân hàng khác hoặc quay lại sau.]]></string>
-
     <string name="zpw_string_bank_not_support">Ngân hàng đã chọn không còn được hỗ trợ.\nVui lòng chọn thẻ khác để giao dịch</string>
 
     <string name="zpw_string_error_system">Hệ thống không thể thực hiện yêu cầu lúc này.\nVui lòng thử lại sau ít phút</string>
@@ -381,8 +359,6 @@
     <string name="zpw_string_fee_format">Phí: %1$s VND</string>
     <string name="sdk_fee_format">%1$s VND</string>
 
-    <string name="zpw_string_exit_without_pin">Để giao dịch an toàn, chúng tôi cần bạn nhập mật khẩu thanh toán.\nBạn có muốn tiếp tục giao dịch?</string>
-
     <string name="zpw_string_error_layout">Lỗi khởi tạo dữ liệu.\nVui lòng thử lại</string>
 
     <string name="zpw_string_error_payment_info">Thông tin thanh toán không hợp lệ</string>
@@ -398,10 +374,7 @@
 
     <string name="zpw_alert_empty_creditcard_url">Website của ngân hàng không có dữ liệu.\nVui lòng thực hiện lại giao dịch!</string>
 
-    <string name="zpw_alert_error_resource_not_download">Không tải được dữ liệu thanh toán.\nVui lòng thử lại sau ít phút!</string>
 
-    <string name="zpw_string_title_require_pin_page">Nhập mật khẩu thanh toán</string>
-    <string name="zpw_string_alert_userinfo_invalid">Tài khoản nhận không tồn tại</string>
     <string name="zpw_string_transfer_title">Người nhận</string>
     <string name="zpw_string_transfer_description">Lời nhắn</string>
     <string name="zpw_string_transfer_zalopay_id">Zalo Pay ID</string>
@@ -450,7 +423,6 @@
 
     <string name="zpw_string_alert_networking_not_stable">Mạng dữ liệu không ổn định.</string>
     <string name="zpw_string_alert_networking_offline">Không có kết nối mạng.</string>
-    <string name="zpw_string_alert_networking_online">Kết nối mạng đã bật</string>
     <string name="zpw_string_remind_turn_on_networking">Kiểm tra kết nối!</string>
 
     <string name="zpw_string_number_card_format_wrong">Số thẻ không hợp lệ</string>
@@ -549,7 +521,6 @@
     <string name="zpw_warning_bidv_select_linkcard_payment"><![CDATA[Ngân hàng <b>BIDV</b> chỉ hỗ trợ hình thức thanh toán qua thẻ liên kết. Vui lòng chọn thẻ liên kết <b>BIDV</b> để thanh toán.]]></string>
     <string name="zpw_warning_bidv_linkcard_before_payment"><![CDATA[<b>BIDV</b> chỉ hỗ trợ thanh toán qua thẻ đã liên kết. Bạn có muốn liên kết thẻ để tiếp tục thanh toán không?]]></string>
     <string name="zpw_alert_networking_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng.\nVui lòng thực hiện lại giao dịch!</string>
-    <string name="zpw_alert_error_networking_when_load_banklist">Không tải được thông tin ngân hàng. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_ssl_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng!</string>
     <string name="zpw_loading_website_message">Tải website ngân hàng</string>
     <string name="zpw_string_special_bankscript_vcb_generate_captcha">^.+(vietcombank\\.com\\.vn).+(\\/Account\\/GenerateCaptcha).*$</string>
@@ -572,9 +543,6 @@
     <string name="invalid_order_amount_bank">%1$s không hỗ trợ mệnh giá %2$s VND</string>
     <string name="sdk_warning_pmc_transtype_disable_payment"><![CDATA[<b>%1$s</b> hiện không hỗ trợ loại giao dịch bạn đã chọn. Vui lòng thử lại sau!]]></string>
     <string name="sdk_warning_pmc_transtype_disable_link"><![CDATA[<b>%1$s</b> hiện tại không hỗ trợ liên kết. Vui lòng thử lại sau!]]></string>
-
-    <string name="sdk_load_appinfo_error_message">Không tải được thông tin ứng dụng. Vui lòng thử lại!</string>
-    <string name="sdk_load_generic_error_message">Không tải được thông tin. Vui lòng thử lại!</string>
 
     <string name="sdk_pay_button_confirm_txt">Xác Nhận Thanh Toán</string>
     <string name="sdk_generic_button_confirm_txt">Xác Nhận Giao Dịch</string>
