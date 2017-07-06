@@ -111,6 +111,7 @@ public class AndroidApplication extends Application {
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
+        Fabric.with(this, new Crashlytics());
         ConfigLoader.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
         LocationProvider.init(appComponent.locationRepositoryFactory(), this);
 
@@ -119,7 +120,6 @@ public class AndroidApplication extends Application {
     private void backgroundInitialization() {
         appComponent.bundleService().ensureLocalResources();
         loadFontFromApp1(false);
-        Fabric.with(this, new Crashlytics());
     }
 
     public void loadFontFromApp1(boolean postEvent) {
