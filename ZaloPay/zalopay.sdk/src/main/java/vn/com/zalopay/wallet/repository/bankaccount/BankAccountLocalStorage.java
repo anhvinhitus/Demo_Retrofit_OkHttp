@@ -47,29 +47,24 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
             Timber.d("bank account list in cache is valid - skip update");
             return;
         }
-        try {
-            Timber.d("start update bank account list on cache");
-            mSharedPreferences.setBankAccountCheckSum(checkSum);
-            if (bankAccountList != null && bankAccountList.size() > 0) {
-                StringBuilder keyList = new StringBuilder();
-                int count = 0;
-                for (BaseMap bankAccount : bankAccountList) {
-                    count++;
-                    setBankAccount(pUserId, bankAccount);
-                    keyList.append(bankAccount.getKey());
-                    if (count < bankAccountList.size()) {
-                        keyList.append(Constants.COMMA);
-                    }
-                }
-                //cache map list
-                setBankAccountKeyList(pUserId, keyList.toString());
-            } else {
-                resetBankAccountCacheList(pUserId);
-                Timber.d("clear bank account list");
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
+        Timber.d("start update bank account list on cache");
+        mSharedPreferences.setBankAccountCheckSum(checkSum);
+        if(bankAccountList == null || bankAccountList.size() <= 0){
+            resetBankAccountCacheList(pUserId);
+            return;
         }
+        StringBuilder keyList = new StringBuilder();
+        int count = 0;
+        for (BaseMap bankAccount : bankAccountList) {
+            count++;
+            setBankAccount(pUserId, bankAccount);
+            keyList.append(bankAccount.getKey());
+            if (count < bankAccountList.size()) {
+                keyList.append(Constants.COMMA);
+            }
+        }
+        //cache map list
+        setBankAccountKeyList(pUserId, keyList.toString());
     }
 
     @Override

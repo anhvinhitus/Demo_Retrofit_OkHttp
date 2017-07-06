@@ -116,22 +116,18 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
             resetMapCardCacheList(pUserId);
             return;
         }
-        try {
-            StringBuilder keyListBuilder = new StringBuilder();
-            int count = 0;
-            for (BaseMap card : cardList) {
-                count++;
-                setCard(pUserId, card);
-                keyListBuilder.append(card.getKey());
-                if (count < cardList.size()) {
-                    keyListBuilder.append(Constants.COMMA);
-                }
+        StringBuilder keyListBuilder = new StringBuilder();
+        int count = 0;
+        for (BaseMap card : cardList) {
+            count++;
+            setCard(pUserId, card);
+            keyListBuilder.append(card.getKey());
+            if (count < cardList.size()) {
+                keyListBuilder.append(Constants.COMMA);
             }
-            //key map list
-            setCardKeyList(pUserId, keyListBuilder.toString());
-        } catch (Exception e) {
-            Log.e(this, e);
         }
+        //key map list
+        setCardKeyList(pUserId, keyListBuilder.toString());
     }
 
     @Override
