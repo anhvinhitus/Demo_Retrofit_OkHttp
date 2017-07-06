@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemSearchDecoration;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
 /**
@@ -54,7 +55,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     }
 
     private final static int SPAN_COUNT_APPLICATION = 3;
-
+    private final static int PADDING_TEXT = 46;
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
@@ -74,7 +75,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
 
     private GridLayoutManager mGridLayoutManager;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.ItemDecoration mItemDecoration;
+    private SearchItemDecoration mItemDecoration;
     private ZPEditText edtSearch;
 
     @Override
@@ -92,7 +93,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
 
-        mItemDecoration = new GridSpacingItemSearchDecoration(SPAN_COUNT_APPLICATION, 1, false);
+        mItemDecoration = new SearchItemDecoration(AndroidUtils.dp(PADDING_TEXT));
         mGridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
         mGridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -114,7 +115,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         mAdapter.setClickListener(this);
 
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mRecyclerView.addItemDecoration(mItemDecoration);
+        mRecyclerView.removeItemDecoration(mItemDecoration);
         mRecyclerView.swapAdapter(mAdapter, false);
     }
 
@@ -126,7 +127,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         mResultAdapter.setClickListener(this);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.removeItemDecoration(mItemDecoration);
+        mRecyclerView.addItemDecoration(mItemDecoration);
         mRecyclerView.swapAdapter(mResultAdapter, false);
     }
 

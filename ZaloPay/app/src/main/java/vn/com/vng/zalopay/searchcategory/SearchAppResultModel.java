@@ -18,20 +18,18 @@ import vn.com.vng.zalopay.domain.model.InsideApp;
  * App result item model
  */
 
-public class SearchAppResultModel extends EpoxyModelWithHolder<SearchAppResultModel.AppItemHolder> {
+class SearchAppResultModel extends EpoxyModelWithHolder<SearchAppResultModel.AppItemHolder> {
 
     interface OnItemClickListener {
         void onAppClick(SearchAppResultModel app);
     }
 
     private InsideApp app;
-    private boolean isLastPos;
 
     private SearchAppResultModel.OnItemClickListener itemClickListener;
 
     SearchAppResultModel(InsideApp app, boolean isLastPos) {
         this.app = app;
-        this.isLastPos = isLastPos;
     }
 
     @Override
@@ -47,20 +45,15 @@ public class SearchAppResultModel extends EpoxyModelWithHolder<SearchAppResultMo
     @Override
     public void bind(SearchAppResultModel.AppItemHolder holder) {
         super.bind(holder);
-        holder.itemLayout.setOnClickListener(viewClickListener);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.mIcon.setText(Html.fromHtml(app.appName, Html.FROM_HTML_MODE_LEGACY));
+            holder.mAppView.setText(Html.fromHtml(app.appName, Html.FROM_HTML_MODE_LEGACY));
         } else {
-            holder.mIcon.setText(Html.fromHtml(app.appName));
+            holder.mAppView.setText(Html.fromHtml(app.appName));
         }
 
-        holder.mIcon.setLeftIcon(app.iconName, app.iconColor);
-
-        if (isLastPos) {
-            holder.viewSeparate.setVisibility(View.GONE);
-        } else {
-            holder.viewSeparate.setVisibility(View.VISIBLE);
-        }
+        holder.mAppView.setLeftIcon(app.iconName, app.iconColor);
+        holder.mAppView.setOnClickListener(viewClickListener);
     }
 
     @Override
@@ -84,13 +77,7 @@ public class SearchAppResultModel extends EpoxyModelWithHolder<SearchAppResultMo
 
     static class AppItemHolder extends EpoxyHolder {
         @BindView(R.id.icon)
-        IconFontTextView mIcon;
-
-        @BindView(R.id.viewSeparate)
-        View viewSeparate;
-
-        @BindView(R.id.itemLayout)
-        View itemLayout;
+        IconFontTextView mAppView;
 
         @Override
         protected void bindView(View itemView) {
