@@ -1,2 +1,17 @@
-Zalo Pay (Staging v2.14.0 - build 311) - Released on 2017-07-05 17:23
-
+Zalo Pay (Sandbox v2.14.0 - build 312) - Released on 2017-07-06 11:55
++ [Icon Font] Fix bug icon font by hieuvm (#19e61e8)
++ [QRCode] ZPF-224: Nhận tiền - AND gửi tiền cho iOS nhận: không thấy thông tin chuyển by khattn (#72b445f)
++ [String] Add unit test by khattn (#f07d4f9)
++ [String] Add function encode, decode by khattn (#b4449a9)
++ [SDK] Refactor commit #a974187813d35d1a6438dadc3501a038a15d7944 [a974187] by vo van chuc (#895cab6)
++ [Bank] #ZPF-250 : Update title popup trong liên kết by vo van chuc (#9222601)
++ [Bank] #ZPF-249 : [Android - 2.14 - Staging] thiếu ngân hàng hổ trợ : Sửa title thành Các Ngân hàng được hỗ trợ by vo van chuc (#56887c9)
++ [Bank] Show lại VCB trong popup ds ngân hàng hỗ trợ khi liên kết và thanh toán by vo van chuc (#8057ee3)
++ [SDK] Reload lại ds thẻ lưu nếu gặp lỗi "Thẻ đã được lưu trước đó" by vo van chuc (#8f2b882)
++ [SDK] Update UI Success view by lytm (#2fcbe34)
++ [App] Promotion: remove line below toolbar by datnt10 (#976fd55)
++ [Bank] Xóa message mặc định khi bảo trì VCB by vo van chuc (#a8fa35f)
++ [SDK] Refactor bank support version by vo van chuc (#7140bbb)
++ [SDK] Clear code by vo van chuc (#5bf85a8)
++ [SDK] Reset name app dịch vụ (app id = 15) by vo van chuc (#a974187)
++ [Bank] Edit check maintenance function by datnt10 (#b8ac513)
