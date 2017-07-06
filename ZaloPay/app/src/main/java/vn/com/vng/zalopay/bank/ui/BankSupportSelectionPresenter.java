@@ -30,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
 /**
@@ -123,7 +124,7 @@ public class BankSupportSelectionPresenter extends AbstractBankPresenter<IBankSu
                 .getApplicationComponent()
                 .bankListInteractor()
                 .getSupportBanks(BuildConfig.VERSION_NAME, System.currentTimeMillis())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> {
                     if (mView != null) {
                         mView.showLoading();

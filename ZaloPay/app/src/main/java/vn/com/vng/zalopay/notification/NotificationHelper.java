@@ -236,6 +236,7 @@ public class NotificationHelper {
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .refreshMapList(BuildConfig.VERSION_NAME, mUser.zaloPayId, mUser.accesstoken, first6cardno, last4cardno)
+                .subscribeOn(Schedulers.io())
                 .subscribe(aBoolean -> Timber.d("reload card and bank account"),
                         throwable -> Timber.d("reload card and bank account on error %s", throwable));
         mCompositeSubscription.add(subscription);

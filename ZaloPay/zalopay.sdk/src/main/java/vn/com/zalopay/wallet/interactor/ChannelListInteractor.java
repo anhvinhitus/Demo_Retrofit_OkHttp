@@ -86,21 +86,25 @@ public class ChannelListInteractor {
                 new int[]{mPaymentInfoHelper.getTranstype()},
                 userInfo.zalopay_userid, userInfo.accesstoken, appVersion, currentTime)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_START))
-                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END));
+                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_APPINFO_END))
+                .subscribeOn(Schedulers.io());
 
         currentTime = System.currentTimeMillis();
         Observable<BankConfigResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START))
-                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END));
+                .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END))
+                .subscribeOn(Schedulers.io());
 
         currentTime = System.currentTimeMillis();
         Observable<PlatformInfoCallback> platformObservable = mPlatformInteractor.loadSDKPlatform(userInfo.zalopay_userid, userInfo.accesstoken, currentTime)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_START))
-                .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END));
+                .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END))
+                .subscribeOn(Schedulers.io());
 
         Observable<Boolean> initResource = ResourceManager.initResource()
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
-                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END));
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
+                .subscribeOn(Schedulers.io());
 
         Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, initResource, this::zipData)
                 .observeOn(Schedulers.io())

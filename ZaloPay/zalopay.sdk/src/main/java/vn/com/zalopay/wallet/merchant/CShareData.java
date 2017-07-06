@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -142,6 +143,7 @@ public class CShareData extends SingletonBase {
                     SDKApplication.getApplicationComponent()
                             .linkInteractor()
                             .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
+                            .subscribeOn(Schedulers.io())
                             .subscribe(aBoolean -> Timber.d("reload bank account finish"), throwable -> Timber.d("reload bank account error %s", throwable));
                 }
             } catch (Exception ex) {

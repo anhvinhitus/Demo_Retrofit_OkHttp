@@ -18,6 +18,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 
 /**
  * Created by longlv on 04/09/2016.
@@ -39,7 +40,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                 .getApplicationComponent()
                 .bankListInteractor()
                 .getWithdrawBanks(vn.com.vng.zalopay.BuildConfig.VERSION_NAME, System.currentTimeMillis())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .subscribe(new DefaultSubscriber<List<BankConfig>>() {
                     @Override
                     public void onError(Throwable e) {

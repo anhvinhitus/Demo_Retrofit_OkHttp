@@ -52,6 +52,7 @@ import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
@@ -188,7 +189,7 @@ public class AdapterLinkAcc extends AdapterBase {
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .subscribe(loadBankAccountSubscriber, loadBankAccountException);
         try {
             getPresenter().addSubscription(subscription);

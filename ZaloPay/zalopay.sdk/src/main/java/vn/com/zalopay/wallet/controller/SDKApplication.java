@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import rx.Observer;
 import rx.Subscription;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -95,18 +96,21 @@ public class SDKApplication extends Application {
                     .subscribe(pObserver);
             //load bank list
             Subscription subscription0 = getApplicationComponent().bankListInteractor().getBankList(pAppVersion, currentTime)
+                    .subscribeOn(Schedulers.io())
                     .subscribe(bankConfigResponse -> Timber.d("load bank list finish: %s", GsonUtils.toJsonString(bankConfigResponse)),
                             throwable -> Timber.d("load bank list on error: %s", throwable.getMessage()));
             subscription[0] = subscription0;
             //load app zalopay with 4 transtype
             Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
                     new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
+                    .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),
                             throwable -> Timber.d("load app info on error: %s", throwable.getMessage()));
             subscription[1] = subscription1;
             //load app withdraw (appid = 2)
             Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAWAPP_ID,
                     new int[]{TransactionType.WITHDRAW}, userId, accessToken, pAppVersion, currentTime)
+                    .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),
                             throwable -> Timber.d("load app info on error: %s", throwable.getMessage()));
             subscription[2] = subscription2;
@@ -123,6 +127,7 @@ public class SDKApplication extends Application {
     public synchronized static Subscription refreshSDKData(UserInfo pUserInfo, @NonNull Observer<PlatformInfoCallback> pObserver) {
         return getApplicationComponent().platformInfoInteractor()
                 .loadSDKPlatformFromCloud(pUserInfo.zalopay_userid, pUserInfo.accesstoken, true, false)
+                .subscribeOn(Schedulers.io())
                 .subscribe(pObserver);
     }
 

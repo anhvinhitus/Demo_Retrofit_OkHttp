@@ -63,6 +63,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.pay.PayProxy;
@@ -1577,7 +1578,7 @@ public abstract class AdapterBase {
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerHelper.applySchedulers())
                 .subscribe(loadCardSubscriber, loadCardException);
         try {
             getPresenter().addSubscription(subscription);
