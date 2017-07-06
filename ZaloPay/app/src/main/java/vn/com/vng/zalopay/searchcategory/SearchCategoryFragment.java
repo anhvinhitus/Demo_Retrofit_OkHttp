@@ -25,8 +25,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
-import vn.com.vng.zalopay.ui.widget.GridSpacingItemSearchDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
@@ -63,7 +61,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     View layoutNoResult;
 
     @BindView(R.id.search_result_emty)
-    TextView mTextSearchEmty;
+    TextView mTextSearchEmpty;
 
     @Inject
     SearchCategoryPresenter mPresenter;
@@ -76,9 +74,10 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     private GridLayoutManager mGridLayoutManager;
     private RecyclerView.LayoutManager mLayoutManager;
     private SearchItemDecoration mItemDecoration;
-    private ZPEditText edtSearch;
+    private AppTypicalItemDecoration mAppTypicalItemDecoration;
+    private ZPEditText mEdtSearchView;
 
-    @Override
+  @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -92,7 +91,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-
+        mAppTypicalItemDecoration = new AppTypicalItemDecoration();
         mItemDecoration = new SearchItemDecoration(AndroidUtils.dp(PADDING_TEXT));
         mGridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
         mGridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
@@ -103,8 +102,8 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         mRecyclerView.setItemAnimator(null);
         mSearchIcon = (IconFont) getActivity().findViewById(R.id.ifSearch);
         mSearchIcon.setIcon(R.string.general_search);
-        edtSearch = (ZPEditText) getActivity().findViewById(R.id.edtSearch);
-        edtSearch.addTextChangedListener(this);
+        mEdtSearchView = (ZPEditText) getActivity().findViewById(R.id.edtSearch);
+        mEdtSearchView.addTextChangedListener(this);
     }
 
     private void setCommonRecyclerView() {
@@ -116,6 +115,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
 
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.removeItemDecoration(mItemDecoration);
+        mRecyclerView.addItemDecoration(mAppTypicalItemDecoration);
         mRecyclerView.swapAdapter(mAdapter, false);
     }
 
@@ -128,6 +128,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(mItemDecoration);
+        mRecyclerView.removeItemDecoration(mAppTypicalItemDecoration);
         mRecyclerView.swapAdapter(mResultAdapter, false);
     }
 
@@ -190,8 +191,8 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         if (noResult) {
             mRecyclerView.setVisibility(View.GONE);
             layoutNoResult.setVisibility(View.VISIBLE);
-            String message = getString(R.string.search_no_result, edtSearch.getText());
-            mTextSearchEmty.setText(message);
+            String message = getString(R.string.search_no_result, mEdtSearchView.getText());
+            mTextSearchEmpty.setText(message);
             return;
         }
 
