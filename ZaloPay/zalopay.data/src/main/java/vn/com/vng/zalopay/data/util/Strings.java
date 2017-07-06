@@ -233,10 +233,11 @@ public final class Strings {
         return text;
     }
 
-    private static final String NOT_SPECIAL_CHARACTERS_REGEX = "[^!@#$%^&()_+|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890]";
+    private static final String NOT_SPECIAL_CHARACTERS_REGEX = "[^!@#$%^&()_+|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ]";
 
     public static String removeSpecialCharacters(@NonNull String text) {
-        return text.replaceAll(NOT_SPECIAL_CHARACTERS_REGEX, "");
+        String standardStr = stripAccents(text);
+        return standardStr.replaceAll(NOT_SPECIAL_CHARACTERS_REGEX, "");
     }
 
 

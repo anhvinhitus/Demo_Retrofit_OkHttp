@@ -257,7 +257,6 @@ public class StringsTest {
 
     @Test
     public void removeSpecialCharactersTest() {
-
         String text1 = "◠‿◠ Mầu \uD83E\uDD17\uD83E\uDD84\uD83E\uDD81\uD83E\uDD81";
         String text2 = "123456";
         String text3 = "AbCd EFch";
@@ -270,10 +269,10 @@ public class StringsTest {
         System.out.println(Strings.removeSpecialCharacters(text4));
         System.out.println("empty :" + Strings.removeSpecialCharacters(text5));
 
-        Assert.assertEquals("Mu", Strings.removeSpecialCharacters(text1));
+        Assert.assertEquals(" Mau ", Strings.removeSpecialCharacters(text1));
         Assert.assertEquals("123456", Strings.removeSpecialCharacters(text2));
-        Assert.assertEquals("AbCdEFch", Strings.removeSpecialCharacters(text3));
-        Assert.assertEquals("CnghoxhichnghaVitNamclptdohnhphc", Strings.removeSpecialCharacters(text4));
+        Assert.assertEquals("AbCd EFch", Strings.removeSpecialCharacters(text3));
+        Assert.assertEquals("Cong hoa xa hoi chu nghia Viet Nam  Doc lap tu do hanh phuc", Strings.removeSpecialCharacters(text4));
         Assert.assertEquals("", Strings.removeSpecialCharacters(text5));
     }
 }
