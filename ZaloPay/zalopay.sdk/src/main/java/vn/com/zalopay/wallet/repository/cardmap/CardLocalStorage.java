@@ -42,15 +42,6 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         mSharedPreferences.resetMapCardListCache(userId);
     }
 
-    public long expireTime() {
-        return mSharedPreferences.getMapExpireTime();
-    }
-
-    @Override
-    public void setExpireTime(long time) {
-        mSharedPreferences.setMapExpireTime(time);
-    }
-
     @Override
     public String getCheckSum() {
         String checksum = null;
@@ -114,7 +105,6 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
 
     @Override
     public void put(String pUserId, String checkSum, List<MapCard> cardList) {
-        setExpireTime(System.currentTimeMillis() + BuildConfig.cache_timeout);
         if (!needUpdate(checkSum)) {
             Timber.d("map card list cache is valid - skip update");
             return;

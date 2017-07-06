@@ -27,10 +27,6 @@ public class CardStore {
 
         String getCheckSum();
 
-        long expireTime();
-
-        void setExpireTime(long time);
-
         String getCardKeyList(String userid);
 
         void resetMapCardCache(String userId, String first6cardno, String last4cardno);

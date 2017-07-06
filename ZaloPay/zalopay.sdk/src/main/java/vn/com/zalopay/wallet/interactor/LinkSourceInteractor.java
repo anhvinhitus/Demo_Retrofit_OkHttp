@@ -7,9 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.functions.Func1;
-import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
@@ -130,11 +128,9 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     @Override
     public Observable<Boolean> getMap(String userid, String accesstoken, boolean pReload, String appversion) {
-        Observable<Boolean> mapObservable = Observable.zip(getCards(userid, accesstoken, pReload, appversion),
+        return Observable.zip(getCards(userid, accesstoken, pReload, appversion),
                 getBankAccounts(userid, accesstoken, pReload, appversion),
                 (finishLoadCard, finishLoadBankAccount) -> finishLoadCard && finishLoadBankAccount);
-        return Observable.concat(expireObservable(),mapObservable)
-                .first(stopStream -> stopStream);
     }
 
     @Override
@@ -154,10 +150,5 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     private BankAccount getBankAccount(String userid, String key) {
         return bankAccountRepository.getLocalStorage().getBankAccount(userid, key);
-    }
-
-    private Observable<Boolean> expireObservable(){
-        boolean expire = cardRepository.getLocalStorage().expireTime() > System.currentTimeMillis();
-        return Observable.just(expire);
     }
 }

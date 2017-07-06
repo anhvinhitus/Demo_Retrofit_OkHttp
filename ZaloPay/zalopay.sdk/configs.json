@@ -18,6 +18,5 @@
     "channel_credit_card": "36",
     "channel_atm": "39",
     "cc_code": "123PCC",
-    "cache_timeout": "600000"
   }
 }
