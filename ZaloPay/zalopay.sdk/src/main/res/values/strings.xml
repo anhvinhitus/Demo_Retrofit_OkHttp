@@ -252,7 +252,7 @@
     <string name="zpw_string_title_total_pay">Thanh toán</string>
     <string name="zpw_string_vnd_success">VND</string>
     <string name="zpw_string_title_select_bank">Các ngân hàng được hỗ trợ</string>
-    <string name="zpw_string_title_select_card"><![CDATA[ Các thẻ được "<b>Zalo Pay</b>" hỗ trợ ]]></string>
+    <string name="zpw_string_title_select_card"><![CDATA[ <b>Zalo Pay</b> hỗ trợ liên kết]]></string>
 
     <string name="dialog_retry_button">THỬ LẠI</string>
     <string name="dialog_title_normal">Thông báo</string>

@@ -66,25 +66,26 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
-                .map(mapAppName())
+                .map(appInfoResponse -> changeAppName(appInfoResponse))
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
                 .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));
     }
 
-    private Func1<AppInfoResponse, AppInfoResponse> mapAppName() {
-        return appInfoResponse -> {
-            AppInfo appInfo = appInfoResponse.info;
-            if (appInfo == null) {
-                return appInfoResponse;
-            }
-            if (appInfo.appid == Long.parseLong(GlobalData.getStringResource(RS.string.app_service_id))) {
-                appInfo.appname = GlobalData.getStringResource(RS.string.app_service_name);
-                appInfoResponse.info = appInfo;
-            }
+    private AppInfoResponse changeAppName(AppInfoResponse appInfoResponse){
+        if(appInfoResponse == null){
+            return null;
+        }
+        AppInfo appInfo = appInfoResponse.info;
+        if (appInfo == null) {
             return appInfoResponse;
-        };
+        }
+        if (appInfo.appid == Long.parseLong(GlobalData.getStringResource(RS.string.app_service_id))) {
+            appInfo.appname = GlobalData.getStringResource(RS.string.app_service_name);
+            appInfoResponse.info = appInfo;
+        }
+        return appInfoResponse;
     }
 
     private Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {
