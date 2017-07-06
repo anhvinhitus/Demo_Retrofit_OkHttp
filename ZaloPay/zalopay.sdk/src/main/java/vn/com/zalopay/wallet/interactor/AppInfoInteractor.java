@@ -66,7 +66,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
-                .map(appInfoResponse -> changeAppName(appInfoResponse))
+                .map(this::changeAppName)
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
