@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Pair;
 
@@ -550,7 +551,14 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             return;
         }
 
-        Subscription subscription = mTransactionRepository.updateThankMessage(transid, message)
+        // message is content of embeddata.message, so it is used in encoded format
+        // to be consistent with DB, message must be decoded first
+        String decodedMessage = Strings.decodeUTF16(message);
+        if (TextUtils.isEmpty(decodedMessage)) {
+            decodedMessage = message;
+        }
+
+        Subscription subscription = mTransactionRepository.updateThankMessage(transid, decodedMessage)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
