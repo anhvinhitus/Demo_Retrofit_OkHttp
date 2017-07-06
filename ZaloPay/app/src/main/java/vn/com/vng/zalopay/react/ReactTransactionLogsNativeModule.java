@@ -551,21 +551,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             return;
         }
 
-        // message is content of embeddata.message, so it is used in encoded format
-        // to be consistent with DB, message must be decoded first
-        String decodedMessage = Strings.decodeUTF16(message);
-        if (TextUtils.isEmpty(decodedMessage)) {
-            decodedMessage = message;
-        }
-
-        String finalDecodedMessage = decodedMessage;
-        Subscription subscription = mTransactionRepository.updateThankMessage(transid, decodedMessage)
+        Subscription subscription = mTransactionRepository.updateThankMessage(transid, message)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
                         WritableMap map = Arguments.createMap();
-                        map.putString("message", finalDecodedMessage);
+                        map.putString("message", message);
                         Helpers.promiseResolveSuccess(promise, map);
                     }
 
