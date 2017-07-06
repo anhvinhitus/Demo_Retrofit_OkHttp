@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.withdraw.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ScrollView;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -39,6 +42,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         navigator.startBankActivityFromWithdrawCondition(getContext());
     }
 
+    @BindView(R.id.ScrollView)
+    ScrollView mScrollView;
+
     public WithdrawConditionFragment() {
         // Required empty public constructor
     }
@@ -51,6 +57,13 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
      */
     public static WithdrawConditionFragment newInstance() {
         return new WithdrawConditionFragment();
+    }
+
+    public void setFocusDown() {
+        if (mScrollView == null) {
+            return;
+        }
+        new Handler().postDelayed(() -> mScrollView.fullScroll(View.FOCUS_DOWN), 300);
     }
 
     @Override
@@ -87,6 +100,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         mCardSupportFragment = (CardSupportWithdrawFragment)
                 getChildFragmentManager().findFragmentById(R.id.cardSupportWithdrawFragment);
         showLoading();
+        setFocusDown();
     }
 
     @Override

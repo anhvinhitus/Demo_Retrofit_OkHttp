@@ -59,6 +59,7 @@
             android:layout_marginLeft="@dimen/spacing.medium.t"
             android:layout_marginRight="@dimen/spacing.medium.t"
             android:layout_marginTop="@dimen/spacing.large"
+            android:layout_marginBottom="@dimen/spacing.medium.t"
             android:orientation="horizontal">
 
             <com.zalopay.ui.widget.IconFontTextView
