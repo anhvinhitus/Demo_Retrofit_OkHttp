@@ -22,6 +22,8 @@ public class RS {
 
     public static final class string {
 
+        public static final String sdk_error_mess_exist_mapcard = "sdk_error_mess_exist_mapcard";
+
         public static final String app_service_id = "app_service_id";
         public static final String app_service_name = "app_service_name";
 

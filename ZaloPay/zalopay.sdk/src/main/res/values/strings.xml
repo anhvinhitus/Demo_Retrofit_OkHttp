@@ -313,7 +313,7 @@
 
     <string name="zpw_string_authen_atm">Xác thực thông tin</string>
 
-    <string name="sdk_load_card_error">Mạng không ổn định.\nKhông thể cập nhật thông tin danh sách thẻ liên kết lúc này!</string>
+    <string name="sdk_load_card_error">Mạng không ổn định.Không thể cập nhật thông tin danh sách liên kết lúc này!</string>
     <string name="zpw_string_get_bank_account_error">Mạng không ổn định.\nKhông thể cập nhật thông tin tài khoản liên kết lúc này!</string>
 
     <string name="zpw_string_number_retry">3</string>
@@ -579,5 +579,7 @@
     <string name="sdk_loading_payment_info_title">Tải thông tin</string>
 
     <string name="app_service_name">Thanh toán đơn hàng</string>
+
+    <string name="sdk_error_mess_exist_mapcard">Thẻ đã được lưu trước đó</string>
 
 </resources>

@@ -81,7 +81,6 @@ import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
-import static vn.com.zalopay.wallet.api.task.SDKReportTask.API_ERROR;
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.GENERAL_EXCEPTION;
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.TIMEOUT_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_AUTHEN;
@@ -144,6 +143,46 @@ public abstract class AdapterBase {
      */
     int numberOfRetryTimeout = 1;
     private SDKTransactionAdapter mTransactionAdapter;
+    private Action1<Throwable> loadCardException = throwable -> {
+        Log.d(this, "load card list on error", throwable);
+        String message = null;
+        if (throwable instanceof RequestException) {
+            message = throwable.getMessage();
+        }
+        if (TextUtils.isEmpty(message)) {
+            message = GlobalData.getStringResource(RS.string.sdk_load_card_error);
+        }
+        try {
+            getView().hideLoading();
+            getView().showInfoDialog(message);
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    };
+    private Action1<Boolean> loadCardSubscriber = aBoolean -> {
+        Timber.d("load card list finish");
+        try {
+            getView().hideLoading();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        String cardKey = getCard().getCardKey();
+        if (!TextUtils.isEmpty(cardKey)) {
+            MapCard mapCard = SDKApplication
+                    .getApplicationComponent()
+                    .linkInteractor()
+                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
+            if (mapCard != null) {
+                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
+                mPaymentInfoHelper.setMapCardResult(mapCardResult);
+                Log.d(this, "set map card to app", mapCardResult);
+            }
+        }
+        //quit sdk right away
+        if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
+            onClickSubmission();
+        }
+    };
     public ZPWOnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new ZPWOnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
@@ -204,46 +243,6 @@ public abstract class AdapterBase {
                     Timber.w(e.getMessage());
                 }
             }
-        }
-    };
-    private Action1<Throwable> loadCardException = throwable -> {
-        Log.d(this, "load card list on error", throwable);
-        String message = null;
-        if (throwable instanceof RequestException) {
-            message = throwable.getMessage();
-        }
-        if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.sdk_load_card_error);
-        }
-        try {
-            getView().hideLoading();
-            getView().showInfoDialog(message);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    };
-    private Action1<Boolean> loadCardSubscriber = aBoolean -> {
-        Timber.d("load card list finish");
-        try {
-            getView().hideLoading();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        String cardKey = getCard().getCardKey();
-        if (!TextUtils.isEmpty(cardKey)) {
-            MapCard mapCard = SDKApplication
-                    .getApplicationComponent()
-                    .linkInteractor()
-                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
-            if (mapCard != null) {
-                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
-                mPaymentInfoHelper.setMapCardResult(mapCardResult);
-                Log.d(this, "set map card to app", mapCardResult);
-            }
-        }
-        //quit sdk right away
-        if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
-            onClickSubmission();
         }
     };
 
@@ -1336,7 +1335,7 @@ public abstract class AdapterBase {
 
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
 
-        if(mPaymentInfoHelper.getOrder() != null && mPaymentInfoHelper.getOrder().appid == 12){
+        if (mPaymentInfoHelper.getOrder() != null && mPaymentInfoHelper.getOrder().appid == 12) {
             new Handler().postDelayed(() -> {
                 try {
                     getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));
@@ -1425,8 +1424,25 @@ public abstract class AdapterBase {
             Log.e(this, e);
         }
         PaymentSnackBar.getInstance().dismiss();
+        reloadMapListOnResponseMessage(pMessage);
         //tracking translogid on fail event
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
+    }
+
+    private void reloadMapListOnResponseMessage(String message) {
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+        if (!message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_error_mess_exist_mapcard))) {
+            return;
+        }
+        //clear checksum cardinfo
+        try {
+            SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
+            reloadMapCard(false);
+        } catch (Exception e) {
+            Timber.w(e);
+        }
     }
 
     public void terminate(String pMessage, boolean pExitSDK) {
@@ -1540,7 +1556,7 @@ public abstract class AdapterBase {
             //clear checksum cardinfo
             SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
         } catch (Exception ex) {
-            sdkReportErrorOnPharse(Constants.RESULT_PHARSE, ex != null ? ex.getMessage() : GsonUtils.toJsonString(mResponseStatus));
+            sdkReportErrorOnPharse(Constants.RESULT_PHARSE, ex.getMessage());
             throw ex;
         }
     }
@@ -1599,7 +1615,7 @@ public abstract class AdapterBase {
         try {
             strMappedCard = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e.getMessage());
         }
         return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, MapCard.class) != null;
     }
