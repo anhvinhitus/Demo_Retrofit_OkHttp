@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,7 +26,6 @@ import vn.com.vng.zalopay.bank.models.BankAction;
 import vn.com.vng.zalopay.bank.models.BankInfo;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
@@ -46,7 +43,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -219,7 +215,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     protected void linkCard() {
-        mPaymentWrapper.linkCard(getActivity());
+        getPaymentWrapper().linkCard(getActivity());
     }
 
     private void removeLinkedCard(MapCard mappCard) {
@@ -255,12 +251,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
     }
 
     void linkAccount(String cardCode) {
-        List<BankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(getUser());
-        if (checkLinkedBankAccount(mapCardLis, cardCode)) {
-            showVCBWarningDialog();
-        } else {
-            showVCBConfirmDialog(cardCode);
-        }
+        getPaymentWrapper().linkAccount(getActivity(), cardCode);
     }
 
     String VCBMaintenanceMessage() {
@@ -272,41 +263,6 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             return bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT);
         }
         return null;
-    }
-
-    private void showVCBWarningDialog() {
-        if (mView == null) return;
-        SweetAlertDialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
-        dialog.setTitleText(getActivity().getString(R.string.notification));
-        dialog.setContentText(getActivity().getString(R.string.bank_link_account_vcb_exist));
-        dialog.setConfirmText(getActivity().getString(R.string.txt_close));
-        dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> dialog.dismiss());
-        dialog.show();
-    }
-
-    private void showVCBConfirmDialog(String cardCode) {
-        if (mView == null) return;
-        SweetAlertDialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
-
-        dialog.setTitleText(getActivity().getString(R.string.notification));
-        dialog.setCancelText(getActivity().getString(R.string.txt_cancel));
-        dialog.setContentText(getVCBWarningMessage());
-        dialog.setConfirmText(getActivity().getString(R.string.accept));
-        dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
-            getPaymentWrapper().linkAccount(getActivity(), cardCode);
-//            getPaymentWrapper().linkAccount(getActivity(), "ZPVCB");
-            dialog.dismiss();
-        });
-        dialog.show();
-    }
-
-    //Just to note, though, the Java compiler will automatically convert.
-    //Ref: https://stackoverflow.com/questions/4965513/stringbuilder-vs-string-considering-replace
-    private String getVCBWarningMessage() {
-        return String.format(getActivity().getString(R.string.link_account_empty_bank_support_phone_require_hint),
-                "<b>" + PhoneUtil.formatPhoneNumberWithDot(getUser().phonenumber) + "</b>") +
-                "<br><br>" +
-                getActivity().getString(R.string.link_account_empty_bank_support_balance_require_hint);
     }
 
 //    private List<BaseMap> getFakeData() {
