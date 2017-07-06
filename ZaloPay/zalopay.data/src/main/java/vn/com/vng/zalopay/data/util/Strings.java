@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.data.util;
 
 import android.text.TextUtils;
+import android.util.Base64;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.Normalizer;
@@ -206,5 +208,27 @@ public final class Strings {
             builder.addQueryParameter(item.getKey(), item.getValue());
         }
         return builder.build().toString();
+    }
+
+    public static String encodeUTF16(String text) {
+        try {
+            text = Base64.encodeToString(text.getBytes("UTF-16"), Base64.DEFAULT);
+        } catch (UnsupportedEncodingException e) {
+            text = Base64.encodeToString(text.getBytes(), Base64.DEFAULT);
+        }
+        return text;
+    }
+
+    public static String decodeUTF16(String text) {
+        try {
+            try {
+                text = new String(Base64.decode(text, Base64.DEFAULT), "UTF-16");
+            } catch(UnsupportedEncodingException e) {
+                text = new String(Base64.decode(text, Base64.DEFAULT), "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+        return text;
     }
 }
