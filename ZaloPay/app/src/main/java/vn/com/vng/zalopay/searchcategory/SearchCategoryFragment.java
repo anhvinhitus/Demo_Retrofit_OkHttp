@@ -92,7 +92,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
 
-        mItemDecoration = new GridSpacingItemSearchDecoration(SPAN_COUNT_APPLICATION,1, false);
+        mItemDecoration = new GridSpacingItemSearchDecoration(SPAN_COUNT_APPLICATION, 1, false);
         mGridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
         mGridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -171,11 +171,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if(TextUtils.isEmpty(s)) {
-            mSearchIcon.setIcon(R.string.general_search);
-        } else {
-            mSearchIcon.setIcon("");
-        }
+        mSearchIcon.setVisibility(TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
         mPresenter.filter(s.toString());
     }
 
@@ -193,7 +189,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         if (noResult) {
             mRecyclerView.setVisibility(View.GONE);
             layoutNoResult.setVisibility(View.VISIBLE);
-            String message = getString(R.string.search_no_result,edtSearch.getText());
+            String message = getString(R.string.search_no_result, edtSearch.getText());
             mTextSearchEmty.setText(message);
             return;
         }

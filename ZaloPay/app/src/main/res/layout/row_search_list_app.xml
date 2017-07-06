@@ -16,6 +16,7 @@
         android:paddingBottom="@dimen/app_padding"
         android:paddingLeft="@dimen/app_padding"
         android:paddingTop="@dimen/app_padding"
+        app:iconLeftName="@string/general_icondefault"
         app:iconLeftSize="@dimen/searchbox.fontsize.app.result"/>
 
     <View

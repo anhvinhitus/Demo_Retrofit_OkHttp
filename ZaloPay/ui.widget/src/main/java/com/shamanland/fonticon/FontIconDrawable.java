@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -86,7 +87,7 @@ public class FontIconDrawable extends Drawable {
         mPaint = new TextPaint();
         mTextSize = 9f;
         mRect = new Rect();
-        mTextColor = ColorStateList.valueOf(0);
+        mTextColor = ColorStateList.valueOf(Color.BLACK);
         mPaint.setTypeface(IconFontLoader.getDefaultTypeface());
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Paint.Align.LEFT);

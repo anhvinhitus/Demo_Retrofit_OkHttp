@@ -46,6 +46,7 @@ public class IconFontTextView extends FontIconTextView {
     public static final int Top = 1;
     public static final int Right = 2;
     public static final int Bottom = 3;
+    public static final int INVALID_COLOR = Color.TRANSPARENT;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(flag = true, value = {Left, Top, Right, Bottom})
@@ -90,7 +91,7 @@ public class IconFontTextView extends FontIconTextView {
         }
 
         int iconSize = typedArray.getDimensionPixelSize(size, -1);
-        int iconColor = typedArray.getColor(color, -1);
+        int iconColor = typedArray.getColor(color, INVALID_COLOR);
 
         setIcon(gravity, iconName, ICON_DEFAULT, iconColor, iconSize);
     }
@@ -126,7 +127,7 @@ public class IconFontTextView extends FontIconTextView {
     }
 
     public void setIcon(@Gravity int gravity, String iconName) {
-        setIcon(gravity, iconName, ICON_DEFAULT, -1);
+        setIcon(gravity, iconName, ICON_DEFAULT, INVALID_COLOR);
     }
 
     public void setIcon(@Gravity int gravity, String iconName, @ColorInt int color) {
@@ -145,9 +146,9 @@ public class IconFontTextView extends FontIconTextView {
 
         String code = IconFontLoader.getCode(iconName, iconDefault);
 
-        //if (color >= 0) {
-        drawable.setTextColor(color);
-        //}
+        if (color != INVALID_COLOR) {
+            drawable.setTextColor(color);
+        }
 
         if (size >= 0) {
             drawable.setTextSize(size);
