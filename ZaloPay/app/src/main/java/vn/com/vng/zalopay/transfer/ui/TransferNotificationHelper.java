@@ -34,11 +34,13 @@ class TransferNotificationHelper {
     }
 
     Subscription sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
+        String standardName = Strings.removeSpecialCharacters(mUser.displayName);
         String encodedName = Strings.encodeUTF16(mUser.displayName);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.QR_TRANSFER);
-        jsonObject.addProperty("displayname", encodedName);
+        jsonObject.addProperty("displayname", standardName);
+        jsonObject.addProperty("displaynamev2", encodedName);
         jsonObject.addProperty("avatar", mUser.avatar);
         jsonObject.addProperty("mt_progress", stage);
         if (!TextUtils.isEmpty(transId)) {

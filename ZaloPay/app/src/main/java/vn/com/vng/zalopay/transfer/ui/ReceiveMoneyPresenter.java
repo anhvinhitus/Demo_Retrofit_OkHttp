@@ -213,12 +213,14 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
         final int progress = embedData.get("mt_progress").getAsInt();
         String transId = null;
 
-        String senderDisplayName = embedData.get("displayname").getAsString();
-        senderDisplayName = Strings.decodeUTF16(senderDisplayName);
-        if (senderDisplayName.isEmpty()) {
-            return;
+        String senderDisplayName;
+        try {
+            senderDisplayName = embedData.get("displaynamev2").getAsString();
+            senderDisplayName = Strings.decodeUTF16(senderDisplayName);
+        } catch (Exception e) {
+            senderDisplayName = embedData.get("displayname").getAsString();
         }
-
+        
         if (embedData.has("transid")) {
             transId = embedData.get("transid").getAsString();
         }
