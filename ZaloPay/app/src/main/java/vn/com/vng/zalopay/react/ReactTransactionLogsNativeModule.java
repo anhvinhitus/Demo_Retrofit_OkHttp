@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -520,19 +521,15 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     private String generateEmbeddata(long transId, String message, String displayName, String zalopayid, long timestamp) {
-        String encodedMessage;
-        try {
-            encodedMessage = Base64.encodeToString(message.getBytes("UTF-16"), Base64.DEFAULT);
-        } catch (UnsupportedEncodingException e) {
-            encodedMessage = Base64.encodeToString(message.getBytes(), Base64.DEFAULT);
-        }
+        String encodedMessage = Strings.encodeUTF16(message);
+        String encodedDisplayName = Strings.encodeUTF16(displayName);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE);
         jsonObject.addProperty("message", encodedMessage);
         jsonObject.addProperty("timestamp", timestamp);
         jsonObject.addProperty("transid", transId);
-        jsonObject.addProperty("displayname", displayName);
+        jsonObject.addProperty("displayname", encodedDisplayName);
         jsonObject.addProperty("zalopayid", zalopayid);
 
         String embeddata = jsonObject.toString();

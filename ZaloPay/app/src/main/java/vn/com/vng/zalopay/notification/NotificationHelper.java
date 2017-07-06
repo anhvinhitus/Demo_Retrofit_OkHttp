@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -279,22 +280,28 @@ public class NotificationHelper {
                     skipStorage = true;
                     break;
                 case NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE:
-                    String message = embeddata.get("message").getAsString();
-                    try {
-                        message = new String(Base64.decode(message, Base64.DEFAULT), "UTF-16");
-                    } catch(UnsupportedEncodingException e) {
-                        message = new String(Base64.decode(message, Base64.DEFAULT), "UTF-8");
-                    }
-                    String displayName = embeddata.get("displayname").getAsString();
                     long transId = embeddata.get("transid").getAsLong();
                     String zalopayid = embeddata.get("zalopayid").getAsString();
 
-                    String name = zalopayid != null && !zalopayid.isEmpty() ? zalopayid : displayName;
+                    String message = embeddata.get("message").getAsString();
+                    String decodedMessage = Strings.decodeUTF16(message);
+                    if (decodedMessage.isEmpty() && !message.isEmpty()) {
+                        return false;
+                    }
+                    embeddata.addProperty("message", decodedMessage);
+                    String displayName = embeddata.get("displayname").getAsString();
+                    String decodeName = Strings.decodeUTF16(displayName);
+                    if (decodeName.isEmpty() && !displayName.isEmpty()) {
+                        return false;
+                    }
+                    embeddata.addProperty("displayname", decodeName);
+
+                    String name = zalopayid != null && !zalopayid.isEmpty() ? zalopayid : decodeName;
 
                     notify.notificationstate = (long) (Enums.NotificationState.UNREAD.getId());
                     notify.message = String.format(mContext.getString(R.string.receive_thank_message), name);
                     notify.transid = transId;
-                    Subscription subscription = mTransactionRepository.updateThankMessage(transId, message)
+                    Subscription subscription = mTransactionRepository.updateThankMessage(transId, decodedMessage)
                             .subscribeOn(Schedulers.io())
                             .subscribe(new DefaultSubscriber<>());
                     mCompositeSubscription.add(subscription);
