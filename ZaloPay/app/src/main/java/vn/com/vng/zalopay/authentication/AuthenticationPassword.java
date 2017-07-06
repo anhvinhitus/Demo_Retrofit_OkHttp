@@ -7,6 +7,8 @@ import android.content.Intent;
 import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
+import java.lang.ref.WeakReference;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -24,7 +26,7 @@ import vn.com.vng.zalopay.service.UserSession;
 
 public class AuthenticationPassword implements AuthenticationProvider.Callback {
     private PasswordManager mPassword;
-    private Context mContext;
+    private WeakReference<Context> mContext;
     private Intent pendingIntent;
     private KeyTools mKeyTools;
     private boolean isFinish = false; //
@@ -40,7 +42,7 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     private AuthenticationProvider mAuthenticationProvider;
 
     public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, Intent pendingIntent, boolean isFinish) {
-        this.mContext = mContext;
+        this.mContext = new WeakReference<Context>(mContext);
         this.pendingIntent = pendingIntent;
         this.isFinish = isFinish;
         this.mKeyTools = new KeyTools();
@@ -49,14 +51,15 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     }
 
     public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, AuthenticationCallback pAuthenticationCallback) {
-        this.mContext = mContext;
+        this.mContext = new WeakReference<Context>(mContext);
         this.mKeyTools = new KeyTools();
         this.mAuthenticationCallback = pAuthenticationCallback;
         this.mSuggestFingerprint = pSuggestFingerprint;
         initPassword();
     }
+
     private void initPassword() {
-        mPassword = new PasswordManager((Activity) mContext, mContext.getString(R.string.input_pin_to_access), null, null, mSuggestFingerprint, new IPinCallBack() {
+        mPassword = new PasswordManager((Activity) mContext.get(), mContext.get().getString(R.string.input_pin_to_access), null, null, mSuggestFingerprint, new IPinCallBack() {
             @Override
             public void onError(String pError) {
                 Timber.d("PasswordManager onError [%s]", pError);
@@ -88,7 +91,7 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     }
 
     private void checkPassword(String pPass) {
-        mAuthenticationProvider = new PasswordAuthenticationProvider(mContext, accountRepository, this);
+        mAuthenticationProvider = new PasswordAuthenticationProvider(mContext.get(), accountRepository, this);
         mAuthenticationProvider.verify(pPass);
     }
 
@@ -101,9 +104,9 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
             mKeyTools.storePassword(password);
         }
         if (pendingIntent != null) {
-            mContext.startActivity(pendingIntent);
+            mContext.get().startActivity(pendingIntent);
             if (isFinish) {
-                ((Activity) mContext).finish();
+                ((Activity) mContext.get()).finish();
             }
         }
         if (mAuthenticationCallback != null) {
@@ -115,7 +118,7 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     @Override
     public void onError(Throwable e) {
         Timber.d("show password error [%s]", e);
-        String message = ErrorMessageFactory.create(mContext, e);
+        String message = ErrorMessageFactory.create(mContext.get(), e);
         mPassword.setErrorMessage(message);
         if (mAuthenticationCallback != null) {
             mAuthenticationCallback.onAuthenticationFailure();
