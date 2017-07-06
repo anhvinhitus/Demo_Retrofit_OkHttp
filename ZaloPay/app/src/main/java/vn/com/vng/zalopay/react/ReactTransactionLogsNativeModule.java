@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.UnsupportedEncodingException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -39,8 +38,8 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
+import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
 import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -52,6 +51,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.notification.NotificationType;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.model.TransactionResult;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 
@@ -558,12 +558,21 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             decodedMessage = message;
         }
 
+        String finalDecodedMessage = decodedMessage;
         Subscription subscription = mTransactionRepository.updateThankMessage(transid, decodedMessage)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        Helpers.promiseResolve(promise, aBoolean ? 1 : -1);
+                        WritableMap map = Arguments.createMap();
+                        map.putString("message", finalDecodedMessage);
+                        Helpers.promiseResolveSuccess(promise, map);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), e.getMessage());
                     }
                 });
         mCompositeSubscription.add(subscription);
