@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.util;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -100,12 +101,12 @@ public final class Strings {
 
     public static String getDomainName(String url) {
         try {
-            final String[] DOMAIN = { "com", "org", "net", "edu", "co", "gov", "asia", };
+            final String[] DOMAIN = {"com", "org", "net", "edu", "co", "gov", "asia",};
 
             URI uri = new URI(url);
             String domain = uri.getHost();
 
-            if(domain != null) {
+            if (domain != null) {
                 String dot = ".";
                 String[] parts = domain.split("\\.");
 
@@ -131,7 +132,7 @@ public final class Strings {
 
         if (standardRemoveAccentString.contains(searchText)) {
             return standardRemoveAccentString.indexOf(searchText);
-        } else if(standardString.contains(searchText)) {
+        } else if (standardString.contains(searchText)) {
             return standardString.indexOf(searchText);
         }
 
@@ -140,13 +141,13 @@ public final class Strings {
 
     public static String getRawQueryMultipleValue(String... keys) {
         String[] params = new String[keys.length];
-        for(int i = 0; i < params.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             params[i] = "?";
         }
         return "(" + joinWithDelimiter(",", params) + ")";
     }
 
-     public static String pathSegmentsToString(List<String> pathSegments) {
+    public static String pathSegmentsToString(List<String> pathSegments) {
         StringBuilder out = new StringBuilder();
         for (int i = 0, size = pathSegments.size(); i < size; i++) {
             out.append('/');
@@ -158,9 +159,9 @@ public final class Strings {
     /**
      * Parse input string with format
      * ((key1:value1)\t)+
-     *
+     * <p>
      * Example input
-     *  Nhà mạng:Viettel\tMệnh giá:50.000 VND\tNạp cho:Số của tôi - 0902167233
+     * Nhà mạng:Viettel\tMệnh giá:50.000 VND\tNạp cho:Số của tôi - 0902167233
      *
      * @param collection input string
      * @return list of name-value pair with exact order appears in input string
@@ -223,7 +224,7 @@ public final class Strings {
         try {
             try {
                 text = new String(Base64.decode(text, Base64.DEFAULT), "UTF-16");
-            } catch(UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 text = new String(Base64.decode(text, Base64.DEFAULT), "UTF-8");
             }
         } catch (UnsupportedEncodingException e) {
@@ -231,4 +232,12 @@ public final class Strings {
         }
         return text;
     }
+
+    private static final String NOT_SPECIAL_CHARACTERS_REGEX = "[^!@#$%^&()_+|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890]";
+
+    public static String removeSpecialCharacters(@NonNull String text) {
+        return text.replaceAll(NOT_SPECIAL_CHARACTERS_REGEX, "");
+    }
+
+
 }
