@@ -274,26 +274,13 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
         return null;
     }
 
-    public boolean isVCBMaintenance() {
-        BankConfig bankConfig = SDKApplication
-                .getApplicationComponent()
-                .bankListInteractor()
-                .getBankConfig(CardType.PVCB);
-        if (bankConfig.status == BankStatus.MAINTENANCE) {
-            return true;
-        }
-        return false;
-    }
-
     private void showVCBWarningDialog() {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
         dialog.setTitleText(getActivity().getString(R.string.notification));
         dialog.setContentText(getActivity().getString(R.string.bank_link_account_vcb_exist));
         dialog.setConfirmText(getActivity().getString(R.string.txt_close));
-        dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
-            dialog.dismiss();
-        });
+        dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> dialog.dismiss());
         dialog.show();
     }
 
