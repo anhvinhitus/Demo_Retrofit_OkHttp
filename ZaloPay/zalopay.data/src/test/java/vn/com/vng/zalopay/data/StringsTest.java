@@ -239,4 +239,19 @@ public class StringsTest {
         actual = Strings.addUrlQueryParams(url, map);
         Assert.assertEquals(expected, actual);
     }
+
+    @Test
+    public void testEncodeDecodeUTF16() {
+        String text1 = "◠‿◠ Mầu \uD83E\uDD17\uD83E\uDD84\uD83E\uDD81\uD83E\uDD81";
+        String text2 = "123456";
+        String text3 = "AbCd EFch";
+        String text4 = "Cộng hoà xã hội chủ nghĩa Việt Nam - Độc lập tự do hạnh phúc";
+        String text5 = "\uD83D\uDE03\uD83D\uDE0C\uD83D\uDE06\uD83D\uDE0A\uD83D\uDE06\uD83D\uDE0C\uD83D\uDE0A☺\uD83D\uDE1C\uD83D\uDE0A\uD83D\uDE19\uD83D\uDE1C\uD83D\uDE0A☺\uD83C\uDF50\uD83C\uDF4E\uD83E\uDDC0\uD83C\uDF51\uD83C\uDF4E\uD83E\uDDC0\uD83C\uDF4E\uD83C\uDF50\uD83E\uDDC0\uD83C\uDF4E\uD83C\uDF50\uD83C\uDFD1\uD83C\uDFC2\uD83C\uDFB3\uD83C\uDFB3\uD83C\uDFD1\uD83C\uDFC2\uD83C\uDFB1\uD83C\uDF80\uD83C\uDF90\uD83C\uDF8D\uD83C\uDFAB\uD83C\uDF8D\uD83C\uDF91\uD83C\uDF91⛲\uD83C\uDFED\uD83C\uDFE9⛺\uD83C\uDFED\uD83D\uDD4B\uD83D\uDEBF\uD83D\uDECF\uD83D\uDEBF\uD83C\uDFB0\uD83D\uDECF\uD83D\uDC34\uD83D\uDC29\uD83D\uDC08\uD83D\uDC29\uD83D\uDC04\uD83D\uDC08\uD83C\uDF14\uD83C\uDF0D\uD83D\uDDFA\uD83C\uDF14\uD83D\uDCF2\uD83D\uDEB0\uD83D\uDEE2\uD83C\uDF11\uD83D\uDDFA\uD83C\uDF1A\uD83C\uDF13\uD83C\uDF26\uD83C\uDF08\uD83C\uDF2A\uD83C\uDF00☃\uD83C\uDF2A⛱\uD83D\uDD25\uD83C\uDF0A\uD83C\uDF0A\uD83D\uDCA7\uD83D\uDCF1\uD83D\uDD08\uD83D\uDCF2\uD83D\uDD0B\uD83D\uDD14";
+
+        Assert.assertEquals(text1, Strings.decodeUTF16(Strings.encodeUTF16(text1)));
+        Assert.assertEquals(text2, Strings.decodeUTF16(Strings.encodeUTF16(text2)));
+        Assert.assertEquals(text3, Strings.decodeUTF16(Strings.encodeUTF16(text3)));
+        Assert.assertEquals(text4, Strings.decodeUTF16(Strings.encodeUTF16(text4)));
+        Assert.assertEquals(text5, Strings.decodeUTF16(Strings.encodeUTF16(text5)));
+    }
 }
