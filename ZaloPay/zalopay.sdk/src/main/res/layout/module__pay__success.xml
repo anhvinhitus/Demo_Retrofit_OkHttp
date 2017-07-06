@@ -12,8 +12,8 @@
         android:layout_width="@dimen/sdk_ic_success_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/sdk_margin_top_bottom_large"
-        android:layout_marginBottom="@dimen/sdk_margin_top_bottom_large"
+        android:layout_marginTop="@dimen/zpw_padding_30"
+        android:layout_marginBottom="@dimen/sdk_margin_top_bottom"
         app:actualImageScaleType="centerInside"
         app:viewAspectRatio="1" />
 
@@ -49,10 +49,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:lines="3"
+        android:maxLines="3"
         android:ellipsize="end"
         android:textColor="@color/text_color_grey"
         android:textStyle="italic"
+        android:paddingBottom="@dimen/zpw_padding_5"
         android:textSize="@dimen/zpw_text_size_medium" />
 
     <View
