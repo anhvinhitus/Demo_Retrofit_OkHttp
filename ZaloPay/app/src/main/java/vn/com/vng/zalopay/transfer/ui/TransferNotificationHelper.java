@@ -5,11 +5,14 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
+import java.io.UnsupportedEncodingException;
+
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
@@ -31,9 +34,11 @@ class TransferNotificationHelper {
     }
 
     Subscription sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
+        String encodedName = Strings.encodeUTF16(mUser.displayName);
+
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", NotificationType.AppP2PNotificationType.QR_TRANSFER);
-        jsonObject.addProperty("displayname", mUser.displayName);
+        jsonObject.addProperty("displayname", encodedName);
         jsonObject.addProperty("avatar", mUser.avatar);
         jsonObject.addProperty("mt_progress", stage);
         if (!TextUtils.isEmpty(transId)) {

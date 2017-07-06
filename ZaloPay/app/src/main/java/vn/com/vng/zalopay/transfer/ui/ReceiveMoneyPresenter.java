@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
@@ -207,10 +209,15 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
     }
 
     private void handleNotifications(NotificationData notify, JsonObject embedData) {
-        final String senderDisplayName = embedData.get("displayname").getAsString();
         final String senderAvatar = embedData.get("avatar").getAsString();
         final int progress = embedData.get("mt_progress").getAsInt();
         String transId = null;
+
+        String senderDisplayName = embedData.get("displayname").getAsString();
+        senderDisplayName = Strings.decodeUTF16(senderDisplayName);
+        if (senderDisplayName.isEmpty()) {
+            return;
+        }
 
         if (embedData.has("transid")) {
             transId = embedData.get("transid").getAsString();
