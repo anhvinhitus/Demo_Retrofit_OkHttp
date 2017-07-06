@@ -1,2 +1,14 @@
-Zalo Pay (Staging v2.14.0 - build 313) - Released on 2017-07-06 11:56
-
+Zalo Pay (Staging v2.14.0 - build 314) - Released on 2017-07-06 17:14
++ [Bank] Refactor code by datnt10 (#3fc11b6)
++ [Util] Remove special char by hieuvm (#1adce20)
++ [SDK] Thay bởi reference method by vo van chuc (#560edd6)
++ [SDK] #ZPF-245, #ZPF-253 : Pay and link: pay được, đã link dưới um nhưng ko hiển thị trên app, vào lại sdk cũng ko load - Liên kết VCB by vo van chuc (#2551898)
++ [Password] Update WeakReference Password by lytm (#79713b9)
++ [Search] Fix ui search category by hieuvm (#ee60fe7)
++ [Fabric] Init fabric in mainthread by hieuvm (#e858820)
++ [SDK] Clear code by vo van chuc (#8ff99d0)
++ [SDK] Remove expire time trong map card api by vo van chuc (#b3ffc22)
++ [Search] Fix ui search catetory by hieuvm (#8f02bec)
++ [APP] Refactor code by lytm (#b684a3d)
++ [APP] Update layout withdraw condition by lytm (#0fd89bb)
++ [ThankMessage] Encode/ Decode displayname by khattn (#22aef2c)
