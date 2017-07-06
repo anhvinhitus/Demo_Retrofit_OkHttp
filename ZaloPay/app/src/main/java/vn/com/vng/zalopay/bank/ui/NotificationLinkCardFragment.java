@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +13,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 
 /**
@@ -122,12 +122,17 @@ public class NotificationLinkCardFragment extends BaseFragment {
             mTxtBankName.setText(bankName);
         }
     }
-    private void setScrollViewFocusDown()
-    {
-        if(mScrollView == null)
-        {
-            return;
-        }
-        new Handler().postDelayed(() -> mScrollView.fullScroll(View.FOCUS_DOWN), 300);
+
+    private void setScrollViewFocusDown() {
+        AndroidUtils.runOnUIThread(mScrollViewRunnable, 300);
     }
+
+    private Runnable mScrollViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mScrollView != null) {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        }
+    };
 }

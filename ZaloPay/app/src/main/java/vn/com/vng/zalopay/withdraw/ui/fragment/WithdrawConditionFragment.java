@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.withdraw.ui.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ScrollView;
@@ -17,6 +16,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
@@ -60,11 +60,17 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     }
 
     public void setFocusDown() {
-        if (mScrollView == null) {
-            return;
-        }
-        new Handler().postDelayed(() -> mScrollView.fullScroll(View.FOCUS_DOWN), 300);
+        AndroidUtils.runOnUIThread(mScrollViewRunnable, 300);
     }
+
+    private Runnable mScrollViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mScrollView != null) {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        }
+    };
 
     @Override
     protected void setupFragmentComponent() {
