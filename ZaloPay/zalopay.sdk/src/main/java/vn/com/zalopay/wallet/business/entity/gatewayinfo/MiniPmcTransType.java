@@ -11,7 +11,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.FeeType;
@@ -64,6 +63,7 @@ public class MiniPmcTransType implements Parcelable {
     private boolean allowPmcQuota = true;
     private boolean allowLevel = true;
     private boolean allowOrderAmount = true;
+    private boolean allowBankVersion = true;
 
     public MiniPmcTransType() {
     }
@@ -123,6 +123,14 @@ public class MiniPmcTransType implements Parcelable {
         return transtypePmcKey.toString();
     }
 
+    public boolean isAllowBankVersion() {
+        return allowBankVersion;
+    }
+
+    public void setAllowBankVersion(boolean allowBankVersion) {
+        this.allowBankVersion = allowBankVersion;
+    }
+
     public void resetToDefault() {
         this.status = PaymentChannelStatus.ENABLE;
         this.minvalue = -1;
@@ -166,7 +174,7 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public boolean meetPaymentCondition() {
-        return isEnable() && isAllowPmcQuota() && !isMaintenance() && isAllowOrderAmount();
+        return isEnable() && isAllowPmcQuota() && !isMaintenance() && isAllowOrderAmount() && isAllowBankVersion();
     }
 
     public boolean isDisable() {

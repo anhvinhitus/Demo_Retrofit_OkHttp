@@ -10,7 +10,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -62,6 +61,20 @@ public class ValidationActor extends SingletonBase {
         return mChannelListPresenter.get().getViewOrThrow();
     }
 
+    private void warningSupportVersion() {
+        if (mChannel.isMapValid()) {
+            BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
+            if (bankConfig != null) {
+                String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                pMessage = String.format(pMessage, bankConfig.getShortBankName());
+                showSupportBankVersionDialog(pMessage);
+                return;
+            }
+        }
+        String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+        showSupportBankVersionDialog(String.format(message, mChannel.pmcname));
+    }
+
     public boolean validate(PaymentChannel channel) throws Exception {
         if (channel == null) {
             return false;
@@ -79,34 +92,21 @@ public class ValidationActor extends SingletonBase {
                 return false;
             }
         }
-        if (!mChannel.meetPaymentCondition()) {
-            Log.d(this, "select channel not support", mChannel);
-            return false;
-        }
         //check level for payment
-        if (!mPaymentInfoHelper.userLevelValid()) {
+        /*if (!mPaymentInfoHelper.userLevelValid()) {
             getView().showUpdateLevelDialog(
                     GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update),
                     getBtnCloseText(), mUpdateLevelListener);
             return false;
-        }
+        }*/
         //check bank future
-        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
-            if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-                BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
-                if (bankConfig != null) {
-                    String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                    pMessage = String.format(pMessage, bankConfig.getShortBankName());
-                    showSupportBankVersionDialog(pMessage);
-                }
-                return false;
-            } else if (!mChannel.isAtmChannel()) {
-                String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
-                showSupportBankVersionDialog(String.format(message, mChannel.pmcname));
-                return false;
-            }
+        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext())) && !mChannel.isNewAtmChannel()) {
+            warningSupportVersion();
         }
-
+        if (!mChannel.meetPaymentCondition()) {
+            Log.d(this, "select channel not support", mChannel);
+            return false;
+        }
         //withdraw
         if (mPaymentInfoHelper.isWithDrawTrans()) {
             return true;
@@ -137,7 +137,7 @@ public class ValidationActor extends SingletonBase {
          * if user have no linked bank accoount, redirect him to link bank account page
          * if user have some link bank account, he need to select one to continue to payment
          */
-        if (channel.isBankAccount() && !channel.isBankAccountMap) {
+        /*if (channel.isBankAccount() && !channel.isBankAccountMap) {
             //callback bankcode to app , app will direct user to link bank account to right that bank
             BankAccount dBankAccount = new BankAccount();
             dBankAccount.bankcode = CardType.PVCB;
@@ -145,7 +145,7 @@ public class ValidationActor extends SingletonBase {
             mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
             getView().callbackThenTerminate();
             return false;
-        }
+        }*/
         return true;
     }
 

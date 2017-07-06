@@ -8,6 +8,7 @@ import java.util.List;
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -303,11 +304,18 @@ public abstract class AbstractChannelLoader {
 
     protected void send(PaymentChannel pChannel) {
         if (pChannel != null) {
-            if (this instanceof WithDrawChannelLoader) {
-                processWithDrawCase(pChannel);
-            }
-            //sometimes network not stable, so 2 channels same in listview, we must exclude it if it existed
+            updateChannelStatus(pChannel);
             source.onNext(pChannel);
+        }
+    }
+
+    private void updateChannelStatus(PaymentChannel channel) {
+        if (this instanceof WithDrawChannelLoader) {
+            processWithDrawCase(channel);
+        }
+        //update status bank future version
+        if (!channel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            channel.setAllowBankVersion(false);
         }
     }
 

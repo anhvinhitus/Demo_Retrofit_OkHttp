@@ -282,11 +282,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return null;
         }
         try {
-            trackingPaymentChannel(channel.pmcid);
             markSelectChannel(channel, pPosition);
-            if (GlobalData.analyticsTrackerWrapper != null) {
-                GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
-            }
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
@@ -324,6 +320,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mLastSelectPosition = position;
         mChannelAdapter.notifyBinderItemChanged(position);
         updateButton(channel);
+        trackingPaymentChannel(channel.pmcid);
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_ChoosePayMethod, ZPPaymentSteps.OrderStepResult_None, channel.pmcid);
+        }
     }
 
     public void startPayment() {
@@ -783,6 +783,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private void trackingPaymentChannel(int pmcid) {
+        Timber.d("track channel id %s", pmcid);
         switch (pmcid) {
             case BuildConfig.channel_credit_card:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_36);

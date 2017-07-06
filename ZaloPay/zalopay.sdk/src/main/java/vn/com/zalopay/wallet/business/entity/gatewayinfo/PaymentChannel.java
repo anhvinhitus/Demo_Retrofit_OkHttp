@@ -13,16 +13,20 @@ public class PaymentChannel extends MiniPmcTransType {
     public PaymentChannel() {
     }
 
-    public String cardKey(){
-        return f6no + l4no;
-    }
-
     public PaymentChannel(MiniPmcTransType channel) {
         super(channel);
     }
 
+    public String cardKey() {
+        return f6no + l4no;
+    }
+
     public boolean isMapValid() {
         return !TextUtils.isEmpty(f6no) && !TextUtils.isEmpty(l4no);
+    }
+
+    public boolean isNewAtmChannel() {
+        return isAtmChannel() && !isMapValid();
     }
 
     @Override

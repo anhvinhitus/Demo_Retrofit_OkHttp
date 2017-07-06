@@ -115,6 +115,8 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
             mess = mContext.getString(R.string.sdk_warning_balance_error);
         } else if ((amount + pChannel.totalfee) < pChannel.minvalue) {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount_small);
+        } else if (!pChannel.isAllowBankVersion()) {
+            mess = mContext.getString(R.string.zpw_string_channel_bank_support_version_warning_message);
         } else if (!pChannel.isAllowPmcQuota()) {
             mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount);
         } else if (pChannel.isMaintenance() && pChannel.isMapCardChannel()) {
