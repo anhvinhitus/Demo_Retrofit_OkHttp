@@ -19,15 +19,12 @@ import rx.Observable;
 
 import vn.com.vng.zalopay.data.ApplicationTestCase;
 import vn.com.vng.zalopay.data.CustomObserver;
-import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.TransactionFragmentEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -151,8 +148,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions when not having data (both from local and cloud)", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess when not having data (both from local and cloud)", 0, result.get(0).second.size());
     }
 
     @Test
@@ -169,8 +166,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = -1;
-        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions with data from clound and count = -1", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess with data from clound and count = -1", 0, result.get(0).second.size());
     }
 
     @Test
@@ -186,8 +183,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = -1;
         count = 10;
-        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions with datas from cloud and pageIndex = -1", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess with datas from cloud and pageIndex = -1", 0, result.get(0).second.size());
     }
 
     @Test
@@ -202,7 +199,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         offset = 10;
         count = 5;
-        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        mRepository.getTransactionsSuccess(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
         int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
         assertEquals(transactionHistoryResponse.data.subList(startIdx, startIdx + count), result.get(0).second);
     }
@@ -219,8 +216,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         offset = 0;
         count = 0;
-        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions: get 0 data from clound", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess: get 0 data from clound", 0, result.get(0).second.size());
     }
 
     @Test
@@ -234,8 +231,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         offset = 10;
         count = 5;
-        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions from local when not having any datas with success type", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess from local when not having any datas with success type", 0, result.get(0).second.size());
     }
 
     @Test
@@ -249,8 +246,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         offset = 0;
         count = 0;
-        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions get 0 datas from local", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess get 0 datas from local", 0, result.get(0).second.size());
     }
 
     @Test
@@ -266,7 +263,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         offset = 10;
         count = 5;
-        mRepository.getTransactions(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
+        mRepository.getTransactionsSuccess(timestamp, types, offset, count, sign).subscribe(new CustomObserver<>(result));
 
         int startIdx = (int)(maxreqdate - timestamp) / 10 + offset;
         List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(startIdx, startIdx + count);
@@ -288,7 +285,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = TRANSACTION_SIZE;
-        mRepository.getTransactions(maxreqdate2, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        mRepository.getTransactionsSuccess(maxreqdate2, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
 
         assertEquals(transactionHistoryResponse.data, result.get(0).second);
     }
@@ -306,8 +303,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        mRepository.getTransactions(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("getTransactions: get 0 data from clound and local", 0, result.get(0).second.size());
+        mRepository.getTransactionsSuccess(timestamp, types, pageIndex, count, sign).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("getTransactionsSuccess: get 0 data from clound and local", 0, result.get(0).second.size());
     }
 
     @Test

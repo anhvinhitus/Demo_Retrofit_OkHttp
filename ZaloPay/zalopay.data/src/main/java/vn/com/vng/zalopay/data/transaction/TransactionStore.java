@@ -54,7 +54,7 @@ public interface TransactionStore {
 
     interface Repository {
 
-        Observable<Pair<Integer, List<TransHistory>>> getTransactions(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
+        Observable<Pair<Integer, List<TransHistory>>> getTransactionsSuccess(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 
         Observable<Pair<Integer, List<TransHistory>>> getTransactionsFail(long timestamp, List<Integer> transTypes, int offset, int count, int sign);
 

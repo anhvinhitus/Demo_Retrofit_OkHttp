@@ -30,11 +30,11 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class TransactionRepository implements TransactionStore.Repository {
 
-    private ZaloPayEntityDataMapper mDataMapper;
-    private TransactionStore.LocalStorage mLocalStorage;
-    private TransactionFragmentStore.LocalStorage mFragmentLocalStorage;
-    private TransactionStore.RequestService mRequestService;
-    private User mUser;
+    private final ZaloPayEntityDataMapper mDataMapper;
+    private final TransactionStore.LocalStorage mLocalStorage;
+    private final TransactionFragmentStore.LocalStorage mFragmentLocalStorage;
+    private final TransactionStore.RequestService mRequestService;
+    private final User mUser;
     private final EventBus mEventBus;
 
     private static final int TRANSACTION_STATUS_SUCCESS = 1;
@@ -47,6 +47,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private static final int RECURSE_TIME = 5;
 
+    private static final int ERR_CODE_ERROR = -1;
     private static final int ERR_CODE_SUCCESS = 1;
     private static final int ERR_CODE_OUT_OF_DATA = 2;
 
@@ -66,44 +67,38 @@ public class TransactionRepository implements TransactionStore.Repository {
         mEventBus = eventBus;
     }
 
-    @Override
-    public Observable<Pair<Integer, List<TransHistory>>> getTransactions(long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
+    private Observable<Pair<Integer, List<TransHistory>>> getTransactions(int type, long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
         if (offset < 0 || count <= 0) {
             return Observable.just(new Pair<>(ERR_CODE_SUCCESS, Collections.emptyList()));
         }
 
-        return fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS, timestamp, transTypes, offset, count, sign)
-                .flatMap(response -> getTransactionHistoryLocal(timestamp, transTypes, offset, count, TRANSACTION_STATUS_SUCCESS, sign))
-                .map(entities -> new Pair<>(checkOutOfData(timestamp, TRANSACTION_STATUS_SUCCESS) && entities.size() < count ?
-                        ERR_CODE_OUT_OF_DATA : ERR_CODE_SUCCESS, Lists.transform(entities, mDataMapper::transform)))
-                .doOnError(Timber::d)
-                .onErrorResumeNext(new Func1<Throwable, Observable<Pair<Integer, List<TransHistory>>>>() {
-                    @Override
-                    public Observable<Pair<Integer, List<TransHistory>>> call(Throwable throwable) {
-                        return ObservableHelper.makeObservable(() ->
-                                new Pair<Integer, List<TransHistory>>(checkOutOfData(timestamp, TRANSACTION_STATUS_SUCCESS) ? ERR_CODE_OUT_OF_DATA : ERR_CODE_SUCCESS, Collections.emptyList()));
+        return getTransactionHistoryLocal(timestamp, transTypes, offset, count, type, sign)
+                .flatMap(entities -> {
+                    if (entities != null && entities.size() >= count) {
+                        return Observable.just(entities);
+                    } else {
+                        return fetchTransactionHistoryOldest(type, timestamp, transTypes, offset, count, sign);
                     }
-                });
+                })
+                .map(entities -> {
+                    Timber.d("get transaction local with timestamp [%s] offset [%s] count [%s] statusType [%s] sign [%s] - Result size:%s ",
+                            timestamp, offset, count, type, sign, entities.size());
+                    int code = isOutOfData(timestamp, type) && entities.size() < count ? ERR_CODE_OUT_OF_DATA : ERR_CODE_SUCCESS;
+                    return new Pair<>(code, Lists.transform(entities, mDataMapper::transform));
+                })
+                .onErrorResumeNext(throwable -> getTransactionHistoryLocal(timestamp, transTypes, offset, count, type, sign)
+                        .map(entities -> new Pair<>(ERR_CODE_ERROR, Lists.transform(entities, mDataMapper::transform))))
+                ;
+    }
+
+    @Override
+    public Observable<Pair<Integer, List<TransHistory>>> getTransactionsSuccess(long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
+        return getTransactions(TRANSACTION_STATUS_SUCCESS, timestamp, transTypes, offset, count, sign);
     }
 
     @Override
     public Observable<Pair<Integer, List<TransHistory>>> getTransactionsFail(long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
-        if (offset < 0 || count <= 0) {
-            return Observable.just(new Pair<>(ERR_CODE_SUCCESS, Collections.emptyList()));
-        }
-
-        return fetchTransactionHistoryOldest(TRANSACTION_STATUS_FAIL, timestamp, transTypes, offset, count, sign)
-                .flatMap(response -> getTransactionHistoryLocal(timestamp, transTypes, offset, count, TRANSACTION_STATUS_FAIL, sign))
-                .map(entities -> new Pair<>(checkOutOfData(timestamp, TRANSACTION_STATUS_FAIL) && entities.size() < count ?
-                        ERR_CODE_OUT_OF_DATA : ERR_CODE_SUCCESS, Lists.transform(entities, mDataMapper::transform)))
-                .doOnError(Timber::d)
-                .onErrorResumeNext(new Func1<Throwable, Observable<Pair<Integer, List<TransHistory>>>>() {
-                    @Override
-                    public Observable<Pair<Integer, List<TransHistory>>> call(Throwable throwable) {
-                        return ObservableHelper.makeObservable(() ->
-                                new Pair<Integer, List<TransHistory>>(checkOutOfData(timestamp, TRANSACTION_STATUS_FAIL) ? ERR_CODE_OUT_OF_DATA : ERR_CODE_SUCCESS, Collections.emptyList()));
-                    }
-                });
+        return getTransactions(TRANSACTION_STATUS_FAIL, timestamp, transTypes, offset, count, sign);
     }
 
     private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(long timestamp,
@@ -112,13 +107,17 @@ public class TransactionRepository implements TransactionStore.Repository {
                                                                             int count,
                                                                             int statusType,
                                                                             int sign) {
-        Timber.d("get transaction local with timestamp [%s] page index [%s] count [%s] status type [%s] sign [%s]",
+        Timber.d("get transaction local with timestamp [%s] offset [%s] count [%s] statusType [%s] sign [%s]",
                 timestamp, offset, count, statusType, sign);
 
         return getTimestampInFragment(timestamp, statusType)
-                .filter(reqdate -> reqdate != null)
-                .flatMap(reqdate -> ObservableHelper.makeObservable(() -> mLocalStorage.get(offset, count, statusType,
-                        timestamp == 0 ? reqdate.maxreqdate : timestamp, reqdate.minreqdate, transTypes, sign)));
+                .flatMap(reqdate -> {
+                    if (reqdate == null) {
+                        return Observable.just(Collections.emptyList());
+                    }
+                    return ObservableHelper.makeObservable(() -> mLocalStorage.get(offset, count, statusType,
+                            timestamp == 0 ? reqdate.maxreqdate : timestamp, reqdate.minreqdate, transTypes, sign));
+                });
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryLatest(int statusType) {
@@ -127,18 +126,24 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryOldest(int statusType, long timestamp, List<Integer> transTypes, int offset, int count, int sign) {
-        if (checkOutOfData(timestamp, statusType)) {
-            return Observable.just(Collections.emptyList());
-        }
-
-        return getTimestampInFragment(timestamp, statusType)
-                .flatMap(entity -> {
-                    long timeStamp = (entity != null && (entity.minreqdate < timestamp || timestamp == 0)) ? entity.minreqdate : timestamp;
-                    if (transTypes.size() == 0) {
-                        return fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_OLDEST, statusType, -1);
+        return checkOutOfData(timestamp, statusType)
+                .flatMap(isOutOfData -> {
+                    if (isOutOfData) {
+                        return Observable.just(Collections.emptyList());
+                    } else {
+                        return getTimestampInFragment(timestamp, statusType)
+                                .map(entity -> (entity != null && (entity.minreqdate < timestamp || timestamp == 0)) ? entity.minreqdate : timestamp)
+                                .flatMap(timeStamp -> {
+                                    if (transTypes.size() == 0) {
+                                        return fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_OLDEST, statusType, -1);
+                                    }
+                                    return fetchTransactionHistoryWithTransType(timeStamp, TRANSACTION_ORDER_OLDEST, statusType, -1, transTypes, offset, count, sign);
+                                });
                     }
-                    return fetchTransactionHistoryWithTransType(timeStamp, TRANSACTION_ORDER_OLDEST, statusType, -1, transTypes, offset, count, sign);
-                });
+                })
+                .lastOrDefault(Collections.emptyList())
+                .flatMap(transHistoryEntities -> getTransactionHistoryLocal(timestamp, transTypes, offset, count, statusType, sign))
+                ;
     }
 
     private Observable<TransactionFragmentEntity> getTimestampInFragment(long timestamp, int statusType) {
@@ -154,7 +159,11 @@ public class TransactionRepository implements TransactionStore.Repository {
         });
     }
 
-    private boolean checkOutOfData(long timestamp, int statusType) {
+    private Observable<Boolean> checkOutOfData(long timestamp, int statusType) {
+        return ObservableHelper.makeObservable(() -> isOutOfData(timestamp, statusType));
+    }
+
+    private boolean isOutOfData(long timestamp, int statusType) {
         if (timestamp <= 0) {
             TransactionFragmentEntity entity = mFragmentLocalStorage.getLatestFragment(statusType);
             return entity != null && entity.outofdata;
