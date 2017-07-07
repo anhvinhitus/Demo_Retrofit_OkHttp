@@ -846,7 +846,7 @@ public class Navigator implements INavigator {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
-        AndroidUtils.runOnUIThread(() -> showPinDialog(context, promise), 200);
+        AndroidUtils.runOnUIThread(() -> showPinDialog(context, promise), 0);
         return false;
     }
 
