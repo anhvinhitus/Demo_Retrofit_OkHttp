@@ -1,2 +1,3 @@
-Zalo Pay (Sandbox v2.14.0 - build 325) - Released on 2017-07-07 12:06
-
+Zalo Pay (Sandbox v2.14.0 - build 326) - Released on 2017-07-07 16:09
++ [React] Refactor code by hieuvm (#11e7238)
++ [React] Fix WeakHashMap Activity by hieuvm (#3a35146)
