@@ -64,6 +64,13 @@ public class PaymentInfoHelper extends SingletonBase {
         return null;
     }
 
+    public int getOrderSource() {
+        if (getOrder() != null) {
+            return getOrder().ordersource;
+        }
+        return -1;
+    }
+
     public String getNumberPhone() {
         if (getUserInfo() != null) {
             return getUserInfo().phonenumber;

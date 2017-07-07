@@ -129,8 +129,8 @@ public class GlobalData {
         }
     }
 
-    public static void initializeAnalyticTracker(long pAppId, String pAppTransID, @TransactionType int transactionType) {
-        analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(pAppId, pAppTransID, transactionType);
+    public static void initializeAnalyticTracker(long pAppId, String pAppTransID, @TransactionType int transactionType, int orderSource) {
+        analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(pAppId, pAppTransID, transactionType, orderSource);
     }
 
     public static boolean shouldUpdateBankFuncbyPayType(){

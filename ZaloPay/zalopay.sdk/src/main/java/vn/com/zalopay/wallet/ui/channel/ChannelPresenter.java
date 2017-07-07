@@ -178,11 +178,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 public void onCancelEvent() {
                     try {
                         setPaymentStatusAndCallback(PaymentStatus.FAILURE);
+                        if (GlobalData.analyticsTrackerWrapper != null) {
+                            GlobalData.analyticsTrackerWrapper.trackUserCancel();
+                        }
                     } catch (Exception e) {
                         Log.e(this, e);
-                    }
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper.trackUserCancel(false);
                     }
                 }
 
@@ -201,7 +201,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public boolean onBackPressed() {
         try {
-            return canQuit();
+            boolean canQuit = canQuit();
+            if (!canQuit && GlobalData.analyticsTrackerWrapper != null) {
+                GlobalData.analyticsTrackerWrapper.trackUserCancel();
+            }
+            return canQuit;
         } catch (Exception e) {
             Log.e(this, e);
             return false;

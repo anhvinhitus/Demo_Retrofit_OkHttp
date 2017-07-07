@@ -130,12 +130,6 @@ public class PaymentWrapper {
         paymentOrder.ordersource = ZPPaymentSteps.OrderSource_Unknown;
         UserInfo userInfo = createUserInfo(mCurrentUser.displayName, mCurrentUser.avatar, String.valueOf(mCurrentUser.phonenumber), mCurrentUser.zalopayname);
 
-        ZPApptransidLog log = new ZPApptransidLog();
-        log.apptransid = order.apptransid;
-        log.appid = order.appid;
-        log.start_time = System.currentTimeMillis();
-        ZPAnalytics.trackApptransidEvent(log);
-
         mPaymentInfoBuilder.setOrder(paymentOrder)
                 .setUser(userInfo)
                 .setTransactionType(TransactionType.WITHDRAW);
@@ -149,13 +143,6 @@ public class PaymentWrapper {
 
         UserInfo userInfo = createUserInfo(displayName, mCurrentUser.avatar, phoneNumber, zaloPayName);
         UserInfo receiverInfo = createUserInfo(displayName, avatar, "", zaloPayName);
-
-        ZPApptransidLog log = new ZPApptransidLog();
-        log.apptransid = order.apptransid;
-        log.appid = order.appid;
-        log.source = source;
-        log.start_time = System.currentTimeMillis();
-        ZPAnalytics.trackApptransidEvent(log);
 
         mPaymentInfoBuilder.setOrder(paymentOrder)
                 .setUser(userInfo)
@@ -189,13 +176,6 @@ public class PaymentWrapper {
         try {
             AbstractOrder paymentOrder = transform(order);
             paymentOrder.ordersource = source;
-            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
-            ZPApptransidLog log = new ZPApptransidLog();
-            log.apptransid = order.apptransid;
-            log.appid = order.appid;
-            log.source = source;
-            log.start_time = System.currentTimeMillis();
-            ZPAnalytics.trackApptransidEvent(log);
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             int transtype = order.appid == BuildConfig.ZALOPAY_APP_ID ? TransactionType.TOPUP : TransactionType.PAY;
@@ -424,11 +404,6 @@ public class PaymentWrapper {
         Timber.d("Call Pay to sdk activity [%s] transactionType [%s] order [%s]", owner, transtype, order);
         mPendingOrder = order;
         mPendingTransaction = transtype;
-
-        if (transtype != TransactionType.LINK) {
-            ZPApptransidLog log = new ZPApptransidLog(order.apptransid, ZPPaymentSteps.OrderStep_SDKInit, ZPPaymentSteps.OrderStepResult_None, System.currentTimeMillis());
-            ZPAnalytics.trackApptransidEvent(log);
-        }
         SDKPayment.pay(owner, mPaymentInfoBuilder.build(), mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()), new PaymentFeedBackCollector());
     }
 

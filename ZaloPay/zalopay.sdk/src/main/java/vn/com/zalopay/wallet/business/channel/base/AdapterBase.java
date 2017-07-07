@@ -18,7 +18,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -525,7 +524,9 @@ public abstract class AdapterBase {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_SubmitTrans, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_SubmitTrans)
+                    .track();
         }
     }
 
@@ -1353,12 +1354,24 @@ public abstract class AdapterBase {
         if (getGuiProcessor() != null) {
             bankCode = getGuiProcessor().getDetectedBankCode();
         }
-        if (mPaymentInfoHelper.isBankAccountTrans()) {
-            bankCode = mPaymentInfoHelper.getLinkAccBankCode();
+        if(TextUtils.isEmpty(bankCode)){
+            bankCode = "";
+        }
+        Long transId;
+        try {
+            transId = Long.parseLong(mTransactionID);
+        }catch (Exception e){
+            Timber.w(e.getMessage());
+            transId = 0L;
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_OrderResult, pResult,
-                    getChannelID(), mTransactionID, returnCode, 1, bankCode);
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_OrderResult)
+                    .transId(transId)
+                    .bankCode(bankCode)
+                    .server_result(returnCode)
+                    .step_result(pResult)
+                    .track();
         }
     }
 

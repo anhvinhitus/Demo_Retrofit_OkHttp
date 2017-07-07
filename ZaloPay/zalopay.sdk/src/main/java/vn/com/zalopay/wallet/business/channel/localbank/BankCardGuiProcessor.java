@@ -173,7 +173,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             Log.e(this, e);
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_InputCardInfo, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_InputCardInfo)
+                    .track();
         }
     }
 
@@ -441,7 +443,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         }
         checkEnableSubmitButton();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_VerifyOtp, ZPPaymentSteps.OrderStepResult_None, getAdapter().getChannelID());
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_VerifyOtp)
+                    .track();
         }
     }
 

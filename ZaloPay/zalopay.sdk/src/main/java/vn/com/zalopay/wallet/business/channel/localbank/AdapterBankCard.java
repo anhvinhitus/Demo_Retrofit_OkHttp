@@ -388,7 +388,9 @@ public class AdapterBankCard extends AdapterBase {
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
                 if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
+                    GlobalData.analyticsTrackerWrapper
+                            .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
+                            .track();
                 }
             }
             mWebViewProcessor.hit();

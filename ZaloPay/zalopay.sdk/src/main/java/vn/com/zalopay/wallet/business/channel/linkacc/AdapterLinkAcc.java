@@ -458,7 +458,6 @@ public class AdapterLinkAcc extends AdapterBase {
                         .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), first6No + last4No);
             }
         }
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
     /***
@@ -482,7 +481,6 @@ public class AdapterLinkAcc extends AdapterBase {
             Log.e(this, e);
         }
         PaymentSnackBar.getInstance().dismiss();
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     /***
@@ -502,7 +500,6 @@ public class AdapterLinkAcc extends AdapterBase {
         if (mBankAccountList != null && mBankAccountList.size() > 0) {
             mPaymentInfoHelper.setMapBank(mBankAccountList.get(0));
         }
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
     }
 
     /***
@@ -522,7 +519,6 @@ public class AdapterLinkAcc extends AdapterBase {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
     @Override
@@ -782,11 +778,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_REGISTER_PAGE)) {
                 Timber.d("event register page");
 
-                // TrackApptransidEvent confirm stage
-                if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
-                }
-
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_LINK;
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
@@ -880,9 +871,6 @@ public class AdapterLinkAcc extends AdapterBase {
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebOtp, ZPPaymentSteps.OrderStepResult_None, getChannelID());
-                    }
                     return null;
                 } else {
                     // set Message
@@ -955,12 +943,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 // get bankaccount from cache callback to app
                 Timber.d("event on unregister page complete");
-
-                // TrackApptransidEvent AuthenType
-                if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebInfoConfirm, ZPPaymentSteps.OrderStepResult_None, getChannelID());
-                }
-
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_UNLINK;
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
@@ -1204,10 +1186,6 @@ public class AdapterLinkAcc extends AdapterBase {
         }
 
         mWebViewProcessor.start(pUrl);
-        // TrackApptransidEvent input card info
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_WebLogin, ZPPaymentSteps.OrderStepResult_None, getChannelID());
-        }
     }
 
     public String getUserNameValue() {

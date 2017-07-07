@@ -62,7 +62,9 @@ public class ChannelListInteractor {
         cancelCurrentTask(paymentInfoHelper);
 
         if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.track(ZPPaymentSteps.OrderStep_GetAppInfo, ZPPaymentSteps.OrderStepResult_None);
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_GetAppInfo)
+                    .track();
         }
 
         AsyncTask task = new AsyncTask() {
@@ -148,6 +150,11 @@ public class ChannelListInteractor {
     }
 
     private void loadInfoCompleted(SdkPaymentInfoReadyMessage message) {
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_SDKInit)
+                    .track();
+        }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_INFO_READY);
         mPaymentInfoReadyMessage = message;
         if (mPaymentReadyListener != null) {

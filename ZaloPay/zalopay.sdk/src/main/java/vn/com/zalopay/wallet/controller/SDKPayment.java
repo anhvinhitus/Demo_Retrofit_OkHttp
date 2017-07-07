@@ -154,12 +154,6 @@ public class SDKPayment {
             }
         }
         Log.d("pay", "payment info", paymentInfoHelper);
-        //init tracker event
-        long appId = paymentInfoHelper.getAppId();
-        int transtype = paymentInfoHelper.getTranstype();
-        String appTransId = paymentInfoHelper.getAppTransId();
-        GlobalData.initializeAnalyticTracker(appId, appTransId, transtype);
-
         startGateway(paymentInfoHelper);
     }
 
@@ -192,6 +186,12 @@ public class SDKPayment {
             terminateSession(GlobalData.getStringResource(RS.string.sdk_config_invalid), PaymentError.DATA_INVALID);
             return;
         }
+        //init tracker event
+        long appId = paymentInfoHelper.getAppId();
+        String appTransId = paymentInfoHelper.getAppTransId();
+        int orderSource = paymentInfoHelper.getOrderSource();
+        GlobalData.initializeAnalyticTracker(appId, appTransId, transtype, orderSource);
+
         // here start background task to collect data
         ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
         interactor.collectPaymentInfo(paymentInfoHelper);
