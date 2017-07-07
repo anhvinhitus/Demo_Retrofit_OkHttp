@@ -260,7 +260,6 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     @Override
     public void onRippleAnimationEnd() {
-        Log.d(TAG, "==onRippleAnimationEnd==" + mPinCode.length());
     }
 
     public void closePinView() {
