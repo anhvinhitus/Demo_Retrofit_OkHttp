@@ -1,8 +1,2 @@
-Zalo Pay (Production v2.14.0 - build 323) - Released on 2017-07-07 12:05
-+ [Password] Update show Password in UI thread : nodelay by vo van chuc (#9441d7d)
-+ [Password] Refactor commit cb081390e14b4e28354126c863079dc16b00193e [cb08139] by vo van chuc (#46da1b6)
-+ [Password] Update show Password in UI thread by lytm (#cb08139)
-+ [APP] Update String Số dư không đủ khi rút tiền by lytm (#d9f616e)
-+ [SDK] Thêm phần giải phóng resource cho VCB khi thanh toán cần switch link by vo van chuc (#88a1af4)
-+ [APP] Update String thiết lập bảo vệ tài khoản by lytm (#c919cd7)
-+ [Transaction] Refactor get transaction by hieuvm (#a7afd8b)
+Zalo Pay (Staging v2.14.0 - build 324) - Released on 2017-07-07 12:06
+
