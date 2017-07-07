@@ -7,7 +7,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -272,14 +272,15 @@
                 android:layout_height="@dimen/separate"
                 android:layout_marginTop="@dimen/spacing.medium"
                 android:background="@color/separate" />
-
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/personal_menu_item_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="@dimen/spacing.medium">
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
 
                 <TextView
                     style="@style/TextView.Profile.Item"
