@@ -747,12 +747,9 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(final Context context, final AuthenticationCallback callback) {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
-                mAuthenticationPassword.initialize();
-            }
+        AndroidUtils.runOnUIThread(() -> {
+            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+            mAuthenticationPassword.initialize();
         }, 200);
     }
 
@@ -849,16 +846,7 @@ public class Navigator implements INavigator {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
-        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
-        if (!isUiThread) {
-            Timber.d("notification promotion event coming from background, switching thread to main thread...");
-            new Handler(Looper.getMainLooper()).post(() -> {
-                //this runs on the UI thread
-                showPinDialog(context, promise);
-            });
-        } else {
-            showPinDialog(context, promise);
-        }
+        AndroidUtils.runOnUIThread(() -> showPinDialog(context, promise), 200);
         return false;
     }
 
