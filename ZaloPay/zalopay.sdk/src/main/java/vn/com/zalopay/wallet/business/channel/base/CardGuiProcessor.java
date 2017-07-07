@@ -28,6 +28,7 @@ import java.lang.ref.WeakReference;
 
 import rx.functions.Action1;
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -381,6 +382,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             try {
                 initForInputCard();
+                if (GlobalData.analyticsTrackerWrapper != null) {
+                    GlobalData.analyticsTrackerWrapper
+                            .step(ZPPaymentSteps.OrderStep_InputCardInfo)
+                            .track();
+                }
             } catch (Exception e) {
                 Log.e(this, e);
             }

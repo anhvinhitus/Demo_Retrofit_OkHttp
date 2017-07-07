@@ -172,11 +172,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper
-                    .step(ZPPaymentSteps.OrderStep_InputCardInfo)
-                    .track();
-        }
     }
 
     @Override

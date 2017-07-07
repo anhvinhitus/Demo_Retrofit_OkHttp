@@ -201,11 +201,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public boolean onBackPressed() {
         try {
-            boolean canQuit = canQuit();
-            if (!canQuit && GlobalData.analyticsTrackerWrapper != null) {
-                GlobalData.analyticsTrackerWrapper.trackUserCancel();
-            }
-            return canQuit;
+            return canQuit();
         } catch (Exception e) {
             Log.e(this, e);
             return false;

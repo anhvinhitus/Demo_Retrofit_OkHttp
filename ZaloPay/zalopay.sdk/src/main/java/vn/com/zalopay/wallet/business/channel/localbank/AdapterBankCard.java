@@ -308,10 +308,20 @@ public class AdapterBankCard extends AdapterBase {
                     //request permission read/view sms on android 6.0+
                     requestReadOtpPermission();
                     getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                    if (GlobalData.analyticsTrackerWrapper != null) {
+                        GlobalData.analyticsTrackerWrapper
+                                .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
+                                .track();
+                    }
                 }
 
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
                     getView().setVisible(R.id.txtOtpInstruction, true);
+                    if (GlobalData.analyticsTrackerWrapper != null) {
+                        GlobalData.analyticsTrackerWrapper
+                                .step(ZPPaymentSteps.OrderStep_WebOtp)
+                                .track();
+                    }
                     //testing broadcast otp viettinbak
                     /*
                     new Handler().postDelayed(new Runnable() {
@@ -387,11 +397,6 @@ public class AdapterBankCard extends AdapterBase {
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
-                if (GlobalData.analyticsTrackerWrapper != null) {
-                    GlobalData.analyticsTrackerWrapper
-                            .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
-                            .track();
-                }
             }
             mWebViewProcessor.hit();
             return;

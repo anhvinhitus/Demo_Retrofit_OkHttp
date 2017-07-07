@@ -1439,7 +1439,6 @@ public abstract class AdapterBase {
         }
         PaymentSnackBar.getInstance().dismiss();
         reloadMapListOnResponseMessage(pMessage);
-        //tracking translogid on fail event
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
 
