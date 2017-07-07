@@ -181,7 +181,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     @Override
     protected void onStart() {
         super.onStart();
-        nativeInstanceManager().activeCurrentActivity(getLocalClassName());
+        nativeInstanceManager().activeCurrentActivity(getClass().getSimpleName());
     }
 
     @Override

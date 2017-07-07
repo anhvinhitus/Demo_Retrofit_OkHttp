@@ -24,7 +24,7 @@ import timber.log.Timber;
 public class ReactNativeHostLongLife implements ReactNativeHostable {
     private Map<String, ReactInstanceManager> mInstance = new HashMap<>();
     private Map<String, Boolean> mNameMapping = new HashMap<>();
-    private WeakHashMap<String, Activity> mWeakHashMapActivity = new WeakHashMap<>();
+    private HashMap<String, WeakReference<Activity>> mWeakHashMapActivity = new HashMap<>();
     private String mCurrentClassActivity;
 
     public ReactNativeHostLongLife() {
@@ -196,32 +196,39 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
 
     @Override
     public Context getActivityContext() {
+
+        Timber.d("getActivityContext: %s", mCurrentClassActivity);
+
         if (TextUtils.isEmpty(mCurrentClassActivity)) {
             return null;
         }
 
-        return mWeakHashMapActivity.get(mCurrentClassActivity);
+        Activity activity = getActivity(mCurrentClassActivity);
+        Timber.d("activity in cache [%s]", activity);
+        return activity;
     }
 
     @Override
     public void activeCurrentActivity(String className) {
+        Timber.d("activeCurrentActivity: %s", className);
         mCurrentClassActivity = className;
     }
 
     @Override
     public void setActivityContext(Activity activity) {
-        mWeakHashMapActivity.put(activity.getLocalClassName(), activity);
-
-        Timber.d("setActivityContext: activity cache [size %s]", mWeakHashMapActivity.size());
+        Timber.d("setActivityContext: %s", activity);
+        putActivity(activity.getClass().getSimpleName(), activity);
     }
 
     @Override
     public void destroyActivityContext(Activity activity) {
-        mWeakHashMapActivity.remove(activity.getLocalClassName());
+        Timber.d("destroyActivityContext: %s", activity);
+        removeActivity(activity.getClass().getSimpleName());
     }
 
     @Override
     public void cleanup() {
+        Timber.d("cleanup");
         try {
             for (ReactInstanceManager manager : mInstance.values()) {
                 manager.destroy();
@@ -231,5 +238,26 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         } catch (Exception e) {
             Timber.w(e, "Error on cleanup of ReactNativeInstanceManagerLongLife");
         }
+    }
+
+    private Activity getActivity(String key) {
+        WeakReference<Activity> weakRef = mWeakHashMapActivity.get(key);
+        if (weakRef == null) {
+            return null;
+        }
+
+        Activity result = weakRef.get();
+        if (result == null) {
+            mWeakHashMapActivity.remove(key);
+        }
+        return result;
+    }
+
+    private void putActivity(String key, Activity value) {
+        mWeakHashMapActivity.put(key, new WeakReference<>(value));
+    }
+
+    private void removeActivity(String key) {
+        mWeakHashMapActivity.remove(key);
     }
 }

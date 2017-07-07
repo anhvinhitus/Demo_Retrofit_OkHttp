@@ -233,6 +233,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         Context context = mReactNativeHostable.getActivityContext();
 
         if (context == null) {
+            Timber.w("context is null");
             return;
         }
 
