@@ -169,7 +169,7 @@ public class InternalReactFragment extends ReactBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        nativeInstanceManager().activeCurrentActivity(getActivity().getClass().getSimpleName());
+        nativeInstanceManager().activeCurrentActivity(getActivity());
     }
 
     @Override

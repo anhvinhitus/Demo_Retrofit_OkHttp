@@ -38,5 +38,5 @@ public interface ReactNativeHostable {
 
     void destroyActivityContext(Activity activity);
 
-    void activeCurrentActivity(String className);
+    void activeCurrentActivity(Activity activity);
 }

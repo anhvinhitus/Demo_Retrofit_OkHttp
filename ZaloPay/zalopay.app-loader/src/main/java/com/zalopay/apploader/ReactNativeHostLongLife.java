@@ -209,9 +209,9 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public void activeCurrentActivity(String className) {
-        Timber.d("activeCurrentActivity: %s", className);
-        mCurrentClassActivity = className;
+    public void activeCurrentActivity(Activity activity) {
+        Timber.d("activeCurrentActivity: %s", activity);
+        mCurrentClassActivity = activity.getClass().getSimpleName();
     }
 
     @Override
