@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 class ApptransidFileLog {
 
     static final ApptransidFileLog Instance = new ApptransidFileLog();
-    private static final String FILE_NAME_FORMAT = "zpv2-zalopay-logs-apptransid-%s.txt";
+    private static final String FILE_NAME_FORMAT = "zpv2-logs-apptransid-%s.txt";
 
     private final File mDirectoryFileLog;
     private final SimpleDateFormat mDateFormat;
