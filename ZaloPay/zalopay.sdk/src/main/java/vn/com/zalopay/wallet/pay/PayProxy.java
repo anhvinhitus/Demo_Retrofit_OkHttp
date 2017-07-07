@@ -83,6 +83,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -97,14 +105,6 @@ public class PayProxy extends SingletonBase {
             startChannelActivity();
         }
         Timber.d(throwable, "trans status on error");
-    };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -392,7 +392,7 @@ public class PayProxy extends SingletonBase {
                             .chargeInfo(chargeInfo)
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
-                            .doOnNext(statusResponse -> showLoading(mContext.getString(R.string.zpw_string_alert_submit_order)))
+                            .doOnSubscribe(() -> showLoading(mContext.getString(R.string.zpw_string_alert_submit_order)))
                             .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
@@ -426,7 +426,7 @@ public class PayProxy extends SingletonBase {
         mRequestApi = getTransStatusRequest();
         return ((TransStatus) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
-                .doOnNext(statusResponse -> {
+                .doOnSubscribe(() -> {
                     try {
                         getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
                     } catch (Exception e) {
@@ -441,7 +441,7 @@ public class PayProxy extends SingletonBase {
         mRequestApi = getTransStatusAppTransRequest();
         return ((StatusByAppTrans) mRequestApi).getObserver()
                 .compose(SchedulerHelper.applySchedulers())
-                .doOnNext(statusResponse -> {
+                .doOnSubscribe(() -> {
                     try {
                         getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
                     } catch (Exception e) {
