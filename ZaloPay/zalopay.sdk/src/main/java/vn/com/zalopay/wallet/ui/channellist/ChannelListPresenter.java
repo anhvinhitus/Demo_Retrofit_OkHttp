@@ -129,7 +129,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return true;
         }
         int status = mPaymentInfoHelper.getStatus();
-        return status == PaymentStatus.DIRECT_LINKCARD || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
+        return status == PaymentStatus.DIRECT_LINKCARD
+                || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT
+                || status == PaymentStatus.DIRECT_LINK_ACCOUNT
+                || status == PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT;
     }
 
     @Override
