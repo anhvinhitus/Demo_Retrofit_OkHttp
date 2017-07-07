@@ -1,14 +1,2 @@
-Zalo Pay (Staging v2.14.0 - build 320) - Released on 2017-07-07 09:49
-+ [Icon Font] Add icon default by hieuvm (#9a29759)
-+ [Tracking] task#673 : Thêm prefix zpv2- vào tên file log apptransid by vo van chuc (#984dbfd)
-+ [ModalView] Fabric#893 (prod) : Fix Null Context by hieuvm (#6441003)
-+ [App] Profile: edit layout by datnt10 (#7ecdc48)
-+ [AppTranslogid] Refactor phần gọi tracking trong SDK by vo van chuc (#4c233e7)
-+ [Tracking] task#673 : Thêm prefix zpv2- vào tên file log apptransid by vo van chuc (#c20de19)
-+ [UI - Password] Clear code by vo van chuc (#5898b82c)
-+ [SDK] Show loading khi subsribe by vo van chuc (#70a64a1)
-+ [AppTranslogid] Refactor phần gọi tracking trong SDK by vo van chuc (#8d9b1c4)
-+ [React-native] update internal resource by phucpv (#521059c)
-+ [Transaction] Revert code to store thank message in decoded format by Nguyen Huu Hoa (#1840871)
-+ [Transaction] Resolve decoded thank message to React Native by Nguyen Huu Hoa (#d43eab3)
-+ [Transaction] Decode message before storing into DB by Nguyen Huu Hoa (#aac2e0c)
+Zalo Pay (Production v2.14.0 - build 321) - Released on 2017-07-07 09:57
+
