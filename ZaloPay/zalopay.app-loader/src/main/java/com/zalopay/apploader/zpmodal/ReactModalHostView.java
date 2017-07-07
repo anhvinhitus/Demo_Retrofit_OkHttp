@@ -9,15 +9,10 @@
 
 package com.zalopay.apploader.zpmodal;
 
-import javax.annotation.Nullable;
-
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +32,10 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.zalopay.apploader.ReactNativeHostable;
+
+import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 import timber.log.Timber;
 
@@ -83,7 +82,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
     @Nullable
     ReactNativeHostable mReactNativeHostable;
 
-    public ReactModalHostView(Context context, ReactNativeHostable nativeInstanceManager) {
+    public ReactModalHostView(Context context, @Nullable ReactNativeHostable nativeInstanceManager) {
         super(context);
         ((ReactContext) context).addLifecycleEventListener(this);
 
@@ -152,11 +151,11 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         }
     }
 
-    protected void setOnRequestCloseListener(OnRequestCloseListener listener) {
+    protected void setOnRequestCloseListener(@Nullable OnRequestCloseListener listener) {
         mOnRequestCloseListener = listener;
     }
 
-    protected void setOnShowListener(DialogInterface.OnShowListener listener) {
+    protected void setOnShowListener(@Nullable DialogInterface.OnShowListener listener) {
         mOnShowListener = listener;
     }
 
@@ -226,9 +225,16 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
             theme = R.style.Theme_FullScreenDialogAnimatedSlide;
         }
 
-        Context context = mReactNativeHostable.getActivityContext();
-        Timber.d("showOrUpdate: [context : %s]", context);
+        if (mReactNativeHostable == null) {
+            Timber.w("React-natvie hostable is null");
+            return;
+        }
 
+        Context context = mReactNativeHostable.getActivityContext();
+
+        if (context == null) {
+            return;
+        }
 
         mDialog = new Dialog(context, theme);
 
@@ -268,10 +274,13 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
                     }
                 });
 
-        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        if (mHardwareAccelerated) {
-            mDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        if (mDialog.getWindow() != null) {
+            mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            if (mHardwareAccelerated) {
+                mDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+            }
         }
+
         mDialog.show();
     }
 
@@ -296,6 +305,11 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
     private void updateProperties() {
         Assertions.assertNotNull(mDialog, "mDialog must exist when we call updateProperties");
         //mDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        if (mDialog.getWindow() == null) {
+            return;
+        }
+
         if (mTransparent) {
             mDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         } else {
