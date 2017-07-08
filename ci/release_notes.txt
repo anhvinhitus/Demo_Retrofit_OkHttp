@@ -1,3 +1,2 @@
-Zalo Pay (Sandbox v2.14.0 - build 329) - Released on 2017-07-08 12:42
-+ [WebApp] Fix allow url by hieuvm (#9be5d65)
-+ [WebApp] Fix allow url by hieuvm (#6b179f7)
+Zalo Pay (Staging v2.14.0 - build 330) - Released on 2017-07-08 13:01
+
