@@ -616,17 +616,27 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean checkAllowUrls(String url) {
-        if(!url.startsWith("https")) {
+        Timber.d("checkAllowUrls: %s", url);
+
+        if (!url.startsWith("https")) {
             return false;
         }
 
+        int length = "https://".length();
+
+        if (length >= url.length()) {
+            return false;
+        }
+
+        String path = url.substring(length, url.length());
+
         String regex = TextUtils.join("|", ConfigLoader.getAllowUrls());
         final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-        final Matcher matcher = pattern.matcher(url);
+        final Matcher matcher = pattern.matcher(path);
 
         boolean isMatched = false;
         while (matcher.find()) {
-            Timber.d("URL: %s", url);
+            Timber.d("URL: %s", path);
             Timber.d("Full match: %s", matcher.group(0));
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 Timber.d("Group [%s]: %s", i, matcher.group(i));
