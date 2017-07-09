@@ -296,7 +296,7 @@ public class DialogHelper {
                 }
 
                 if (callback != null) {
-                    callback.onOKevent();
+                    callback.onOKEvent();
                 }
 
             }

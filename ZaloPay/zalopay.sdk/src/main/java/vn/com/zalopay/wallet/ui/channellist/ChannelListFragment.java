@@ -293,7 +293,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                         callbackThenTerminate();
                     }
@@ -322,7 +322,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         mPresenter.setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINKCARD);
                         callbackThenTerminate();
                     }
@@ -364,7 +364,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                     }
                 });
     }
@@ -393,7 +393,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                         terminate();
                     }

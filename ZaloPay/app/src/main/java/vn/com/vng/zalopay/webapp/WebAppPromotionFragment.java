@@ -190,7 +190,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (mPresenter.isLoadPageFinished()) {
                             return;
                         }

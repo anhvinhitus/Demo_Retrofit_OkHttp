@@ -200,7 +200,7 @@ public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewP
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (mWebViewProcessor != null && mWebViewProcessor.isLoadPageFinished()) {
                             return;
                         }

@@ -213,7 +213,7 @@ public class UpdateProfileLevel2Activity extends UserBaseToolBarActivity
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         finishActivityWithResult(RESULT_OK);
                     }
                 });

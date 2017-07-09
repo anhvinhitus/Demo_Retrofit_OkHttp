@@ -187,7 +187,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 }
 
                 @Override
-                public void onOKevent() {
+                public void onOKEvent() {
                     showKeyBoardOnFocusingViewAgain();
                 }
             });
@@ -319,7 +319,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                                 }
 
                                 @Override
-                                public void onOKevent() {
+                                public void onOKEvent() {
                                     setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
                                 }
                             });

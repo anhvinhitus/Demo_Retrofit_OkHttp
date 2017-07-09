@@ -37,7 +37,7 @@ public class ValidationActor extends SingletonBase {
         }
 
         @Override
-        public void onOKevent() {
+        public void onOKEvent() {
             if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserInfo().zalopay_userid, CardType.PVCB)) {
                 mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
             } else {

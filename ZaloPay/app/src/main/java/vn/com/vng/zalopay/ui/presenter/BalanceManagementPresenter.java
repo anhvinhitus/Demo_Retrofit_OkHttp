@@ -167,7 +167,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
                             }
 
                             @Override
-                            public void onOKevent() {
+                            public void onOKEvent() {
                                 startWithdrawActivity();
                             }
                         });
@@ -213,7 +213,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (mView != null) {
                             mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
                         }

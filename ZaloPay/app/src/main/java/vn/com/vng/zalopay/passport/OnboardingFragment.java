@@ -555,7 +555,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (!isAdded()) {
                             return;
                         }

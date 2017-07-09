@@ -120,7 +120,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
                 getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (presenter != null) {
                             presenter.updateAccountName(accountName);
                         }
@@ -161,7 +161,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         getActivity().finish();
                     }
                 });

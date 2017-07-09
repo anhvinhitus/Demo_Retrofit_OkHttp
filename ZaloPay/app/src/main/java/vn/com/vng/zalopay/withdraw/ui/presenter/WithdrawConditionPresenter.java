@@ -54,7 +54,7 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         checkConditionAndStartWithdrawActivity();
                     }
                 });

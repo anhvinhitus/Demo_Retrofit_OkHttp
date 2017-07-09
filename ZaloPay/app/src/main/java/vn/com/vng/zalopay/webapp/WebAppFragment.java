@@ -164,7 +164,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (mPresenter.isLoadPageFinished()) {
                             return;
                         }

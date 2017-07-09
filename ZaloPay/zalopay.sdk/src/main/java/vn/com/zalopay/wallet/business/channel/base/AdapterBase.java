@@ -214,7 +214,7 @@ public abstract class AdapterBase {
                                 }
 
                                 @Override
-                                public void onOKevent() {
+                                public void onOKEvent() {
                                     DialogManager.showProcessDialog(activity.get(), mProgressDialogTimeoutListener);
                                     try {
                                         getGuiProcessor().reloadUrl();
@@ -1527,7 +1527,7 @@ public abstract class AdapterBase {
             }
 
             @Override
-            public void onOKevent() {
+            public void onOKEvent() {
                 try {
                     getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } catch (Exception e) {

@@ -157,7 +157,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
                 }
 
                 @Override
-                public void onOKevent() {
+                public void onOKEvent() {
                     onDialogDismiss();
                 }
 

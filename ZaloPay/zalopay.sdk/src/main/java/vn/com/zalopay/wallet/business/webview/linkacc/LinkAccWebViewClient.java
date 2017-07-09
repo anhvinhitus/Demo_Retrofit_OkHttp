@@ -186,7 +186,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                         }
 
                         @Override
-                        public void onOKevent() {
+                        public void onOKEvent() {
                             handler.proceed(); // Ignore SSL certificate errors
                         }
                     });

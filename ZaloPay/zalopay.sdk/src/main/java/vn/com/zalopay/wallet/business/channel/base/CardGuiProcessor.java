@@ -886,7 +886,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                         try {
                             getAdapter().getPresenter().callback();
@@ -910,7 +910,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             }
 
                             @Override
-                            public void onOKevent() {
+                            public void onOKEvent() {
                                 //callback bankcode to app , app will direct user to link bank account to right that bank
                                 BankAccount dBankAccount = new BankAccount();
                                 dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
@@ -937,7 +937,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             }
 
                             @Override
-                            public void onOKevent() {
+                            public void onOKEvent() {
                                 //callback bankcode to app , app will direct user to link bank account to right that bank
                                 BankAccount dBankAccount = new BankAccount();
                                 dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
@@ -1426,7 +1426,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
                     new ZPWOnEventDialogListener() {
                         @Override
-                        public void onOKevent() {
+                        public void onOKEvent() {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {

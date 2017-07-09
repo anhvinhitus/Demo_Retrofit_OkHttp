@@ -254,7 +254,7 @@ public class DialogManager {
                     }
 
                     if (callback != null) {
-                        callback.onOKevent();
+                        callback.onOKEvent();
                     }
                 }
             });
@@ -327,7 +327,7 @@ public class DialogManager {
                     }
 
                     if (callback != null) {
-                        callback.onOKevent();
+                        callback.onOKEvent();
                     }
                 }
             });
@@ -396,7 +396,7 @@ public class DialogManager {
                     }
 
                     if (callback != null) {
-                        callback.onOKevent();
+                        callback.onOKEvent();
 
                     }
                 }
@@ -465,7 +465,7 @@ public class DialogManager {
                     }
 
                     if (callback != null) {
-                        callback.onOKevent();
+                        callback.onOKEvent();
 
                     }
                 }
@@ -804,7 +804,7 @@ public class DialogManager {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
                     if (callback != null) {
-                        callback.onOKevent();
+                        callback.onOKEvent();
 
                     }
                     if (pActivity != null && !pActivity.isFinishing() && sDialog != null) {

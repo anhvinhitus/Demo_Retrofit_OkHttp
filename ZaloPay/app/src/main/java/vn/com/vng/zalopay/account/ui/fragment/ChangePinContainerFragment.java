@@ -112,7 +112,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
             }
 
             @Override
-            public void onOKevent() {
+            public void onOKEvent() {
                 nextPage();
             }
         });

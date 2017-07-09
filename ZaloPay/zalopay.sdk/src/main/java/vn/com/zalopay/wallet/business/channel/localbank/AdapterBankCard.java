@@ -470,7 +470,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
 
                         @Override
-                        public void onOKevent() {
+                        public void onOKEvent() {
                             needLinkCardBeforePayment(pBankCode);
                         }
                     });
@@ -489,7 +489,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
 
                         @Override
-                        public void onOKevent() {
+                        public void onOKEvent() {
                             needLinkCardBeforePayment(pBankCode);
                         }
                     });

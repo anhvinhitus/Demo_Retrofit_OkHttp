@@ -238,7 +238,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         closeable.smoothCloseMenu();
                         if (menuPosition == 0 && direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
                             //removeLinkedBank(mAdapter.getItem(adapterPosition));
@@ -305,7 +305,7 @@ public class BankFragment extends BaseFragment implements IBankView, BankAdapter
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         getActivity().setResult(Activity.RESULT_OK);
                         getActivity().finish();
                     }

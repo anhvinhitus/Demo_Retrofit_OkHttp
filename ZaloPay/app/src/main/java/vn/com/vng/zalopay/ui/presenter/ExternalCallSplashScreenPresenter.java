@@ -332,7 +332,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         finish();
                     }
                 });

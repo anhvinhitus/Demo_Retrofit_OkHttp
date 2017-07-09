@@ -173,7 +173,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
                 }
 
                 @Override
-                public void onOKevent() {
+                public void onOKEvent() {
                     PlayStoreUtils.openPlayStoreForUpdate(getActivity(), vn.com.vng.zalopay.BuildConfig.PACKAGE_IN_PLAY_STORE,
                             AndroidApplication.instance().getResources().getString(R.string.app_name), "force-app-update", "bank-future");
                 }

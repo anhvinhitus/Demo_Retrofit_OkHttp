@@ -199,7 +199,7 @@ public class WebViewFromQRScanFragment extends BaseFragment implements ZPWebView
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         if (mWebViewProcessor != null && mWebViewProcessor.isLoadPageFinished()) {
                             return;
                         }

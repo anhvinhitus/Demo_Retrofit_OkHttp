@@ -1054,7 +1054,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 }
 
                                                 @Override
-                                                public void onOKevent() {
+                                                public void onOKEvent() {
                                                     //retry reload the previous page
                                                     if (!TextUtils.isEmpty(mUrlReload)) {
                                                         visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));

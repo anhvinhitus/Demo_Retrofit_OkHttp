@@ -228,7 +228,7 @@ public class PayProxy extends SingletonBase {
             }
 
             @Override
-            public void onOKevent() {
+            public void onOKEvent() {
                 getTransStatus();
             }
         });
@@ -726,7 +726,7 @@ public class PayProxy extends SingletonBase {
         try {
             getView().showInfoDialog(mContext.getString(R.string.zpw_error_authen_pin), new ZPWOnEventDialogListener() {
                 @Override
-                public void onOKevent() {
+                public void onOKEvent() {
                     try {
                         showPassword(getActivity());
                     } catch (Exception e) {

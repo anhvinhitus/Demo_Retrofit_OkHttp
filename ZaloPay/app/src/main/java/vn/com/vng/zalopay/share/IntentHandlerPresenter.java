@@ -299,7 +299,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         Timber.d("Change account");
                         mApplicationSession.clearUserSessionWithoutSignOut();
                         startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
@@ -346,7 +346,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         finish(true);
                     }
                 });

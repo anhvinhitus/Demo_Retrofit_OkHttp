@@ -106,7 +106,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
                 }
 
                 @Override
-                public void onOKevent() {
+                public void onOKEvent() {
                     mRetryCount++;
                     makeRequest();
                 }

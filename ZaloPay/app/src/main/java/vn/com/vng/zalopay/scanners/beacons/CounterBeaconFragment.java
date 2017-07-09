@@ -211,7 +211,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
                         }
 
                         @Override
-                        public void onOKevent() {
+                        public void onOKEvent() {
                             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                     PERMISSION_CODE.ACCESS_COARSE_LOCATION);
                         }

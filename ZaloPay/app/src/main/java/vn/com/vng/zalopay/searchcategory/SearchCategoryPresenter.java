@@ -312,7 +312,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                             }
 
                             @Override
-                            public void onOKevent() {
+                            public void onOKEvent() {
                                 startWithdrawActivity();
                             }
                         });

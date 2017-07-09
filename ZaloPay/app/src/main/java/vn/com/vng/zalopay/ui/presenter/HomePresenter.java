@@ -516,7 +516,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                     }
 
                     @Override
-                    public void onOKevent() {
+                    public void onOKEvent() {
                         pay(dataEvent.appId, dataEvent.zptranstoken, dataEvent.isAppToApp);
                         if (dataEvent.notification != null) {
                             removeNotification(dataEvent.notification);
