@@ -38,9 +38,9 @@ import vn.com.zalopay.wallet.merchant.entities.Maintenance;
  * *
  */
 public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IBalanceManagementView> {
-    private EventBus mEventBus;
-    private BalanceStore.Repository mBalanceRepository;
-    private Navigator mNavigator;
+    private final EventBus mEventBus;
+    private final BalanceStore.Repository mBalanceRepository;
+    protected final Navigator mNavigator;
 
     @Inject
     BalanceManagementPresenter(User user,
