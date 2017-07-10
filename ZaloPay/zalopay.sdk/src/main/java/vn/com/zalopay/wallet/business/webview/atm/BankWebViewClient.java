@@ -62,11 +62,13 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     public BankWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
-        if (getAdapter() != null) {
-            mWebPaymentBridge = new BankWebView(GlobalData.getAppContext());
-            mWebPaymentBridge.setWebViewClient(this);
-            mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-        }
+        initWebViewBridge();
+    }
+
+    private void initWebViewBridge() {
+        mWebPaymentBridge = new BankWebView(GlobalData.getAppContext());
+        mWebPaymentBridge.setWebViewClient(this);
+        mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
     }
 
     public void start(String pUrl) {
@@ -82,13 +84,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
         final long time = System.currentTimeMillis();
         mLastStartPageTime = time;
-        mHandler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                onAjax(time);
-            }
-        }, DELAY_TIME_TO_DETECT_AJAX);
+        mHandler.postDelayed(() -> onAjax(time), DELAY_TIME_TO_DETECT_AJAX);
 
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
@@ -151,11 +147,13 @@ public class BankWebViewClient extends PaymentWebViewClient {
         if (!TextUtils.isEmpty(pJsFileName)) {
             Timber.d(pJsFileName);
             Timber.d(pJsInput);
-
-            String jsContent = null;
+            String jsContent;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
                 jsContent = String.format(jsContent, pJsInput);
+                if (mWebPaymentBridge == null) {
+                    initWebViewBridge();
+                }
                 mWebPaymentBridge.runScript(jsContent);
             }
         }
