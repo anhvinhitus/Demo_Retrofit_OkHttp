@@ -341,6 +341,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
             if (mPaymentInfoHelper == null) {
                 callback();
+                getViewOrThrow().terminate();
                 return;
             }
             startSubscribePaymentReadyMessage();
