@@ -1275,6 +1275,7 @@ public abstract class AdapterBase {
         }
         //if this is redpacket,then close sdk and callback to app
         if (processResultForRedPackage()) {
+            finishTransaction();
             return;
         }
         showDialogOnChannelList = false;

@@ -34,8 +34,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private boolean isTimerStated = false;
     private String mMessage;
     private int mRetryCount = 1;
-    private UserInfo userInfo;
-
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mTransID = pTransID;
@@ -43,7 +41,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
         this.mAdapter = pAdapter;
         this.mMessage = pMessage;
         this.transtype = mAdapter.getPaymentInfoHelper().getTranstype();
-        this.userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
         initTimer();
     }
 
@@ -182,8 +179,11 @@ public class GetStatus extends BaseTask<StatusResponse> {
             Timber.d("load website timeout");
             return;
         }
+        if(!mIsNeedToCheckDataInResponse){
+            pResponse.data = null;
+        }
         //flow 3ds
-        if (mIsNeedToCheckDataInResponse && TransactionHelper.isSecurityFlow(pResponse)) {
+        if (TransactionHelper.isSecurityFlow(pResponse)) {
             cancelTimer();
             onPostResult(pResponse);
         }
