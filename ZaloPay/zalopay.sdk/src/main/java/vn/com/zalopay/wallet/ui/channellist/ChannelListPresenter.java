@@ -83,6 +83,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private PaymentChannel mSelectChannel = null;
     private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
+    private long mCountClickPmc = 0;
     private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
         @Override
         public void onClose() {
@@ -330,6 +331,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             if (mSelectChannel != null) {
                 mPayProxy.setChannel(mSelectChannel).start();
+                ZPAnalytics.trackEvent(ZPEvents.USER_ACTION_NUMBER, mCountClickPmc);
+                mCountClickPmc = 0;
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -793,6 +796,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .track();
         }
         Timber.d("track channel id %s", pmcid);
+        mCountClickPmc++;
         switch (pmcid) {
             case BuildConfig.channel_credit_card:
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_36);
