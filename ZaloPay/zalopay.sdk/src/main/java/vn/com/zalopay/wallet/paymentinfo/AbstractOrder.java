@@ -48,7 +48,7 @@ public class AbstractOrder {
                 items = Strings.parseNameValues(itemExt);
             }
         } catch (Exception e) {
-            Timber.w(e, "parse order item error");
+            Timber.d(e, "parse order item error");
         }
         /*List<NameValuePair> expected = new ArrayList<>();
         expected.add(new NameValuePair("Nhà mạng", "Viettel"));
