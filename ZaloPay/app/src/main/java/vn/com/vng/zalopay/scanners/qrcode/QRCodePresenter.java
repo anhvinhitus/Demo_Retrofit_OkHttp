@@ -616,13 +616,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean checkAllowUrls(String url) {
-        Uri uri = Uri.parse(url);
-
-        if (TextUtils.isEmpty(url) || !"https".equals(uri.getScheme())) {
+        if (TextUtils.isEmpty(url)) {
             return false;
         }
 
-        if (uri == null || TextUtils.isEmpty(uri.getHost())) {
+        Uri uri = Uri.parse(url);
+
+        if (uri == null || TextUtils.isEmpty(uri.getHost()) || !"https".equals(uri.getScheme())) {
             return false;
         }
 
