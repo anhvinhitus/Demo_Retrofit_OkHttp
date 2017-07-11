@@ -217,6 +217,10 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @Override
     protected Fragment getActiveFragment() {
+        if (mHomePagerAdapter == null) {
+            return null;
+        }
+
         return mHomePagerAdapter.getPage(mCurrentPosition);
     }
 
