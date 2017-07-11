@@ -1,7 +1,2 @@
-Zalo Pay (Production v2.14.0 - build 333) - Released on 2017-07-11 08:58
-+ [Dịch Vụ] Fix reload url by hieuvm (#659413a)
-+ [UI] #ZPF-288 : [Android-Real-2.14(322)]MKTT: Bị đứng không gõ mktt được khi vào ngân hàng, nạp tiền by vo van chuc (#9783702)
-+ [Tracking] Thêm GA event ZPEvents.USER_ACTION_NUMBER by vo van chuc (#77067fe)
-+ [SDK] Clear SDK nếu payment info bị null by vo van chuc (#37aa30e)
-+ [SDK] không đẩy log error lên crashlytic nếu parse item fail by vo van chuc (#a9a341b)
-+ [Onboarding] Update cover image by hieuvm (#1c849e1)
+Zalo Pay (Staging v2.14.0 - build 334) - Released on 2017-07-11 09:18
+
