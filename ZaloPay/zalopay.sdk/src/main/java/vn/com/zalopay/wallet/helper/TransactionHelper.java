@@ -41,7 +41,7 @@ public class TransactionHelper {
         if (throwable instanceof NetworkConnectionException) {
             return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
-        return GlobalData.getStringResource(RS.string.zpw_string_error_system);
+        return GlobalData.getStringResource(RS.string.sdk_undefine_error);
     }
 
     public static String getAppNameByTranstype(Context context, @TransactionType int transtype) {

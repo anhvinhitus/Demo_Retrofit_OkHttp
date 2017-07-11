@@ -781,7 +781,7 @@ public abstract class AdapterBase {
 						},5000);
 						*/
                     } else {
-                        showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_system));
+                        showTransactionFailView(GlobalData.getStringResource(RS.string.sdk_undefine_error));
                     }
                 } else {
                     if (isOrderProcessing()) {

@@ -254,7 +254,7 @@ public class RS {
         public static final String zpw_string_alert_over_retry_otp = "zpw_string_alert_over_retry_otp";
         public static final String zpw_string_number_load_web_retry = "zpw_string_number_load_web_retry";
 
-        public static final String zpw_string_error_system = "zpw_string_error_system";
+        public static final String sdk_undefine_error = "sdk_undefine_error";
 
         public static final String zingpaysdk_alert_processing_bank = "zingpaysdk_alert_processing_bank";
 
