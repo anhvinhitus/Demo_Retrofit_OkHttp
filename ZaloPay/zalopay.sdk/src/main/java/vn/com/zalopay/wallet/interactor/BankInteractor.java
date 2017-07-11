@@ -58,7 +58,7 @@ public class BankInteractor implements IBankInteractor {
     @Override
     public void clearConfig() {
         this.mLocalStorage.clearConfig();
-        cacheBankResponseOnMemory(null);
+        mMemoryCache.put(key_on_mem, MemoryCache.EmptyObject);
     }
 
     @Override

@@ -12,7 +12,6 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -56,22 +55,16 @@ public class SDKApplication extends Application {
      */
     private static void clearCache(String userId, String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
-        IBankInteractor bankList = getApplicationComponent().bankListInteractor();
-        if (platformInfo.isNewVersion(pAppVersion)) {
+        if (platformInfo.isNewVersion(pAppVersion) || platformInfo.isNewUser(userId)) {
+            IBankInteractor bankList = getApplicationComponent().bankListInteractor();
+            AppInfoStore.Interactor appInfo = getApplicationComponent().appInfoInteractor();
             bankList.clearConfig();
             Timber.d("clearCache - bank list");
-            resetAppInfo();
-        } else if (platformInfo.isNewUser(userId)) {
-            resetAppInfo();
+            //reset expire time app info
+            appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
+            appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
+            Timber.d("clearCache - app info 1,2");
         }
-    }
-
-    private static void resetAppInfo() {
-        //reset expire time app info
-        AppInfoStore.Interactor appInfo = getApplicationComponent().appInfoInteractor();
-        appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
-        appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
-        Timber.d("clearCache - app info 1,2");
     }
 
     /***
@@ -83,7 +76,7 @@ public class SDKApplication extends Application {
      */
     public synchronized static List<Subscription> loadSDKData(UserInfo pUserInfo, String pAppVersion, @NonNull Observer<PlatformInfoCallback> pObserver) {
         try {
-            Log.d("SDKApplication", "start load sdk payment data time", SdkUtils.convertDateTime(System.currentTimeMillis()));
+            Timber.d("start load sdk payment data time");
             //prevent load gateway if user in sdk
             if (GlobalData.isUserInSDK()) {
                 pObserver.onCompleted();
@@ -133,6 +126,7 @@ public class SDKApplication extends Application {
             }
             return subscription;
         } catch (Exception e) {
+            Timber.w(e.getMessage());
             pObserver.onError(e);
         }
         return null;
