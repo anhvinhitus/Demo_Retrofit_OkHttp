@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.authentication;
 
-import android.content.Context;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -18,12 +16,10 @@ class PasswordAuthenticationProvider implements AuthenticationProvider {
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private Callback mCallback;
-    private Context mContext;
 
-    PasswordAuthenticationProvider(Context context, AccountStore.Repository accountRepository, Callback callback) {
+    PasswordAuthenticationProvider(AccountStore.Repository accountRepository, Callback callback) {
         this.mAccountRepository = accountRepository;
         this.mCallback = callback;
-        this.mContext = context;
     }
 
     @Override

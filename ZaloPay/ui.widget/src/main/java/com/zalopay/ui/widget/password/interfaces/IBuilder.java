@@ -1,39 +1,38 @@
 package com.zalopay.ui.widget.password.interfaces;
 
-import android.app.Activity;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 public interface IBuilder {
 
-    IBuilder setIFPinCallBack(IPinCallBack pinListener);
+    IBuilder setPasswordCallBack(IPasswordCallBack pinListener);
 
-    IPinCallBack getIFPinCallBack();
+    IPasswordCallBack getIFPinCallBack();
 
     View getView();
 
+    IBuilder setView(View pView);
+
     String getLogoPath();
+
+    IBuilder setLogoPath(String pIdImage);
 
     String getPmcName();
 
     String getTitle();
 
-    IBuilder setView(View pView);
+    IBuilder setTitle(String pTitle);
 
-    IBuilder setErrorMessage(Activity pActivity, String pMessage);
+    IBuilder setError(String pMessage);
 
     IBuilder clearText();
 
-    IBuilder setPmName(String pPmcName);
-
-    IBuilder setTitle(String pTitle);
-
-    IBuilder setLogoPath(String pIdImage);
+    IBuilder setContent(String pPmcName);
 
     IBuilder showLoadding(boolean pShow);
 
-    IBuilder setFingerPrint(boolean pShow);
+    IBuilder showFPSuggestCheckBox(boolean pShow);
 
     boolean getFingerPrint();
 
@@ -41,11 +40,11 @@ public interface IBuilder {
 
     UIBottomSheetDialog.IRender build();
 
-    IBuilder setIFControl(IControl control);
-
     IControl getIFControl();
 
-    IBuilder setLockControl(boolean isLockControl);
+    IBuilder setIFControl(IControl control);
+
+    IBuilder lockView(boolean isLockControl);
 
     void release();
 }

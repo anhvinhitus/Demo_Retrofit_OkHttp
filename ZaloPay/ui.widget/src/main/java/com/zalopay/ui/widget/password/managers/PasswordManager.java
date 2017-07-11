@@ -3,128 +3,101 @@ package com.zalopay.ui.widget.password.managers;
 import android.app.Activity;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.password.bottomsheet.PasswordViewRender;
 import com.zalopay.ui.widget.password.interfaces.IBuilder;
 import com.zalopay.ui.widget.password.interfaces.IControl;
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 
 import java.lang.ref.WeakReference;
+
+import timber.log.Timber;
 
 /**
  * Created by lytm on 23/05/2017.
  */
 
 public class PasswordManager {
-    private static final String TAG = PasswordManager.class.getSimpleName();
-    private WeakReference<IPinCallBack> mIPinCallBack;
-    private WeakReference<Activity> mActivity;
     private IBuilder mIBuilder;
     private UIBottomSheetDialog mUiBottomSheetDialog;
+    private WeakReference<Activity> mActivity;
     private IControl mControl = new IControl() {
         @Override
-        public void clickCancel() {
-            if (mIBuilder == null) {
-                Log.e(TAG, "mBuilder is null");
-                return;
+        public void onClose() {
+            if (mIBuilder != null && mIBuilder.getIFPinCallBack() != null) {
+                mIBuilder.getIFPinCallBack().onClose();
             }
-            if (mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing()) {
-                mIBuilder.showLoadding(false);
-                mIBuilder.clearText();
-                mIBuilder.getIFPinCallBack().onCancel();
-                mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
-
+            close();
         }
     };
 
-    /**
-     * @param pActivity
-     * @param pPmcName
-     * @param pLogoPath
-     * @param pIPinCallBack
-     */
-    public PasswordManager(Activity pActivity, String pTitle, String pPmcName, String pLogoPath, boolean pFingerPrint, IPinCallBack pIPinCallBack) {
-        mIPinCallBack = new WeakReference<>(pIPinCallBack);
+    public PasswordManager(Activity pActivity) {
         mActivity = new WeakReference<>(pActivity);
-        View contentView = View.inflate(mActivity.get(), com.zalopay.ui.widget.R.layout.view_pin_code, null);
-        mIBuilder = PasswordViewRender.getBuilder()
-                .setView(contentView)
-                .setIFPinCallBack(mIPinCallBack.get())
-                .setIFControl(mControl)
-                .setTitle(pTitle)
-                .setPmName(pPmcName)
-                .setLogoPath(pLogoPath)
-                .setFingerPrint(pFingerPrint);
+        View contentView = View.inflate(pActivity, com.zalopay.ui.widget.R.layout.view_pin_code, null);
+        mIBuilder = PasswordViewRender.getBuilder();
+        mIBuilder.setView(contentView)
+                .setIFControl(mControl);
+    }
+
+    public synchronized void buildDialog() {
+        if (mActivity.get() == null || mActivity.get().isFinishing()) {
+            Timber.d("activity is destroy");
+            return;
+        }
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
         mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
     }
 
-    public void show() {
-        if (mUiBottomSheetDialog != null && !isShowing()) {
+    public IBuilder getBuilder() {
+        return mIBuilder;
+    }
+
+
+    public synchronized void show() {
+        if (!isShowing()) {
             mUiBottomSheetDialog.show();
             mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
 
-    public boolean isShowing() {
-        return mUiBottomSheetDialog.isShowing();
+    public synchronized boolean isShowing() {
+        return mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing();
     }
 
-    public void closePinView() {
-        if (mUiBottomSheetDialog != null && isShowing() && mIBuilder != null) {
-            mIBuilder.showLoadding(false);
-            mIBuilder.clearText();
-            mUiBottomSheetDialog.dismiss();
-        }
-        mActivity = null;
-        mIPinCallBack = null;
-        mIBuilder = null;
-        mUiBottomSheetDialog = null;
-    }
-
-    /**
-     * @param pMessage
-     */
-    public void setErrorMessage(String pMessage) {
-        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null && mActivity.get() != null && !mActivity.get().isFinishing()) {
-            mIBuilder.showLoadding(false);
-            mIBuilder.setErrorMessage(mActivity.get(), pMessage);
-        }
-    }
-
-    public void setContent(String pPmName, String pLogoPath) {
+    public synchronized void close() {
         if (mIBuilder == null) {
-            Log.e("setContent", "mBuilder is null");
             return;
         }
-        mIBuilder.setPmName(pPmName);
-        mIBuilder.setLogoPath(pLogoPath);
+
+        if (mUiBottomSheetDialog != null && isShowing()) {
+            mUiBottomSheetDialog.dismiss();
+            Timber.d("dismiss password popup");
+        }
+        Timber.d("release password popup");
+        mIBuilder = null;
+        mUiBottomSheetDialog = null;
+        mActivity = null;
+    }
+
+    public void setError(String pMessage) {
+        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null) {
+            mIBuilder.showLoadding(false);
+            mIBuilder.setError(pMessage);
+        }
     }
 
     public void showLoading(boolean pShowing) {
         if (mIBuilder == null) {
-            Log.e(TAG, "mBuilder is null");
+            Timber.d("mIBuilder is null");
             return;
         }
         mIBuilder.showLoadding(pShowing);
     }
 
-    public void showFingerPrintCheckBox(boolean pShowing) {
-        if (mIBuilder == null) {
-            Log.e(TAG, "mBuilder is null");
-            return;
-        }
-        mIBuilder.setFingerPrint(pShowing);
-    }
-
     public void setTitle(String pTitle) {
-
         if (mIBuilder == null) {
-            Log.e("setContent", "mBuilder is null");
+            Timber.d("mIBuilder is null");
             return;
         }
         mIBuilder.setTitle(pTitle);
@@ -138,12 +111,13 @@ public class PasswordManager {
         disable(false);
     }
 
-    private void disable(boolean enable) {
+    private void disable(boolean disable) {
         if (mUiBottomSheetDialog == null) {
-            Log.d(TAG, "mUiBottomSheetDialog is null");
+            Timber.d("mUiBottomSheetDialog is null");
             return;
         }
-        mUiBottomSheetDialog.setDisableHidden(enable);
-        mIBuilder.setLockControl(enable);
+        mUiBottomSheetDialog.preventDrag(disable);
+        mUiBottomSheetDialog.setCancelable(!disable);
+        mIBuilder.lockView(disable);
     }
 }

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
+import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
@@ -28,7 +28,7 @@ public class AuthenActor {
     private String popupPassword;//password input on popup
     private boolean useFPPassword = true;//user check checkbox
     private PasswordManager mPassword;
-    private IPinCallBack mPasswordCallback = new IPinCallBack() {
+    private IPasswordCallBack mPasswordCallback = new IPasswordCallBack() {
         @Override
         public void onError(String pError) {
             try {
@@ -46,7 +46,7 @@ public class AuthenActor {
         }
 
         @Override
-        public void onCancel() {
+        public void onClose() {
             Timber.d("user close password - reset some payment data");
             try {
                 getProxy().resetResponse();
@@ -70,8 +70,8 @@ public class AuthenActor {
     private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
         public void onError(FPError pError) {
-            closeAuthen();
             try {
+                closeAuthen();
                 getProxy().onErrorFingerPrint();
             } catch (Exception e) {
                 Log.e(this, e);
@@ -143,20 +143,20 @@ public class AuthenActor {
     }
 
     public void showPasswordPopup(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
-
+        if (mPassword != null && mPassword.isShowing()) {
+            return;
+        }
         String logo_path = ResourceManager.getAbsoluteImagePath(pPaymentChannel.channel_icon);
-        String Title = getProxy().getPaymentInfoHelper().getTitlePassword(pActivity);
-        if (mPassword == null) {
-            //just show checkbox when device have fingerprint feature available but user hasn't config password payment yet
-            boolean visualCheckbox = shouldUseFPPassword();
-            mPassword = new PasswordManager(pActivity, Title, pPaymentChannel.pmcname, logo_path, visualCheckbox, mPasswordCallback);
-        } else {
-            mPassword.setContent(pPaymentChannel.pmcname, logo_path);
-            mPassword.setTitle(Title);
-        }
-        if (mPassword == null) {
-            throw new Exception("password popup is not ready");
-        }
+        String title = getProxy().getPaymentInfoHelper().getTitlePassword(pActivity);
+        boolean visualCheckbox = shouldUseFPPassword();
+        mPassword = new PasswordManager(pActivity);
+        mPassword.getBuilder()
+                .setTitle(title)
+                .setContent(pPaymentChannel.pmcname)
+                .setLogoPath(logo_path)
+                .showFPSuggestCheckBox(visualCheckbox)
+                .setPasswordCallBack(mPasswordCallback);
+        mPassword.buildDialog();
         mPassword.show();
     }
 
@@ -188,26 +188,28 @@ public class AuthenActor {
 
     public boolean hideLoading(String pError) {
         if (mPassword != null) {
-            mPassword.setErrorMessage(pError);
+            mPassword.setError(pError);
             mPassword.unlock();
         }
         return mPassword != null;
     }
 
     public void closeAuthen() {
-        closePassword();
         closeFingerPrint();
+        closePassword();
     }
 
     private void closePassword() {
         if (mPassword != null) {
-            mPassword.closePinView();
+            mPassword.close();
             mPassword = null;
         }
     }
 
+
     public void release() {
         mFingerPrintDialog = null;
+        mPassword = null;
         mPayProxy = null;
     }
 }

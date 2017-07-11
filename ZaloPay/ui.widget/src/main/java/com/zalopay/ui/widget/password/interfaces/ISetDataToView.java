@@ -1,17 +1,15 @@
 package com.zalopay.ui.widget.password.interfaces;
 
-import android.app.Activity;
-
 /**
  * Created by lytm on 07/06/2017.
  */
 
 public interface ISetDataToView {
-    void setErrorMessage(Activity pActivity, String pError);
+    void setErrorMessage(String pError);
 
-    void setImage(String pIdImage);
+    void setImagePath(String pIdImage);
 
-    void setPmcName(String pPmcName);
+    void setContent(String pPmcName);
 
     void setTitle(String pTitle);
 
@@ -21,5 +19,5 @@ public interface ISetDataToView {
 
     void showFingerPrintCheckBox(boolean pShow);
 
-    void lockControl(boolean islock);
+    void lockView(boolean islock);
 }

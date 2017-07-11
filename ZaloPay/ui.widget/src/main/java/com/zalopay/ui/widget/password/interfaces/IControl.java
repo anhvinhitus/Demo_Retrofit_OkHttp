@@ -5,5 +5,5 @@ package com.zalopay.ui.widget.password.interfaces;
  */
 
 public interface IControl {
-    void clickCancel();
+    void onClose();
 }

@@ -562,7 +562,7 @@
     <string name="sdk_link_account_service">Liên kết tài khoản</string>
     <string name="sdk_unlink_account_service">Hủy liên kết tài khoản</string>
 
-    <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Bạn có thể thực hiện lại giao dịch</string>
+    <string name="sdk_warning_order_submit">Đơn hàng đang xử lý. Vui lòng chờ trong giây lát!</string>
     <string name="sdk_warning_balance_error">Số dư không đủ</string>
 
     <string name="zpw_string_vcb_error_password">Mật khẩu hiện tại không đúng. Xin vui lòng kiểm tra lại</string>

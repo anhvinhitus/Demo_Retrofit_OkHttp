@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.password.interfaces.IBuilder;
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
 
 public abstract class PasswordRender implements UIBottomSheetDialog.IRender {
     protected IBuilder mBuilder;
@@ -23,11 +22,10 @@ public abstract class PasswordRender implements UIBottomSheetDialog.IRender {
         if (mBuilder == null) {
             return;
         }
-        IPinCallBack IFPinListener = mBuilder.getIFPinCallBack();
-        if (IFPinListener != null) {
-            IFPinListener.onCancel();
-            mBuilder.clearText();
+        if (mBuilder.getIFControl() != null) {
+            mBuilder.getIFControl().onClose();
         }
+        mBuilder.release();
     }
 
 }

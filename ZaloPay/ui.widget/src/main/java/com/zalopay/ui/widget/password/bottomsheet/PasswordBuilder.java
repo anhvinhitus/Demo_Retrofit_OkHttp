@@ -1,20 +1,18 @@
 package com.zalopay.ui.widget.password.bottomsheet;
 
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.password.interfaces.IBuilder;
 import com.zalopay.ui.widget.password.interfaces.IControl;
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
+import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.interfaces.ISetDataToView;
 
 public abstract class PasswordBuilder implements IBuilder {
-    protected IPinCallBack mIPinCallBack;
+    protected IPasswordCallBack mIPinCallBack;
     protected View mView;
-    protected Activity mActivity;
     protected String mIdLogo;
     protected String mTextPmcName;
     protected ISetDataToView mISetDataToView;
@@ -27,13 +25,13 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setIFPinCallBack(IPinCallBack pinListener) {
+    public IBuilder setPasswordCallBack(IPasswordCallBack pinListener) {
         mIPinCallBack = pinListener;
         return this;
     }
 
     @Override
-    public IPinCallBack getIFPinCallBack() {
+    public IPasswordCallBack getIFPinCallBack() {
         return mIPinCallBack;
     }
 
@@ -55,9 +53,8 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setErrorMessage(Activity pActivity, String pMessage) {
-        mActivity = pActivity;
-        mISetDataToView.setErrorMessage(pActivity, pMessage);
+    public IBuilder setError(String pMessage) {
+        mISetDataToView.setErrorMessage(pMessage);
         return this;
     }
 
@@ -76,10 +73,10 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setPmName(String pPmcName) {
+    public IBuilder setContent(String pPmcName) {
         mTextPmcName = pPmcName;
         if (!TextUtils.isEmpty(pPmcName) && mISetDataToView != null) {
-            mISetDataToView.setPmcName(pPmcName);
+            mISetDataToView.setContent(pPmcName);
         }
         return this;
     }
@@ -88,7 +85,7 @@ public abstract class PasswordBuilder implements IBuilder {
     public IBuilder setLogoPath(String pIdImage) {
         mIdLogo = pIdImage;
         if (!TextUtils.isEmpty(pIdImage) && mISetDataToView != null) {
-            mISetDataToView.setImage(pIdImage);
+            mISetDataToView.setImagePath(pIdImage);
         }
         return this;
     }
@@ -124,7 +121,7 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setFingerPrint(boolean pShow) {
+    public IBuilder showFPSuggestCheckBox(boolean pShow) {
         if (mISetDataToView != null) {
             mISetDataToView.showFingerPrintCheckBox(pShow);
         }
@@ -138,9 +135,9 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
-    public IBuilder setLockControl(boolean isLockControl) {
+    public IBuilder lockView(boolean isLock) {
         if (mISetDataToView != null) {
-            mISetDataToView.lockControl(isLockControl);
+            mISetDataToView.lockView(isLock);
         }
         return this;
     }

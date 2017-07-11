@@ -1,14 +1,11 @@
 package com.zalopay.ui.widget.password.bottomsheet;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Vibrator;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -27,9 +24,13 @@ import com.zalopay.ui.widget.password.interfaces.KeyboardButtonClickedListener;
 import com.zalopay.ui.widget.password.view.KeyboardView;
 import com.zalopay.ui.widget.password.view.PassCodeRoundView;
 
+import java.lang.ref.WeakReference;
+
+import timber.log.Timber;
+
 public class PasswordViewRender extends PasswordRender implements KeyboardButtonClickedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    public static final String TAG = "PinViewRender";
+    public static final String TAG = PasswordViewRender.class.getSimpleName();
     private static final int DEFAULT_PIN_LENGTH = 6;
 
     protected PassCodeRoundView mPinCodeRoundView;
@@ -44,26 +45,24 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
-    private Context mContext;
+    private WeakReference<Context> mContext;
     private CheckBox mCheckBox;
-    private LinearLayout mMaskLayout;
     private LoadingIndicatorView mLoadingIndicatorView;
     private LinearLayout mLayoutCheckBox;
-    private LinearLayout mLayoutContent;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
-        public void setErrorMessage(Activity pActivity, String pError) {
+        public void setErrorMessage(String pError) {
 
             if (mLoadingIndicatorView != null && mTextMessage != null) {
                 mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                 mTextMessage.setVisibility(View.VISIBLE);
             }
-            onPinCodeError(pActivity);
+            onPinCodeError();
             setErrorMessageToView(pError);
         }
 
         @Override
-        public void setImage(String pIdImage) {
+        public void setImagePath(String pIdImage) {
             //set Image here
             if (mLogo != null) {
                 mLogo.setImageURI(pIdImage);
@@ -71,7 +70,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
-        public void setPmcName(String pTitle) {
+        public void setContent(String pTitle) {
             //set title here
             if (mTextViewPmcName != null) {
                 mTextViewPmcName.setText(pTitle);
@@ -112,15 +111,12 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
         @Override
         public void showFingerPrintCheckBox(boolean pShow) {
-            showFingerPrin(pShow);
+            showSuggestFPCheckBox(pShow);
         }
 
         @Override
-        public void lockControl(boolean islock) {
-            if (mMaskLayout == null) {
-                return;
-            }
-            DisableView(mMaskLayout, !islock);
+        public void lockView(boolean islock) {
+            enableView(!islock);
         }
     };
 
@@ -139,14 +135,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     @Override
     public void render(final Context pContext) {
-        mContext = pContext;
+        mContext = new WeakReference<>(pContext);
         if (mBuilder == null) {
             return;
         }
         View view = mBuilder.getView();
-
         if (view == null) {
-            Log.d(TAG, "view == null");
+            Timber.w("render password - view is null");
             return;
         }
         initLayout(view, pContext);
@@ -170,9 +165,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
-        mMaskLayout = (LinearLayout) pWView.findViewById(R.id.layout_root_view);
         mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
-        mLayoutContent = (LinearLayout) pWView.findViewById(R.id.layout_content);
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
@@ -185,7 +178,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         } else {
             mLogo.setVisibility(View.GONE);
         }
-        showFingerPrin(mBuilder.getFingerPrint());
+        showSuggestFPCheckBox(mBuilder.getFingerPrint());
         setTitleText(pContext);
     }
 
@@ -204,7 +197,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
     }
 
-    private void showFingerPrin(boolean pShow) {
+    private void showSuggestFPCheckBox(boolean pShow) {
         if (mLayoutCheckBox == null) {
             return;
         }
@@ -234,9 +227,8 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.cancel_action) {
-            closePinView();
+            close();
         }
-
     }
 
     @Override
@@ -254,7 +246,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             }
         }
         if (mPinCode.length() == this.getPinLength()) {
-            onPinCodeInputed();
+            onPasswordComplete();
         }
     }
 
@@ -262,17 +254,19 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     public void onRippleAnimationEnd() {
     }
 
-    public void closePinView() {
-        mBuilder.getIFControl().clickCancel();
+    public void close() {
         mPinCode = "";
         mPinCodeRoundView.refresh(mPinCode.length());
         isSuccess = false;
+        if (mBuilder != null && mBuilder.getIFControl() != null) {
+            mBuilder.getIFControl().onClose();
+        }
     }
 
     /**
      * Switch over the {@link #mType} to determine if the password is ok, if we should pass to the next step etc...
      */
-    protected void onPinCodeInputed() {
+    protected void onPasswordComplete() {
         switch (mType) {
             case 1:
                 onPinSuccess();
@@ -283,7 +277,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     public void onPinSuccess() {
-        Log.d(TAG, "==onPinSuccess==" + isSuccess);
+        Timber.d("onPinSuccess %s", isSuccess);
         if (isSuccess) {
             return;
         }
@@ -294,33 +288,28 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     /**
      * Run a shake animation when the password is not valid.
      */
-    public void onPinCodeError(final Activity pActivity) {
+    public void onPinCodeError() {
         isSuccess = false;
         mPinCode = "";
         mPinCodeRoundView.refresh(mPinCode.length());
-        Vibrator v = (Vibrator) pActivity.getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        v.vibrate(500);
+        if (mContext.get() != null) {
+            Vibrator v = (Vibrator) mContext.get().getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(500);// Vibrate for 500 milliseconds
+        }
     }
 
     public void setErrorMessageToView(String pMessage) {
         if (mTextMessage != null) {
             mTextMessage.setText(pMessage);
+            if (mContext.get() == null) {
+                return;
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mTextMessage.setTextColor(mContext.getColor(R.color.holo_red_light));
+                mTextMessage.setTextColor(mContext.get().getColor(R.color.holo_red_light));
             } else {
-                mTextMessage.setTextColor(mContext.getResources().getColor(R.color.holo_red_light));
+                mTextMessage.setTextColor(mContext.get().getResources().getColor(R.color.holo_red_light));
             }
         }
-    }
-
-    /**
-     * When the user has failed a pin challenge
-     *
-     * @param attempts the number of attempts the user has used
-     */
-    public void onPinFailure(int attempts) {
-        mBuilder.getIFPinCallBack().onError("onPinFailure");
     }
 
     @Override
@@ -330,17 +319,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
     }
 
-
-    private void DisableView(ViewGroup layout, boolean pIsDisable) {
-        layout.setEnabled(pIsDisable);
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            View child = layout.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                DisableView((ViewGroup) child, pIsDisable);
-            } else {
-                child.setClickable(pIsDisable);
-            }
-        }
+    private void enableView(boolean enable) {
+        mCheckBox.setClickable(enable);
+        mCancelImageView.setClickable(enable);
+        mKeyboardView.enableInput(enable);
+        Timber.d("enable password popup %s", enable);
     }
-
 }

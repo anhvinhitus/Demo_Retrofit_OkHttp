@@ -10,7 +10,7 @@ import android.view.View;
 
 public class UIBottomSheetDialog extends BottomSheetDialog {
     private IRender mRender;
-    private boolean isHidden = false;
+    private boolean mPreventDrag = false;
 
     public UIBottomSheetDialog(@NonNull Context context, @StyleRes int theme, @NonNull IRender pRender) {
         super(context, theme);
@@ -34,8 +34,8 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
         bottomSheetBehavior.setState(state);
     }
 
-    public void setDisableHidden(boolean pHidden) {
-        isHidden = pHidden;
+    public void preventDrag(boolean pPrevent) {
+        mPreventDrag = pPrevent;
     }
 
     private void configureBottomSheetBehavior(final BottomSheetBehavior pBottomSheetBehavior) {
@@ -53,7 +53,7 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
                         case BottomSheetBehavior.STATE_COLLAPSED:
                             break;
                         case BottomSheetBehavior.STATE_DRAGGING:
-                            if (isHidden) {
+                            if (mPreventDrag) {
                                 pBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                             }
                             break;

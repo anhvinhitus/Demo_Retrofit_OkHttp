@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.zalopay.ui.widget.password.interfaces.IPinCallBack;
+import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import java.lang.ref.WeakReference;
@@ -25,24 +25,43 @@ import vn.com.vng.zalopay.service.UserSession;
  */
 
 public class AuthenticationPassword implements AuthenticationProvider.Callback {
+    @Inject
+    AccountStore.Repository accountRepository;
+    boolean mSuggestFingerprint;
     private PasswordManager mPassword;
     private WeakReference<Context> mContext;
     private Intent pendingIntent;
     private KeyTools mKeyTools;
     private boolean isFinish = false; //
     private AuthenticationCallback mAuthenticationCallback;
-    private boolean mSuggestFingerprint;
-    @Inject
-    AccountStore.Repository accountRepository;
-
-    public void initialize() {
-        AndroidApplication.instance().getUserComponent().inject(this);
-    }
-
     private AuthenticationProvider mAuthenticationProvider;
+    IPasswordCallBack mPasswordCallBack = new IPasswordCallBack() {
+        @Override
+        public void onError(String pError) {
+            Timber.d("PasswordManager onError [%s]", pError);
+        }
+
+        @Override
+        public void onCheckedFingerPrint(boolean pChecked) {
+            Timber.d("PasswordManager onCheckedFingerPrint [%s]", pChecked);
+            mSuggestFingerprint = pChecked;
+        }
+
+        @Override
+        public void onClose() {
+            Timber.d("PasswordManager onClose");
+        }
+
+        @Override
+        public void onComplete(String pHashPin) {
+            Timber.d("PasswordManager onComplete [%s]", pHashPin);
+            checkPassword(pHashPin);
+            showLoading();
+        }
+    };
 
     public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, Intent pendingIntent, boolean isFinish) {
-        this.mContext = new WeakReference<Context>(mContext);
+        this.mContext = new WeakReference<>(mContext);
         this.pendingIntent = pendingIntent;
         this.isFinish = isFinish;
         this.mKeyTools = new KeyTools();
@@ -51,38 +70,27 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     }
 
     public AuthenticationPassword(Context mContext, boolean pSuggestFingerprint, AuthenticationCallback pAuthenticationCallback) {
-        this.mContext = new WeakReference<Context>(mContext);
+        this.mContext = new WeakReference<>(mContext);
         this.mKeyTools = new KeyTools();
         this.mAuthenticationCallback = pAuthenticationCallback;
         this.mSuggestFingerprint = pSuggestFingerprint;
         initPassword();
     }
 
+    public void initialize() {
+        AndroidApplication.instance().getUserComponent().inject(this);
+    }
+
     private void initPassword() {
-        mPassword = new PasswordManager((Activity) mContext.get(), mContext.get().getString(R.string.input_pin_to_access), null, null, mSuggestFingerprint, new IPinCallBack() {
-            @Override
-            public void onError(String pError) {
-                Timber.d("PasswordManager onError [%s]", pError);
-            }
-
-            @Override
-            public void onCheckedFingerPrint(boolean pChecked) {
-                Timber.d("PasswordManager onCheckedFingerPrint [%s]", pChecked);
-                mSuggestFingerprint = pChecked;
-            }
-
-            @Override
-            public void onCancel() {
-                Timber.d("PasswordManager onCancel");
-            }
-
-            @Override
-            public void onComplete(String pHashPin) {
-                Timber.d("PasswordManager onComplete [%s]", pHashPin);
-                checkPassword(pHashPin);
-
-            }
-        });
+        if(mPassword != null && mPassword.isShowing()){
+            return;
+        }
+        mPassword = new PasswordManager((Activity) mContext.get());
+        mPassword.getBuilder()
+                .setTitle(mContext.get().getString(R.string.input_pin_to_access))
+                .showFPSuggestCheckBox(mSuggestFingerprint)
+                .setPasswordCallBack(mPasswordCallBack);
+        mPassword.buildDialog();
         mPassword.show();
     }
 
@@ -90,8 +98,8 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
         return mPassword;
     }
 
-    private void checkPassword(String pPass) {
-        mAuthenticationProvider = new PasswordAuthenticationProvider(mContext.get(), accountRepository, this);
+    void checkPassword(String pPass) {
+        mAuthenticationProvider = new PasswordAuthenticationProvider(accountRepository, this);
         mAuthenticationProvider.verify(pPass);
     }
 
@@ -112,16 +120,30 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
         if (mAuthenticationCallback != null) {
             mAuthenticationCallback.onAuthenticated(password);
         }
-        mPassword.closePinView();
+        mPassword.close();
     }
 
     @Override
     public void onError(Throwable e) {
         Timber.d("show password error [%s]", e);
         String message = ErrorMessageFactory.create(mContext.get(), e);
-        mPassword.setErrorMessage(message);
+        setError(message);
         if (mAuthenticationCallback != null) {
             mAuthenticationCallback.onAuthenticationFailure();
+        }
+    }
+
+    void showLoading() {
+        if (mPassword != null) {
+            mPassword.showLoading(true);
+            mPassword.lock();
+        }
+    }
+
+    void setError(String pError) {
+        if (mPassword != null) {
+            mPassword.setError(pError);
+            mPassword.unlock();
         }
     }
 }
