@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -268,9 +269,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         userInfo.zalopay_userid = mUser.zaloPayId;
         userInfo.accesstoken = mUser.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
-        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, mPlatformInfoSubscriber);
-        if (subscriptions != null && subscriptions.length > 0) {
-            mSubscription.addAll(subscriptions);
+        List<Subscription> subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, mPlatformInfoSubscriber);
+        if (subscriptions != null) {
+            mSubscription.addAll(subscriptions.toArray(new Subscription[0]));
         }
     }
 

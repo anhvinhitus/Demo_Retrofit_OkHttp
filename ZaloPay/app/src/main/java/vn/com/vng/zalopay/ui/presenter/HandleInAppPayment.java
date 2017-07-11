@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -238,9 +239,9 @@ public class HandleInAppPayment {
         userInfo.zalopay_userid = user.zaloPayId;
         userInfo.accesstoken = user.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
-        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber<>());
+        List<Subscription> subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber<>());
         if (subscriptions != null) {
-            mCompositeSubscription.addAll(subscriptions);
+            mCompositeSubscription.addAll(subscriptions.toArray(new Subscription[0]));
         }
     }
 

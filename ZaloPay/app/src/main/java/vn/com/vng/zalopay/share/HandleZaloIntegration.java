@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.share;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -57,9 +59,9 @@ public class HandleZaloIntegration {
         userInfo.zalopay_userid = user.zaloPayId;
         userInfo.accesstoken = user.accesstoken;
         String appVersion = BuildConfig.VERSION_NAME;
-        Subscription[] subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber<>());
+        List<Subscription> subscriptions = SDKApplication.loadSDKData(userInfo, appVersion, new DefaultSubscriber<>());
         if (subscriptions != null) {
-            mCompositeSubscription.addAll(subscriptions);
+            mCompositeSubscription.addAll(subscriptions.toArray(new Subscription[0]));
         }
     }
 

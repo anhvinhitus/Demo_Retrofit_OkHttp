@@ -11,7 +11,7 @@ import timber.log.Timber;
  */
 
 public abstract class AbstractPresenter<View> implements IPresenter<View> {
-    protected CompositeSubscription mSubscription = new CompositeSubscription();
+    protected final CompositeSubscription mSubscription = new CompositeSubscription();
     protected View mView;
 
 

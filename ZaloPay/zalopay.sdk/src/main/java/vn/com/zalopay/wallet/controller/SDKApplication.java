@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observer;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -74,7 +77,7 @@ public class SDKApplication extends Application {
      * @param pObserver
      * @return
      */
-    public synchronized static Subscription[] loadSDKData(UserInfo pUserInfo, String pAppVersion, @NonNull Observer<PlatformInfoCallback> pObserver) {
+    public synchronized static List<Subscription> loadSDKData(UserInfo pUserInfo, String pAppVersion, @NonNull Observer<PlatformInfoCallback> pObserver) {
         try {
             Log.d("SDKApplication", "start load sdk payment data time", SdkUtils.convertDateTime(System.currentTimeMillis()));
             //prevent load gateway if user in sdk
@@ -88,7 +91,7 @@ public class SDKApplication extends Application {
             String userId = pUserInfo.zalopay_userid;
             String accessToken = pUserInfo.accesstoken;
             long currentTime = System.currentTimeMillis();
-            Subscription[] subscription = new Subscription[3];
+            List<Subscription> subscription = new ArrayList<>();
             //load platform info
             getApplicationComponent().platformInfoInteractor()
                     .loadSDKPlatform(userId, accessToken, currentTime)
@@ -99,22 +102,31 @@ public class SDKApplication extends Application {
                     .subscribeOn(Schedulers.io())
                     .subscribe(bankConfigResponse -> Timber.d("load bank list finish: %s", GsonUtils.toJsonString(bankConfigResponse)),
                             throwable -> Timber.d("load bank list on error: %s", throwable.getMessage()));
-            subscription[0] = subscription0;
+            if (subscription0 != null) {
+                subscription.add(subscription0);
+            }
+
             //load app zalopay with 4 transtype
             Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
                     new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
                     .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),
                             throwable -> Timber.d("load app info on error: %s", throwable.getMessage()));
-            subscription[1] = subscription1;
+            if (subscription1 != null) {
+                subscription.add(subscription1);
+            }
+
             //load app withdraw (appid = 2)
             Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAWAPP_ID,
                     new int[]{TransactionType.WITHDRAW}, userId, accessToken, pAppVersion, currentTime)
                     .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),
                             throwable -> Timber.d("load app info on error: %s", throwable.getMessage()));
-            subscription[2] = subscription2;
-            return subscription;
+
+            if (subscription2 != null) {
+                subscription.add(subscription2);
+            }
+            return subscription.toArray();
         } catch (Exception e) {
             pObserver.onError(e);
         }
