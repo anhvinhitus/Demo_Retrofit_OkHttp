@@ -126,7 +126,7 @@ public class SDKApplication extends Application {
             if (subscription2 != null) {
                 subscription.add(subscription2);
             }
-            return subscription.toArray();
+            return subscription;
         } catch (Exception e) {
             pObserver.onError(e);
         }
