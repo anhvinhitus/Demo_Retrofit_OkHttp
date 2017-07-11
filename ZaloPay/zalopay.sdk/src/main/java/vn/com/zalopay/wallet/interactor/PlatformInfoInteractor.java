@@ -43,32 +43,30 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         this.repository = repository;
     }
 
-    private Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>> mapResult(String appVersion) {
-        return platformInfoResponse -> {
-            if (platformInfoResponse == null) {
-                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
-            }
-            if (platformInfoResponse.forceappupdate) {
-                //notify force user update new app on store
-                VersionCallback upversionCallback = new VersionCallback(true,
-                        platformInfoResponse.newestappversion,
-                        platformInfoResponse.forceupdatemessage);
-                return Observable.just(upversionCallback);
-            }
-            if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
-                //notify user  have a new version on store but not force user update
-                VersionCallback upversionCallback = new VersionCallback(false,
-                        platformInfoResponse.newestappversion,
-                        platformInfoResponse.forceupdatemessage);
-                return Observable.just(upversionCallback);
-            }
-            if (platformInfoResponse.returncode == 1) {
-                PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback();
-                return Observable.just(platformInfoCallback);
-            } else {
-                return Observable.error(new RequestException(platformInfoResponse.returncode, platformInfoResponse.returnmessage));
-            }
-        };
+    private Observable<PlatformInfoCallback> mapResult(PlatformInfoResponse platformInfoResponse, String appVersion) {
+        if (platformInfoResponse == null) {
+            return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+        }
+        if (platformInfoResponse.forceappupdate) {
+            //notify force user update new app on store
+            VersionCallback upversionCallback = new VersionCallback(true,
+                    platformInfoResponse.newestappversion,
+                    platformInfoResponse.forceupdatemessage);
+            return Observable.just(upversionCallback);
+        }
+        if (!TextUtils.isEmpty(appVersion) && !appVersion.equals(platformInfoResponse.newestappversion)) {
+            //notify user  have a new version on store but not force user update
+            VersionCallback upversionCallback = new VersionCallback(false,
+                    platformInfoResponse.newestappversion,
+                    platformInfoResponse.forceupdatemessage);
+            return Observable.just(upversionCallback);
+        }
+        if (platformInfoResponse.returncode == 1) {
+            PlatformInfoCallback platformInfoCallback = new PlatformInfoCallback();
+            return Observable.just(platformInfoCallback);
+        } else {
+            return Observable.error(new RequestException(platformInfoResponse.returncode, platformInfoResponse.returnmessage));
+        }
     }
 
     public PlatformInfoStore.LocalStorage getLocalStorage() {
@@ -152,7 +150,12 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         return repository
                 .fetchCloud(params)
                 .concatMap(this::tryDownloadResource)
-                .flatMap(mapResult(appVersion));
+                .flatMap(new Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>>() {
+                    @Override
+                    public Observable<PlatformInfoCallback> call(PlatformInfoResponse platformInfoResponse) {
+                        return mapResult(platformInfoResponse, appVersion);
+                    }
+                });
     }
 
     private Map<String, String> getParams(String userId, String accessToken, boolean forceReloadPlatform, boolean forceDownloadResource, String appVersion) {
@@ -201,7 +204,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
          1.server return isupdateresource = true;
          2.resource version on cached client and resource version server return is different.This case user no need to update app.
          */
-        Timber.d("start download resource - should download ");
+        Timber.d("start check download resource");
         String resourceVersion = repository.getLocalStorage().getResourceVersion();
         if (platformInfoResponse.resource == null) {
             return Observable.just(platformInfoResponse);
