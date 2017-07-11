@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
@@ -79,6 +80,13 @@ public class ChannelListInteractor {
         task.execute();
     }
 
+    private Observable<Boolean> initResource(){
+        return ResourceManager.initResource()
+                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
+                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
+                .subscribeOn(Schedulers.io());
+    }
+
     private void loadPaymentInfo() {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
@@ -103,12 +111,13 @@ public class ChannelListInteractor {
                 .doOnNext(platformInfoCallback -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_PLATFORMINFO_END))
                 .subscribeOn(Schedulers.io());
 
-        Observable<Boolean> initResource = ResourceManager.initResource()
-                .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
-                .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
-                .subscribeOn(Schedulers.io());
-
-        Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, initResource, this::zipData)
+        Subscription subscription = Observable.zip(appInfoObservable, bankObservable, platformObservable, this::zipData)
+                .concatMap(new Func1<SdkPaymentInfoReadyMessage, Observable<SdkPaymentInfoReadyMessage>>() {
+                    @Override
+                    public Observable<SdkPaymentInfoReadyMessage> call(SdkPaymentInfoReadyMessage sdkPaymentInfoReadyMessage) {
+                        return initResource().map(aBoolean -> sdkPaymentInfoReadyMessage);
+                    }
+                })
                 .observeOn(Schedulers.io())
                 .subscribe(this::loadInfoCompleted, this::loadInfoError);
         mSubscription.add(subscription);
@@ -130,8 +139,7 @@ public class ChannelListInteractor {
 
     private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo,
                                                BankConfigResponse bankConfigResponse,
-                                               PlatformInfoCallback platformInfoCallback,
-                                               boolean resourceInitialized) {
+                                               PlatformInfoCallback platformInfoCallback) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;
         message.mPlatformInfoCallback = platformInfoCallback;
