@@ -90,6 +90,12 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         initWebView();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadDefaultWebView();
+    }
+
     protected void initPresenter(View view) {
 
     }
@@ -246,7 +252,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     @Override
     public void onResume() {
         super.onResume();
-        loadDefaultWebView();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onResume();
         }
