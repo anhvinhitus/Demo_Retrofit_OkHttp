@@ -56,19 +56,9 @@ public class BankInteractor implements IBankInteractor {
     }
 
     @Override
-    public void clearCheckSum() {
-        this.mLocalStorage.clearCheckSum();
-    }
-
-    @Override
     public void clearConfig() {
         this.mLocalStorage.clearConfig();
         cacheBankResponseOnMemory(null);
-    }
-
-    @Override
-    public void resetExpireTime() {
-        this.mLocalStorage.setExpireTime(0);
     }
 
     @Override

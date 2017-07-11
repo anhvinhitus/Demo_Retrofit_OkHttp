@@ -13,11 +13,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  */
 
 public interface IBankInteractor {
-    void clearCheckSum();
-
     void clearConfig();
-
-    void resetExpireTime();
 
     void setPaymentBank(String userId, String cardKey);
 

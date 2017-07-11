@@ -237,7 +237,7 @@ public class SharedPreferencesManager extends SingletonBase {
         return getString(mContext.get().getResources().getString(R.string.sdk_bankconfig) + pKey);
     }
 
-    public boolean setBankConfigMap(String pBankMap) {
+    public boolean setBankPrefix(String pBankMap) {
         return setString(mContext.get().getResources().getString(R.string.sdk_bank_prefix), pBankMap);
     }
 

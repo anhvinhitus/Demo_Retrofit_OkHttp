@@ -118,7 +118,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         mSharedPreferences.setBankCodeList(bankCodeList.toString());
         //save bank prefix number (use to detect card type)
         String hashMapBank = GsonUtils.toJsonString(pResponse.bankcardprefixmap);
-        mSharedPreferences.setBankConfigMap(hashMapBank);
+        mSharedPreferences.setBankPrefix(hashMapBank);
     }
 
     @Override
@@ -172,6 +172,21 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
 
     @Override
     public void clearConfig() {
-        mSharedPreferences.setBankConfigMap(null);
+        try {
+            mSharedPreferences.setExpiredBankList(0);
+            mSharedPreferences.setCheckSumBankList(null);
+            mSharedPreferences.setBankPrefix(null);
+            String bankCodeList = getBankCodeList();
+            if (TextUtils.isEmpty(bankCodeList)) {
+                return;
+            }
+            String[] arrayBankCode = bankCodeList.split(Constants.COMMA);
+            for (String bankCode : arrayBankCode) {
+                mSharedPreferences.setBankConfig(bankCode, null);
+            }
+            mSharedPreferences.setBankCodeList(null);
+        } catch (Exception e) {
+            Timber.w(e, "clear bank config error");
+        }
     }
 }

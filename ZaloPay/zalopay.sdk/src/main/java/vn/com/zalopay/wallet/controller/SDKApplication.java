@@ -56,18 +56,22 @@ public class SDKApplication extends Application {
      */
     private static void clearCache(String userId, String pAppVersion) {
         IPlatformInfo platformInfo = getApplicationComponent().platformInfoInteractor();
-        AppInfoStore.Interactor appInfo = getApplicationComponent().appInfoInteractor();
         IBankInteractor bankList = getApplicationComponent().bankListInteractor();
-        if (platformInfo.isNewVersion(pAppVersion) || platformInfo.isNewUser(userId)) {
-            Timber.d("clearCache - start clear cache in previous version");
-            //clear banklist
-            bankList.clearCheckSum();
+        if (platformInfo.isNewVersion(pAppVersion)) {
             bankList.clearConfig();
-            bankList.resetExpireTime();
-            //reset expire time app info
-            appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
-            appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
+            Timber.d("clearCache - bank list");
+            resetAppInfo();
+        } else if (platformInfo.isNewUser(userId)) {
+            resetAppInfo();
         }
+    }
+
+    private static void resetAppInfo() {
+        //reset expire time app info
+        AppInfoStore.Interactor appInfo = getApplicationComponent().appInfoInteractor();
+        appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
+        appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
+        Timber.d("clearCache - app info 1,2");
     }
 
     /***
@@ -86,11 +90,12 @@ public class SDKApplication extends Application {
                 Timber.d("user in sdk - delay load gateway info");
                 return null;
             }
-            //clearCache(pUserInfo.zalopay_userid, pAppVersion);
-
             String userId = pUserInfo.zalopay_userid;
             String accessToken = pUserInfo.accesstoken;
             long currentTime = System.currentTimeMillis();
+
+            clearCache(userId, pAppVersion);
+
             List<Subscription> subscription = new ArrayList<>();
             //load platform info
             getApplicationComponent().platformInfoInteractor()
