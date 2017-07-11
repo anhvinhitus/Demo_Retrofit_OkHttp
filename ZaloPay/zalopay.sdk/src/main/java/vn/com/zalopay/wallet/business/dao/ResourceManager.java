@@ -17,6 +17,9 @@ import java.util.Map;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.zalopay.utility.StorageUtil;
+import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -27,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.ui.channel.ResourceRender;
 
@@ -39,7 +43,6 @@ public class ResourceManager extends SingletonBase {
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
     private static final String HIDE_IMG_NAME = "0.png";
-    public static boolean mResourceCreated = false;
     private static String mUnzipPath = null;
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
@@ -113,21 +116,31 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static boolean isInit() {
-        return (mResourceCreated) && (mConfigFromServer != null);
+        return mConfigFromServer != null;
+    }
+
+    public static synchronized void deleteResFolder() {
+        try {
+            String resPath = getUnzipFolderPath();
+            if (!TextUtils.isEmpty(resPath)) {
+                File file = new File(resPath);
+                if (file.exists()) {
+                    StorageUtil.deleteRecursive(file);
+                    Timber.d("delete order resource %s", resPath);
+                }
+            }
+        } catch (Exception e) {
+            Timber.w(e.getMessage());
+        }
     }
 
     public static synchronized Observable<Boolean> initResource() {
-        if (isInit()) {
-            return Observable.just(true);
-        }
-
         return Observable.defer(() -> {
             try {
                 Timber.d("initializing SDK resource");
                 String json = loadJsonConfig();
                 if (TextUtils.isEmpty(json)) {
-                    mResourceCreated = false;
-                    Timber.w("Lỗi đọc file resource");
+                    throw new Exception("Empty resource file config");
                 } else {
                     mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
                     ResourceManager commonResourceManager = getInstance(null);
@@ -139,13 +152,13 @@ public class ResourceManager extends SingletonBase {
                             getInstance(page.pageName).mPageConfig = page;
                         }
                     }
-                    mResourceCreated = true;
                 }
             } catch (Exception e) {
-                mResourceCreated = false;
-                return Observable.error(e);
+                Timber.w(e.getMessage());
+                deleteResFolder();
+                return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
             }
-            return Observable.just(mResourceCreated);
+            return Observable.just(true);
         });
     }
 

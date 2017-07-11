@@ -14,6 +14,7 @@ import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -84,10 +85,10 @@ public class ResourceInteractor {
                 return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
             } else {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
-                Timber.d("decompressed file zip to %s", unzipFolder);
+                Timber.d("extract resource to %s", unzipFolder);
                 mPlatformStorage.setResourceVersion(mResourceVersion);
                 mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
-                return Observable.just(new SdkDownloadResourceMessage(true, null));//post signal success
+                return Observable.just(new SdkDownloadResourceMessage(true, null));
             }
         } catch (IOException e) {
             Timber.w(e, "Exception IO");
