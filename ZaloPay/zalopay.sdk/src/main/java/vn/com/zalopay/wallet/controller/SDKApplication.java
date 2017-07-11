@@ -86,7 +86,7 @@ public class SDKApplication extends Application {
                 Timber.d("user in sdk - delay load gateway info");
                 return null;
             }
-            clearCache(pUserInfo.zalopay_userid, pAppVersion);
+            //clearCache(pUserInfo.zalopay_userid, pAppVersion);
 
             String userId = pUserInfo.zalopay_userid;
             String accessToken = pUserInfo.accesstoken;

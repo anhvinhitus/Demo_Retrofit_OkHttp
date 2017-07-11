@@ -41,6 +41,7 @@ import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
  */
 
 public class BankInteractor implements IBankInteractor {
+    private static final String key_on_mem = "SdkBankList";
     private final BankStore.LocalStorage mLocalStorage;
     private final BankStore.BankListService mBankListService;
     private final MemoryCache mMemoryCache;
@@ -62,6 +63,7 @@ public class BankInteractor implements IBankInteractor {
     @Override
     public void clearConfig() {
         this.mLocalStorage.clearConfig();
+        cacheBankResponseOnMemory(null);
     }
 
     @Override
@@ -232,7 +234,7 @@ public class BankInteractor implements IBankInteractor {
         String checksum = mLocalStorage.getCheckSum();
         String platform = BuildConfig.PAYMENT_PLATFORM;
 
-        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable("SdkBankList")
+        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable(key_on_mem)
                 .map(object -> {
                     if (object.equals(MemoryCache.EmptyObject)) {
                         return null;
@@ -255,7 +257,7 @@ public class BankInteractor implements IBankInteractor {
     }
 
     private void cacheBankResponseOnMemory(BankConfigResponse response) {
-        mMemoryCache.put("SdkBankList", response);
+        mMemoryCache.put(key_on_mem, response);
     }
 
     @Override
