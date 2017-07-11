@@ -344,7 +344,7 @@
 
     <string name="zpw_string_bank_not_support">Ngân hàng đã chọn không còn được hỗ trợ.\nVui lòng chọn thẻ khác để giao dịch</string>
 
-    <string name="sdk_undefine_error">Không thể thực hiện yêu cầu lúc này.\nVui lòng đóng ứng dụng và thử lại</string>
+    <string name="sdk_undefine_error">Không thể thực hiện yêu cầu lúc này.Vui lòng đóng ứng dụng và thử lại!</string>
 
     <string name="zpw_string_alert_profilelevel_update">Bạn cần cập nhật Mật Khẩu Thanh Toán để sử dụng tính năng này.\nBạn có muốn cập nhật thông tin?</string>
     <string name="zpw_string_alert_profilelevel_update_and_before_payby_bankaccount">Bạn cần cập nhật Mật Khẩu Thanh Toán trước khi sử dụng tài khoản ngân hàng để giao dịch.\nBạn có muốn cập nhật thông tin?</string>
