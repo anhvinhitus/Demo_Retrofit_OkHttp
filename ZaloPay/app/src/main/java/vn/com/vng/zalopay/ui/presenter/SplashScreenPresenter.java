@@ -4,9 +4,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
 
@@ -31,13 +33,23 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
 
     public void verifyUser() {
         Timber.d("ApplicationState object [%s]", mApplicationState);
-        if (mUserConfig.hasCurrentUser()) {
-            Timber.i("go to Home Screen");
-            mZaloSdkApi.getProfile();
-            mView.gotoHomeScreen();
-        } else  {
-            Timber.d("gotoLoginScreen");
+
+        if (!mUserConfig.hasCurrentUser()) {
+            Timber.i("goto Login screen");
             mView.gotoLoginScreen();
+            return;
         }
+
+        User user = mUserConfig.getCurrentUser();
+        if (user.profilelevel <= 1) {
+            Timber.i("should update level");
+            AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+            return;
+        }
+
+        Timber.i("go to home screen");
+
+        mZaloSdkApi.getProfile();
+        mView.gotoHomeScreen();
     }
 }
