@@ -74,8 +74,6 @@ import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     public EventBus mBus;
-    public boolean hasAtm;
-    public boolean hasCC;
     private CountDownTimer mExpireTransTimer;
     private boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
@@ -260,84 +258,141 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void startPayment() {
-        Timber.d("start payment channel %s", mMiniPmcTransType);
-        if (mPaymentInfoHelper == null) {
-            callback();
-            return;
-        }
-        if (mMiniPmcTransType == null) {
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
-            return;
-        }
         try {
-            mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
-            if (mAdapter == null) {
-                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            if (mPaymentInfoHelper == null) {
+                callback();
                 return;
             }
             initTimer();
-            getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
             getViewOrThrow().visiableOrderInfo(!mPaymentInfoHelper.isLinkTrans());
-            //hide header if this is link card
-            if (!mPaymentInfoHelper.isLinkTrans()) {
-                getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
-            }
-            initChannel();
             if (mPaymentInfoHelper.isLinkTrans()) {
-                prepareLink();
+                startSubscribePaymentReadyMessage();
+                return;
             }
+            if (mMiniPmcTransType == null) {
+                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+                return;
+            }
+            Timber.d("start payment channel %s", mMiniPmcTransType);
+            getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
+            mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            if (mAdapter == null) {
+                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                return;
+            }
+            initAdapter();
         } catch (Exception e) {
             Timber.w(e, "Exception on start payment");
-            onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+            onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
     }
 
-    private void prepareLink() {
-        //link card
-        if (mPaymentInfoHelper.isLinkTrans() && !mPaymentInfoHelper.isBankAccountTrans()) {
-            //check profile level permission in table map
-            try {
-                UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-                if (userInfo == null) {
-                    onExit(GlobalData.getAppContext().getString(R.string.zingpaysdk_missing_app_user), true);
-                    return;
-                }
-                int allowATM = userInfo.getPermissionByChannelMap(BuildConfig.channel_atm, TransactionType.LINK);
-                int allowCC = userInfo.getPermissionByChannelMap(BuildConfig.channel_credit_card, TransactionType.LINK);
-                if (allowATM == Constants.LEVELMAP_INVALID && allowCC == Constants.LEVELMAP_INVALID) {
-                    onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
-                    return;
-                }
-                if (allowATM == Constants.LEVELMAP_BAN && allowCC == Constants.LEVELMAP_BAN) {
-                    getViewOrThrow().showUpdateLevelDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update),
-                            GlobalData.getStringResource(RS.string.dialog_close_button),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-                                    callback();
-                                }
-
-                                @Override
-                                public void onOKEvent() {
-                                    setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-                                }
-                            });
-                    return;
-                }
-                hasAtm = (allowATM == Constants.LEVELMAP_ALLOW);
-                hasCC = (allowCC == Constants.LEVELMAP_ALLOW);
-                //switch to cc adapter if link card just allow cc without atm
-                if (!hasAtm && hasCC && createChannelAdapter(BuildConfig.channel_credit_card)) {
-                    initChannel();
-                }
-            } catch (Exception ex) {
-                Log.e(this, ex);
-                onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
+    @Override
+    protected void onProcessPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception {
+        if (message == null) {
+            callback();
+            return;
+        }
+        if (message.mPlatformInfoCallback instanceof VersionCallback) {
+            VersionCallback versionCallback = (VersionCallback) message.mPlatformInfoCallback;
+            onProcessUpVersionMessage(versionCallback);
+            if (versionCallback.forceupdate) {
                 return;
             }
         }
-        startSubscribePaymentReadyMessage();
+        if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
+            startLink();
+            return;
+        }
+        Timber.d("payment info on error %s", message.mError.getMessage());
+        String error = TransactionHelper.getMessage(message.mError);
+        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+        onExit(error, showDialog);
+    }
+
+    private void startLink() {
+        Timber.d("start link channel");
+        try {
+            mMiniPmcTransType = SDKApplication
+                    .getApplicationComponent()
+                    .appInfoInteractor()
+                    .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, mPaymentInfoHelper.isBankAccountTrans(), null);
+            if (mMiniPmcTransType == null) {
+                onExit(GlobalData.getAppContext().getString(R.string.sdk_config_invalid), true);
+                return;
+            }
+            mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            if (mAdapter == null) {
+                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                return;
+            }
+            initAdapter();
+            reFillBidvCardNumber();
+            showKeyBoardOnFocusingViewAgain();
+            if (mAdapter instanceof AdapterLinkAcc) {
+                ((AdapterLinkAcc) mAdapter).startFlow();
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+            onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
+        }
+    }
+
+    public synchronized void switchAdapter(int pChannelID, final String pCardNumber) {
+        if (mAdapter == null) {
+            return;
+        }
+        if (mAdapter.isATMFlow() && pChannelID == BuildConfig.channel_atm) {
+            return;
+        }
+        if (mAdapter.isCCFlow() && pChannelID == BuildConfig.channel_credit_card) {
+            return;
+        }
+        //prevent user move to next if input existed card in link card
+        CardGuiProcessor cardGuiProcessor = mAdapter.getGuiProcessor();
+        if (cardGuiProcessor != null && cardGuiProcessor.preventNextIfLinkCardExisted()) {
+            try {
+                cardGuiProcessor.showHintError(cardGuiProcessor.getCardNumberView(), cardGuiProcessor.warningCardExist());
+                return;
+            } catch (Exception e) {
+                Timber.w(e, "Exception switchAdapter");
+            }
+        }
+        if (!createChannelAdapter(pChannelID)) {
+            return;
+        }
+        try {
+            setIsSwitching(true);
+            if (mAdapter.isCardFlow()) {
+                mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Exception on switching channel");
+        }
+    }
+
+    private boolean createChannelAdapter(int pChannelId) {
+        try {
+            MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
+                    getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, TransactionType.LINK, pChannelId, null), MiniPmcTransType.class);
+            if (miniPmcTransType == null) {
+                return false;
+            }
+            Timber.d("create new adapter pmc id = %s", pChannelId);
+            //release old adapter
+            if (mAdapter != null) {
+                mAdapter.onFinish();
+                mAdapter = null;
+            }
+            mAdapter = AdapterFactory.createByPmc(this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            initAdapter();
+            mMiniPmcTransType = miniPmcTransType;
+        } catch (Exception e) {
+            Timber.w(e, "Exception on create adapter by channel id %s", pChannelId);
+            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+        }
+        return true;
     }
 
     @Override
@@ -408,70 +463,18 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    private boolean createChannelAdapter(int pChannelId) {
+    private void initAdapter() throws Exception {
         try {
-            Timber.d("create new adapter pmc id = %s", pChannelId);
-            //release old adapter
-            if (mAdapter != null) {
-                mAdapter.onFinish();
-                mAdapter = null;
-            }
-            int transtype = TransactionType.LINK;
-            MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
-                    getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, transtype, pChannelId, null), MiniPmcTransType.class);
-            if (miniPmcTransType != null) {
-                mAdapter = AdapterFactory.createByPmc(this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
-                return true;
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
-        }
-        return false;
-    }
-
-    private void initChannel() throws Exception {
-        Timber.d("init channel");
-        try {
-            mAdapter.init();
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-            return;
-        }
-        if (!GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
-            getViewOrThrow().renderByResource(mAdapter.getPageName());
-        } else {
-            getViewOrThrow().renderResourceAfterDelay(mAdapter.getPageName());
-        }
-        getViewOrThrow().updateCardNumberFont();
-    }
-
-    public synchronized void switchChannel(int pChannelID, final String pCardNumber) {
-        if (mAdapter != null && mAdapter.isATMFlow() && pChannelID == BuildConfig.channel_atm)
-            return;
-        if (mAdapter != null && mAdapter.isCCFlow() && pChannelID == BuildConfig.channel_credit_card)
-            return;
-        //prevent user move to next if input existed card in link card
-        CardGuiProcessor cardGuiProcessor = mAdapter.getGuiProcessor();
-        if (cardGuiProcessor != null && cardGuiProcessor.preventNextIfLinkCardExisted()) {
-            try {
-                cardGuiProcessor.showHintError(cardGuiProcessor.getCardNumberView(), cardGuiProcessor.warningCardExist());
+            if (mAdapter == null) {
                 return;
-            } catch (Exception e) {
-                Log.e(this, e);
             }
-        }
-        if (!createChannelAdapter(pChannelID)) {
-            return;
-        }
-        setIsSwitching(true);
-        try {
-            initChannel();
-            if (mAdapter.isCardFlow()) {
-                mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
-            }
+            Timber.d("start init channel %s", mAdapter.getClass().getSimpleName());
+            mAdapter.init();
+            getViewOrThrow().renderByResource(mAdapter.getPageName());
+            getViewOrThrow().marginSubmitButtonTop(false);
+            getViewOrThrow().updateCardNumberFont();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception init channel");
         }
     }
 
@@ -557,29 +560,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    @Override
-    protected void onProcessPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception {
-        if (message == null) {
-            callback();
-            return;
-        }
-        if (message.mPlatformInfoCallback instanceof VersionCallback) {
-            VersionCallback versionCallback = (VersionCallback) message.mPlatformInfoCallback;
-            onProcessUpVersionMessage(versionCallback);
-            if (versionCallback.forceupdate) {
-                return;
-            }
-        }
-        if (message.mErrorType == SdkPaymentInfoReadyMessage.ErrorType.SUCCESS) {
-            startLink();
-            return;
-        }
-        Timber.d("payment info on error %s", message.mError.getMessage());
-        String error = TransactionHelper.getMessage(message.mError);
-        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
-        onExit(error, showDialog);
-    }
-
     public void onSubmitClick() {
         if (mAdapter == null) {
             callback();
@@ -636,22 +616,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void setIsSwitching(boolean pSwitching) {
         this.mIsSwitching = pSwitching;
-    }
-
-    private void startLink() {
-        Timber.d("start link channel");
-        try {
-            getViewOrThrow().renderByResource(mAdapter.getPageName());
-            getViewOrThrow().hideLoading();
-            reFillBidvCardNumber();
-            showKeyBoardOnFocusingViewAgain();
-            if (mAdapter instanceof AdapterLinkAcc) {
-                ((AdapterLinkAcc) mAdapter).startFlow();
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-            onExit(GlobalData.getAppContext().getString(R.string.sdk_error_init_data), true);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

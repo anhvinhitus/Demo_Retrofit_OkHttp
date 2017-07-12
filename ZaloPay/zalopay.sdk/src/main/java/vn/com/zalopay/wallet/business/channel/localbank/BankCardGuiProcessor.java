@@ -28,6 +28,7 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
@@ -176,7 +177,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void setCardDateOnCardView() {
-       // Set hint card issue here
+        // Set hint card issue here
     }
 
     public void continueDetectCardForLinkCard() {
@@ -656,7 +657,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected boolean canSwitchChannelLinkCard() {
         try {
-            return getAdapter().getPresenter().hasCC;
+            return PaymentPermission.allowLinkCC();
         } catch (Exception e) {
             Log.e(this, e);
             return false;
@@ -670,9 +671,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void switchChannel() {
-        Timber.d("===switchChannel===");
+        Timber.d("===switchAdapter===");
         try {
-            getAdapter().getPresenter().switchChannel(BuildConfig.channel_credit_card, getCardNumber());
+            getAdapter().getPresenter().switchAdapter(BuildConfig.channel_credit_card, getCardNumber());
         } catch (Exception e) {
             Log.e(this, e);
         }

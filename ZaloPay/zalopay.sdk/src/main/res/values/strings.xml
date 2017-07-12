@@ -5,6 +5,8 @@
 
     <string name="allow_use_fingerprint_feature">1</string>
     <string name="allow_use_send_log_on_transactionfail">1</string>
+    <string name="allow_link_atm">1</string>
+    <string name="allow_link_cc">1</string>
 
     <string name="payment_success_label">Giao dịch thành công</string>
 

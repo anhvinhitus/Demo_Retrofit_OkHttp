@@ -84,6 +84,9 @@ public class RS {
 
         public static final String allow_use_send_log_on_transactionfail = "allow_use_send_log_on_transactionfail";
         public static final String allow_use_fingerprint_feature = "allow_use_fingerprint_feature";
+        public static final String allow_link_atm = "allow_link_atm";
+        public static final String allow_link_cc = "allow_link_cc";
+
         public static final String zpw_error_authen_pin = "zpw_error_authen_pin";
 
         public static final String zpw_fail_transanction_by_ssl = "zpw_fail_transanction_by_ssl";

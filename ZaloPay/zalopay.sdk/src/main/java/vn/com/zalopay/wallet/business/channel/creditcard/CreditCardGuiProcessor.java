@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -74,7 +75,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         try {
             getAdapter().getPresenter().addSubscription(subscription);
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
     }
 
@@ -109,7 +110,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         try {
             return new CreditCardFragmentAdapter(getAdapter().getActivity().getSupportFragmentManager(), getAdapter().getActivity().getIntent().getExtras());
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
         return null;
     }
@@ -191,14 +192,14 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                 getAdapter().getView().enableSubmitBtn();
                 getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
             } catch (Exception e) {
-                Log.e(this,e);
+                Log.e(this, e);
             }
             return true;
         } else {
             try {
                 getAdapter().getView().disableSubmitBtn();
             } catch (Exception e) {
-                Log.e(this,e);
+                Log.e(this, e);
             }
             return false;
         }
@@ -207,9 +208,9 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected boolean canSwitchChannelLinkCard() {
         try {
-            return getAdapter().getPresenter().hasAtm;
+            return PaymentPermission.allowLinkAtm();
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
         return false;
     }
@@ -221,11 +222,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void switchChannel() {
-        Timber.d("===switchChannel===");
+        Timber.d("===switchAdapter===");
         try {
-            getAdapter().getPresenter().switchChannel(BuildConfig.channel_atm, getCardNumber());
+            getAdapter().getPresenter().switchAdapter(BuildConfig.channel_atm, getCardNumber());
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
     }
 
