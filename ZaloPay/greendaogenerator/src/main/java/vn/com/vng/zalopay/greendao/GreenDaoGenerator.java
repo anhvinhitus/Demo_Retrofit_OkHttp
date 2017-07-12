@@ -8,7 +8,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 59;
+    private static final int APP_DB_VERSION = 61;
     private static final int GLOBAL_DB_VERSION = 4;
 
     /**
@@ -57,6 +57,8 @@ public class GreenDaoGenerator {
         receivePackageGD.addLongProperty("status");
         receivePackageGD.addStringProperty("messageStatus");
         receivePackageGD.addStringProperty("message");
+        receivePackageGD.addLongProperty("isLuckiest");
+        receivePackageGD.addLongProperty("createTime");
     }
 
 
@@ -155,7 +157,6 @@ public class GreenDaoGenerator {
 
     private static void addTransactionLog(Schema schema) {
         addTransactionLog(schema, "TransactionLog");
-        addTransactionLog(schema, "TransactionLogBackup");
     }
 
     private static void addTransactionLog(Schema schema, String entityName) {
@@ -179,6 +180,7 @@ public class GreenDaoGenerator {
         entity.addStringProperty("username");
         entity.addStringProperty("appusername");
         entity.addLongProperty("statustype");
+        entity.addStringProperty("thank_message");
     }
 
     private static void addDataManifest(Schema schema) {
