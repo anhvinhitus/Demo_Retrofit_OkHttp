@@ -1,7 +1,7 @@
-Zalo Pay (Production v2.14.0 - build 336) - Released on 2017-07-11 15:58
-+ [SDK] #ZPF-289 : [Android-Real-2.14(333)]SDK: Clear data, ko load lai resource được by vo van chuc (#0df4ae9)
-+ [SDK] Return as list from commit #d93dedbf460c507135a87a9ccc808c06716e0d8a [d93dedb] by vo van chuc (#fd6df17)
-+ [SDK] Fix possible NPE on return array of subscription in loadSDKData by Nguyen Huu Hoa (#d93dedb)
-+ [App] Fix NPE adapter by hieuvm (#6b32f2d)
-+ [SDK] Thay đổi message thông báo nếu lỗi không xác định by vo van chuc (#1d84d10)
-+ [SDK] Thay đổi message thông báo nếu lỗi không xác định by vo van chuc (#e6e4238)
+Zalo Pay (Production v2.14.0 - build 337) - Released on 2017-07-12 07:34
++ [SDK] Make sure finish download before initializing json config by vo van chuc (#430df5a)
++ [SDK] Refactor PlatformInfoInteractor by vo van chuc (#2119a4a)
++ [SDK] Refactor phần init resource by vo van chuc (#203ec0f)
++ [SDK] Refactor phần clear cache khi setup new version hoặc switch account by vo van chuc (#a72d517)
++ [SDK] Refactor phần clear cache khi setup new version hoặc switch account by vo van chuc (#a49aab6)
++ [Onboarding] Task#683 : Force user level 1 đi flow Onboarding khi cài đè version mới by hieuvm (#921c9d3)
