@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -17,6 +18,7 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;
+    private long startTime = 0, endTime = 0;
 
     public SubmitOrderTask(AdapterBase pAdapter) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -26,6 +28,12 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     public void onDoTaskOnResponse(StatusResponse pResponse) {
         Timber.d("onDoTaskOnResponse nothing");
+        //tracking api call app transid
+        endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returncode = pResponse != null ? pResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, returncode);
+        }
     }
 
     @Override
@@ -62,6 +70,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     protected void doRequest() {
         if (mAdapter.openSettingNetworking()) {
+            startTime = System.currentTimeMillis();
             shareDataRepository().setTask(this).postData(new SubmitOrderImpl(), getDataParams());
         }
     }

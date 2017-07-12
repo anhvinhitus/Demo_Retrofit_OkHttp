@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -34,6 +35,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private boolean isTimerStated = false;
     private String mMessage;
     private int mRetryCount = 1;
+    private long startTime = 0, endTime = 0;
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mTransID = pTransID;
@@ -152,6 +154,11 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
+        endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returnCode = pResponse != null ? pResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, returnCode);
+        }
         if (pResponse == null) {
             cancelTimer();
             askToRetryGetStatus(GlobalData.getStringResource(RS.string.zingpaysdk_alert_error_networking_ask_to_retry));
@@ -225,6 +232,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
+        startTime = System.currentTimeMillis();
         GetStatusShare.shared().onGetStatus(this, getDataParams());
     }
 

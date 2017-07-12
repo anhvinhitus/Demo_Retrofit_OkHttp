@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenPayerImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -14,6 +15,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 public class AuthenPayerTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
     private String mTransID, mAuthenType, mAuthenValue;
+    private long startTime = 0, endTime = 0;
 
     public AuthenPayerTask(AdapterBase pAdapter, String pTransID, String pAuthenType, String pAuthenValue) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -30,6 +32,11 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
+        endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returnCode = pResponse != null ? pResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER, startTime, endTime, returnCode);
+        }
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE, pResponse);
         }
@@ -65,6 +72,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
     @Override
     protected void doRequest() {
         if (mAdapter.openSettingNetworking()) {
+            startTime = System.currentTimeMillis();
             shareDataRepository().setTask(this).postData(new AuthenPayerImpl(), getDataParams());
         }
     }

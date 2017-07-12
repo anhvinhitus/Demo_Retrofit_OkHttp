@@ -5,11 +5,11 @@ import java.util.Map;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -45,6 +45,12 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
 
     private boolean shouldStop(StatusResponse pResponse) {
         Timber.d("start check should stop check trans status");
+        //tracking api call app trans id
+        endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returnCode = pResponse != null ? pResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, returnCode);
+        }
         if (pResponse == null) {
             return false;
         }
@@ -69,6 +75,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
                 .doOnSubscribe(() -> {
                     retryCount ++;
                     running = true;
+                    startTime = System.currentTimeMillis();
                 })
                 /*.map(statusResponse -> {
                     statusResponse.isprocessing = true;

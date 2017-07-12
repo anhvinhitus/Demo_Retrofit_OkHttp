@@ -1,9 +1,11 @@
 package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -16,6 +18,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
     private String mAppTransID;
     private AdapterBase mAdapter;
+    private long startTime = 0, endTime = 0;
 
     /***
      * contructor
@@ -36,6 +39,11 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
+        endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returnCode = pResponse != null ? pResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, returnCode);
+        }
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE, pResponse);
         } else {
@@ -53,7 +61,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
         } else {
             Log.e(this, "mAdapter = NULL");
         }
-        Timber.d(e != null ? e.getMessage() : "Exception") ;
+        Timber.d(e != null ? e.getMessage() : "Exception");
     }
 
     @Override
@@ -68,6 +76,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
+        startTime = System.currentTimeMillis();
         shareDataRepository().setTask(this).loadData(new CheckOrderStatusFailSubmitImpl(), getDataParams());
     }
 

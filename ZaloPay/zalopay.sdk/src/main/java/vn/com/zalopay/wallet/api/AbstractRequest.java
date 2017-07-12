@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.api;
 
 import android.os.Build;
+import android.support.annotation.CallSuper;
 import android.util.ArrayMap;
 
 import java.util.HashMap;
@@ -16,12 +17,26 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 public abstract class AbstractRequest<T extends BaseResponse> implements IRequest<T> {
     protected ITransService mTransService;
     protected boolean running = false;
+    protected long startTime = 0;
+    protected long endTime = 0;
     protected Observable.Transformer<T, T> applyState = observable -> observable
-            .doOnSubscribe(() -> running = true)
-            .doOnCompleted(() -> running = false);
+            .doOnSubscribe(this::doOnSubscribe)
+            .doOnNext(this::doOnNext);
 
     public AbstractRequest(ITransService transService) {
         mTransService = transService;
+    }
+
+    @CallSuper
+    protected void doOnSubscribe() {
+        running = true;
+        startTime = System.currentTimeMillis();
+    }
+
+    @CallSuper
+    protected void doOnNext(T t) {
+        running = false;
+        endTime = System.currentTimeMillis();
     }
 
     @Override

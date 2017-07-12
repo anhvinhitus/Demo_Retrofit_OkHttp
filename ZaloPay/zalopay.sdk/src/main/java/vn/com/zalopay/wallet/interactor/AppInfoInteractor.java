@@ -7,9 +7,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -61,6 +63,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         String appInfoCheckSum = mLocalStorage.getAppInfoCheckSum(appid);
         String transtypeString = transtypeToString(transtypes);
         String transtypeCheckSum = transtypeCheckSum(appid, transtypes);
+        long startTime = System.currentTimeMillis();
         Observable<AppInfo> appInfoOnCache = mLocalStorage
                 .get(appid)
                 .subscribeOn(Schedulers.io())
@@ -68,6 +71,13 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
                 .map(this::changeAppName)
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
+                .doOnNext(appInfoResponse -> {
+                    long endTime = System.currentTimeMillis();
+                    if (GlobalData.analyticsTrackerWrapper != null) {
+                        int returnCode = appInfoResponse != null ? appInfoResponse.returncode : -100;
+                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO, startTime, endTime, returnCode);
+                    }
+                })
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
                 .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));

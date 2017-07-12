@@ -3,10 +3,11 @@ package vn.com.zalopay.wallet.transaction;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Func1;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -83,5 +84,15 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
     public Observable<StatusResponse> getObserver() {
         return submitTrans(buildParams())
                 .compose(applyState);
+    }
+
+    @Override
+    protected void doOnNext(StatusResponse statusResponse) {
+        super.doOnNext(statusResponse);
+        //tracking api call app transid
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            int returncode = statusResponse != null ? statusResponse.returncode : -100;
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, returncode);
+        }
     }
 }
