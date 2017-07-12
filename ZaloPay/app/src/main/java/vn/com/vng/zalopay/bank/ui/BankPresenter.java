@@ -444,7 +444,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             }
             showErrorView(message);
         } else {
-            new Handler().postDelayed(() -> linkAccount(bankInfo.bankcode), 1000);
+            new Handler().postDelayed(() -> linkAccount(bankInfo.bankcode), 300);
         }
     }
 
