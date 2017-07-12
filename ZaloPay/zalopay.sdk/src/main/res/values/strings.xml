@@ -66,6 +66,7 @@
     <string name="zingpaysdk_alert_no_connection">Không có kết nối internet.\nVui lòng kiểm tra kết nối mạng!</string>
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_networking_off_in_transaction">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
+    <string name="sdk_error_api">Mạng không ổn định. Vui lòng kiểm tra và thực hiện lại giao dịch</string>
 
     <string name="sdk_alert_network_onfline_submitorder">Mạng đã tắt, vui lòng kiểm tra trạng thái giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
 
