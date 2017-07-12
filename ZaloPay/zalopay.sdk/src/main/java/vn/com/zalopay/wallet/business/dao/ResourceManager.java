@@ -43,7 +43,6 @@ public class ResourceManager extends SingletonBase {
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
     private static final String HIDE_IMG_NAME = "0.png";
-    private static String mUnzipPath = null;
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
     private static DConfigFromServer mConfigFromServer = null;
@@ -82,13 +81,7 @@ public class ResourceManager extends SingletonBase {
     }
 
     private static String getUnzipFolderPath() throws Exception {
-        if (SharedPreferencesManager.getInstance() == null) {
-            throw new Exception("Missing shared preferences!!!");
-        }
-        if (mUnzipPath == null) {
-            mUnzipPath = SharedPreferencesManager.getInstance().getUnzipPath();
-        }
-        return mUnzipPath;
+        return SharedPreferencesManager.getInstance().getUnzipPath();
     }
 
     private static String loadFile(String pathPrefix, String fileName) throws Exception {

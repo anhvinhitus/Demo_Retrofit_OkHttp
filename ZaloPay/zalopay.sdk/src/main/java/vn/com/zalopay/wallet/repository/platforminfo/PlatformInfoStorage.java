@@ -53,7 +53,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             Log.d(this, "save maintain withdraw to cache", maintenance);
             // need to update cache data if chechsum is changed.
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
-                mSharedPreferences.setPlatformInfoCheckSum(pResponse.platforminfochecksum);
+                setCheckSum(pResponse.platforminfochecksum);
             }
             /*MapCard mapCard = new MapCard();
             mapCard.bankcode = CardType.PVTB;
@@ -211,17 +211,6 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
-    public String getResourceDownloadUrl() {
-        String url = null;
-        try {
-            url = mSharedPreferences.getResourceDownloadUrl();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return url;
-    }
-
-    @Override
     public void setResourceDownloadUrl(String resourceDownloadUrl) {
         mSharedPreferences.setResourceDownloadUrl(resourceDownloadUrl);
     }
@@ -254,12 +243,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
-    public void clearCardMapCheckSum() {
-        mSharedPreferences.setCardInfoCheckSum(null);
-    }
-
-    @Override
-    public void clearBankAccountMapCheckSum() {
-        mSharedPreferences.setBankAccountCheckSum(null);
+    public void setCheckSum(String checkSum) {
+        mSharedPreferences.setPlatformInfoCheckSum(checkSum);
     }
 }

@@ -47,15 +47,11 @@ public class PlatformInfoStore {
 
         void setUnzipPath(String pUnzipPath);
 
-        String getResourceDownloadUrl();
-
         void setResourceDownloadUrl(String resourceDownloadUrl);
 
         String getUserId();
 
-        void clearCardMapCheckSum();
-
-        void clearBankAccountMapCheckSum();
+        void setCheckSum(String checkSum);
     }
 
     public interface Repository {
