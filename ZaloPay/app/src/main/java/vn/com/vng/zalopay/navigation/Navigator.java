@@ -7,10 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -107,6 +104,7 @@ public class Navigator implements INavigator {
 
     private SharedPreferences mPreferences;
 
+    private boolean allowClick = true;
     AuthenticationPassword mAuthenticationPassword;
 
     @Inject
@@ -325,18 +323,31 @@ public class Navigator implements INavigator {
         }
         final Intent intent = getBankIntent(activity, linkBankType, bankCode, true, true, false);
         if (hasLinkBank() && shouldShowPinDialog()) {
-            showPinDialog(activity, new AuthenticationCallback() {
+            showAuthencationDialog(activity, new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
                     UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
                     UserSession.mHashPassword = password;
                     activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
                 }
+
+                @Override
+                public void onShowPassword() {
+                    showPinDialog(activity, new AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticated(String password) {
+                            UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                            UserSession.mHashPassword = password;
+                            activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+                        }
+                    });
+                }
             });
         } else {
             activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
         }
     }
+
 
     private void startLinkBankActivityForResult(final Fragment fragment,
                                                 LinkBankType linkBankType,
@@ -350,18 +361,54 @@ public class Navigator implements INavigator {
         }
         final Intent intent = getBankIntent(fragment.getContext(), linkBankType, bankCode, true, true, false);
         if (hasLinkBank() && shouldShowPinDialog()) {
-            showPinDialog(fragment.getContext(), new AuthenticationCallback() {
+            showAuthencationDialog(fragment.getContext(), new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
                     UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
                     UserSession.mHashPassword = password;
                     fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
                 }
+
+                @Override
+                public void onShowPassword() {
+                    showPinDialog(fragment.getContext(), new AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticated(String password) {
+                            UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                            UserSession.mHashPassword = password;
+                            fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+                        }
+                    });
+                }
             });
+
         } else {
             fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
         }
     }
+
+    private void showAuthencationDialog(Context context, final AuthenticationCallback callback) {
+        if (PasswordUtil.detectShowFingerPrint(context, mUserConfig)) {
+            AndroidUtils.runOnUIThread(() -> {
+                AuthenticationDialog dialog = AuthenticationDialog.newInstance();
+                dialog.setStage(Stage.FINGERPRINT_DECRYPT);
+                dialog.setAuthenticationCallback(callback);
+                dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+            }, 300);
+        } else {
+            //show password view
+            showPinDialog(context, callback);
+        }
+
+    }
+
+    private void showPinDialog(final Context context, final AuthenticationCallback callback) {
+        AndroidUtils.runOnUIThread(() -> {
+            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+            mAuthenticationPassword.initialize();
+        }, 200);
+    }
+
 
     @Override
     public void startLinkCardActivityForResult(final Activity activity, String bankCode) {
@@ -744,13 +791,6 @@ public class Navigator implements INavigator {
 
     private void showPinDialog(Context context, Intent pendingIntent) {
         showPinDialog(context, pendingIntent, false);
-    }
-
-    private void showPinDialog(final Context context, final AuthenticationCallback callback) {
-        AndroidUtils.runOnUIThread(() -> {
-            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
-            mAuthenticationPassword.initialize();
-        }, 200);
     }
 
     private void showPinDialog(Context context, Intent pendingIntent, boolean isFinish) {
