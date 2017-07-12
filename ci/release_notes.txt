@@ -1,7 +1,3 @@
-Zalo Pay (Production v2.14.0 - build 337) - Released on 2017-07-12 07:34
-+ [SDK] Make sure finish download before initializing json config by vo van chuc (#430df5a)
-+ [SDK] Refactor PlatformInfoInteractor by vo van chuc (#2119a4a)
-+ [SDK] Refactor phần init resource by vo van chuc (#203ec0f)
-+ [SDK] Refactor phần clear cache khi setup new version hoặc switch account by vo van chuc (#a72d517)
-+ [SDK] Refactor phần clear cache khi setup new version hoặc switch account by vo van chuc (#a49aab6)
-+ [Onboarding] Task#683 : Force user level 1 đi flow Onboarding khi cài đè version mới by hieuvm (#921c9d3)
+Zalo Pay (Production v2.14.0 - build 338) - Released on 2017-07-12 11:34
++ [SDK] Clear code by vo van chuc (#40bc3bf)
++ [SDK] Thay đổi message thông báo khi call api bị lỗi by vo van chuc (#5311637)

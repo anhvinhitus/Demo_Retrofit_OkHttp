@@ -43,7 +43,7 @@ android {
         applicationId cfg.applicationId
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 337
+        versionCode 338
         versionName "2.14.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
@@ -130,7 +130,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            debuggable false
+            debuggable true
 
             // removes all unused code - http://developer.android.com/tools/help/proguard.html
             shrinkResources true
