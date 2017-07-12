@@ -633,6 +633,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         String regex = TextUtils.join("|", ConfigLoader.getAllowUrls());
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(path);
+
         return matcher.find();
     }
 }
