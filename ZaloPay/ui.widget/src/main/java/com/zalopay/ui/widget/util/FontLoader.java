@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,11 +22,12 @@ import timber.log.Timber;
  * *
  */
 
-public class IconFontLoader {
+public class FontLoader {
 
     private static final String FONT_DEFAULT_NAME = "zalopay.ttf";
     private static final String FONT_CODE_DEFAULT_NAME = "zalopay.json";
     private static final String FONTS_ASSET_PATH = "fonts/";
+    private static final String FILE_EXTENSIONS = ".ttf";
 
     private static boolean _initialize = false;
 
@@ -104,6 +106,16 @@ public class IconFontLoader {
         Typeface typeface = sFontMap.get(FONT_DEFAULT_NAME);
         if (typeface == null) {
             Timber.e("Default Typeface is null [sFontMap: %s]", sFontMap.size());
+        }
+        return typeface;
+    }
+
+    public static Typeface getFont(AssetManager assetManager, String fontName) {
+        Typeface typeface = sFontMap.get(fontName);
+        if (typeface == null) {
+            String fileName = FONTS_ASSET_PATH + fontName + FILE_EXTENSIONS;
+            typeface = Typeface.createFromAsset(assetManager, fileName);
+            sFontMap.put(fontName, typeface);
         }
         return typeface;
     }

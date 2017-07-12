@@ -14,7 +14,7 @@ import android.util.AttributeSet;
 
 import com.shamanland.fonticon.FontIconDrawable;
 import com.shamanland.fonticon.FontIconTextView;
-import com.zalopay.ui.widget.util.IconFontLoader;
+import com.zalopay.ui.widget.util.FontLoader;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -144,7 +144,7 @@ public class IconFontTextView extends FontIconTextView {
             return;
         }
 
-        String code = IconFontLoader.getCode(iconName, iconDefault);
+        String code = FontLoader.getCode(iconName, iconDefault);
 
         if (color != INVALID_COLOR) {
             drawable.setTextColor(color);

@@ -52,11 +52,6 @@ public class TutorialConnectInternetFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTurnOnWifi.setText(Html.fromHtml(getString(R.string.turn_on_wifi)));

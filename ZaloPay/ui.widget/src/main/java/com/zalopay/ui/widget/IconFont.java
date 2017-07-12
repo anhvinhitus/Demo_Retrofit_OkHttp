@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import com.shamanland.fonticon.FontIconView;
-import com.zalopay.ui.widget.util.IconFontLoader;
+import com.zalopay.ui.widget.util.FontLoader;
 
 public class IconFont extends FontIconView {
 
@@ -74,7 +74,7 @@ public class IconFont extends FontIconView {
     }
 
     public void setIcon(String iconName) {
-        String code = IconFontLoader.getCode(iconName, mIconDefault == null ? ICON_DEFAULT : mIconDefault);
+        String code = FontLoader.getCode(iconName, mIconDefault == null ? ICON_DEFAULT : mIconDefault);
         if (!TextUtils.isEmpty(code)) {
             setText(code);
             return;

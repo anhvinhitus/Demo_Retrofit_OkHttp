@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.zalopay.ui.widget.R;
-import com.zalopay.ui.widget.util.FontHelper;
+import com.zalopay.ui.widget.util.FontLoader;
 
 /**
  * Created by hieuvm on 7/4/17.
@@ -34,20 +34,10 @@ public class FontTextView extends android.support.v7.widget.AppCompatTextView {
 
         if (ta != null) {
             String fontAsset = ta.getString(R.styleable.FontTextView_typefaceAsset);
-
             if (!TextUtils.isEmpty(fontAsset)) {
-                Typeface tf = FontHelper.getInstance().getFontFromAsset(getContext().getAssets(), fontAsset);
-                int style = Typeface.NORMAL;
-
-                if (getTypeface() != null) {
-                    style = getTypeface().getStyle();
-                }
-
-                if (tf != null) {
-                    setTypeface(tf, style);
-                }
+                Typeface tf = FontLoader.getFont(getContext().getAssets(), fontAsset);
+                setTypeface(tf);
             }
-
             ta.recycle();
         }
 

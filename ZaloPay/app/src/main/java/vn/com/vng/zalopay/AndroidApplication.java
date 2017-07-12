@@ -17,7 +17,7 @@ import com.facebook.react.views.text.ReactFontManager;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
-import com.zalopay.ui.widget.util.IconFontLoader;
+import com.zalopay.ui.widget.util.FontLoader;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
@@ -89,7 +89,7 @@ public class AndroidApplication extends Application {
             Timber.plant(new CrashlyticsTree());
         }
 
-        IconFontLoader.initialize(this);
+        FontLoader.initialize(this);
 
         initializeFresco();
 
@@ -125,13 +125,13 @@ public class AndroidApplication extends Application {
     public void loadFontFromApp1(boolean postEvent) {
         String fontPath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name);
         String codePath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info);
-        boolean isLoadFontSuccess = IconFontLoader.loadFont(fontPath, codePath);
+        boolean isLoadFontSuccess = FontLoader.loadFont(fontPath, codePath);
 
         if (isLoadFontSuccess) {
             return;
         }
 
-        Typeface typeface = IconFontLoader.getDefaultTypeface();
+        Typeface typeface = FontLoader.getDefaultTypeface();
         ReactFontManager.getInstance()
                 .setTypeface(PaymentAppConfig.Constants.FONT_FAMILY_NAME_ZALOPAY,
                         Typeface.NORMAL, typeface);

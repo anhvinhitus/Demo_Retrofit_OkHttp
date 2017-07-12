@@ -27,7 +27,7 @@ import android.view.InflateException;
 import android.view.View;
 
 import com.zalopay.ui.widget.R;
-import com.zalopay.ui.widget.util.IconFontLoader;
+import com.zalopay.ui.widget.util.FontLoader;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -88,14 +88,14 @@ public class FontIconDrawable extends Drawable {
         mTextSize = 9f;
         mRect = new Rect();
         mTextColor = ColorStateList.valueOf(Color.BLACK);
-        mPaint.setTypeface(IconFontLoader.getDefaultTypeface());
+        mPaint.setTypeface(FontLoader.getDefaultTypeface());
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Paint.Align.LEFT);
     }
 
     public FontIconDrawable(String iconName, @ColorInt int color, float size) {
         this();
-        mText = IconFontLoader.getCode(iconName);
+        mText = FontLoader.getCode(iconName);
         mTextColor = ColorStateList.valueOf(color);
         mTextSize = size;
         updatePaint(true, true);

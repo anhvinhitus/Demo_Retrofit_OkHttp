@@ -10,10 +10,9 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.zalopay.ui.widget.R;
-import com.zalopay.ui.widget.util.IconFontLoader;
+import com.zalopay.ui.widget.util.FontLoader;
 
 import static com.shamanland.fonticon.CompoundDrawables.SNAPSHOT;
 
@@ -127,7 +126,7 @@ public class FontIconView extends android.support.v7.widget.AppCompatCheckedText
         if (isInEditMode()) {
             mOldValuesSaver = null;
         } else {
-            setTypeface(IconFontLoader.getDefaultTypeface());
+            setTypeface(FontLoader.getDefaultTypeface());
             mOldValuesSaver = new Runnable() {
                 @Override
                 public void run() {
