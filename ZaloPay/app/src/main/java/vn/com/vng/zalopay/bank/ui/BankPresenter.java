@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
@@ -443,7 +444,7 @@ class BankPresenter extends AbstractBankPresenter<IBankView> {
             }
             showErrorView(message);
         } else {
-            linkAccount(bankInfo.bankcode);
+            new Handler().postDelayed(() -> linkAccount(bankInfo.bankcode), 1000);
         }
     }
 
