@@ -41,8 +41,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
     public void onRequestSuccess(StatusResponse pResponse) {
         endTime = System.currentTimeMillis();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returnCode = pResponse != null ? pResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, returnCode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, pResponse);
         }
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE, pResponse);

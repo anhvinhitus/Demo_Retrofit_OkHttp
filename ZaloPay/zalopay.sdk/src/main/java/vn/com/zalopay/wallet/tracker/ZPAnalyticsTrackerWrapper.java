@@ -8,6 +8,7 @@ import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPApptransidLogApiCall;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -60,7 +61,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
                 System.currentTimeMillis(), System.currentTimeMillis(), "", 0);
     }
 
-    public void trackApiTiming(int apiId, long startTime, long endTime, int returnCode) {
+    public void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
         if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
             Timber.d("skip track api call app trans id");
             return;
@@ -70,9 +71,9 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         apiTrack.apiid = apiId;
         apiTrack.time_begin = startTime;
         apiTrack.time_end = endTime;
-        apiTrack.return_code = returnCode;
+        apiTrack.return_code = response != null ? response.returncode : -100;
         ZPAnalytics.trackApptransidApiCall(apiTrack);
-        Timber.d("tracking call api timing api (apiid, returncode) - (%s , %s) time %s(ms)", apiId, returnCode, ((endTime - startTime)));
+        Timber.d("tracking call api timing api (apiid, returncode) - (%s , %s) time %s(ms)", apiId, apiTrack.return_code, ((endTime - startTime)));
     }
 
     public void trackUserCancel() {

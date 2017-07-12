@@ -156,8 +156,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     public void onRequestSuccess(StatusResponse pResponse) {
         endTime = System.currentTimeMillis();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returnCode = pResponse != null ? pResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, returnCode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, pResponse);
         }
         if (pResponse == null) {
             cancelTimer();

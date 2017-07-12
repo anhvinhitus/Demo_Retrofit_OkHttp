@@ -47,8 +47,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         //tracking api call app trans id
         endTime = System.currentTimeMillis();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returnCode = pResponse != null ? pResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, returnCode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, pResponse);
         }
         if (pResponse == null) {
             return false;

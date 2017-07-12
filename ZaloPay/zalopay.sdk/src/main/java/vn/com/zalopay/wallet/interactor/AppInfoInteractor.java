@@ -74,8 +74,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
                 .doOnNext(appInfoResponse -> {
                     long endTime = System.currentTimeMillis();
                     if (GlobalData.analyticsTrackerWrapper != null) {
-                        int returnCode = appInfoResponse != null ? appInfoResponse.returncode : -100;
-                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO, startTime, endTime, returnCode);
+                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO, startTime, endTime, appInfoResponse);
                     }
                 })
                 .flatMap(mapResult(appid));

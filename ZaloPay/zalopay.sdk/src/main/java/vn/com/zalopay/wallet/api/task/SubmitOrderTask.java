@@ -31,8 +31,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
         //tracking api call app transid
         endTime = System.currentTimeMillis();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returncode = pResponse != null ? pResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, returncode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, pResponse);
         }
     }
 

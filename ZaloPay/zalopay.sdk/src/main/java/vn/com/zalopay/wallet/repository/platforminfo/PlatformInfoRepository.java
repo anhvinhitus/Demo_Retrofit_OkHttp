@@ -32,8 +32,7 @@ public class PlatformInfoRepository implements PlatformInfoStore.Repository {
                 .doOnNext(platformInfoResponse -> {
                     long endTime = System.currentTimeMillis();
                     if (GlobalData.analyticsTrackerWrapper != null) {
-                        int returnCode = platformInfoResponse != null ? platformInfoResponse.returncode : -100;
-                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO, startTime, endTime, returnCode);
+                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO, startTime, endTime, platformInfoResponse);
                     }
                 });
     }

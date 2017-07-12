@@ -91,8 +91,7 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
         super.doOnNext(statusResponse);
         //tracking api call app transid
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returncode = statusResponse != null ? statusResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, returncode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, statusResponse);
         }
     }
 }

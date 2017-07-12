@@ -34,8 +34,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
     public void onRequestSuccess(StatusResponse pResponse) {
         endTime = System.currentTimeMillis();
         if (GlobalData.analyticsTrackerWrapper != null) {
-            int returnCode = pResponse != null ? pResponse.returncode : -100;
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER, startTime, endTime, returnCode);
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER, startTime, endTime, pResponse);
         }
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE, pResponse);
