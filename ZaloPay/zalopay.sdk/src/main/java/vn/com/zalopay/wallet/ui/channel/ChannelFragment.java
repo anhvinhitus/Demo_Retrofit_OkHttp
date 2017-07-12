@@ -693,7 +693,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         changeSubmitButtonBackground(order);
         updateToolBar();
         enableSubmitBtn();
-        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 100);
+        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 300);
     }
 
 
@@ -730,7 +730,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         changeSubmitButtonBackground(order);
         updateToolBar();
         enableSubmitBtn();
-        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 100);
+        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 300);
     }
 
     private void updateToolBar() {
