@@ -528,13 +528,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private boolean shouldCloseChannelList() {
-        switch (mPaymentInfoHelper.getStatus()) {
-            case PaymentStatus.SUCCESS:
-            case PaymentStatus.FAILURE:
-                return true;
-            default:
-                return mStatusResponse != null;
-        }
+        return mStatusResponse != null;
     }
 
     private void startChannelActivity() {
@@ -557,6 +551,7 @@ public class PayProxy extends SingletonBase {
 
             if (shouldCloseChannelList()) {
                 getView().terminate();
+                Timber.d("release channel list activity");
             }
         } catch (Exception e) {
             Log.e(this, e);

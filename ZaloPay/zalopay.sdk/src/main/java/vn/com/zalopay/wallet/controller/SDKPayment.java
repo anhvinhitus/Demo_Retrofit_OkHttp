@@ -22,6 +22,7 @@ import vn.com.zalopay.wallet.business.validation.IValidate;
 import vn.com.zalopay.wallet.business.validation.PaymentInfoValidation;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
@@ -181,6 +182,7 @@ public class SDKPayment {
         interactor.collectPaymentInfo(paymentInfoHelper);
 
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
+        paymentInfoHelper.setResult(PaymentStatus.PROCESSING);
         GlobalData.paymentInfoHelper = paymentInfoHelper;
         GlobalData.updateBankFuncByTranstype();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

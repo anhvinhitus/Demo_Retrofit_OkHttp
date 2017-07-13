@@ -196,6 +196,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void onStartLinkThenPay(Intent data) {
         try {
+            Timber.d("onStartLinkThenPay flow");
             @Link_Then_Pay int bankLink = data.getIntExtra("bank", Link_Then_Pay.NONE);
             if (bankLink == Link_Then_Pay.NONE) {
                 return;

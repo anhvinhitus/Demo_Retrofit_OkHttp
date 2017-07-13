@@ -246,6 +246,9 @@ public class BankWebViewClient extends PaymentWebViewClient {
         mLastStartPageTime++;
         final String result = pResult;
         try {
+            if (getAdapter() == null) {
+                return;
+            }
             getAdapter().getActivity().runOnUiThread(() -> {
                 DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
                 Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
@@ -333,26 +336,27 @@ public class BankWebViewClient extends PaymentWebViewClient {
     public void getHtml(final String pHtml) {
         //pHtml = PaymentHtmlParser.getContent(pHtml);
         Log.d(this, "Html", pHtml);
-        if (getAdapter() != null) {
-            try {
-                getAdapter().getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-                        if (!TextUtils.isEmpty(paymentError)) {
-                            paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
-                        }
-
-                        try {
-                            getAdapter().sdkReportError(ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                        }
+        if (getAdapter() == null) {
+            return;
+        }
+        try {
+            getAdapter().getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+                    if (!TextUtils.isEmpty(paymentError)) {
+                        paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
                     }
-                });
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+
+                    try {
+                        getAdapter().sdkReportError(ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                    } catch (Exception e) {
+                        Log.e(this, e);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 }
