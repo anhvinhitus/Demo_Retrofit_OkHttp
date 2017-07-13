@@ -58,7 +58,7 @@ public class SDKPayment {
             AdapterBase adapterBase = channelActivity.getAdapter();
             return adapterBase != null && adapterBase.isFinalScreen();
         } catch (Exception ex) {
-            Log.e("canCloseSdk", ex);
+            Timber.w(ex, "Exception check close SDK");
         }
         return false;
     }
@@ -86,7 +86,7 @@ public class SDKPayment {
                 throw new Exception("Không thể đóng sdk lúc này");
             }
         } catch (Exception ex) {
-            Log.e("closeSdk", ex);
+            Timber.w(ex, "Exception close SDK");
             throw ex;
         }
     }
@@ -104,7 +104,8 @@ public class SDKPayment {
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {
             if (pPaymentListener != null) {
-                pPaymentListener.onError(new CError(PaymentError.COMPONENT_NULL, "Component (activity,payment info) is null"));
+                Timber.w("Component (activity,payment info) is null");
+                pPaymentListener.onError(new CError(PaymentError.COMPONENT_NULL, "Dữ liệu không hợp lệ"));
             }
             return;
         }
@@ -119,7 +120,6 @@ public class SDKPayment {
         }
 
         PaymentInfoHelper paymentInfoHelper = new PaymentInfoHelper(pPaymentInfo);
-
         IValidate validation = new PaymentInfoValidation(paymentInfoHelper);
         //validate params order info and user info
         String validateMessage = validation.onValidate(pPaymentInfo);
@@ -127,11 +127,6 @@ public class SDKPayment {
             terminateSession(validateMessage, PaymentError.DATA_INVALID);
             return;
         }
-
-       /* if (!bypassBankAccount(paymentInfoHelper)) {
-            return;
-        }*/
-
         //set listener and data payment to global static
         try {
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener);
@@ -155,9 +150,9 @@ public class SDKPayment {
     }
 
     private static void startGateway(PaymentInfoHelper paymentInfoHelper) {
-        Activity pOwner = GlobalData.getMerchantActivity();
-        if (pOwner == null || pOwner.isFinishing()) {
-            Log.e("startGateway", "merchant activity is null");
+        Activity merchantActivity = GlobalData.getMerchantActivity();
+        if (merchantActivity == null || merchantActivity.isFinishing()) {
+            Timber.w("merchant activity is null");
             terminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             return;
         }
@@ -168,7 +163,7 @@ public class SDKPayment {
             int layoutId = paymentInfoHelper.isBankAccountTrans() ? R.layout.screen__link__acc : R.layout.screen__card;
             intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
         } else {
-            intent = new Intent(pOwner, ChannelListActivity.class);
+            intent = new Intent(merchantActivity, ChannelListActivity.class);
         }
         //init tracker event
         long appId = paymentInfoHelper.getAppId();
@@ -187,8 +182,7 @@ public class SDKPayment {
         GlobalData.updateBankFuncByTranstype();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        pOwner.startActivity(intent);
+        merchantActivity.startActivity(intent);
         Timber.d("start screen %s", intent.getComponent().getShortClassName());
     }
 
@@ -204,60 +198,4 @@ public class SDKPayment {
         SingletonLifeCircleManager.disposeAll();
         SDKApplication.getApplicationComponent().channelListInteractor().cleanup();
     }
-
-     /*private static boolean bypassBankAccount(PaymentInfoHelper paymentInfoHelper) {
-        BankConfig bankConfig = SDKApplication
-                .getApplicationComponent()
-                .bankListInteractor()
-                .getBankConfig(paymentInfoHelper.getLinkAccBankCode());
-        //1 zalopay user has only 1 vcb account
-        if (paymentInfoHelper.isBankAccountTrans()
-                && paymentInfoHelper.bankAccountLink()
-                && BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
-            DialogManager.closeProcessDialog();
-            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_cannot_connect),
-                    GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
-                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                        if (GlobalData.getPaymentListener() != null) {
-                            GlobalData.getPaymentListener().onComplete();
-                        }
-                        SingletonLifeCircleManager.disposeAll();
-                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
-        }
-//
-        //user have no link bank account so no need to unlink
-        else if (paymentInfoHelper.isBankAccountTrans()
-                && paymentInfoHelper.bankAccountUnlink()
-                && !BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), paymentInfoHelper.getLinkAccBankCode())) {
-            DialogManager.closeProcessDialog();
-            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
-                    GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                    GlobalData.getMerchantActivity().getString(R.string.zpw_warning_unlink_bankaccount_invalid),
-                    pIndex -> {
-                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                        if (GlobalData.getPaymentListener() != null) {
-                            GlobalData.getPaymentListener().onComplete();
-                        }
-                        SingletonLifeCircleManager.disposeAll();
-                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
-        }
-
-        //check maintenance link bank account
-        else if (paymentInfoHelper.isBankAccountTrans() && bankConfig != null && bankConfig.isBankMaintenence(BankFunctionCode.LINK_BANK_ACCOUNT)) {
-            DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
-                    GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                    bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT), pIndex -> {
-                        paymentInfoHelper.setResult(PaymentStatus.USER_CLOSE);
-                        if (GlobalData.getPaymentListener() != null) {
-                            GlobalData.getPaymentListener().onComplete();
-                        }
-                        SingletonLifeCircleManager.disposeAll();
-                    }, GlobalData.getStringResource(RS.string.dialog_close_button));
-            return false;
-        } else {
-            return true;
-        }
-        return false;
-    }*/
-
 }
