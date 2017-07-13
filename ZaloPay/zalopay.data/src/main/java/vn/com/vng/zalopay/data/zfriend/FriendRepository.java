@@ -208,6 +208,7 @@ public class FriendRepository implements FriendStore.Repository {
                 .map(entities -> Lists.chopped(entities, MAX_LENGTH_CHECK_LIST_ZALO_ID))
                 .flatMap(Observable::from)
                 .map(this::toZaloIds)
+                .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(this::fetchZaloPayUserByZaloId)
                 .toList()
                 .map(entities -> Boolean.TRUE);
