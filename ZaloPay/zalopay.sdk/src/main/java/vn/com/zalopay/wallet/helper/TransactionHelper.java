@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.helper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -41,6 +42,7 @@ public class TransactionHelper {
         if (throwable instanceof NetworkConnectionException) {
             return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
+        Timber.d(throwable, "undefine exception");
         return GlobalData.getStringResource(RS.string.sdk_error_api);
     }
 

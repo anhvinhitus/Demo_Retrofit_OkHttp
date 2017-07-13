@@ -166,7 +166,7 @@ public class BankInteractor implements IBankInteractor {
     private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
         return mBankListService.fetch(platform, checksum, appversion)
                 .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
-                .doOnNext(bankConfigResponse -> mLocalStorage.put(bankConfigResponse));
+                .doOnNext(mLocalStorage::put);
     }
 
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {

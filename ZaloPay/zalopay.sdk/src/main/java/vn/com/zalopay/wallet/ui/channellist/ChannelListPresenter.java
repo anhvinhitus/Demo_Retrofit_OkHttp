@@ -135,16 +135,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     @Override
-    protected boolean manualRelease() {
-        if (mPaymentInfoHelper == null) {
-            return true;
-        }
-        int status = mPaymentInfoHelper.getStatus();
-        return status == PaymentStatus.DIRECT_LINKCARD
-                || status == PaymentStatus.DIRECT_LINK_ACCOUNT;
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult resultCode %s", resultCode);
         if (requestCode != Constants.CHANNEL_PAYMENT_REQUEST_CODE) {
@@ -801,9 +791,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         Timber.d("callback");
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
-        }
-        if (manualRelease()) {
-            SingletonLifeCircleManager.disposeAll();
         }
     }
 

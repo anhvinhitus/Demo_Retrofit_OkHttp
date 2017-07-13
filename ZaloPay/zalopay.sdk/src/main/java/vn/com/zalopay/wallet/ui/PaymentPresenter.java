@@ -32,10 +32,6 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
     protected void callback() {
     }
 
-    protected boolean manualRelease() {
-        return false;
-    }
-
     /***
      * load app info from cache or api
      */
