@@ -35,6 +35,7 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -311,9 +312,17 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         onExit(error, showDialog);
     }
 
+    private boolean allowLink() {
+        return PaymentPermission.allowLinkAtm() || PaymentPermission.allowLinkCC();
+    }
+
     private void startLink() {
         Timber.d("start link channel");
         try {
+            if (!allowLink() && !mPaymentInfoHelper.isBankAccountTrans()) {
+                onExit(GlobalData.getAppContext().getString(R.string.sdk_error_ban_link), true);
+                return;
+            }
             mMiniPmcTransType = SDKApplication
                     .getApplicationComponent()
                     .appInfoInteractor()
@@ -560,7 +569,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public void callbackLinkThenPay(@Link_Then_Pay int bankLink){
+    public void callbackLinkThenPay(@Link_Then_Pay int bankLink) {
         try {
             Timber.d("call back link then pay");
             Intent intent = new Intent();
