@@ -639,7 +639,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             if (isOtp && isToken && isCoverBankOtp && isCoverBankCaptcha && isAccountName && isAccountPassword && isOnlinePassword) {
                 try {
                     getAdapter().getView().enableSubmitBtn();
-                    getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                    if (getAdapter().isOtpStep()) {
+                        getAdapter().getView().changeBgSubmitButton(false);
+                    } else {
+                        getAdapter().getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                    }
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
