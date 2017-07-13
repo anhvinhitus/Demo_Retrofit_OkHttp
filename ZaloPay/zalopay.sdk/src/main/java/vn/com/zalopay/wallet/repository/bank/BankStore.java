@@ -34,8 +34,6 @@ public class BankStore {
 
         BankConfig getBankConfig(String bankCode);
 
-        void clearCheckSum();
-
         void clearConfig();
     }
 

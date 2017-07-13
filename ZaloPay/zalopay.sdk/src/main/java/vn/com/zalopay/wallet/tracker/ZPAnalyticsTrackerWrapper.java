@@ -61,7 +61,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
                 System.currentTimeMillis(), System.currentTimeMillis(), "", 0);
     }
 
-    public void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
+    public void trackApiTiming(int apiId, long startTime, long endTime, int returncode) {
         if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
             Timber.d("skip track api call app trans id");
             return;
@@ -71,9 +71,14 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         apiTrack.apiid = apiId;
         apiTrack.time_begin = startTime;
         apiTrack.time_end = endTime;
-        apiTrack.return_code = response != null ? response.returncode : -100;
+        apiTrack.return_code = returncode;
         ZPAnalytics.trackApptransidApiCall(apiTrack);
         Timber.d("tracking call api timing api (apiid, returncode) - (%s , %s) time %s(ms)", apiId, apiTrack.return_code, ((endTime - startTime)));
+    }
+
+    public void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
+        int returnCode = response != null ? response.returncode : -100;
+        trackApiTiming(apiId, startTime, endTime, returnCode);
     }
 
     public void trackUserCancel() {

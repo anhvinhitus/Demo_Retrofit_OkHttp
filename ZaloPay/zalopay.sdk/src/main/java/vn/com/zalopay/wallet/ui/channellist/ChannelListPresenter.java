@@ -61,7 +61,6 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
-import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -89,9 +88,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private int mLastSelectPosition = -1;
     private long mCountClickPmc = 0;
     private
-    @TransactionType int tempTranstype;
+    @TransactionType
+    int tempTranstype;
     private AbstractOrder temOrder;
-    private @PaymentStatus int tempPaymentStatus;
+    private
+    @PaymentStatus
+    int tempPaymentStatus;
     private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
         @Override
         public void onClose() {
@@ -157,13 +159,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPayProxy.setPaymentInfo(mPaymentInfoHelper);
             temOrder = null;
             //reload channels list to continue payment if user link success
-            if(resultCode == Activity.RESULT_OK && mPaymentInfoHelper.getStatus() == PaymentStatus.SUCCESS){
+            if (resultCode == Activity.RESULT_OK && mPaymentInfoHelper.getStatus() == PaymentStatus.SUCCESS) {
                 try {
                     mChannelList.clear();
                     mChannelAdapter.clearDataset();
                     loadChannels();
                 } catch (Exception e) {
-                    Timber.w(e,"Exception reload channel after link success");
+                    Timber.w(e, "Exception reload channel after link success");
                 }
             }
             mPaymentInfoHelper.setResult(tempPaymentStatus);

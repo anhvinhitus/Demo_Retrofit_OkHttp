@@ -166,11 +166,6 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
     }
 
     @Override
-    public void clearCheckSum() {
-        mSharedPreferences.setCheckSumBankList(null);
-    }
-
-    @Override
     public void clearConfig() {
         try {
             mSharedPreferences.setExpiredBankList(0);
