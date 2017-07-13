@@ -24,9 +24,7 @@ import static vn.com.zalopay.wallet.constants.PaymentError.COMPONENT_NULL;
 import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
 import static vn.com.zalopay.wallet.constants.PaymentError.NETWORKING_ERROR;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINK_ACCOUNT;
-import static vn.com.zalopay.wallet.constants.PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.DISCONNECT;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ERROR_BALANCE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.FAILURE;
@@ -48,9 +46,9 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_LOCK;
  * Listener for callback from SDK
  */
 class WalletListener implements ZPPaymentListener {
-    private PaymentWrapper mPaymentWrapper;
     private final TransactionStore.Repository mTransactionRepository;
     private final BalanceStore.Repository mBalanceRepository;
+    private PaymentWrapper mPaymentWrapper;
     private CompositeSubscription mCompositeSubscription;
 
     WalletListener(PaymentWrapper paymentWrapper,
@@ -146,30 +144,6 @@ class WalletListener implements ZPPaymentListener {
                     Timber.w("pay complete, response error: DIRECT_LINK_ACCOUNT");
                     responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
                 }
-                break;
-            case DIRECT_LINK_ACCOUNT_AND_PAYMENT:
-                String bankCode = null;
-                if (mapBank != null) {
-                    bankCode = mapBank.bankcode;
-                }
-                if (mPaymentWrapper.mRedirectListener == null) {
-                    mPaymentWrapper.startLinkAccountActivity(bankCode);
-                } else {
-                    mPaymentWrapper.mRedirectListener.startLinkAccountActivity(bankCode);
-                }
-                paymentIsCompleted = false; // will continue after update profile
-                break;
-            case DIRECT_LINKCARD_AND_PAYMENT:
-                String bankCodeLinkCard = null;
-                if (mapBank != null) {
-                    bankCodeLinkCard = mapBank.bankcode;
-                }
-                if (mPaymentWrapper.mRedirectListener == null) {
-                    mPaymentWrapper.startLinkCardActivity(bankCodeLinkCard);
-                } else {
-                    mPaymentWrapper.mRedirectListener.startLinkCardActivity(bankCodeLinkCard);
-                }
-                paymentIsCompleted = false; // will continue after update profile
                 break;
             case UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
                 if (mPaymentWrapper.mRedirectListener == null) {

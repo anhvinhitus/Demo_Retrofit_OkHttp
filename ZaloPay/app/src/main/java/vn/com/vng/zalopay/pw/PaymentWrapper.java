@@ -524,10 +524,6 @@ public class PaymentWrapper {
                 return false;
             case PaymentStatus.LEVEL_UPGRADE_PASSWORD:
                 return false;
-            case PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT:
-                return false;
-            case PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT:
-                return false;
             case PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
                 return false;
             default:
