@@ -1,7 +1,10 @@
-Zalo Pay (Production v2.14.0 - build 340) - Released on 2017-07-13 09:27
-+ [SDK] Refactor code by vo van chuc (#2f581e4)
-+ [SDK] Thêm config off link channel by vo van chuc (#6ce0836)
-+ [SDK] Thực hiện flow link and pay bên trong SDK by vo van chuc (#f091aee)
-+ [SDK] Refactor channel presenter by vo van chuc (#d63898f)
-+ [SDK] Update delay set Title by lytm (#9d0bd16)
-+ [App] Fix GreenDaoGenerator by hieuvm (#6b34e9c)
+Zalo Pay (Production v2.14.0 - build 341) - Released on 2017-07-13 14:04
++ [SDK] Clean code by vo van chuc (#ce49875)
++ [Dialog] Show lại dialog nếu bị gọi đè by vo van chuc (#ee38832)
++ [Fix] externalCall finish after login zalo by hieuvm (#e079f64)
++ [App] Update AndroidDevMetrics version 0.5 by hieuvm (#84bd64e)
++ [App] Refactor FontLoader by hieuvm (#bb185e0)
++ [SDK] Add lại miss PaymentStatus by vo van chuc (#0acaa08)
++ [SDK] Clear SDKPayment class by vo van chuc (#4f0a8a3)
++ [PaymentStatus] Clear code link and pay by vo van chuc (#2216b49)
++ [SDK] Refactor method name by vo van chuc (#2ee3ca9)
