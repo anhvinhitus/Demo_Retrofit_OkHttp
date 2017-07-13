@@ -1,7 +1,7 @@
-Zalo Pay (Production v2.14.0 - build 339) - Released on 2017-07-12 16:11
-+ [AppTransId] Refactor commit #146dfe9771f6097e9ddffd3002fa9c0278f8e2b1 [146dfe9] by vo van chuc (#baeda21)
-+ [Password] ZPF-296: Show Fingerprint khi chuyển liên kết tk VCB by lytm (#2e7e5e5)
-+ [AppTransId] task#626 : Thêm log kết quả gọi api trong phần log apptransid by vo van chuc (#146dfe9)
-+ [UnitTest] Add unit test about checking url regex (allow urls) by datnt10 (#5298d30)
-+ [Bank] Edit time delay link account by datnt10 (#f4f5373)
-+ [Bank] ZPF-295 : Liên kết: chọn ngân hàng # VCB, nhập 9704 36 => nhấn liên kết => back lại list ngân hàng by datnt10 (#69d4347)
+Zalo Pay (Production v2.14.0 - build 340) - Released on 2017-07-13 09:27
++ [SDK] Refactor code by vo van chuc (#2f581e4)
++ [SDK] Thêm config off link channel by vo van chuc (#6ce0836)
++ [SDK] Thực hiện flow link and pay bên trong SDK by vo van chuc (#f091aee)
++ [SDK] Refactor channel presenter by vo van chuc (#d63898f)
++ [SDK] Update delay set Title by lytm (#9d0bd16)
++ [App] Fix GreenDaoGenerator by hieuvm (#6b34e9c)
