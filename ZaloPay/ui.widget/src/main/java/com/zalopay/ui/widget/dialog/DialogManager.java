@@ -286,8 +286,7 @@ public class DialogManager {
             }
 
             if (mAlertDialog.isShowing()) {
-                Log.d("showSweetDialogCustom", "===there're a alert dialog is showing===");
-                return;
+                mAlertDialog.dismiss();
             }
 
             mAlertDialog.setConfirmText(pButtonText);
