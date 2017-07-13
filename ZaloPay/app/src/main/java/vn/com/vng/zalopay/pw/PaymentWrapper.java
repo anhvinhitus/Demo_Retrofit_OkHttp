@@ -32,8 +32,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.zpsdk.PaymentFeedBackCollector;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -85,7 +83,7 @@ public class PaymentWrapper {
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
         this.mCurrentUser = getUserComponent().currentUser();
-        this.mPaymentInfoBuilder = PaymentInfo.getBuilder().setLocation(transform(LocationProvider.getLocation()));
+        this.mPaymentInfoBuilder = PaymentInfo.newBuilder().setLocation(transform(LocationProvider.getLocation()));
     }
 
     public IBuilder getPaymentInfoBuilder() {

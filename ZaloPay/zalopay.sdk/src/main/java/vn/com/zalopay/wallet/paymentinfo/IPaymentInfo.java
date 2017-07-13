@@ -40,5 +40,5 @@ public interface IPaymentInfo {
     @PaymentStatus
     int getPaymentStatus();
 
-    IBuilder getBulder();
+    IBuilder getBuilder();
 }

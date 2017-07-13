@@ -18,7 +18,7 @@ public final class PaymentInfo implements IPaymentInfo {
         this.builder = pBuilder;
     }
 
-    public static IBuilder getBuilder() {
+    public static IBuilder newBuilder() {
         return new PaymentInfoBuilder();
     }
 
@@ -75,7 +75,7 @@ public final class PaymentInfo implements IPaymentInfo {
     }
 
     @Override
-    public IBuilder getBulder() {
+    public IBuilder getBuilder() {
         return builder;
     }
 }

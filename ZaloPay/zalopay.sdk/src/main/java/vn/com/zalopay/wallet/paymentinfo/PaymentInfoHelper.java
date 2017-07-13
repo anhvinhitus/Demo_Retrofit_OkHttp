@@ -115,8 +115,8 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public void setOrder(AbstractOrder order) {
-        if (paymentInfo != null && paymentInfo.getBulder() != null) {
-            paymentInfo.getBulder().setOrder(order);
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getBuilder().setOrder(order);
         }
     }
 
@@ -125,8 +125,8 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public void setMapBank(BaseMap mapBank) {
-        if (paymentInfo != null && paymentInfo.getBulder() != null) {
-            paymentInfo.getBulder().setMapBank(mapBank);
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getBuilder().setMapBank(mapBank);
         }
     }
 
@@ -136,8 +136,8 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public void setTranstype(@TransactionType int transtype) {
-        if (paymentInfo != null && paymentInfo.getBulder() != null) {
-            paymentInfo.getBulder().setTransactionType(transtype);
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getBuilder().setTransactionType(transtype);
         }
     }
 
@@ -165,8 +165,8 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public void setLinkAccountInfo(LinkAccInfo linkAccountInfo) {
-        if (paymentInfo != null && paymentInfo.getBulder() != null) {
-            paymentInfo.getBulder().setLinkAccountInfo(linkAccountInfo);
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getBuilder().setLinkAccountInfo(linkAccountInfo);
         }
     }
 
@@ -174,8 +174,8 @@ public class PaymentInfoHelper extends SingletonBase {
         AbstractOrder abstractOrder = null;
         if (paymentInfo != null && paymentInfo.getOrder() != null) {
             abstractOrder = paymentInfo.getOrder().clone();
-            if (paymentInfo.getBulder() != null) {
-                paymentInfo.getBulder().setOrder(null);
+            if (paymentInfo.getBuilder() != null) {
+                paymentInfo.getBuilder().setOrder(null);
             }
         }
         return abstractOrder;
@@ -189,8 +189,8 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public void setMapCardResult(DMapCardResult mapBankResult) {
-        if (paymentInfo != null && paymentInfo.getBulder() != null) {
-            paymentInfo.getBulder().setMapCard(mapBankResult);
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getBuilder().setMapCard(mapBankResult);
         }
     }
 
