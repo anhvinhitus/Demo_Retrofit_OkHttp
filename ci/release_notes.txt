@@ -1,10 +1,2 @@
-Zalo Pay (Production v2.14.0 - build 341) - Released on 2017-07-13 14:04
-+ [SDK] Clean code by vo van chuc (#ce49875)
-+ [Dialog] Show lại dialog nếu bị gọi đè by vo van chuc (#ee38832)
-+ [Fix] externalCall finish after login zalo by hieuvm (#e079f64)
-+ [App] Update AndroidDevMetrics version 0.5 by hieuvm (#84bd64e)
-+ [App] Refactor FontLoader by hieuvm (#bb185e0)
-+ [SDK] Add lại miss PaymentStatus by vo van chuc (#0acaa08)
-+ [SDK] Clear SDKPayment class by vo van chuc (#4f0a8a3)
-+ [PaymentStatus] Clear code link and pay by vo van chuc (#2216b49)
-+ [SDK] Refactor method name by vo van chuc (#2ee3ca9)
+Zalo Pay (Production v2.14.0 - build 342) - Released on 2017-07-13 16:23
++ [Gradle] Set debugable to false in release build mode by Nguyen Huu Hoa (#2a1d77ba4)
