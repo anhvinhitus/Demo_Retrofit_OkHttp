@@ -56,7 +56,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.BankFlow;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -1640,11 +1642,9 @@ public abstract class AdapterBase {
             if (getGuiProcessor().isCardLengthMatchIdentifier(getGuiProcessor().getCardNumber())) {
                 SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
             }
-            //callback bank code to app to know what bank user input
-            BaseMap card = new MapCard();
-            card.bankcode = pBankCode;
-            mPaymentInfoHelper.setMapBank(card);
-            getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT);
+            if(CardType.PBIDV.equals(pBankCode)){
+                getPresenter().callbackLinkThenPay(Link_Then_Pay.BIDV);
+            }
         } catch (Exception e) {
             Log.e(this, e);
         }

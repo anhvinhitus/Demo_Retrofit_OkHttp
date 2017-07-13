@@ -40,6 +40,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -51,13 +52,16 @@ import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -84,6 +88,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
     private long mCountClickPmc = 0;
+    private
+    @TransactionType int tempTranstype;
+    private AbstractOrder temOrder;
+    private @PaymentStatus int tempPaymentStatus;
     private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
         @Override
         public void onClose() {
@@ -131,15 +139,34 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         int status = mPaymentInfoHelper.getStatus();
         return status == PaymentStatus.DIRECT_LINKCARD
-                || status == PaymentStatus.DIRECT_LINKCARD_AND_PAYMENT
-                || status == PaymentStatus.DIRECT_LINK_ACCOUNT
-                || status == PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT;
+                || status == PaymentStatus.DIRECT_LINK_ACCOUNT;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult resultCode %s", resultCode);
         if (requestCode != Constants.CHANNEL_PAYMENT_REQUEST_CODE) {
+            return;
+        }
+        //restore the previous info
+        if (temOrder != null) {
+            Timber.d("restore payment values for payment info");
+            mPaymentInfoHelper.setOrder(temOrder);
+            mPaymentInfoHelper.setTranstype(tempTranstype);
+            mPaymentInfoHelper.setLinkAccountInfo(null);
+            mPayProxy.setPaymentInfo(mPaymentInfoHelper);
+            temOrder = null;
+            //reload channels list to continue payment if user link success
+            if(resultCode == Activity.RESULT_OK && mPaymentInfoHelper.getStatus() == PaymentStatus.SUCCESS){
+                try {
+                    mChannelList.clear();
+                    mChannelAdapter.clearDataset();
+                    loadChannels();
+                } catch (Exception e) {
+                    Timber.w(e,"Exception reload channel after link success");
+                }
+            }
+            mPaymentInfoHelper.setResult(tempPaymentStatus);
             return;
         }
         switch (resultCode) {
@@ -159,6 +186,40 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             case Constants.MAP_POPUP_RESULT_CODE:
                 selectChannelFromPopup(data);
                 break;
+            case Constants.LINK_THEN_PAY_RESULT_CODE:
+                if (data != null) {
+                    onStartLinkThenPay(data);
+                }
+                break;
+        }
+    }
+
+    private void onStartLinkThenPay(Intent data) {
+        try {
+            @Link_Then_Pay int bankLink = data.getIntExtra("bank", Link_Then_Pay.NONE);
+            if (bankLink == Link_Then_Pay.NONE) {
+                return;
+            }
+            //backup data and fake data for link type
+            temOrder = mPaymentInfoHelper.takeOrder();
+            tempTranstype = mPaymentInfoHelper.getTranstype();
+            tempPaymentStatus = mPaymentInfoHelper.getStatus();
+            boolean shouldlinkThenPay = GlobalData.updatePaymentInfo(bankLink);
+            if (shouldlinkThenPay) {
+                if (mPayProxy != null) {
+                    mPayProxy.setPaymentInfo(null);
+                }
+
+                ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+                interactor.collectPaymentInfo(GlobalData.paymentInfoHelper);
+
+                Intent intent = getChannelIntent();
+                int layoutId = bankLink == Link_Then_Pay.VCB ? R.layout.screen__link__acc : R.layout.screen__card;
+                intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
+                getViewOrThrow().startActivityForResult(intent, Constants.CHANNEL_PAYMENT_REQUEST_CODE);
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Exception onStartLinkThenPay");
         }
     }
 
@@ -452,11 +513,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void clearObjects() {
         mActiveMapChannels.clear();
-        mActiveMapChannels = null;
         mInActiveMapChannels.clear();
-        mInActiveMapChannels = null;
         mCCMapChannel.clear();
-        mCCMapChannel = null;
         mChannelLoader = null;
     }
 

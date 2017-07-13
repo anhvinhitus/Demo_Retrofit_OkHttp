@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
@@ -54,20 +53,6 @@ public final class PaymentInfo implements IPaymentInfo {
     }
 
     @Override
-    public void setMapBank(BaseMap mapBank) {
-        if (builder != null) {
-            builder.setMapBank(mapBank);
-        }
-    }
-
-    @Override
-    public void setMapCard(DMapCardResult mapCard) {
-        if (builder != null) {
-            builder.setMapCard(mapCard);
-        }
-    }
-
-    @Override
     public int[] getForceChannels() {
         return builder != null ? builder.getForceChannels() : null;
     }
@@ -87,5 +72,10 @@ public final class PaymentInfo implements IPaymentInfo {
     @Override
     public int getPaymentStatus() {
         return builder != null ? builder.getStatus() : PaymentStatus.PROCESSING;
+    }
+
+    @Override
+    public IBuilder getBulder() {
+        return builder;
     }
 }

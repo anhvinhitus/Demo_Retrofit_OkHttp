@@ -49,7 +49,6 @@ import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
 import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
@@ -83,14 +82,6 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -105,6 +96,14 @@ public class PayProxy extends SingletonBase {
             startChannelActivity();
         }
         Timber.d(throwable, "trans status on error");
+    };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -462,9 +461,9 @@ public class PayProxy extends SingletonBase {
             mapBank.setLastNumber(mChannel.l4no);
             mapBank.setFirstNumber(mChannel.f6no);
             mapBank.bankcode = mChannel.bankcode;
-            mPaymentInfoHelper.paymentInfo.setMapBank(mapBank);
+            mPaymentInfoHelper.setMapBank(mapBank);
         } else {
-            mPaymentInfoHelper.paymentInfo.setMapBank(null);
+            mPaymentInfoHelper.setMapBank(null);
         }
         mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
 
@@ -542,7 +541,7 @@ public class PayProxy extends SingletonBase {
         Lock lock = new ReentrantLock();
         try {
             lock.lock();
-            Intent intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
+            Intent intent = getPresenter().getChannelIntent();
             if (mStatusResponse != null) {
                 /***
                  * re-assign trans id again because of some case
@@ -554,9 +553,6 @@ public class PayProxy extends SingletonBase {
             }
             intent.putExtra(PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
 
             if (shouldCloseChannelList()) {

@@ -115,6 +115,7 @@ public class Constants {
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
     public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
     public static final int MAP_POPUP_RESULT_CODE = 880;
+    public static final int LINK_THEN_PAY_RESULT_CODE = 881;
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
     public static int PAYMENT_INIT = 1;

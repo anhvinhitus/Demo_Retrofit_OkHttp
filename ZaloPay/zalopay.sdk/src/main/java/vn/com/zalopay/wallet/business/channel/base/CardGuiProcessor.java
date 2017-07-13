@@ -51,6 +51,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.BankListPopup;
@@ -745,7 +746,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void showKeyBoardAndResizeButtonsIfNotSwitchChannel() throws Exception {
-        if (!getAdapter().getPresenter().isSwitching()) {
+        if (!getAdapter().getPresenter().isSwitchAdapter()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -756,7 +757,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                         }
                         showKeyBoardOnCardNumberView();
                         moveScrollViewToCurrentFocusView();
-                        getAdapter().getPresenter().setIsSwitching(false);
+                        getAdapter().getPresenter().setSwitchAdapter(false);
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -938,12 +939,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
                             @Override
                             public void onOKEvent() {
-                                //callback bankcode to app , app will direct user to link bank account to right that bank
+                              /*  //callback bankcode to app , app will direct user to link bank account to right that bank
                                 BankAccount dBankAccount = new BankAccount();
                                 dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
-                                mPaymentInfoHelper.setMapBank(dBankAccount);
+                                mPaymentInfoHelper.setMapBank(dBankAccount);*/
                                 try {
-                                    getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
+                                    getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.VCB);
+                                    //getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
                                 } catch (Exception e) {
                                     Log.e(this, e);
                                 }

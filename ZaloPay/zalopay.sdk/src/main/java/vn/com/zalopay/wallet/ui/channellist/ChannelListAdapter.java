@@ -73,6 +73,22 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
         notifyItemChanged(position);
     }
 
+    public void clearDataset() {
+        AbstractItem item = getDataBinder(ItemType.ZALOPAY);
+        if (item != null) {
+            item.clear();
+        }
+        item = getDataBinder(ItemType.MAP);
+        if (item != null) {
+            item.clear();
+        }
+        item = getDataBinder(ItemType.INPUT);
+        if (item != null) {
+            item.clear();
+        }
+        notifyDataSetChanged();
+    }
+
 
     public enum ItemType {
         ZALOPAY, MAP, TITLE, INPUT

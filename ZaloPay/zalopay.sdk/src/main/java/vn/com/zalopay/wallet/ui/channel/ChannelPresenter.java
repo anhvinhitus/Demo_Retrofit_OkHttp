@@ -40,10 +40,10 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -363,7 +363,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         try {
-            setIsSwitching(true);
+            this.mIsSwitching = true;
             if (mAdapter.isCardFlow()) {
                 mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
             }
@@ -560,6 +560,18 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
+    public void callbackLinkThenPay(@Link_Then_Pay int bankLink){
+        try {
+            Timber.d("call back link then pay");
+            Intent intent = new Intent();
+            intent.putExtra("bank", bankLink);
+            setResult(Constants.LINK_THEN_PAY_RESULT_CODE, intent);
+            getViewOrThrow().terminate();
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+    }
+
     public void onSubmitClick() {
         if (mAdapter == null) {
             callback();
@@ -610,11 +622,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public boolean isSwitching() {
+    public boolean isSwitchAdapter() {
         return mIsSwitching;
     }
 
-    public void setIsSwitching(boolean pSwitching) {
+    public void setSwitchAdapter(boolean pSwitching) {
         this.mIsSwitching = pSwitching;
     }
 

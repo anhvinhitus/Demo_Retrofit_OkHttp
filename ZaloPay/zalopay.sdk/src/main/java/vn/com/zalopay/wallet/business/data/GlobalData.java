@@ -8,13 +8,17 @@ import java.lang.ref.WeakReference;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
@@ -38,8 +42,29 @@ public class GlobalData {
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
 
-    public static @TransactionType int transtype() {
+    public static
+    @TransactionType
+    int transtype() {
         return paymentInfoHelper != null ? paymentInfoHelper.getTranstype() : TransactionType.PAY;
+    }
+
+    public static boolean updatePaymentInfo(@Link_Then_Pay int bankLink) {
+        if (paymentInfoHelper == null) {
+            return false;
+        }
+        switch (bankLink) {
+            case Link_Then_Pay.VCB:
+                LinkAccInfo linkAccInfo = new LinkAccInfo(CardType.PVCB, ELinkAccType.LINK);
+                paymentInfoHelper.setLinkAccountInfo(linkAccInfo);
+                paymentInfoHelper.setTranstype(TransactionType.LINK);
+                break;
+            case Link_Then_Pay.BIDV:
+                paymentInfoHelper.setTranstype(TransactionType.LINK);
+                break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     /***
@@ -133,10 +158,10 @@ public class GlobalData {
         analyticsTrackerWrapper = new ZPAnalyticsTrackerWrapper(pAppId, pAppTransID, transactionType, orderSource);
     }
 
-    public static boolean shouldUpdateBankFuncbyPayType(){
+    public static boolean shouldUpdateBankFuncbyPayType() {
         return bankFunction == BankFunctionCode.PAY ||
                 bankFunction == BankFunctionCode.PAY_BY_CARD_TOKEN ||
-                bankFunction == BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN||
+                bankFunction == BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN ||
                 bankFunction == BankFunctionCode.PAY_BY_CARD ||
                 bankFunction == BankFunctionCode.PAY_BY_BANK_ACCOUNT;
     }

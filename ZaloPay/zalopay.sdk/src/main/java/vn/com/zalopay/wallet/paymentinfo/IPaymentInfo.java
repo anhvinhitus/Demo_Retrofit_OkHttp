@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
@@ -22,7 +21,7 @@ public interface IPaymentInfo {
 
     /**
      * whom tranfer to
-    */
+     */
     UserInfo getMoneyTransferReceiverInfo();
 
     /**
@@ -41,7 +40,5 @@ public interface IPaymentInfo {
     @PaymentStatus
     int getPaymentStatus();
 
-    void setMapBank(BaseMap mapBank);
-
-    void setMapCard(DMapCardResult mapCard);
+    IBuilder getBulder();
 }

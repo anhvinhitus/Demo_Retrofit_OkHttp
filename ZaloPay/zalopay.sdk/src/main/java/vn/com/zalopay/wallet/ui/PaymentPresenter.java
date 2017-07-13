@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.ui;
 
+import android.content.Intent;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
@@ -9,6 +11,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 /**
  * Created by chucvv on 6/24/17.
@@ -54,6 +57,13 @@ public abstract class PaymentPresenter<T extends IContract> extends AbstractPres
                 Timber.d(e, "Exception when loading payment info");
             }
         });
+    }
+
+    public Intent getChannelIntent() {
+        Intent intent = new Intent(GlobalData.getAppContext(), ChannelActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        return intent;
     }
 
     protected abstract void onProcessPaymentInfo(SdkPaymentInfoReadyMessage message) throws Exception;

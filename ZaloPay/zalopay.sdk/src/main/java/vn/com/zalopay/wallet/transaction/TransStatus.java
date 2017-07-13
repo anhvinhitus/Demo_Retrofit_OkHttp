@@ -76,7 +76,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
                     running = true;
                     startTime = System.currentTimeMillis();
                 })
-                /*.map(statusResponse -> {
+               /* .map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
                     return statusResponse;

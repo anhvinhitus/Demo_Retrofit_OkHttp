@@ -29,6 +29,23 @@ public class AbstractOrder {
     public double amount_total;
     public double fee;
 
+    public AbstractOrder clone() {
+        AbstractOrder order = new AbstractOrder();
+        order.appid = this.appid;
+        order.apptransid = this.apptransid;
+        order.embeddata = this.embeddata;
+        order.item = this.item;
+        order.description = this.description;
+        order.mac = this.mac;
+        order.apptime = this.apptime;
+        order.amount = this.amount;
+        order.appuser = this.appuser;
+        order.ordersource = this.ordersource;
+        order.amount_total = this.amount_total;
+        order.fee = this.fee;
+        return order;
+    }
+
     public void plusChannelFee(double channel_fee) {
         fee = channel_fee;
         amount_total = amount + fee;
