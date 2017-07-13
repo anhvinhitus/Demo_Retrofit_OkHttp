@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.HttpUrl;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 
@@ -37,6 +38,28 @@ public final class Strings {
 
                 loopDelimiter = delimiter;
             }
+        }
+
+        return sb.toString();
+    }
+
+    public static <T> String joinWithDelimiter(String delimiter, List<T> values, Func1<? super T, String> converter) {
+        StringBuilder sb = new StringBuilder();
+        String loopDelimiter = "";
+        for (T value : values) {
+            if (value == null) {
+                continue;
+            }
+
+            String id = converter.call(value);
+
+            if (TextUtils.isEmpty(id)) {
+                continue;
+            }
+
+            sb.append(loopDelimiter);
+            sb.append(id);
+            loopDelimiter = delimiter;
         }
 
         return sb.toString();

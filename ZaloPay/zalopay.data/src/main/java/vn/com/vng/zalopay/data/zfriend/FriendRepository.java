@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.R;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
@@ -36,16 +36,16 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  */
 public class FriendRepository implements FriendStore.Repository {
 
-    private final int TIME_RELOAD = 5 * 60; //5'
-
+    private static final int MAX_LENGTH_CHECK_LIST_ZALO_ID = 50;
+    private static final int TIME_RELOAD = 5 * 60;
     private static final int TIMEOUT_REQUEST_FRIEND = 10;
+    private static final int INTERVAL_SYNC_CONTACT = 259200;
 
-    private FriendStore.RequestService mRequestService;
-    private FriendStore.ZaloRequestService mZaloRequestService;
-    private FriendStore.LocalStorage mLocalStorage;
-    private User mUser;
-
-    private ContactFetcher mContactFetcher;
+    private final FriendStore.RequestService mRequestService;
+    private final FriendStore.ZaloRequestService mZaloRequestService;
+    private final FriendStore.LocalStorage mLocalStorage;
+    private final User mUser;
+    private final ContactFetcher mContactFetcher;
 
     public FriendRepository(User user, FriendStore.ZaloRequestService zaloRequestService,
                             FriendStore.RequestService requestService,
@@ -204,28 +204,17 @@ public class FriendRepository implements FriendStore.Repository {
      **/
     @Override
     public Observable<Boolean> checkListZaloIdForClient() {
-        return makeObservable(() -> mLocalStorage.getZaloUserWithoutZaloPayId())
-                .map(this::transformZpId)
-                .filter(s -> !TextUtils.isEmpty(s))
+        return makeObservable(mLocalStorage::getZaloUserWithoutZaloPayId)
+                .map(entities -> Lists.chopped(entities, MAX_LENGTH_CHECK_LIST_ZALO_ID))
+                .flatMap(Observable::from)
+                .map(this::toZaloIds)
                 .flatMap(this::fetchZaloPayUserByZaloId)
+                .toList()
                 .map(entities -> Boolean.TRUE);
     }
 
-    private String transformZpId(List<ZaloUserEntity> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for (ZaloUserEntity entity : list) {
-            if (builder.length() == 0) {
-                builder.append(entity.userId);
-            } else {
-                builder.append(",");
-                builder.append(entity.userId);
-            }
-        }
-        return builder.toString();
+    private String toZaloIds(List<ZaloUserEntity> list) {
+        return Strings.joinWithDelimiter(",", list, entity -> String.valueOf(entity.userId));
     }
 
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
@@ -291,8 +280,8 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> syncContact() {
         return Observable.just(FriendConfig.sEnableSyncContact)
                 .filter(Boolean::booleanValue)
-                .flatMap(aBoolean -> makeObservable(() -> mLocalStorage.lastTimeSyncContact()))
-                .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= 259200) //3 Ngày.
+                .map(aBoolean -> mLocalStorage.lastTimeSyncContact())
+                .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= INTERVAL_SYNC_CONTACT)
                 .flatMap(aLong -> beginSync());
     }
 

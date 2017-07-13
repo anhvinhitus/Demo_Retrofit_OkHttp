@@ -57,4 +57,17 @@ public final class Lists {
 
         return transformedList;
     }
+
+    public static <T> List<List<T>> chopped(List<T> list, final int length) {
+        if (length <= 0) {
+            throw new RuntimeException("Split array with length " + length);
+        }
+
+        List<List<T>> parts = new ArrayList<>();
+        final int size = list.size();
+        for (int i = 0; i < size; i += length) {
+            parts.add(new ArrayList<>(list.subList(i, Math.min(size, i + length))));
+        }
+        return parts;
+    }
 }
