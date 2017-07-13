@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.ExternalCallSplashScreenPresenter;
@@ -57,6 +58,7 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(this, requestCode, resultCode, data);
+        restarted = false;
     }
 
     @Override

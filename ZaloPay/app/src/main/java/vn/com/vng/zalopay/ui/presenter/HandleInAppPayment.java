@@ -46,7 +46,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class HandleInAppPayment {
 
-    private final WeakReference<Activity> mActivity;
+    protected final WeakReference<Activity> mActivity;
     private final CompositeSubscription mCompositeSubscription;
 
     @Inject
@@ -58,11 +58,10 @@ public class HandleInAppPayment {
     @Inject
     User mUser;
 
-    private PaymentWrapper paymentWrapper;
-
+    protected PaymentWrapper paymentWrapper;
     private String mSource;
-    private String mBrowser;
-    private long mAppId;
+    String mBrowser;
+    protected long mAppId;
 
     HandleInAppPayment(Activity activity) {
         mActivity = new WeakReference<>(activity);
@@ -83,15 +82,19 @@ public class HandleInAppPayment {
     }
 
     void doPay(final long appId, @NonNull final String zptranstoken, @Nullable String source, @Nullable String browser) {
+
+        Timber.d("pay [appId:%s zptranstoken:%s source:%s browser:%s]", appId, zptranstoken, source, browser);
         mSource = source;
         mBrowser = browser;
         mAppId = appId;
 
         Subscription subscription = mBalanceRepository.fetchBalance()
                 .subscribeOn(Schedulers.io())
+                .doOnError(Timber::d)
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onNext(Long aLong) {
+                        Timber.d("pay with token [pw:%s]", paymentWrapper);
                         if (paymentWrapper != null) {
                             paymentWrapper.payWithToken(mActivity.get(), appId, zptranstoken, ZPPaymentSteps.OrderSource_AppToApp);
                         }
@@ -170,14 +173,14 @@ public class HandleInAppPayment {
     }
 
 
-    private boolean shouldRedirectToWeb() {
+    boolean shouldRedirectToWeb() {
         Timber.d("should RedirectToWeb : [Source %s Browser %s]", mSource, mBrowser);
         return !(TextUtils.isEmpty(mSource) || TextUtils.isEmpty(mBrowser))
                 && "web".equalsIgnoreCase(mSource);
 
     }
 
-    private void redirectToWeb(long appId, boolean isSuccessful, @NonNull String transId, @NonNull String appTransId) {
+    void redirectToWeb(long appId, boolean isSuccessful, @NonNull String transId, @NonNull String appTransId) {
         Subscription subscription = ObservableHelper
                 .makeObservable(() -> SDKApplication.getApplicationComponent()
                         .appInfoInteractor()
@@ -222,7 +225,7 @@ public class HandleInAppPayment {
 
     }
 
-    private void startBrowser(Context context, String browser, String redirectUrl) {
+    void startBrowser(Context context, String browser, String redirectUrl) {
         Timber.d("redirect [url:%s]", redirectUrl);
         if ("chrome".equalsIgnoreCase(browser)) {
             mNavigator.startChrome(context, redirectUrl);

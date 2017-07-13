@@ -259,7 +259,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         mHandleInAppPayment.doPay(appid, zptranstoken, source, browser);
     }
 
-    private void finish() {
+    void finish() {
         if (mView != null) {
             ((Activity) mView.getContext()).finish();
         }
