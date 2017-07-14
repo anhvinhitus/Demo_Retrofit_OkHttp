@@ -27,18 +27,25 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     private final static int TRANSFER_TYPE = 4;
     private final static int CASHINMERCHANT_TYPE = 11;
 
+    private final TransactionLogDao mTransactionLogDao;
+
     public TransactionLocalStorage(DaoSession daoSession) {
         super(daoSession);
+        mTransactionLogDao = daoSession.getTransactionLogDao();
     }
 
     @Override
     public void put(List<TransHistoryEntity> val) {
         try {
             List<TransactionLog> list = transform(val);
-            getDaoSession().getTransactionLogDao().insertOrReplaceInTx(list);
+            if (Lists.isEmptyOrNull(list)) {
+                return;
+            }
+
+            mTransactionLogDao.insertOrReplaceInTx(list);
             Timber.d("put list transaction %s", list.size());
         } catch (Exception e) {
-            Timber.w("Exception while trying to put transaction histories to local storage: %s", e.getMessage());
+            Timber.d("Exception while trying to put transaction histories to local storage: %s", e.getMessage());
         }
     }
 
@@ -55,19 +62,19 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void remove(long id) {
         TransactionLog transactionLog = queryTransactionById(id);
-        getDaoSession().getTransactionLogDao().delete(transactionLog);
+        mTransactionLogDao.delete(transactionLog);
     }
 
     @Override
     public boolean isHaveTransactionInDb() {
-        return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
+        return mTransactionLogDao.queryBuilder().count() > 0;
     }
 
     private List<TransHistoryEntity> queryList(long maxreqdate, long minreqdate, List<Integer> transTypes, int offset, int limit, int statusType, int sign) {
         Timber.d("queryList: offset [%s], maxreqdate [%s], minreqdate [%s], sign [%s], statustype [%s]",
                 offset, maxreqdate, minreqdate, sign, statusType);
 
-        QueryBuilder<TransactionLog> queryBuilder = getDaoSession().getTransactionLogDao().queryBuilder();
+        QueryBuilder<TransactionLog> queryBuilder = mTransactionLogDao.queryBuilder();
         WhereCondition where = queryBuilder.and(TransactionLogDao.Properties.Reqdate.le(maxreqdate),
                 TransactionLogDao.Properties.Reqdate.ge(minreqdate),
                 TransactionLogDao.Properties.Statustype.eq(statusType));
@@ -98,7 +105,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private List<TransHistoryEntity> queryList(int offset, int limit, WhereCondition where) {
-        QueryBuilder<TransactionLog> queryBuilder = getDaoSession().getTransactionLogDao().queryBuilder();
+        QueryBuilder<TransactionLog> queryBuilder = mTransactionLogDao.queryBuilder();
         return transform2Entity(
                 queryBuilder
                         .where(where)
@@ -212,9 +219,9 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 return;
             }
             transactionLog.thank_message = message;
-            getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
+            mTransactionLogDao.insertOrReplaceInTx(transactionLog);
         } catch (Exception e) {
-            Timber.w("Exception while trying update thank message: %s", e.getMessage());
+            Timber.d("Exception while trying update thank message: %s", e.getMessage());
         }
     }
 
@@ -225,7 +232,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private TransactionLog queryTransactionById(long id) {
-        return getDaoSession().getTransactionLogDao().load(id);
+        return mTransactionLogDao.load(id);
     }
 
     @Override
@@ -235,7 +242,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
             return;
         }
         transactionLog.statustype = (long) (status);
-        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
+        mTransactionLogDao.insertOrReplaceInTx(transactionLog);
     }
 
     @Override
