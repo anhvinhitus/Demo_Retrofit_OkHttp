@@ -215,7 +215,8 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private String toZaloIds(List<ZaloUserEntity> list) {
-        return Strings.joinWithDelimiter(",", list, entity -> String.valueOf(entity.userId));
+        List<Long> zaloids = Lists.transform(list, entity -> entity.userId);
+        return Strings.joinWithDelimiter(",", zaloids);
     }
 
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
