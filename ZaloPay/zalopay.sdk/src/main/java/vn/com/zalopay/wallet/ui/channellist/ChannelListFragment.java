@@ -203,10 +203,10 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype) {
         ChannelListAdapter channelAdapter = new ChannelListAdapter();
         Context context = getContext();
-        channelAdapter.addZaloPayBinder(context, amount, userInfo, transtype);
+        channelAdapter.addZaloPayBinder(context, amount, userInfo.balance, transtype);
         channelAdapter.addMapBinder(context, amount);
         channelAdapter.addTitle();
-        channelAdapter.addInputBinder(context, amount, userInfo, transtype);
+        channelAdapter.addInputBinder(context, amount, transtype);
         onBindingChannel(channelAdapter);
 
         return channelAdapter;

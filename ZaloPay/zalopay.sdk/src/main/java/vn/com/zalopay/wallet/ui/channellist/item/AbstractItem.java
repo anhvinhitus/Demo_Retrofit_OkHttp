@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -43,7 +44,15 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
 
     public abstract T onNewBindHolder(ViewGroup parent);
 
-    public abstract void onBindViewHolder(T holder, int position);
+    @CallSuper
+    protected void onBindViewHolder(T holder, int position){
+        PaymentChannel channel = mDataSet.get(position);
+        String fee_desc = getFeeDesc(channel);
+        if (!TextUtils.isEmpty(fee_desc)) {
+            fee_desc = formatFeeDesc(fee_desc);
+        }
+        renderDesc(holder, fee_desc);
+    }
 
     private void adjustLine(View pLine) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pLine.getLayoutParams();

@@ -24,16 +24,16 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
     public ChannelListAdapter() {
     }
 
-    public void addZaloPayBinder(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {
-        addBinder(new ZaloPayItem(context, amount, userInfo, transtype, this));
+    public void addZaloPayBinder(Context context, long amount, long balance, @TransactionType int transtype) {
+        addBinder(new ZaloPayItem(context, amount, balance, transtype, this));
     }
 
     public void addMapBinder(Context context, long amount) {
         addBinder(new MapItem(context, amount, this));
     }
 
-    public void addInputBinder(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {
-        addBinder(new InputItem(context, amount, userInfo, transtype, this));
+    public void addInputBinder(Context context, long amount, @TransactionType int transtype) {
+        addBinder(new InputItem(context, amount, transtype, this));
     }
 
     public void addTitle() {

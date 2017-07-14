@@ -102,7 +102,7 @@ public class MapBankPopup extends BasePaymentDialogActivity {
 
     protected void setupRecycler(List<PaymentChannel> channelList) {
         ChannelListAdapter channelListAdapter = new ChannelListAdapter();
-        channelListAdapter.addZaloPayBinder(getApplicationContext(), (long) orderAmount, null, TransactionType.PAY);
+        channelListAdapter.addZaloPayBinder(getApplicationContext(), (long) orderAmount, 0, TransactionType.PAY);
         channelListAdapter.addMapBinder(getApplicationContext(), (long) orderAmount);
         channelListAdapter.addAll(MAP, channelList);
 
