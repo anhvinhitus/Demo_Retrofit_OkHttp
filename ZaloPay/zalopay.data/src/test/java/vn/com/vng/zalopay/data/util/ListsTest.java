@@ -21,7 +21,7 @@ public class ListsTest {
 
     @Test
     public void chopped() throws Exception {
-        List<Integer> numbers = Collections.emptyList();
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
         List<List<Integer>> result = Lists.chopped(numbers, 2);
         Assert.assertTrue(result.size() == 4);
         System.out.println(result.toString());
