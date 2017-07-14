@@ -26,13 +26,13 @@ public class PasswordManager {
     private IControl mControl = new IControl() {
         @Override
         public void onClose() {
-            if (mIBuilder != null && mIBuilder.getIFPinCallBack() != null) {
-                mIBuilder.getIFPinCallBack().onClose();
-            }
             try {
+                if (mIBuilder != null && mIBuilder.getIFPinCallBack() != null) {
+                    mIBuilder.getIFPinCallBack().onClose();
+                }
                 close();
             } catch (Exception e) {
-                Timber.d("PasswordManager [%s]",e);
+                Timber.d("PasswordManager [%s]", e);
             }
         }
     };

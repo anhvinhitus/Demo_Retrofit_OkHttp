@@ -143,26 +143,24 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     }
 
     void showLoading() {
-        if (mPassword != null) {
-
-            try {
+        try {
+            if (mPassword != null) {
                 mPassword.showLoading(true);
                 mPassword.lock();
-            } catch (Exception e) {
-                Timber.d("AuthenticationPassword showLoading() [%s]", e.getMessage());
             }
+        } catch (Exception e) {
+            Timber.d("AuthenticationPassword showLoading() [%s]", e.getMessage());
         }
     }
 
     void setError(String pError) {
-        if (mPassword != null) {
-            try {
+        try {
+            if (mPassword != null) {
                 mPassword.setError(pError);
                 mPassword.unlock();
-            } catch (Exception e) {
-                Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
             }
-
+        } catch (Exception e) {
+            Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
         }
     }
 }

@@ -179,25 +179,25 @@ public class AuthenActor {
     }
 
     public boolean showLoading() {
-        if (mPassword != null) {
-            try {
+        try {
+            if (mPassword != null) {
                 mPassword.showLoading(true);
                 mPassword.lock();
-            } catch (Exception e) {
-                Timber.d("AuthenActor showLoading [%s]", e.getMessage());
             }
+        } catch (Exception e) {
+            Timber.d("AuthenActor showLoading [%s]", e.getMessage());
         }
         return mPassword != null;
     }
 
     public boolean hideLoading(String pError) {
-        if (mPassword != null) {
-            try {
+        try {
+            if (mPassword != null) {
                 mPassword.setError(pError);
                 mPassword.unlock();
-            } catch (Exception e) {
-                Timber.d("AuthenActor hideLoading [%s]", e.getMessage());
             }
+        } catch (Exception e) {
+            Timber.d("AuthenActor hideLoading [%s]", e.getMessage());
         }
         return mPassword != null;
     }
@@ -208,16 +208,15 @@ public class AuthenActor {
     }
 
     private void closePassword() {
-        if (mPassword != null) {
-            try {
+        try {
+            if (mPassword != null) {
                 mPassword.close();
                 mPassword = null;
-            } catch (Exception e) {
-                Timber.d("AuthenActor closePassword [%s]", e.getMessage());
             }
+        } catch (Exception e) {
+            Timber.d("AuthenActor closePassword [%s]", e.getMessage());
         }
     }
-
 
     public void release() {
         mFingerPrintDialog = null;
