@@ -80,14 +80,14 @@ public class ChannelListInteractor {
         task.execute();
     }
 
-    private Observable<Boolean> initResource(){
+    Observable<Boolean> initResource(){
         return ResourceManager.initResource()
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
                 .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))
                 .subscribeOn(Schedulers.io());
     }
 
-    private void loadPaymentInfo() {
+    void loadPaymentInfo() {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();

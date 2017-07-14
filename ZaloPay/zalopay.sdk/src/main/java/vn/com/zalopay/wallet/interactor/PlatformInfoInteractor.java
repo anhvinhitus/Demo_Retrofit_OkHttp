@@ -43,7 +43,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         this.repository = repository;
     }
 
-    private Observable<PlatformInfoCallback> mapResult(PlatformInfoResponse platformInfoResponse, String appVersion) {
+    Observable<PlatformInfoCallback> mapResult(PlatformInfoResponse platformInfoResponse, String appVersion) {
         if (platformInfoResponse == null) {
             return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
         }

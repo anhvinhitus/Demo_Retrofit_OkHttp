@@ -56,7 +56,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     // Android 2.3
     private boolean isRedirected = false;
 
-    private AdapterLinkAcc mAdapter = null;
+    AdapterLinkAcc mAdapter = null;
     private PaymentWebView mWebPaymentBridge = null;
 
     private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();

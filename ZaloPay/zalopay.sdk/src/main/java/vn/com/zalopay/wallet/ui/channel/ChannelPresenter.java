@@ -76,8 +76,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     public EventBus mBus;
     private CountDownTimer mExpireTransTimer;
-    private boolean mTimerRunning = false;
-    private AdapterBase mAdapter = null;
+    boolean mTimerRunning = false;
+    AdapterBase mAdapter = null;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAdapter != null) {
             mAdapter.openSettingNetworking();
@@ -449,7 +449,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     /***
      * focus on current view
      */
-    private void showKeyBoardOnFocusingViewAgain() {
+    void showKeyBoardOnFocusingViewAgain() {
         if (mAdapter != null && mAdapter.getGuiProcessor() != null && (mAdapter.isCardFlow() || mAdapter.isLinkAccFlow())) {
             //auto show keyboard
             if (mAdapter.isInputStep() || mAdapter.shouldFocusAfterCloseQuitDialog()) {

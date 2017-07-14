@@ -215,8 +215,8 @@ class SnackbarManager {
     }
 
     private static class SnackbarRecord {
-        private final WeakReference<Callback> callback;
-        private int duration;
+        final WeakReference<Callback> callback;
+        int duration;
 
         SnackbarRecord(int duration, Callback callback) {
             this.callback = new WeakReference<>(callback);

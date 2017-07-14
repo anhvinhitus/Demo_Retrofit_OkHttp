@@ -114,7 +114,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         return mPresenter;
     }
 
-    private void startCenterSupport() {
+    void startCenterSupport() {
         Intent intent = new Intent();
         intent.setAction(Constants.SUPPORT_INTRO_ACTION_SUPPORT_CENTER);
         startActivity(intent);

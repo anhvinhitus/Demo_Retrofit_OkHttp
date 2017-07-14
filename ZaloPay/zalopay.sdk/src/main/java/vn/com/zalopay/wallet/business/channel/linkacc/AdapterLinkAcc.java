@@ -95,15 +95,15 @@ public class AdapterLinkAcc extends AdapterBase {
     protected ZPWNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
     private int COUNT_ERROR_CAPTCHA = 1;
-    private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
+    int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
     private int COUNT_UNREGISTER = 0;
-    private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
-    private LinkAccGuiProcessor linkAccGuiProcessor;
+    int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
+    LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapAccNum;
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
-    private LinkAccWebViewClient mWebViewProcessor = null;
+    LinkAccWebViewClient mWebViewProcessor = null;
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -236,7 +236,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
-    private void loadBankAccountSuccess() throws Exception {
+    void loadBankAccountSuccess() throws Exception {
         if (BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
@@ -465,7 +465,7 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void linkAccFail(String pMessage, String pTransID) {
+    void linkAccFail(String pMessage, String pTransID) {
         try {
             mPageName = PAGE_LINKACC_FAIL;
             mWebViewProcessor.stop();//stop loading website
@@ -507,7 +507,7 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void unlinkAccFail(String pMessage, String pTransID) {
+    void unlinkAccFail(String pMessage, String pTransID) {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
@@ -640,13 +640,13 @@ public class AdapterLinkAcc extends AdapterBase {
         return false;
     }
 
-    private void visibleLoadingDialog(String pMessage) {
+    void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.isShowingProgressDialog()) {
             showLoadindTimeout(pMessage);
         }
     }
 
-    private void hideLoadingDialog() {
+    void hideLoadingDialog() {
         try {
             getView().hideLoading();
         } catch (Exception e) {

@@ -1191,7 +1191,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    private void onDoneTapped() {
+    void onDoneTapped() {
         int errorFragmentIndex = validateInputCard();
         //there're no error
         if (errorFragmentIndex == -1) {
@@ -1614,7 +1614,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }, 300);
     }
 
-    private boolean supportCard() {
+    boolean supportCard() {
         try {
             if (mCardAdapter.getCardNumberFragment().hasError() &&
                     (mCardAdapter.getCardNumberFragment().getError().equals(GlobalData.getStringResource(RS.string.zpw_string_card_not_support))

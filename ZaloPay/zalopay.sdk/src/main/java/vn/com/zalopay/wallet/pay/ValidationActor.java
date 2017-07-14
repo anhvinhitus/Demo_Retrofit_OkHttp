@@ -26,10 +26,10 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
  * pre check before start payment channel
  */
 public class ValidationActor extends SingletonBase {
-    private PaymentChannel mChannel;
-    private PaymentInfoHelper mPaymentInfoHelper;
+    PaymentChannel mChannel;
+    PaymentInfoHelper mPaymentInfoHelper;
     private IBankInteractor mBankInteractor;
-    private WeakReference<ChannelListPresenter> mChannelListPresenter;
+    WeakReference<ChannelListPresenter> mChannelListPresenter;
     private ZPWOnEventConfirmDialogListener mUpdateLevelListener = new ZPWOnEventConfirmDialogListener() {
         @Override
         public void onCancelEvent() {
@@ -57,7 +57,7 @@ public class ValidationActor extends SingletonBase {
         this.mChannelListPresenter = new WeakReference<>(channelListPresenter);
     }
 
-    private ChannelListFragment getView() throws Exception {
+    ChannelListFragment getView() throws Exception {
         return mChannelListPresenter.get().getViewOrThrow();
     }
 

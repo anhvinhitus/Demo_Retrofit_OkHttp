@@ -27,7 +27,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
     private ITransService mDataSource;
     private boolean mIsRequesting = false;//prevent duplicate request
     private Subscription mSubscription;
-    private BaseTask mTask;
+    BaseTask mTask;
 
     private final Action1<Throwable> errorAction = new Action1<Throwable>() {
         @Override
@@ -89,7 +89,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
         releaseLock();
     }
 
-    private boolean verifyException(Throwable t) {
+    boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
             SdkNetworkEvent networkEventMessage = new SdkNetworkEvent(API, false);
             SDKApplication.getApplicationComponent().eventBus().post(networkEventMessage);
@@ -135,7 +135,7 @@ public class ServiceManager<T extends BaseResponse> extends SingletonBase {
         return mIsRequesting;
     }
 
-    private void releaseLock() {
+    void releaseLock() {
         mIsRequesting = false;
         unSubscribe();
         Timber.d("released lock requesting...");

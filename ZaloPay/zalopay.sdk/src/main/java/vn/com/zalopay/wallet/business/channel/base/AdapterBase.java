@@ -144,7 +144,7 @@ public abstract class AdapterBase {
      * loading website so long,over timeout 40s
      */
     int numberOfRetryTimeout = 1;
-    private SDKTransactionAdapter mTransactionAdapter;
+    SDKTransactionAdapter mTransactionAdapter;
     private Action1<Throwable> loadCardException = throwable -> {
         Log.d(this, "load card list on error", throwable);
         String message = null;
@@ -1689,7 +1689,7 @@ public abstract class AdapterBase {
     /***
      * * get status 1 oneshot to check status again in load website is timeout
      * */
-    private void getOneShotTransactionStatus() {
+    void getOneShotTransactionStatus() {
         isLoadWebTimeout = true;
         getStatusStrategy(mTransactionID, false, null);
     }

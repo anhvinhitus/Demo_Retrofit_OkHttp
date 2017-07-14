@@ -24,9 +24,9 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 public class AuthenActor {
     private WeakReference<PayProxy> mPayProxy;
     private DialogFragment mFingerPrintDialog = null;
-    private String fpPassword;//password from fingerprint
-    private String popupPassword;//password input on popup
-    private boolean useFPPassword = true;//user check checkbox
+    String fpPassword;//password from fingerprint
+    String popupPassword;//password input on popup
+    boolean useFPPassword = true;//user check checkbox
     private PasswordManager mPassword;
     private IPasswordCallBack mPasswordCallback = new IPasswordCallBack() {
         @Override
@@ -129,7 +129,7 @@ public class AuthenActor {
         return this;
     }
 
-    private PayProxy getProxy() throws Exception {
+    PayProxy getProxy() throws Exception {
         if (mPayProxy == null || mPayProxy.get() == null) {
             throw new IllegalStateException("invalid pay proxy");
         }

@@ -556,7 +556,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         clearObjects();
     }
 
-    private void loadChannelOnCompleted() {
+    void loadChannelOnCompleted() {
         String sortedBankCodes = mBankInteractor.getBankCodeList();
         if (TextUtils.isEmpty(sortedBankCodes)) {
             renderMapChannels();

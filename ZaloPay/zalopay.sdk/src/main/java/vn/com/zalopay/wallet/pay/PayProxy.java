@@ -400,7 +400,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    private void getTransStatus() {
+    void getTransStatus() {
         try {
             mSubscription = transStatus();
             getPresenter().addSubscription(mSubscription);

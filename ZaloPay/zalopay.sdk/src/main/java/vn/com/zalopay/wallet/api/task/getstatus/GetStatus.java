@@ -34,7 +34,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
-    private int mRetryCount = 1;
+    int mRetryCount = 1;
     private long startTime = 0, endTime = 0;
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -78,14 +78,14 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     }
 
-    private void cancelTimer() {
+    void cancelTimer() {
         if (mTimer != null && isTimerStated) {
             isTimerStated = false;
             mTimer.cancel();
         }
     }
 
-    private synchronized void askToRetryGetStatus(String pMessage) {
+    synchronized void askToRetryGetStatus(String pMessage) {
         showProgress(false);
         if (mAdapter != null && mAdapter.isFinalScreen()) {
             Timber.d("user in fail screen, don't need show retry dialog again");
@@ -116,7 +116,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
     }
 
-    private void onPostResult(StatusResponse pResponse) {
+    void onPostResult(StatusResponse pResponse) {
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_GET_STATUS_COMPLETE, pResponse);
         } else {

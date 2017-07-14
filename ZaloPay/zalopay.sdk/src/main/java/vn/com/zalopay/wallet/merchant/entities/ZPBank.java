@@ -34,7 +34,7 @@ public class ZPBank implements Parcelable {
         this.bankCode = pCardCode;
     }
 
-    private ZPBank(Parcel in) {
+    ZPBank(Parcel in) {
         this.bankCode = in.readString();
         this.bankLogo = in.readString();
         this.isBankAccount = (Boolean) in.readValue(Boolean.class.getClassLoader());

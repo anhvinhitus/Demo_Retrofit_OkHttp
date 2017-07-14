@@ -50,7 +50,7 @@ import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
 public class LinkAccGuiProcessor extends CardGuiProcessor {
     private AdapterBase mAdapter;
-    private int mPositionSpn;
+    int mPositionSpn;
     private ProgressBar pgbProgress;
     private TextView txtMessage;
     private LoginHolder loginHolder;
@@ -830,11 +830,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public class UnregisterHolder {
-        private LinearLayout llUnregister;
-        private Spinner spnWalletType;
-        private Spinner spnPhoneNumber;
-        private EditText edtPhoneNumber;
-        private VPaymentDrawableEditText edtPassword;
+        LinearLayout llUnregister;
+        Spinner spnWalletType;
+        Spinner spnPhoneNumber;
+        EditText edtPhoneNumber;
+        VPaymentDrawableEditText edtPassword;
 
         public LinearLayout getLlUnregister() {
             return llUnregister;
@@ -858,8 +858,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public class ConfirmOTPHolder {
-        private LinearLayout llConfirmOTP;
-        private VPaymentDrawableEditText edtConfirmOTP;
+        LinearLayout llConfirmOTP;
+        VPaymentDrawableEditText edtConfirmOTP;
 
         public LinearLayout getLlConfirmOTP() {
             return llConfirmOTP;
@@ -871,20 +871,20 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public class RegisterHolder {
-        private LinearLayout llRegister;
-        private Spinner spnWalletType;
-        private Spinner spnAccNumberDefault;
-        private Spinner spnPhoneNumber;
-        private Spinner spnOTPValidType;
-        private TextView tvPhoneReceiveOTP;
-        private VPaymentDrawableEditText edtCaptcha;
-        private EditText edtPhoneNum;
-        private EditText edtAccNumDefault;
-        private ImageView imgCaptcha;
-        private WebView webCaptcha;
-        private LinearLayout llAccNumberDefault;
-        private TextInputLayout ilAccNumberDefault;
-        private ImageView btnRefreshCaptcha;
+        LinearLayout llRegister;
+        Spinner spnWalletType;
+        Spinner spnAccNumberDefault;
+        Spinner spnPhoneNumber;
+        Spinner spnOTPValidType;
+        TextView tvPhoneReceiveOTP;
+        VPaymentDrawableEditText edtCaptcha;
+        EditText edtPhoneNum;
+        EditText edtAccNumDefault;
+        ImageView imgCaptcha;
+        WebView webCaptcha;
+        LinearLayout llAccNumberDefault;
+        TextInputLayout ilAccNumberDefault;
+        ImageView btnRefreshCaptcha;
 
         public LinearLayout getLlRegister() {
             return llRegister;
