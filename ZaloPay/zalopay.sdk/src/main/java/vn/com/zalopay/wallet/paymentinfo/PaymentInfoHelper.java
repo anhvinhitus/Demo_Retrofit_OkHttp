@@ -154,8 +154,9 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public String getLinkAccBankCode() {
-        if (getLinkAccountInfo() != null) {
-            return getLinkAccountInfo().getBankCode();
+        LinkAccInfo linkAccInfo = getLinkAccountInfo();
+        if (linkAccInfo != null) {
+            return linkAccInfo.getBankCode();
         }
         return null;
     }
