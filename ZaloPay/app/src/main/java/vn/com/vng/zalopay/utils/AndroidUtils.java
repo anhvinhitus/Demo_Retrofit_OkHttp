@@ -48,10 +48,11 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.zalopay.ui.widget.util.AgentUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -1099,29 +1100,37 @@ public class AndroidUtils {
         return DeviceUtil.getDeviceName().toUpperCase().matches("(.*)XIAOMI(.*)");
     }
 
-    public static String getUserAgent(Context context) {
+    private static String sUserAgent = null;
 
-        String ua = null;
+    public static String getUserAgent(Context context) {
+        if (sUserAgent != null) {
+            return sUserAgent;
+        }
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                ua = WebSettings.getDefaultUserAgent(context);
+                sUserAgent = WebSettings.getDefaultUserAgent(context);
             } else {
 
                 final Class<?> webSettingsClassicClass = Class.forName("android.webkit.WebSettingsClassic");
                 final Constructor<?> constructor = webSettingsClassicClass.getDeclaredConstructor(Context.class, Class.forName("android.webkit.WebViewClassic"));
                 constructor.setAccessible(true);
                 final Method method = webSettingsClassicClass.getMethod("getUserAgentString");
-                ua = (String) method.invoke(constructor.newInstance(context, null));
+                sUserAgent = (String) method.invoke(constructor.newInstance(context, null));
             }
         } catch (Exception e) {
             Timber.d(e, "exception");
         }
 
-        if (TextUtils.isEmpty(ua)) {
-            ua = System.getProperty("http.agent");
+        if (TextUtils.isEmpty(sUserAgent)) {
+            sUserAgent = System.getProperty("http.agent");
         }
 
-        return ua;
+        if (TextUtils.isEmpty(sUserAgent)) {
+            sUserAgent = AgentUtil.getUserAgent();
+        }
+
+        return sUserAgent;
     }
 
     public static Drawable getTintedDrawable(Context context, @DrawableRes int id, @ColorRes int color) {

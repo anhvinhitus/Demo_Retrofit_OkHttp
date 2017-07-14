@@ -142,6 +142,6 @@ public class ApplicationModule {
     @Provides
     @Singleton
     GoogleReporter providesGoogleReporter(Context context) {
-        return new GoogleReporter(BuildConfig.GA_Tracker);
+        return new GoogleReporter(context, BuildConfig.GA_Tracker);
     }
 }

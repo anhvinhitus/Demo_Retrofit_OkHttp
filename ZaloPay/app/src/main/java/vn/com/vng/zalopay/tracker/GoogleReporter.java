@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.tracker;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -30,10 +31,14 @@ public class GoogleReporter {
     private final AnalyticsStore.Repository mAnalyticsService;
     private final Map<String, String> mDefMap;
     private final String mTrackerId;
+    private final String mUserAgain;
+    private final String mLocale;
 
-    public GoogleReporter(String trackerId) {
+    public GoogleReporter(Context context, String trackerId) {
         mTrackerId = trackerId;
         mAnalyticsService = AndroidApplication.instance().getAppComponent().analyticsRepository();
+        mUserAgain = AndroidUtils.getUserAgent(context);
+        mLocale = Locale.getDefault().getDisplayName();
         mDefMap = buildParams();
     }
 
@@ -143,8 +148,8 @@ public class GoogleReporter {
         params.put("cid", AndroidUtils.getDeviceId());
         params.put("an", "Zalo Pay");
         params.put("av", BuildConfig.VERSION_NAME);
-        params.put("ua", Constants.UserAgent.ZALO_PAY_CLIENT + BuildConfig.VERSION_NAME);
-        params.put("ul", Locale.getDefault().getDisplayName());
+        params.put("ua", mUserAgain);
+        params.put("ul", mLocale);
         params.put("sr", String.valueOf(AndroidUtils.density));
         return params;
     }

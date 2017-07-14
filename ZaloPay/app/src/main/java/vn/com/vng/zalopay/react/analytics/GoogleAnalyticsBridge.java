@@ -27,7 +27,7 @@ class GoogleAnalyticsBridge extends ReactContextBaseJavaModule {
 
     private synchronized GoogleReporter getTracker(String trackerId) {
         if (!mTrackers.containsKey(trackerId)) {
-            GoogleReporter reporter = new GoogleReporter(trackerId);
+            GoogleReporter reporter = new GoogleReporter(getReactApplicationContext(), trackerId);
             mTrackers.put(trackerId, reporter);
         }
         return mTrackers.get(trackerId);
