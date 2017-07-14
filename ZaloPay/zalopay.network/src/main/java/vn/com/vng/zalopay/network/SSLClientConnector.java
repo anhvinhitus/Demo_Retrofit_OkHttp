@@ -24,6 +24,9 @@ import timber.log.Timber;
  */
 
 class SSLClientConnector implements SocketConnector {
+
+    private static final int LIMIT_MESSAGE_SIZE = 65000;
+
     private final String mHostname;
     private final int mPort;
     private final Handler mConnectionHandler;
@@ -214,7 +217,7 @@ class SSLClientConnector implements SocketConnector {
             return null;
         }
 
-        if (szBody <= 0 || szBody > 20000) {
+        if (szBody <= 0 || szBody > LIMIT_MESSAGE_SIZE) {
             return null;
         }
 
