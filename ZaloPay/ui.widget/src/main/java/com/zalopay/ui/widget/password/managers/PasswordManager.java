@@ -56,14 +56,18 @@ public class PasswordManager {
 
     @UiThread
     public synchronized void show() {
-        if (!isShowing() && mActivity != null) {
-            mActivity.get().runOnUiThread(new Runnable() {
+        try {
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mUiBottomSheetDialog.show();
-                    mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    if (!isShowing()) {
+                        mUiBottomSheetDialog.show();
+                        mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -77,57 +81,79 @@ public class PasswordManager {
         if (mIBuilder == null) {
             return;
         }
-
-        if (mUiBottomSheetDialog != null && isShowing()) {
-            mUiBottomSheetDialog.dismiss();
-            Timber.d("dismiss password popup");
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUiBottomSheetDialog != null && isShowing()) {
+                        mUiBottomSheetDialog.dismiss();
+                        Timber.d("dismiss password popup");
+                    }
+                    Timber.d("release password popup");
+                    mIBuilder = null;
+                    mUiBottomSheetDialog = null;
+                    mActivity = null;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Timber.d("release password popup");
-        mIBuilder = null;
-        mUiBottomSheetDialog = null;
-        mActivity = null;
+
     }
 
     @UiThread
     public void setError(final String pMessage) {
-        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null && mActivity.get() != null && mActivity != null) {
-            mActivity.get().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mIBuilder.showLoadding(false);
-                    mIBuilder.setError(pMessage);
-                }
-            });
+        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null) {
+            try {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIBuilder.showLoadding(false);
+                        mIBuilder.setError(pMessage);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
         }
     }
 
     @UiThread
     public void showLoading(final boolean pShowing) {
-        if (mIBuilder == null || mActivity == null) {
+        if (mIBuilder == null) {
             Timber.d("mIBuilder is null");
             return;
         }
-        mActivity.get().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIBuilder.showLoadding(pShowing);
-            }
-        });
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                 @Override
+                 public void run() {
+                     mIBuilder.showLoadding(pShowing);
+                 }
+             });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @UiThread
     public void setTitle(final String pTitle) {
-        if (mIBuilder == null || mActivity == null) {
+        if (mIBuilder == null) {
             Timber.d("mIBuilder is null");
             return;
         }
-        mActivity.get().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIBuilder.setTitle(pTitle);
-            }
-        });
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mIBuilder.setTitle(pTitle);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void lock() {
@@ -140,17 +166,29 @@ public class PasswordManager {
 
     @UiThread
     private void disable(final boolean disable) {
-        if (mUiBottomSheetDialog == null || mActivity == null) {
+        if (mUiBottomSheetDialog == null) {
             Timber.d("mUiBottomSheetDialog is null");
             return;
         }
-        mActivity.get().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mUiBottomSheetDialog.preventDrag(disable);
-                mUiBottomSheetDialog.setCancelable(!disable);
-                mIBuilder.lockView(disable);
-            }
-        });
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                 @Override
+                 public void run() {
+                     mUiBottomSheetDialog.preventDrag(disable);
+                     mUiBottomSheetDialog.setCancelable(!disable);
+                     mIBuilder.lockView(disable);
+                 }
+             });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    private Activity getActivity() throws Exception {
+        if (mActivity == null || mActivity.get() == null) {
+            throw new IllegalAccessException("Activity is null");
+        }
+        return mActivity.get();
+    }
+
 }
