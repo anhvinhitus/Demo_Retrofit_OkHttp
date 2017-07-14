@@ -70,10 +70,12 @@ public class SDKPayment {
      */
     public synchronized static void closeSdk() throws Exception {
         if (!isOpenSdk()) {
-            throw new Exception("SDK không đang mở, yêu cầu đóng sdk không thể thực hiện");
+            Timber.d("SDK không đang mở, yêu cầu đóng sdk không thể thực hiện");
+            return;
         }
         if (!canCloseSdk()) {
-            throw new Exception("Có 1 hóa đơn vẫn đang xử lý. Không thể đóng giao dịch khi chưa hoàn thành.");
+            Timber.d("Có 1 hóa đơn vẫn đang xử lý. Không thể đóng giao dịch khi chưa hoàn thành");
+            return;
         }
         try {
             ChannelActivity channelActivity = BaseActivity.getChannelActivity();
@@ -82,8 +84,6 @@ public class SDKPayment {
                 if (adapterBase != null) {
                     adapterBase.onClickSubmission();
                 }
-            } else {
-                throw new Exception("Không thể đóng sdk lúc này");
             }
         } catch (Exception ex) {
             Timber.w(ex, "Exception close SDK");
