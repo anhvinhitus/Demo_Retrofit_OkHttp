@@ -82,16 +82,21 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
     }
 
     private void initPassword() {
-        if(mPassword != null && mPassword.isShowing()){
-            return;
+        try {
+            if (mPassword != null && mPassword.isShowing()) {
+                return;
+            }
+            mPassword = new PasswordManager((Activity) mContext.get());
+            mPassword.getBuilder()
+                    .setTitle(mContext.get().getString(R.string.input_pin_to_access))
+                    .showFPSuggestCheckBox(mSuggestFingerprint)
+                    .setPasswordCallBack(mPasswordCallBack);
+            mPassword.buildDialog();
+
+            mPassword.show();
+        } catch (Exception e) {
+            Timber.d("AuthenticationPassword show password [%s]", e.getMessage());
         }
-        mPassword = new PasswordManager((Activity) mContext.get());
-        mPassword.getBuilder()
-                .setTitle(mContext.get().getString(R.string.input_pin_to_access))
-                .showFPSuggestCheckBox(mSuggestFingerprint)
-                .setPasswordCallBack(mPasswordCallBack);
-        mPassword.buildDialog();
-        mPassword.show();
     }
 
     public PasswordManager getPasswordManager() {
@@ -120,7 +125,11 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
         if (mAuthenticationCallback != null) {
             mAuthenticationCallback.onAuthenticated(password);
         }
-        mPassword.close();
+        try {
+            mPassword.close();
+        } catch (Exception e) {
+            Timber.d("AuthenticationPassword close password [%s]", e.getMessage());
+        }
     }
 
     @Override
@@ -135,15 +144,25 @@ public class AuthenticationPassword implements AuthenticationProvider.Callback {
 
     void showLoading() {
         if (mPassword != null) {
-            mPassword.showLoading(true);
-            mPassword.lock();
+
+            try {
+                mPassword.showLoading(true);
+                mPassword.lock();
+            } catch (Exception e) {
+                Timber.d("AuthenticationPassword showLoading() [%s]", e.getMessage());
+            }
         }
     }
 
     void setError(String pError) {
         if (mPassword != null) {
-            mPassword.setError(pError);
-            mPassword.unlock();
+            try {
+                mPassword.setError(pError);
+                mPassword.unlock();
+            } catch (Exception e) {
+                Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
+            }
+
         }
     }
 }

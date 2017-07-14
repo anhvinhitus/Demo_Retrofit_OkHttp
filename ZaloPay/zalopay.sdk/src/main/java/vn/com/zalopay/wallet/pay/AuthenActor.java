@@ -84,7 +84,7 @@ public class AuthenActor {
             try {
                 getProxy().showPassword();
             } catch (Exception e) {
-                Timber.w("show password on error %s", e);
+                Timber.w("show password on error %s", e.getMessage());
             }
         }
 
@@ -180,16 +180,24 @@ public class AuthenActor {
 
     public boolean showLoading() {
         if (mPassword != null) {
-            mPassword.showLoading(true);
-            mPassword.lock();
+            try {
+                mPassword.showLoading(true);
+                mPassword.lock();
+            } catch (Exception e) {
+                Timber.d("AuthenActor showLoading [%s]", e.getMessage());
+            }
         }
         return mPassword != null;
     }
 
     public boolean hideLoading(String pError) {
         if (mPassword != null) {
-            mPassword.setError(pError);
-            mPassword.unlock();
+            try {
+                mPassword.setError(pError);
+                mPassword.unlock();
+            } catch (Exception e) {
+                Timber.d("AuthenActor hideLoading [%s]", e.getMessage());
+            }
         }
         return mPassword != null;
     }
@@ -201,8 +209,12 @@ public class AuthenActor {
 
     private void closePassword() {
         if (mPassword != null) {
-            mPassword.close();
-            mPassword = null;
+            try {
+                mPassword.close();
+                mPassword = null;
+            } catch (Exception e) {
+                Timber.d("AuthenActor closePassword [%s]", e.getMessage());
+            }
         }
     }
 

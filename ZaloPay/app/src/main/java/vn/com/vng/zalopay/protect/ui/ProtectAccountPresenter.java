@@ -133,7 +133,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), PasswordUtil.detectSuggestFingerprint(mView.getContext(), mUserConfig), callback);
         authenticationPassword.initialize();
         if (authenticationPassword != null && authenticationPassword.getPasswordManager() != null) {
-            authenticationPassword.getPasswordManager().setTitle(mContext.getString(R.string.input_pin_to_confirm));
+            try {
+                authenticationPassword.getPasswordManager().setTitle(mContext.getString(R.string.input_pin_to_confirm));
+            } catch (Exception e) {
+                Timber.d("ProtectAccountPresenter setTitle password [%s]", e.getMessage());
+            }
         }
       /*  AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD);
