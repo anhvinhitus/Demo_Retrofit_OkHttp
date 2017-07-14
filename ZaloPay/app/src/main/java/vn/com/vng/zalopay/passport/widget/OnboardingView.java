@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  */
 abstract class OnboardingView extends LinearLayout {
 
+    abstract View onCreateInputView();
+
     public OnboardingView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -89,11 +91,8 @@ abstract class OnboardingView extends LinearLayout {
         mButtonText = a.getString(R.styleable.OnboardingView_onb_buttonText);
         mShowSecButton = a.getBoolean(R.styleable.OnboardingView_onb_showSecondButton, false);
         mSecondButtonText = a.getString(R.styleable.OnboardingView_onb_secondButtonText);
-        int input_layout = a.getResourceId(R.styleable.OnboardingView_onb_input_layout, R.layout.layout_onboarding_edt_input);
         a.recycle();
-
-        addView(View.inflate(context, input_layout, null), INPUT_VIEW_INDEX);
-
+        addView(onCreateInputView(), INPUT_VIEW_INDEX);
     }
 
     public void onFinishInflate() {

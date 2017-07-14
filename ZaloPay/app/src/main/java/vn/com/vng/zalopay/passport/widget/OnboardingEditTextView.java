@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
@@ -30,10 +31,9 @@ public class OnboardingEditTextView extends OnboardingView {
         super(context, attrs);
     }
 
-    @BindView(R.id.inputview)
     CustomTextView mInputView;
 
-    private int mLengthToActiveButton = -1;
+    int mLengthToActiveButton = -1;
     private List<ZPEditTextValidate> mValidators;
 
     public void assign() {
@@ -42,6 +42,9 @@ public class OnboardingEditTextView extends OnboardingView {
     }
 
     private class Watcher implements TextWatcher {
+        Watcher() {
+        }
+
         public void afterTextChanged(Editable s) {
 
         }
@@ -137,5 +140,11 @@ public class OnboardingEditTextView extends OnboardingView {
 
     public void addTextChangedListener(TextWatcher watcher) {
         mInputView.addTextChangedListener(watcher);
+    }
+
+    @Override
+    protected View onCreateInputView() {
+        mInputView = (CustomTextView) View.inflate(getContext(), R.layout.layout_onboarding_edt_input, null);
+        return mInputView;
     }
 }

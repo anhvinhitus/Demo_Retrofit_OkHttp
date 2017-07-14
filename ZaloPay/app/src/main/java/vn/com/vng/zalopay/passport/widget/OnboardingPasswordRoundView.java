@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.passport.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
@@ -21,7 +22,6 @@ public class OnboardingPasswordRoundView extends OnboardingView {
         super(context, attrs);
     }
 
-    @BindView(R.id.inputview)
     CustomPassCodeRoundView mInputView;
 
     public void assign() {
@@ -46,4 +46,9 @@ public class OnboardingPasswordRoundView extends OnboardingView {
         return mInputView;
     }
 
+    @Override
+    protected View onCreateInputView() {
+        mInputView = (CustomPassCodeRoundView) View.inflate(getContext(), R.layout.layout_onboarding_pwd_input, null);
+        return mInputView;
+    }
 }

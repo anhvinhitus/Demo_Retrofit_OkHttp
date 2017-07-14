@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:onb_descriptionInput=""
-        app:onb_input_layout="@layout/layout_onboarding_pwd_input"
         app:onb_showButton="false"
         app:onb_subtitle="@string/ip.desc.create.password"
         app:onb_title="@string/ip.title.create.password"/>
@@ -22,7 +21,6 @@
         android:layout_height="match_parent"
         app:onb_buttonText="@string/come.back"
         app:onb_descriptionInput=""
-        app:onb_input_layout="@layout/layout_onboarding_pwd_input"
         app:onb_showButton="false"
         app:onb_subtitle="@string/ip.desc.confirm.password"
         app:onb_title="@string/ip.title.confirm.password"/>
@@ -33,7 +31,6 @@
         android:layout_height="match_parent"
         app:onb_buttonText="@string/txt_continue"
         app:onb_descriptionInput=""
-        app:onb_input_layout="@layout/layout_onboarding_edt_input"
         app:onb_showButton="true"
         app:onb_subtitle="@string/ip.desc.input.phone"
         app:onb_title="@string/ip.title.input.phone"/>
@@ -44,7 +41,6 @@
         android:layout_height="match_parent"
         app:onb_buttonText="@string/confirm"
         app:onb_descriptionInput=""
-        app:onb_input_layout="@layout/layout_onboarding_edt_input"
         app:onb_secondButtonText="@string/resend.otp"
         app:onb_showButton="true"
         app:onb_showSecondButton="true"
