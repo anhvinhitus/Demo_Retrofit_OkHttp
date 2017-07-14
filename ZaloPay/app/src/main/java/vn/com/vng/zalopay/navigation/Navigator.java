@@ -402,14 +402,6 @@ public class Navigator implements INavigator {
 
     }
 
-    private void showPinDialog(final Context context, final AuthenticationCallback callback) {
-        AndroidUtils.runOnUIThread(() -> {
-            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
-            mAuthenticationPassword.initialize();
-        }, 200);
-    }
-
-
     @Override
     public void startLinkCardActivityForResult(final Activity activity, String bankCode) {
         startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD, bankCode);
@@ -821,9 +813,18 @@ public class Navigator implements INavigator {
 
     }
 
+    private void showPinDialog(final Context context, final AuthenticationCallback callback) {
+        AndroidUtils.runOnUIThread(() -> {
+            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+            mAuthenticationPassword.initialize();
+        }, 200);
+    }
+
     private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
-        mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
-        mAuthenticationPassword.initialize();
+        AndroidUtils.runOnUIThread(() -> {
+            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
+            mAuthenticationPassword.initialize();
+        }, 200);
     }
 
     private void showPinDialog(final Context context, final Promise promise) {
