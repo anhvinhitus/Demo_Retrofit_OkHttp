@@ -234,7 +234,7 @@ public class FontIconView extends android.support.v7.widget.AppCompatCheckedText
             }
         };
 
-        private SavedState(Parcel in) {
+        SavedState(Parcel in) {
             super(in);
             checked = (Boolean) in.readValue(null);
         }

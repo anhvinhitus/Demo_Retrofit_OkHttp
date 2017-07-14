@@ -38,19 +38,19 @@ public class DialogManager {
 
     private static final int UPDATE_TYPE = 6;
     private static final int PROGRESS_DIALOG_TIMEOUT = 35000;//ms
-    private static SweetAlertDialog mProgressDialog = null;
+    static SweetAlertDialog mProgressDialog = null;
 
-    private static SweetAlertDialog mRetrySweetDialog = null;
+    static SweetAlertDialog mRetrySweetDialog = null;
 
-    private static SweetAlertDialog mConfirmSweetDialog = null;
+    static SweetAlertDialog mConfirmSweetDialog = null;
 
-    private static SweetAlertDialog mCustomViewSweetDialog = null;
-    private static SweetAlertDialog mSweetDialogNoInternet = null;
-    private static SweetAlertDialog mAlertDialog = null;
-    private static SweetAlertDialog mUpdateweetDialog = null;
-    private static SweetAlertDialog mNewDiaLog = null;
-    private static SweetAlertDialog mDialog = null;
-    private static long mLastShowProcessDialog = 0;
+    static SweetAlertDialog mCustomViewSweetDialog = null;
+    static SweetAlertDialog mSweetDialogNoInternet = null;
+    static SweetAlertDialog mAlertDialog = null;
+    static SweetAlertDialog mUpdateweetDialog = null;
+    static SweetAlertDialog mNewDiaLog = null;
+    static SweetAlertDialog mDialog = null;
+    static long mLastShowProcessDialog = 0;
 
     public synchronized static void dismiss() {
         closeProcessDialog();

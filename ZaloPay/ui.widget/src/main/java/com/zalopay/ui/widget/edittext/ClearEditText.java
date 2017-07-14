@@ -76,7 +76,7 @@ public class ClearEditText extends TextInputEditText {
         return this.getText().toString();
     }
 
-    private void checkEnableDrawableRight() {
+    void checkEnableDrawableRight() {
         String s = this.getString();
         this.setCompoundDrawablePadding(10);
         if (s.length() > 0) {

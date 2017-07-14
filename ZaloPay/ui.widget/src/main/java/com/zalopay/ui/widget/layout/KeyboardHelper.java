@@ -16,13 +16,13 @@ import android.widget.EditText;
 
 public class KeyboardHelper {
 
-    private OnKeyboardStateChangeListener mListener;
+    OnKeyboardStateChangeListener mListener;
     private static final int UNKNOW = -1;
-    private Rect mRect = new Rect();
-    private Rect mOriRect = new Rect();
-    private int mKeyboardHeight = UNKNOW;
-    private boolean isKeyboardShow = false;
-    private View mRootView;
+    Rect mRect = new Rect();
+    Rect mOriRect = new Rect();
+    int mKeyboardHeight = UNKNOW;
+    boolean isKeyboardShow = false;
+    View mRootView;
 
 
     public void setOnKeyboardStateListener(OnKeyboardStateChangeListener listener) {

@@ -36,13 +36,13 @@ import java.util.List;
  */
 public class SwipeMenuView extends LinearLayout {
 
-    private SwipeSwitch mSwipeSwitch;
+    SwipeSwitch mSwipeSwitch;
 
-    private RecyclerView.ViewHolder mAdapterVIewHolder;
+    RecyclerView.ViewHolder mAdapterVIewHolder;
 
-    private int mDirection;
+    int mDirection;
 
-    private OnSwipeMenuItemClickListener mItemClickListener;
+    OnSwipeMenuItemClickListener mItemClickListener;
 
     public SwipeMenuView(Context context) {
         this(context, null);

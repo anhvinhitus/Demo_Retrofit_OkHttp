@@ -20,9 +20,9 @@ import timber.log.Timber;
  */
 
 public class PasswordManager {
-    private IBuilder mIBuilder;
-    private UIBottomSheetDialog mUiBottomSheetDialog;
-    private WeakReference<Activity> mActivity;
+    IBuilder mIBuilder;
+    UIBottomSheetDialog mUiBottomSheetDialog;
+    WeakReference<Activity> mActivity;
     private IControl mControl = new IControl() {
         @Override
         public void onClose() {

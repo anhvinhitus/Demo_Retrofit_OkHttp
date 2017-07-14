@@ -39,7 +39,7 @@ import static com.shamanland.fonticon.CompoundDrawables.SNAPSHOT;
 
 
 public class FontIconDrawable extends Drawable {
-    private static final String LOG_TAG = FontIconDrawable.class.getSimpleName();
+    static final String LOG_TAG = FontIconDrawable.class.getSimpleName();
 
     protected String mText;
     protected ColorStateList mTextColor;

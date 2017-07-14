@@ -17,15 +17,15 @@ public class SuccessTickView extends View {
     private float mDensity = -1;
     private final float CONST_RADIUS = dip2px(1.2f);
     private final float CONST_RECT_WEIGHT = dip2px(3);
-    private final float CONST_LEFT_RECT_W = dip2px(15);
-    private final float CONST_RIGHT_RECT_W = dip2px(25);
-    private final float MIN_LEFT_RECT_W = dip2px(3.3f);
-    private final float MAX_RIGHT_RECT_W = CONST_RIGHT_RECT_W + dip2px(6.7f);
+    final float CONST_LEFT_RECT_W = dip2px(15);
+    final float CONST_RIGHT_RECT_W = dip2px(25);
+    final float MIN_LEFT_RECT_W = dip2px(3.3f);
+    final float MAX_RIGHT_RECT_W = CONST_RIGHT_RECT_W + dip2px(6.7f);
     private Paint mPaint;
-    private float mMaxLeftRectWidth;
-    private float mLeftRectWidth;
-    private float mRightRectWidth;
-    private boolean mLeftRectGrowMode;
+    float mMaxLeftRectWidth;
+    float mLeftRectWidth;
+    float mRightRectWidth;
+    boolean mLeftRectGrowMode;
 
     public SuccessTickView(Context context) {
         super(context);

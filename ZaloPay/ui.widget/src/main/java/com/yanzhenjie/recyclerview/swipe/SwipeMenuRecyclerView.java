@@ -68,8 +68,8 @@ public class SwipeMenuRecyclerView extends RecyclerView {
 
     private boolean allowSwipeDelete = false;
 
-    private SwipeMenuCreator mSwipeMenuCreator;
-    private OnSwipeMenuItemClickListener mSwipeMenuItemClickListener;
+    SwipeMenuCreator mSwipeMenuCreator;
+    OnSwipeMenuItemClickListener mSwipeMenuItemClickListener;
     private DefaultItemTouchHelper mDefaultItemTouchHelper;
 
     public SwipeMenuRecyclerView(Context context) {

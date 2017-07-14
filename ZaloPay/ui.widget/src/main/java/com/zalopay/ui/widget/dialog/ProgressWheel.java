@@ -733,7 +733,7 @@ public class ProgressWheel extends View {
             super(superState);
         }
 
-        private WheelSavedState(Parcel in) {
+        WheelSavedState(Parcel in) {
             super(in);
             this.mProgress = in.readFloat();
             this.mTargetProgress = in.readFloat();

@@ -9,8 +9,8 @@ import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 
 public class UIBottomSheetDialog extends BottomSheetDialog {
-    private IRender mRender;
-    private boolean mPreventDrag = false;
+    IRender mRender;
+    boolean mPreventDrag = false;
 
     public UIBottomSheetDialog(@NonNull Context context, @StyleRes int theme, @NonNull IRender pRender) {
         super(context, theme);

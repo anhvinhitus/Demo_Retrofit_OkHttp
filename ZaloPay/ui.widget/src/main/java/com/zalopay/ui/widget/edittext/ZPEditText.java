@@ -72,9 +72,9 @@ public class ZPEditText extends AppCompatEditText {
 
     private int bottomSpacing;
 
-    private boolean floatingLabelEnabled;
+    boolean floatingLabelEnabled;
 
-    private boolean highlightFloatingLabel;
+    boolean highlightFloatingLabel;
 
     private int baseColor;
 
@@ -112,7 +112,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private float floatingLabelFraction;
 
-    private boolean floatingLabelShown;
+    boolean floatingLabelShown;
 
     private float focusFraction;
 
@@ -126,7 +126,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private int underlineColor;
 
-    private boolean autoValidate;
+    boolean autoValidate;
 
     private boolean charactersCountValid;
 
@@ -136,7 +136,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private Bitmap clearButtonBitmaps;
 
-    private boolean validateOnFocusLost;
+    boolean validateOnFocusLost;
 
     private boolean showClearButton;
     private int clearButtonSize;
@@ -167,7 +167,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private boolean adjustBottomLines;
 
-    private boolean beginCheckValidate = true;
+    boolean beginCheckValidate = true;
 
     public ZPEditText(Context context) {
         super(context);
@@ -790,7 +790,7 @@ public class ZPEditText extends AppCompatEditText {
         return tempErrorText == null && isCharactersCountValid() && !TextUtils.isEmpty(getText().toString());
     }
 
-    private boolean isInternalValid() {
+    boolean isInternalValid() {
         ////Log.d(TAG, "isInternalValid: " + beginCheckValidate);
         return !beginCheckValidate || tempErrorText == null && isCharactersCountValid() || TextUtils.isEmpty(getText().toString());
     }
@@ -882,7 +882,7 @@ public class ZPEditText extends AppCompatEditText {
         }
     }
 
-    private ObjectAnimator getLabelAnimator() {
+    ObjectAnimator getLabelAnimator() {
         if (labelAnimator == null) {
             labelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
         }
@@ -890,7 +890,7 @@ public class ZPEditText extends AppCompatEditText {
         return labelAnimator;
     }
 
-    private ObjectAnimator getLabelFocusAnimator() {
+    ObjectAnimator getLabelFocusAnimator() {
         if (labelFocusAnimator == null) {
             labelFocusAnimator = ObjectAnimator.ofFloat(this, "focusFraction", 0f, 1f);
         }
@@ -1018,7 +1018,7 @@ public class ZPEditText extends AppCompatEditText {
         return singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0;
     }
 
-    private void checkCharactersCount() {
+    void checkCharactersCount() {
         if ((!firstShown && !checkCharactersCountAtBeginning) || !hasCharactersCounter()) {
             charactersCountValid = true;
         } else {

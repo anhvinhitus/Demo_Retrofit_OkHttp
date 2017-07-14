@@ -26,9 +26,9 @@ import timber.log.Timber;
  */
 public class ZPTextInputLayout extends TextInputLayout {
     private List<ZPEditTextValidate> mValidators;
-    private View.OnFocusChangeListener mOnFocusChangeListener;
+    View.OnFocusChangeListener mOnFocusChangeListener;
     private boolean mIsRequired = false;
-    private boolean mAutoValidate = false;
+    boolean mAutoValidate = false;
     private boolean mAutoTrimValue = false;
 
     private Integer mMarginBottom = null;
@@ -106,7 +106,7 @@ public class ZPTextInputLayout extends TextInputLayout {
         });
     }
 
-    private void initializeTextWatcher() {
+    void initializeTextWatcher() {
         getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -127,7 +127,7 @@ public class ZPTextInputLayout extends TextInputLayout {
         });
     }
 
-    private void initializeFocusChanged() {
+    void initializeFocusChanged() {
         getEditText().setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

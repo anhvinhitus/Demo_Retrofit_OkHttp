@@ -57,7 +57,7 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     public static final int NO_INTERNET = 10;
 
     public static final int STYLE = R.style.alert_dialog;
-    private View mDialogView;
+    View mDialogView;
     private View mLine;
     private LinearLayout mRootView;
     private LinearLayout mLayoutCustomButton;
@@ -109,8 +109,8 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private OnSweetClickListener mCancelClickListener;
     private OnSweetClickListener mConfirmClickListener;
     private OnSweetClickListener mUpdateClickListener;
-    private ZPWOnDialogListener mClickButtonArrListener;
-    private boolean mCloseFromCancel;
+    ZPWOnDialogListener mClickButtonArrListener;
+    boolean mCloseFromCancel;
     private boolean mIsChecked = false;
     private int backgroundResource;
 

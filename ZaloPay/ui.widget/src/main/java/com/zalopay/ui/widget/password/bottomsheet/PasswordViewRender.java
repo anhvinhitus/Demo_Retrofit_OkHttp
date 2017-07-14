@@ -47,7 +47,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private View mRootView;
     private WeakReference<Context> mContext;
     private CheckBox mCheckBox;
-    private LoadingIndicatorView mLoadingIndicatorView;
+    LoadingIndicatorView mLoadingIndicatorView;
     private LinearLayout mLayoutCheckBox;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
@@ -197,7 +197,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
     }
 
-    private void showSuggestFPCheckBox(boolean pShow) {
+    void showSuggestFPCheckBox(boolean pShow) {
         if (mLayoutCheckBox == null) {
             return;
         }
@@ -319,7 +319,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
     }
 
-    private void enableView(boolean enable) {
+    void enableView(boolean enable) {
         mCheckBox.setClickable(enable);
         mCancelImageView.setClickable(enable);
         mKeyboardView.enableInput(enable);
