@@ -814,17 +814,14 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(final Context context, final AuthenticationCallback callback) {
-        AndroidUtils.runOnUIThread(() -> {
-            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
-            mAuthenticationPassword.initialize();
-        }, 200);
+        mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), callback);
+        mAuthenticationPassword.initialize();
     }
 
     private void showPassWord(Context context, Intent pendingIntent, boolean isFinish) {
-        AndroidUtils.runOnUIThread(() -> {
-            mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
-            mAuthenticationPassword.initialize();
-        }, 200);
+        mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), pendingIntent, isFinish);
+        mAuthenticationPassword.initialize();
+
     }
 
     private void showPinDialog(final Context context, final Promise promise) {
@@ -887,7 +884,7 @@ public class Navigator implements INavigator {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
-        AndroidUtils.runOnUIThread(() -> showPinDialog(context, promise), 0);
+        showPinDialog(context, promise);
         return false;
     }
 

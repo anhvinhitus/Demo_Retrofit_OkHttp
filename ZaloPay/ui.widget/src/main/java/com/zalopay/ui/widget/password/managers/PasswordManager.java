@@ -1,6 +1,7 @@
 package com.zalopay.ui.widget.password.managers;
 
 import android.app.Activity;
+import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
@@ -53,7 +54,7 @@ public class PasswordManager {
         return mIBuilder;
     }
 
-
+    @UiThread
     public synchronized void show() {
         if (!isShowing()) {
             mUiBottomSheetDialog.show();
@@ -61,10 +62,12 @@ public class PasswordManager {
         }
     }
 
+    @UiThread
     public synchronized boolean isShowing() {
         return mUiBottomSheetDialog != null && mUiBottomSheetDialog.isShowing();
     }
 
+    @UiThread
     public synchronized void close() {
         if (mIBuilder == null) {
             return;
@@ -80,13 +83,15 @@ public class PasswordManager {
         mActivity = null;
     }
 
-    public void setError(String pMessage) {
-        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null) {
+    @UiThread
+    public void setError(final String pMessage) {
+        if (!TextUtils.isEmpty(pMessage) && mIBuilder != null && mActivity.get() != null) {
             mIBuilder.showLoadding(false);
             mIBuilder.setError(pMessage);
         }
     }
 
+    @UiThread
     public void showLoading(boolean pShowing) {
         if (mIBuilder == null) {
             Timber.d("mIBuilder is null");
@@ -95,6 +100,7 @@ public class PasswordManager {
         mIBuilder.showLoadding(pShowing);
     }
 
+    @UiThread
     public void setTitle(String pTitle) {
         if (mIBuilder == null) {
             Timber.d("mIBuilder is null");
@@ -111,6 +117,7 @@ public class PasswordManager {
         disable(false);
     }
 
+    @UiThread
     private void disable(boolean disable) {
         if (mUiBottomSheetDialog == null) {
             Timber.d("mUiBottomSheetDialog is null");
