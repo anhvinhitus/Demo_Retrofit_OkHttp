@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +10,10 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
 import vn.com.zalopay.utility.StringUtil;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
-import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkInvalidDataMessage;
 
 /**
  * Created by chucvv on 6/14/17.
@@ -45,18 +40,9 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
         String fee_desc = getFeeDesc(channel);
-        if (userInfo.level < BuildConfig.level_allow_use_zalopay) {
-            //check map table for allow
-            int iCheck = userInfo.getPermissionByChannelMap(channel.pmcid, transtype);
-            //error map table from server, show dialog alert and quit sdk
-            if (iCheck == Constants.LEVELMAP_INVALID) {
-                SDKApplication.getApplicationComponent().eventBus()
-                        .post(new SdkInvalidDataMessage(mContext.getString(R.string.zingpaysdk_alert_input_error)));
-            } else if (iCheck == Constants.LEVELMAP_BAN) {
-                fee_desc = GlobalData.getStringResource(RS.string.zpw_string_fee_upgrade_level);
-            }
+        if (!TextUtils.isEmpty(fee_desc)) {
+            fee_desc = formatFeeDesc(fee_desc);
         }
-        fee_desc = formatFeeDesc(fee_desc);
         renderDesc(holder, fee_desc);
         renderBalance(holder);
     }

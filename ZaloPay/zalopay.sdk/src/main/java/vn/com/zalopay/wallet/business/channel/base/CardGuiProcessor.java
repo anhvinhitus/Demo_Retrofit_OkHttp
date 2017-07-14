@@ -958,8 +958,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } else if (getAdapter() != null) {
             try {
                 Activity activity = getAdapter().getActivity();
-                Intent intent = MapBankPopup.createVCBIntent(activity, activity.getString(R.string.dialog_retry_input_card_button),
-                        mPaymentInfoHelper.getAmountTotal(), mPaymentInfoHelper.getLevel());
+                Intent intent = MapBankPopup.createVCBIntent(activity,
+                        activity.getString(R.string.dialog_retry_input_card_button),
+                        mPaymentInfoHelper.getAmountTotal());
                 getAdapter().getView().startActivityForResult(intent, MAP_POPUP_REQUEST_CODE);
             } catch (Exception e) {
                 Log.e(this, e);

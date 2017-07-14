@@ -38,10 +38,6 @@ android {
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', '"' + configJson.configs.package_playstore + '"'
         buildConfigField 'String', 'CC_CODE', '"' + configJson.configs.cc_code + '"'
 
-        buildConfigField 'int', 'level_allow_use_zalopay', configJson.configs.level_allow_use_zalopay
-        buildConfigField 'int', 'level_allow_cardmap', configJson.configs.level_allow_cardmap
-        buildConfigField 'int', 'level_allow_withdraw', configJson.configs.level_allow_withdraw
-        buildConfigField 'int', 'level_allow_bankaccount', configJson.configs.level_allow_bankaccount
         buildConfigField 'int', 'transaction_expire_time', configJson.configs.transaction_expire_time
 
         buildConfigField 'int', 'channel_zalopay', configJson.configs.channel_zalopay

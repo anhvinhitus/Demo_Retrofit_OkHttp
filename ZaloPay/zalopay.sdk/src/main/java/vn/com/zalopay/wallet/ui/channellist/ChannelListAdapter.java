@@ -28,8 +28,8 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
         addBinder(new ZaloPayItem(context, amount, userInfo, transtype, this));
     }
 
-    public void addMapBinder(Context context, long amount, int user_level) {
-        addBinder(new MapItem(context, amount, user_level, this));
+    public void addMapBinder(Context context, long amount) {
+        addBinder(new MapItem(context, amount, this));
     }
 
     public void addInputBinder(Context context, long amount, UserInfo userInfo, @TransactionType int transtype) {

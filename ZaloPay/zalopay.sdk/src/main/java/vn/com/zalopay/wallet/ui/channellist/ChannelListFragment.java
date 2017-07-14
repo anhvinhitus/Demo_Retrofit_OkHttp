@@ -204,7 +204,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         ChannelListAdapter channelAdapter = new ChannelListAdapter();
         Context context = getContext();
         channelAdapter.addZaloPayBinder(context, amount, userInfo, transtype);
-        channelAdapter.addMapBinder(context, amount, userLevel);
+        channelAdapter.addMapBinder(context, amount);
         channelAdapter.addTitle();
         channelAdapter.addInputBinder(context, amount, userInfo, transtype);
         onBindingChannel(channelAdapter);
@@ -279,25 +279,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 getResources().getString(R.string.zpw_not_allow_payment_app),
                 getResources().getString(R.string.dialog_close_button),
                 SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
-    }
-
-    @Override
-    public void showForceUpdateLevelDialog() {
-        DialogManager.showSweetDialogOptionNotice(getActivity(),
-                getResources().getString(R.string.zpw_string_alert_profilelevel_update),
-                getResources().getString(R.string.dialog_upgrade_button),
-                getResources().getString(R.string.dialog_cancel_button), new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        callbackThenTerminate();
-                    }
-
-                    @Override
-                    public void onOKEvent() {
-                        mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-                        callbackThenTerminate();
-                    }
-                });
     }
 
     @Override

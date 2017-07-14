@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
  */
 
 public class MapItem extends AbstractItem<MapItem.ViewHolder> {
-
-    private int user_level = 1;
-
-    public MapItem(Context context, long amount, int user_level, DataBindAdapter dataBindAdapter) {
+    public MapItem(Context context, long amount, DataBindAdapter dataBindAdapter) {
         super(context, amount, dataBindAdapter);
-        this.user_level = user_level;
     }
 
     @Override
@@ -34,10 +31,9 @@ public class MapItem extends AbstractItem<MapItem.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
         String fee_desc = getFeeDesc(channel);
-        if (channel.isMapCardChannel() && user_level < BuildConfig.level_allow_cardmap) {
-            fee_desc = mContext.getString(R.string.zpw_string_fee_upgrade_level);
+        if(!TextUtils.isEmpty(fee_desc)){
+            fee_desc = formatFeeDesc(fee_desc);
         }
-        fee_desc = formatFeeDesc(fee_desc);
         renderDesc(holder, fee_desc);
     }
 

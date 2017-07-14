@@ -414,11 +414,6 @@
     <string name="zpw_string_bankname_visa">VISA</string>
     <string name="zpw_string_bankname_master">Mastercard</string>
 
-    <string name="zpw_string_level_allow_use_zalopay">2</string>
-    <string name="zpw_string_level_allow_mapcard">2</string>
-    <string name="zpw_string_level_allow_withdraw">2</string>
-    <string name="zpw_string_level_allow_bankaccount">2</string>
-
     <string name="zpw_string_withdraw_description">Số tiền</string>
 
     <string name="zpw_string_visible_pin_on">Hiện</string>

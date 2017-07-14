@@ -109,7 +109,6 @@ public class Constants {
     public static final String CARDNUMBER_EXTRA = "cardnumber";
     public static final String NOTICE_CONTENT_EXTRA = "content";
     public static final String AMOUNT_EXTRA = "amount";
-    public static final String USER_LEVEL_EXTRA = "level";
     public static final String SELECTED_PMC_POSITION = "pmc_name";
     public static final int MAP_POPUP_REQUEST_CODE = 1000;
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;

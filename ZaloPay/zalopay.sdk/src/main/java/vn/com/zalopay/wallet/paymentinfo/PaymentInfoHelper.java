@@ -341,27 +341,6 @@ public class PaymentInfoHelper extends SingletonBase {
         return title;
     }
 
-    /***
-     * user level 1 can not tranfer money.
-     * user level 1 can not withdraw.
-     */
-    public boolean userLevelValid() {
-        boolean userLevelValid = true;
-        try {
-            int user_level = getLevel();
-            if (isMoneyTranferTrans() && user_level < BuildConfig.level_allow_use_zalopay) {
-                userLevelValid = false;
-            } else if (isWithDrawTrans() && user_level < BuildConfig.level_allow_withdraw) {
-                userLevelValid = false;
-            } else if ((payByCardMap() || payByBankAccountMap()) && user_level < BuildConfig.level_allow_cardmap) {
-                userLevelValid = false;
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return userLevelValid;
-    }
-
     public boolean shouldIgnore(int pChannelId) {
         int[] channels = getForceChannels();
         if (channels == null || channels.length <= 0) {

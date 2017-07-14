@@ -29,8 +29,6 @@ public interface ChannelListContract extends IContract {
 
         void showAppInfoNotFoundDialog();
 
-        void showForceUpdateLevelDialog();
-
         void showWarningLinkCardBeforeWithdraw();
 
         void showSupportBankVersionDialog(String pMessage);

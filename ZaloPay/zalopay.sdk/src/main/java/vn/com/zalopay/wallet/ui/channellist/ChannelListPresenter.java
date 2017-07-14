@@ -38,14 +38,12 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkInvalidDataMessage;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
@@ -407,12 +405,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
-            //validate user level
-            if (!mPaymentInfoHelper.userLevelValid()) {
-                getViewOrThrow().showForceUpdateLevelDialog();
-                return;
-            }
-
             //init channel proxy
             mPayProxy = PayProxy.shared().initialize((BaseActivity) getViewOrThrow().getActivity())
                     .setChannelListPresenter(this)
@@ -791,16 +783,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         Timber.d("callback");
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onInvalidData(SdkInvalidDataMessage eventMessge) {
-        try {
-            mPaymentInfoHelper.setResult(PaymentStatus.INVALID_DATA);
-            getViewOrThrow().showError(eventMessge.message);
-        } catch (Exception e) {
-            Timber.w(e, "onInvalidData on error");
         }
     }
 

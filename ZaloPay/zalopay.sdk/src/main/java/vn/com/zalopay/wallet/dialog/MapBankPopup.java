@@ -40,7 +40,6 @@ import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
-import static vn.com.zalopay.wallet.constants.Constants.USER_LEVEL_EXTRA;
 import static vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter.ItemType.MAP;
 
 public class MapBankPopup extends BasePaymentDialogActivity {
@@ -49,30 +48,27 @@ public class MapBankPopup extends BasePaymentDialogActivity {
     protected String mCardNumber = null;
     protected String mContent = null;
     protected double orderAmount;
-    protected int userLevel;
     protected TextView mContentTextView;
     protected View mSelectButton, mSelectOtherButton;
     protected List<PaymentChannel> mChannelList;
     private RecyclerView mChannelRecyclerView;
     private EventBus mBus;
 
-    public static Intent createBidvIntent(Activity activity, String cardNumber, double orderAmount, int userLevel) {
+    public static Intent createBidvIntent(Activity activity, String cardNumber, double orderAmount) {
         Intent intentBidv = new Intent(activity, MapBankPopup.class);
         intentBidv.putExtra(BANKCODE_EXTRA, CardType.PBIDV);
         intentBidv.putExtra(CARDNUMBER_EXTRA, cardNumber);
         intentBidv.putExtra(NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
         intentBidv.putExtra(BUTTON_LEFT_TEXT_EXTRA, GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
         intentBidv.putExtra(AMOUNT_EXTRA, orderAmount);
-        intentBidv.putExtra(USER_LEVEL_EXTRA, userLevel);
         return intentBidv;
     }
 
-    public static Intent createVCBIntent(Activity activity, String btnCloseTxt, double orderAmount, int userLevel) {
+    public static Intent createVCBIntent(Activity activity, String btnCloseTxt, double orderAmount) {
         Intent intentVCB = new Intent(activity, MapBankPopup.class);
         intentVCB.putExtra(BANKCODE_EXTRA, CardType.PVCB);
         intentVCB.putExtra(BUTTON_LEFT_TEXT_EXTRA, btnCloseTxt);
         intentVCB.putExtra(AMOUNT_EXTRA, orderAmount);
-        intentVCB.putExtra(USER_LEVEL_EXTRA, userLevel);
         return intentVCB;
     }
 
@@ -107,7 +103,7 @@ public class MapBankPopup extends BasePaymentDialogActivity {
     protected void setupRecycler(List<PaymentChannel> channelList) {
         ChannelListAdapter channelListAdapter = new ChannelListAdapter();
         channelListAdapter.addZaloPayBinder(getApplicationContext(), (long) orderAmount, null, TransactionType.PAY);
-        channelListAdapter.addMapBinder(getApplicationContext(), (long) orderAmount, userLevel);
+        channelListAdapter.addMapBinder(getApplicationContext(), (long) orderAmount);
         channelListAdapter.addAll(MAP, channelList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -147,7 +143,6 @@ public class MapBankPopup extends BasePaymentDialogActivity {
             mCardNumber = bundle.getString(CARDNUMBER_EXTRA);
             mContent = bundle.getString(NOTICE_CONTENT_EXTRA);
             orderAmount = bundle.getDouble(AMOUNT_EXTRA);
-            userLevel = bundle.getInt(USER_LEVEL_EXTRA);
         }
     }
 

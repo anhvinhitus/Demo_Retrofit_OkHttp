@@ -452,9 +452,11 @@ public class AdapterBankCard extends AdapterBase {
     public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) throws Exception {
 
         //have some card bidv in map card list and have this card
-        if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && hasBidvBankInMapCardList(pCardNumber))) {
-            Intent intentBidv = MapBankPopup.createBidvIntent(getActivity(), getGuiProcessor().getCardNumber(),
-                    mPaymentInfoHelper.getAmountTotal(), mPaymentInfoHelper.getLevel());
+        if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
+                && hasBidvBankInMapCardList(pCardNumber))) {
+            Intent intentBidv = MapBankPopup.createBidvIntent(getActivity(),
+                    getGuiProcessor().getCardNumber(),
+                    mPaymentInfoHelper.getAmountTotal());
             getView().startActivityForResult(intentBidv, MAP_POPUP_REQUEST_CODE);
             return true;
         }

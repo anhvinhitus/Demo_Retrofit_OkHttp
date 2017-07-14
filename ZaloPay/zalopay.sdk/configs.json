@@ -7,16 +7,12 @@
     "package_playstore": "vn.com.vng.zalopay",
     "zalopay_id": "1",
     "withdrawapp_id": "2",
-    "level_allow_use_zalopay": "2",
-    "level_allow_cardmap": "2",
-    "level_allow_withdraw": "2",
-    "level_allow_bankaccount": "2",
     "transaction_expire_time": "7",
     "redpackage_app_id": "6",
     "channel_zalopay": "38",
     "channel_bankaccount": "37",
     "channel_credit_card": "36",
     "channel_atm": "39",
-    "cc_code": "123PCC",
+    "cc_code": "123PCC"
   }
 }
