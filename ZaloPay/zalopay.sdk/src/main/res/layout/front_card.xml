@@ -1,4 +1,4 @@
-<vn.com.zalopay.wallet.view.custom.ripple.RippleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<vn.com.zalopay.wallet.view.custom.cardview.ripple.RippleRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/front_card_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -82,4 +82,4 @@
     </LinearLayout>
 
 
-</vn.com.zalopay.wallet.view.custom.ripple.RippleRelativeLayout>
+</vn.com.zalopay.wallet.view.custom.cardview.ripple.RippleRelativeLayout>

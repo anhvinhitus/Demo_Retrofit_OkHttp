@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.data;
 
+import android.support.annotation.StringRes;
+
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class RS {
@@ -7,6 +9,7 @@ public class RS {
         return get(pName, "id");
     }
 
+    @StringRes
     public static int getString(String pName) {
         return get(pName, "string");
     }

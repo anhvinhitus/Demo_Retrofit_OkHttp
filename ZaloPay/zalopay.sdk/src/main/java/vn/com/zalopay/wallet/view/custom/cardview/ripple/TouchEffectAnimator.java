@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.custom.ripple;
+package vn.com.zalopay.wallet.view.custom.cardview.ripple;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

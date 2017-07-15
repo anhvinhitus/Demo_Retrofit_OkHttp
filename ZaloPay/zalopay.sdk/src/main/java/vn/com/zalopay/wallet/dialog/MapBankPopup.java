@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,7 +33,6 @@ import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
-import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 
 import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
@@ -161,7 +161,7 @@ public class MapBankPopup extends BasePaymentDialogActivity {
         });
         this.mSelectOtherButton.setOnClickListener(view -> onBackPressed());
         if (!TextUtils.isEmpty(mCloseButtonText)) {
-            ((ZPWRippleButton) findViewById(R.id.selectOtherButton)).setText(mCloseButtonText);
+            ((Button) findViewById(R.id.selectOtherButton)).setText(mCloseButtonText);
         }
         if (!TextUtils.isEmpty(mContent)) {
             this.mContentTextView.setText(RenderHelper.getHtml(mContent));

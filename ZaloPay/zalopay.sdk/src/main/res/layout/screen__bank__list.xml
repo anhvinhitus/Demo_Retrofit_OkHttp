@@ -49,7 +49,7 @@
         android:layout_above="@+id/rippleButtonSelectBank"
         android:background="@color/dark_transparent" />
 
-    <vn.com.zalopay.wallet.view.custom.ZPWRippleButton
+    <Button
         android:id="@+id/rippleButtonSelectBank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
