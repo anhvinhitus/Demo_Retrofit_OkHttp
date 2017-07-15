@@ -58,6 +58,7 @@ import vn.com.zalopay.wallet.dialog.BankListPopup;
 import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -898,73 +899,60 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 });
     }
 
-    protected void showWarningBankAccount() {
+    private void showWarningBankAccount() throws Exception {
+        ChannelFragment channelFragment = getAdapter().getView();
+        if (channelFragment == null || mPaymentInfoHelper == null) {
+            return;
+        }
         if (mPaymentInfoHelper.isLinkTrans()) {
-            try {
-                getAdapter().getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
-                        GlobalData.getStringResource(RS.string.dialog_linkaccount_button),
-                        GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-                                clearCardNumberAndShowKeyBoard();
-                            }
-
-                            @Override
-                            public void onOKEvent() {
-                                //callback bankcode to app , app will direct user to link bank account to right that bank
-                                BankAccount dBankAccount = new BankAccount();
-                                dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
-                                mPaymentInfoHelper.setMapBank(dBankAccount);
-                                try {
-                                    getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT);
-                                } catch (Exception e) {
-                                    Log.e(this, e);
+            channelFragment
+                    .showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),
+                            GlobalData.getStringResource(RS.string.dialog_linkaccount_button),
+                            GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+                            new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+                                    clearCardNumberAndShowKeyBoard();
                                 }
-                            }
-                        });
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+
+                                @Override
+                                public void onOKEvent() {
+                                    try {
+                                        //callback bankcode to app , app will direct user to link bank account to right that bank
+                                        BankAccount dBankAccount = new BankAccount();
+                                        dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
+                                        mPaymentInfoHelper.setMapBank(dBankAccount);
+                                        getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT);
+                                    } catch (Exception e) {
+                                        Timber.w(e, "Exception switch bank link");
+                                    }
+                                }
+                            });
         } else if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
-            try {
-                getAdapter().getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkcard_before_payment),
-                        GlobalData.getStringResource(RS.string.dialog_linkaccount_button),
-                        GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-                                clearCardNumberAndShowKeyBoard();
-                            }
+            channelFragment.showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkcard_before_payment),
+                    GlobalData.getStringResource(RS.string.dialog_linkaccount_button),
+                    GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            clearCardNumberAndShowKeyBoard();
+                        }
 
-                            @Override
-                            public void onOKEvent() {
-                              /*  //callback bankcode to app , app will direct user to link bank account to right that bank
-                                BankAccount dBankAccount = new BankAccount();
-                                dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
-                                mPaymentInfoHelper.setMapBank(dBankAccount);*/
-                                try {
-                                    getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.VCB);
-                                    //getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-                                } catch (Exception e) {
-                                    Log.e(this, e);
-                                }
+                        @Override
+                        public void onOKEvent() {
+                            try {
+                                getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.VCB);
+                            } catch (Exception e) {
+                                Timber.w(e, "Exception callback then pay VCB");
                             }
-                        });
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-
+                        }
+                    });
         } else if (getAdapter() != null) {
-            try {
-                Activity activity = getAdapter().getActivity();
-                Intent intent = MapBankPopup.createVCBIntent(activity,
-                        activity.getString(R.string.dialog_retry_input_card_button),
-                        mPaymentInfoHelper.getAmountTotal());
-                getAdapter().getView().startActivityForResult(intent, MAP_POPUP_REQUEST_CODE);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+            Activity activity = getAdapter().getActivity();
+            Intent intent = MapBankPopup.createVCBIntent(activity,
+                    activity.getString(R.string.dialog_retry_input_card_button),
+                    mPaymentInfoHelper.getAmountTotal());
+            channelFragment.startActivityForResult(intent, MAP_POPUP_REQUEST_CODE);
         }
     }
 

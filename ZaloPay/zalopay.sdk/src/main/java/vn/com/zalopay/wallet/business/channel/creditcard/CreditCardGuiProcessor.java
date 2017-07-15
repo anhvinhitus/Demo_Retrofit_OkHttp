@@ -222,11 +222,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void switchChannel() {
-        Timber.d("===switchAdapter===");
         try {
-            getAdapter().getPresenter().switchAdapter(BuildConfig.channel_atm, getCardNumber());
+            Timber.d("start switch to atm adapter");
+            getAdapter().getPresenter().switchCardLinkAdapter(BuildConfig.channel_atm, getCardNumber());
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e,"Exception switch atm adapter");
         }
     }
 

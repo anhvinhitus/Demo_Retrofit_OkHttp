@@ -39,10 +39,13 @@ import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -75,9 +78,9 @@ import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     public EventBus mBus;
-    private CountDownTimer mExpireTransTimer;
     boolean mTimerRunning = false;
     AdapterBase mAdapter = null;
+    private CountDownTimer mExpireTransTimer;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAdapter != null) {
             mAdapter.openSettingNetworking();
@@ -187,7 +190,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
                 @Override
                 public void onOKEvent() {
-                    showKeyBoardOnFocusingViewAgain();
+                    showKeyBoard();
                 }
             });
             return true;
@@ -316,6 +319,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return PaymentPermission.allowLinkAtm() || PaymentPermission.allowLinkCC();
     }
 
+    private MiniPmcTransType loadLinkConfig(boolean bankLink) {
+        return SDKApplication
+                .getApplicationComponent()
+                .appInfoInteractor()
+                .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, bankLink, null);
+    }
+
     private void startLink() {
         Timber.d("start link channel");
         try {
@@ -323,10 +333,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 onExit(GlobalData.getAppContext().getString(R.string.sdk_error_ban_link), true);
                 return;
             }
-            mMiniPmcTransType = SDKApplication
-                    .getApplicationComponent()
-                    .appInfoInteractor()
-                    .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, mPaymentInfoHelper.isBankAccountTrans(), null);
+            mMiniPmcTransType = loadLinkConfig(mPaymentInfoHelper.isBankAccountTrans());
             if (mMiniPmcTransType == null) {
                 onExit(GlobalData.getAppContext().getString(R.string.sdk_config_invalid), true);
                 return;
@@ -337,10 +344,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 return;
             }
             initAdapter();
-            reFillBidvCardNumber();
-            showKeyBoardOnFocusingViewAgain();
             if (mAdapter instanceof AdapterLinkAcc) {
                 ((AdapterLinkAcc) mAdapter).startFlow();
+            } else {
+                reFillBidvCardNumber();
+                showKeyBoard();
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -348,7 +356,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public synchronized void switchAdapter(int pChannelID, final String pCardNumber) {
+    public void switchCardLinkAdapter(int pChannelID, final String pCardNumber) {
         if (mAdapter == null) {
             return;
         }
@@ -365,10 +373,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 cardGuiProcessor.showHintError(cardGuiProcessor.getCardNumberView(), cardGuiProcessor.warningCardExist());
                 return;
             } catch (Exception e) {
-                Timber.w(e, "Exception switchAdapter");
+                Timber.w(e, "Exception switchCardLinkAdapter");
             }
         }
-        if (!createChannelAdapter(pChannelID)) {
+        if (!createLinkAdapter(pChannelID)) {
             return;
         }
         try {
@@ -381,7 +389,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    private boolean createChannelAdapter(int pChannelId) {
+    private boolean createLinkAdapter(int pChannelId) {
         try {
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
                     getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, TransactionType.LINK, pChannelId, null), MiniPmcTransType.class);
@@ -420,7 +428,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         if (!mAdapter.isFinalScreen()) {
-            showKeyBoardOnFocusingViewAgain();
+            showKeyBoard();
         }
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             PaymentSnackBar.getInstance().dismiss();
@@ -449,7 +457,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     /***
      * focus on current view
      */
-    void showKeyBoardOnFocusingViewAgain() {
+    void showKeyBoard() {
         if (mAdapter != null && mAdapter.getGuiProcessor() != null && (mAdapter.isCardFlow() || mAdapter.isLinkAccFlow())) {
             //auto show keyboard
             if (mAdapter.isInputStep() || mAdapter.shouldFocusAfterCloseQuitDialog()) {
