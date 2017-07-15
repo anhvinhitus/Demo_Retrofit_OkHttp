@@ -9,6 +9,7 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -111,7 +112,11 @@ public class AndroidApplication extends Application {
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
-        Fabric.with(this, new Crashlytics());
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+        Fabric.with(this, crashlyticsKit);
+
         ConfigLoader.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
         LocationProvider.init(appComponent.locationRepositoryFactory(), this);
 
