@@ -124,10 +124,10 @@ public class AndroidApplication extends Application {
 
     private void backgroundInitialization() {
         appComponent.bundleService().ensureLocalResources();
-        loadFontFromApp1(false);
+        loadFontFromApp1();
     }
 
-    public void loadFontFromApp1(boolean postEvent) {
+    public void loadFontFromApp1() {
         String fontPath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name);
         String codePath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info);
         boolean isLoadFontSuccess = FontLoader.loadFont(fontPath, codePath);
