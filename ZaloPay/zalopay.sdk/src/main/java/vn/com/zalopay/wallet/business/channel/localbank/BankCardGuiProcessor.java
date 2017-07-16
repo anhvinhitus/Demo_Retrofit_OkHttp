@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
@@ -65,8 +66,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     private WebView mCaptchaWebview;
     private VPaymentDrawableEditText mAccountNameEditText, mAccountPasswordEditText, mOtpWebEditText, mCaptchaWebEditText, mOnlinePasswordEditText;
 
-    public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) {
-        super();
+    public BankCardGuiProcessor(Context pContext, AdapterBankCard pAdapterLocalCard) {
+        super(pContext);
         mAdapter = new WeakReference<>(pAdapterLocalCard);
         init(mAdapter.get().getPaymentInfoHelper());
     }
@@ -410,7 +411,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             getAdapter().getView().visibleInputCardView(false);
             getAdapter().getView().setText(R.id.zpsdk_btn_submit,
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_button_submit_text));
+                    mContext.getResources().getString(R.string.sdk_button_submit_text));
             if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                 getAdapter().getView().visiableOrderInfo(true);
             }
@@ -555,7 +556,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     private void moveToAuthenOptionView() throws Exception {
-        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
+        SdkUtils.hideSoftKeyboard(mContext, getAdapter().getActivity());
         getAdapter().getView().visiableOrderInfo(false);
         getAdapter().getView().setVisible(R.id.linearlayout_input_local_card, false);
         getAdapter().getView().visibleCardViewNavigateButton(false);

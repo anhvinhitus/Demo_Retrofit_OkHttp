@@ -22,11 +22,11 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
  */
 
 public class AuthenActor {
-    private WeakReference<PayProxy> mPayProxy;
-    private DialogFragment mFingerPrintDialog = null;
     String fpPassword;//password from fingerprint
     String popupPassword;//password input on popup
     boolean useFPPassword = true;//user check checkbox
+    private WeakReference<PayProxy> mPayProxy;
+    private DialogFragment mFingerPrintDialog = null;
     private PasswordManager mPassword;
     private IPasswordCallBack mPasswordCallback = new IPasswordCallBack() {
         @Override

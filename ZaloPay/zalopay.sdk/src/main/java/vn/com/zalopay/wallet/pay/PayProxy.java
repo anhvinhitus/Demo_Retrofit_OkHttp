@@ -81,6 +81,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -96,17 +104,9 @@ public class PayProxy extends SingletonBase {
         }
         Timber.d(throwable, "trans status on error");
     };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-            markTransFail(mContext.getString(R.string.sdk_error_not_submit_order));
+            markTransFail(mContext.getResources().getString(R.string.sdk_error_not_submit_order));
         } else {
             try {
                 processStatus(statusResponse);
@@ -166,7 +166,7 @@ public class PayProxy extends SingletonBase {
         mActivity = new WeakReference<>(activity);
         mAuthenActor = AuthenActor.get().plant(this);
         mTransService = SDKApplication.getApplicationComponent().transService();
-        mContext = SDKApplication.getApplication();
+        mContext = activity.getApplicationContext();
         mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
         return this;
     }
@@ -208,7 +208,7 @@ public class PayProxy extends SingletonBase {
         boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
         if (isSubmitted) {
             try {
-                getView().showInfoDialog(mContext.getString(R.string.sdk_order_processing_warning_mess));
+                getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_order_processing_warning_mess));
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -218,7 +218,7 @@ public class PayProxy extends SingletonBase {
 
     private void askToRetryGetStatus() throws Exception {
         showRetryDialogCount++;
-        String message = mContext.getString(R.string.sdk_trans_retry_getstatus_mess);
+        String message = mContext.getResources().getString(R.string.sdk_trans_retry_getstatus_mess);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -302,7 +302,7 @@ public class PayProxy extends SingletonBase {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
-            mStatusResponse.returnmessage = mContext.getString(R.string.sdk_fail_trans_status);
+            mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_fail_trans_status);
         }
         mAuthenActor.closeAuthen();
         startChannelActivity();
@@ -341,7 +341,7 @@ public class PayProxy extends SingletonBase {
     public boolean validate(PaymentChannel channel) {
         try {
             if (mValidActor == null) {
-                mValidActor = new ValidationActor(mPaymentInfoHelper, mBankInteractor, getPresenter());
+                mValidActor = new ValidationActor(mContext, mPaymentInfoHelper, mBankInteractor, getPresenter());
             }
             return mValidActor.validate(channel);
         } catch (Exception e) {
@@ -390,7 +390,7 @@ public class PayProxy extends SingletonBase {
                             .chargeInfo(chargeInfo)
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
-                            .doOnSubscribe(() -> showLoading(mContext.getString(R.string.sdk_trans_submit_order_mess)))
+                            .doOnSubscribe(() -> showLoading(mContext.getResources().getString(R.string.sdk_trans_submit_order_mess)))
                             .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
@@ -426,7 +426,7 @@ public class PayProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> {
                     try {
-                        getView().setTitle(mContext.getString(R.string.sdk_trans_getstatus_mess));
+                        getView().setTitle(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -441,7 +441,7 @@ public class PayProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> {
                     try {
-                        getView().setTitle(mContext.getString(R.string.sdk_trans_getstatus_mess));
+                        getView().setTitle(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -502,7 +502,7 @@ public class PayProxy extends SingletonBase {
             return true;
         }
 
-        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_select_bank_not_support);
+        String message = mContext.getResources().getString(R.string.sdk_select_bank_not_support);
         try {
             getView().showInfoDialog(message);
         } catch (Exception e) {
@@ -714,7 +714,7 @@ public class PayProxy extends SingletonBase {
 
     public void onErrorFingerPrint() {
         try {
-            getView().showInfoDialog(mContext.getString(R.string.sdk_fingerprint_error_suggest_password_mess), new ZPWOnEventDialogListener() {
+            getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_fingerprint_error_suggest_password_mess), new ZPWOnEventDialogListener() {
                 @Override
                 public void onOKEvent() {
                     try {
@@ -726,7 +726,7 @@ public class PayProxy extends SingletonBase {
                 }
             });
         } catch (Exception e) {
-            Timber.w(e,"Exception show FingerPrint");
+            Timber.w(e, "Exception show FingerPrint");
             markTransFail(getGenericExceptionMessage(mContext));
         }
     }

@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -72,6 +73,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     EventBus mBus;
+    @Inject
+    Context mContext;
 
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
@@ -117,7 +120,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 getViewOrThrow().showAppInfoNotFoundDialog();
                 return;
             }
-            String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+            String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
             if (TextUtils.isEmpty(appName)) {
                 appName = appInfo.appname;
             }
@@ -232,7 +235,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPaymentInfoHelper == null) {
             return null;
         }
-        return mPaymentInfoHelper.getQuitMessByTrans(GlobalData.getAppContext());
+        return mPaymentInfoHelper.getQuitMessByTrans(mContext);
     }
 
     public boolean onBackPressed() {
@@ -271,7 +274,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Override
     public void onResume() {
-        if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        if (ConnectionUtil.isOnline(mContext)) {
             PaymentSnackBar.getInstance().dismiss();
         } else {
             showNetworkOfflineSnackBar();
@@ -400,7 +403,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
             startSubscribePaymentReadyMessage();
             initAdapter();
-            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
+            getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();
@@ -436,7 +439,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } else {
             itemType = ChannelListAdapter.ItemType.INPUT;
             if (!mSetInputMethodTitle) {
-                mChannelAdapter.setTitle(mPaymentInfoHelper.getPaymentMethodTitleByTrans());
+                mChannelAdapter.setTitle(mPaymentInfoHelper.getPaymentMethodTitleByTrans(mContext));
                 mSetInputMethodTitle = true;
             }
         }
@@ -537,7 +540,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             } else {
                 String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
                 if (TextUtils.isEmpty(alertMessage)) {
-                    alertMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_no_channel_warning_mess);
+                    alertMessage = mContext.getResources().getString(R.string.sdk_no_channel_warning_mess);
                 }
                 try {
                     getViewOrThrow().showError(alertMessage);
@@ -566,7 +569,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .doOnNext(aBoolean -> collectChannelsToList())
                     .subscribe(aBoolean -> loadChannelOnDoLast(), throwable -> {
                         try {
-                            getViewOrThrow().showError(GlobalData.getAppContext().getString(R.string.zpw_string_error_layout));
+                            getViewOrThrow().showError(mContext.getResources().getString(R.string.zpw_string_error_layout));
                         } catch (Exception e) {
                             Timber.w(e);
                         }
@@ -624,7 +627,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         if (!hasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
-            getViewOrThrow().showSnackBar(GlobalData.getAppContext().getString(R.string.sdk_warning_no_channel), null,
+            getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
         }
     }
@@ -657,7 +660,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             public void onError(Throwable e) {
                 Timber.w("load channel on error %s", e);
                 try {
-                    getViewOrThrow().showError(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
+                    getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_init_data));
                 } catch (Exception e1) {
                     Timber.d(e);
                 }
@@ -720,8 +723,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mChannelLoader.source.subscribe(getChannelObserver());
             mChannelLoader.getChannels();
         } catch (Exception e) {
-            Log.e(this, e);
-            getViewOrThrow().showError(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
+            Timber.w(e,"Exception load channels");
+            getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_init_data));
         }
 
     }
@@ -809,8 +812,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void showNetworkOfflineSnackBar() {
         try {
             getViewOrThrow().showSnackBar(
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_offline_networking_mess),
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_turn_on_networking_mess),
+                    mContext.getResources().getString(R.string.sdk_offline_networking_mess),
+                    mContext.getResources().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         } catch (Exception e) {
             Log.e(this, e);

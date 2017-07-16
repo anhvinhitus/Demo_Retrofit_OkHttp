@@ -266,10 +266,10 @@ public class PaymentInfoHelper extends SingletonBase {
         }
     }
 
-    public String getPaymentMethodTitleByTrans() {
-        String title = GlobalData.getAppContext().getResources().getString(R.string.sdk_pay_method_title);
+    public String getPaymentMethodTitleByTrans(Context context) {
+        String title = context.getResources().getString(R.string.sdk_pay_method_title);
         if (isMoneyTranferTrans()) {
-            title = GlobalData.getAppContext().getResources().getString(R.string.sdk_tranfer_method_title);
+            title = context.getResources().getString(R.string.sdk_tranfer_method_title);
         }
         return title;
     }
@@ -303,39 +303,39 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public String getSuccessTitleByTrans(Context context) {
-        String title = context.getString(R.string.sdk_pay_success_title);
+        String title = context.getResources().getString(R.string.sdk_pay_success_title);
         if (isTopupTrans()) {
-            title = context.getString(R.string.sdk_topup_success_title);
+            title = context.getResources().getString(R.string.sdk_topup_success_title);
         } else if (isMoneyTranferTrans()) {
-            title = context.getString(R.string.sdk_transfer_success_title);
+            title = context.getResources().getString(R.string.sdk_transfer_success_title);
         } else if (isWithDrawTrans()) {
-            title = context.getString(R.string.sdk_withdraw_success_title);
+            title = context.getResources().getString(R.string.sdk_withdraw_success_title);
         } else if (isLinkTrans()) {
-            title = context.getString(R.string.sdk_link_acc_success_title);
+            title = context.getResources().getString(R.string.sdk_link_acc_success_title);
         }
         return title;
     }
 
     public String getQuitMessByTrans(Context context) {
-        String title = context.getString(R.string.sdk_trans_confirm_quit_pay_mess);
+        String title = context.getResources().getString(R.string.sdk_trans_confirm_quit_pay_mess);
         if (isTopupTrans()) {
-            title = context.getString(R.string.sdk_trans_confirm_quit_topup_mess);
+            title = context.getResources().getString(R.string.sdk_trans_confirm_quit_topup_mess);
         } else if (isMoneyTranferTrans()) {
-            title = context.getString(R.string.sdk_trans_confirm_quit_transfer_mess);
+            title = context.getResources().getString(R.string.sdk_trans_confirm_quit_transfer_mess);
         } else if (isWithDrawTrans()) {
-            title = context.getString(R.string.sdk_trans_confirm_quit_withdraw_mess);
+            title = context.getResources().getString(R.string.sdk_trans_confirm_quit_withdraw_mess);
         }
         return title;
     }
 
     public String getTitlePassword(Context context) {
-        String title = context.getString(R.string.sdk_pay_password_title_text);
+        String title = context.getResources().getString(R.string.sdk_pay_password_title_text);
         if (isTopupTrans()) {
-            title = context.getString(R.string.sdk_topup_password_title_text);
+            title = context.getResources().getString(R.string.sdk_topup_password_title_text);
         } else if (isMoneyTranferTrans()) {
-            title = context.getString(R.string.sdk_transfer_password_title_text);
+            title = context.getResources().getString(R.string.sdk_transfer_password_title_text);
         } else if (isWithDrawTrans()) {
-            title = context.getString(R.string.sdk_withdraw_password_title_text);
+            title = context.getResources().getString(R.string.sdk_withdraw_password_title_text);
         }
         return title;
     }
@@ -367,7 +367,7 @@ public class PaymentInfoHelper extends SingletonBase {
         }
     }
 
-    public boolean updateResultNetworkingError(String pMessage) {
+    public boolean updateResultNetworkingError(Context pContext, String pMessage) {
         boolean isOffNetworking;
         try {
             isOffNetworking = !ConnectionUtil.isOnline(BaseActivity.getCurrentActivity());
@@ -376,40 +376,40 @@ public class PaymentInfoHelper extends SingletonBase {
             isOffNetworking = false;
         }
         if (isOffNetworking &&
-                (pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_no_internet_mess)) ||
-                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess)) ||
-                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_link_account)) ||
-                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account)))) {
+                (pMessage.equals(pContext.getResources().getString(R.string.sdk_payment_no_internet_mess)) ||
+                        pMessage.equals(pContext.getResources().getString(R.string.sdk_trans_networking_offine_mess)) ||
+                        pMessage.equals(pContext.getResources().getString(R.string.sdk_alert_networking_off_in_link_account)) ||
+                        pMessage.equals(pContext.getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account)))) {
             setResult(PaymentStatus.DISCONNECT);
         }
         return isOffNetworking;
     }
 
-    public String getMessage(Throwable throwable) {
+    public String getMessage(Context context,Throwable throwable) {
         String message = null;
         if (throwable instanceof RequestException) {
             RequestException requestException = (RequestException) throwable;
             message = requestException.getMessage();
             switch (requestException.code) {
                 case RequestException.NULL:
-                    message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+                    message = context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
                     break;
                 default:
                     updateTransactionResult(requestException.code);
             }
         } else if (throwable instanceof NetworkConnectionException) {
-            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+            message = context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         return message;
     }
 
-    public String getOfflineMessage() {
+    public String getOfflineMessage(Context context) {
         if (bankAccountLink()) {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_link_account);
+            return context.getResources().getString(R.string.sdk_alert_networking_off_in_link_account);
         } else if (bankAccountUnlink()) {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account);
+            return context.getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account);
         } else {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+            return context.getResources().getString(R.string.sdk_trans_networking_offine_mess);
         }
     }
 

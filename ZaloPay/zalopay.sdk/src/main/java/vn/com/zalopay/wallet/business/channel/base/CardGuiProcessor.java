@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -78,6 +79,7 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
  */
 public abstract class CardGuiProcessor extends SingletonBase implements ViewPager.OnPageChangeListener {
     public final String VERTICAL_SEPERATOR = " ";
+    protected Context mContext;
     protected WeakReference<AdapterBase> mAdapter;
     protected CardSupportAdapter cardSupportGridViewAdapter;
     protected ScrollView mScrollViewRoot;
@@ -211,8 +213,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     if (!validCardNameWithWhiteSpace(s.toString())) {
                         try {
                             getCardNameView().setText(lastValue);
-                            mCardAdapter.getCardNameFragment().setError(GlobalData.getAppContext().getResources()
-                                    .getString(R.string.sdk_invalid_whitespace_cardname_mess));
+                            mCardAdapter.getCardNameFragment().setError(mContext.getResources().getString(R.string.sdk_invalid_whitespace_cardname_mess));
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -344,6 +345,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         }
     };
+
+    public CardGuiProcessor(Context context) {
+        this.mContext = context;
+    }
 
     public abstract boolean checkEnableSubmitButton();
 
@@ -551,13 +556,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     getViewPager().setCurrentItem(mLastPageSelected);
                     String errMes = getCardNumberView().getPatternErrorMessage();
                     if (TextUtils.isEmpty(getCardNumber())) {
-                        errMes = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_missing_cardnumber_mess);
+                        errMes = mContext.getResources().getString(R.string.sdk_error_missing_cardnumber_mess);
                     } else if (!validateCardNumberLength()) {
                         errMes = getCardNumberView().getPatternErrorMessage();
                     } else if (preventNextIfLinkCardExisted()) {
                         errMes = warningCardExist();
                     } else if (!validateCardNumberLuhn()) {
-                        errMes = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_luhn_cardnumber_mess);
+                        errMes = mContext.getResources().getString(R.string.sdk_error_luhn_cardnumber_mess);
                     }
                     showHintError(getCardNumberView(), errMes);
                     //disable next button
@@ -819,7 +824,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 miniPmcTransType.checkPmcOrderAmount(mPaymentInfoHelper.getAmount());//check amount is support or not
                 if (!miniPmcTransType.isAllowPmcQuota()) {
                     CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
-                    String invalidAmountMessage = GlobalData.getAppContext().getResources().getString(R.string.invalid_order_amount_bank);
+                    String invalidAmountMessage = mContext.getResources().getString(R.string.invalid_order_amount_bank);
                     double amount_total = mPaymentInfoHelper.getAmountTotal();
                     cardNumberView.setError(String.format(invalidAmountMessage, getBankCardFinder().getShortBankName(), StringUtil.formatVnCurrence(String.valueOf(amount_total))));
                     disableNext();
@@ -827,7 +832,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
             //check bank future feature
-            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
                 showWarningBankVersionSupport();
                 return;
             }
@@ -877,12 +882,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return;
         }
         String pMessage = mPaymentInfoHelper.isLinkTrans() ?
-                GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_linkchannel) :
-                GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_payment);
+                mContext.getResources().getString(R.string.sdk_warning_version_support_linkchannel) :
+                mContext.getResources().getString(R.string.sdk_warning_version_support_payment);
         pMessage = String.format(pMessage, bankConfig.getShortBankName());
         getAdapter().getView().showConfirmDialog(pMessage,
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_upgrade_button),
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
+                mContext.getResources().getString(R.string.dialog_upgrade_button),
+                mContext.getResources().getString(R.string.dialog_retry_input_card_button),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
@@ -908,9 +913,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
         if (mPaymentInfoHelper.isLinkTrans()) {
             channelFragment
-                    .showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_link_warning_mess),
-                            GlobalData.getAppContext().getString(R.string.dialog_linkaccount_button),
-                            GlobalData.getAppContext().getString(R.string.dialog_retry_input_card_button),
+                    .showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_warning_mess),
+                            mContext.getResources().getString(R.string.dialog_linkaccount_button),
+                            mContext.getResources().getString(R.string.dialog_retry_input_card_button),
                             new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
@@ -931,9 +936,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                 }
                             });
         } else if (!BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), CardType.PVCB)) {
-            channelFragment.showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_link_before_payment_warning_mess),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_linkaccount_button),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
+            channelFragment.showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_before_payment_warning_mess),
+                    mContext.getResources().getString(R.string.dialog_linkaccount_button),
+                    mContext.getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {
@@ -972,7 +977,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 miniPmcTransType = getAdapter().getConfig(pBankCode);
             }
 
-            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext()))) {
+            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
                 showWarningBankVersionSupport();
                 return;
             }
@@ -1018,7 +1023,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void setMinHeightSwitchCardButton() {
         if (mLayoutSwitch != null) {
-            int heightSwitchButton = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.switch_card_layout_min_height);
+            int heightSwitchButton = (int) mContext.getResources().getDimension(R.dimen.switch_card_layout_min_height);
             android.view.ViewGroup.LayoutParams params = mLayoutSwitch.getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = heightSwitchButton;
@@ -1081,9 +1086,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void addDot() {
-        ImageView dot = new ImageView(GlobalData.getAppContext());
+        ImageView dot = new ImageView(mContext);
         dot.setImageResource(R.drawable.dot);
-        int dotSize = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.dot_size);
+        int dotSize = (int) mContext.getResources().getDimension(R.dimen.dot_size);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dotSize, dotSize);
         params.setMargins(dotSize, 0, dotSize, 0);
         mDotView.addView(dot, params);
@@ -1168,7 +1173,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             //user in last view (card name)
             if (errorFragmentIndex == (mMaxPagerCount - 1)) {
                 try {
-                    showHintError(getCardNameView(), GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_cardname_mess));
+                    showHintError(getCardNameView(), mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
 
                 } catch (Exception e) {
                     Log.e(this, e);
@@ -1267,7 +1272,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         //validate card number before move to next page
         if (currentIndex == 0 && !validateCardNumberLuhn()) {
             try {
-                showHintError(getCardNumberView(), GlobalData.getAppContext().getResources().getString(R.string.sdk_error_luhn_cardnumber_mess));
+                showHintError(getCardNumberView(), mContext.getResources().getString(R.string.sdk_error_luhn_cardnumber_mess));
                 Timber.d("validdate Luhn fail");
                 return;
             } catch (Exception e) {
@@ -1279,7 +1284,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } else {
             // completed the card entry.
             try {
-                SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
+                SdkUtils.hideSoftKeyboard(mContext, getAdapter().getActivity());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -1377,7 +1382,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getAdapter()
                     .getView()
                     .showInfoDialog(messaage,
-                            GlobalData.getAppContext().getString(R.string.dialog_retry_input_card_button),
+                            mContext.getString(R.string.dialog_retry_input_card_button),
                             mBankMaintenanceDialogListener);
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -1386,12 +1391,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void showWarningDisablePmc(String pBankName) {
         String mess = mPaymentInfoHelper.isLinkTrans() ?
-                GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_pmc_transtype_disable_link) :
-                GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_pmc_transtype_disable_payment);
+                mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_link) :
+                mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_payment);
         String disableBankMessage = String.format(mess, pBankName);
         try {
             getAdapter().getView().showInfoDialog(disableBankMessage,
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
+                    mContext.getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventDialogListener() {
                         @Override
                         public void onOKEvent() {
@@ -1491,7 +1496,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (!supportCard()) {
                 return;
             }
-            cardNumberView.setError(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_not_support));
+            cardNumberView.setError(mContext.getResources().getString(R.string.sdk_card_not_support));
             cardNumberView.showQuestionIcon();
             disableNext();
         }
@@ -1509,7 +1514,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public void showHintError(EditText pEdittext, String pError) {
         try {
-            getAdapter().getView().setTextInputLayoutHintError(pEdittext, pError, GlobalData.getAppContext());
+            getAdapter().getView().setTextInputLayoutHintError(pEdittext, pError, mContext);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1532,7 +1537,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public void clearHintError(EditText pEdittext) {
         try {
-            getAdapter().getView().setTextInputLayoutHint(pEdittext, null, GlobalData.getAppContext());
+            getAdapter().getView().setTextInputLayoutHint(pEdittext, null, mContext);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1582,7 +1587,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     boolean supportCard() {
         try {
             if (mCardAdapter.getCardNumberFragment().hasError() &&
-                    (mCardAdapter.getCardNumberFragment().getError().equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_not_support))
+                    (mCardAdapter.getCardNumberFragment().getError().equals(mContext.getResources().getString(R.string.sdk_card_not_support))
                             || mCardAdapter.getCardNumberFragment().getError().contains("không hỗ trợ"))) {
                 return false;
             }
@@ -1718,7 +1723,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             VPaymentEditText currentFocusView = (VPaymentEditText) getCurrentFocusView();
             //card name input
             if (currentFocusView.getId() == R.id.edittext_localcard_name && !currentFocusView.isValidInput()) {
-                showHintError(currentFocusView, GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_cardname_mess));
+                showHintError(currentFocusView, mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
                 return false;
             }
             //empty or input valid

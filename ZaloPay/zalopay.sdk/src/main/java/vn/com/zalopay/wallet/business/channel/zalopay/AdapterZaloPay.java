@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.zalopay;
 
+import android.content.Context;
+
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -12,9 +14,9 @@ import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ZALOPAY;
 
 public class AdapterZaloPay extends AdapterBase {
-    public AdapterZaloPay(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
+    public AdapterZaloPay(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(SCREEN_ZALOPAY, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(pContext, SCREEN_ZALOPAY, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
     }
 
     protected int getDefaultChannelId() {

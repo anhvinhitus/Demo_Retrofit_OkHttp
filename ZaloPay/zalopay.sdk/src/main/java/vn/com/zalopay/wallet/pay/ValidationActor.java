@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.pay;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
@@ -12,9 +12,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
@@ -28,28 +26,10 @@ public class ValidationActor extends SingletonBase {
     PaymentInfoHelper mPaymentInfoHelper;
     WeakReference<ChannelListPresenter> mChannelListPresenter;
     private IBankInteractor mBankInteractor;
-    private ZPWOnEventConfirmDialogListener mUpdateLevelListener = new ZPWOnEventConfirmDialogListener() {
-        @Override
-        public void onCancelEvent() {
-            mChannelListPresenter.get().exitHasOneChannel();
-        }
+    Context mContext;
 
-        @Override
-        public void onOKEvent() {
-            if (mChannel.isBankAccount() && !BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserInfo().zalopay_userid, CardType.PVCB)) {
-                mPaymentInfoHelper.setResult(PaymentStatus.UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT);
-            } else {
-                mPaymentInfoHelper.setResult(PaymentStatus.LEVEL_UPGRADE_PASSWORD);
-            }
-            try {
-                getView().callbackThenTerminate();
-            } catch (Exception e) {
-                Timber.d(e.getMessage());
-            }
-        }
-    };
-
-    public ValidationActor(PaymentInfoHelper paymentInfoHelper, IBankInteractor iBankInteractor, ChannelListPresenter channelListPresenter) {
+    public ValidationActor(Context pContext, PaymentInfoHelper paymentInfoHelper, IBankInteractor iBankInteractor, ChannelListPresenter channelListPresenter) {
+        this.mContext = pContext;
         this.mPaymentInfoHelper = paymentInfoHelper;
         this.mBankInteractor = iBankInteractor;
         this.mChannelListPresenter = new WeakReference<>(channelListPresenter);
@@ -63,13 +43,13 @@ public class ValidationActor extends SingletonBase {
         if (mChannel.isMapValid()) {
             BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
             if (bankConfig != null) {
-                String pMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_payment);
+                String pMessage = mContext.getResources().getString(R.string.sdk_warning_version_support_payment);
                 pMessage = String.format(pMessage, bankConfig.getShortBankName());
                 showSupportBankVersionDialog(pMessage);
                 return;
             }
         }
-        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_payment);
+        String message = mContext.getResources().getString(R.string.sdk_warning_version_support_payment);
         showSupportBankVersionDialog(String.format(message, mChannel.pmcname));
     }
 
@@ -91,7 +71,7 @@ public class ValidationActor extends SingletonBase {
             }
         }
         //check bank future
-        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext())) && !mChannel.isNewAtmChannel()) {
+        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(SDKApplication.getContext())) && !mChannel.isNewAtmChannel()) {
             warningSupportVersion();
         }
         if (!mChannel.meetPaymentCondition()) {

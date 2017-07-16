@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.creditcard;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -12,10 +13,8 @@ import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -29,8 +28,8 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 
 public class CreditCardGuiProcessor extends CardGuiProcessor {
-    public CreditCardGuiProcessor(AdapterCreditCard pAdapterCreditCard) {
-        super();
+    public CreditCardGuiProcessor(Context pContext, AdapterCreditCard pAdapterCreditCard) {
+        super(pContext);
         mAdapter = new WeakReference<>(pAdapterCreditCard);
         init(mAdapter.get().getPaymentInfoHelper());
     }
@@ -57,19 +56,16 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     public void continueDetectCardForLinkCard() {
         Timber.d("card number=" + getCardNumber() + "===preparing to detect bank");
-        Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber(), new Action1<Boolean>() {
-            @Override
-            public void call(Boolean detected) {
-                getAdapter().setNeedToSwitchChannel(detected);
-                populateTextOnCardView();
-                if (detected) {
-                    setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
-                    checkAutoMoveCardNumberFromBundle = true;
-                    Timber.d("card number=" + getCardNumber() + " detected=" + detected + " bank=" + getBankCardFinder().getBankName());
+        Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber(), detected -> {
+            getAdapter().setNeedToSwitchChannel(detected);
+            populateTextOnCardView();
+            if (detected) {
+                setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
+                checkAutoMoveCardNumberFromBundle = true;
+                Timber.d("card number=" + getCardNumber() + " detected=" + detected + " bank=" + getBankCardFinder().getBankName());
 
-                } else {
-                    setDetectedCard();
-                }
+            } else {
+                setDetectedCard();
             }
         });
         try {
@@ -226,7 +222,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             Timber.d("start switch to atm adapter");
             getAdapter().getPresenter().switchCardLinkAdapter(BuildConfig.channel_atm, getCardNumber());
         } catch (Exception e) {
-            Timber.w(e,"Exception switch atm adapter");
+            Timber.w(e, "Exception switch atm adapter");
         }
     }
 

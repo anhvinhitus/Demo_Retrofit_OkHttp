@@ -391,7 +391,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         PaymentSnackBar.getInstance().dismiss();
         try {
             PaymentSnackBar.getInstance().setRootView(view_top_linearlayout)
-                    .setBgColor(GlobalData.getAppContext().getResources().getColor(R.color.yellow_bg_popup_error))
+                    .setBgColor(getResources().getColor(R.color.yellow_bg_popup_error))
                     .setMessage(pMessage)
                     .setActionMessage(pActionMessage)
                     .setDuration(pDuration)

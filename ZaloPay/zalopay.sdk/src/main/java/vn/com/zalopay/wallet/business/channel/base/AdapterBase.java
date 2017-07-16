@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
@@ -128,7 +129,6 @@ public abstract class AdapterBase {
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
-
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -139,6 +139,7 @@ public abstract class AdapterBase {
         public void onOpenSettingDialogClicked() {
         }
     };
+    protected Context mContext;
     /*
      * loading website so long,over timeout 40s
      */
@@ -151,7 +152,7 @@ public abstract class AdapterBase {
             message = throwable.getMessage();
         }
         if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_load_card_mess);
+            message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
         }
         try {
             getView().hideLoading();
@@ -197,7 +198,7 @@ public abstract class AdapterBase {
                     return;
                 }
                 //retry load website cc
-                if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isCCFlow() && isLoadWeb() && hasTransId()) {
+                if (ConnectionUtil.isOnline(mContext) && isCCFlow() && isLoadWeb() && hasTransId()) {
                     //max retry 3
                     if (numberOfRetryTimeout > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_retry_number_load_website))) {
                         getOneShotTransactionStatus();
@@ -205,9 +206,9 @@ public abstract class AdapterBase {
                     }
                     numberOfRetryTimeout++;
                     DialogManager.showSweetDialogOptionNotice(activity.get(),
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_load_data_timeout_mess),
-                            GlobalData.getAppContext().getResources().getString(R.string.dialog_continue_load_button),
-                            GlobalData.getAppContext().getResources().getString(R.string.dialog_cancel_button),
+                            mContext.getResources().getString(R.string.sdk_load_data_timeout_mess),
+                            mContext.getResources().getString(R.string.dialog_continue_load_button),
+                            mContext.getResources().getString(R.string.dialog_cancel_button),
                             new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
@@ -226,19 +227,19 @@ public abstract class AdapterBase {
                             });
                 }
                 //load web timeout, need to get oneshot to server to check status again
-                else if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isParseWebFlow() && hasTransId()) {
+                else if (ConnectionUtil.isOnline(mContext) && isParseWebFlow() && hasTransId()) {
                     getOneShotTransactionStatus();
                 } else if (mPaymentInfoHelper.isBankAccountTrans() && AdapterBase.this instanceof AdapterLinkAcc && isFinalStep()) {
                     ((AdapterLinkAcc) AdapterBase.this).verifyServerAfterParseWebTimeout();
                     Timber.d("load website timeout, continue to verify server again to ask for new data list");
                 } else if (!isFinalScreen()) {
-                    getView().showInfoDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess),
-                            () -> showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
+                    getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess),
+                            () -> showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
                 }
                 sdkReportError(TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
             } catch (Exception ex) {
                 Timber.w(ex.getMessage());
-                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                 try {
                     sdkReportError(GENERAL_EXCEPTION, ex.getMessage());
                 } catch (Exception e) {
@@ -248,8 +249,9 @@ public abstract class AdapterBase {
         }
     };
 
-    public AdapterBase(String pPageName, ChannelPresenter pPresenter,
+    public AdapterBase(Context pContext, String pPageName, ChannelPresenter pPresenter,
                        MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
+        mContext = pContext;
         mPresenter = new WeakReference<>(pPresenter);
         mMiniPmcTransType = pMiniPmcTransType;
         mCard = new DPaymentCard();
@@ -294,7 +296,7 @@ public abstract class AdapterBase {
 
     public void requestReadOtpPermission() {
         try {
-            getActivity().requestPermission(GlobalData.getAppContext());//request permission read/view sms on android 6.0+
+            getActivity().requestPermission(mContext);//request permission read/view sms on android 6.0+
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -320,7 +322,6 @@ public abstract class AdapterBase {
     }
 
     public void init() throws Exception {
-        //add overswipe for rootview scrollview
         ScrollView scrollViewRoot = (ScrollView) getView().findViewById(R.id.zpw_scrollview_container);
         if (scrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
@@ -519,11 +520,11 @@ public abstract class AdapterBase {
         mIsOrderSubmit = true;
         mCanEditCardInfo = false;
         try {
-            getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_submit_order_mess));
+            getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_submit_order_mess));
             mTransactionAdapter.startTransaction();
         } catch (Exception e) {
             Log.e(this, e);
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout));
+            showTransactionFailView(mContext.getResources().getString(R.string.zpw_string_error_layout));
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper
@@ -553,11 +554,11 @@ public abstract class AdapterBase {
         numberRetryOtp++;
         //over number of retry
         if (numberRetryOtp > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_number_retry_otp))) {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_retry_otp_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_retry_otp_mess));
             return;
         }
         showDialogWithCallBack(mResponseStatus.returnmessage,
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
+                mContext.getResources().getString(R.string.dialog_close_button), () -> {
                     //reset otp and show keyboard again
                     if (isCardFlow()) {
                         ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
@@ -570,7 +571,7 @@ public abstract class AdapterBase {
     }
 
     protected boolean shouldCheckStatusAgain() {
-        return mResponseStatus == null && ConnectionUtil.isOnline(GlobalData.getAppContext()) && hasTransId();
+        return mResponseStatus == null && ConnectionUtil.isOnline(mContext) && hasTransId();
     }
 
     protected boolean isOrderProcessing() {
@@ -590,22 +591,22 @@ public abstract class AdapterBase {
             if (pAdditionParams == null || pAdditionParams.length == 0 || (pAdditionParams.length >= 1 && pAdditionParams[0] == null)) {
                 getView().hideLoading();
                 //offline
-                if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+                if (!ConnectionUtil.isOnline(mContext)) {
                     processNetworkingOffAfterSubmitTransaction();
                     return pAdditionParams;
                 }
                 if (isAlreadyCheckStatusFailSubmit) {
                     try {
-                        showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+                        showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
-                        terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
+                        terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
                     }
                     return pAdditionParams;
                 }
                 if (shouldCheckTransactionStatusByClientId() && order != null) {
                     checkTransactionStatusAfterSubmitFail(true, order.apptransid,
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                     return pAdditionParams;
                 }
                 mResponseStatus = null;
@@ -630,13 +631,13 @@ public abstract class AdapterBase {
                 mOtpEndTime = System.currentTimeMillis();
                 mCaptchaEndTime = System.currentTimeMillis();
                 getTransactionStatus(mTransactionID, false,
-                        GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+                        mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
             }
             //callback load site error from webview
             //need to get status again if use submit otp or cc flow
             else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
-                if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                    showTransactionFailView(GlobalData.getAppContext().getString(R.string.sdk_payment_generic_error_networking_mess));
+                if (!ConnectionUtil.isOnline(mContext)) {
+                    showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                     return pAdditionParams;
                 }
                 //ending timer loading site
@@ -656,10 +657,10 @@ public abstract class AdapterBase {
                 if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
                     isLoadWebTimeout = true;
                     getTransactionStatus(mTransactionID, false,
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } else {
                     String mess = (webViewError != null) ? webViewError.getFriendlyMessage() :
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_errormess_end_transaction);
+                            mContext.getResources().getString(R.string.sdk_errormess_end_transaction);
                     showTransactionFailView(mess);
                 }
             }
@@ -678,15 +679,15 @@ public abstract class AdapterBase {
                     try {
                         mCountCheckStatus++;
                         if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
-                            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_order_not_submit_mess));
+                            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_order_not_submit_mess));
                         } else if (order != null) {
                             //retry again
                             checkTransactionStatusAfterSubmitFail(false, order.apptransid,
-                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+                                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                         }
                     } catch (Exception e) {
                         Log.e(this, e);
-                        terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
+                        terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
                     }
 
                     return null;
@@ -710,7 +711,7 @@ public abstract class AdapterBase {
                 getView().visibleSubmitButton(true);
                 //error
                 if (mResponseStatus == null) {
-                    showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+                    showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
                     return pAdditionParams;
                 }
                 //retry otp
@@ -724,7 +725,7 @@ public abstract class AdapterBase {
                     if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
                         //no link for parsing
                         if (TextUtils.isEmpty(dataResponse.redirecturl)) {
-                            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_empty_url_mess));
+                            showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_empty_url_mess));
                             sdkReportErrorOnPharse(Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
                             return null;
                         }
@@ -739,7 +740,7 @@ public abstract class AdapterBase {
                         }
                         if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                             setECardFlowType(BankFlow.PARSEWEB);
-                            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
+                            showLoadindTimeout(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
                             initWebView(dataResponse.redirecturl);
                             endingCountTimeLoadCaptchaOtp();
                         }
@@ -753,7 +754,7 @@ public abstract class AdapterBase {
                                 mOtpBeginTime = System.currentTimeMillis();
                                 mCaptchaBeginTime = System.currentTimeMillis();
                             } catch (Exception e) {
-                                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
+                                showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_init_data));
                                 sdkReportErrorOnPharse(Constants.STATUS_PHARSE, e.getMessage());
                                 Log.e(this, e);
                             }
@@ -784,12 +785,12 @@ public abstract class AdapterBase {
 								messageIntent.setAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
 								messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_SENDER, sender);
 								messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_BODY,body);
-								LocalBroadcastManager.get(GlobalData.getAppContext()).sendBroadcast(messageIntent);
+								LocalBroadcastManager.get(mContext).sendBroadcast(messageIntent);
 							}
 						},5000);
 						*/
                     } else {
-                        showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_undefine_error));
+                        showTransactionFailView(mContext.getResources().getString(R.string.sdk_undefine_error));
                     }
                 } else {
                     if (isOrderProcessing()) {
@@ -807,7 +808,7 @@ public abstract class AdapterBase {
             }
 
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_generic_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_generic_mess));
             sdkReportErrorOnPharse(Constants.UNDEFINE, e.getMessage());
             Log.e(this, e);
         }
@@ -867,7 +868,7 @@ public abstract class AdapterBase {
                 DialogManager.closeAllDialog();//close dialog
                 if (mResponseStatus != null) {
                     mResponseStatus.returncode = 1;
-                    mResponseStatus.returnmessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_success_mess);
+                    mResponseStatus.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
                 }
                 /***
                  *  get time from notification
@@ -941,7 +942,7 @@ public abstract class AdapterBase {
         }
 
 
-        View contentView = View.inflate(GlobalData.getAppContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+        View contentView = View.inflate(mContext, vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
         mPromotionBuilder = CashBackRender.getBuilder()
                 .setPromotion(promotionEvent)
                 .setView(contentView)
@@ -982,7 +983,7 @@ public abstract class AdapterBase {
      * @return
      */
     public boolean openSettingNetworking() {
-        boolean isNetworkingOpen = ConnectionUtil.isOnline(GlobalData.getAppContext());
+        boolean isNetworkingOpen = ConnectionUtil.isOnline(mContext);
         if (!isNetworkingOpen) {
             try {
                 getView().hideLoading();
@@ -1014,7 +1015,7 @@ public abstract class AdapterBase {
     public void onClickSubmission() {
         try {
             Log.d(this, "page name", getPageName());
-            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+            SdkUtils.hideSoftKeyboard(mContext, getActivity());
             //fail transaction
             if (isTransactionFail()) {
                 terminate(null, true);
@@ -1026,7 +1027,7 @@ public abstract class AdapterBase {
                 onProcessPhrase();
             }
         } catch (Exception ex) {
-            terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
+            terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
             Log.e(this, ex);
         }
     }
@@ -1063,14 +1064,14 @@ public abstract class AdapterBase {
      */
     public void whetherQuitPaymentOffline() {
         boolean isNeedCloseSDK = isOrderSubmit() || isLinkAccFlow();
-        if (isNeedCloseSDK && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        if (isNeedCloseSDK && !ConnectionUtil.isOnline(mContext)) {
             try {
-                SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                SdkUtils.hideSoftKeyboard(mContext, getActivity());
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage(mContext) :
+                    mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess);
             showTransactionFailView(offlineMessage);
         }
     }
@@ -1088,10 +1089,10 @@ public abstract class AdapterBase {
      */
     protected void processNetworkingOffAfterSubmitTransaction() {
         try {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess));
         } catch (Exception e) {
             Log.e(this, e);
-            terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
+            terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
         }
     }
 
@@ -1120,11 +1121,11 @@ public abstract class AdapterBase {
     private void getStatusStrategy(String pTransID, boolean pCheckData, String pMessage) {
         try {
             getView().showLoading(TextUtils.isEmpty(pMessage) ?
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess) :
+                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess) :
                     pMessage);
             mTransactionAdapter.getTransactionStatus(pTransID, pCheckData, pMessage);
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
             Log.e(this, e);
         }
     }
@@ -1148,11 +1149,11 @@ public abstract class AdapterBase {
             }
             //response is null
             else {
-                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             }
             getView().hideLoading();
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             Log.e(this, e);
         }
     }
@@ -1165,15 +1166,15 @@ public abstract class AdapterBase {
     protected void showFailScreen(String pMessage) {
         String message = pMessage;
         if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+            message = mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
-        String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+        String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
         if (TextUtils.isEmpty(appName)) {
             AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
             appName = appInfo != null ? appInfo.appname : null;
         }
         try {
-            String title = mPaymentInfoHelper.getFailTitleByTrans(GlobalData.getAppContext());
+            String title = mPaymentInfoHelper.getFailTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mResponseStatus, true, title);
         } catch (Exception e) {
@@ -1194,7 +1195,7 @@ public abstract class AdapterBase {
         try {
             isAlreadyCheckStatusFailSubmit = true;
             getView().showLoading(TextUtils.isEmpty(pMessage) ?
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess) :
+                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess) :
                     pMessage);
             if (shouldDelay) {
                 //delay 1s before continue check
@@ -1207,7 +1208,7 @@ public abstract class AdapterBase {
             }
 
         } catch (Exception ex) {
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             Log.e(this, ex);
         }
     }
@@ -1303,7 +1304,7 @@ public abstract class AdapterBase {
         }
 
         AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
-        String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
+        String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
         if (TextUtils.isEmpty(appName)) {
             appName = appInfo != null ? appInfo.appname : null;
         }
@@ -1311,7 +1312,7 @@ public abstract class AdapterBase {
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             boolean isTransfer = mPaymentInfoHelper.isMoneyTranferTrans();
             UserInfo receiverInfo = mPaymentInfoHelper.getMoneyTransferReceiverInfo();
-            String title = mPaymentInfoHelper.getSuccessTitleByTrans(GlobalData.getAppContext());
+            String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             boolean hideAmount = isLink;
             getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, receiverInfo, title);
@@ -1333,7 +1334,7 @@ public abstract class AdapterBase {
         }
         PaymentSnackBar.getInstance().dismiss();
         try {
-            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+            SdkUtils.hideSoftKeyboard(mContext, getActivity());
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
@@ -1391,9 +1392,9 @@ public abstract class AdapterBase {
     }
 
     public boolean isTransactionProcessing(String pMessage) {
-        return pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
-                || pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(R.string.sdk_expire_transaction_mess))
-                || pMessage.equals(GlobalData.getAppContext().getString(R.string.sdk_error_generic_submitorder));
+        return pMessage.equalsIgnoreCase(mContext.getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
+                || pMessage.equalsIgnoreCase(mContext.getString(R.string.sdk_expire_transaction_mess))
+                || pMessage.equals(mContext.getString(R.string.sdk_error_generic_submitorder));
     }
 
     public boolean isTransactionInProgress() {
@@ -1416,9 +1417,9 @@ public abstract class AdapterBase {
         }
         if (isTransactionProcessing(pMessage)) {
             mPageName = PAGE_FAIL_PROCESSING;
-        } else if (isTransNetworkError(GlobalData.getAppContext(), pMessage)) {
+        } else if (isTransNetworkError(mContext, pMessage)) {
             mPageName = PAGE_FAIL_NETWORKING;
-            mPaymentInfoHelper.updateResultNetworkingError(pMessage); //update payment status to no internet to app know
+            mPaymentInfoHelper.updateResultNetworkingError(mContext, pMessage); //update payment status to no internet to app know
         } else {
             mPageName = PAGE_FAIL;
         }
@@ -1447,7 +1448,7 @@ public abstract class AdapterBase {
             Log.e(this, e);
         }
         try {
-            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+            SdkUtils.hideSoftKeyboard(mContext, getActivity());
             getView().hideLoading();
         } catch (Exception e) {
             Log.e(this, e);
@@ -1461,7 +1462,7 @@ public abstract class AdapterBase {
         if (TextUtils.isEmpty(message)) {
             return;
         }
-        if (!message.equalsIgnoreCase(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_mess_exist_mapcard))) {
+        if (!message.equalsIgnoreCase(mContext.getResources().getString(R.string.sdk_error_mess_exist_mapcard))) {
             return;
         }
         //clear checksum cardinfo
@@ -1515,7 +1516,7 @@ public abstract class AdapterBase {
             return;
         }
         if (!TextUtils.isEmpty(pMessage)) {
-            pMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+            pMessage = mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         try {
             getView().showInfoDialog(pMessage);
@@ -1534,17 +1535,17 @@ public abstract class AdapterBase {
             Timber.d("user in fail screen - skip retry get status");
             return;
         }
-        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_mess);
+        String message = mContext.getResources().getString(R.string.sdk_trans_retry_getstatus_mess);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                showTransactionFailView(GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
+                showTransactionFailView(mContext.getResources().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
             }
 
             @Override
             public void onOKEvent() {
                 try {
-                    getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+                    getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
@@ -1556,7 +1557,7 @@ public abstract class AdapterBase {
                     mTransactionAdapter.getTransactionStatus(pZmpTransID, isCheckDataInStatus, null);
                 } catch (Exception e) {
                     Log.e(this, e);
-                    terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
+                    terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
                 }
             }
         });
@@ -1595,13 +1596,13 @@ public abstract class AdapterBase {
     protected void reloadMapCard(boolean showLoading) {
         if (showLoading) {
             try {
-                getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_card_info_mess));
+                getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_load_card_info_mess));
             } catch (Exception e) {
                 Log.e(this, e);
             }
         }
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        String appVersion = SdkUtils.getAppVersion(mContext);
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
@@ -1663,12 +1664,12 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportErrorOnPharse(int pPharse, String pMessage) {
-        String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
-        if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
+        if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(mContext)) {
             return;
         }
-        paymentError = String.format(paymentError, pPharse, 200, pMessage);
         try {
+            paymentError = String.format(paymentError, String.valueOf(pPharse), String.valueOf(200), pMessage);
             sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
         } catch (Exception e) {
             Timber.d(e.getMessage());
@@ -1676,10 +1677,10 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportErrorOnTransactionFail() throws Exception {
-        if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(mContext)) {
             return;
         }
-        String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
+        String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
         if (!TextUtils.isEmpty(paymentError)) {
             paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
             sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
@@ -1687,7 +1688,7 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportError(int pErrorCode, String pMessage) {
-        if (getGuiProcessor() == null || !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        if (getGuiProcessor() == null || !ConnectionUtil.isOnline(mContext)) {
             return;
         }
         try {

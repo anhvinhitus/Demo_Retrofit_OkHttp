@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -46,9 +47,9 @@ public class AdapterBankCard extends AdapterBase {
     private PaymentWebViewClient mWebViewProcessor = null;
     private int numberRetryCaptcha = 0;
 
-    public AdapterBankCard(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
+    public AdapterBankCard(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                            PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(SCREEN_ATM, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(pContext, SCREEN_ATM, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         GlobalData.cardChannelType = CardChannel.ATM;
     }
 
@@ -75,7 +76,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void init() throws Exception {
         super.init();
-        this.mGuiProcessor = new BankCardGuiProcessor(this);
+        this.mGuiProcessor = new BankCardGuiProcessor(mContext, this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
         }
@@ -288,16 +289,16 @@ public class AdapterBankCard extends AdapterBase {
                     }
                     showDialogWithCallBack(response.message,
                             GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
-                        if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
-                            //reset otp and show keyboard again
-                            ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
-                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
-                        } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                            //reset otp and show keyboard again
-                            ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
-                        }
-                    });
+                                if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
+                                    //reset otp and show keyboard again
+                                    ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
+                                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                                } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+                                    //reset otp and show keyboard again
+                                    ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
+                                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
+                                }
+                            });
                 }
                 boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
                 getView().visiableOrderInfo(visibleOrderInfo);

@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.linkacc;
 
+import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
@@ -102,11 +103,11 @@ public class AdapterLinkAcc extends AdapterBase {
                 Timber.d("refreshCaptcha()");
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
-                        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                        SdkUtils.hideSoftKeyboard(mContext, getActivity());
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
-                    linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
+                    linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
                 }
                 mIsLoadingCaptcha = true;
@@ -143,7 +144,7 @@ public class AdapterLinkAcc extends AdapterBase {
             Log.d(this, "load bank account error", throwable);
             String message = TransactionHelper.getMessage(throwable);
             if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getAppContext().getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
+                message = mContext.getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
             }
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccFail(message, mTransactionID);
@@ -161,7 +162,7 @@ public class AdapterLinkAcc extends AdapterBase {
         if (userInfo == null) {
             return;
         }
-        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
+        String appVersion = SdkUtils.getAppVersion(mContext);
         Subscription subscription = SDKApplication.getApplicationComponent()
                 .linkInteractor()
                 .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
@@ -180,11 +181,11 @@ public class AdapterLinkAcc extends AdapterBase {
             if (!isLoadingCaptcha()) {
                 if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
-                        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+                        SdkUtils.hideSoftKeyboard(mContext, getActivity());
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
-                    linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
+                    linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
                 }
                 Timber.d("refreshCaptcha()");
@@ -196,19 +197,19 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     };
 
-    public AdapterLinkAcc(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
-        super(SCREEN_LINK_ACC, pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
+    public AdapterLinkAcc(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
+        super(pContext, SCREEN_LINK_ACC, pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
     }
 
     private String getDescLinkAccount() {
         if (getPageName().equals(PAGE_LINKACC_SUCCESS)) {
-            String desc = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_success_mess);
+            String desc = mContext.getResources().getString(R.string.sdk_vcb_linkacc_success_mess);
             if (getNotification() != null) {
                 desc = getNotification().getMsg();
             }
             return desc;
         } else {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_unlinkacc_success_mess);
+            return mContext.getResources().getString(R.string.sdk_vcb_unlinkacc_success_mess);
         }
     }
 
@@ -217,11 +218,11 @@ public class AdapterLinkAcc extends AdapterBase {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
             } else {
-                unlinkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_account_exist_system_mess), mTransactionID);
+                unlinkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_account_exist_system_mess), mTransactionID);
             }
         } else {
             if (mPaymentInfoHelper.bankAccountLink()) {
-                linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_account_notfound_mess), mTransactionID);
+                linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_account_notfound_mess), mTransactionID);
             } else {
                 unlinkAccSuccess();
             }
@@ -271,7 +272,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 .bankListInteractor()
                 .getBankConfig(bankCode);
         if (bankConfig == null || !bankConfig.isActive()) {
-            terminate(GlobalData.getAppContext().getResources().getString(R.string.sdk_select_bank_not_support), true);
+            terminate(mContext.getResources().getString(R.string.sdk_select_bank_not_support), true);
         } else {
             String loginBankUrl = bankConfig.loginbankurl;
             if (TextUtils.isEmpty(loginBankUrl)) {
@@ -283,7 +284,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void init() throws Exception {
-        linkAccGuiProcessor = new LinkAccGuiProcessor(this);
+        linkAccGuiProcessor = new LinkAccGuiProcessor(mContext, this);
         this.mGuiProcessor = linkAccGuiProcessor;
         // set button always above keyboard.
         LayoutUtils.setButtonAlwaysAboveKeyboards(
@@ -296,9 +297,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // show title bar
         if (mPaymentInfoHelper.bankAccountLink()) {
-            getView().setTitle(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_link_acc_title));
+            getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_link_acc_title));
         } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-            getView().setTitle(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_unlink_acc_title));
+            getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_unlink_acc_title));
             try {
                 mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             } catch (Exception e) {
@@ -306,7 +307,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
 
         } else {
-            throw new Exception(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data));
+            throw new Exception(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
         }
         linkAccGuiProcessor.getLoginHolder().btnRefreshCaptcha.setOnClickListener(refreshCaptchaLogin);
         linkAccGuiProcessor.getRegisterHolder().getButtonRefreshCaptcha().setOnClickListener(refreshCaptcha);
@@ -320,7 +321,7 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void onProcessPhrase() {
         Timber.d("on process phase " + mPageName);
-        if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+        if (!ConnectionUtil.isOnline(mContext)) {
             try {
                 getView().showOpenSettingNetwokingDialog(closeSettingNetworkingListener);
             } catch (Exception e) {
@@ -397,7 +398,7 @@ public class AdapterLinkAcc extends AdapterBase {
             Timber.d("stopping reload bank account because user in result screen");
             return;
         }
-        visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_reload_bankaccount_list));
+        visibleLoadingDialog(mContext.getResources().getString(R.string.sdk_trans_reload_bankaccount_list));
         mHandler.postDelayed(runnableWaitingNotifyLink, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
@@ -407,7 +408,7 @@ public class AdapterLinkAcc extends AdapterBase {
             getView().renderByResource(mPageName);
             String descLink = getDescLinkAccount();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, GlobalData.getAppContext().getString(R.string.sdk_link_acc_success_title));
+            getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
             getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
@@ -447,7 +448,7 @@ public class AdapterLinkAcc extends AdapterBase {
             mWebViewProcessor.stop();//stop loading website
             getView().renderByResource(mPageName);
             getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
-                    mResponseStatus, true, GlobalData.getAppContext().getString(R.string.sdk_link_acc_fail_title));
+                    mResponseStatus, true, mContext.getResources().getString(R.string.sdk_link_acc_fail_title));
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
@@ -466,7 +467,7 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
         getView().renderByResource(mPageName);
-        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service), getDescLinkAccount(), true, false, null, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_success_title));
+        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null, getActivity().getString(R.string.sdk_unlink_account_service), getDescLinkAccount(), true, false, null, mContext.getResources().getString(R.string.sdk_unlink_acc_success_title));
         getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
@@ -487,7 +488,7 @@ public class AdapterLinkAcc extends AdapterBase {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
-            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, GlobalData.getAppContext().getString(R.string.sdk_unlink_acc_fail_title));
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
             if (GlobalData.shouldNativeWebFlow()) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
@@ -553,7 +554,7 @@ public class AdapterLinkAcc extends AdapterBase {
     protected boolean isValidPhoneList(List<String> pPhoneVcb) {
         //validate zalopay phone and vcb phone must same
         if (!validate_Phone_Zalopay_Vcb(pPhoneVcb)) {
-            String formatMess = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_numberphone_sdk_vcb);
+            String formatMess = mContext.getResources().getString(R.string.sdk_error_numberphone_sdk_vcb);
             String message = String.format(formatMess, pPhoneVcb.get(0), maskNumberPhone(mPaymentInfoHelper.getNumberPhone()));
             showFailScreenOnType(message);
             return false;
@@ -650,7 +651,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // Event: HIT
         if (pEventType == EEventType.ON_HIT) {
-            visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
+            visibleLoadingDialog(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
             return null;
         }
 
@@ -710,23 +711,23 @@ public class AdapterLinkAcc extends AdapterBase {
                         case WRONG_USERNAME_PASSWORD:
                             mNumAllowLoginWrong--;
                             if (mNumAllowLoginWrong > 0) {
-                                showMessage(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_login_mess),
-                                        String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_retry_mess),
+                                showMessage(mContext.getResources().getString(R.string.sdk_vcb_error_login_mess),
+                                        String.format(mContext.getResources().getString(R.string.sdk_vcb_retry_mess),
                                                 mNumAllowLoginWrong),
                                         TSnackbar.LENGTH_LONG);
                                 linkAccGuiProcessor.getLoginHolder().getEdtUsername().selectAll();
                                 linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                             } else if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
+                                linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
                             } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
+                                unlinkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
                             }
                             return null;
                         case ACCOUNT_LOCKED:
                             if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
+                                linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
                             } else {
-                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
+                                unlinkAccFail(mContext.getResources().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
                             }
                             return null;
                         case WRONG_CAPTCHA:
@@ -804,7 +805,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         return null;
                     } else if (response.phoneNumList.size() <= 0) {
                         // don't have account link
-                        linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_phonenumber_register_notfound_mess),
+                        linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_phonenumber_register_notfound_mess),
                                 mTransactionID);
                     } else {
                         mHashMapPhoneNum = HashMapUtils.JsonArrayToHashMap(response.phoneNumList);
@@ -930,7 +931,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 if (COUNT_UNREGISTER > 0) {
                     String Message = (TextUtils.isEmpty(response.message)) ?
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_password_mess) :
+                            mContext.getResources().getString(R.string.sdk_vcb_error_password_mess) :
                             response.message;
                     if (COUNT_UNREGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
 
@@ -973,7 +974,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     return null;
                 } else if ((response.phoneNumUnRegList == null || response.phoneNumUnRegList.size() <= 0)) {
                     // don't have account link
-                    unlinkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_phonenumber_unregister_notfound_mess), mTransactionID);
+                    unlinkAccFail(mContext.getResources().getString(R.string.sdk_vcb_phonenumber_unregister_notfound_mess), mTransactionID);
                     return null;
                 } else {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
@@ -987,7 +988,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
-                    showMessage(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_login_mess), response.message, TSnackbar.LENGTH_LONG);
+                    showMessage(mContext.getResources().getString(R.string.sdk_vcb_error_login_mess), response.message, TSnackbar.LENGTH_LONG);
                 }
 
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
@@ -1031,7 +1032,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 @Override
                                                 public void onCancelEvent() {
                                                     hideLoadingDialog(); // close process dialog
-                                                    String msgErr = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_cancel_retry_otp_mess);
+                                                    String msgErr = mContext.getResources().getString(R.string.sdk_vcb_cancel_retry_otp_mess);
                                                     linkAccFail(msgErr, mTransactionID);
                                                 }
 
@@ -1039,7 +1040,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 public void onOKEvent() {
                                                     //retry reload the previous page
                                                     if (!TextUtils.isEmpty(mUrlReload)) {
-                                                        visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_loading_website_message));
+                                                        visibleLoadingDialog(mContext.getResources().getString(R.string.zpw_loading_website_message));
                                                         linkAccGuiProcessor.resetCaptchaConfirm();
                                                         linkAccGuiProcessor.resetOtp();
                                                         mWebViewProcessor.reloadWebView(mUrlReload);
@@ -1097,9 +1098,9 @@ public class AdapterLinkAcc extends AdapterBase {
             Timber.d("event on fail");
             hideLoadingDialog();
             //networking is offline
-            if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
-                        GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+            if (!ConnectionUtil.isOnline(mContext)) {
+                String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage(mContext) :
+                        mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess);
                 showFailScreenOnType(offlineMessage);
                 return pAdditionParams;
             }
@@ -1108,7 +1109,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 return pAdditionParams;
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : GlobalData.getAppContext().getString(R.string.sdk_vcb_error_unidentified));
+            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : mContext.getResources().getString(R.string.sdk_vcb_error_unidentified));
             return pAdditionParams;
         }
         //event notification from app.
@@ -1153,7 +1154,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
             } else {
                 // hide webview && show web parse
-                visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_loading_website_message));//show loading view
+                visibleLoadingDialog(mContext.getResources().getString(R.string.zpw_loading_website_message));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
             try {
@@ -1164,9 +1165,9 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }
         //networking is offline
-        if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
-                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+        if (!ConnectionUtil.isOnline(mContext)) {
+            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage(mContext) :
+                    mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess);
             showFailScreenOnType(offlineMessage);
             return;
         }

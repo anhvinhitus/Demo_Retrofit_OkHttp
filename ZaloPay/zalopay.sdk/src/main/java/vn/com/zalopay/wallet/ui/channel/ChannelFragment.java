@@ -263,10 +263,10 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void showDialogManyOption(ZPWOnSweetDialogListener pListener) {
         DialogManager.showDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, null,
-                GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_khong_button),
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_co_button),
-                GlobalData.getAppContext().getResources().getString(R.string.dialog_getstatus_button));
+                getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,
+                getResources().getString(R.string.dialog_khong_button),
+                getResources().getString(R.string.dialog_co_button),
+                getResources().getString(R.string.dialog_getstatus_button));
     }
 
     @Override
@@ -573,7 +573,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         PaymentSnackBar.getInstance().dismiss();
         try {
             PaymentSnackBar.getInstance().setRootView(findViewById(R.id.supperRootView))
-                    .setBgColor(GlobalData.getAppContext().getResources().getColor(R.color.yellow_bg_popup_error))
+                    .setBgColor(getResources().getColor(R.color.yellow_bg_popup_error))
                     .setMessage(pMessage)
                     .setActionMessage(pActionMessage)
                     .setDuration(pDuration)
@@ -802,7 +802,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         PaymentSnackBar.getInstance().dismiss();
         try {
             PaymentSnackBar.getInstance().setRootView(pRootView)
-                    .setBgColor(GlobalData.getAppContext().getResources().getColor(R.color.yellow_bg_popup_error))
+                    .setBgColor(getResources().getColor(R.color.yellow_bg_popup_error))
                     .setMessage(pMessage)
                     .setActionMessage(pActionMessage)
                     .setDuration(pDuration)

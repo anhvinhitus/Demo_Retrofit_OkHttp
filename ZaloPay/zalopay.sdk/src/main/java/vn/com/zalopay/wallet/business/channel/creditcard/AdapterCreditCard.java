@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.creditcard;
 
+import android.content.Context;
+
 import rx.Subscription;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -16,9 +18,9 @@ import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
 
 public class AdapterCreditCard extends AdapterBase {
-    public AdapterCreditCard(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
+    public AdapterCreditCard(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                              PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(SCREEN_CC, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(pContext, SCREEN_CC, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
         GlobalData.cardChannelType = CardChannel.CREDIT;
     }
 
@@ -38,7 +40,7 @@ public class AdapterCreditCard extends AdapterBase {
     @Override
     public void init() throws Exception {
         super.init();
-        this.mGuiProcessor = new CreditCardGuiProcessor(this);
+        this.mGuiProcessor = new CreditCardGuiProcessor(mContext, this);
         if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             this.mGuiProcessor.initPager();
         }

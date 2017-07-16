@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.channel.linkacc;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -139,7 +140,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
 
-    public LinkAccGuiProcessor(AdapterBase pAdapter) {
+    public LinkAccGuiProcessor(Context pContext,AdapterBase pAdapter) {
+        super(pContext);
         mAdapter = pAdapter;
         init();
     }
@@ -275,8 +277,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                     if (start < 1) {
                         try {
                             getAdapter().getView().setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
-                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint),
-                                    GlobalData.getAppContext());
+                                    mContext.getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint),
+                                    mContext);
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -329,8 +331,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                     if (start < 1) {
                         try {
                             getAdapter().getView().setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
-                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint)
-                                    , GlobalData.getAppContext());
+                                    mContext.getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint), mContext);
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -550,7 +551,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setWalletList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnWalletType().setAdapter(adapter);
         }
@@ -561,7 +562,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setAccNumList(ArrayList<String> pList) {
         if (pList != null) {
-            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList));
+            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList));
             getRegisterHolder().getSpnAccNumberDefault().setClickable(true);
             getRegisterHolder().getSpnAccNumberDefault().setOnTouchListener((view, motionEvent) -> {
                 showDialogSpinnerView();
@@ -590,7 +591,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     public void setPhoneNumList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnPhoneNumber().setAdapter(adapter);
         }
@@ -604,7 +605,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     public void setOtpValidList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnOTPValidType().setAdapter(adapter);
         }
@@ -626,7 +627,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     public void setWalletUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnWalletType().setAdapter(adapter);
         }
@@ -634,7 +635,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     public void setPhoneNumUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(GlobalData.getAppContext(), android.R.layout.simple_spinner_item, pList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnPhoneNumber().setAdapter(adapter);
         }
