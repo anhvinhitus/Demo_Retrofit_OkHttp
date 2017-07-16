@@ -30,7 +30,7 @@
                 android:minHeight="@dimen/zpw_support_button_min_height"
                 android:paddingLeft="@dimen/zpw_padding_10"
                 android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_support_question"
+                android:text="@string/sdk_support_question_text"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_submit_button_text_size" />
 
@@ -50,7 +50,7 @@
                 android:minHeight="@dimen/zpw_support_button_min_height"
                 android:paddingLeft="@dimen/zpw_padding_10"
                 android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_get_support"
+                android:text="@string/sdk_support_send_error_text"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_submit_button_text_size" />
 
@@ -69,7 +69,7 @@
                 android:minHeight="@dimen/zpw_support_button_min_height"
                 android:paddingLeft="@dimen/zpw_padding_10"
                 android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_support_btn_cancel"
+                android:text="@string/sdk_support_btn_cancel_text"
                 android:textColor="@color/text_color_primary"
                 android:textSize="@dimen/zpw_submit_button_text_size" />
 

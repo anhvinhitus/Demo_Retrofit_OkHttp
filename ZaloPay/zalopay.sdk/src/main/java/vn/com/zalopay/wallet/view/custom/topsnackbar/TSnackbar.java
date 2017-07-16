@@ -37,7 +37,6 @@ import java.lang.annotation.RetentionPolicy;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.listener.ZPWOnCloseCardPopupListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
@@ -212,7 +211,7 @@ public final class TSnackbar {
 
         if (gridView != null) {
             if (pBankListAdapter instanceof LinkCardBankGridViewAdapter)
-                setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
+                setText(Html.fromHtml(GlobalData.getAppContext().getResources().getString(R.string.sdk_support_banklist_link_title)));
 
             if (pBankListAdapter.getCount() <= 3)
                 gridView.setNumColumns(pBankListAdapter.getCount());

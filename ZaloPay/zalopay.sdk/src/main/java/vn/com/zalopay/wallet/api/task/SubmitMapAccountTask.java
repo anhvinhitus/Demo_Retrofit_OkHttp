@@ -1,10 +1,10 @@
 package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -52,7 +52,7 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
 
     @Override
     public String getDefaulErrorNetwork() {
-        return GlobalData.getStringResource(RS.string.zpw_alert_network_error_submitbankaccount);
+        return GlobalData.getAppContext().getResources().getString(R.string.sdk_linkacc_error_networking_submitbankaccount_mess);
     }
 
     @Override

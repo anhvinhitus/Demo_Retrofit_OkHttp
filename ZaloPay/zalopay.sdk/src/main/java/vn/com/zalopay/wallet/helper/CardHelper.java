@@ -3,10 +3,10 @@ package vn.com.zalopay.wallet.helper;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
@@ -22,7 +22,7 @@ public class CardHelper {
             mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
             bankName = BankCardCheck.getInstance().getShortBankName();
             if (!TextUtils.isEmpty(bankName)) {
-                bankName = String.format(GlobalData.getStringResource(RS.string.sdk_card_generic_label), bankName);
+                bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), bankName);
             }
         }
         //cc
@@ -32,11 +32,11 @@ public class CardHelper {
             if (cardCheck.isDetected()) {
                 String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
                 mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(cardType));
-                bankName = String.format(GlobalData.getStringResource(RS.string.sdk_creditcard_label), cardCheck.getBankName());
+                bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), cardCheck.getBankName());
             }
         }
         if (TextUtils.isEmpty(bankName)) {
-            bankName = GlobalData.getStringResource(RS.string.sdk_card_default_label);
+            bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format);
         }
         mapCardResult.setBankName(bankName);
         return mapCardResult;

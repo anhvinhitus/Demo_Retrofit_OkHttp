@@ -160,7 +160,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
      * apply font bold for some view
      */
     private void makeFont() {
-        applyFont(findViewById(R.id.order_amount_total_txt), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(findViewById(R.id.order_amount_total_txt), GlobalData.getStringResource(RS.string.sdk_font_medium));
     }
 
     @Override
@@ -263,10 +263,10 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void showDialogManyOption(ZPWOnSweetDialogListener pListener) {
         DialogManager.showDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, null,
-                GlobalData.getStringResource(RS.string.zpw_confirm_quit_loadsite), pListener,
-                GlobalData.getStringResource(RS.string.dialog_khong_button),
-                GlobalData.getStringResource(RS.string.dialog_co_button),
-                GlobalData.getStringResource(RS.string.dialog_getstatus_button));
+                GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,
+                GlobalData.getAppContext().getResources().getString(R.string.dialog_khong_button),
+                GlobalData.getAppContext().getResources().getString(R.string.dialog_co_button),
+                GlobalData.getAppContext().getResources().getString(R.string.dialog_getstatus_button));
     }
 
     @Override
@@ -455,7 +455,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void updateCardNumberFont() {
-        new Handler().postDelayed(() -> applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium)), 500);
+        new Handler().postDelayed(() -> applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.sdk_font_medium)), 500);
     }
 
     @Override
@@ -534,7 +534,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void showMaintenanceServiceDialog(String message) {
         if (TextUtils.isEmpty(message)) {
-            message = getString(R.string.zpw_string_alert_maintenance);
+            message = getString(R.string.sdk_system_maintenance_mess);
         }
         showInfoDialog(message, () -> mPresenter.setPaymentStatusAndCallback(PaymentStatus.SERVICE_MAINTENANCE));
     }
@@ -548,8 +548,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     public void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener) {
         hideLoading();
         DialogManager.showSweetDialog(getActivity(), SweetAlertDialog.NO_INTERNET,
-                getString(R.string.zingpaysdk_alert_title_nointernet),
-                getString(R.string.zingpaysdk_alert_content_nointernet), pIndex -> {
+                getString(R.string.sdk_dialog_nointernet_title),
+                getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
                         pListener.onCloseNetworkingDialog();
                     } else if (pIndex == 1) {
@@ -618,7 +618,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         if (hasTransId) {
             transaction_id_txt.setText(FormatHelper.formatTransID(pTransID));
         } else {
-            transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_label));
+            transaction_id_txt.setText(getResources().getString(R.string.sdk_no_transid_mess));
         }
         View sdk_trans_id_relativelayout = viewContainer.findViewById(R.id.sdk_trans_id_relativelayout);
         sdk_trans_id_relativelayout.setVisibility(visibleTrans ? View.VISIBLE : View.GONE);//hide trans id if unlink account
@@ -648,7 +648,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         //transaction amount
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
-            applyFont(findViewById(R.id.success_order_amount_total_txt), GlobalData.getStringResource(RS.string.zpw_font_medium));
+            applyFont(findViewById(R.id.success_order_amount_total_txt), GlobalData.getStringResource(RS.string.sdk_font_medium));
             setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
             ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
@@ -815,6 +815,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     public void showDialogWarningLinkCardAndResetCardNumber() {
-        showInfoDialog(GlobalData.getStringResource(RS.string.zpw_alert_linkcard_not_support), () -> mPresenter.resetCardNumberAndShowKeyBoard());
+        showInfoDialog(getResources().getString(R.string.sdk_error_linkcard_not_support_mess), () -> mPresenter.resetCardNumberAndShowKeyBoard());
     }
 }

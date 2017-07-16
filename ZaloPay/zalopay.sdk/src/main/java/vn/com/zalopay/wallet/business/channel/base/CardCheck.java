@@ -10,9 +10,9 @@ import rx.Subscription;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
@@ -171,9 +171,9 @@ public abstract class CardCheck extends SingletonBase {
     public String warningCardExistMessage() {
         String bankName = getShortBankName();
         String last4Number = getLast4CardNo();
-        String message = GlobalData.getStringResource(RS.string.sdk_link_card_exist);
+        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_link_card_exist);
         if (!TextUtils.isEmpty(bankName)) {
-            message = String.format(GlobalData.getStringResource(RS.string.sdk_link_card_exist_detail), bankName, last4Number);
+            message = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_link_card_exist_detail), bankName, last4Number);
         }
         return message;
     }

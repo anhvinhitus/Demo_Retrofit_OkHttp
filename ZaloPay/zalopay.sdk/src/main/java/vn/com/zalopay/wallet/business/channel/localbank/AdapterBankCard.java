@@ -130,12 +130,12 @@ public class AdapterBankCard extends AdapterBase {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                         pOtp = pOtp.trim();
-                        /***
-                         * vietinbank has 2 type of sms
-                         * 1. 6 number otp in the fist of content
-                         * 2. 6 number otp in the last of content
-                         * need extract splited otp by search space ' ' again
-                         * then compare #validOtp and length otp in config
+                        /*
+                         vietinbank has 2 type of sms
+                         1. 6 number otp in the fist of content
+                         2. 6 number otp in the last of content
+                         need extract splited otp by search space ' ' again
+                         then compare #validOtp and length otp in config
                          */
                         int index = -1;
                         String validOtp = null;
@@ -194,7 +194,8 @@ public class AdapterBankCard extends AdapterBase {
             if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
                 //check result authen, otp code is 17: wrong otp, other code callback
                 if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
-                    getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                    getTransactionStatus(mTransactionID, false,
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                 }
                 //retry otp
                 else if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
@@ -203,9 +204,10 @@ public class AdapterBankCard extends AdapterBase {
                     showTransactionFailView(mResponseStatus.returnmessage);
                 } else if (shouldCheckStatusAgain()) {
                     Timber.d("continue get status because response is null after authen payer");
-                    getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                    getTransactionStatus(mTransactionID, false,
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } else {
-                    showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                    showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                 }
             }
             //flow webview parse website
@@ -220,7 +222,7 @@ public class AdapterBankCard extends AdapterBase {
                     }
 
                     if (!TextUtils.isEmpty(failMessage)) {
-                        failMessage = GlobalData.getStringResource(RS.string.zpw_alert_networking_error_parse_website);
+                        failMessage = GlobalData.getAppContext().getResources().getString(R.string.zpw_alert_networking_error_parse_website);
                     }
                     showTransactionFailView(failMessage);
                     getView().hideLoading();
@@ -233,7 +235,8 @@ public class AdapterBankCard extends AdapterBase {
                 mOtpEndTime = System.currentTimeMillis();
                 BaseResponse response = (BaseResponse) pAdditionParams[0];
                 if (response.returncode == ParseWebCode.ATM_VERIFY_OTP_SUCCESS) {
-                    getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                    getTransactionStatus(mTransactionID, false,
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } else {
                     showTransactionFailView(response.returnmessage);
                 }
@@ -256,7 +259,7 @@ public class AdapterBankCard extends AdapterBase {
                     if (numberRetryCaptcha >= Constants.MAX_COUNT_RETRY_CAPTCHA) {
                         String message = response.message;
                         if (TextUtils.isEmpty(message)) {
-                            message = GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank_update);
+                            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
                         }
                         showTransactionFailView(message);
                         return null;
@@ -280,10 +283,11 @@ public class AdapterBankCard extends AdapterBase {
                 }
                 //has an error on website(wrong captcha,otp)
                 else {
-                    if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank))) {
-                        response.message = GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank_update);
+                    if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_vcb_invalid_captcha))) {
+                        response.message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
                     }
-                    showDialogWithCallBack(response.message, GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
+                    showDialogWithCallBack(response.message,
+                            GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
                         if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
                             //reset otp and show keyboard again
                             ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
@@ -346,7 +350,7 @@ public class AdapterBankCard extends AdapterBase {
             }
         } catch (Exception ex) {
             Log.e(this, ex);
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
         }
         return null;
     }
@@ -377,7 +381,7 @@ public class AdapterBankCard extends AdapterBase {
     public void onProcessPhrase() throws Exception {
         //authen payer atm
         if (isAuthenPayerPharse()) {
-            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
+            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_otp_mess));
             processingOrder = true;
             SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
             if (mOtpEndTime == 0)
@@ -389,7 +393,7 @@ public class AdapterBankCard extends AdapterBase {
             if (!openSettingNetworking()) {
                 return;
             }
-            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -462,9 +466,9 @@ public class AdapterBankCard extends AdapterBase {
         }
         //have some card bidv in map card list and but don't have this card
         if (hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !hasBidvBankInMapCardList(pCardNumber)) {
-            getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getStringResource(RS.string.dialog_linkcard_button),
-                    GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
+                    GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
+                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {
@@ -481,9 +485,9 @@ public class AdapterBankCard extends AdapterBase {
         }
         //have no any card in map card list
         if (!hasBidvBankInMapCardList()) {
-            getView().showConfirmDialog(GlobalData.getStringResource(RS.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getStringResource(RS.string.dialog_linkcard_button),
-                    GlobalData.getStringResource(RS.string.dialog_retry_input_card_button),
+            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
+                    GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
+                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {
@@ -511,8 +515,8 @@ public class AdapterBankCard extends AdapterBase {
             isContinue = true;
         }
         if (!TextUtils.isEmpty(pMessage) &&
-                (pMessage.contains(GlobalData.getStringResource(RS.string.zpw_error_message_bidv_website_wrong_captcha))
-                        || pMessage.equals(GlobalData.getStringResource(RS.string.zpw_error_message_bidv_website_wrong_password)))) {
+                (pMessage.contains(GlobalData.getStringResource(RS.string.sdk_bidv_website_wrong_captcha_mess))
+                        || pMessage.equals(GlobalData.getStringResource(RS.string.sdk_bidv_website_wrong_password_mess)))) {
             isContinue = true;
         }
         return isContinue;

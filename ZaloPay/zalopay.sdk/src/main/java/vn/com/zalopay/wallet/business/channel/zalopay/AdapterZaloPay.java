@@ -2,9 +2,7 @@ package vn.com.zalopay.wallet.business.channel.zalopay;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -16,7 +14,7 @@ import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ZALOPAY;
 public class AdapterZaloPay extends AdapterBase {
     public AdapterZaloPay(ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
-        super(SCREEN_ZALOPAY,pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
+        super(SCREEN_ZALOPAY, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
     }
 
     protected int getDefaultChannelId() {
@@ -34,9 +32,8 @@ public class AdapterZaloPay extends AdapterBase {
      * @return
      */
     @Override
-    public boolean processResultForRedPackage() {
-        long appId = mPaymentInfoHelper.getAppId();
-        boolean isReqPackage = GlobalData.isRedPacketChannel(appId);
+    public boolean processResultRedPacket() {
+        boolean isReqPackage = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
         if (isReqPackage) {
             onClickSubmission();
         }

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/zpw_padding_8"
             android:paddingTop="@dimen/zpw_padding_8"
-            android:text="@string/zingpaysdk_alert_title_nointernet"
+            android:text="@string/sdk_dialog_nointernet_title"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/text_color_bold"
             android:textStyle="bold" />

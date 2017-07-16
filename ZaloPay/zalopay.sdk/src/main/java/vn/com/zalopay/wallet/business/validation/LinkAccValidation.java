@@ -2,8 +2,8 @@ package vn.com.zalopay.wallet.business.validation;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -17,7 +17,7 @@ public class LinkAccValidation implements IValidate {
     @Override
     public String onValidateUser(UserInfo userInfo) {
         if (userInfo == null || TextUtils.isEmpty(userInfo.zalo_userid) || TextUtils.isEmpty(userInfo.zalopay_userid) || TextUtils.isEmpty(userInfo.accesstoken)) {
-            return GlobalData.getStringResource(RS.string.sdk_invalid_missing_linkaccInfo);
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_paymentinfo_invalid_linkaccInfo_mess);
         } else {
             return null;
         }
@@ -33,7 +33,7 @@ public class LinkAccValidation implements IValidate {
         String error = onValidateUser(paymentInfo.getUser());
         if (TextUtils.isEmpty(error)) {
             if (paymentInfo.getLinkAccountInfo() == null || TextUtils.isEmpty(paymentInfo.getLinkAccountInfo().getBankCode())) {
-                error = GlobalData.getStringResource(RS.string.sdk_invalid_missing_linkaccInfo);
+                error = GlobalData.getAppContext().getResources().getString(R.string.sdk_paymentinfo_invalid_linkaccInfo_mess);
             }
         }
         return error;

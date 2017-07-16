@@ -10,7 +10,7 @@ import android.webkit.WebView;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -21,7 +21,6 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 
-import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_SSL;
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.business.entity.base.WebViewHelper.SSL_ERROR;
 
@@ -34,7 +33,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     public CCWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
-        this.mMerchantPrefix = GlobalData.getStringResource(RS.string.zpw_string_merchant_creditcard_3ds_url_prefix);
+        this.mMerchantPrefix = GlobalData.getStringResource(RS.string.sdk_website3ds_callback_url);
     }
 
     @Override
@@ -47,16 +46,22 @@ public class CCWebViewClient extends PaymentWebViewClient {
 
     }
 
+    private boolean shouldStopFlow(String url) {
+        return TextUtils.isEmpty(url) || url.contains(mMerchantPrefix) || url.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain));
+    }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Timber.d("shouldOverrideUrlLoading %s ", url);
-        if ((url.contains(mMerchantPrefix) || url.contains(BuildConfig.HOST_COMPLETE)) && getAdapter() != null) {
+        if (getAdapter() == null) {
+            Timber.w("Adapter is release on loading webwsite");
+            return true;
+        }
+        if (shouldStopFlow(url)) {
             getAdapter().onEvent(EEventType.ON_PAYMENT_RESULT_BROWSER, new Object());
             return true;
         }
-        if (getAdapter() != null) {
-            getAdapter().showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
-        }
+        getAdapter().showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         view.loadUrl(url);
         mWebView = view;
         return true;
@@ -65,8 +70,8 @@ public class CCWebViewClient extends PaymentWebViewClient {
     @Override
     public void onLoadResource(WebView view, String url) {
         Timber.d("load resource %s", url);
-        if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.zpw_string_pay_domain)) && getAdapter() != null) {
-            getAdapter().showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
+        if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.sdk_website123pay_domain)) && getAdapter() != null) {
+            getAdapter().showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         }
         super.onLoadResource(view, url);
     }
@@ -113,7 +118,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     }
 
     public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {
-        if (pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_bidv_auto_select_rule))) {
+        if (pUrl.matches(GlobalData.getStringResource(RS.string.sdk_bidv_bankscript_auto_select_rule))) {
             executeJs(Constants.AUTOCHECK_RULE_FILLOTP_BIDV_JS, pOtp, pView);
             //request permission read/view sms on android 6.0+
             if (isFirstLoad) {

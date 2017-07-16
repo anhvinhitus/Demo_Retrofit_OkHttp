@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/header_title"
+                android:text="@string/spinner_vcb_header_title"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/text_size_normal_plus" />
 
@@ -51,7 +51,7 @@
                     android:minHeight="@dimen/zpw_support_button_min_height"
                     android:paddingLeft="@dimen/zpw_padding_10"
                     android:paddingRight="@dimen/zpw_padding_10"
-                    android:text="@string/zpw_support_btn_cancel"
+                    android:text="@string/sdk_support_btn_cancel_text"
                     android:textColor="@color/text_color_primary"
                     android:textSize="@dimen/zpw_submit_button_text_size" />
 
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_button"
-                    android:text="@string/footer_button_confirm"
+                    android:text="@string/spinner_vcb_footer_button_confirm_text"
                     android:textColor="@color/blue_btn_bg_pressed_color"
                     android:textSize="@dimen/zpw_text_size_header" />
 

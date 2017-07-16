@@ -10,7 +10,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
@@ -47,7 +46,7 @@ public class PaymentInfoHelper extends SingletonBase {
         if (getOrder() != null) {
             return getOrder().appid;
         }
-        return BuildConfig.ZALOAPP_ID;
+        return BuildConfig.ZALOPAY_APPID;
     }
 
     public String getUserId() {
@@ -268,9 +267,9 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public String getPaymentMethodTitleByTrans() {
-        String title = GlobalData.getStringResource(RS.string.sdk_pay_method_title);
+        String title = GlobalData.getAppContext().getResources().getString(R.string.sdk_pay_method_title);
         if (isMoneyTranferTrans()) {
-            title = GlobalData.getStringResource(RS.string.sdk_tranfer_method_title);
+            title = GlobalData.getAppContext().getResources().getString(R.string.sdk_tranfer_method_title);
         }
         return title;
     }
@@ -318,13 +317,13 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public String getQuitMessByTrans(Context context) {
-        String title = context.getString(R.string.sdk_quit_pay_confirm_text);
+        String title = context.getString(R.string.sdk_trans_confirm_quit_pay_mess);
         if (isTopupTrans()) {
-            title = context.getString(R.string.sdk_quit_topup_confirm_text);
+            title = context.getString(R.string.sdk_trans_confirm_quit_topup_mess);
         } else if (isMoneyTranferTrans()) {
-            title = context.getString(R.string.sdk_quit_tranfer_confirm_text);
+            title = context.getString(R.string.sdk_trans_confirm_quit_transfer_mess);
         } else if (isWithDrawTrans()) {
-            title = context.getString(R.string.sdk_quit_withdraw_confirm_text);
+            title = context.getString(R.string.sdk_trans_confirm_quit_withdraw_mess);
         }
         return title;
     }
@@ -377,10 +376,10 @@ public class PaymentInfoHelper extends SingletonBase {
             isOffNetworking = false;
         }
         if (isOffNetworking &&
-                (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account)) ||
-                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account)))) {
+                (pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_no_internet_mess)) ||
+                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess)) ||
+                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_link_account)) ||
+                        pMessage.equals(GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account)))) {
             setResult(PaymentStatus.DISCONNECT);
         }
         return isOffNetworking;
@@ -393,14 +392,29 @@ public class PaymentInfoHelper extends SingletonBase {
             message = requestException.getMessage();
             switch (requestException.code) {
                 case RequestException.NULL:
-                    message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+                    message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
                     break;
                 default:
                     updateTransactionResult(requestException.code);
             }
         } else if (throwable instanceof NetworkConnectionException) {
-            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         return message;
     }
+
+    public String getOfflineMessage() {
+        if (bankAccountLink()) {
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_link_account);
+        } else if (bankAccountUnlink()) {
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_alert_networking_off_in_unlink_account);
+        } else {
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+        }
+    }
+
+    public boolean isRedPacket() {
+        return getAppId() == BuildConfig.REDPACKET_APPID;
+    }
+
 }

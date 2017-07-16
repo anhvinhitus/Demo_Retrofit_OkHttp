@@ -61,8 +61,8 @@ public class SDKApplication extends Application {
             bankList.clearConfig();
             Timber.d("clearCache - bank list");
             //reset expire time app info
-            appInfo.setExpireTime(BuildConfig.ZALOAPP_ID, 0);
-            appInfo.setExpireTime(BuildConfig.WITHDRAWAPP_ID, 0);
+            appInfo.setExpireTime(BuildConfig.ZALOPAY_APPID, 0);
+            appInfo.setExpireTime(BuildConfig.WITHDRAW_APPID, 0);
             Timber.d("clearCache - app info 1,2");
         }
     }
@@ -105,7 +105,7 @@ public class SDKApplication extends Application {
             }
 
             //load app zalopay with 4 transtype
-            Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOAPP_ID,
+            Subscription subscription1 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.ZALOPAY_APPID,
                     new int[]{TransactionType.PAY, TransactionType.TOPUP, TransactionType.LINK, TransactionType.MONEY_TRANSFER}, userId, accessToken, pAppVersion, currentTime)
                     .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),
@@ -115,7 +115,7 @@ public class SDKApplication extends Application {
             }
 
             //load app withdraw (appid = 2)
-            Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAWAPP_ID,
+            Subscription subscription2 = getApplicationComponent().appInfoInteractor().loadAppInfo(BuildConfig.WITHDRAW_APPID,
                     new int[]{TransactionType.WITHDRAW}, userId, accessToken, pAppVersion, currentTime)
                     .subscribeOn(Schedulers.io())
                     .subscribe(appInfo -> Timber.d("load app info: %s", GsonUtils.toJsonString(appInfo)),

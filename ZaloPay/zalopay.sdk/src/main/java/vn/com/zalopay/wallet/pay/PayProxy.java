@@ -23,7 +23,6 @@ import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -209,7 +208,7 @@ public class PayProxy extends SingletonBase {
         boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
         if (isSubmitted) {
             try {
-                getView().showInfoDialog(mContext.getString(R.string.sdk_warning_order_submit));
+                getView().showInfoDialog(mContext.getString(R.string.sdk_order_processing_warning_mess));
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -219,7 +218,7 @@ public class PayProxy extends SingletonBase {
 
     private void askToRetryGetStatus() throws Exception {
         showRetryDialogCount++;
-        String message = mContext.getString(R.string.zingpaysdk_alert_processing_ask_to_retry);
+        String message = mContext.getString(R.string.sdk_trans_retry_getstatus_mess);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -391,7 +390,7 @@ public class PayProxy extends SingletonBase {
                             .chargeInfo(chargeInfo)
                             .getObserver()
                             .compose(SchedulerHelper.applySchedulers())
-                            .doOnSubscribe(() -> showLoading(mContext.getString(R.string.zpw_string_alert_submit_order)))
+                            .doOnSubscribe(() -> showLoading(mContext.getString(R.string.sdk_trans_submit_order_mess)))
                             .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
@@ -427,7 +426,7 @@ public class PayProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> {
                     try {
-                        getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
+                        getView().setTitle(mContext.getString(R.string.sdk_trans_getstatus_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -442,7 +441,7 @@ public class PayProxy extends SingletonBase {
                 .compose(SchedulerHelper.applySchedulers())
                 .doOnSubscribe(() -> {
                     try {
-                        getView().setTitle(mContext.getString(R.string.zingpaysdk_alert_checking));
+                        getView().setTitle(mContext.getString(R.string.sdk_trans_getstatus_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -503,7 +502,7 @@ public class PayProxy extends SingletonBase {
             return true;
         }
 
-        String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
+        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_select_bank_not_support);
         try {
             getView().showInfoDialog(message);
         } catch (Exception e) {
@@ -715,7 +714,7 @@ public class PayProxy extends SingletonBase {
 
     public void onErrorFingerPrint() {
         try {
-            getView().showInfoDialog(mContext.getString(R.string.zpw_error_authen_pin), new ZPWOnEventDialogListener() {
+            getView().showInfoDialog(mContext.getString(R.string.sdk_fingerprint_error_suggest_password_mess), new ZPWOnEventDialogListener() {
                 @Override
                 public void onOKEvent() {
                     try {
@@ -727,7 +726,7 @@ public class PayProxy extends SingletonBase {
                 }
             });
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e,"Exception show FingerPrint");
             markTransFail(getGenericExceptionMessage(mContext));
         }
     }

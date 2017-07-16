@@ -10,7 +10,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -34,16 +33,16 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 public class TransactionHelper {
     public static String getMessage(Throwable throwable) {
         if (throwable == null) {
-            return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         if (throwable instanceof RequestException || throwable instanceof SdkResourceException) {
             return throwable.getMessage();
         }
         if (throwable instanceof NetworkConnectionException) {
-            return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         Timber.d(throwable, "undefine exception");
-        return GlobalData.getStringResource(RS.string.sdk_error_api);
+        return GlobalData.getAppContext().getResources().getString(R.string.sdk_error_api);
     }
 
     public static String getAppNameByTranstype(Context context, @TransactionType int transtype) {
@@ -123,7 +122,7 @@ public class TransactionHelper {
     public static String getSubmitExceptionMessage(Context context) {
         boolean online = ConnectionUtil.isOnline(context);
         return online ? context.getString(R.string.sdk_error_generic_submitorder) :
-                context.getString(R.string.sdk_alert_network_onfline_submitorder);
+                context.getString(R.string.sdk_trans_network_onfline_warning_mess);
     }
 
     public static String getGenericExceptionMessage(Context context) {
@@ -163,12 +162,12 @@ public class TransactionHelper {
     }
 
     public static boolean isTransNetworkError(Context context, String pMessage) {
-        return pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_networking_error_check_status))
-                || pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_order_not_submit))
-                || pMessage.equalsIgnoreCase(context.getString(R.string.zingpaysdk_alert_network_error))
-                || pMessage.equalsIgnoreCase(context.getString(R.string.zpw_alert_networking_off_in_transaction))
+        return pMessage.equalsIgnoreCase(context.getString(R.string.sdk_trans_fail_check_status_mess))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_trans_order_not_submit_mess))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_payment_generic_error_networking_mess))
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_trans_networking_offine_mess))
                 || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_link_account))
                 || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_unlink_account))
-                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_network_onfline_submitorder));
+                || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_trans_network_onfline_warning_mess));
     }
 }

@@ -12,7 +12,6 @@ import java.lang.ref.WeakReference;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 
@@ -74,9 +73,9 @@ public class BankListPopup extends BasePaymentDialogActivity {
                 mGridViewBank.setAdapter(getAdapter());
             }
             if (GlobalData.transtype() == TransactionType.LINK) {
-                txtLabel.setText(Html.fromHtml(GlobalData.getStringResource(RS.string.zpw_string_title_select_card)));
+                txtLabel.setText(Html.fromHtml(GlobalData.getAppContext().getResources().getString(R.string.sdk_support_banklist_link_title)));
             } else {
-                txtLabel.setText(GlobalData.getAppContext().getString(R.string.zpw_string_title_select_bank));
+                txtLabel.setText(GlobalData.getAppContext().getString(R.string.sdk_support_banklist_title));
             }
 
         } catch (Exception e) {

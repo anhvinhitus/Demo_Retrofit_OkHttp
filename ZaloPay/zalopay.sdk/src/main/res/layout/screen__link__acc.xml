@@ -133,7 +133,7 @@
                 android:background="?android:selectableItemBackground"
                 android:gravity="center"
                 android:padding="@dimen/zpw_padding_12"
-                android:text="@string/zpw_support"
+                android:text="@string/sdk_support_text"
                 android:textColor="@color/blue_btn_bg_pressed_color"
                 android:textSize="@dimen/zpw_text_size_medium"
                 android:visibility="gone" />

@@ -127,7 +127,6 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static int NULL_ERRORCODE = -747;
-    public static String TRUE = "true";
 
     public interface CHANNEL_CONST {
         String layout = "layout";

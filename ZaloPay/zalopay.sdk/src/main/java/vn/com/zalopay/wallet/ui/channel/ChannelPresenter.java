@@ -36,16 +36,12 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -275,20 +271,20 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 return;
             }
             if (mMiniPmcTransType == null) {
-                onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+                onExit(GlobalData.getAppContext().getResources().getString(R.string.sdk_config_invalid), true);
                 return;
             }
             Timber.d("start payment channel %s", mMiniPmcTransType);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
             if (mAdapter == null) {
-                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                onExit(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data), true);
                 return;
             }
             initAdapter();
         } catch (Exception e) {
             Timber.w(e, "Exception on start payment");
-            onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+            onExit(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
         }
     }
 
@@ -323,7 +319,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return SDKApplication
                 .getApplicationComponent()
                 .appInfoInteractor()
-                .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, bankLink, null);
+                .getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, null);
     }
 
     private void startLink() {
@@ -340,7 +336,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             mAdapter = AdapterFactory.create(this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
             if (mAdapter == null) {
-                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                onExit(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data), true);
                 return;
             }
             initAdapter();
@@ -392,7 +388,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     private boolean createLinkAdapter(int pChannelId) {
         try {
             MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
-                    getPmcConfigByPmcID(BuildConfig.ZALOAPP_ID, TransactionType.LINK, pChannelId, null), MiniPmcTransType.class);
+                    getPmcConfigByPmcID(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, pChannelId, null), MiniPmcTransType.class);
             if (miniPmcTransType == null) {
                 return false;
             }
@@ -407,7 +403,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mMiniPmcTransType = miniPmcTransType;
         } catch (Exception e) {
             Timber.w(e, "Exception on create adapter by channel id %s", pChannelId);
-            onExit(GlobalData.getStringResource(RS.string.sdk_config_invalid), true);
+            onExit(GlobalData.getAppContext().getResources().getString(R.string.sdk_config_invalid), true);
         }
         return true;
     }
@@ -433,8 +429,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             PaymentSnackBar.getInstance().dismiss();
         } else if (!mAdapter.isFinalScreen()) {
-            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_offline),
-                    GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking),
+            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.sdk_offline_networking_mess),
+                    GlobalData.getAppContext().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE);
         }
         Timber.d("onResume");
@@ -519,7 +515,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 Timber.d("Timer is onFinish");
                 if (mAdapter != null && !mAdapter.isFinalScreen()) {
                     DialogManager.closeAllDialog();
-                    mAdapter.showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
+                    mAdapter.showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_expire_transaction_mess));
                     Timber.d("Moving to expired transaction screen because expiration");
                 }
             }
@@ -553,7 +549,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         //continue to show dialog and quit.
         String message = pMessage;
         if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         try {
             getViewOrThrow().showError(message);
@@ -678,12 +674,12 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         Timber.d("networking is changed online : %s", message.online);
         //come from api request fail with handshake
         if (message.origin == API) {
-            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_not_stable),
-                    GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG);
+            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.sdk_not_stable_networking_mess),
+                    GlobalData.getAppContext().getString(R.string.sdk_turn_on_networking_mess), TSnackbar.LENGTH_LONG);
             Timber.d("networking is not stable");
         } else if (!message.online) {
-            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.zpw_string_alert_networking_offline),
-                    GlobalData.getAppContext().getString(R.string.zpw_string_remind_turn_on_networking),
+            showNetworkOfflineSnackBar(GlobalData.getAppContext().getString(R.string.sdk_offline_networking_mess),
+                    GlobalData.getAppContext().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE);
         } else {
             PaymentSnackBar.getInstance().dismiss();

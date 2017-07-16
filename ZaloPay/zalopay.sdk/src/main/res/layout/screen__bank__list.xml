@@ -23,7 +23,7 @@
         android:layout_below="@+id/imInfoIcon"
         android:layout_marginLeft="@dimen/zpw_card_support_bank_padding"
         android:layout_marginTop="@dimen/zpw_card_support_bank_padding"
-        android:text="@string/zpw_string_title_select_bank"
+        android:text="@string/sdk_support_banklist_title"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/text_color_bold" />
 

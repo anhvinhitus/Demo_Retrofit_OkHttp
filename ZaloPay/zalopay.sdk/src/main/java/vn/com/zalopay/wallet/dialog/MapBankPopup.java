@@ -58,8 +58,8 @@ public class MapBankPopup extends BasePaymentDialogActivity {
         Intent intentBidv = new Intent(activity, MapBankPopup.class);
         intentBidv.putExtra(BANKCODE_EXTRA, CardType.PBIDV);
         intentBidv.putExtra(CARDNUMBER_EXTRA, cardNumber);
-        intentBidv.putExtra(NOTICE_CONTENT_EXTRA, GlobalData.getStringResource(RS.string.zpw_warning_bidv_select_linkcard_payment));
-        intentBidv.putExtra(BUTTON_LEFT_TEXT_EXTRA, GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
+        intentBidv.putExtra(NOTICE_CONTENT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment));
+        intentBidv.putExtra(BUTTON_LEFT_TEXT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button));
         intentBidv.putExtra(AMOUNT_EXTRA, orderAmount);
         return intentBidv;
     }

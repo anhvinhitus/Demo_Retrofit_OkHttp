@@ -12,11 +12,10 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.event.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
@@ -53,7 +52,7 @@ public class ResourceInteractor {
     }
 
     private String getDefaultError() {
-        return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error_download_resource);
+        return GlobalData.getAppContext().getResources().getString(R.string.sdk_error_download_resource_mess);
     }
 
     public Observable<SdkDownloadResourceMessage> fetchResource() {
@@ -80,9 +79,9 @@ public class ResourceInteractor {
             //can not create folder storage for resource.
             if (TextUtils.isEmpty(unzipFolder)) {
                 Timber.w("error create folder resource on device. Maybe your device memory run out of now");
-                return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+                return Observable.error(getMessException(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_extract_resource_mess)));
             } else if (mResourceZipFileURL == null || mResourceVersion == null) {
-                return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+                return Observable.error(getMessException(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_extract_resource_mess)));
             } else {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
                 Timber.d("extract resource to %s", unzipFolder);
@@ -92,7 +91,7 @@ public class ResourceInteractor {
             }
         } catch (IOException e) {
             Timber.w(e, "Exception IO");
-            return Observable.error(getMessException(GlobalData.getStringResource(RS.string.zpw_string_error_storage)));
+            return Observable.error(getMessException(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_extract_resource_mess)));
         } catch (Exception e) {
             Timber.w(e, "Exception on save resource");
             return Observable.error(getMessException(getDefaultError()));

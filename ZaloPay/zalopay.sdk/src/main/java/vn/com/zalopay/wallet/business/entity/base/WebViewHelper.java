@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.entity.base;
 
 import android.text.TextUtils;
 
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 
@@ -18,7 +19,7 @@ public class WebViewHelper {
     public String getFriendlyMessage() {
         String friendlyMessage = null;
         if (code == SSL_ERROR) {
-            friendlyMessage = GlobalData.getStringResource(RS.string.zpw_fail_transanction_by_ssl);
+            friendlyMessage = GlobalData.getStringResource(RS.string.sdk_website_error_ssl_mess);
         } else if (!TextUtils.isEmpty(description)) {
             friendlyMessage= getDetailMessage();
         }
@@ -26,21 +27,21 @@ public class WebViewHelper {
     }
 
     private String getDetailMessage(){
-        if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_name_not_resolved))) {
-            return GlobalData.getStringResource(RS.string.zpw_string_error_friendlymessage_name_not_resolved);
-        } else if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_timeout)) ||
-                description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_timeout_connection))) {
-            return GlobalData.getStringResource(RS.string.zpw_string_error_friendlymessage_timeout);
-        } else if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_disconnected))) {
-            return GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_not_resolved_domain))) {
+            return GlobalData.getStringResource(RS.string.sdk_website_errormess_not_resolved_domain);
+        } else if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_timeout_load)) ||
+                description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_timeout_connect))) {
+            return GlobalData.getStringResource(RS.string.sdk_website_errormess_timeout_load);
+        } else if (description.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_disconnected))) {
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         return  null;
     }
 
     public static boolean isLoadSiteError(String pDescription) {
         return !TextUtils.isEmpty(pDescription) &&
-                (pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_name_not_resolved))
-                        || pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_timeout))
-                        || pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_error_code_timeout_connection)));
+                (pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_not_resolved_domain))
+                        || pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_timeout_load))
+                        || pDescription.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_website_errorcode_timeout_connect)));
     }
 }

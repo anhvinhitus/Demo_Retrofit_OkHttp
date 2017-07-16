@@ -29,7 +29,6 @@ import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -234,7 +233,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public boolean isAllowValidateCardNumberByLuhn() {
-        return GlobalData.getStringResource(RS.string.zpsdk_luhn_check_atm).equalsIgnoreCase(Constants.TRUE);
+        return PaymentPermission.allowLuhnATM();
     }
 
     @Override
@@ -410,7 +409,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     public void showOtpTokenView() {
         try {
             getAdapter().getView().visibleInputCardView(false);
-            getAdapter().getView().setText(R.id.zpsdk_btn_submit, GlobalData.getStringResource(RS.string.zpw_button_submit_text));
+            getAdapter().getView().setText(R.id.zpsdk_btn_submit,
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_button_submit_text));
             if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
                 getAdapter().getView().visiableOrderInfo(true);
             }

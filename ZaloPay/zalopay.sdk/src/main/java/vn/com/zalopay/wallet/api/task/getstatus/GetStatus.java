@@ -8,14 +8,14 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
@@ -29,13 +29,14 @@ public class GetStatus extends BaseTask<StatusResponse> {
     protected long mAppId;
     @TransactionType
     int transtype;
+    int mRetryCount = 1;
     private String mTransID;
     private boolean mIsNeedToCheckDataInResponse;
     private AdapterBase mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
-    int mRetryCount = 1;
     private long startTime = 0, endTime = 0;
+
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mTransID = pTransID;
@@ -55,8 +56,9 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private void initTimer() {
         //reduce double to zalopay channel
         int intervalRetry = Constants.SLEEPING_INTERVAL_OF_RETRY;
-        if (GlobalData.isZalopayChannel(mAppId))
+        if (mAppId == BuildConfig.channel_zalopay) {
             intervalRetry /= 2;
+        }
 
         mTimer = new CountDownTimer(Constants.MAX_INTERVAL_OF_RETRY, intervalRetry) {
             public void onTick(long millisUntilFinished) {
@@ -65,7 +67,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
             public void onFinish() {
                 cancelTimer();
-                askToRetryGetStatus(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry));
+                askToRetryGetStatus(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_mess));
             }
         };
     }
@@ -93,7 +95,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         if (mRetryCount == Constants.MAX_RETRY_GETSTATUS) {
-            onPostResult(createReponse(-1,  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
+            onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
             return;
         }
 
@@ -112,7 +114,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             });
         } catch (Exception e) {
             Log.e(this, e);
-            onPostResult(createReponse(-1,  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
+            onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
         }
     }
 
@@ -126,11 +128,11 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     private void showProgress(boolean pIsShow) {
         if (TextUtils.isEmpty(mMessage)) {
-            mMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing);
+            mMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess);
         }
         try {
             if (pIsShow) {
-                mAdapter.getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
+                mAdapter.getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
             } else {
                 mAdapter.getView().hideLoading();
             }
@@ -160,7 +162,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
         if (pResponse == null) {
             cancelTimer();
-            askToRetryGetStatus(GlobalData.getStringResource(RS.string.zingpaysdk_alert_error_networking_ask_to_retry));
+            askToRetryGetStatus(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_onerror_networking_mess));
             return;
         }
         //getResponse().data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
@@ -177,7 +179,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         if (mAdapter.isLoadWebTimeout() && pResponse.isprocessing) {
             pResponse.isprocessing = false;
             pResponse.returncode = -1;
-            pResponse.returnmessage =  GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype));
+            pResponse.returnmessage = GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype));
 
             mAdapter.setLoadWebTimeout(false);
             cancelTimer();
@@ -185,7 +187,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             Timber.d("load website timeout");
             return;
         }
-        if(!mIsNeedToCheckDataInResponse){
+        if (!mIsNeedToCheckDataInResponse) {
             pResponse.data = null;
         }
         //flow 3ds
@@ -210,9 +212,9 @@ public class GetStatus extends BaseTask<StatusResponse> {
         //can not get status response from server
         //maybe because networking is not stable or networking is off
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            askToRetryGetStatus(GlobalData.getStringResource(RS.string.zingpaysdk_alert_error_networking_ask_to_retry));
+            askToRetryGetStatus(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_onerror_networking_mess));
         } else if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            onPostResult(createReponse(-1, GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)));
+            onPostResult(createReponse(-1, GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess)));
         } else {
             onPostResult(createReponse(-1, null));
         }

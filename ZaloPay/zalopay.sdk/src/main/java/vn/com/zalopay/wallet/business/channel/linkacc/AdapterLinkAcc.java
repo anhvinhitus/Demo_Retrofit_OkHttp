@@ -18,10 +18,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.HashMapUtils;
 import vn.com.zalopay.utility.LayoutUtils;
@@ -93,29 +91,22 @@ public class AdapterLinkAcc extends AdapterBase {
     public String mUrlReload;
     public boolean mIsLoadingCaptcha = false;
     protected ZPWNotification mNotification;
-    private int COUNT_ERROR_PASS = 1;
-    private int COUNT_ERROR_CAPTCHA = 1;
     int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
-    private int COUNT_RETRY_GET_NUMBERPHONE = 1;
-    private int COUNT_UNREGISTER = 0;
     int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     LinkAccGuiProcessor linkAccGuiProcessor;
-    private TreeMap<String, String> mHashMapAccNum;
-    private TreeMap<String, String> mHashMapPhoneNum;
-    private TreeMap<String, String> mHashMapPhoneNumUnReg;
     LinkAccWebViewClient mWebViewProcessor = null;
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
                 Timber.d("refreshCaptcha()");
-                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
                         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
                 }
                 mIsLoadingCaptcha = true;
@@ -125,28 +116,13 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }
     };
-    /*private Action1<BankConfigResponse> bankListSubscriber = new Action1<BankConfigResponse>() {
-        @Override
-        public void call(BankConfigResponse bankConfigResponse) {
-            try {
-                hideLoadingDialog();
-                // get bank config
-                String bankCode = mPaymentInfoHelper.getLinkAccBankCode();
-                BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
-                if (bankConfig == null || !bankConfig.isActive()) {
-                    terminate(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
-                } else {
-                    String loginBankUrl = bankConfig.loginbankurl;
-                    if (TextUtils.isEmpty(loginBankUrl)) {
-                        loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
-                    }
-                    initWebView(loginBankUrl);
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-    };*/
+    private int COUNT_ERROR_PASS = 1;
+    private int COUNT_ERROR_CAPTCHA = 1;
+    private int COUNT_RETRY_GET_NUMBERPHONE = 1;
+    private int COUNT_UNREGISTER = 0;
+    private TreeMap<String, String> mHashMapAccNum;
+    private TreeMap<String, String> mHashMapPhoneNum;
+    private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private List<BankAccount> mBankAccountList = null;
     private Action1<Boolean> loadBankAccountSubscriber = new Action1<Boolean>() {
         @Override
@@ -167,7 +143,7 @@ public class AdapterLinkAcc extends AdapterBase {
             Log.d(this, "load bank account error", throwable);
             String message = TransactionHelper.getMessage(throwable);
             if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getStringResource(RS.string.zpw_alert_network_error_loadmapbankaccountlist);
+                message = GlobalData.getAppContext().getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
             }
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccFail(message, mTransactionID);
@@ -202,13 +178,13 @@ public class AdapterLinkAcc extends AdapterBase {
         @Override
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
-                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
                         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
                 }
                 Timber.d("refreshCaptcha()");
@@ -226,13 +202,13 @@ public class AdapterLinkAcc extends AdapterBase {
 
     private String getDescLinkAccount() {
         if (getPageName().equals(PAGE_LINKACC_SUCCESS)) {
-            String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
+            String desc = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_success_mess);
             if (getNotification() != null) {
                 desc = getNotification().getMsg();
             }
             return desc;
         } else {
-            return GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
+            return GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_unlinkacc_success_mess);
         }
     }
 
@@ -241,11 +217,11 @@ public class AdapterLinkAcc extends AdapterBase {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
             } else {
-                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                unlinkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_account_exist_system_mess), mTransactionID);
             }
         } else {
             if (mPaymentInfoHelper.bankAccountLink()) {
-                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
+                linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_account_notfound_mess), mTransactionID);
             } else {
                 unlinkAccSuccess();
             }
@@ -295,11 +271,11 @@ public class AdapterLinkAcc extends AdapterBase {
                 .bankListInteractor()
                 .getBankConfig(bankCode);
         if (bankConfig == null || !bankConfig.isActive()) {
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
+            terminate(GlobalData.getAppContext().getResources().getString(R.string.sdk_select_bank_not_support), true);
         } else {
             String loginBankUrl = bankConfig.loginbankurl;
             if (TextUtils.isEmpty(loginBankUrl)) {
-                loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
+                loginBankUrl = GlobalData.getStringResource(RS.string.sdk_website_login_vcb_url);
             }
             initWebView(loginBankUrl);
         }
@@ -316,13 +292,13 @@ public class AdapterLinkAcc extends AdapterBase {
                 linkAccGuiProcessor.getLlButton());
 
         // get number times allow login wrong.
-        mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_num_times_allow_login_wrong));
+        mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_login));
 
         // show title bar
         if (mPaymentInfoHelper.bankAccountLink()) {
-            getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
+            getView().setTitle(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_link_acc_title));
         } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-            getView().setTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
+            getView().setTitle(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_unlink_acc_title));
             try {
                 mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
             } catch (Exception e) {
@@ -330,7 +306,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
 
         } else {
-            throw new Exception(GlobalData.getStringResource(RS.string.zpw_error_paymentinfo));
+            throw new Exception(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data));
         }
         linkAccGuiProcessor.getLoginHolder().btnRefreshCaptcha.setOnClickListener(refreshCaptchaLogin);
         linkAccGuiProcessor.getRegisterHolder().getButtonRefreshCaptcha().setOnClickListener(refreshCaptcha);
@@ -421,7 +397,7 @@ public class AdapterLinkAcc extends AdapterBase {
             Timber.d("stopping reload bank account because user in result screen");
             return;
         }
-        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_reload_bankaccount_list));
         mHandler.postDelayed(runnableWaitingNotifyLink, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
@@ -577,7 +553,7 @@ public class AdapterLinkAcc extends AdapterBase {
     protected boolean isValidPhoneList(List<String> pPhoneVcb) {
         //validate zalopay phone and vcb phone must same
         if (!validate_Phone_Zalopay_Vcb(pPhoneVcb)) {
-            String formatMess = GlobalData.getStringResource(RS.string.sdk_error_numberphone_sdk_vcb);
+            String formatMess = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_numberphone_sdk_vcb);
             String message = String.format(formatMess, pPhoneVcb.get(0), maskNumberPhone(mPaymentInfoHelper.getNumberPhone()));
             showFailScreenOnType(message);
             return false;
@@ -674,7 +650,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // Event: HIT
         if (pEventType == EEventType.ON_HIT) {
-            visibleLoadingDialog(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
             return null;
         }
 
@@ -734,20 +710,23 @@ public class AdapterLinkAcc extends AdapterBase {
                         case WRONG_USERNAME_PASSWORD:
                             mNumAllowLoginWrong--;
                             if (mNumAllowLoginWrong > 0) {
-                                showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow), mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
+                                showMessage(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_login_mess),
+                                        String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_retry_mess),
+                                                mNumAllowLoginWrong),
+                                        TSnackbar.LENGTH_LONG);
                                 linkAccGuiProcessor.getLoginHolder().getEdtUsername().selectAll();
                                 linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                             } else if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
+                                linkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
                             } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
+                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_error_retry_login_mess), mTransactionID);
                             }
                             return null;
                         case ACCOUNT_LOCKED:
                             if (mPaymentInfoHelper.bankAccountLink()) {
-                                linkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
+                                linkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
                             } else {
-                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
+                                unlinkAccFail(GlobalData.getAppContext().getString(R.string.sdk_vcb_bank_locked_account_mess), mTransactionID);
                             }
                             return null;
                         case WRONG_CAPTCHA:
@@ -825,7 +804,8 @@ public class AdapterLinkAcc extends AdapterBase {
                         return null;
                     } else if (response.phoneNumList.size() <= 0) {
                         // don't have account link
-                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register), mTransactionID);
+                        linkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_phonenumber_register_notfound_mess),
+                                mTransactionID);
                     } else {
                         mHashMapPhoneNum = HashMapUtils.JsonArrayToHashMap(response.phoneNumList);
 
@@ -880,7 +860,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                 break;
                             case WRONG_CAPTCHA:
-                                if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
+                                if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_captcha))) {
                                     if (!TextUtils.isEmpty(response.message)) {
                                         hideLoadingDialog(); // close process dialog
                                         String msgErr = response.message;
@@ -890,7 +870,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                 } else {
                                     try {
-                                        getView().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                                        getView().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.sdk_vcb_error_captcha_mess), getActivity());
                                     } catch (Exception e) {
                                         Log.e(this, e);
                                     }
@@ -949,8 +929,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 if (COUNT_UNREGISTER > 0) {
-                    String Message = (TextUtils.isEmpty(response.message)) ? GlobalData.getStringResource(RS.string.zpw_string_vcb_error_password) : response.message;
-                    if (COUNT_UNREGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    String Message = (TextUtils.isEmpty(response.message)) ?
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_password_mess) :
+                            response.message;
+                    if (COUNT_UNREGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
 
                         if (!TextUtils.isEmpty(response.messageResult)) {
                             // SUCCESS. Success register
@@ -991,7 +973,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     return null;
                 } else if ((response.phoneNumUnRegList == null || response.phoneNumUnRegList.size() <= 0)) {
                     // don't have account link
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
+                    unlinkAccFail(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_phonenumber_unregister_notfound_mess), mTransactionID);
                     return null;
                 } else {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
@@ -1005,7 +987,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
-                    showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.message, TSnackbar.LENGTH_LONG);
+                    showMessage(GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_error_login_mess), response.message, TSnackbar.LENGTH_LONG);
                 }
 
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
@@ -1029,7 +1011,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkBankAccount();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                         hideLoadingDialog(); // close process dialog
                         String msgErr = response.message;
                         linkAccFail(msgErr, mTransactionID);
@@ -1049,7 +1031,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 @Override
                                                 public void onCancelEvent() {
                                                     hideLoadingDialog(); // close process dialog
-                                                    String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
+                                                    String msgErr = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_cancel_retry_otp_mess);
                                                     linkAccFail(msgErr, mTransactionID);
                                                 }
 
@@ -1057,7 +1039,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 public void onOKEvent() {
                                                     //retry reload the previous page
                                                     if (!TextUtils.isEmpty(mUrlReload)) {
-                                                        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+                                                        visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_loading_website_message));
                                                         linkAccGuiProcessor.resetCaptchaConfirm();
                                                         linkAccGuiProcessor.resetOtp();
                                                         mWebViewProcessor.reloadWebView(mUrlReload);
@@ -1116,7 +1098,9 @@ public class AdapterLinkAcc extends AdapterBase {
             hideLoadingDialog();
             //networking is offline
             if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                showFailScreenOnType(GlobalData.getOfflineMessage(mPaymentInfoHelper));
+                String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
+                        GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+                showFailScreenOnType(offlineMessage);
                 return pAdditionParams;
             }
 
@@ -1124,7 +1108,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 return pAdditionParams;
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : GlobalData.getAppContext().getString(R.string.zpw_string_vcb_error_unidentified));
+            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : GlobalData.getAppContext().getString(R.string.sdk_vcb_error_unidentified));
             return pAdditionParams;
         }
         //event notification from app.
@@ -1169,7 +1153,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
             } else {
                 // hide webview && show web parse
-                visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));//show loading view
+                visibleLoadingDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_loading_website_message));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
             try {
@@ -1181,7 +1165,9 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         //networking is offline
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            showFailScreenOnType(GlobalData.getOfflineMessage(mPaymentInfoHelper));
+            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+            showFailScreenOnType(offlineMessage);
             return;
         }
 
@@ -1215,7 +1201,7 @@ public class AdapterLinkAcc extends AdapterBase {
 //    }
 
     public String getWalletTypeValue() {
-        return GlobalData.getStringResource(RS.string.zpw_vcb_wallet_type);
+        return GlobalData.getStringResource(RS.string.sdk_vcb_wallet_zalopay_type);
     }
 
     public String getAccNumValue() {
@@ -1234,7 +1220,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public String getOTPValidValue() {
-        return GlobalData.getStringResource(RS.string.zpw_vcb_value_otp_sms);
+        return GlobalData.getStringResource(RS.string.sdk_vcb_otp_sms_type);
     }
 
     public String getCaptchaConfirm() {
@@ -1248,7 +1234,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public String getWalletTypeUnRegValue() {
-        return GlobalData.getStringResource(RS.string.zpw_vcb_wallet_type);
+        return GlobalData.getStringResource(RS.string.sdk_vcb_wallet_zalopay_type);
     }
 
     public String getPhoneNumUnRegValue() {

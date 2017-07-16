@@ -12,7 +12,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -176,10 +176,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
 
-        /***
-         * STOP WEBVIEW IF THIS IS THE FINAL STEP (REDIRECT SUCCESS FROM 123PAY)
-         */
-        if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
+        //STOP WEBVIEW IF THIS IS THE FINAL STEP (REDIRECT SUCCESS FROM 123PAY)
+        if (mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
             view.stopLoading();
         }
     }
@@ -343,7 +341,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
             getAdapter().getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+                    String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
                     if (!TextUtils.isEmpty(paymentError)) {
                         paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
                     }

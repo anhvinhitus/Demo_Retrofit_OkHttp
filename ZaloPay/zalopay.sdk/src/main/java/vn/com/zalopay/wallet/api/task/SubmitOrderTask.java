@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -63,7 +64,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     public String getDefaulErrorNetwork() {
-        return GlobalData.getStringResource(RS.string.sdk_error_generic_submitorder);
+        return GlobalData.getAppContext().getResources().getString(R.string.sdk_error_generic_submitorder);
     }
 
     @Override

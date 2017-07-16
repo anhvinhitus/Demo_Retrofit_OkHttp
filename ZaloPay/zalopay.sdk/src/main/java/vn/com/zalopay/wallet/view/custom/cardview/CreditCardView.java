@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -24,7 +25,6 @@ import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
@@ -87,14 +87,6 @@ public class CreditCardView extends FrameLayout {
         return mCVV;
     }
 
-    public void setCVV(String cvv) {
-        if (cvv == null) {
-            cvv = "";
-        }
-        this.mCVV = cvv;
-        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
-    }
-
     public void setCVV(int cvvInt) {
 
         if (cvvInt == 0) {
@@ -104,6 +96,14 @@ public class CreditCardView extends FrameLayout {
             setCVV(cvv);
         }
 
+    }
+
+    public void setCVV(String cvv) {
+        if (cvv == null) {
+            cvv = "";
+        }
+        this.mCVV = cvv;
+        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
     }
 
     public String getCardDate() {
@@ -142,20 +142,18 @@ public class CreditCardView extends FrameLayout {
         String cardNumber = a.getString(R.styleable.creditcard_card_number);
         int cvv = a.getInt(R.styleable.creditcard_cvv, 0);
         int cardSide = a.getInt(R.styleable.creditcard_card_side, CreditCardUtils.CARD_SIDE_FRONT);
-
         //resize width
         try {
-            mPercentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ondefault));
-
-            if (SdkUtils.isTablet(GlobalData.getAppContext()))
-                mPercentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ontablet));
-
+            TypedValue typedValue = new TypedValue();
+            GlobalData.getAppContext().getResources().getValue(R.dimen.percent_ondefault, typedValue, true);
+            if (SdkUtils.isTablet(GlobalData.getAppContext())) {
+                GlobalData.getAppContext().getResources().getValue(R.dimen.percent_ontablet, typedValue, true);
+            }
+            mPercentWitdh = typedValue.getFloat();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception get value dimension");
             mPercentWitdh = 0.8f;
         }
-
-
         setCardNumber(cardNumber);
         setCVV(cvv);
         setCardDate(expiry);
@@ -165,7 +163,7 @@ public class CreditCardView extends FrameLayout {
         }
 
         paintCard();
-        applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.zpw_font_unisec));
+        applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.sdk_font_unisec));
         resizeFontCardNumber(mWidthCardView);
 
         a.recycle();

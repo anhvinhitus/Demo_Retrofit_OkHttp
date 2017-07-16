@@ -79,9 +79,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/zpw_string_linkacc_accNumDef_hint"
+            android:hint="@string/sdk_vcb_linkacc_accNumDef_hint"
             android:paddingTop="@dimen/margin_small"
-            android:tag="@string/zpw_string_linkacc_accNumDef_hint"
+            android:tag="@string/sdk_vcb_linkacc_accNumDef_hint"
             android:theme="@style/TextLabelHint">
 
             <EditText
@@ -105,9 +105,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/zpw_string_linkacc_phone_hint"
+            android:hint="@string/sdk_vcb_linkacc_phone_hint"
             android:paddingTop="@dimen/margin_small"
-            android:tag="@string/zpw_string_linkacc_phone_hint"
+            android:tag="@string/sdk_vcb_linkacc_phone_hint"
             android:theme="@style/TextLabelHint">
 
             <EditText
@@ -137,10 +137,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/white"
-                android:hint="@string/zpw_string_linkacc_captcha_hint"
+                android:hint="@string/sdk_vcb_linkacc_captcha_hint"
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/margin_small"
-                android:tag="@string/zpw_string_linkacc_captcha_hint"
+                android:tag="@string/sdk_vcb_linkacc_captcha_hint"
                 android:theme="@style/TextLabelHint">
 
                 <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText

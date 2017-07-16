@@ -1,4 +1,7 @@
 <resources>
+    <item name="percent_ontablet" type="dimen" format="float">0.5</item>
+    <item name="percent_ondefault" type="dimen" format="float">0.8</item>
+
     <dimen name="bank_logo_width">60dp</dimen>
     <dimen name="preview_margin">2dp</dimen>
     <dimen name="sdk_form_input_size">16sp</dimen>
@@ -134,12 +137,6 @@
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_xlarge">20dp</dimen>
     <dimen name="text_size_small">16sp</dimen>
-
-    <color name="semi_white">#88FFFFFF</color>
-    <color name="light_font">#FBFBFB</color>
-    <color name="grey_font">#ff9e9e9e</color>
-    <color name="text_shadow">#7F000000</color>
-    <color name="text_shadow_white">#FFFFFF</color>
 
     <dimen name="card_radius">2dp</dimen>
     <dimen name="cardview_default_elevation">1dp</dimen>

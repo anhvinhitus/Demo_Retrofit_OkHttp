@@ -66,7 +66,7 @@
         android:ellipsize="end"
         android:gravity="left"
         android:singleLine="true"
-        android:text="@string/zpw_string_title_select_bank"
+        android:text="@string/sdk_support_banklist_title"
         android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
         android:textColor="@color/text_color_grey"
         android:textSize="@dimen/zpw_text_size_header" />

@@ -66,7 +66,7 @@ public class CardNumberFragment extends CreditCardFragment {
 
         if (mImageViewQuestion != null && mCardNumberView != null && mRootView != null) {
             //calculate the width of text
-            String text = GlobalData.getStringResource(RS.string.zpw_string_card_not_support);
+            String text = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_not_support);
 
             Rect bounds = new Rect();
             Paint textPaint = mCardNumberView.getPaint();

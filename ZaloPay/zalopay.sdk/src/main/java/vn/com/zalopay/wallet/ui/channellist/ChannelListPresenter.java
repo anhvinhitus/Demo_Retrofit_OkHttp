@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
@@ -538,7 +537,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             } else {
                 String alertMessage = mChannelLoader.getAlertAmount(mPaymentInfoHelper.getAmount());
                 if (TextUtils.isEmpty(alertMessage)) {
-                    alertMessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
+                    alertMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_no_channel_warning_mess);
                 }
                 try {
                     getViewOrThrow().showError(alertMessage);
@@ -658,7 +657,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             public void onError(Throwable e) {
                 Timber.w("load channel on error %s", e);
                 try {
-                    getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
+                    getViewOrThrow().showError(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
                 } catch (Exception e1) {
                     Timber.d(e);
                 }
@@ -722,7 +721,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mChannelLoader.getChannels();
         } catch (Exception e) {
             Log.e(this, e);
-            getViewOrThrow().showError(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
+            getViewOrThrow().showError(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
         }
 
     }
@@ -810,8 +809,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void showNetworkOfflineSnackBar() {
         try {
             getViewOrThrow().showSnackBar(
-                    GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
-                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking),
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_offline_networking_mess),
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         } catch (Exception e) {
             Log.e(this, e);

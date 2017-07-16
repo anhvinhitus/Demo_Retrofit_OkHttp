@@ -116,9 +116,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     protected boolean shouldOnCheckMatchOnLoadResouce(String pUrl) {
-        return pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_generate_captcha))
-                || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_register_complete))
-                || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete));
+        return pUrl.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_generate_captcha))
+                || pUrl.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_register_complete))
+                || pUrl.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_unregister_complete));
     }
 
     protected boolean shouldExecuteJs() {
@@ -150,7 +150,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         Timber.d("load page finish %s", url);
         if (!isRedirected) {
             Timber.d("load page finish on the first %s", url);
-            if (GlobalData.shouldNativeWebFlow() && url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_auto_select_service))) {
+            if (GlobalData.shouldNativeWebFlow() && url.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_auto_select_service))) {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag

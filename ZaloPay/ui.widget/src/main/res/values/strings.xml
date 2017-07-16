@@ -58,7 +58,7 @@
 
     <!--STRING DIALOG-->
 
-    <string name="zingpaysdk_alert_title_nointernet">HƯỚNG DẪN</string>
+    <string name="sdk_dialog_nointernet_title">HƯỚNG DẪN</string>
 
     <string name="dialog_cancel_button">THOÁT</string>
 

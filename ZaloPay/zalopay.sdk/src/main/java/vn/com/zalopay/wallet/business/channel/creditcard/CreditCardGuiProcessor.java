@@ -102,7 +102,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public boolean isAllowValidateCardNumberByLuhn() {
-        return GlobalData.getStringResource(RS.string.zpsdk_luhn_check_cc).equalsIgnoreCase(Constants.TRUE);
+        return PaymentPermission.allowLuhnCC();
     }
 
     @Override

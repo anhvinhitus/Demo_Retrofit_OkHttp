@@ -61,7 +61,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     }
 
     protected String getFeeDesc(PaymentChannel pChannel) {
-        String fee_desc = mContext.getString(R.string.zpw_string_fee_free);
+        String fee_desc = mContext.getString(R.string.sdk_channel_free_mess);
         if (pChannel.hasFee()) {
             fee_desc = StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee));
         }
@@ -71,9 +71,9 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     protected String formatFeeDesc(String fee_desc) {
         if (!TextUtils.isEmpty(fee_desc)
                 && !fee_desc.equals(mContext.getString(R.string.default_message_pmc_fee))
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_free))
-                && !fee_desc.equals(mContext.getString(R.string.zpw_string_fee_upgrade_level))) {
-            fee_desc = String.format(mContext.getString(R.string.zpw_string_fee_format), fee_desc);
+                && !fee_desc.equals(mContext.getString(R.string.sdk_channel_free_mess))
+                && !fee_desc.equals(mContext.getString(R.string.sdk_channel_not_allow_by_level))) {
+            fee_desc = String.format(mContext.getString(R.string.sdk_channel_fee_format), fee_desc);
         }
         return fee_desc;
     }
@@ -123,24 +123,24 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         if (pChannel.isZaloPayChannel() && !pChannel.isAllowOrderAmount()) {
             mess = mContext.getString(R.string.sdk_warning_balance_error);
         } else if ((amount + pChannel.totalfee) < pChannel.minvalue) {
-            mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount_small);
+            mess = mContext.getString(R.string.sdk_channel_not_allow_by_amount);
         } else if (!pChannel.isAllowBankVersion()) {
-            mess = mContext.getString(R.string.zpw_string_channel_bank_support_version_warning_message);
+            mess = mContext.getString(R.string.sdk_channel_not_allow_by_support_version);
         } else if (!pChannel.isAllowPmcQuota()) {
-            mess = mContext.getString(R.string.zpw_string_channel_not_allow_by_amount);
+            mess = mContext.getString(R.string.sdk_channel_not_allow_by_quota);
         } else if (pChannel.isMaintenance() && pChannel.isMapCardChannel()) {
-            mess = mContext.getString(R.string.zpw_string_bank_maintenance);
+            mess = mContext.getString(R.string.sdk_channel_not_allow_by_bank_maintenance);
         } else if (pChannel.isMaintenance()) {
-            mess = mContext.getString(R.string.zpw_string_channel_maintenance);
+            mess = mContext.getString(R.string.sdk_channel_not_allow_by_maintenance);
         } else if (!pChannel.isAllowOrderAmount()) {
             StringBuilder builder = new StringBuilder();
             if (pChannel.hasFee()) {
-                builder.append(String.format(mContext.getString(R.string.zpw_string_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))));
+                builder.append(String.format(mContext.getString(R.string.sdk_channel_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))));
             }
-            builder.append(mContext.getString(R.string.zpw_string_channel_not_allow_by_fee));
+            builder.append(mContext.getString(R.string.sdk_channel_not_allow_by_balance));
             mess = builder.toString();
         } else {
-            mess = mContext.getString(R.string.zpw_string_channel_not_allow);
+            mess = mContext.getString(R.string.sdk_channel_not_support);
         }
         return mess;
     }
@@ -160,7 +160,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     }
 
     private boolean displayDesc(String desc) {
-        return !mContext.getString(R.string.zpw_string_fee_free).equals(desc);
+        return !mContext.getString(R.string.sdk_channel_free_mess).equals(desc);
     }
 
     protected void renderDesc(T holder, String desc) {

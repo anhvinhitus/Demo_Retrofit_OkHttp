@@ -29,12 +29,11 @@ android {
         targetSdkVersion cfg.targetSdk
 
         buildConfigField 'String', 'SDK_BUILD_VERSION', '"' + configJson.configs.build_version + '"'
-        buildConfigField 'String', 'HOST_COMPLETE', '"' + configJson.configs.host_complete + '"'
         buildConfigField 'String', 'FOLDER_RESOURCE', '"' + configJson.configs.resource_folder + '"'
         buildConfigField 'String', 'PAYMENT_PLATFORM', '"' + configJson.configs.platform_code + '"'
-        buildConfigField 'int', 'ZALOAPP_ID', configJson.configs.zalopay_id
-        buildConfigField 'int', 'WITHDRAWAPP_ID', configJson.configs.withdrawapp_id
-        buildConfigField 'int', 'REDPACKAGEAPP_ID', configJson.configs.redpackage_app_id
+        buildConfigField 'int', 'ZALOPAY_APPID', configJson.configs.zalopay_appid
+        buildConfigField 'int', 'WITHDRAW_APPID', configJson.configs.withdraw_appid
+        buildConfigField 'int', 'REDPACKET_APPID', configJson.configs.redpacket_appid
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', '"' + configJson.configs.package_playstore + '"'
         buildConfigField 'String', 'CC_CODE', '"' + configJson.configs.cc_code + '"'
 

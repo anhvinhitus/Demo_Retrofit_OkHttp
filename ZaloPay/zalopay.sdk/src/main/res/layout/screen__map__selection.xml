@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/zpw_card_support_bank_padding"
-        android:text="@string/zpw_warning_vietcombank_select_linkcard_payment"
+        android:text="@string/sdk_vcb_select_existedlink_payment_mess"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/text_color_bold" />
 

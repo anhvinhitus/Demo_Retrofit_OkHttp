@@ -19,10 +19,10 @@ import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -45,7 +45,8 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     Observable<PlatformInfoCallback> mapResult(PlatformInfoResponse platformInfoResponse, String appVersion) {
         if (platformInfoResponse == null) {
-            return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+            return Observable.error(new RequestException(RequestException.NULL,
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
         }
         if (platformInfoResponse.forceappupdate) {
             //notify force user update new app on store

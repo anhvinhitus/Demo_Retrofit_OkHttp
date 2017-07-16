@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/zpw_title_padding_bottom"
             android:layout_marginLeft="@dimen/zpw_padding_left_right"
-            android:text="@string/zpw_string_title_confirm_transaction"
+            android:text="@string/sdk_confirm_authen_type_title"
             android:textAllCaps="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/text_color_grey" />
@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:enabled="true"
-                android:text="@string/zpw_string_sms"
+                android:text="@string/sdk_authen_sms_type"
                 android:textColor="@color/text_color_bold"
                 android:theme="@style/PaymentRadioButton" />
 
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/zpw_string_token"
+                android:text="@string/sdk_authen_token_type"
                 android:textColor="@color/text_color_bold"
                 android:theme="@style/PaymentRadioButton" />
 

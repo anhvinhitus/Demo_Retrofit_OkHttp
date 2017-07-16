@@ -85,7 +85,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
      * apply font bold for some view
      */
     private void makeFont() {
-        applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.sdk_font_medium));
     }
 
     @Override
@@ -276,7 +276,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void showAppInfoNotFoundDialog() {
         DialogManager.showSweetDialogCustom(getActivity(),
-                getResources().getString(R.string.zpw_not_allow_payment_app),
+                getResources().getString(R.string.sdk__app_not_allow_payment_mess),
                 getResources().getString(R.string.dialog_close_button),
                 SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
     }
@@ -293,7 +293,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showWarningLinkCardBeforeWithdraw() {
         hideLoading();
         DialogManager.showSweetDialogOptionNotice(getActivity(),
-                getResources().getString(R.string.zpw_string_alert_linkcard_channel_withdraw),
+                getResources().getString(R.string.sdk_withdraw_no_link_warning_mess),
                 getResources().getString(R.string.dialog_linkcard_button),
                 getResources().getString(R.string.dialog_close_button),
                 new ZPWOnEventConfirmDialogListener() {
@@ -314,8 +314,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener) {
         hideLoading();
         DialogManager.showSweetDialog(getActivity(), SweetAlertDialog.NO_INTERNET,
-                getString(R.string.zingpaysdk_alert_title_nointernet),
-                getString(R.string.zingpaysdk_alert_content_nointernet), pIndex -> {
+                getString(R.string.sdk_dialog_nointernet_title),
+                getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
                         pListener.onCloseNetworkingDialog();
                     } else if (pIndex == 1) {

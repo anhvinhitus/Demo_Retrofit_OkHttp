@@ -38,7 +38,6 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -276,7 +275,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                     if (start < 1) {
                         try {
                             getAdapter().getView().setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
-                                    GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint), GlobalData.getAppContext());
+                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint),
+                                    GlobalData.getAppContext());
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -329,7 +329,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                     if (start < 1) {
                         try {
                             getAdapter().getView().setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
-                                    GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint)
+                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_linkacc_captcha_hint)
                                     , GlobalData.getAppContext());
                         } catch (Exception e) {
                             Log.e(this, e);

@@ -17,7 +17,7 @@
             android:layout_marginLeft="@dimen/zpw_padding_left_right"
             android:layout_marginRight="@dimen/zpw_padding_left_right"
             android:layout_marginTop="@dimen/zpw_item_listview_padding_top_bottom"
-            android:text="@string/zpw_otp_instruction"
+            android:text="@string/sdk_intro_otp_mess"
             android:textColor="@color/text_color"
             android:textSize="@dimen/zpw_text_size_medium" />
 
@@ -30,9 +30,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/zpw_string_linkacc_otp_hint"
+            android:hint="@string/sdk_vcb_linkacc_otp_hint"
             android:paddingTop="@dimen/margin_small"
-            android:tag="@string/zpw_string_linkacc_otp_hint"
+            android:tag="@string/sdk_vcb_linkacc_otp_hint"
             android:theme="@style/TextLabelHint">
 
             <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText

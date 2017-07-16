@@ -13,7 +13,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
@@ -113,7 +112,8 @@ public class SDKPayment {
         //check internet connection
         if (!ConnectionUtil.isOnline(pMerchantActivity)) {
             if (GlobalData.getPaymentListener() != null) {
-                GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
+                GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR,
+                        GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_no_internet_mess)));
             }
             SingletonLifeCircleManager.disposeAll();
             return;
@@ -131,7 +131,7 @@ public class SDKPayment {
         try {
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener);
         } catch (Exception e) {
-            terminateSession(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            terminateSession(pMerchantActivity.getResources().getString(R.string.sdk_invalid_payment_data), PaymentError.DATA_INVALID);
             return;
         }
         //set fingerprint listener from merchant
@@ -153,7 +153,7 @@ public class SDKPayment {
         Activity merchantActivity = GlobalData.getMerchantActivity();
         if (merchantActivity == null || merchantActivity.isFinishing()) {
             Timber.w("merchant activity is null");
-            terminateSession(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
+            terminateSession(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data), PaymentError.DATA_INVALID);
             return;
         }
         Intent intent;

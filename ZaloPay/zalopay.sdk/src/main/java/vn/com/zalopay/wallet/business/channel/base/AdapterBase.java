@@ -50,7 +50,6 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -152,7 +151,7 @@ public abstract class AdapterBase {
             message = throwable.getMessage();
         }
         if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.sdk_load_card_error);
+            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_load_card_mess);
         }
         try {
             getView().hideLoading();
@@ -181,7 +180,7 @@ public abstract class AdapterBase {
             }
         }
         //quit sdk right away
-        if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
+        if (mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket()) {
             onClickSubmission();
         }
     };
@@ -200,15 +199,15 @@ public abstract class AdapterBase {
                 //retry load website cc
                 if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isCCFlow() && isLoadWeb() && hasTransId()) {
                     //max retry 3
-                    if (numberOfRetryTimeout > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_load_web_retry))) {
+                    if (numberOfRetryTimeout > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_retry_number_load_website))) {
                         getOneShotTransactionStatus();
                         return;
                     }
                     numberOfRetryTimeout++;
                     DialogManager.showSweetDialogOptionNotice(activity.get(),
-                            GlobalData.getStringResource(RS.string.zpw_string_load_website_timeout_message),
-                            GlobalData.getStringResource(RS.string.dialog_continue_load_button),
-                            GlobalData.getStringResource(RS.string.dialog_cancel_button),
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_load_data_timeout_mess),
+                            GlobalData.getAppContext().getResources().getString(R.string.dialog_continue_load_button),
+                            GlobalData.getAppContext().getResources().getString(R.string.dialog_cancel_button),
                             new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
@@ -233,12 +232,13 @@ public abstract class AdapterBase {
                     ((AdapterLinkAcc) AdapterBase.this).verifyServerAfterParseWebTimeout();
                     Timber.d("load website timeout, continue to verify server again to ask for new data list");
                 } else if (!isFinalScreen()) {
-                    getView().showInfoDialog(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), () -> showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+                    getView().showInfoDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess),
+                            () -> showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
                 }
                 sdkReportError(TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
             } catch (Exception ex) {
                 Timber.w(ex.getMessage());
-                showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                 try {
                     sdkReportError(GENERAL_EXCEPTION, ex.getMessage());
                 } catch (Exception e) {
@@ -519,11 +519,11 @@ public abstract class AdapterBase {
         mIsOrderSubmit = true;
         mCanEditCardInfo = false;
         try {
-            getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_alert_submit_order));
+            getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_submit_order_mess));
             mTransactionAdapter.startTransaction();
         } catch (Exception e) {
             Log.e(this, e);
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout));
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper
@@ -552,17 +552,18 @@ public abstract class AdapterBase {
     protected void processWrongOtp() {
         numberRetryOtp++;
         //over number of retry
-        if (numberRetryOtp > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry))) {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_alert_over_retry_otp));
+        if (numberRetryOtp > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_number_retry_otp))) {
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_retry_otp_mess));
             return;
         }
-        showDialogWithCallBack(mResponseStatus.returnmessage, GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
-            //reset otp and show keyboard again
-            if (isCardFlow()) {
-                ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
-            }
-        });
+        showDialogWithCallBack(mResponseStatus.returnmessage,
+                GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
+                    //reset otp and show keyboard again
+                    if (isCardFlow()) {
+                        ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
+                        getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
+                    }
+                });
     }
 
     public void autoFillOtp(String pSender, String pOtp) {
@@ -595,15 +596,16 @@ public abstract class AdapterBase {
                 }
                 if (isAlreadyCheckStatusFailSubmit) {
                     try {
-                        showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+                        showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
                     } catch (Exception e) {
                         Log.e(this, e);
-                        terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+                        terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
                     }
                     return pAdditionParams;
                 }
                 if (shouldCheckTransactionStatusByClientId() && order != null) {
-                    checkTransactionStatusAfterSubmitFail(true, order.apptransid, GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                    checkTransactionStatusAfterSubmitFail(true, order.apptransid,
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                     return pAdditionParams;
                 }
                 mResponseStatus = null;
@@ -627,13 +629,14 @@ public abstract class AdapterBase {
                 //ending timer loading site
                 mOtpEndTime = System.currentTimeMillis();
                 mCaptchaEndTime = System.currentTimeMillis();
-                getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                getTransactionStatus(mTransactionID, false,
+                        GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
             }
             //callback load site error from webview
             //need to get status again if use submit otp or cc flow
             else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
                 if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                    showTransactionFailView(GlobalData.getAppContext().getString(R.string.zingpaysdk_alert_network_error));
+                    showTransactionFailView(GlobalData.getAppContext().getString(R.string.sdk_payment_generic_error_networking_mess));
                     return pAdditionParams;
                 }
                 //ending timer loading site
@@ -652,9 +655,11 @@ public abstract class AdapterBase {
 
                 if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
                     isLoadWebTimeout = true;
-                    getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                    getTransactionStatus(mTransactionID, false,
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } else {
-                    String mess = (webViewError != null) ? webViewError.getFriendlyMessage() : GlobalData.getStringResource(RS.string.zpw_string_error_friendlymessage_end_transaction);
+                    String mess = (webViewError != null) ? webViewError.getFriendlyMessage() :
+                            GlobalData.getAppContext().getResources().getString(R.string.sdk_errormess_end_transaction);
                     showTransactionFailView(mess);
                 }
             }
@@ -673,14 +678,15 @@ public abstract class AdapterBase {
                     try {
                         mCountCheckStatus++;
                         if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
-                            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit));
+                            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_order_not_submit_mess));
                         } else if (order != null) {
                             //retry again
-                            checkTransactionStatusAfterSubmitFail(false, order.apptransid, GlobalData.getStringResource(RS.string.zingpaysdk_alert_checking));
+                            checkTransactionStatusAfterSubmitFail(false, order.apptransid,
+                                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                         }
                     } catch (Exception e) {
                         Log.e(this, e);
-                        terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+                        terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
                     }
 
                     return null;
@@ -704,7 +710,7 @@ public abstract class AdapterBase {
                 getView().visibleSubmitButton(true);
                 //error
                 if (mResponseStatus == null) {
-                    showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+                    showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
                     return pAdditionParams;
                 }
                 //retry otp
@@ -718,7 +724,7 @@ public abstract class AdapterBase {
                     if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
                         //no link for parsing
                         if (TextUtils.isEmpty(dataResponse.redirecturl)) {
-                            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_empty_creditcard_url));
+                            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_empty_url_mess));
                             sdkReportErrorOnPharse(Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
                             return null;
                         }
@@ -733,7 +739,7 @@ public abstract class AdapterBase {
                         }
                         if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                             setECardFlowType(BankFlow.PARSEWEB);
-                            showLoadindTimeout(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+                            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
                             initWebView(dataResponse.redirecturl);
                             endingCountTimeLoadCaptchaOtp();
                         }
@@ -747,7 +753,7 @@ public abstract class AdapterBase {
                                 mOtpBeginTime = System.currentTimeMillis();
                                 mCaptchaBeginTime = System.currentTimeMillis();
                             } catch (Exception e) {
-                                showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_error_data));
+                                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_init_data));
                                 sdkReportErrorOnPharse(Constants.STATUS_PHARSE, e.getMessage());
                                 Log.e(this, e);
                             }
@@ -783,7 +789,7 @@ public abstract class AdapterBase {
 						},5000);
 						*/
                     } else {
-                        showTransactionFailView(GlobalData.getStringResource(RS.string.sdk_undefine_error));
+                        showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_undefine_error));
                     }
                 } else {
                     if (isOrderProcessing()) {
@@ -801,7 +807,7 @@ public abstract class AdapterBase {
             }
 
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_process_error));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_generic_mess));
             sdkReportErrorOnPharse(Constants.UNDEFINE, e.getMessage());
             Log.e(this, e);
         }
@@ -861,7 +867,7 @@ public abstract class AdapterBase {
                 DialogManager.closeAllDialog();//close dialog
                 if (mResponseStatus != null) {
                     mResponseStatus.returncode = 1;
-                    mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
+                    mResponseStatus.returnmessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_success_mess);
                 }
                 /***
                  *  get time from notification
@@ -1020,7 +1026,7 @@ public abstract class AdapterBase {
                 onProcessPhrase();
             }
         } catch (Exception ex) {
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+            terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
             Log.e(this, ex);
         }
     }
@@ -1063,7 +1069,9 @@ public abstract class AdapterBase {
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            showTransactionFailView(GlobalData.getOfflineMessage(mPaymentInfoHelper));
+            String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage() :
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess);
+            showTransactionFailView(offlineMessage);
         }
     }
 
@@ -1080,10 +1088,10 @@ public abstract class AdapterBase {
      */
     protected void processNetworkingOffAfterSubmitTransaction() {
         try {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_networking_offine_mess));
         } catch (Exception e) {
             Log.e(this, e);
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+            terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
         }
     }
 
@@ -1111,10 +1119,12 @@ public abstract class AdapterBase {
 
     private void getStatusStrategy(String pTransID, boolean pCheckData, String pMessage) {
         try {
-            getView().showLoading(TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
+            getView().showLoading(TextUtils.isEmpty(pMessage) ?
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess) :
+                    pMessage);
             mTransactionAdapter.getTransactionStatus(pTransID, pCheckData, pMessage);
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
             Log.e(this, e);
         }
     }
@@ -1138,11 +1148,11 @@ public abstract class AdapterBase {
             }
             //response is null
             else {
-                showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+                showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             }
             getView().hideLoading();
         } catch (Exception e) {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             Log.e(this, e);
         }
     }
@@ -1155,7 +1165,7 @@ public abstract class AdapterBase {
     protected void showFailScreen(String pMessage) {
         String message = pMessage;
         if (TextUtils.isEmpty(message)) {
-            message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         String appName = TransactionHelper.getAppNameByTranstype(GlobalData.getAppContext(), mPaymentInfoHelper.getTranstype());
         if (TextUtils.isEmpty(appName)) {
@@ -1183,7 +1193,9 @@ public abstract class AdapterBase {
     protected void checkTransactionStatusAfterSubmitFail(boolean shouldDelay, final String pAppTransID, String pMessage) {
         try {
             isAlreadyCheckStatusFailSubmit = true;
-            getView().showLoading(TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
+            getView().showLoading(TextUtils.isEmpty(pMessage) ?
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess) :
+                    pMessage);
             if (shouldDelay) {
                 //delay 1s before continue check
                 new Handler().postDelayed(() -> {
@@ -1195,7 +1207,7 @@ public abstract class AdapterBase {
             }
 
         } catch (Exception ex) {
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status));
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             Log.e(this, ex);
         }
     }
@@ -1238,16 +1250,16 @@ public abstract class AdapterBase {
      *
      * @return
      */
-    protected boolean processResultForRedPackage() {
-        if (GlobalData.isRedPacketChannel(mPaymentInfoHelper.getAppId())) {
+    protected boolean processResultRedPacket() {
+        boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
+        if (isRedPacket) {
             if (needReloadCardMapAfterPayment()) {
                 reloadMapCard(false);
             } else {
                 onClickSubmission();
             }
-            return true;
         }
-        return false;
+        return isRedPacket;
     }
 
     private AppInfo getAppInfoCache(long appId) {
@@ -1276,7 +1288,7 @@ public abstract class AdapterBase {
             GlobalData.getPaymentListener().onPreComplete(true, mTransactionID, mPaymentInfoHelper.getAppTransId());
         }
         //if this is redpacket,then close sdk and callback to app
-        if (processResultForRedPackage()) {
+        if (processResultRedPacket()) {
             finishTransaction();
             return;
         }
@@ -1357,13 +1369,13 @@ public abstract class AdapterBase {
         if (getGuiProcessor() != null) {
             bankCode = getGuiProcessor().getDetectedBankCode();
         }
-        if(TextUtils.isEmpty(bankCode)){
+        if (TextUtils.isEmpty(bankCode)) {
             bankCode = "";
         }
         Long transId;
         try {
             transId = Long.parseLong(mTransactionID);
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.w(e.getMessage());
             transId = 0L;
         }
@@ -1380,7 +1392,7 @@ public abstract class AdapterBase {
 
     public boolean isTransactionProcessing(String pMessage) {
         return pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
-                || pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(R.string.zpw_string_transaction_expired))
+                || pMessage.equalsIgnoreCase(GlobalData.getAppContext().getString(R.string.sdk_expire_transaction_mess))
                 || pMessage.equals(GlobalData.getAppContext().getString(R.string.sdk_error_generic_submitorder));
     }
 
@@ -1449,7 +1461,7 @@ public abstract class AdapterBase {
         if (TextUtils.isEmpty(message)) {
             return;
         }
-        if (!message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_error_mess_exist_mapcard))) {
+        if (!message.equalsIgnoreCase(GlobalData.getAppContext().getResources().getString(R.string.sdk_error_mess_exist_mapcard))) {
             return;
         }
         //clear checksum cardinfo
@@ -1503,7 +1515,7 @@ public abstract class AdapterBase {
             return;
         }
         if (!TextUtils.isEmpty(pMessage)) {
-            pMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            pMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         try {
             getView().showInfoDialog(pMessage);
@@ -1522,7 +1534,7 @@ public abstract class AdapterBase {
             Timber.d("user in fail screen - skip retry get status");
             return;
         }
-        String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry);
+        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_mess);
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -1532,7 +1544,7 @@ public abstract class AdapterBase {
             @Override
             public void onOKEvent() {
                 try {
-                    getView().showLoading(GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
+                    getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
@@ -1544,7 +1556,7 @@ public abstract class AdapterBase {
                     mTransactionAdapter.getTransactionStatus(pZmpTransID, isCheckDataInStatus, null);
                 } catch (Exception e) {
                     Log.e(this, e);
-                    terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
+                    terminate(GlobalData.getAppContext().getResources().getString(R.string.zpw_string_error_layout), true);
                 }
             }
         });
@@ -1583,7 +1595,7 @@ public abstract class AdapterBase {
     protected void reloadMapCard(boolean showLoading) {
         if (showLoading) {
             try {
-                getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
+                getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_card_info_mess));
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -1642,7 +1654,7 @@ public abstract class AdapterBase {
             if (getGuiProcessor().isCardLengthMatchIdentifier(getGuiProcessor().getCardNumber())) {
                 SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
             }
-            if(CardType.PBIDV.equals(pBankCode)){
+            if (CardType.PBIDV.equals(pBankCode)) {
                 getPresenter().callbackLinkThenPay(Link_Then_Pay.BIDV);
             }
         } catch (Exception e) {
@@ -1651,7 +1663,7 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportErrorOnPharse(int pPharse, String pMessage) {
-        String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+        String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
         if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             return;
         }
@@ -1667,7 +1679,7 @@ public abstract class AdapterBase {
         if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             return;
         }
-        String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+        String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
         if (!TextUtils.isEmpty(paymentError)) {
             paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
             sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);

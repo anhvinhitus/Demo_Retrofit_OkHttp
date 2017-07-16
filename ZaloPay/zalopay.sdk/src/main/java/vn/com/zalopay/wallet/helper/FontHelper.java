@@ -22,7 +22,7 @@ public class FontHelper {
      * apply font for all view on screen.
      */
     public static void overrideFont(ViewGroup viewGroup) {
-        overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
+        overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.sdk_font_regular));
     }
 
     public static void applyFont(View pView, String pFontName) {

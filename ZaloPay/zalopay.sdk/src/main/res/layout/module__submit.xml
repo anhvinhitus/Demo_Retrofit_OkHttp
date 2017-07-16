@@ -14,7 +14,7 @@
         android:background="@drawable/bg_btn_blue_border_selector"
         android:enabled="false"
         android:gravity="center"
-        android:text="@string/zpw_button_submit_text"
+        android:text="@string/sdk_button_submit_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white"
         android:textSize="@dimen/zpw_submit_button_text_size" />

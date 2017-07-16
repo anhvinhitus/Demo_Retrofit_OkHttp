@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
@@ -63,7 +63,7 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
                 .onErrorReturn(throwable -> {
                     BaseResponse baseResponse = new BaseResponse();
                     baseResponse.returncode = -1;
-                    baseResponse.returnmessage = GlobalData.getStringResource(RS.string.zpw_alert_network_error_removemapcard);
+                    baseResponse.returnmessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_error_networking_removemapcard_mess);
                     return baseResponse;
                 });
         return Observable.concat(removeMapObservable, reloadCardObservable).first(baseResponse -> baseResponse != null && baseResponse.returncode != 1);

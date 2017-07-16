@@ -95,33 +95,6 @@ public class GlobalData {
         return isTransactionHasInputCard && isChannelHasInputCard;
     }
 
-    public static String getOfflineMessage(PaymentInfoHelper paymentInfoHelper) {
-        if (paymentInfoHelper.bankAccountLink()) {
-            return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account);
-        } else if (paymentInfoHelper.bankAccountUnlink()) {
-            return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account);
-        } else {
-            return GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction);
-        }
-    }
-
-    /***
-     * this is red package channel
-     */
-    public static boolean isRedPacketChannel(long appID) {
-        long redPackageID;
-        try {
-            redPackageID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_redpackage_app_id));
-            return redPackageID == appID;
-        } catch (Exception ignored) {
-        }
-        return false;
-    }
-
-    public static boolean isZalopayChannel(long appID) {
-        return BuildConfig.channel_zalopay == appID;
-    }
-
     @BankFunctionCode
     public static int updateBankFuncByPayType() {
         if (paymentInfoHelper.payByBankAccountMap()) {

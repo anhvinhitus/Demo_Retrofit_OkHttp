@@ -7,11 +7,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -100,7 +100,8 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     private Func1<AppInfoResponse, Observable<AppInfo>> mapResult(long appId) {
         return appInfoResponse -> {
             if (appInfoResponse == null) {
-                return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+                return Observable.error(new RequestException(RequestException.NULL,
+                        GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
             } else if (appInfoResponse.returncode == 1) {
                 //success, load app info from cache
                 return mLocalStorage.get(appId);

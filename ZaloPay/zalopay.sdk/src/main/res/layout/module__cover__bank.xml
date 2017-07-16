@@ -126,8 +126,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
-                        android:hint="@string/zpw_string_cardpassword_hint"
-                        android:tag="@string/zpw_string_cardpassword_hint"
+                        android:hint="@string/sdk_cardpassword_hint"
+                        android:tag="@string/sdk_cardpassword_hint"
                         android:theme="@style/TextLabelHint"
                         android:visibility="gone">
 
@@ -157,8 +157,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
-                        android:hint="@string/zpw_string_otp_hint"
-                        android:tag="@string/zpw_string_otp_hint"
+                        android:hint="@string/sdk_otp_hint"
+                        android:tag="@string/sdk_otp_hint"
                         android:theme="@style/TextLabelHint"
                         android:visibility="gone">
 
@@ -200,9 +200,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="@string/zpw_string_captcha"
+                            android:hint="@string/sdk_captcha_hint"
                             android:paddingTop="@dimen/zpw_row_padding_top"
-                            android:tag="@string/zpw_string_captcha"
+                            android:tag="@string/sdk_captcha_hint"
                             android:theme="@style/TextLabelHint">
 
                             <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
@@ -265,7 +265,7 @@
                 android:layout_marginRight="@dimen/zpw_padding_left_right"
                 android:layout_marginTop="@dimen/zpw_item_listview_padding_top_bottom"
                 android:gravity="center"
-                android:text="@string/zpw_otp_instruction"
+                android:text="@string/sdk_intro_otp_mess"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/zpw_text_size_medium"
                 android:visibility="gone" />

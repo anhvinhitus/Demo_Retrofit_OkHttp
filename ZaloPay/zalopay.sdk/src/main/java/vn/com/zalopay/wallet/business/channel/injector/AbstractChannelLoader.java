@@ -11,12 +11,12 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -72,10 +72,10 @@ public abstract class AbstractChannelLoader {
     public String getAlertAmount(long amount) {
         String strAlert = "";
         if (hasMinValueChannel() && amount < getMinValueChannel()) {
-            strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_min_amount_input),
+            strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_min_amount_mess),
                     StringUtil.formatVnCurrence(String.valueOf(getMinValueChannel())));
         } else if (hasMaxValueChannel() && amount > getMaxValueChannel()) {
-            strAlert = String.format(GlobalData.getStringResource(RS.string.zpw_string_alert_max_amount_input),
+            strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_max_amount_mess),
                     StringUtil.formatVnCurrence(String.valueOf(getMaxValueChannel())));
         }
         return strAlert;
@@ -177,7 +177,7 @@ public abstract class AbstractChannelLoader {
                     channel.f6no = bankAccount.firstaccountno;
                     channel.l4no = bankAccount.lastaccountno;
                     channel.bankcode = bankAccount.bankcode;
-                    channel.pmcname = GlobalData.getStringResource(RS.string.zpw_channelname_vietcombank_mapaccount);
+                    channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_bankaccount_name);
                     channel.isBankAccountMap = true;
 
                     ChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
@@ -271,7 +271,7 @@ public abstract class AbstractChannelLoader {
                         CreditCardCheck.getInstance().detectOnSync(channel.f6no);
                         if (CreditCardCheck.getInstance().isDetected()) {
                             //populate channel name
-                            channel.pmcname = String.format(GlobalData.getStringResource(RS.string.sdk_creditcard_label), CreditCardCheck.getInstance().getBankName()) + mapCard.last4cardno;
+                            channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), CreditCardCheck.getInstance().getBankName()) + mapCard.last4cardno;
                             String cardType = CreditCardCheck.getInstance().getCodeBankForVerify();
                             ChannelHelper.inflatChannelIcon(channel, cardType);
                         }
@@ -284,15 +284,15 @@ public abstract class AbstractChannelLoader {
                             //populate channel name
                             String bankName = BankCardCheck.getInstance().getShortBankName();
                             if (TextUtils.isEmpty(bankName)) {
-                                bankName = GlobalData.getStringResource(RS.string.sdk_card_default_label);
+                                bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format);
                             } else {
-                                bankName = String.format(GlobalData.getStringResource(RS.string.sdk_card_generic_label), bankName);
+                                bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), bankName);
                             }
                             channel.pmcname = bankName + mapCard.last4cardno;
                         }
                     }
                     if (!CreditCardCheck.getInstance().isDetected() && !BankCardCheck.getInstance().isDetected()) {
-                        channel.pmcname = GlobalData.getStringResource(RS.string.sdk_card_default_label) + mapCard.last4cardno;
+                        channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format) + mapCard.last4cardno;
                     }
                     send(channel);
                 }

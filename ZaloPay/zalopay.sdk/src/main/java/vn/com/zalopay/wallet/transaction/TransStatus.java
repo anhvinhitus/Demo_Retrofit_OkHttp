@@ -1,11 +1,14 @@
 package vn.com.zalopay.wallet.transaction;
 
+import android.os.Build;
+
 import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
@@ -40,7 +43,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
         this.mAppId = appId;
         this.mUserInfo = userInfo;
         this.mTransId = transId;
-        intervalRetry = GlobalData.isZalopayChannel(mAppId) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
+        intervalRetry = (mAppId == BuildConfig.channel_zalopay) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
     }
 
     private boolean shouldStop(StatusResponse pResponse) {

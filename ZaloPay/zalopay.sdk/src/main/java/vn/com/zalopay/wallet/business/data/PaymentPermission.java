@@ -7,6 +7,26 @@ import timber.log.Timber;
  * which config from bundle
  */
 public class PaymentPermission {
+    public static boolean allowLuhnCC() {
+        try {
+            int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_luhn_cc));
+            return allow > 0;
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception read allow Luhn CC");
+            return true;
+        }
+    }
+
+    public static boolean allowLuhnATM() {
+        try {
+            int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_luhn_atm));
+            return allow > 0;
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception read allow Luhn ATM");
+            return true;
+        }
+    }
+
     public static boolean allowUseFingerPrint() {
         try {
             int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_use_fingerprint_feature));

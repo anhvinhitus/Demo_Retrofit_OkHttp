@@ -90,7 +90,7 @@
                 android:layout_toRightOf="@+id/zpw_payment_fail_iv_support"
                 android:paddingLeft="@dimen/zpw_padding_10"
                 android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_support"
+                android:text="@string/sdk_support_text"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 
@@ -134,7 +134,7 @@
                 android:layout_toRightOf="@+id/zpw_payment_fail_iv_update_info"
                 android:paddingLeft="@dimen/zpw_padding_10"
                 android:paddingRight="@dimen/zpw_padding_10"
-                android:text="@string/zpw_update_info"
+                android:text="@string/sdk_update_info_text"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 

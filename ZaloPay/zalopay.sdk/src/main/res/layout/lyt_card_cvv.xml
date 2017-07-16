@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
-        android:hint="@string/zpw_string_credit_card_cvv_hint"
-        android:tag="@string/zpw_string_credit_card_cvv_hint"
+        android:hint="@string/sdk_card_cvv_hint"
+        android:tag="@string/sdk_card_cvv_hint"
         android:theme="@style/TextLabelHint">
 
         <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText

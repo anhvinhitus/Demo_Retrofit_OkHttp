@@ -132,7 +132,7 @@
                         android:layout_marginLeft="@dimen/spacing.tiny"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:text="@string/zpw_string_vnd_success"
+                        android:text="@string/sdk_currency_unit"
                         android:textColor="@color/txt_item_main"
                         android:textSize="@dimen/textsize.tiny" />
                 </LinearLayout>

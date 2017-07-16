@@ -12,6 +12,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.RetryWithDelay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -121,12 +122,12 @@ public class BankInteractor implements IBankInteractor {
             if (visa != null) {
                 visa.bankLogo = String.format("%s%s", GlobalData.getStringResource(RS.string.sdk_banklogo_visa), BITMAP_EXTENSION);
                 visa.bankCode = bankCodeVisa;
-                visa.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_visa);
+                visa.bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_visa_bankname);
 
                 masterCard = new ZPBank(visa);
                 masterCard.bankLogo = supportBankLogo(bankCodeMaster);
                 masterCard.bankCode = bankCodeMaster;
-                masterCard.bankName = GlobalData.getStringResource(RS.string.zpw_string_bankname_master);
+                masterCard.bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_master_bankname);
             }
 
             //build support cards
@@ -205,9 +206,9 @@ public class BankInteractor implements IBankInteractor {
         MiniPmcTransType pmcTransType = SDKApplication
                 .getApplicationComponent()
                 .appInfoInteractor()
-                .getPmcTranstype(BuildConfig.ZALOAPP_ID, TransactionType.LINK, isBankAccount, bankCode);
+                .getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, isBankAccount, bankCode);
         if (pmcTransType != null && !pmcTransType.isVersionSupport(appVersion)) {
-            String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel);
+            String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_linkchannel);
             message = String.format(message, bankConfig.getShortBankName());
             bank.setBankStatus(BankStatus.UPVERSION);
             bank.bankMessage = message;
@@ -266,7 +267,8 @@ public class BankInteractor implements IBankInteractor {
     @NonNull
     private Observable<BankConfigResponse> convertToBankConfigResponseObservable(BankConfigResponse bankConfigResponse) {
         if (bankConfigResponse == null) {
-            return Observable.error(new RequestException(RequestException.NULL, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)));
+            return Observable.error(new RequestException(RequestException.NULL,
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
         } else if (bankConfigResponse.returncode == 1) {
             bankConfigResponse.expiredtime = mLocalStorage.getExpireTime();
             if (bankConfigResponse.bankcardprefixmap == null) {

@@ -39,7 +39,7 @@
             android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/zpw_margin_left"
             android:gravity="bottom"
-            android:text="@string/zpw_string_payment_currency_label"
+            android:text="@string/sdk_currency_unit"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/sdk_text_size_amount_unit" />
     </LinearLayout>

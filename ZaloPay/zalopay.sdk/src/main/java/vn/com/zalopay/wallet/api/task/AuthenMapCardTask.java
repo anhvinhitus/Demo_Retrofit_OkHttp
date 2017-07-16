@@ -1,11 +1,11 @@
 package vn.com.zalopay.wallet.api.task;
 
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -48,7 +48,7 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     public void onRequestInProcess() {
         if (mAdapter != null) {
             try {
-                mAdapter.getView().showLoading(GlobalData.getStringResource(RS.string.zpw_string_authen_atm));
+                mAdapter.getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -57,7 +57,7 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     public String getDefaulErrorNetwork() {
-        return GlobalData.getStringResource(RS.string.zpw_alert_network_error_authenpayer);
+        return GlobalData.getAppContext().getResources().getString(R.string.sdk_error_networking_authenpayer_mess);
     }
 
     @Override

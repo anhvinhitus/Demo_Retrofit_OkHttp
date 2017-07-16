@@ -24,7 +24,7 @@
         android:layout_marginBottom="@dimen/dimen_linkacc_margin_bottom_title"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/dimen_linkacc_margin_top_title"
-        android:text="@string/zpw_string_login_vcb_title"
+        android:text="@string/sdk_vcb_login_title"
         android:textSize="@dimen/text_size_normal_small" />
 
     <View
@@ -42,9 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/zpw_string_linkacc_account_hint"
+            android:hint="@string/sdk_vcb_linkacc_account_hint"
             android:paddingTop="@dimen/margin_small"
-            android:tag="@string/zpw_string_linkacc_account_hint"
+            android:tag="@string/sdk_vcb_linkacc_account_hint"
             android:theme="@style/TextLabelHint">
 
             <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
@@ -68,9 +68,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="@string/zpw_string_linkacc_password_hint"
+            android:hint="@string/sdk_vcb_linkacc_password_hint"
             android:paddingTop="@dimen/margin_small"
-            android:tag="@string/zpw_string_linkacc_password_hint"
+            android:tag="@string/sdk_vcb_linkacc_password_hint"
             android:theme="@style/TextLabelHint"
             app:passwordToggleEnabled="false">
 
@@ -102,10 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/white"
-                android:hint="@string/zpw_string_linkacc_captcha_hint"
+                android:hint="@string/sdk_vcb_linkacc_captcha_hint"
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/margin_small"
-                android:tag="@string/zpw_string_linkacc_captcha_hint"
+                android:tag="@string/sdk_vcb_linkacc_captcha_hint"
                 android:theme="@style/TextLabelHint">
 
                 <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText

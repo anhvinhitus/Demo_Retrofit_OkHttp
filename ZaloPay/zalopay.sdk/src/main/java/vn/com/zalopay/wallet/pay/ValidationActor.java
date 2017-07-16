@@ -6,15 +6,13 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.interactor.IBankInteractor;
@@ -28,8 +26,8 @@ import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 public class ValidationActor extends SingletonBase {
     PaymentChannel mChannel;
     PaymentInfoHelper mPaymentInfoHelper;
-    private IBankInteractor mBankInteractor;
     WeakReference<ChannelListPresenter> mChannelListPresenter;
+    private IBankInteractor mBankInteractor;
     private ZPWOnEventConfirmDialogListener mUpdateLevelListener = new ZPWOnEventConfirmDialogListener() {
         @Override
         public void onCancelEvent() {
@@ -65,13 +63,13 @@ public class ValidationActor extends SingletonBase {
         if (mChannel.isMapValid()) {
             BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
             if (bankConfig != null) {
-                String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                String pMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_payment);
                 pMessage = String.format(pMessage, bankConfig.getShortBankName());
                 showSupportBankVersionDialog(pMessage);
                 return;
             }
         }
-        String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+        String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_payment);
         showSupportBankVersionDialog(String.format(message, mChannel.pmcname));
     }
 
@@ -92,13 +90,6 @@ public class ValidationActor extends SingletonBase {
                 return false;
             }
         }
-        //check level for payment
-        /*if (!mPaymentInfoHelper.userLevelValid()) {
-            getView().showUpdateLevelDialog(
-                    GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update),
-                    getBtnCloseText(), mUpdateLevelListener);
-            return false;
-        }*/
         //check bank future
         if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(GlobalData.getAppContext())) && !mChannel.isNewAtmChannel()) {
             warningSupportVersion();
@@ -107,45 +98,6 @@ public class ValidationActor extends SingletonBase {
             Log.d(this, "select channel not support", mChannel);
             return false;
         }
-        //withdraw
-        if (mPaymentInfoHelper.isWithDrawTrans()) {
-            return true;
-        }
-
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        int transtype = mPaymentInfoHelper.getTranstype();
-        String warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update);
-        //validate in map table
-        int iCheck = userInfo.getPermissionByChannelMap(channel.pmcid, transtype);
-        if (iCheck == Constants.LEVELMAP_INVALID) {
-            getView().showError(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-            return false;
-        }
-        if (iCheck == Constants.LEVELMAP_BAN && mChannel.isBankAccountMap()) {
-            warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount);
-        } else if (iCheck == Constants.LEVELMAP_BAN && mChannel.isBankAccount()) {
-            warningLevel = GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_linkaccount_before_payment);
-        }
-
-        if (iCheck == Constants.LEVELMAP_BAN) {
-            getView().showUpdateLevelDialog(warningLevel, getBtnCloseText(), mUpdateLevelListener);
-            return false;
-        }
-
-        /***
-         * user selected bank account channel
-         * if user have no linked bank accoount, redirect him to link bank account page
-         * if user have some link bank account, he need to select one to continue to payment
-         */
-        /*if (channel.isBankAccount() && !channel.isBankAccountMap) {
-            //callback bankcode to app , app will direct user to link bank account to right that bank
-            BankAccount dBankAccount = new BankAccount();
-            dBankAccount.bankcode = CardType.PVCB;
-            mPaymentInfoHelper.setMapBank(dBankAccount);
-            mPaymentInfoHelper.setResult(PaymentStatus.DIRECT_LINK_ACCOUNT_AND_PAYMENT);
-            getView().callbackThenTerminate();
-            return false;
-        }*/
         return true;
     }
 
@@ -153,15 +105,7 @@ public class ValidationActor extends SingletonBase {
         try {
             getView().showSupportBankVersionDialog(pMessage);
         } catch (Exception e) {
-            Timber.d(e != null ? e.getMessage() : "Exception");
+            Timber.d(e, "Exception show bank support version");
         }
-    }
-
-    private String getBtnCloseText() {
-        String closeButtonText = GlobalData.getStringResource(RS.string.dialog_choose_again_button);
-        if (mChannelListPresenter.get().isUniqueChannel()) {
-            closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
-        }
-        return closeButtonText;
     }
 }

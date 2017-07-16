@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/zpw_row_padding_top"
-                android:tag="@string/zpw_string_otp_hint"
+                android:tag="@string/sdk_otp_hint"
                 android:theme="@style/TextLabelHint">
 
                 <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txt_bottom_default_style"
-                    android:hint="@string/zpw_string_otp_hint"
+                    android:hint="@string/sdk_otp_hint"
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:inputType="number|textNoSuggestions"
                     android:maxLength="@integer/maximum_character_field_opt_length"
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/zpw_row_padding_top"
-                android:tag="@string/zpw_string_token_hint"
+                android:tag="@string/sdk_token_hint"
                 android:theme="@style/TextLabelHint"
                 android:visibility="gone">
 
@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txt_bottom_default_style"
-                    android:hint="@string/zpw_string_token_hint"
+                    android:hint="@string/sdk_token_hint"
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:inputType="textVisiblePassword"
                     android:maxLength="@integer/maximum_character_field_token_length"
@@ -85,7 +85,7 @@
                 android:layout_marginBottom="@dimen/zpw_title_padding_bottom"
                 android:layout_marginTop="@dimen/zpw_padding_title_top"
                 android:paddingLeft="@dimen/zpw_row_start_padding"
-                android:text="@string/zpw_string_title_confirm_transaction"
+                android:text="@string/sdk_confirm_authen_type_title"
                 android:textAllCaps="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/text_color_grey" />
@@ -106,7 +106,7 @@
                     android:layout_weight="1"
                     android:checked="true"
                     android:enabled="true"
-                    android:text="@string/zpw_string_sms"
+                    android:text="@string/sdk_authen_sms_type"
                     android:textColor="@color/text_color_bold"
                     android:theme="@style/PaymentRadioButton" />
 
@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/zpw_string_token"
+                    android:text="@string/sdk_authen_token_type"
                     android:textColor="@color/text_color_bold"
                     android:theme="@style/PaymentRadioButton" />
 

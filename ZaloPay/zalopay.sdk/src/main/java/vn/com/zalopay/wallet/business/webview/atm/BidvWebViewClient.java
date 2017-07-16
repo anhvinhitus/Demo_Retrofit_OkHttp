@@ -12,12 +12,13 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -156,7 +157,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-        if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
+        if (mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
             view.stopLoading();
         }
     }
@@ -176,12 +177,12 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         return true;
     }
 
-    protected boolean loadingStaticResource(String pUrl) {
-        return TextUtils.isEmpty(pUrl) || pUrl.contains(BuildConfig.HOST_COMPLETE) || pUrl.endsWith(".css") || pUrl.endsWith(".js") || pUrl.endsWith(".png") || pUrl.endsWith(".ico")
+    private boolean loadingStaticResource(String pUrl) {
+        return TextUtils.isEmpty(pUrl) || pUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain)) || pUrl.endsWith(".css") || pUrl.endsWith(".js") || pUrl.endsWith(".png") || pUrl.endsWith(".ico")
                 || pUrl.endsWith(".xml") || pUrl.endsWith(".jpg") || pUrl.endsWith(".jpeg") || pUrl.endsWith(".gif");
     }
 
-    protected void intervalCheck() {
+    private void intervalCheck() {
         if (countIntervalCheck >= MAX_INTERVAL_CHECK_COUNT) {
             Timber.d("===intervalCheck===stop");
             return;
