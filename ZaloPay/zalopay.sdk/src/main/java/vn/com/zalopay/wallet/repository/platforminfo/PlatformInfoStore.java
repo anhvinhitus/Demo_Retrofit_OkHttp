@@ -10,6 +10,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
@@ -44,21 +45,55 @@ public class PlatformInfoStore {
 
         void setBankAccountCheckSum(String checkSum);
 
-        String getUnzipPath();
-
-        void setUnzipPath(String pUnzipPath);
+        void setResourcePath(String pUnzipPath);
 
         void setResourceDownloadUrl(String resourceDownloadUrl);
 
         String getUserId();
 
         void setCheckSum(String checkSum);
+
+        boolean enableTopup();
+
+        String getResourcePath();
+
+        Maintenance withdrawMaintain();
     }
 
-    public interface Repository {
-        Observable<PlatformInfoResponse> fetchCloud(Map<String, String> params);
+    public interface Interactor {
+        boolean isNewVersion(String appVersion);
 
-        PlatformInfoStore.LocalStorage getLocalStorage();
+        boolean isNewUser(String userId);
+
+        long getExpireTime();
+
+        String getAppVersion();
+
+        String getPlatformInfoCheckSum();
+
+        String getUserId();
+
+        String getResourcePath();
+
+        String getResourceVersion();
+
+        boolean validFileConfig();
+
+        boolean enableTopup();
+
+        Maintenance withdrawMaintain();
+
+        Observable<PlatformInfoCallback> loadSDKPlatform(String userId, String accessToken, long currentTime);
+
+        Observable<PlatformInfoCallback> loadSDKPlatformFromCloud(String userId, String accessToken, boolean forceReloadApi, boolean forceDownloadResource);
+
+        /***
+         * Platform info expire time,unix time to exprired time (in milisecond)
+         * After this expire time, client need hit to server again
+         * @return
+         */
+        long getPlatformInfoDurationExpire();
+
     }
 
     public interface PlatformInfoService {

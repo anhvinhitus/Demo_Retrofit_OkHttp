@@ -23,6 +23,8 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
+import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
 /**
  * Created by huuhoa on 6/29/17.
@@ -31,8 +33,8 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 public class ChannelListInteractor {
     private final AppInfoStore.Interactor mAppInfoInteractor;
-    private final IBankInteractor mBankInteractor;
-    private final IPlatformInfo mPlatformInteractor;
+    private final BankStore.Interactor mBankInteractor;
+    private final PlatformInfoStore.Interactor mPlatformInteractor;
     private final ZPMonitorEventTiming mEventTiming;
     private final Handler mApplicationHandler;
 
@@ -43,9 +45,9 @@ public class ChannelListInteractor {
 
     @Inject
     public ChannelListInteractor(Application application,
-                                 IPlatformInfo platformInteractor,
+                                 PlatformInfoStore.Interactor platformInteractor,
                                  AppInfoStore.Interactor appInfoInteractor,
-                                 IBankInteractor bankInteractor,
+                                 BankStore.Interactor bankInteractor,
                                  ZPMonitorEventTiming eventTiming) {
         mApplicationHandler = new Handler(application.getMainLooper());
 
@@ -80,7 +82,7 @@ public class ChannelListInteractor {
         task.execute();
     }
 
-    Observable<Boolean> initResource(){
+    Observable<Boolean> initResource() {
         return ResourceManager.initResource()
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_START))
                 .doOnNext(aBoolean -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_INIT_RESOURCE_END))

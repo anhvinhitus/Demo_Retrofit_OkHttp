@@ -86,7 +86,7 @@ public class ResourceInteractor {
                 StorageUtil.decompress(responseBody.bytes(), unzipFolder);
                 Timber.d("extract resource to %s", unzipFolder);
                 mPlatformStorage.setResourceVersion(mResourceVersion);
-                mPlatformStorage.setUnzipPath(unzipFolder + mResourceVersion);
+                mPlatformStorage.setResourcePath(unzipFolder + mResourceVersion);
                 return Observable.just(new SdkDownloadResourceMessage(true, null));
             }
         } catch (IOException e) {

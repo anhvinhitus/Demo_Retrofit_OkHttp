@@ -51,12 +51,12 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -69,7 +69,7 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> {
     @Inject
-    public IBankInteractor mBankInteractor;
+    public BankStore.Interactor mBankInteractor;
     protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     EventBus mBus;
@@ -723,7 +723,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mChannelLoader.source.subscribe(getChannelObserver());
             mChannelLoader.getChannels();
         } catch (Exception e) {
-            Timber.w(e,"Exception load channels");
+            Timber.w(e, "Exception load channels");
             getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_init_data));
         }
 

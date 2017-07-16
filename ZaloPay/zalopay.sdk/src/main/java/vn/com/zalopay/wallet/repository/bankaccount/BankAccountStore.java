@@ -39,12 +39,6 @@ public class BankAccountStore {
         void clearCheckSum();
     }
 
-    public interface Repository {
-        Observable<BankAccountListResponse> fetchCloud(String userid, String accesstoken, String checksum, String appversion);
-
-        BankAccountStore.LocalStorage getLocalStorage();
-    }
-
     public interface BankAccountService {
         @GET(Constants.URL_LISTBANKACCCOUNT)
         @API_NAME(https = ZPEvents.API_UM_LISTBANKACCOUNTFORCLIENT, connector = ZPEvents.CONNECTOR_UM_LISTBANKACCOUNTFORCLIENT)

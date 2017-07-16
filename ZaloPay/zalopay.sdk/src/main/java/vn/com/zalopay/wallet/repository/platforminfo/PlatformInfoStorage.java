@@ -163,18 +163,18 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     }
 
     @Override
-    public String getUnzipPath() {
-        String unzipPath = null;
+    public String getResourcePath() {
+        String resourcePath = null;
         try {
-            unzipPath = mSharedPreferences.getUnzipPath();
+            resourcePath = mSharedPreferences.getUnzipPath();
         } catch (Exception e) {
             Log.e(this, e);
         }
-        return unzipPath;
+        return resourcePath;
     }
 
     @Override
-    public void setUnzipPath(String pUnzipPath) {
+    public void setResourcePath(String pUnzipPath) {
         mSharedPreferences.setUnzipPath(pUnzipPath);
     }
 
@@ -245,6 +245,30 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     @Override
     public void setCheckSum(String checkSum) {
         mSharedPreferences.setPlatformInfoCheckSum(checkSum);
+    }
+
+    @Override
+    public boolean enableTopup() {
+        try {
+            return mSharedPreferences.getEnableDeposite();
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception check enable deposit");
+        }
+        return true;
+    }
+
+    @Override
+    public Maintenance withdrawMaintain() {
+        try {
+            String maintenanceOb = mSharedPreferences.getMaintenanceWithDraw();
+            if (TextUtils.isEmpty(maintenanceOb)) {
+                return null;
+            }
+            return GsonUtils.fromJsonString(maintenanceOb, Maintenance.class);
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception get maintain withdraw");
+        }
+        return null;
     }
 
     @Override

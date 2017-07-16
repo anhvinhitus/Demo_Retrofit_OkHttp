@@ -41,7 +41,7 @@ import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
  * Created by chucvv on 6/8/17.
  */
 
-public class BankInteractor implements IBankInteractor {
+public class BankInteractor implements BankStore.Interactor {
     private static final String key_on_mem = "SdkBankList";
     private final BankStore.LocalStorage mLocalStorage;
     private final BankStore.BankListService mBankListService;

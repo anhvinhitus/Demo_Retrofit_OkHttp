@@ -23,13 +23,18 @@ import vn.com.zalopay.wallet.repository.cardmap.CardStore;
  */
 
 public class LinkSourceInteractor implements ILinkSourceInteractor {
-    private CardStore.Repository cardRepository;
-    private BankAccountStore.Repository bankAccountRepository;
+    private CardStore.CardMapService mCardMapService;
+    private CardStore.LocalStorage mCardMapLocalStorage;
+    private BankAccountStore.BankAccountService mBankAccountService;
+    private BankAccountStore.LocalStorage mBankAccountLocalStorage;
 
     @Inject
-    public LinkSourceInteractor(CardStore.Repository cardRepository, BankAccountStore.Repository bankAccountRepository) {
-        this.cardRepository = cardRepository;
-        this.bankAccountRepository = bankAccountRepository;
+    public LinkSourceInteractor(CardStore.CardMapService cardMapService, CardStore.LocalStorage cardMapLocalStorage,
+                                BankAccountStore.BankAccountService bankAccountService, BankAccountStore.LocalStorage bankAccountLocalStorage) {
+        this.mCardMapService = cardMapService;
+        this.mCardMapLocalStorage = cardMapLocalStorage;
+        this.mBankAccountService = bankAccountService;
+        this.mBankAccountLocalStorage = bankAccountLocalStorage;
     }
 
     @Override
@@ -42,8 +47,8 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
     }
 
     private Observable<Boolean> refreshAll(String appVersion, String userId, String accessToken) {
-        this.bankAccountRepository.getLocalStorage().resetBankAccountCacheList(userId);
-        this.cardRepository.getLocalStorage().resetMapCardCacheList(userId);
+        this.mBankAccountLocalStorage.resetBankAccountCacheList(userId);
+        this.mCardMapLocalStorage.resetMapCardCacheList(userId);
         return getMap(userId, accessToken, true, appVersion);
     }
 
@@ -58,8 +63,10 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
                         return Observable.just(baseResponse);
                     }
                 });
-        Observable<BaseResponse> removeMapObservable = cardRepository
-                .removeCard(userid, accessToken, cardname, first6cardno, last4cardno, bankCode, appVersion)
+        Observable<BaseResponse> removeMapObservable = mCardMapService
+                .removeMapCard(userid, accessToken, cardname, first6cardno, last4cardno, bankCode, appVersion)
+                .doOnSubscribe(() -> mCardMapLocalStorage.clearCheckSum())
+                .doOnNext(baseResponse -> mCardMapLocalStorage.resetMapCardCache(userid, first6cardno, last4cardno))
                 .onErrorReturn(throwable -> {
                     BaseResponse baseResponse = new BaseResponse();
                     baseResponse.returncode = -1;
@@ -77,10 +84,10 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         MapCard mapCard = getCard(userId, key);
         BankAccount bankAccount = getBankAccount(userId, key);
         if (mapCard != null && !TextUtils.isEmpty(mapCard.bankcode)) {
-            this.cardRepository.getLocalStorage().resetMapCardCache(userId, first6cardno, last4cardno);
+            mCardMapLocalStorage.resetMapCardCache(userId, first6cardno, last4cardno);
             return getCards(userId, accessToken, true, appVersion);
         } else if (bankAccount != null && !TextUtils.isEmpty(bankAccount.bankcode)) {
-            this.bankAccountRepository.getLocalStorage().resetBankAccountCache(userId, first6cardno, last4cardno);
+            mBankAccountLocalStorage.resetBankAccountCache(userId, first6cardno, last4cardno);
             return getBankAccounts(userId, accessToken, true, appVersion);
         } else {
             return refreshAll(appVersion, userId, accessToken);
@@ -89,18 +96,19 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     @Override
     public List<BankAccount> getBankAccountList(String userid) {
-        return this.bankAccountRepository.getLocalStorage().getBankAccountList(userid);
+        return mBankAccountLocalStorage.getBankAccountList(userid);
     }
 
     @Override
     public Observable<Boolean> getCards(String userid, String accesstoken, boolean pReload, String appversion) {
         String checksum = "";
         if (pReload) {
-            cardRepository.getLocalStorage().clearCheckSum();
+            mCardMapLocalStorage.clearCheckSum();
         } else {
-            checksum = cardRepository.getLocalStorage().getCheckSum();
+            checksum = mCardMapLocalStorage.getCheckSum();
         }
-        return cardRepository.fetchCloud(userid, accesstoken, checksum, appversion)
+        return mCardMapService.fetch(userid, accesstoken, checksum, appversion)
+                .doOnNext(cardInfoListResponse -> mCardMapLocalStorage.saveResponse(userid, cardInfoListResponse))
                 .flatMap(new Func1<CardInfoListResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(CardInfoListResponse cardInfoListResponse) {
@@ -113,11 +121,12 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
     public Observable<Boolean> getBankAccounts(String userid, String accesstoken, boolean pReload, String appversion) {
         String checksum = "";
         if (pReload) {
-            bankAccountRepository.getLocalStorage().clearCheckSum();
+            mBankAccountLocalStorage.clearCheckSum();
         } else {
-            checksum = bankAccountRepository.getLocalStorage().getCheckSum();
+            checksum = mBankAccountLocalStorage.getCheckSum();
         }
-        return bankAccountRepository.fetchCloud(userid, accesstoken, checksum, appversion)
+        return mBankAccountService.fetch(userid, accesstoken, checksum, appversion)
+                .doOnNext(bankAccountListResponse -> mBankAccountLocalStorage.saveResponse(userid, bankAccountListResponse))
                 .flatMap(new Func1<BankAccountListResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(BankAccountListResponse bankAccountListResponse) {
@@ -135,20 +144,20 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     @Override
     public void putCards(String userid, String checksum, List<MapCard> cardList) {
-        cardRepository.getLocalStorage().put(userid, checksum, cardList);
+        mCardMapLocalStorage.put(userid, checksum, cardList);
     }
 
     @Override
     public void putBankAccounts(String userid, String checksum, List<BankAccount> bankAccountList) {
-        bankAccountRepository.getLocalStorage().put(userid, checksum, bankAccountList);
+        mBankAccountLocalStorage.put(userid, checksum, bankAccountList);
     }
 
     @Override
     public MapCard getCard(String userid, String cardKey) {
-        return cardRepository.getLocalStorage().getCard(userid, cardKey);
+        return mCardMapLocalStorage.getCard(userid, cardKey);
     }
 
     private BankAccount getBankAccount(String userid, String key) {
-        return bankAccountRepository.getLocalStorage().getBankAccount(userid, key);
+        return mBankAccountLocalStorage.getBankAccount(userid, key);
     }
 }

@@ -13,8 +13,8 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
@@ -25,10 +25,10 @@ public class ValidationActor extends SingletonBase {
     PaymentChannel mChannel;
     PaymentInfoHelper mPaymentInfoHelper;
     WeakReference<ChannelListPresenter> mChannelListPresenter;
-    private IBankInteractor mBankInteractor;
     Context mContext;
+    private BankStore.Interactor mBankInteractor;
 
-    public ValidationActor(Context pContext, PaymentInfoHelper paymentInfoHelper, IBankInteractor iBankInteractor, ChannelListPresenter channelListPresenter) {
+    public ValidationActor(Context pContext, PaymentInfoHelper paymentInfoHelper, BankStore.Interactor iBankInteractor, ChannelListPresenter channelListPresenter) {
         this.mContext = pContext;
         this.mPaymentInfoHelper = paymentInfoHelper;
         this.mBankInteractor = iBankInteractor;

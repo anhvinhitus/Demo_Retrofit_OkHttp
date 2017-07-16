@@ -11,9 +11,7 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.interactor.AppInfoInteractor;
 import vn.com.zalopay.wallet.interactor.BankInteractor;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
-import vn.com.zalopay.wallet.interactor.IPlatformInfo;
 import vn.com.zalopay.wallet.interactor.LinkSourceInteractor;
 import vn.com.zalopay.wallet.interactor.PlatformInfoInteractor;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
@@ -29,13 +27,13 @@ import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 public class InteractorModule {
     @Provides
     @Singleton
-    IPlatformInfo providePlatformInteractor(PlatformInfoStore.Repository platformInfoRepository) {
-        return new PlatformInfoInteractor(platformInfoRepository);
+    PlatformInfoStore.Interactor providePlatformInteractor(PlatformInfoStore.PlatformInfoService service, PlatformInfoStore.LocalStorage localStorage) {
+        return new PlatformInfoInteractor(service, localStorage);
     }
 
     @Provides
     @Singleton
-    IBankInteractor provideBankListInteractor(BankStore.LocalStorage localStorage, BankStore.BankListService bankListService, MemoryCache memoryCache) {
+    BankStore.Interactor provideBankListInteractor(BankStore.LocalStorage localStorage, BankStore.BankListService bankListService, MemoryCache memoryCache) {
         return new BankInteractor(localStorage, bankListService, memoryCache);
     }
 
@@ -47,17 +45,17 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    ILinkSourceInteractor provideLinkInteactor(CardStore.Repository cardRepository,
-                                               BankAccountStore.Repository bankAccountRepository) {
-        return new LinkSourceInteractor(cardRepository, bankAccountRepository);
+    ILinkSourceInteractor provideLinkInteactor(CardStore.CardMapService cardMapService, CardStore.LocalStorage cardMapLocalStorage,
+                                               BankAccountStore.BankAccountService bankAccountService, BankAccountStore.LocalStorage bankAccountLocalStorage) {
+        return new LinkSourceInteractor(cardMapService, cardMapLocalStorage, bankAccountService, bankAccountLocalStorage);
     }
 
     @Provides
     @Singleton
     ChannelListInteractor provideChannelListInteractor(Application application,
-                                                       IPlatformInfo platformInteractor,
+                                                       PlatformInfoStore.Interactor platformInteractor,
                                                        AppInfoStore.Interactor appInfoInteractor,
-                                                       IBankInteractor bankInteractor,
+                                                       BankStore.Interactor bankInteractor,
                                                        ZPMonitorEventTiming eventTiming) {
         return new ChannelListInteractor(application,
                 platformInteractor, appInfoInteractor, bankInteractor,

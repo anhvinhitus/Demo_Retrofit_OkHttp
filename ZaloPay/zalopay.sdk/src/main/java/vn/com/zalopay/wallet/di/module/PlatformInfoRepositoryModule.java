@@ -7,7 +7,6 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.di.qualifier.Api;
-import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoRepository;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStorage;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
@@ -26,12 +25,5 @@ public class PlatformInfoRepositoryModule {
     @Singleton
     public PlatformInfoStore.LocalStorage providePlatformInfoLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
         return new PlatformInfoStorage(sharedPreferencesManager);
-    }
-
-    @Provides
-    @Singleton
-    public PlatformInfoStore.Repository providePlatformInfoRepository(PlatformInfoStore.PlatformInfoService platformInfoService,
-                                                                      PlatformInfoStore.LocalStorage localStorage) {
-        return new PlatformInfoRepository(platformInfoService, localStorage);
     }
 }

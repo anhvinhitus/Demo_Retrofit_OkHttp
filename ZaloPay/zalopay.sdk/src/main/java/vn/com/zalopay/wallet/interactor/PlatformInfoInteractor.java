@@ -14,10 +14,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -37,12 +37,14 @@ import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
  * Created by chucvv on 6/7/17.
  */
 
-public class PlatformInfoInteractor implements IPlatformInfo {
-    private PlatformInfoStore.Repository repository;
+public class PlatformInfoInteractor implements PlatformInfoStore.Interactor {
+    private PlatformInfoStore.PlatformInfoService mService;
+    private PlatformInfoStore.LocalStorage mLocalStorage;
 
     @Inject
-    public PlatformInfoInteractor(PlatformInfoStore.Repository repository) {
-        this.repository = repository;
+    public PlatformInfoInteractor(PlatformInfoStore.PlatformInfoService service, PlatformInfoStore.LocalStorage localStorage) {
+        this.mService = service;
+        this.mLocalStorage = localStorage;
     }
 
     Observable<PlatformInfoCallback> mapResult(PlatformInfoResponse platformInfoResponse, String appVersion) {
@@ -72,13 +74,9 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         }
     }
 
-    public PlatformInfoStore.LocalStorage getLocalStorage() {
-        return repository.getLocalStorage();
-    }
-
     @Override
     public boolean isNewVersion(String appVersion) {
-        String checksumSDKV = repository.getLocalStorage().getAppVersion();
+        String checksumSDKV = getAppVersion();
         return !TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV);
     }
 
@@ -120,12 +118,12 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     @Override
     public String getUserId() {
-        return this.repository.getLocalStorage().getUserId();
+        return mLocalStorage.getUserId();
     }
 
     @Override
-    public String getUnzipPath() {
-        return this.repository.getLocalStorage().getUnzipPath();
+    public String getResourcePath() {
+        return mLocalStorage.getResourcePath();
     }
 
     /***
@@ -133,7 +131,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
      */
     @Override
     public boolean validFileConfig() {
-        String path = getUnzipPath();
+        String path = getResourcePath();
         StringBuilder pathBuilder = new StringBuilder();
         pathBuilder.append(path).append(File.separator).append(ResourceManager.CONFIG_FILE);
         File file = new File(pathBuilder.toString());
@@ -150,8 +148,16 @@ public class PlatformInfoInteractor implements IPlatformInfo {
         Timber.d("start get platform info from server - should force reload api %s - force download res %s", forceReloadApi, forceDownloadResource);
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         Map<String, String> params = getParams(userId, accessToken, forceReloadApi, forceDownloadResource, appVersion);
-        return repository
-                .fetchCloud(params)
+        long startTime = System.currentTimeMillis();
+        return mService
+                .fetch(params)
+                .doOnNext(platformInfoResponse -> mLocalStorage.put(params.get(ConstantParams.USER_ID), platformInfoResponse))
+                .doOnNext(platformInfoResponse -> {
+                    long endTime = System.currentTimeMillis();
+                    if (GlobalData.analyticsTrackerWrapper != null) {
+                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO, startTime, endTime, platformInfoResponse);
+                    }
+                })
                 .concatMap(this::tryDownloadResource)
                 .flatMap(new Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>>() {
                     @Override
@@ -162,18 +168,18 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     }
 
     private Map<String, String> getParams(String userId, String accessToken, boolean forceReloadPlatform, boolean forceDownloadResource, String appVersion) {
-        String checksum = repository.getLocalStorage().getPlatformInfoCheckSum();
-        String resourceVersion = repository.getLocalStorage().getResourceVersion();
+        String checksum = getPlatformInfoCheckSum();
+        String resourceVersion = getResourceVersion();
         if (forceReloadPlatform) {
             checksum = null;
-            repository.getLocalStorage().setCardInfoCheckSum(null);
-            repository.getLocalStorage().setBankAccountCheckSum(null);
+            mLocalStorage.setCardInfoCheckSum(null);
+            mLocalStorage.setBankAccountCheckSum(null);
         }
         if (forceDownloadResource) {
             resourceVersion = null;
         }
-        String cardInfoCheckSum = repository.getLocalStorage().getCardInfoCheckSum();
-        String bankAccountChecksum = repository.getLocalStorage().getBankAccountCheckSum();
+        String cardInfoCheckSum = mLocalStorage.getCardInfoCheckSum();
+        String bankAccountChecksum = mLocalStorage.getBankAccountCheckSum();
         //format data
         cardInfoCheckSum = cardInfoCheckSum != null ? cardInfoCheckSum : "";
         checksum = checksum != null ? checksum : "";
@@ -208,7 +214,7 @@ public class PlatformInfoInteractor implements IPlatformInfo {
          2.resource version on cached client and resource version server return is different.This case user no need to update app.
          */
         Timber.d("start check download resource");
-        String resourceVersion = repository.getLocalStorage().getResourceVersion();
+        String resourceVersion = getResourceVersion();
         if (platformInfoResponse.resource == null) {
             return Observable.just(platformInfoResponse);
         }
@@ -219,13 +225,13 @@ public class PlatformInfoInteractor implements IPlatformInfo {
             return Observable.just(platformInfoResponse);
         }
 
-        repository.getLocalStorage().setResourceDownloadUrl(platformInfoResponse.resource.rsurl);
+        mLocalStorage.setResourceDownloadUrl(platformInfoResponse.resource.rsurl);
 
         Timber.d("start download sdk resource %s", platformInfoResponse.resource.rsurl);
         Context context = GlobalData.getAppContext();
         IDownloadService downloadService = SDKApplication.getApplicationComponent().downloadService();
         ResourceInteractor downloadResourceTask = new ResourceInteractor(context, downloadService,
-                repository.getLocalStorage(),
+                mLocalStorage,
                 platformInfoResponse.resource.rsurl,
                 platformInfoResponse.resource.rsversion);
         return downloadResourceTask.fetchResource()
@@ -234,50 +240,36 @@ public class PlatformInfoInteractor implements IPlatformInfo {
 
     @Override
     public long getPlatformInfoDurationExpire() {
-        return repository.getLocalStorage().getExpireTimeDuration();
+        return mLocalStorage.getExpireTimeDuration();
     }
 
     @Override
     public long getExpireTime() {
-        return repository.getLocalStorage().getExpireTime();
+        return mLocalStorage.getExpireTime();
     }
 
     @Override
     public String getAppVersion() {
-        return repository.getLocalStorage().getAppVersion();
+        return mLocalStorage.getAppVersion();
     }
 
     @Override
     public String getResourceVersion() {
-        return repository.getLocalStorage().getResourceVersion();
+        return mLocalStorage.getResourceVersion();
     }
 
     @Override
     public String getPlatformInfoCheckSum() {
-        return repository.getLocalStorage().getPlatformInfoCheckSum();
+        return mLocalStorage.getPlatformInfoCheckSum();
     }
 
     @Override
     public boolean enableTopup() {
-        try {
-            return repository.getLocalStorage().sharePref().getEnableDeposite();
-        } catch (Exception ex) {
-            Timber.w(ex, "Exception check enable deposit");
-        }
-        return true;
+        return mLocalStorage.enableTopup();
     }
 
     @Override
     public Maintenance withdrawMaintain() {
-        try {
-            String maintenanceOb = repository.getLocalStorage().sharePref().getMaintenanceWithDraw();
-            if (TextUtils.isEmpty(maintenanceOb)) {
-                return null;
-            }
-            return GsonUtils.fromJsonString(maintenanceOb, Maintenance.class);
-        } catch (Exception ex) {
-            Timber.w(ex, "Exception get maintain withdraw");
-        }
-        return null;
+        return mLocalStorage.withdrawMaintain();
     }
 }

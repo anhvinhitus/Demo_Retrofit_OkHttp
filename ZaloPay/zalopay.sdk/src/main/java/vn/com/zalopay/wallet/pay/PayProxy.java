@@ -42,8 +42,8 @@ import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.interactor.IBankInteractor;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
 import vn.com.zalopay.wallet.transaction.SubmitOrder;
 import vn.com.zalopay.wallet.transaction.TransStatus;
@@ -75,20 +75,12 @@ public class PayProxy extends SingletonBase {
     private Subscription mSubscription;
     private WeakReference<ChannelListPresenter> mChannelListPresenter;
     private StatusResponse mStatusResponse;
-    private IBankInteractor mBankInteractor;
+    private BankStore.Interactor mBankInteractor;
     private String mTransId = "0";
     private boolean transStatusStart = false;
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -103,6 +95,14 @@ public class PayProxy extends SingletonBase {
             startChannelActivity();
         }
         Timber.d(throwable, "trans status on error");
+    };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {

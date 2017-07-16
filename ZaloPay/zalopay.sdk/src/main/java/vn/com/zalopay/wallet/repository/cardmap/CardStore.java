@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.Constants;
 
 /**
@@ -42,14 +41,6 @@ public class CardStore {
         void clearCheckSum();
     }
 
-    public interface Repository {
-        Observable<CardInfoListResponse> fetchCloud(String userid, String accesstoken, String checksum, String appversion);
-
-        Observable<BaseResponse> removeCard(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion);
-
-        CardStore.LocalStorage getLocalStorage();
-    }
-
     public interface CardMapService {
         @GET(Constants.URL_LISTCARDINFO)
         @API_NAME(https = ZPEvents.API_UM_LISTCARDINFOFORCLIENT, connector = ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT)
@@ -59,11 +50,11 @@ public class CardStore {
         @POST(Constants.URL_REMOVE_MAPCARD)
         @API_NAME(https = ZPEvents.API_V001_TPE_REMOVEMAPCARD, connector = ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)
         Observable<BaseResponse> removeMapCard(@Query("userid") String userid,
-                                            @Query("accesstoken") String accessToken,
-                                            @Query("cardname") String cardName,
-                                            @Query("first6cardno") String first6Cardno,
-                                            @Query("last4cardno") String last4Cardno,
-                                            @Query("bankcode") String bankCode,
-                                            @Query("appversion") String appver);
+                                               @Query("accesstoken") String accessToken,
+                                               @Query("cardname") String cardName,
+                                               @Query("first6cardno") String first6Cardno,
+                                               @Query("last4cardno") String last4Cardno,
+                                               @Query("bankcode") String bankCode,
+                                               @Query("appversion") String appver);
     }
 }
