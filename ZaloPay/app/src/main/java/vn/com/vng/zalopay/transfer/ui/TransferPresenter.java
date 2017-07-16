@@ -53,7 +53,9 @@ import vn.com.vng.zalopay.utils.TrackApptransidHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 
 /**
@@ -460,8 +462,12 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void initLimitAmount() {
-        mMinAmount = CShareDataWrapper.getMinTranferValue();
-        mMaxAmount = CShareDataWrapper.getMaxTranferValue();
+        AppInfoStore.Interactor appInfo =
+                SDKApplication.getApplicationComponent()
+                .appInfoInteractor();
+
+        mMinAmount = appInfo.minAmountTransType(TransactionType.MONEY_TRANSFER);
+        mMaxAmount = appInfo.maxAmountTransType(TransactionType.MONEY_TRANSFER);
 
         if (mMinAmount <= 0) {
             mMinAmount = Constants.MIN_TRANSFER_MONEY;

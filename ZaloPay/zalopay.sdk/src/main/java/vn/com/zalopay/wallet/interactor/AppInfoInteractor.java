@@ -163,4 +163,24 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     public void setExpireTime(long appId, long expireTime) {
         mLocalStorage.setExpireTime(appId, expireTime);
     }
+
+    @Override
+    public long minAmountTransType(@TransactionType int transtype) {
+        try {
+            return mLocalStorage.sharePref().getMinValueChannel(String.valueOf(transtype));
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception get min value transtype");
+        }
+        return 0;
+    }
+
+    @Override
+    public long maxAmountTransType(@TransactionType int transtype) {
+        try {
+            return mLocalStorage.sharePref().getMaxValueChannel(String.valueOf(transtype));
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception get max value transtype");
+        }
+        return 0;
+    }
 }

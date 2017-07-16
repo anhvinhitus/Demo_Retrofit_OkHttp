@@ -59,42 +59,6 @@ public class CShareDataWrapper {
         return CShareData.getInstance().detectCardType(first6CardNo);
     }
 
-    public static Maintenance getWithdrawMaintenance() {
-        return CShareData.getInstance().getWithdrawMaintenance();
-    }
-
-    public static long getPlatformInfoExpiredTime() {
-        return SDKApplication.getApplicationComponent().platformInfoInteractor().getPlatformInfoDurationExpire();
-    }
-
-    public static boolean isEnableDeposite() {
-        return CShareData.getInstance().isEnableDeposite();
-    }
-
-    public static long getMinTranferValue() {
-        return CShareData.getInstance().getMinTranferValue();
-    }
-
-    public static long getMaxTranferValue() {
-        return CShareData.getInstance().getMaxTranferValue();
-    }
-
-    public static long getMinDepositValue() {
-        return CShareData.getInstance().getMinDepositValue();
-    }
-
-    public static long getMaxDepositValue() {
-        return CShareData.getInstance().getMaxDepositValue();
-    }
-
-    public static long getMinWithDrawValue() {
-        return CShareData.getInstance().getMinWithDrawValue();
-    }
-
-    public static long getMaxWithDrawValue() {
-        return CShareData.getInstance().getMaxWithDrawValue();
-    }
-
     public static void pushNotificationToSdk(User user, int notificationType, String message) {
         if (user == null
                 || TextUtils.isEmpty(user.zaloPayId)

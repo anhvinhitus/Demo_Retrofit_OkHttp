@@ -19,6 +19,9 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
  * Created by AnhHieu on 8/29/16.
@@ -90,8 +93,9 @@ public class SetAmountFragment extends BaseFragment {
         long mMinAmount = 0;
         long mMaxAmount = 0;
         try {
-            mMinAmount = CShareDataWrapper.getMinTranferValue();
-            mMaxAmount = CShareDataWrapper.getMaxTranferValue();
+            AppInfoStore.Interactor appInfo = SDKApplication.getApplicationComponent().appInfoInteractor();
+            mMinAmount = appInfo.minAmountTransType(TransactionType.MONEY_TRANSFER);
+            mMaxAmount = appInfo.maxAmountTransType(TransactionType.MONEY_TRANSFER);
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }

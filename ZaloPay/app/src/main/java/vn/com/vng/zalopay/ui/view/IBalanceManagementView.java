@@ -17,5 +17,5 @@ public interface IBalanceManagementView extends ILoadDataView {
 
     void showConfirmDialog(String message, String btnConfirm, String btnCancel, ZPWOnEventConfirmDialogListener listener);
 
-    void showDeposit(boolean isShow);
+    void showTopup(boolean isShow);
 }

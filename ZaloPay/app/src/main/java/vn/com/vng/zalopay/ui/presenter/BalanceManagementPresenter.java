@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 
 /**
@@ -66,12 +67,15 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     public void loadView() {
-        boolean isEnableDeposit = CShareDataWrapper.isEnableDeposite();
+        boolean isEnableTopup =
+                SDKApplication.getApplicationComponent()
+                .platformInfoInteractor()
+                .enableTopup();
         if (mView == null) {
             return;
         }
 
-        mView.showDeposit(isEnableDeposit);
+        mView.showTopup(isEnableTopup);
         mView.setUser(mUser);
         getBalance();
     }
@@ -111,7 +115,9 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     private boolean isMaintainWithdraw() {
-        Maintenance wdMaintenance = CShareDataWrapper.getWithdrawMaintenance();
+        Maintenance wdMaintenance = SDKApplication.getApplicationComponent()
+                .platformInfoInteractor()
+                .withdrawMaintain();
         if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
             return false;
         }

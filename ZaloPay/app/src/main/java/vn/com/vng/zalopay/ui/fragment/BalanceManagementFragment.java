@@ -109,8 +109,8 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     }
 
     @Override
-    public void showDeposit(boolean isEnableDeposit) {
-        Timber.d("showDeposit: [%s]", isEnableDeposit);
+    public void showTopup(boolean isEnableDeposit) {
+        Timber.d("showTopup: [%s]", isEnableDeposit);
         mViewDeposit.setVisibility(isEnableDeposit ? View.VISIBLE : View.GONE);
         mViewSeparate.setVisibility(isEnableDeposit ? View.VISIBLE : View.GONE);
     }

@@ -44,7 +44,9 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -160,8 +162,9 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     private void initLimitAmount() {
-        minWithdrawAmount = CShareDataWrapper.getMinWithDrawValue();
-        maxWithdrawAmount = CShareDataWrapper.getMaxWithDrawValue();
+        AppInfoStore.Interactor appInfo = SDKApplication.getApplicationComponent().appInfoInteractor();
+        minWithdrawAmount = appInfo.minAmountTransType(TransactionType.WITHDRAW);
+        maxWithdrawAmount = appInfo.maxAmountTransType(TransactionType.WITHDRAW);
     }
 
     public void withdraw(final long amount) {

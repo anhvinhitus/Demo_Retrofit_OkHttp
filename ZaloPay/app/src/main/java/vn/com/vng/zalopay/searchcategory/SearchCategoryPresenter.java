@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 
 /**
@@ -256,7 +257,9 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     }
 
     private boolean isMaintainWithdraw() {
-        Maintenance wdMaintenance = CShareDataWrapper.getWithdrawMaintenance();
+        Maintenance wdMaintenance = SDKApplication.getApplicationComponent()
+                .platformInfoInteractor()
+                .withdrawMaintain();
         if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
             return false;
         }

@@ -17,6 +17,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.DeviceUtil;
 import vn.com.zalopay.utility.DimensionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -27,6 +28,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 
 /**
@@ -253,5 +255,29 @@ public class PlatformInfoInteractor implements IPlatformInfo {
     @Override
     public String getPlatformInfoCheckSum() {
         return repository.getLocalStorage().getPlatformInfoCheckSum();
+    }
+
+    @Override
+    public boolean enableTopup() {
+        try {
+            return repository.getLocalStorage().sharePref().getEnableDeposite();
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception check enable deposit");
+        }
+        return true;
+    }
+
+    @Override
+    public Maintenance withdrawMaintain() {
+        try {
+            String maintenanceOb = repository.getLocalStorage().sharePref().getMaintenanceWithDraw();
+            if (TextUtils.isEmpty(maintenanceOb)) {
+                return null;
+            }
+            return GsonUtils.fromJsonString(maintenanceOb, Maintenance.class);
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception get maintain withdraw");
+        }
+        return null;
     }
 }

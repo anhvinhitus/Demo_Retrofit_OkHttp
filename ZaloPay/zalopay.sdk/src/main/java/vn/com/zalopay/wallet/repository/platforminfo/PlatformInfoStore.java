@@ -10,13 +10,14 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
+import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
  * Created by chucvv on 6/7/17.
  */
 
 public class PlatformInfoStore {
-    public interface LocalStorage {
+    public interface LocalStorage extends AbstractLocalStorage.LocalStorage {
         void put(String userId, PlatformInfoResponse platformInfoResponse);
 
         long getExpireTime();

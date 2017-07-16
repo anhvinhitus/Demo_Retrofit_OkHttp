@@ -292,7 +292,10 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private void beginAutoRefreshPlatform() {
         unsubscribeIfNotNull(mRefPlatformSubscription);
 
-        mRefPlatformSubscription = Observable.just(CShareDataWrapper.getPlatformInfoExpiredTime())
+        long expirePlatformDuration = SDKApplication.getApplicationComponent()
+                .platformInfoInteractor()
+                .getPlatformInfoDurationExpire();
+        mRefPlatformSubscription = Observable.just(expirePlatformDuration)
                 .flatMap(new Func1<Long, Observable<Long>>() {
                     @Override
                     public Observable<Long> call(Long var) {

@@ -16,15 +16,17 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +36,15 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
  * create an instance of this fragment.
  */
 public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView {
+
+    @Inject
+    BalanceTopupPresenter mPresenter;
+    @BindView(R.id.tvResourceMoney)
+    TextView tvResourceMoney;
+    @BindView(R.id.edtAmount)
+    MoneyEditText mEdtAmountView;
+    @BindView(R.id.btnDeposit)
+    View mBtnDepositView;
 
     public static BalanceTopupFragment newInstance(Bundle bundle) {
         BalanceTopupFragment fragment = new BalanceTopupFragment();
@@ -51,18 +62,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         return R.layout.fragment_balance_topup;
     }
 
-    @Inject
-    BalanceTopupPresenter mPresenter;
-
-    @BindView(R.id.tvResourceMoney)
-    TextView tvResourceMoney;
-
-    @BindView(R.id.edtAmount)
-    MoneyEditText mEdtAmountView;
-
-    @BindView(R.id.btnDeposit)
-    View mBtnDepositView;
-
     @OnClick(R.id.btnDeposit)
     public void onClickBtnDeposit() {
         if (!mEdtAmountView.validate()) {
@@ -79,8 +78,9 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     private void initLimitAmount() {
 
-        long minDepositAmount = CShareDataWrapper.getMinDepositValue();
-        long maxDepositAmount = CShareDataWrapper.getMaxDepositValue();
+        AppInfoStore.Interactor appInfo = SDKApplication.getApplicationComponent().appInfoInteractor();
+        long minDepositAmount = appInfo.minAmountTransType(TransactionType.TOPUP);
+        long maxDepositAmount = appInfo.maxAmountTransType(TransactionType.TOPUP);
 
         if (minDepositAmount <= 0) {
             minDepositAmount = Constants.MIN_DEPOSIT_MONEY;

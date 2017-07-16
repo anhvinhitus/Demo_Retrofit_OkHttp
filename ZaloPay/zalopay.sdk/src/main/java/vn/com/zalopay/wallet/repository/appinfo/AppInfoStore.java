@@ -12,13 +12,14 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
  * Created by chucvv on 6/7/17.
  */
 
 public class AppInfoStore {
-    public interface LocalStorage {
+    public interface LocalStorage extends AbstractLocalStorage.LocalStorage{
         void put(long pAppId, AppInfoResponse appInfo);
 
         Observable<AppInfo> get(long appid);
@@ -38,6 +39,8 @@ public class AppInfoStore {
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
 
         List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
+
+
     }
 
     public interface Interactor {
@@ -50,6 +53,9 @@ public class AppInfoStore {
         List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
 
         Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime);
+
+        long minAmountTransType(@TransactionType int transtype);
+        long maxAmountTransType(@TransactionType int transtype);
     }
 
     public interface RequestService {

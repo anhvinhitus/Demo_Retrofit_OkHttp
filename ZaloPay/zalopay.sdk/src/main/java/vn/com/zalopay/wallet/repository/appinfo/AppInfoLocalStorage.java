@@ -114,7 +114,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 Log.d(this, "save app info to cache and update new checksum", pResponse.info);
             }
         } catch (Exception ex) {
-            Timber.d(ex != null ? ex.getMessage() : "Exception");
+            Timber.w(ex.getMessage());
         }
     }
 
@@ -206,5 +206,10 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 .append(Constants.UNDERLINE)
                 .append(transtype);
         return appTransTypePmcKey.toString();
+    }
+
+    @Override
+    public SharedPreferencesManager sharePref() {
+        return mSharedPreferences;
     }
 }

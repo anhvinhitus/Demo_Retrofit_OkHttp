@@ -246,4 +246,9 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
     public void setCheckSum(String checkSum) {
         mSharedPreferences.setPlatformInfoCheckSum(checkSum);
     }
+
+    @Override
+    public SharedPreferencesManager sharePref() {
+        return mSharedPreferences;
+    }
 }

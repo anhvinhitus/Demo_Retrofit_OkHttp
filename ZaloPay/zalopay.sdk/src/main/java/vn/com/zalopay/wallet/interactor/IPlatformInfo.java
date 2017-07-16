@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.interactor;
 
 import rx.Observable;
+import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -24,6 +25,10 @@ public interface IPlatformInfo {
     String getResourceVersion();
 
     boolean validFileConfig();
+
+    boolean enableTopup();
+
+    Maintenance withdrawMaintain();
 
     Observable<PlatformInfoCallback> loadSDKPlatform(String userId, String accessToken, long currentTime);
 
