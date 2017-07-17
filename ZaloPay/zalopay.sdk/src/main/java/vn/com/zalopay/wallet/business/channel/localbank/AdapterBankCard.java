@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -32,14 +31,12 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
-import vn.com.zalopay.wallet.dialog.MapBankPopup;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 
@@ -458,11 +455,9 @@ public class AdapterBankCard extends AdapterBase {
 
         //have some card bidv in map card list and have this card
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
-                && hasBidvBankInMapCardList(pCardNumber))) {
-            Intent intentBidv = MapBankPopup.createBidvIntent(getActivity(),
-                    getGuiProcessor().getCardNumber(),
-                    mPaymentInfoHelper.getAmountTotal());
-            getView().startActivityForResult(intentBidv, MAP_POPUP_REQUEST_CODE);
+                && hasBidvBankInMapCardList(pCardNumber)) && getPresenter() != null) {
+                
+            getPresenter().showMapBankDialog(true);
             return true;
         }
         //have some card bidv in map card list and but don't have this card

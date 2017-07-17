@@ -48,6 +48,7 @@ import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
@@ -63,9 +64,9 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 import static vn.com.zalopay.wallet.constants.Constants.API;
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
+import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 
 /**
@@ -207,31 +208,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         } catch (Exception e) {
             Log.e(this, e);
             return false;
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MAP_POPUP_REQUEST_CODE) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    if (data != null) {
-                        try {
-                            Timber.d("onActivityResult data %s", data);
-                            setResult(MAP_POPUP_RESULT_CODE, data);
-                            getViewOrThrow().terminate();
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                        }
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    Timber.d("cancel popup map selection");
-                    if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
-                        mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
-                    }
-                    break;
-            }
         }
     }
 
@@ -420,6 +396,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Override
     public void onStop() {
         mBus.unregister(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
 
     @Override
@@ -646,6 +626,43 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void setSwitchAdapter(boolean pSwitching) {
         this.mIsSwitching = pSwitching;
     }
+
+    public void showMapBankDialog(boolean isBIDVBank) {
+        if (mPaymentInfoHelper == null) {
+            return;
+        }
+        if (!isBIDVBank) {
+            getView().showMapBankDialog(mPaymentInfoHelper.getAmountTotal(), resultCallBackListener);
+        } else {
+            if (getAdapter().getGuiProcessor() != null) {
+                getView().showMapBankBIDVDialog(getAdapter().getGuiProcessor().getCardNumber(), mPaymentInfoHelper.getAmountTotal(), resultCallBackListener);
+            }
+        }
+
+    }
+
+    private ZPWResultCallBackListener resultCallBackListener = new ZPWResultCallBackListener() {
+        @Override
+        public void onResultOk(int pReturnCode, int pData) {
+            try {
+                Timber.d("onActivityResult data %s", pData);
+                Intent intent = new Intent();
+                intent.putExtra(SELECTED_PMC_POSITION, pData);
+                setResult(MAP_POPUP_RESULT_CODE, intent);
+                getViewOrThrow().terminate();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+
+        @Override
+        public void onCancel(int pReturnCode) {
+            Timber.d("cancel popup map selection");
+            if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
+                mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
+            }
+        }
+    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {

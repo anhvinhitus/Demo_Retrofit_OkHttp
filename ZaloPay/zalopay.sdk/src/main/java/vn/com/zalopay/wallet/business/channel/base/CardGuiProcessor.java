@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -54,8 +53,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.dialog.BankListPopup;
-import vn.com.zalopay.wallet.dialog.MapBankPopup;
+import vn.com.zalopay.wallet.dialog.BankListDialogFragment;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
@@ -71,7 +69,6 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_REQUEST_CODE;
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 
 /***
@@ -954,12 +951,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             }
                         }
                     });
-        } else if (getAdapter() != null) {
-            Activity activity = getAdapter().getActivity();
-            Intent intent = MapBankPopup.createVCBIntent(activity,
-                    activity.getString(R.string.dialog_retry_input_card_button),
-                    mPaymentInfoHelper.getAmountTotal());
-            channelFragment.startActivityForResult(intent, MAP_POPUP_REQUEST_CODE);
+        } else if (getAdapter().getPresenter() != null) {
+            getAdapter().getPresenter().showMapBankDialog(false);
         }
     }
 
@@ -1424,10 +1417,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (cardSupportGridViewAdapter == null) {
             cardSupportGridViewAdapter = CardSupportAdapter.createAdapterProxy(isATMChannel(), mPaymentInfoHelper.getTranstype());
         }
-        BankListPopup.setAdapter(cardSupportGridViewAdapter);
-        BankListPopup.setCloseDialogListener(getCloseDialogListener());
-        Intent intentBankList = new Intent(getAdapter().getActivity(), BankListPopup.class);
-        getAdapter().getActivity().startActivity(intentBankList);
+        BankListDialogFragment dialog = new BankListDialogFragment();
+        dialog.setAdapter(cardSupportGridViewAdapter);
+        dialog.show(getAdapter().getActivity().getFragmentManager(), BankListDialogFragment.TAG);
     }
 
     public View.OnClickListener getOnQuestionIconClick() {

@@ -49,6 +49,8 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.dialog.MapBankDialogFragment;
+import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
@@ -57,6 +59,7 @@ import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
+import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
@@ -532,11 +535,27 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void showMaintenanceServiceDialog(String message) {
+    public void showMaintenanceServiceDialog(String message ) {
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.sdk_system_maintenance_mess);
         }
         showInfoDialog(message, () -> mPresenter.setPaymentStatusAndCallback(PaymentStatus.SERVICE_MAINTENANCE));
+    }
+
+    @Override
+    public void showMapBankDialog(Double pOrderAmount,ZPWResultCallBackListener pZpwResultCallBackListener) {
+        MapBankDialogFragment dialog = new MapBankDialogFragment();
+        dialog.setContent(getActivity().getString(R.string.dialog_retry_input_card_button), pOrderAmount);
+        dialog.setDialogListener(pZpwResultCallBackListener);
+        dialog.show(getActivity().getFragmentManager(), MapBankDialogFragment.TAG);
+    }
+
+    @Override
+    public void showMapBankBIDVDialog(String pCardNumbe, Double pOrderAmount, ZPWResultCallBackListener pZpwResultCallBackListener) {
+        MapBankDialogFragment dialog = new MapBankDialogFragment();
+        dialog.setContent(pCardNumbe,getActivity().getString(R.string.dialog_retry_input_card_button), pOrderAmount);
+        dialog.setDialogListener(pZpwResultCallBackListener);
+        dialog.show(getActivity().getFragmentManager(), MapBankDialogFragment.TAG);
     }
 
     @Override

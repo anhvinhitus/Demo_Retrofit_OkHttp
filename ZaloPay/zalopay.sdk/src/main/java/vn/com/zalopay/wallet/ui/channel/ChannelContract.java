@@ -7,6 +7,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
 
@@ -63,5 +64,9 @@ public interface ChannelContract extends IContract {
         void visiableOrderInfo(boolean visible);
 
         void showMaintenanceServiceDialog(String message);
+
+        void showMapBankDialog(Double pOrderAmount,ZPWResultCallBackListener pZpwResultCallBackListener);
+
+        void showMapBankBIDVDialog(String pCardNumbe,Double pOrderAmount,ZPWResultCallBackListener pZpwResultCallBackListener);
     }
 }

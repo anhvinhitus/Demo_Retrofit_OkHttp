@@ -49,6 +49,7 @@
             android:paddingRight="@dimen/zpw_padding_15"
             android:paddingTop="@dimen/zpw_padding_button"
             android:text="@string/dialog_choose_again_button"
+            android:background="@color/transparent"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/color_primary" />
 
@@ -62,6 +63,7 @@
             android:paddingRight="@dimen/zpw_padding_15"
             android:paddingTop="@dimen/zpw_padding_button"
             android:text="@string/dialog_agree_button"
+            android:background="@color/transparent"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/color_primary" />
 
