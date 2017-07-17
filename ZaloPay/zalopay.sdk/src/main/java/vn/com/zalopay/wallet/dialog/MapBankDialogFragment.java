@@ -113,7 +113,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-          this.mBus = SDKApplication.getApplicationComponent().eventBus();
+        this.mBus = SDKApplication.getApplicationComponent().eventBus();
     }
 
     protected List<PaymentChannel> getMapChannel() throws Exception {
@@ -197,6 +197,9 @@ public class MapBankDialogFragment extends BaseDialogFragment {
 
 
     protected PaymentChannel getChannel(String pCardNumber) {
+        if (mChannelList == null) {
+            return null;
+        }
         for (int i = 0; i < mChannelList.size(); i++) {
             PaymentChannel channel = mChannelList.get(i);
             if (BankAccountHelper.isBankAccount(mBankCode) && !TextUtils.isEmpty(mBankCode) && mBankCode.equals(channel.bankcode)) {
@@ -250,6 +253,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         mZPZpwResultCallBackListener.get().onResultOk(Activity.RESULT_OK, position);
         dismiss();
     }
+
     @Override
     public void onStart() {
         super.onStart();
