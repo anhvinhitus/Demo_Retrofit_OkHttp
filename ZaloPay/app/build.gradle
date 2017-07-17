@@ -44,7 +44,7 @@ android {
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
         versionCode 341
-        versionName "2.14.0"
+        versionName "2.16.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
