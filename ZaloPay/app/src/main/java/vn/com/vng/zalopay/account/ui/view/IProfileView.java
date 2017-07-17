@@ -1,8 +1,6 @@
 package vn.com.vng.zalopay.account.ui.view;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 import android.app.Activity;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
@@ -18,12 +16,8 @@ public interface IProfileView extends ILoadDataView {
 
     void updateUserInfo(User user);
 
-    void showHideChangePinView(boolean isShow);
-
     void setZaloPayName(String zaloPayName);
 
     void showNotificationDialog(String content);
-
-    void showUpdateProfileDialog(String message, ZPWOnSweetDialogListener listener);
 }
 

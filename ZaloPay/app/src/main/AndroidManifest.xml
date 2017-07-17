@@ -285,12 +285,6 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name=".account.ui.activities.UpdateProfileLevel2Activity"
-            android:label="@string/title.activity.profile"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
             android:name=".account.ui.activities.EditAccountNameActivity"
             android:label="@string/title.activity.update.account.name"
             android:theme="@style/AppTheme.NoActionBar"

@@ -21,19 +21,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     public abstract Object getContext();
 
     @Override
-    public void startUpdateProfileLevel2() {
-        Object context = getContext();
-        if (context == null || mNavigator == null) {
-            return;
-        }
-        if (context instanceof Fragment) {
-            mNavigator.startUpdateProfile2ForResult((Fragment) context);
-        } else if (context instanceof Activity) {
-            mNavigator.startUpdateProfile2ForResult((Activity) context);
-        }
-    }
-
-    @Override
     public void startUpdateProfileLevel3() {
         Object context = getContext();
         if (context == null || mNavigator == null) {
@@ -60,20 +47,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     }
 
     @Override
-    public void startLinkCardActivity(String bankCode) {
-        Object context = getContext();
-        Timber.d("startLinkCardActivity context [%s] navigator[%s]", context, mNavigator);
-        if (context == null || mNavigator == null) {
-            return;
-        }
-        if (context instanceof Fragment) {
-            mNavigator.startLinkCardActivityForResult((Fragment) context, bankCode);
-        } else if (context instanceof Activity) {
-            mNavigator.startLinkCardActivityForResult((Activity) context, bankCode);
-        }
-    }
-
-    @Override
     public void startLinkAccountActivity(String bankCode) {
         Object context = getContext();
         if (context == null || mNavigator == null) {
@@ -83,19 +56,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
             mNavigator.startLinkAccountActivityForResult((Fragment) context, bankCode);
         } else if (context instanceof Activity) {
             mNavigator.startLinkAccountActivityForResult((Activity) context, bankCode);
-        }
-    }
-
-    @Override
-    public void startUpdateProfileBeforeLinkAcc() {
-        Object context = getContext();
-        if (context == null || mNavigator == null) {
-            return;
-        }
-        if (context instanceof Fragment) {
-            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Fragment) context);
-        } else if (context instanceof Activity) {
-            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Activity) context);
         }
     }
 }

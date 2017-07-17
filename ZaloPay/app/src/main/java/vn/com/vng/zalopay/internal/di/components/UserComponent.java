@@ -8,7 +8,6 @@ import javax.inject.Named;
 import dagger.Subcomponent;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinContainerFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
@@ -70,7 +69,6 @@ import vn.com.vng.zalopay.ui.fragment.HomeCollapseHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeTopHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
-import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.HandleInAppPayment;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webapp.WebAppFragment;
@@ -230,8 +228,6 @@ public interface UserComponent {
     void inject(PaymentApplicationActivity activity);
 
     void inject(ProfileActivity activity);
-
-    void inject(UpdateProfileLevel2Activity activity);
 
     void inject(HomeActivity activity);
 

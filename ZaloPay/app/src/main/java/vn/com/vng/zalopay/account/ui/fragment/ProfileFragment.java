@@ -6,9 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -72,9 +69,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.profile_tv_email_and_id_suggest)
     TextView tvEmailAndIdSuggest;
 
-//    @BindView(R.id.layoutChangePin)
-//    View layoutChangePin;
-
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -100,7 +94,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.getProfile();
-        mPresenter.checkShowOrHideChangePinView();
     }
 
     @Override
@@ -173,20 +166,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         DialogHelper.showNotificationDialog(getActivity(), message, null);
     }
 
-    @Override
-    public void showUpdateProfileDialog(String message, ZPWOnSweetDialogListener listener) {
-        DialogHelper.showCustomDialog(getActivity(),
-                SweetAlertDialog.NORMAL_TYPE,
-                getString(R.string.notification),
-                message,
-                listener,
-                new String[]{
-                        getString(R.string.txt_close),
-                        getString(R.string.txt_update)
-                }
-        );
-    }
-
     private void setCMND(String cmnd) {
         if (!TextUtils.isEmpty(cmnd)) {
             tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -250,13 +229,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         super.showToast(message);
     }
 
-    @OnClick(R.id.layoutPhone)
-    public void onClickPhone() {
-        if (tvPhone.length() == 0) {
-            navigator.startUpdateProfileLevel2Activity(getContext());
-        }
-    }
-
     @OnClick(R.id.layoutCmnd)
     public void onClickIdentity() {
         mPresenter.updateIdentity();
@@ -270,19 +242,5 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @OnClick(R.id.layoutAccountName)
     public void onClickEditAccountName() {
         mPresenter.updateZaloPayID();
-    }
-
-//    @OnClick(R.id.layoutChangePin)
-//    public void onClickChangePin() {
-//        navigator.startProtectAccount(getActivity());
-//    }
-
-    @Override
-    public void showHideChangePinView(boolean isShow) {
-//        if (isShow) {
-//            layoutChangePin.setVisibility(View.VISIBLE);
-//        } else {
-//            layoutChangePin.setVisibility(View.GONE);
-//        }
     }
 }

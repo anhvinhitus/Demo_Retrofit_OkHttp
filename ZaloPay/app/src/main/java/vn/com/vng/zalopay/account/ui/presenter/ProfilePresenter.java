@@ -84,23 +84,10 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             updateUserInfo(user);
             // Neu chua co ZaloPayName hoac Chua get profile level 3
             if (TextUtils.isEmpty(user.zalopayname) ||
-                    (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber))) {
+                    (user.profilelevel > User.MIN_PROFILE_LEVEL && TextUtils.isEmpty(user.identityNumber))) {
                 getUserProfile();
             }
         }
-    }
-
-    public void checkShowOrHideChangePinView() {
-        try {
-            boolean isShow = mUser.profilelevel >= 2;
-            mView.showHideChangePinView(isShow);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-    }
-
-    private int getProfileLevel() {
-        return mUser.profilelevel;
     }
 
     public void showLoading() {
@@ -143,9 +130,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             return;
         }
 
-        if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_level_2));
-        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
+        if (mUserConfig.isWaitingApproveProfileLevel3()) {
             int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
             mView.showNotificationDialog(mView.getContext().getString(message));
         } else {
@@ -160,26 +145,9 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         if (mView == null) {
             return;
         }
-        if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_phone));
-        } else {
-            mNavigator.startEditAccountActivity(mView.getContext());
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
-        }
-    }
 
-    private void requireUpdateProfileLevel2(String message) {
-        mView.showUpdateProfileDialog(message,
-                new ZPWOnSweetDialogListener() {
-                    @Override
-                    public void onClickDiaLog(int i) {
-                        if (i == 1) {
-                            if (mView != null) {
-                                mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
-                            }
-                        }
-                    }
-                });
+        mNavigator.startEditAccountActivity(mView.getContext());
+        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
     }
 
     public void logout() {

@@ -98,13 +98,6 @@ class WalletListener implements ZPPaymentListener {
                 responseListener.onResponseAccountSuspended();
                 break;
             case LEVEL_UPGRADE_PASSWORD:
-                //Hien update profile level 2
-                if (mPaymentWrapper.mRedirectListener == null) {
-                    mPaymentWrapper.startUpdateProfile2ForResult();
-                } else {
-                    mPaymentWrapper.mRedirectListener.startUpdateProfileLevel2();
-                }
-
                 paymentIsCompleted = false; // will continue after update profile
                 break;
             case ERROR_BALANCE:
@@ -146,11 +139,6 @@ class WalletListener implements ZPPaymentListener {
                 }
                 break;
             case UPLEVEL_AND_LINK_BANKACCOUNT_AND_PAYMENT:
-                if (mPaymentWrapper.mRedirectListener == null) {
-                    mPaymentWrapper.startUpdateProfileBeforeLinkAcc();
-                } else {
-                    mPaymentWrapper.mRedirectListener.startUpdateProfileBeforeLinkAcc();
-                }
                 paymentIsCompleted = false; // will continue after update profile
                 break;
             case LEVEL_UPGRADE_CMND_EMAIL:

@@ -15,7 +15,6 @@ import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.util.TimeUtils;
 
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
@@ -49,6 +47,7 @@ import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.passport.OnboardingActivity;
@@ -90,7 +89,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
-import static vn.com.vng.zalopay.domain.model.User.MIN_PROFILE_LEVEL;
 
 /*
 * Navigator
@@ -104,7 +102,6 @@ public class Navigator implements INavigator {
 
     private SharedPreferences mPreferences;
 
-    private boolean allowClick = true;
     AuthenticationPassword mAuthenticationPassword;
 
     @Inject
@@ -206,16 +203,6 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startUpdateLevel2(Context context, @NonNull String otp) {
-        Intent intent = getUpdateProfileLevel2Activity(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra("otp", otp);
-        context.startActivity(intent);
-    }
-
-
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -246,40 +233,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    private void showUpdateProfileInfoDialog(final Context context) {
-        if (context == null) {
-            return;
-        }
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setTitleText(context.getString(R.string.notification))
-                .setContentText(context.getString(R.string.txt_need_input_userinfo))
-                .setCancelText(context.getString(R.string.txt_close))
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-                    }
-                })
-                .setConfirmText(context.getString(R.string.txt_input_userinfo))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        startUpdateProfileLevel2Activity(context);
-                    }
-                });
-        sweetAlertDialog.show();
-    }
-
     public void startMiniAppActivity(Activity activity, String moduleName) {
-        if (ModuleName.RED_PACKET.equals(moduleName)) {
-            if (mUserConfig.hasCurrentUser()) {
-                if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-                    showUpdateProfileInfoDialog(activity);
-                    return;
-                }
-            }
-        }
         Intent intent = intentMiniAppActivity(activity, moduleName, new HashMap<>());
         activity.startActivity(intent);
     }
@@ -468,10 +422,6 @@ public class Navigator implements INavigator {
             return false;
         }
 
-        if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showUpdateProfileInfoDialog(context);
-            return false;
-        }
         return true;
     }
 
@@ -496,64 +446,6 @@ public class Navigator implements INavigator {
         if (intent != null) {
             context.startActivity(intent);
         }
-    }
-
-    private Intent getUpdateProfileLevel2Activity(Context context,
-                                                  Boolean linkAccAfterUpdate) {
-        Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
-        if (linkAccAfterUpdate != null) {
-            intent.putExtra(Constants.ARG_UPDATE_PROFILE2_AND_LINK_ACC, linkAccAfterUpdate);
-        }
-        return intent;
-    }
-
-    private Intent getUpdateProfileLevel2Activity(Context context) {
-        return getUpdateProfileLevel2Activity(context, null);
-    }
-
-    public void startUpdateProfileLevelBeforeLinkAcc(Activity activity) {
-        Intent intent = getUpdateProfileLevel2Activity(activity, true);
-        activity.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC);
-    }
-
-    public void startUpdateProfileLevelBeforeLinkAcc(Fragment fragment) {
-        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext(), true);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC);
-    }
-
-
-    public void startUpdateProfileLevel2Activity(Context context) {
-        if (context == null) {
-            Timber.w("Cannot start pre-profile activity due to NULL context");
-            return;
-        }
-
-        Intent intent = getUpdateProfileLevel2Activity(context, null);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void startUpdateProfile2ForResult(Fragment fragment) {
-        if (fragment == null || fragment.getContext() == null) {
-            Timber.w("Cannot start pre-profile activity due to NULL context");
-            return;
-        }
-
-        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext());
-
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
-    }
-
-    @Override
-    public void startUpdateProfile2ForResult(Activity activity) {
-        if (activity == null) {
-            Timber.w("Cannot start pre-profile activity due to NULL context");
-            return;
-        }
-
-        Intent intent = getUpdateProfileLevel2Activity(activity);
-
-        activity.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
     }
 
     @Override
@@ -582,17 +474,9 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startTransferMoneyActivity(Activity activity) {
-        if (!mUserConfig.hasCurrentUser()) {
-            return;
-        }
-
-        if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showUpdateProfileInfoDialog(activity);
-        } else {
-            Intent intent = new Intent(activity, TransferHomeActivity.class);
-            activity.startActivity(intent);
-        }
+    public void startTransferMoneyActivity(Context activity) {
+        Intent intent = new Intent(activity, TransferHomeActivity.class);
+        activity.startActivity(intent);
     }
 
     public void startZaloContactActivity(TransferHomeFragment fragment) {
@@ -624,7 +508,7 @@ public class Navigator implements INavigator {
 
     @Override
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
-        if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
+        if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == User.MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
             intent.putExtra("focusIdentity", focusIdentity);
             context.startActivity(intent);
@@ -775,10 +659,8 @@ public class Navigator implements INavigator {
             return false;
         }
 
-        int profileLevel = mUserConfig.getCurrentUser().profilelevel;
         long now = System.currentTimeMillis();
-        return (now - UserSession.mLastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
-                && profileLevel >= MIN_PROFILE_LEVEL);
+        return (now - UserSession.mLastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD);
     }
 
     private void showPinDialog(Context context, Intent pendingIntent) {

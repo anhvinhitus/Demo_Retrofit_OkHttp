@@ -19,10 +19,6 @@ public interface INavigator {
 
     void startUpdateProfile3Activity(Context context, boolean focusIdentity);
 
-    void startUpdateProfile2ForResult(Activity activity);
-
-    void startUpdateProfile2ForResult(Fragment fragment);
-
     void startDepositForResultActivity(Activity activity);
 
     void startDepositForResultActivity(Fragment fragment);
@@ -34,10 +30,6 @@ public interface INavigator {
     void startLinkAccountActivityForResult(Activity activity, String bankCode);
 
     void startLinkAccountActivityForResult(Fragment fragment, String bankCode);
-
-    void startUpdateProfileLevelBeforeLinkAcc(Activity activity);
-
-    void startUpdateProfileLevelBeforeLinkAcc(Fragment fragment);
 
     void startProfileInfoActivity(Context context);
 

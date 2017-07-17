@@ -22,7 +22,6 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
@@ -221,8 +220,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_LAUNCH);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
-        } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_LAUNCH);
         } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_LAUNCH);
         }
@@ -235,8 +232,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
-        } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_NAVIGATEBACK);
         } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_BACK);
         }

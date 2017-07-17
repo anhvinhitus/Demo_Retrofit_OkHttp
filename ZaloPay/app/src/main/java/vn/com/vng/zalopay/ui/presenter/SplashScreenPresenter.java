@@ -41,7 +41,7 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
         }
 
         User user = mUserConfig.getCurrentUser();
-        if (user.profilelevel <= 1) {
+        if (user.profilelevel < User.MIN_PROFILE_LEVEL) {
             Timber.i("should update level");
             AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
             return;

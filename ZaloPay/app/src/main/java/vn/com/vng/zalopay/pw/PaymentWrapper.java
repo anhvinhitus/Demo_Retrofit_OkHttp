@@ -304,7 +304,6 @@ public class PaymentWrapper {
         }
 
         if (requestCode == Constants.REQUEST_CODE_DEPOSIT
-                || requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2
                 || requestCode == Constants.REQUEST_CODE_LINK_BANK) {
             shouldProcessPendingOrder = true;
         } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC) {
@@ -355,7 +354,7 @@ public class PaymentWrapper {
         userInfo.zalo_userid = String.valueOf(mCurrentUser.zaloId);
         userInfo.zalopay_userid = mCurrentUser.zaloPayId;
         userInfo.accesstoken = mCurrentUser.accesstoken;
-        userInfo.level = getUserProfileLevel();
+        userInfo.level = mCurrentUser.profilelevel;
         userInfo.profile = getUserPermission();
         userInfo.phonenumber = getPhoneNumber();
         return userInfo;
@@ -421,13 +420,6 @@ public class PaymentWrapper {
         return PhoneUtil.formatPhoneNumber(mCurrentUser.phonenumber);
     }
 
-    private int getUserProfileLevel() {
-        if (mCurrentUser != null) {
-            return mCurrentUser.profilelevel;
-        }
-        return -1;
-    }
-
     private UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
@@ -479,34 +471,11 @@ public class PaymentWrapper {
         mNavigator.startDepositForResultActivity(mActivity);
     }
 
-    void startUpdateProfile2ForResult() {
-        if (mActivity == null) {
-            return;
-        }
-
-        mNavigator.startUpdateProfile2ForResult(mActivity);
-    }
-
     void startUpdateProfile3() {
         if (mActivity == null) {
             return;
         }
         mNavigator.startUpdateProfile3Activity(mActivity, false);
-    }
-
-    void startUpdateProfileBeforeLinkAcc() {
-        if (mActivity == null) {
-            return;
-        }
-        mNavigator.startUpdateProfileLevelBeforeLinkAcc(mActivity);
-    }
-
-    void startLinkCardActivity(String bankCode) {
-        if (mActivity == null) {
-            return;
-        }
-
-        mNavigator.startLinkCardActivityForResult(mActivity, bankCode);
     }
 
     void startLinkAccountActivity(String bankCode) {
@@ -551,17 +520,12 @@ public class PaymentWrapper {
     }
 
     public interface IRedirectListener {
-        void startUpdateProfileLevel2();
 
         void startUpdateProfileLevel3();
 
         void startDepositForResult();
 
-        void startLinkCardActivity(String bankCode);
-
         void startLinkAccountActivity(String bankCode);
-
-        void startUpdateProfileBeforeLinkAcc();
     }
 
     public interface IResponseListener {

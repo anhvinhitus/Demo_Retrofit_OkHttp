@@ -19,7 +19,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -183,9 +182,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
             if (AppLifeCycle.isLastActivity(ChangePinActivity.class.getSimpleName())) {
                 mNavigator.startChangePin((Activity) mView.getContext(), otp);
-            } else if (AppLifeCycle.isLastActivity(UpdateProfileLevel2Activity.class.getSimpleName())) {
-                mNavigator.startUpdateLevel2(mView.getContext(), otp);
-            } else {
+            }  else {
                 Timber.d("No subscriber otp");
             }
         } finally {

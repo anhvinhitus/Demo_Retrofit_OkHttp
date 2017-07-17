@@ -69,8 +69,8 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     public void loadView() {
         boolean isEnableTopup =
                 SDKApplication.getApplicationComponent()
-                .platformInfoInteractor()
-                .enableTopup();
+                        .platformInfoInteractor()
+                        .enableTopup();
         if (mView == null) {
             return;
         }
@@ -189,42 +189,12 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         }
         return (Activity) mView.getContext();
     }
-
-    private int getProfileLevel() {
-        return mUser.profilelevel;
-    }
-
+    
     public void updateZaloPayID() {
         if (!TextUtils.isEmpty(mUser.zalopayname)) {
             return;
         }
-        if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2();
-        } else {
-            mNavigator.startEditAccountActivity(mView.getContext());
-        }
-    }
-
-    private void requireUpdateProfileLevel2() {
-        if (mView == null || mView.getContext() == null) {
-            return;
-        }
-        mView.showConfirmDialog(mView.getContext().getString(R.string.alert_need_update_level_2),
-                mView.getContext().getString(R.string.txt_update),
-                mView.getContext().getString(R.string.txt_close),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKEvent() {
-                        if (mView != null) {
-                            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
-                        }
-                    }
-                });
+        mNavigator.startEditAccountActivity(mView.getContext());
     }
 
     private void getBalance() {
