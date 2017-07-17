@@ -247,6 +247,7 @@
 
     <string name="alert.need.update.phone">Vui lòng cập nhật số điện thoại trước.</string>
     <string name="alert.need.update.level.2">Vui lòng cập nhật số điện thoại trước khi cập nhật email và CMND/Hộ chiếu.</string>
+    <string name="alert.not.exist.zalo">Bạn chưa cài đặt ứng dụng Zalo.</string>
 
     <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn</string>
     <string name="need_update_to_use">Cần nâng cấp phiên bản Zalo Pay mới nhất để tiếp tục sử dụng ứng dụng</string>
