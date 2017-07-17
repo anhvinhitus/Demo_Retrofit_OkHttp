@@ -55,19 +55,20 @@ class WebAppPresenter extends AbstractWebAppPresenter<IWebAppView> {
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
-                mView.updateLoadProgress(progress);
-
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    if (progress == 100) {
-                        String title = view.getTitle();
-                        mView.onReceivedTitle(title);
-                    }
+                if (mView == null) {
+                    return;
                 }
+
+                mView.updateLoadProgress(progress);
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
+                if (mView == null) {
+                    return;
+                }
+
                 mView.onReceivedTitle(title);
             }
         });

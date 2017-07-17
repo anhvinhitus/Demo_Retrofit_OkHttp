@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.webapp;
 
-import android.os.Build;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -9,12 +8,10 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
 import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.webview.widget.ZPWebView;
 
 /**
  * Created by datnt10 on 6/22/17.
@@ -34,44 +31,23 @@ class WebAppPromotionPresenter extends AbstractWebAppPresenter<IWebAppPromotionV
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                mView.updateLoadProgress(progress);
-
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    if (progress == 100) {
-                        String title = view.getTitle();
-                        setReceivedTitleStatus(view, title);
-                    }
+                Timber.d("WebLoading progress: %s", progress);
+                if (mView == null) {
+                    return;
                 }
+
+                mView.updateLoadProgress(progress);
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                setReceivedTitleStatus(view, title);
+                if (mView == null) {
+                    return;
+                }
+
+                mView.onReceivedTitle(title);
             }
         });
-    }
-
-    private void setReceivedTitleStatus(WebView view, String title) {
-        if (view.canGoBack()) {
-            setHomeDisplayStatus(false);
-        } else {
-            setHomeDisplayStatus(true);
-            title = getActivity().getString(R.string.promotion_title);
-        }
-
-        mView.onReceivedTitle(title);
-    }
-
-    private void setHomeDisplayStatus(boolean isHome) {
-        if (isHome) {
-            mView.setHiddenBackButton(true);
-            mView.setHiddenShareButton(true);
-            mView.setHiddenTabBar(false);
-        } else {
-            mView.setHiddenBackButton(false);
-            mView.setHiddenShareButton(false);
-            mView.setHiddenTabBar(true);
-        }
     }
 }
