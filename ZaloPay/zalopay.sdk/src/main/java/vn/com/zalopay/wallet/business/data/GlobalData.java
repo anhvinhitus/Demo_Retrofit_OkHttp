@@ -5,7 +5,6 @@ import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -41,6 +40,10 @@ public class GlobalData {
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
+
+    public static String getUserId() {
+        return paymentInfoHelper != null ? paymentInfoHelper.getUserId() : "";
+    }
 
     public static
     @TransactionType

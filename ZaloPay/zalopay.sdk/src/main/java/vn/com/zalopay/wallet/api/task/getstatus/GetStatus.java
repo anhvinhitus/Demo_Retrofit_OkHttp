@@ -20,6 +20,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /***
  * get transaction status class
@@ -35,7 +36,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
-    private long startTime = 0, endTime = 0;
+    private long startTime = 0;
 
     public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -156,10 +157,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, pResponse);
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, pResponse);
         if (pResponse == null) {
             cancelTimer();
             askToRetryGetStatus(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_retry_getstatus_onerror_networking_mess));

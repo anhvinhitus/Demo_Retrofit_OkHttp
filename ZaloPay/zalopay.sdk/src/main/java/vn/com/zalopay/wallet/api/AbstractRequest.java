@@ -18,13 +18,17 @@ public abstract class AbstractRequest<T extends BaseResponse> implements IReques
     protected ITransService mTransService;
     protected boolean running = false;
     protected long startTime = 0;
-    protected long endTime = 0;
     protected Observable.Transformer<T, T> applyState = observable -> observable
             .doOnSubscribe(this::doOnSubscribe)
+            .doOnError(this::doOnError)
             .doOnNext(this::doOnNext);
 
     public AbstractRequest(ITransService transService) {
         mTransService = transService;
+    }
+
+    @CallSuper
+    protected void doOnError(Throwable throwable) {
     }
 
     @CallSuper
@@ -36,7 +40,6 @@ public abstract class AbstractRequest<T extends BaseResponse> implements IReques
     @CallSuper
     protected void doOnNext(T t) {
         running = false;
-        endTime = System.currentTimeMillis();
     }
 
     @Override

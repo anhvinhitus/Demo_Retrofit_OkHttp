@@ -8,7 +8,6 @@ import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -16,10 +15,11 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     protected AdapterBase mAdapter;
-    private long startTime = 0, endTime = 0;
+    private long startTime = 0;
 
     public SubmitOrderTask(AdapterBase pAdapter) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -29,11 +29,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     public void onDoTaskOnResponse(StatusResponse pResponse) {
         Timber.d("onDoTaskOnResponse nothing");
-        //tracking api call app transid
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, pResponse);
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, pResponse);
     }
 
     @Override

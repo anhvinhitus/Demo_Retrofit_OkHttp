@@ -11,11 +11,12 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class AuthenPayerTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;
     private String mTransID, mAuthenType, mAuthenValue;
-    private long startTime = 0, endTime = 0;
+    private long startTime = 0;
 
     public AuthenPayerTask(AdapterBase pAdapter, String pTransID, String pAuthenType, String pAuthenValue) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
@@ -32,10 +33,7 @@ public class AuthenPayerTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER, startTime, endTime, pResponse);
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER, startTime, pResponse);
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE, pResponse);
         }

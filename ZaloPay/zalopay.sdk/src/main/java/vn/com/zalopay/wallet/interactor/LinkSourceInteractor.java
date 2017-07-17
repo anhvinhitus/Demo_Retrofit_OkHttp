@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
@@ -17,6 +18,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.repository.bankaccount.BankAccountStore;
 import vn.com.zalopay.wallet.repository.cardmap.CardStore;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /**
  * Created by chucvv on 6/10/17.
@@ -107,8 +109,12 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         } else {
             checksum = mCardMapLocalStorage.getCheckSum();
         }
+        long startTime = System.currentTimeMillis();
+        int apiId = ZPEvents.API_UM_LISTCARDINFOFORCLIENT;
         return mCardMapService.fetch(userid, accesstoken, checksum, appversion)
+                .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .doOnNext(cardInfoListResponse -> mCardMapLocalStorage.saveResponse(userid, cardInfoListResponse))
+                .doOnNext(cardInfoListResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, cardInfoListResponse))
                 .flatMap(new Func1<CardInfoListResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(CardInfoListResponse cardInfoListResponse) {
@@ -125,8 +131,12 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         } else {
             checksum = mBankAccountLocalStorage.getCheckSum();
         }
+        long startTime = System.currentTimeMillis();
+        int apiId = ZPEvents.API_UM_LISTBANKACCOUNTFORCLIENT;
         return mBankAccountService.fetch(userid, accesstoken, checksum, appversion)
+                .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .doOnNext(bankAccountListResponse -> mBankAccountLocalStorage.saveResponse(userid, bankAccountListResponse))
+                .doOnNext(bankAccountListResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, bankAccountListResponse))
                 .flatMap(new Func1<BankAccountListResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(BankAccountListResponse bankAccountListResponse) {

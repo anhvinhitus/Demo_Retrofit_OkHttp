@@ -9,9 +9,9 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_DELAY_RETRY;
@@ -29,6 +29,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     private String appTransId;
     private int retryCount = 1;
     private Func1<StatusResponse, Boolean> shouldStop = statusResponse -> {
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, statusResponse);
         boolean stop = shouldStop(statusResponse);
         running = !stop;
         return stop;
@@ -44,11 +45,6 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
 
     private boolean shouldStop(StatusResponse pResponse) {
         Timber.d("start check trans status by app trans");
-        //tracking api call app trans id
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, pResponse);
-        }
         if (pResponse == null) {
             return false;
         }
@@ -59,6 +55,12 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void doOnError(Throwable throwable) {
+        super.doOnError(throwable);
+        ZPAnalyticsTrackerWrapper.trackApiError(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, throwable);
     }
 
     @Override
@@ -76,6 +78,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
                     retryCount++;
                     running = true;
                 })
+                .doOnError(this::doOnError)
                 /* .map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     statusResponse.returncode = -49;

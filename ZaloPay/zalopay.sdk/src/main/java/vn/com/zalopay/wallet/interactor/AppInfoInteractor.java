@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /**
  * Interactor decide which get data from
@@ -64,26 +65,23 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         String transtypeString = transtypeToString(transtypes);
         String transtypeCheckSum = transtypeCheckSum(appid, transtypes);
         long startTime = System.currentTimeMillis();
+        int apiId = ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO;
         Observable<AppInfo> appInfoOnCache = mLocalStorage
                 .get(appid)
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null);
         Observable<AppInfo> appInfoOnCloud = mRequestService.fetch(String.valueOf(appid), userid, accesstoken, appInfoCheckSum, transtypeString, transtypeCheckSum, appversion)
+                .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .map(this::changeAppName)
                 .doOnNext(appInfoResponse -> mLocalStorage.put(appid, appInfoResponse))
-                .doOnNext(appInfoResponse -> {
-                    long endTime = System.currentTimeMillis();
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO, startTime, endTime, appInfoResponse);
-                    }
-                })
+                .doOnNext(appInfoResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, appInfoResponse))
                 .flatMap(mapResult(appid));
         return Observable.concat(appInfoOnCache, appInfoOnCloud)
                 .first(appInfo -> appInfo != null && (appInfo.expriretime > currentTime));
     }
 
-    private AppInfoResponse changeAppName(AppInfoResponse appInfoResponse){
-        if(appInfoResponse == null){
+    private AppInfoResponse changeAppName(AppInfoResponse appInfoResponse) {
+        if (appInfoResponse == null) {
             return null;
         }
         AppInfo appInfo = appInfoResponse.info;

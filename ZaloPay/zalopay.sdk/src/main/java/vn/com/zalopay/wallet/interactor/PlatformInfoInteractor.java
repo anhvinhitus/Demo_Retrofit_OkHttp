@@ -30,6 +30,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /**
  * Interactor decide which get data from
@@ -149,15 +150,12 @@ public class PlatformInfoInteractor implements PlatformInfoStore.Interactor {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         Map<String, String> params = getParams(userId, accessToken, forceReloadApi, forceDownloadResource, appVersion);
         long startTime = System.currentTimeMillis();
+        int apiId = ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO;
         return mService
                 .fetch(params)
+                .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .doOnNext(platformInfoResponse -> mLocalStorage.put(params.get(ConstantParams.USER_ID), platformInfoResponse))
-                .doOnNext(platformInfoResponse -> {
-                    long endTime = System.currentTimeMillis();
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO, startTime, endTime, platformInfoResponse);
-                    }
-                })
+                .doOnNext(platformInfoResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, platformInfoResponse))
                 .concatMap(this::tryDownloadResource)
                 .flatMap(new Func1<PlatformInfoResponse, Observable<PlatformInfoCallback>>() {
                     @Override

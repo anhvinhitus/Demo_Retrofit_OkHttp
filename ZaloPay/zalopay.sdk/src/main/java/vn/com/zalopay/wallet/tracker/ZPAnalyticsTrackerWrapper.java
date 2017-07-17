@@ -2,12 +2,15 @@ package vn.com.zalopay.wallet.tracker;
 
 import android.text.TextUtils;
 
+import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
+import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPApptransidLog;
 import vn.com.zalopay.analytics.ZPApptransidLogApiCall;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -23,6 +26,20 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     public ZPAnalyticsTrackerWrapper(long pAppId, String pAppTransID, @TransactionType int transactionType, int ordersource) {
         super();
         initialize(pAppId, pAppTransID, transactionType, ordersource);
+    }
+
+    public static void trackApiError(int apiId, long startTime, Throwable throwable) {
+        long endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(apiId, startTime, endTime, throwable);
+        }
+    }
+
+    public static void trackApiCall(int apiId, long startTime, BaseResponse response) {
+        long endTime = System.currentTimeMillis();
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper.trackApiTiming(apiId, startTime, endTime, response);
+        }
     }
 
     public ZPAnalyticsTrackerWrapper step(int step) {
@@ -61,19 +78,40 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
                 System.currentTimeMillis(), System.currentTimeMillis(), "", 0);
     }
 
-    public void trackApiTiming(int apiId, long startTime, long endTime, int returncode) {
-        if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
-            Timber.d("skip track api call app trans id");
-            return;
+    private void trackApiTiming(int apiId, long startTime, long endTime, int returncode) {
+        try {
+            if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
+                Timber.d("skip track api call app trans id");
+                return;
+            }
+            ZPApptransidLogApiCall apiTrack = new ZPApptransidLogApiCall();
+            apiTrack.apptransid = mZPApptransidLog.apptransid;
+            apiTrack.apiid = apiId;
+            apiTrack.time_begin = startTime;
+            apiTrack.time_end = endTime;
+            apiTrack.return_code = returncode;
+            ZPAnalytics.trackApptransidApiCall(apiTrack);
+            Timber.d("tracking call api timing api (apiid, returncode) - (%s , %s) time %s(ms)", apiId, apiTrack.return_code, ((endTime - startTime)));
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
-        ZPApptransidLogApiCall apiTrack = new ZPApptransidLogApiCall();
-        apiTrack.apptransid = mZPApptransidLog.apptransid;
-        apiTrack.apiid = apiId;
-        apiTrack.time_begin = startTime;
-        apiTrack.time_end = endTime;
-        apiTrack.return_code = returncode;
-        ZPAnalytics.trackApptransidApiCall(apiTrack);
-        Timber.d("tracking call api timing api (apiid, returncode) - (%s , %s) time %s(ms)", apiId, apiTrack.return_code, ((endTime - startTime)));
+    }
+
+    private void trackApiTiming(int apiId, long startTime, long endTime, Throwable throwable) {
+        try {
+            int returnCode = -100;
+            if (throwable instanceof HttpEmptyResponseException) {
+                returnCode = -1010;
+                Timber.w(throwable, "Exception apiId %s PC response null user id %s", apiId, GlobalData.getUserId());
+            } else if (throwable instanceof HttpException) {
+                HttpException httpException = (HttpException) throwable;
+                returnCode = httpException.code();
+                Timber.w(throwable, "Exception apiId %s http error %s user id %s", apiId, httpException.getMessage(), GlobalData.getUserId());
+            }
+            trackApiTiming(apiId, startTime, endTime, returnCode);
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
     }
 
     public void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
@@ -82,21 +120,29 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     }
 
     public void trackUserCancel() {
-        mZPApptransidLog.step = ZPPaymentSteps.OrderStep_OrderResult;
-        mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
-        track();
+        try {
+            mZPApptransidLog.step = ZPPaymentSteps.OrderStep_OrderResult;
+            mZPApptransidLog.step_result = ZPPaymentSteps.OrderStepResult_UserCancel;
+            track();
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
     }
 
     public void track() {
-        if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
-            Timber.d("skip track app trans id");
-            return;
+        try {
+            if (TextUtils.isEmpty(mZPApptransidLog.apptransid)) {
+                Timber.d("skip track app trans id");
+                return;
+            }
+            if (mZPApptransidLog.step == ZPPaymentSteps.OrderStep_OrderResult) {
+                mZPApptransidLog.status = 1;
+            }
+            mZPApptransidLog.finish_time = System.currentTimeMillis();
+            ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
+            Timber.d("track trans %s", GsonUtils.toJsonString(mZPApptransidLog));
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
-        if (mZPApptransidLog.step == ZPPaymentSteps.OrderStep_OrderResult) {
-            mZPApptransidLog.status = 1;
-        }
-        mZPApptransidLog.finish_time = System.currentTimeMillis();
-        ZPAnalytics.trackApptransidEvent(mZPApptransidLog);
-        Timber.d("track trans %s", GsonUtils.toJsonString(mZPApptransidLog));
     }
 }

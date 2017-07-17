@@ -7,13 +7,13 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /**
  * Created by chucvv on 6/16/17.
@@ -89,9 +89,12 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
     @Override
     protected void doOnNext(StatusResponse statusResponse) {
         super.doOnNext(statusResponse);
-        //tracking api call app transid
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, endTime, statusResponse);
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, statusResponse);
+    }
+
+    @Override
+    protected void doOnError(Throwable throwable) {
+        super.doOnError(throwable);
+        ZPAnalyticsTrackerWrapper.trackApiError(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, throwable);
     }
 }

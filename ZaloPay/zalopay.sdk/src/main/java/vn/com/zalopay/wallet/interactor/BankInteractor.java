@@ -11,9 +11,9 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.MemoryCache;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.api.RetryWithDelay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -31,6 +31,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 import static vn.com.zalopay.wallet.constants.Constants.BITMAP_EXTENSION;
 import static vn.com.zalopay.wallet.constants.Constants.UNDERLINE;
@@ -165,9 +166,12 @@ public class BankInteractor implements BankStore.Interactor {
     }
 
     private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
+        long startTime = System.currentTimeMillis();
+        int apiId = ZPEvents.API_V001_TPE_GETBANKLIST;
         return mBankListService.fetch(platform, checksum, appversion)
-                .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
-                .doOnNext(mLocalStorage::put);
+                .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
+                .doOnNext(mLocalStorage::put)
+                .doOnNext(bankConfigResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, bankConfigResponse));
     }
 
     private ZPBank prepareBankFromConfig(String appVersion, String bankCode, boolean isBankAccount) {

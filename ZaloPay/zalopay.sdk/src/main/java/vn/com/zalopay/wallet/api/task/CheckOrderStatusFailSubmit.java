@@ -5,11 +5,11 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 /***
  * get status transaction in case error networking
@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
     private String mAppTransID;
     private AdapterBase mAdapter;
-    private long startTime = 0, endTime = 0;
+    private long startTime = 0;
 
     /***
      * contructor
@@ -39,10 +39,7 @@ public class CheckOrderStatusFailSubmit extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, endTime, pResponse);
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, pResponse);
         if (mAdapter != null) {
             mAdapter.onEvent(EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE, pResponse);
         } else {

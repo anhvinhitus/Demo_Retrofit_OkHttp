@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.transaction;
 
-import android.os.Build;
-
 import java.util.Map;
 
 import rx.Observable;
@@ -12,10 +10,10 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_DELAY_RETRY;
@@ -33,6 +31,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     private long intervalRetry = TRANS_STATUS_DELAY_RETRY;
 
     private Func1<StatusResponse, Boolean> shouldStop = statusResponse -> {
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, statusResponse);
         boolean stop = shouldStop(statusResponse);
         running = !stop;
         return stop;
@@ -48,11 +47,6 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
 
     private boolean shouldStop(StatusResponse pResponse) {
         Timber.d("start check should stop check trans status");
-        //tracking api call app trans id
-        endTime = System.currentTimeMillis();
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper.trackApiTiming(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, endTime, pResponse);
-        }
         if (pResponse == null) {
             return false;
         }
@@ -66,6 +60,12 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     }
 
     @Override
+    protected void doOnError(Throwable throwable) {
+        super.doOnError(throwable);
+        ZPAnalyticsTrackerWrapper.trackApiError(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, throwable);
+    }
+
+    @Override
     public Map<String, String> buildParams() {
         Map<String, String> map = getMapTable();
         DataParameter.prepareGetStatusParams(String.valueOf(mAppId), mUserInfo, map, mTransId);
@@ -75,10 +75,11 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     public Observable<StatusResponse> getStatus(Map<String, String> params) {
         return mTransService.getStatus(params)
                 .doOnSubscribe(() -> {
-                    retryCount ++;
+                    retryCount++;
                     running = true;
                     startTime = System.currentTimeMillis();
                 })
+                .doOnError(this::doOnError)
                /* .map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
