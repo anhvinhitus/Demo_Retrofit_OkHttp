@@ -75,7 +75,9 @@
     <string name="sdk_payment_generic_error_networking_mess">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="sdk_trans_networking_offine_mess">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
 
-    <string name="sdk_error_api">Không thể kết nối dữ liệu. Vui lòng kiểm tra mạng và thực hiện lại giao dịch!</string>
+    <string name="sdk_error_api_emptybody">Không thể kết nối dữ liệu. Vui lòng kiểm tra mạng và thực hiện lại giao dịch!</string>
+    <string name="sdk_error_undefine">ZaloPay không thể thực hiện yêu cầu lúc này. Vui lòng thực hiện lại giao dịch!</string>
+    <string name="sdk_error_system">Hệ thống không thể xử lý yêu cầu lúc này. Vui lòng thực hiện lại giao dịch!</string>
 
     <string name="sdk_linkacc_error_networking_load_mapbankaccount_mess">Mạng không ổn định, không tải được thông tin tài khoản ngân hàng đã liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="sdk_linkcard_error_networking_verifymapcard_mess">Mạng không ổn định, không thể liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>

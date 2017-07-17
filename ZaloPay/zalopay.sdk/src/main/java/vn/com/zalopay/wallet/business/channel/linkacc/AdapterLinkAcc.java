@@ -142,7 +142,7 @@ public class AdapterLinkAcc extends AdapterBase {
         public void call(Throwable throwable) {
             hideLoadingDialog();
             Log.d(this, "load bank account error", throwable);
-            String message = TransactionHelper.getMessage(throwable);
+            String message = TransactionHelper.getMessage(mContext,throwable);
             if (TextUtils.isEmpty(message)) {
                 message = mContext.getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
             }

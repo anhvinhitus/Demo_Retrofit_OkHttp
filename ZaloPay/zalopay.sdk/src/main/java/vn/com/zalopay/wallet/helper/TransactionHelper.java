@@ -3,12 +3,13 @@ package vn.com.zalopay.wallet.helper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -31,18 +32,24 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
  */
 
 public class TransactionHelper {
-    public static String getMessage(Throwable throwable) {
+    public static String getMessage(Context context, Throwable throwable) {
         if (throwable == null) {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+            return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         if (throwable instanceof RequestException || throwable instanceof SdkResourceException) {
             return throwable.getMessage();
         }
         if (throwable instanceof NetworkConnectionException) {
-            return GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
+            return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
-        Timber.d(throwable, "undefine exception");
-        return GlobalData.getAppContext().getResources().getString(R.string.sdk_error_api);
+        if(throwable instanceof HttpEmptyResponseException){
+            return context.getResources().getString(R.string.sdk_error_api_emptybody);
+        }
+        if(throwable instanceof HttpException){
+            return context.getResources().getString(R.string.sdk_error_system);
+        }
+        Timber.w(throwable, "undefine exception");
+        return context.getResources().getString(R.string.sdk_error_undefine);
     }
 
     public static String getAppNameByTranstype(Context context, @TransactionType int transtype) {

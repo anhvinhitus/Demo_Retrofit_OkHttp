@@ -763,7 +763,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         Timber.d("payment info on error %s", message.mError.getMessage());
-        String error = TransactionHelper.getMessage(message.mError);
+        String error = TransactionHelper.getMessage(mContext,message.mError);
         boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
         if (showDialog) {
             getViewOrThrow().showError(error);
