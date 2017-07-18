@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:text="@string/app_name"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textSize="@dimen/font_size_xxlarge"/>
 
     </LinearLayout>
 

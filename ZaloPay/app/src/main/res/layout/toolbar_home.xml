@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/spacing.small"
         android:visibility="gone"
-        tools:text="@string/title.activity.profile" />
+        tools:text="@string/title.activity.profile"
+        android:textSize="@dimen/font_size_xxlarge"/>
 
     <EditText
         android:id="@+id/edtSearch"

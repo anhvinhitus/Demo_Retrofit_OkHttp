@@ -14,7 +14,7 @@
         android:background="@android:color/transparent"
         android:text="@string/sdk_pay_method_title"
         android:textColor="@color/text_color_grey"
-        android:textSize="@dimen/zpw_text_size_medium_m" />
+        android:textSize="@dimen/zpw_text_size_medium_s" />
 
     <View
         android:id="@+id/line"

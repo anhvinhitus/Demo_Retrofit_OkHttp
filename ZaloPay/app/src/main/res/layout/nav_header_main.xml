@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing.medium"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_size_large"
+                android:textSize="@dimen/font_size_xmedium"
                 tools:text="@string/app_name" />
 
             <TextView
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing.tiny"
                 android:textColor="@color/txt_item_sub_2"
-                android:textSize="@dimen/font_size_medium"
+                android:textSize="@dimen/font_size_xnormal"
                 tools:text="@string/app_name" />
         </LinearLayout>
     </LinearLayout>

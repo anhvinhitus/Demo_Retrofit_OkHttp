@@ -14,10 +14,11 @@
 
         <TextView
             android:id="@+id/toolbar_title"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+            android:textSize="@dimen/font_size_xxlarge" />
 
     </LinearLayout>
 
