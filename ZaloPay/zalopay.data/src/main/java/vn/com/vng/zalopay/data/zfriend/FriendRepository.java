@@ -176,8 +176,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Nullable
-    @Override
-    public List<ZPProfile> transformZaloFriend(Cursor cursor) {
+    private List<ZPProfile> transformZaloFriend(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return Collections.emptyList();
         }
@@ -207,16 +206,11 @@ public class FriendRepository implements FriendStore.Repository {
         return makeObservable(mLocalStorage::getZaloUserWithoutZaloPayId)
                 .map(entities -> Lists.chopped(entities, MAX_LENGTH_CHECK_LIST_ZALO_ID))
                 .flatMap(Observable::from)
-                .map(this::toZaloIds)
+                .map(zaloids -> Strings.joinWithDelimiter(",", zaloids))
                 .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(this::fetchZaloPayUserByZaloId)
                 .toList()
                 .map(entities -> Boolean.TRUE);
-    }
-
-    private String toZaloIds(List<ZaloUserEntity> list) {
-        List<Long> zaloids = Lists.transform(list, entity -> entity.userId);
-        return Strings.joinWithDelimiter(",", zaloids);
     }
 
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {

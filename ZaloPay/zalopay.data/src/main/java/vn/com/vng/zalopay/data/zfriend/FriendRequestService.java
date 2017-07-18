@@ -50,12 +50,7 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
 
     @Override
     public Observable<List<ZaloUserEntity>> fetchFriendList() {
-        return Observable.create(new Observable.OnSubscribe<List<ZaloUserEntity>>() {
-            @Override
-            public void call(final Subscriber<? super List<ZaloUserEntity>> subscriber) {
-                zaloRequestFriendList(0, subscriber);
-            }
-        });
+        return Observable.create(subscriber -> zaloRequestFriendList(0, subscriber));
     }
 
     private void zaloRequestFriendList(final int pageIndex, final Subscriber<? super List<ZaloUserEntity>> subscriber) {

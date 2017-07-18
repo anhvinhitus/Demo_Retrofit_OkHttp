@@ -28,6 +28,8 @@ import vn.com.zalopay.analytics.ZPEvents;
 public interface FriendStore {
     interface LocalStorage extends SqlBaseScope {
 
+        void putContacts(@Nullable List<Contact> contacts);
+
         void putZaloUser(List<ZaloUserEntity> val);
 
         void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities);
@@ -38,14 +40,12 @@ public interface FriendStore {
         @NonNull
         List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids);
 
-        void putContacts(@Nullable List<Contact> contacts);
-
         Cursor getZaloUserCursor(boolean enableContact);
 
         Cursor searchZaloFriendList(String s, boolean enableContact);
 
         @NonNull
-        List<ZaloUserEntity> getZaloUserWithoutZaloPayId();
+        List<Long> getZaloUserWithoutZaloPayId();
 
         long getLastTimeSyncContact();
 
@@ -84,9 +84,6 @@ public interface FriendStore {
 
         @Nullable
         ZPProfile transform(Cursor cursor);
-
-        @Nullable
-        List<ZPProfile> transformZaloFriend(Cursor cursor);
 
         Observable<List<ZPProfile>> getZaloFriendList();
 

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import org.greenrobot.greendao.internal.SqlUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -110,14 +111,17 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
      */
     @Override
     @NonNull
-    public List<ZaloUserEntity> getZaloUserWithoutZaloPayId() {
+    public List<Long> getZaloUserWithoutZaloPayId() {
         List<ZaloProfileGD> list = mZaloUserDao.queryDeep("WHERE T.\""
                 + ZaloProfileGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
                 + ZaloPayProfileGDDao.Properties.ZaloPayId.columnName + "\" IS NULL");
 
         Timber.d("Get zalo user without zalopayid size [%s] ", list.size());
+        if (Lists.isEmptyOrNull(list)) {
+            return Collections.emptyList();
+        }
 
-        return mDataMapper.transformZaloUserEntity(list);
+        return Lists.transform(list, profile -> profile.zaloId);
     }
 
     @Override
