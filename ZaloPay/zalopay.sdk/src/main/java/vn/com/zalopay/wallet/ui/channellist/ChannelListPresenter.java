@@ -87,6 +87,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
     private long mCountClickPmc = 0;
+    private boolean mHasActiveChannel = false;
     private
     @TransactionType
     int tempTranstype;
@@ -236,6 +237,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return null;
         }
         return mPaymentInfoHelper.getQuitMessByTrans(mContext);
+    }
+
+    public boolean quitWithoutConfirm() {
+        return !mHasActiveChannel;
     }
 
     public boolean onBackPressed() {
@@ -606,7 +611,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             selectAndScrollToChannel(selectChannel, selectChannel.position);
             return;
         }
-        boolean hasActiveChannel = false;
         int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
@@ -617,7 +621,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (!channel.meetPaymentCondition()) {
                 continue;
             }
-            hasActiveChannel = true;
+            mHasActiveChannel = true;
             pos = position;
             selectChannel = channel;
             break;
@@ -625,7 +629,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (selectChannel != null) {
             selectAndScrollToChannel(selectChannel, pos);
         }
-        if (!hasActiveChannel) {
+        if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
@@ -763,7 +767,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         Timber.d("payment info on error %s", message.mError.getMessage());
-        String error = TransactionHelper.getMessage(mContext,message.mError);
+        String error = TransactionHelper.getMessage(mContext, message.mError);
         boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
         if (showDialog) {
             getViewOrThrow().showError(error);

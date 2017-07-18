@@ -90,12 +90,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public boolean onBackPressed() {
-        boolean back_pressed = mPresenter.onBackPressed();
-        if (!back_pressed) {
-            showQuitConfirm();
-            back_pressed = true;
+        if (mPresenter.quitWithoutConfirm()) {
+            return false;
         }
-        return back_pressed;
+        if (!mPresenter.onBackPressed()) {
+            showQuitConfirm();
+        }
+        return true;
     }
 
     @Override
