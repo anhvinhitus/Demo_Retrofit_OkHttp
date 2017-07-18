@@ -103,6 +103,28 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 break;
         }
     };
+    private ZPWResultCallBackListener resultCallBackListener = new ZPWResultCallBackListener() {
+        @Override
+        public void onResultOk(int pReturnCode, int pData) {
+            try {
+                Timber.d("onActivityResult data %s", pData);
+                Intent intent = new Intent();
+                intent.putExtra(SELECTED_PMC_POSITION, pData);
+                setResult(MAP_POPUP_RESULT_CODE, intent);
+                getViewOrThrow().terminate();
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+
+        @Override
+        public void onCancel(int pReturnCode) {
+            Timber.d("cancel popup map selection");
+            if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
+                mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
+            }
+        }
+    };
 
     public ChannelPresenter() {
         try {
@@ -124,7 +146,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return BaseActivity.getChannelListActivity() != null &&
                 !BaseActivity.getChannelListActivity().isFinishing();
     }
-
 
     private void setResult(int code, Intent data) throws Exception {
         Activity activity = getViewOrThrow().getActivity();
@@ -286,7 +307,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         Timber.d("payment info on error %s", message.mError.getMessage());
-        String error = TransactionHelper.getMessage(mContext,message.mError);
+        String error = TransactionHelper.getMessage(mContext, message.mError);
         boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
         onExit(error, showDialog);
     }
@@ -327,7 +348,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 showKeyBoard();
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception start link");
             onExit(mContext.getResources().getString(R.string.sdk_error_init_data), true);
         }
     }
@@ -640,29 +661,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
 
     }
-
-    private ZPWResultCallBackListener resultCallBackListener = new ZPWResultCallBackListener() {
-        @Override
-        public void onResultOk(int pReturnCode, int pData) {
-            try {
-                Timber.d("onActivityResult data %s", pData);
-                Intent intent = new Intent();
-                intent.putExtra(SELECTED_PMC_POSITION, pData);
-                setResult(MAP_POPUP_RESULT_CODE, intent);
-                getViewOrThrow().terminate();
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-
-        @Override
-        public void onCancel(int pReturnCode) {
-            Timber.d("cancel popup map selection");
-            if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
-                mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
-            }
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {

@@ -31,6 +31,8 @@ import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -59,13 +61,20 @@ public class AdapterBankCard extends AdapterBase {
     public MiniPmcTransType getConfig(String pBankCode) {
         try {
             if (needReloadPmcConfig(pBankCode)) {
-                Timber.d("start reload pmc trans type " + pBankCode);
+                if (mPaymentInfoHelper == null) {
+                    return mMiniPmcTransType;
+                }
+                Timber.d("start reload pmc trans type %s", pBankCode);
                 long appId = mPaymentInfoHelper.getAppId();
-                mMiniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(appId, mPaymentInfoHelper.getTranstype(), pBankCode), MiniPmcTransType.class);
-                Log.d(this, "new pmc trans type", mMiniPmcTransType);
+                boolean bankAccount = BankAccountHelper.isBankAccount(pBankCode);
+                mMiniPmcTransType = SDKApplication
+                        .getApplicationComponent()
+                        .appInfoInteractor()
+                        .getPmcTranstype(appId, mPaymentInfoHelper.getTranstype(), bankAccount, pBankCode);
+                Timber.d("new pmc trans type %s", GsonUtils.toJsonString(mMiniPmcTransType));
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception reload pmc config");
         }
         return mMiniPmcTransType;
     }
@@ -456,7 +465,7 @@ public class AdapterBankCard extends AdapterBase {
         //have some card bidv in map card list and have this card
         if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
                 && hasBidvBankInMapCardList(pCardNumber)) && getPresenter() != null) {
-                
+
             getPresenter().showMapBankDialog(true);
             return true;
         }

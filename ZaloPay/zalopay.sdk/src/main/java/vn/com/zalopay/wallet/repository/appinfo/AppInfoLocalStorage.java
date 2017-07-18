@@ -157,7 +157,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e,"Exception get pmc trans type");
         }
         return pmcTransType;
     }
