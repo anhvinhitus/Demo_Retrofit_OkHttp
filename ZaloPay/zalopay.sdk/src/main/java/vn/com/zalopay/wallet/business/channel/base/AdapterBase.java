@@ -129,6 +129,7 @@ public abstract class AdapterBase {
     protected IBuilder mPromotionBuilder;
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
+    protected Context mContext;
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -139,7 +140,6 @@ public abstract class AdapterBase {
         public void onOpenSettingDialogClicked() {
         }
     };
-    protected Context mContext;
     /*
      * loading website so long,over timeout 40s
      */
@@ -1373,12 +1373,14 @@ public abstract class AdapterBase {
         if (TextUtils.isEmpty(bankCode)) {
             bankCode = "";
         }
-        Long transId;
+        Long transId = -1L;
         try {
-            transId = Long.parseLong(mTransactionID);
+            if (!TextUtils.isEmpty(mTransactionID)) {
+                transId = Long.parseLong(mTransactionID);
+            }
         } catch (Exception e) {
             Timber.w(e.getMessage());
-            transId = 0L;
+            transId = -1L;
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
             GlobalData.analyticsTrackerWrapper

@@ -74,7 +74,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
 
     protected void initialize(long pAppId, String pAppTransId, int pTransType, int ordersource) {
         mZPApptransidLog = new ZPApptransidLog(pAppTransId, pAppId, ZPPaymentSteps.OrderStep_GetAppInfo,
-                ZPPaymentSteps.OrderStepResult_None, 0, pTransType, 0, 0, 0, ordersource,
+                ZPPaymentSteps.OrderStepResult_None, -1, pTransType, -1, 0, 0, ordersource,
                 System.currentTimeMillis(), System.currentTimeMillis(), "", 0);
     }
 
