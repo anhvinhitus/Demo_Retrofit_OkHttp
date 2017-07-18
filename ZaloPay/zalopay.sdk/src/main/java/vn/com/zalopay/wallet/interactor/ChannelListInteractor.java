@@ -11,6 +11,7 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
@@ -21,6 +22,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
+import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
@@ -93,6 +95,11 @@ public class ChannelListInteractor {
         String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         long currentTime = System.currentTimeMillis();
         UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        if (userInfo == null) {
+            Timber.w("user info is null - show warning to user");
+            loadInfoError(new RequestException(-1, "Dữ liệu người dùng không hợp lệ. Vui lòng thử lại!"));
+            return;
+        }
         Observable<AppInfo> appInfoObservable = mAppInfoInteractor.loadAppInfo(
                 mPaymentInfoHelper.getAppId(),
                 new int[]{mPaymentInfoHelper.getTranstype()},
