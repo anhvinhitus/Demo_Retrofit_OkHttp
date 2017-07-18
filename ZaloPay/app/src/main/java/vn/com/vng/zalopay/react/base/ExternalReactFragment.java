@@ -80,6 +80,7 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
     }
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
+    private static final int RECHARGE_MONEY_PHONE_V2_APP_ID = 61;
 
     private String mComponentName;
 
@@ -230,7 +231,7 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
 
     private void buildLaunchOptions(Bundle launchOption) {
         if (mAppResource != null) {
-            if (mAppResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
+            if (mAppResource.appid == RECHARGE_MONEY_PHONE_APP_ID || mAppResource.appid == RECHARGE_MONEY_PHONE_V2_APP_ID) {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
             } else if (mAppResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
                 launchOption.putString("url", BuildConfig.APP22_URL);
