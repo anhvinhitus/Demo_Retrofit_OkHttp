@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 public class PaymentApplicationActivity extends UserReactBasedActivity {
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
+    private static final int RECHARGE_MONEY_PHONE_V2_APP_ID = 61;
 
     private String mComponentName;
 
@@ -123,7 +124,7 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
 
     private void buildLaunchOptions(Bundle launchOption) {
         if (appResource != null) {
-            if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
+            if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID|| appResource.appid == RECHARGE_MONEY_PHONE_V2_APP_ID) {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
             } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
                 launchOption.putString("url", BuildConfig.APP22_URL);
