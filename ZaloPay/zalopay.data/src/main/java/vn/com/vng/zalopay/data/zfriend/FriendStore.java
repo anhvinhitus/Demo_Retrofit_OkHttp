@@ -30,28 +30,7 @@ public interface FriendStore {
 
         void putZaloUser(List<ZaloUserEntity> val);
 
-        @NonNull
-        List<ZaloUserEntity> getZaloUsers();
-
-        @NonNull
-        List<ZaloUserEntity> getZaloUsers(List<Long> zaloids);
-
-        ZaloUserEntity getZaloUser(long zaloid);
-
-        void putZaloUser(ZaloUserEntity entity);
-
         void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities);
-
-        void putZaloPayUser(ZaloPayUserEntity entity);
-
-        @NonNull
-        List<ZaloPayUserEntity> getZaloPayUsers();
-
-        @NonNull
-        List<ZaloPayUserEntity> getZaloPayUsers(List<String> zalopayids);
-
-        @Nullable
-        ZaloPayUserEntity getZaloPayUserByZaloPayId(String zalopayId);
 
         @Nullable
         ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId);
@@ -68,7 +47,7 @@ public interface FriendStore {
         @NonNull
         List<ZaloUserEntity> getZaloUserWithoutZaloPayId();
 
-        long lastTimeSyncContact();
+        long getLastTimeSyncContact();
 
         void setLastTimeSyncContact(long time);
     }

@@ -3,11 +3,9 @@ package vn.com.vng.zalopay.data.zfriend;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import org.greenrobot.greendao.internal.SqlUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -19,10 +17,10 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.ContactGD;
 import vn.com.vng.zalopay.data.cache.model.ContactGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloProfileGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloProfileGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
@@ -59,48 +57,6 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         }
     }
 
-    @NonNull
-    @Override
-    public List<ZaloUserEntity> getZaloUsers() {
-        List<ZaloProfileGD> list = mZaloUserDao.queryBuilder()
-                .list();
-        Timber.d("get all zalo user size [%s]", list.size());
-        return mDataMapper.transformZaloUserEntity(list);
-    }
-
-    @NonNull
-    @Override
-    public List<ZaloUserEntity> getZaloUsers(List<Long> zaloids) {
-        List<ZaloProfileGD> list = mZaloUserDao.queryBuilder()
-                .where(ZaloProfileGDDao.Properties.ZaloId.in(zaloids))
-                .list();
-        Timber.d("get zalo users from zaloids [%s] resultSize [%s]", zaloids.toArray(), list.size());
-        return mDataMapper.transformZaloUserEntity(list);
-    }
-
-    @Override
-    public ZaloUserEntity getZaloUser(long zaloid) {
-
-        if (zaloid <= 0) {
-            return null;
-        }
-
-        List<ZaloUserEntity> list = getZaloUsers(Collections.singletonList(zaloid));
-        if (Lists.isEmptyOrNull(list)) {
-            return null;
-        }
-        return list.get(0);
-    }
-
-    @Override
-    public void putZaloUser(ZaloUserEntity entity) {
-        Timber.d("Put zalo zaloid [%s] to db", entity == null ? 0 : entity.userId);
-        ZaloProfileGD item = mDataMapper.transform(entity);
-        if (item != null) {
-            mZaloUserDao.insertOrReplaceInTx(item);
-        }
-    }
-
     @Override
     public void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities) {
         Timber.d("Put list zalopay user size [%s]", entities == null ? 0 : entities.size());
@@ -111,57 +67,12 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     }
 
     @Override
-    public void putZaloPayUser(ZaloPayUserEntity entity) {
-        Timber.d("Put zalopay userid [%s] to db", entity == null ? 0 : entity.zaloid);
-        ZaloPayProfileGD item = mDataMapper.transform(entity);
-        if (item != null) {
-            mZaloPayUserDao.insertOrReplaceInTx(item);
-        }
-    }
-
-    @Override
     public void putContacts(List<Contact> contacts) {
         Timber.d("Put list contact size [%s]", contacts == null ? 0 : contacts.size());
         List<ContactGD> list = mDataMapper.transformContact(contacts);
         if (!Lists.isEmptyOrNull(list)) {
             mContactDao.insertOrReplaceInTx(list);
         }
-    }
-
-    @NonNull
-    @Override
-    public List<ZaloPayUserEntity> getZaloPayUsers() {
-        List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder().list();
-        Timber.d("Get zalopay users size [%s]", list.size());
-        return mDataMapper.transformZaloPayUserEntity(list);
-    }
-
-    @NonNull
-    @Override
-    public List<ZaloPayUserEntity> getZaloPayUsers(List<String> zalopayids) {
-        if (Lists.isEmptyOrNull(zalopayids)) {
-            return Collections.emptyList();
-        }
-        List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder()
-                .where(ZaloPayProfileGDDao.Properties.ZaloPayId.in(zalopayids))
-                .orderAsc()
-                .list();
-        return mDataMapper.transformZaloPayUserEntity(list);
-    }
-
-    @Nullable
-    @Override
-    public ZaloPayUserEntity getZaloPayUserByZaloPayId(String zalopayId) {
-        if (TextUtils.isEmpty(zalopayId)) {
-            return null;
-        }
-
-        List<ZaloPayUserEntity> list = getZaloPayUsers(Collections.singletonList(zalopayId));
-        if (Lists.isEmptyOrNull(list)) {
-            return null;
-        }
-
-        return list.get(0);
     }
 
     /**
@@ -210,7 +121,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     }
 
     @Override
-    public long lastTimeSyncContact() {
+    public long getLastTimeSyncContact() {
         return getDataManifest(MANIFEST_LASTTIME_SYNC_CONTACT, 0);
     }
 

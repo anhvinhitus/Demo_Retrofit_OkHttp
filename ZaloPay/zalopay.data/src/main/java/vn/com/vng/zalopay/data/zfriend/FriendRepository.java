@@ -282,7 +282,7 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> syncContact() {
         return Observable.just(FriendConfig.sEnableSyncContact)
                 .filter(Boolean::booleanValue)
-                .map(aBoolean -> mLocalStorage.lastTimeSyncContact())
+                .map(aBoolean -> mLocalStorage.getLastTimeSyncContact())
                 .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= INTERVAL_SYNC_CONTACT)
                 .flatMap(aLong -> beginSync());
     }

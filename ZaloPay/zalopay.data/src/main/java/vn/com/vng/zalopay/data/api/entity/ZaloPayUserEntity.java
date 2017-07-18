@@ -20,10 +20,8 @@ public class ZaloPayUserEntity {
     public String zalopayname;
     @SerializedName("status")
     public long status; // = 1 exist
-
     @SerializedName("displayname")
     public String displayName;
-
     @SerializedName("avatar")
     public String avatar;
 

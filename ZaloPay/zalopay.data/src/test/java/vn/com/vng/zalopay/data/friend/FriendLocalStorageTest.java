@@ -10,6 +10,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.ApplicationTestCase;
@@ -98,25 +99,6 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
             ret.add(createContact("contact" + i, PHONE_START + i));
         }
         return ret;
-    }
-
-
-    @Test
-    public void insertZaloPay() {
-        List<ZaloPayUserEntity> entry = listZaloPayProfile();
-        mFriendLocalStorage.putZaloPayUser(entry);
-        List<ZaloPayUserEntity> result = mFriendLocalStorage.getZaloPayUsers();
-        System.out.println(String.format("entry %s result %s", entry.size(), result.size()));
-        Assert.assertTrue(entry.equals(result));
-    }
-
-    @Test
-    public void insertZalo() {
-        List<ZaloUserEntity> entry = listZaloProfile();
-        mFriendLocalStorage.putZaloUser(entry);
-        List<ZaloUserEntity> result = mFriendLocalStorage.getZaloUsers();
-        System.out.println(String.format("entry %s result %s", entry.size(), result.size()));
-        Assert.assertTrue(entry.equals(result));
     }
 
     @Test
@@ -225,9 +207,9 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
         Contact contact = createContact(nameInContact, phone);
 
-        mFriendLocalStorage.putZaloUser(zalo);
-        mFriendLocalStorage.putZaloPayUser(zaloPay);
-        mFriendLocalStorage.putContacts(Arrays.asList(contact));
+        mFriendLocalStorage.putZaloUser(Collections.singletonList(zalo));
+        mFriendLocalStorage.putZaloPayUser(Collections.singletonList(zaloPay));
+        mFriendLocalStorage.putContacts(Collections.singletonList(contact));
 
         Cursor cursor = mFriendLocalStorage.searchZaloFriendList("hieu", true);
 
