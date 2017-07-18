@@ -1,5 +1,10 @@
-Zalo Pay (Sandbox v2.16.0 - build 343) - Released on 2017-07-18 09:03
-+ [Tracking] Log thêm case lỗi api HttpEmptyResponseException và HttpException by vo van chuc (#8bbd9fd)
-+ [SDK] Tách riêng mess theo loại Exception by vo van chuc (#f3e5f97)
-+ [SDK] task#702: Lỗi truy xuất danh sách channel NULL by lytm (#fb20ffa)
-+ [SDK] task#690:  Chuyển các popup (ds ngân hàng hỗ trợ, chọn tài khoản đã liên kết) sang dùng DialogFragment by lytm (#832ea8c)
+Zalo Pay (Sandbox v2.16.0 - build 344) - Released on 2017-07-18 17:03
++ [SDK] Update popup Card Support by lytm (#6598712)
++ [Friend] Refactor code by hieuvm (#d4430fa)
++ [SDK] VCB : Warning hạn mức trước khi show popup yêu cầu liên kết khi thanh toán by vo van chuc (#f93a44a)
++ [React] Send user phone number to app 61 by khattn (#81862a7)
++ [SDK] task#699 : Crash userinfo NULL trong ChannelListInteractor by vo van chuc (#f8ec645)
++ [AppTransId] Update default value transid to -1L by vo van chuc (#2ac35c8)
++ [SDK] Không show dialog confirm thoát nếu không có kênh giao dịch nào được hỗ trợ by vo van chuc (#fc3361c)
++ [React] Send user phone number to app 61 by khattn (#ca54998)
++ [Friend] Clean unused by hieuvm (#e59cb75)
