@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
@@ -75,7 +76,11 @@ public class MapBankDialogFragment extends BaseDialogFragment {
     @Override
     protected int getWidthLayout() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        return (int) (metrics.widthPixels * 0.80);
+        float percentWitdh = getResources().getInteger(R.integer.dialog_percent_ondefault);
+        if (SdkUtils.isTablet(getActivity().getApplicationContext())) {
+            percentWitdh = getResources().getInteger(R.integer.dialog_percent_ontablet);
+        }
+        return (int)  (metrics.widthPixels * percentWitdh / 100);
     }
 
     @Override
