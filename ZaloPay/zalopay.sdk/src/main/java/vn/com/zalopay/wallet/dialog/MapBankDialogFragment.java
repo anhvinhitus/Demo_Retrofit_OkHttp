@@ -25,10 +25,8 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
@@ -38,6 +36,11 @@ import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 
+import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter.ItemType.MAP;
 
 /**
@@ -58,15 +61,14 @@ public class MapBankDialogFragment extends BaseDialogFragment {
     private EventBus mBus;
     private WeakReference<ZPWResultCallBackListener> mZPZpwResultCallBackListener;
 
-    public void setDialogListener(ZPWResultCallBackListener pListener) {
+    private void setDialogListener(ZPWResultCallBackListener pListener) {
         mZPZpwResultCallBackListener = new WeakReference<>(pListener);
     }
 
-    @Override
-    protected MapBankDialogFragment newInstance() {
-        Bundle args = new Bundle();
+    public static BaseDialogFragment newInstance(Bundle args, ZPWResultCallBackListener pListener) {
         MapBankDialogFragment fragment = new MapBankDialogFragment();
         fragment.setArguments(args);
+        fragment.setDialogListener(pListener);
         return fragment;
     }
 
@@ -76,21 +78,17 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         return (int) (metrics.widthPixels * 0.80);
     }
 
-    public void setContent(String btnCloseTxt, double pOrderAmount) {
-        mCloseButtonText = btnCloseTxt;
-        mBankCode = CardType.PVCB;
-        orderAmount = pOrderAmount;
+    @Override
+    protected void getArgument() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mCloseButtonText = bundle.getString(BUTTON_LEFT_TEXT_EXTRA);
+            mBankCode = bundle.getString(BANKCODE_EXTRA);
+            mCardNumber = bundle.getString(CARDNUMBER_EXTRA);
+            mContent = bundle.getString(NOTICE_CONTENT_EXTRA);
+            orderAmount = bundle.getDouble(AMOUNT_EXTRA);
+        }
     }
-
-    public void setContent(String cardNumber, String btnCloseTxt, double pOrderAmount) {
-        mCardNumber = cardNumber;
-        mCloseButtonText = btnCloseTxt;
-        mBankCode = CardType.PBIDV;
-        orderAmount = pOrderAmount;
-        mContent = GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment);
-    }
-
-
     @Override
     protected void initData() {
         try {
@@ -173,6 +171,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
             this.mContentTextView.setText(RenderHelper.getHtml(mContent));
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
@@ -265,4 +264,5 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         super.onStop();
         mBus.unregister(this);
     }
+
 }

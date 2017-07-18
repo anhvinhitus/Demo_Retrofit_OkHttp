@@ -43,6 +43,7 @@ import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -63,8 +64,13 @@ import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
+import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.API;
+import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
+import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
+import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
@@ -653,13 +659,22 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         if (!isBIDVBank) {
-            getView().showMapBankDialog(mPaymentInfoHelper.getAmountTotal(), resultCallBackListener);
+            Bundle bundle = new Bundle();
+            bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
+            bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
+            bundle.putString(BANKCODE_EXTRA, CardType.PVCB);
+            getView().showMapBankDialog(bundle, resultCallBackListener);
         } else {
             if (getAdapter().getGuiProcessor() != null) {
-                getView().showMapBankBIDVDialog(getAdapter().getGuiProcessor().getCardNumber(), mPaymentInfoHelper.getAmountTotal(), resultCallBackListener);
+                Bundle bundle = new Bundle();
+                bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
+                bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
+                bundle.putString(BANKCODE_EXTRA, CardType.PBIDV);
+                bundle.putString(CARDNUMBER_EXTRA, getAdapter().getGuiProcessor().getCardNumber());
+                bundle.putString(NOTICE_CONTENT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment));
+                getView().showMapBankDialog(bundle, resultCallBackListener);
             }
         }
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

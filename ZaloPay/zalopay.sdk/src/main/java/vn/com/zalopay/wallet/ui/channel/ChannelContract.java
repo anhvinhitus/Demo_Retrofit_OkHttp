@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.ui.channel;
 
+import android.os.Bundle;
+
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
@@ -65,8 +67,6 @@ public interface ChannelContract extends IContract {
 
         void showMaintenanceServiceDialog(String message);
 
-        void showMapBankDialog(Double pOrderAmount,ZPWResultCallBackListener pZpwResultCallBackListener);
-
-        void showMapBankBIDVDialog(String pCardNumbe,Double pOrderAmount,ZPWResultCallBackListener pZpwResultCallBackListener);
+        void showMapBankDialog(Bundle args, ZPWResultCallBackListener pZpwResultCallBackListener);
     }
 }

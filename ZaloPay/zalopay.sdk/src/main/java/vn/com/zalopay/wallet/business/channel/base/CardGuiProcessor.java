@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
@@ -24,6 +23,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -52,13 +52,15 @@ import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.BankListDialogFragment;
+import vn.com.zalopay.wallet.dialog.CardSupportHelper;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
+import vn.com.zalopay.wallet.view.adapter.BankSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
-import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -78,7 +80,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public final String VERTICAL_SEPERATOR = " ";
     protected Context mContext;
     protected WeakReference<AdapterBase> mAdapter;
-    protected CardSupportAdapter cardSupportGridViewAdapter;
+    protected BankSupportAdapter mBankSupportAdapter;
     protected ScrollView mScrollViewRoot;
     protected View mLayoutSwitch;
     protected int mLengthBeforeChange;
@@ -1145,7 +1147,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public void dispose() {
         mCardAdapter = null;
-        cardSupportGridViewAdapter = null;
+        mBankSupportAdapter = null;
         if (mWebView != null) {
             mWebView.getCCWebViewClient().dispose();
             mWebView.release();
@@ -1414,12 +1416,23 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void showSupportCardList() throws Exception {
-        if (cardSupportGridViewAdapter == null) {
-            cardSupportGridViewAdapter = CardSupportAdapter.createAdapterProxy(isATMChannel(), mPaymentInfoHelper.getTranstype());
-        }
+        mBankSupportAdapter = new BankSupportAdapter(getAdapter().getActivity());
         BankListDialogFragment dialog = new BankListDialogFragment();
-        dialog.setAdapter(cardSupportGridViewAdapter);
+        dialog.setAdapter(mBankSupportAdapter);
+        mBankSupportAdapter.insertItems(getListCardSupport(isATMChannel()));
+        getAdapter().getPresenter();
         dialog.show(getAdapter().getActivity().getFragmentManager(), BankListDialogFragment.TAG);
+    }
+
+    public ArrayList<String> getListCardSupport(boolean isATMChannel) {
+        if (mPaymentInfoHelper != null) {
+            if (mPaymentInfoHelper.getTranstype() == TransactionType.LINK) {
+                return CardSupportHelper.getLinkCardSupport();
+            } else {
+                return isATMChannel ? CardSupportHelper.getLocalBankSupport() : CardSupportHelper.getCardSupport();
+            }
+        }
+        return null;
     }
 
     public View.OnClickListener getOnQuestionIconClick() {

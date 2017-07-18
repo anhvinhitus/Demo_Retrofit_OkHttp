@@ -27,20 +27,17 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/text_color_bold" />
 
-    <GridView
-        android:id="@+id/gridViewCard"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/line"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line"
         android:layout_below="@+id/cardsupport_label"
         android:layout_margin="@dimen/zpw_card_support_bank_padding"
+        android:layout_marginBottom="13dp"
         android:background="@color/white"
-        android:gravity="center"
-        android:horizontalSpacing="@dimen/zpw_card_support_bank_space"
-        android:numColumns="2"
-        android:scrollbars="none"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="@dimen/zpw_card_support_bank_space" />
+        android:scrollbars="none" />
 
     <View
         android:id="@+id/line"
@@ -56,13 +53,13 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="right"
+        android:background="@color/transparent"
         android:gravity="center|bottom"
         android:paddingBottom="@dimen/zpw_padding_button"
         android:paddingLeft="@dimen/zpw_padding_15"
         android:paddingRight="@dimen/zpw_padding_15"
         android:paddingTop="@dimen/zpw_padding_button"
         android:text="@string/dialog_close_button"
-        android:background="@color/transparent"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/color_primary" />
 </RelativeLayout>

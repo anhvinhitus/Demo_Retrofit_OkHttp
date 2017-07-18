@@ -23,9 +23,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     protected abstract int getLayoutSize();
 
-    protected abstract BaseDialogFragment newInstance();
-
     protected abstract int getWidthLayout();
+
+    protected abstract void getArgument();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getArgument();
         initData();
     }
 
