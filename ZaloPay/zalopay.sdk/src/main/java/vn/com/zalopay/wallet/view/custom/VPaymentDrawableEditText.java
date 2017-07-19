@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.validation.CardValidation;

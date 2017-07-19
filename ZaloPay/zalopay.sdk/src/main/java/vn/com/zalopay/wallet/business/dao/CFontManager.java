@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /***
  * class for caching font.

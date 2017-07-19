@@ -6,8 +6,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;

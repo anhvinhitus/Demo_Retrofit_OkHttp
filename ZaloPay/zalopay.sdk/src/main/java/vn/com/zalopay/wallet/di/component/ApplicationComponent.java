@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.di.module.ApiServiceModule;
 import vn.com.zalopay.wallet.di.module.AppInfoRepositoryModule;

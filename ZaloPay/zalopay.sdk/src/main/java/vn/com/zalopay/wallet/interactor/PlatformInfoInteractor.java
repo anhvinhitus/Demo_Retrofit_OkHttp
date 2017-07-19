@@ -22,7 +22,7 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IDownloadService;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;

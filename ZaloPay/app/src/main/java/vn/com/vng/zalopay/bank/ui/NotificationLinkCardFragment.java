@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /**
  * A simple {@link BaseFragment} subclass.

@@ -6,7 +6,7 @@ import android.content.Context;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;

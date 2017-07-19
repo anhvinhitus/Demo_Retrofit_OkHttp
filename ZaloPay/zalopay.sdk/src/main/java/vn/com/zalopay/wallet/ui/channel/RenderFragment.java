@@ -10,7 +10,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -20,7 +19,7 @@ import java.lang.reflect.Field;
 
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.KeyboardType;

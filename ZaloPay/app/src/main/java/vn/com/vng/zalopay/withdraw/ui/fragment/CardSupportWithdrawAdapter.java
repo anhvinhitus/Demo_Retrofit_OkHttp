@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /**
  * Created by longlv on 12/02/16.

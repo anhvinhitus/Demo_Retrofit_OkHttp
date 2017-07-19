@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.dao;
+package vn.com.zalopay.wallet.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -300,19 +300,21 @@ public class SharedPreferencesManager {
     public List<MapCard> getMapCardList(String pUserID) {
         List<MapCard> mappedCardList = new ArrayList<>();
         String keyList = getMapCardKeyList(pUserID);
-        if (!TextUtils.isEmpty(keyList)) {
-            for (String key : keyList.split(Constants.COMMA)) {
-                String strMappedCard = getMap(pUserID, key);
-                if (!TextUtils.isEmpty(strMappedCard)) {
-                    MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
-                    if (mappedCard != null) {
-                        BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(mappedCard.bankcode), BankConfig.class);
-                        if (bankConfig != null) {
-                            mappedCard.displayorder = bankConfig.displayorder;
-                        }
-                        mappedCardList.add(mappedCard);
-                    }
+        if (TextUtils.isEmpty(keyList)) {
+            return mappedCardList;
+        }
+        for (String key : keyList.split(Constants.COMMA)) {
+            String strMappedCard = getMap(pUserID, key);
+            if (TextUtils.isEmpty(strMappedCard)) {
+                continue;
+            }
+            MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
+            if (mappedCard != null) {
+                BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(mappedCard.bankcode), BankConfig.class);
+                if (bankConfig != null) {
+                    mappedCard.displayorder = bankConfig.displayorder;
                 }
+                mappedCardList.add(mappedCard);
             }
         }
         return mappedCardList;
@@ -321,19 +323,21 @@ public class SharedPreferencesManager {
     public List<BankAccount> getBankAccountList(String pUserID) {
         List<BankAccount> bankAccountList = new ArrayList<>();
         String keyList = getBankAccountKeyList(pUserID);
-        if (!TextUtils.isEmpty(keyList)) {
-            for (String key : keyList.split(Constants.COMMA)) {
-                String strMappedCard = getMap(pUserID, key);
-                if (!TextUtils.isEmpty(strMappedCard)) {
-                    BankAccount bankAccount = GsonUtils.fromJsonString(strMappedCard, BankAccount.class);
-                    if (bankAccount != null) {
-                        BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(CardType.PVCB), BankConfig.class);
-                        if (bankConfig != null) {
-                            bankAccount.displayorder = bankConfig.displayorder;
-                        }
-                        bankAccountList.add(bankAccount);
-                    }
+        if (TextUtils.isEmpty(keyList)) {
+            return bankAccountList;
+        }
+        for (String key : keyList.split(Constants.COMMA)) {
+            String sMap = getMap(pUserID, key);
+            if (TextUtils.isEmpty(sMap)) {
+                continue;
+            }
+            BankAccount bankAccount = GsonUtils.fromJsonString(sMap, BankAccount.class);
+            if (bankAccount != null) {
+                BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(CardType.PVCB), BankConfig.class);
+                if (bankConfig != null) {
+                    bankAccount.displayorder = bankConfig.displayorder;
                 }
+                bankAccountList.add(bankAccount);
             }
         }
         return bankAccountList;

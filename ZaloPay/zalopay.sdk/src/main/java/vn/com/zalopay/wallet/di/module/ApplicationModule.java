@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.vng.zalopay.data.cache.MemoryCacheLru;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 @Singleton
 @Module

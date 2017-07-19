@@ -11,9 +11,8 @@ import android.widget.ImageView;
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
 /**
  * Created by lytm on 17/07/2017.

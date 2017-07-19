@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.dao;
+package vn.com.zalopay.wallet.repository;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

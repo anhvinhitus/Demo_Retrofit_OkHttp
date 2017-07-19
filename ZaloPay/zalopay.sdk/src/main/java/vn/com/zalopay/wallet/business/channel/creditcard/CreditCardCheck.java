@@ -6,7 +6,7 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 

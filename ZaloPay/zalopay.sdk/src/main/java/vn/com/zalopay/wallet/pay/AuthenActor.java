@@ -10,7 +10,7 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;

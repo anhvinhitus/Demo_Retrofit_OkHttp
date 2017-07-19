@@ -38,7 +38,7 @@ import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;

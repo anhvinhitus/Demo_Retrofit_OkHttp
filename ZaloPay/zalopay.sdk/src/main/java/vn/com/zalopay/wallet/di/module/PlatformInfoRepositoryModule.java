@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStorage;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
