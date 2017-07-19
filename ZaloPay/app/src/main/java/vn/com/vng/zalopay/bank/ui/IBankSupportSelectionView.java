@@ -14,20 +14,27 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  * Created by datnt10 on 5/25/17.
  */
 
-public interface IBankSupportSelectionView {
+interface IBankSupportSelectionView {
     Activity getActivity();
 
     Context getContext();
 
-    void fetchListBank(List<ZPBank> cardSupportList);
-
-    void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
+    void setData(List<ZPBank> banks);
 
     void showLoading();
 
     void hideLoading();
 
+    void showError(String message);
+
     void showMessageDialog(String message, ZPWOnEventDialogListener closeDialogListener);
 
     void showDialogThenClose(String content, String title, int dialogType);
+
+    void showConfirmDialog(String pMessage,
+                           String pOKButton,
+                           String pCancelButton,
+                           ZPWOnEventConfirmDialogListener callback);
+
+    void showNetworkErrorDialog();
 }

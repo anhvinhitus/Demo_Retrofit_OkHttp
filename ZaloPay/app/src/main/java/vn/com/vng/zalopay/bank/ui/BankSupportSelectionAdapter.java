@@ -11,8 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,14 +25,26 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  */
 
 final class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankSupportSelectionAdapter.ViewHolder> {
-    private OnClickBankSupportListener listener;
+
+    interface OnClickBankSupportListener {
+        void onClickBankSupport(ZPBank card);
+    }
+
+    OnClickBankSupportListener listener;
+
+    BankSupportSelectionAdapter(Context context, OnClickBankSupportListener listener) {
+        super(context);
+        this.listener = listener;
+    }
+
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {
 
             ZPBank card = getItem(position);
+
             if (listener != null && card != null) {
-                listener.onClickBankSupportListener(card, position);
+                listener.onClickBankSupport(card);
             }
         }
 
@@ -44,16 +54,6 @@ final class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankS
         }
     };
 
-    BankSupportSelectionAdapter(Context context, OnClickBankSupportListener listener) {
-        super(context);
-        this.listener = listener;
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(mInflater.inflate(R.layout.row_bank_support_selection, parent, false), mOnItemClickListener);
@@ -62,47 +62,21 @@ final class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankS
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ZPBank item = getItem(position);
-        holder.bindView(item, position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return super.getItemCount();
-    }
-
-    @Override
-    public void insertItems(List<ZPBank> items) {
-        if (items == null || items.isEmpty()) return;
-        synchronized (_lock) {
-            for (ZPBank item : items) {
-                if (!exist(item)) {
-                    insert(item);
-                }
-            }
+        if (item != null) {
+            holder.bindView(item);
         }
-        notifyDataSetChanged();
-    }
-
-    private boolean exist(ZPBank item) {
-        List<ZPBank> list = getItems();
-        return list.indexOf(item) >= 0;
-    }
-
-    interface OnClickBankSupportListener {
-        void onClickBankSupportListener(ZPBank card, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.row_bank_support_selection_iv_logo)
         SimpleDraweeView mLogoView;
         @BindView(R.id.row_bank_support_selection_iv_next)
-        ImageView ivNext;
+        View ivNext;
         @BindView(R.id.row_bank_support_selection_tv_bank_name)
         TextView tvBankName;
         @BindView(R.id.row_bank_support_selection_tv_bank_maintain)
         TextView tvBankMaintain;
-        @BindView(R.id.row_bank_support_selection_dash_line)
-        View mDashLine;
+
         private OnItemClickListener listener;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
@@ -118,16 +92,7 @@ final class BankSupportSelectionAdapter extends AbsRecyclerAdapter<ZPBank, BankS
             }
         }
 
-        void bindView(ZPBank card, int position) {
-            if (card == null) {
-                mLogoView.setVisibility(View.GONE);
-                return;
-            }
-
-            if (getItemCount() == (position + 1)) {
-                mDashLine.setVisibility(View.GONE);
-            }
-
+        void bindView(ZPBank card) {
             mLogoView.setImageURI(ResourceManager.getAbsoluteImagePath(card.bankLogo));
             mLogoView.setVisibility(View.VISIBLE);
             tvBankName.setText(card.bankName);

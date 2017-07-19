@@ -1,0 +1,89 @@
+<vn.com.vng.zalopay.bank.list.BankCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/link.card.height"
+    app:show_mode="pull_out"
+    app:rightEdgeSwipeOffset="140dp"
+    >
+
+    <!-- Your secondary layout here -->
+    <FrameLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/red">
+
+        <com.zalopay.ui.widget.IconFontTextView
+            android:id="@+id/deleteView"
+            style="@style/HomePage.Title"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:drawablePadding="@dimen/spacing.small"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            app:iconTopColor="@color/white"
+            app:iconTopName="@string/general_delete_card"
+            app:iconTopSize="@dimen/font_size_delete"/>
+
+    </FrameLayout>
+
+    <!-- Your main layout here -->
+    <FrameLayout
+        android:id="@+id/foreground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <FrameLayout
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_link_card">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginEnd="6dp"
+                android:layout_marginRight="6dp"
+                android:adjustViewBounds="true"
+                android:contentDescription=""
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_map_card"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/iv_logo"
+                style="@style/NormalDraweeView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                app:actualImageScaleType="centerInside"/>
+
+            <com.zalopay.ui.widget.textview.FontTextView
+                android:id="@+id/tv_num_acc"
+                style="@style/TextView.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="82dp"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="4"
+                android:shadowRadius="4"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize.card.number"
+                android:textStyle="normal"
+                app:typefaceAsset="ocr-a-tribute"
+                tools:text="*** 0014"/>
+        </FrameLayout>
+    </FrameLayout>
+</vn.com.vng.zalopay.bank.list.BankCardView>

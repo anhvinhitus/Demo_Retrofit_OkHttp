@@ -17,6 +17,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
@@ -28,16 +29,25 @@ import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 public class CShareDataWrapper {
 
-    private static List<MapCard> detectCCCard(List<MapCard> dMappedCards, User user) {
+    private static List<MapCard> detectCCCard(List<MapCard> dMappedCards) {
         if (Lists.isEmptyOrNull(dMappedCards)) {
             return Collections.emptyList();
         }
         for (MapCard bankCard : dMappedCards) {
             if (BuildConfig.CC_CODE.equalsIgnoreCase(bankCard.bankcode)) {
-                bankCard.bankcode = BankUtils.detectCCCard(bankCard.getFirstNumber(), user);
+                bankCard.bankcode = detectCCCard(bankCard.getFirstNumber());
             }
         }
         return dMappedCards;
+    }
+
+    public static String detectCCCard(String first6CardNo) {
+        try {
+            return CShareDataWrapper.detectCardType(first6CardNo);
+        } catch (Exception e) {
+            Timber.w(e, "detectCardType exception [%s]", e.getMessage());
+        }
+        return CardType.UNDEFINE;
     }
 
     public static List<MapCard> getMappedCardList(User user) {
@@ -46,7 +56,7 @@ public class CShareDataWrapper {
         }
         List<MapCard> mapCards = SDKApplication.getApplicationComponent()
                 .linkInteractor().getMapCardList(user.zaloPayId);
-        return detectCCCard(mapCards, user);
+        return detectCCCard(mapCards);
     }
 
     public static List<BankAccount> getMapBankAccountList(User user) {
@@ -58,7 +68,7 @@ public class CShareDataWrapper {
                 .getBankAccountList(user.zaloPayId);
     }
 
-    public static String detectCardType(UserInfo userInfo, String first6CardNo) {
+    public static String detectCardType(String first6CardNo) {
         return CShareData.getInstance().detectCardType(first6CardNo);
     }
 

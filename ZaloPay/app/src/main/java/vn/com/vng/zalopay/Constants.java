@@ -115,6 +115,11 @@ public interface Constants {
  /*   public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/
 
+    interface LinkBank {
+        int LINK_CARD = 1;
+        int LINK_ACCOUNT = 2;
+    }
+
     enum TransferMode {
         TransferToZaloPayID,
         TransferToZaloFriend,

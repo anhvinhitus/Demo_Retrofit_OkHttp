@@ -13,8 +13,7 @@
         android:layout_height="36dp"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/spacing.medium.s"
-        android:layout_marginStart="@dimen/spacing.medium.s"
+        android:layout_margin="12dp"
         android:scaleType="centerInside"
         app:actualImageScaleType="centerInside"
         app:failureImageScaleType="centerInside"
@@ -22,9 +21,8 @@
 
     <LinearLayout
         android:id="@+id/row_bank_support_selection_ll_bank_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="14dp"
         android:layout_toRightOf="@+id/row_bank_support_selection_iv_logo"
         android:gravity="center_vertical"
         android:orientation="vertical">
@@ -46,7 +44,7 @@
             android:visibility="gone"/>
     </LinearLayout>
 
-    <ImageView
+    <com.zalopay.ui.widget.IconFont
         android:id="@+id/row_bank_support_selection_iv_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,15 +53,8 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/spacing.medium.s"
         android:layout_marginRight="@dimen/spacing.medium.s"
-        android:src="@drawable/ic_arrow_right"/>
-
-    <View
-        android:id="@+id/row_bank_support_selection_dash_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignLeft="@+id/row_bank_support_selection_ll_bank_name"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/row_bank_support_selection_ll_bank_name"
-        android:background="@color/separate"/>
+        android:textColor="@color/arrow_right"
+        app:iconName="@string/general_arrowright"
+        app:iconSize="@dimen/font_size_arrow_right"/>
 </RelativeLayout>
 

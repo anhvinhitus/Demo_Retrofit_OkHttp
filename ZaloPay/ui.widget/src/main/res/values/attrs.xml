@@ -2,77 +2,77 @@
 <resources>
 
     <declare-styleable name="SwipeMenuLayout">
-        <attr name="leftViewId" format="reference" />
-        <attr name="rightViewId" format="reference" />
-        <attr name="contentViewId" format="reference" />
+        <attr name="leftViewId" format="reference"/>
+        <attr name="rightViewId" format="reference"/>
+        <attr name="contentViewId" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="IconFont">
-        <attr name="iconName" format="string" />
+        <attr name="iconName" format="string"/>
         <attr name="iconDefault" format="string"/>
-        <attr name="iconSize" format="dimension" />
+        <attr name="iconSize" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="IconFontTextView">
-        <attr name="iconLeftName" format="string" />
-        <attr name="iconLeftSize" format="dimension" />
-        <attr name="iconLeftColor" format="color" />
-        <attr name="iconRightName" format="string" />
-        <attr name="iconRightSize" format="dimension" />
-        <attr name="iconRightColor" format="color" />
-        <attr name="iconTopName" format="string" />
-        <attr name="iconTopSize" format="dimension" />
-        <attr name="iconTopColor" format="color" />
-        <attr name="iconBottomName" format="string" />
-        <attr name="iconBottomSize" format="dimension" />
-        <attr name="iconBottomColor" format="color" />
+        <attr name="iconLeftName" format="string"/>
+        <attr name="iconLeftSize" format="dimension"/>
+        <attr name="iconLeftColor" format="color"/>
+        <attr name="iconRightName" format="string"/>
+        <attr name="iconRightSize" format="dimension"/>
+        <attr name="iconRightColor" format="color"/>
+        <attr name="iconTopName" format="string"/>
+        <attr name="iconTopSize" format="dimension"/>
+        <attr name="iconTopColor" format="color"/>
+        <attr name="iconBottomName" format="string"/>
+        <attr name="iconBottomSize" format="dimension"/>
+        <attr name="iconBottomColor" format="color"/>
     </declare-styleable>
 
     <!--ATTR DEFAULT APPLICATION-->
-    <attr name="selector" format="reference|color" />
-    <attr name="background.default" format="reference|color" />
-    <attr name="separate" format="reference|color" />
-    <attr name="separate.height" format="dimension" />
+    <attr name="selector" format="reference|color"/>
+    <attr name="background.default" format="reference|color"/>
+    <attr name="separate" format="reference|color"/>
+    <attr name="separate.height" format="dimension"/>
 
     <declare-styleable name="TintableImageView">
-        <attr name="tint" format="reference|color" />
+        <attr name="tint" format="reference|color"/>
     </declare-styleable>
 
     <declare-styleable name="PinEntryView">
         <!-- The number of digits in the pin -->
-        <attr name="numDigits" format="integer" />
+        <attr name="numDigits" format="integer"/>
         <!-- Digit dimensions, default 50dp x2 50dp -->
-        <attr name="digitWidth" format="dimension" />
-        <attr name="digitHeight" format="dimension" />
+        <attr name="digitWidth" format="dimension"/>
+        <attr name="digitHeight" format="dimension"/>
         <!-- Spacing between the pin boxes, default 20dp -->
-        <attr name="digitSpacing" format="dimension" />
+        <attr name="digitSpacing" format="dimension"/>
         <!-- Digit background, colour or drawable -->
-        <attr name="digitBackground" format="reference|color" />
+        <attr name="digitBackground" format="reference|color"/>
         <!-- Digit Focused background, colour or drawable -->
-        <attr name="digitFocusedBackground" format="reference|color" />
+        <attr name="digitFocusedBackground" format="reference|color"/>
         <!-- Font size to use for the mask text, default 15sp -->
-        <attr name="digitTextSize" format="dimension" />
+        <attr name="digitTextSize" format="dimension"/>
         <!-- Colour of the mask text, defaults to theme textColorPrimary -->
-        <attr name="digitTextColor" format="color" />
+        <attr name="digitTextColor" format="color"/>
         <!-- Digit elevation (API 21+ only), default 0dp -->
-        <attr name="digitElevation" format="dimension" />
+        <attr name="digitElevation" format="dimension"/>
         <!-- The character to use to mask the input -->
-        <attr name="pinMask" format="string" />
+        <attr name="pinMask" format="string"/>
         <!-- Accent color, defaults to theme colorAccent -->
-        <attr name="pinAccentColor" format="color" />
+        <attr name="pinAccentColor" format="color"/>
         <!-- Accent width, default 3dp -->
-        <attr name="accentWidth" format="dimension" />
+        <attr name="accentWidth" format="dimension"/>
         <!-- Accent type, default 'character' -->
         <attr name="accentType" format="enum">
-            <enum name="none" value="0" />
-            <enum name="all" value="1" />
-            <enum name="character" value="2" />
+            <enum name="none" value="0"/>
+            <enum name="all" value="1"/>
+            <enum name="character" value="2"/>
         </attr>
     </declare-styleable>
 
     <declare-styleable name="FrameLayoutBounded">
-        <attr name="maxWidth" format="dimension" />
-        <attr name="maxHeight" format="dimension" />
+        <attr name="maxWidth" format="dimension"/>
+        <attr name="maxHeight" format="dimension"/>
     </declare-styleable>
 
 
@@ -80,11 +80,11 @@
 
         <!-- indicator visibility -->
         <attr name="indicator_visibility" format="enum">
-            <enum name="visible" value="0" />
-            <enum name="invisible" value="1" />
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
         </attr>
 
-        <attr name="auto_cycle" format="boolean" />
+        <attr name="auto_cycle" format="boolean"/>
 
         <!-- page animation -->
         <attr name="pager_animation" format="enum">
@@ -107,373 +107,391 @@
         </attr>
 
         <!-- page animation time span -->
-        <attr name="pager_animation_span" format="integer" />
+        <attr name="pager_animation_span" format="integer"/>
 
-        <attr name="content_background_color" format="color" />
-        <attr name="content_height" format="dimension" />
+        <attr name="content_background_color" format="color"/>
+        <attr name="content_height" format="dimension"/>
 
     </declare-styleable>
 
     <declare-styleable name="PagerIndicator">
         <!-- indicator visibility -->
         <attr name="visibility" format="enum">
-            <enum name="visible" value="0" />
-            <enum name="invisible" value="1" />
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
         </attr>
 
         <attr name="shape" format="enum">
-            <enum name="oval" value="0" />
-            <enum name="rect" value="1" />
+            <enum name="oval" value="0"/>
+            <enum name="rect" value="1"/>
         </attr>
 
-        <attr name="selected_color" format="color" />
-        <attr name="unselected_color" format="color" />
+        <attr name="selected_color" format="color"/>
+        <attr name="unselected_color" format="color"/>
 
         <!-- indicator style -->
-        <attr name="selected_drawable" format="reference" />
-        <attr name="unselected_drawable" format="reference" />
+        <attr name="selected_drawable" format="reference"/>
+        <attr name="unselected_drawable" format="reference"/>
 
-        <attr name="selected_width" format="dimension" />
-        <attr name="selected_height" format="dimension" />
+        <attr name="selected_width" format="dimension"/>
+        <attr name="selected_height" format="dimension"/>
 
-        <attr name="unselected_width" format="dimension" />
-        <attr name="unselected_height" format="dimension" />
+        <attr name="unselected_width" format="dimension"/>
+        <attr name="unselected_height" format="dimension"/>
 
-        <attr name="padding_left" format="dimension" />
-        <attr name="padding_right" format="dimension" />
-        <attr name="padding_top" format="dimension" />
-        <attr name="padding_bottom" format="dimension" />
+        <attr name="padding_left" format="dimension"/>
+        <attr name="padding_right" format="dimension"/>
+        <attr name="padding_top" format="dimension"/>
+        <attr name="padding_bottom" format="dimension"/>
 
-        <attr name="selected_padding_left" format="dimension" />
-        <attr name="selected_padding_right" format="dimension" />
-        <attr name="selected_padding_top" format="dimension" />
-        <attr name="selected_padding_bottom" format="dimension" />
+        <attr name="selected_padding_left" format="dimension"/>
+        <attr name="selected_padding_right" format="dimension"/>
+        <attr name="selected_padding_top" format="dimension"/>
+        <attr name="selected_padding_bottom" format="dimension"/>
 
-        <attr name="unselected_padding_left" format="dimension" />
-        <attr name="unselected_padding_right" format="dimension" />
-        <attr name="unselected_padding_top" format="dimension" />
-        <attr name="unselected_padding_bottom" format="dimension" />
+        <attr name="unselected_padding_left" format="dimension"/>
+        <attr name="unselected_padding_right" format="dimension"/>
+        <attr name="unselected_padding_top" format="dimension"/>
+        <attr name="unselected_padding_bottom" format="dimension"/>
 
 
     </declare-styleable>
 
     <declare-styleable name="Themes">
-        <attr name="SliderStyle" format="reference" />
-        <attr name="PagerIndicatorStyle" format="reference" />
+        <attr name="SliderStyle" format="reference"/>
+        <attr name="PagerIndicatorStyle" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="RecipientEditTextView">
         <attr name="avatarPosition">
-            <enum name="end" value="0" />
-            <enum name="start" value="1" />
+            <enum name="end" value="0"/>
+            <enum name="start" value="1"/>
         </attr>
-        <attr name="chipBackground" format="reference" />
-        <attr name="chipBackgroundPressed" format="reference" />
-        <attr name="chipDelete" format="reference" />
-        <attr name="chipFontSize" format="reference" />
-        <attr name="chipHeight" format="reference" />
-        <attr name="chipPadding" format="reference" />
-        <attr name="disableDelete" format="boolean" />
-        <attr name="invalidChipBackground" format="reference" />
+        <attr name="chipBackground" format="reference"/>
+        <attr name="chipBackgroundPressed" format="reference"/>
+        <attr name="chipDelete" format="reference"/>
+        <attr name="chipFontSize" format="reference"/>
+        <attr name="chipHeight" format="reference"/>
+        <attr name="chipPadding" format="reference"/>
+        <attr name="disableDelete" format="boolean"/>
+        <attr name="invalidChipBackground" format="reference"/>
         <attr name="imageSpanAlignment">
-            <enum name="bottom" value="0" />
-            <enum name="baseline" value="1" />
+            <enum name="bottom" value="0"/>
+            <enum name="baseline" value="1"/>
         </attr>
     </declare-styleable>
 
     <declare-styleable name="PxBlurringView">
-        <attr name="blurRadius" format="integer" />
-        <attr name="downsampleFactor" format="integer" />
-        <attr name="overlayColor" format="color" />
+        <attr name="blurRadius" format="integer"/>
+        <attr name="downsampleFactor" format="integer"/>
+        <attr name="overlayColor" format="color"/>
     </declare-styleable>
 
 
     <declare-styleable name="HoloCircularProgressBar">
-        <attr name="stroke_width" format="dimension" />
-        <attr name="progress" format="float" />
-        <attr name="marker_progress" format="float" />
-        <attr name="progress_color" format="color" />
-        <attr name="progress_background_color" format="color" />
-        <attr name="thumb_visible" format="boolean" />
-        <attr name="marker_visible" format="boolean" />
-        <attr name="android:gravity" />
+        <attr name="stroke_width" format="dimension"/>
+        <attr name="progress" format="float"/>
+        <attr name="marker_progress" format="float"/>
+        <attr name="progress_color" format="color"/>
+        <attr name="progress_background_color" format="color"/>
+        <attr name="thumb_visible" format="boolean"/>
+        <attr name="marker_visible" format="boolean"/>
+        <attr name="android:gravity"/>
     </declare-styleable>
 
-    <attr name="circularProgressBarStyle" format="reference" />
+    <attr name="circularProgressBarStyle" format="reference"/>
 
 
     <declare-styleable name="CurvedText">
-        <attr name="text" format="string" />
+        <attr name="text" format="string"/>
         <attr name="valign" format="enum">
-            <enum name="top" value="0" />
-            <enum name="bottom" value="1" />
+            <enum name="top" value="0"/>
+            <enum name="bottom" value="1"/>
         </attr>
-        <attr name="textSize" format="dimension" />
+        <attr name="textSize" format="dimension"/>
     </declare-styleable>
 
 
     <declare-styleable name="RoundTextView">
-        <attr name="rv_backgroundColor" format="color" />
-        <attr name="rv_backgroundPressColor" format="color" />
-        <attr name="rv_cornerRadius" format="dimension" />
-        <attr name="rv_strokeWidth" format="dimension" />
-        <attr name="rv_strokeColor" format="color" />
-        <attr name="rv_strokePressColor" format="color" />
-        <attr name="rv_textPressColor" format="color" />
-        <attr name="rv_isRadiusHalfHeight" format="boolean" />
-        <attr name="rv_isWidthHeightEqual" format="boolean" />
-        <attr name="rv_cornerRadius_TL" format="dimension" />
-        <attr name="rv_cornerRadius_TR" format="dimension" />
-        <attr name="rv_cornerRadius_BL" format="dimension" />
-        <attr name="rv_cornerRadius_BR" format="dimension" />
-        <attr name="rv_isRippleEnable" format="boolean" />
+        <attr name="rv_backgroundColor" format="color"/>
+        <attr name="rv_backgroundPressColor" format="color"/>
+        <attr name="rv_cornerRadius" format="dimension"/>
+        <attr name="rv_strokeWidth" format="dimension"/>
+        <attr name="rv_strokeColor" format="color"/>
+        <attr name="rv_strokePressColor" format="color"/>
+        <attr name="rv_textPressColor" format="color"/>
+        <attr name="rv_isRadiusHalfHeight" format="boolean"/>
+        <attr name="rv_isWidthHeightEqual" format="boolean"/>
+        <attr name="rv_cornerRadius_TL" format="dimension"/>
+        <attr name="rv_cornerRadius_TR" format="dimension"/>
+        <attr name="rv_cornerRadius_BL" format="dimension"/>
+        <attr name="rv_cornerRadius_BR" format="dimension"/>
+        <attr name="rv_isRippleEnable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ProgressWheel">
-        <attr name="matProg_progressIndeterminate" format="boolean" />
-        <attr name="matProg_barColor" format="color" />
-        <attr name="matProg_rimColor" format="color" />
-        <attr name="matProg_rimWidth" format="dimension" />
-        <attr name="matProg_spinSpeed" format="float" />
-        <attr name="matProg_barSpinCycleTime" format="integer" />
-        <attr name="matProg_circleRadius" format="dimension" />
-        <attr name="matProg_fillRadius" format="boolean" />
-        <attr name="matProg_barWidth" format="dimension" />
-        <attr name="matProg_linearProgress" format="boolean" />
+        <attr name="matProg_progressIndeterminate" format="boolean"/>
+        <attr name="matProg_barColor" format="color"/>
+        <attr name="matProg_rimColor" format="color"/>
+        <attr name="matProg_rimWidth" format="dimension"/>
+        <attr name="matProg_spinSpeed" format="float"/>
+        <attr name="matProg_barSpinCycleTime" format="integer"/>
+        <attr name="matProg_circleRadius" format="dimension"/>
+        <attr name="matProg_fillRadius" format="boolean"/>
+        <attr name="matProg_barWidth" format="dimension"/>
+        <attr name="matProg_linearProgress" format="boolean"/>
     </declare-styleable>
 
 
     <declare-styleable name="ErrorViewStyle">
-        <attr name="ev_style" format="reference" />
+        <attr name="ev_style" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="ErrorView">
-        <attr name="ev_title" format="string" />
-        <attr name="ev_titleColor" format="color" />
-        <attr name="ev_subtitle" format="string" />
-        <attr name="ev_subtitleColor" format="color" />
-        <attr name="ev_errorImage" format="reference" />
-        <attr name="ev_showTitle" format="boolean" />
-        <attr name="ev_showSubtitle" format="boolean" />
-        <attr name="ev_showRetryButton" format="boolean" />
-        <attr name="ev_retryButtonText" format="string" />
-        <attr name="ev_retryButtonBackground" format="reference" />
-        <attr name="ev_retryButtonTextColor" format="reference|color" />
+        <attr name="ev_title" format="string"/>
+        <attr name="ev_titleColor" format="color"/>
+        <attr name="ev_subtitle" format="string"/>
+        <attr name="ev_subtitleColor" format="color"/>
+        <attr name="ev_errorImage" format="reference"/>
+        <attr name="ev_showTitle" format="boolean"/>
+        <attr name="ev_showSubtitle" format="boolean"/>
+        <attr name="ev_showRetryButton" format="boolean"/>
+        <attr name="ev_retryButtonText" format="string"/>
+        <attr name="ev_retryButtonBackground" format="reference"/>
+        <attr name="ev_retryButtonTextColor" format="reference|color"/>
         <attr name="ev_subtitleAlignment" format="enum">
-            <enum name="left" value="0" />
-            <enum name="center" value="1" />
-            <enum name="right" value="2" />
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
         </attr>
     </declare-styleable>
 
 
     <declare-styleable name="ViewPagerIndicator">
         <!-- Style of the circle indicator. -->
-        <attr name="vpiCirclePageIndicatorStyle" format="reference" />
+        <attr name="vpiCirclePageIndicatorStyle" format="reference"/>
         <!-- Style of the icon indicator's views. -->
-        <attr name="vpiIconPageIndicatorStyle" format="reference" />
+        <attr name="vpiIconPageIndicatorStyle" format="reference"/>
         <!-- Style of the line indicator. -->
-        <attr name="vpiLinePageIndicatorStyle" format="reference" />
+        <attr name="vpiLinePageIndicatorStyle" format="reference"/>
         <!-- Style of the title indicator. -->
-        <attr name="vpiTitlePageIndicatorStyle" format="reference" />
+        <attr name="vpiTitlePageIndicatorStyle" format="reference"/>
         <!-- Style of the tab indicator's tabs. -->
-        <attr name="vpiTabPageIndicatorStyle" format="reference" />
+        <attr name="vpiTabPageIndicatorStyle" format="reference"/>
         <!-- Style of the underline indicator. -->
-        <attr name="vpiUnderlinePageIndicatorStyle" format="reference" />
+        <attr name="vpiUnderlinePageIndicatorStyle" format="reference"/>
     </declare-styleable>
 
-    <attr name="centered" format="boolean" />
-    <attr name="selectedColor" format="color" />
-    <attr name="strokeWidth" format="dimension" />
-    <attr name="unselectedColor" format="color" />
+    <attr name="centered" format="boolean"/>
+    <attr name="selectedColor" format="color"/>
+    <attr name="strokeWidth" format="dimension"/>
+    <attr name="unselectedColor" format="color"/>
 
     <declare-styleable name="CirclePageIndicator">
         <!-- Whether or not the indicators should be centered. -->
-        <attr name="centered" />
+        <attr name="centered"/>
         <!-- Color of the filled circle that represents the current page. -->
-        <attr name="fillColor" format="color" />
+        <attr name="fillColor" format="color"/>
         <!-- Color of the filled circles that represents pages. -->
-        <attr name="pageColor" format="color" />
+        <attr name="pageColor" format="color"/>
         <!-- Orientation of the indicator. -->
-        <attr name="android:orientation" />
+        <attr name="android:orientation"/>
         <!-- Radius of the circles. This is also the spacing between circles. -->
-        <attr name="radius" format="dimension" />
+        <attr name="radius" format="dimension"/>
         <!-- Whether or not the selected indicator snaps to the circles. -->
-        <attr name="snap" format="boolean" />
+        <attr name="snap" format="boolean"/>
         <!-- Color of the open circles. -->
-        <attr name="strokeColor" format="color" />
+        <attr name="strokeColor" format="color"/>
         <!-- Width of the stroke used to draw the circles. -->
-        <attr name="strokeWidth" />
+        <attr name="strokeWidth"/>
         <!-- View background -->
-        <attr name="android:background" />
+        <attr name="android:background"/>
     </declare-styleable>
 
     <declare-styleable name="LinePageIndicator">
         <!-- Whether or not the indicators should be centered. -->
-        <attr name="centered" />
+        <attr name="centered"/>
         <!-- Color of the unselected lines that represent the pages. -->
-        <attr name="unselectedColor" />
+        <attr name="unselectedColor"/>
         <!-- Color of the selected line that represents the current page. -->
-        <attr name="selectedColor" />
+        <attr name="selectedColor"/>
         <!-- Width of each indicator line. -->
-        <attr name="lineWidth" format="dimension" />
+        <attr name="lineWidth" format="dimension"/>
         <!-- Width of each indicator line's stroke. -->
-        <attr name="strokeWidth" />
+        <attr name="strokeWidth"/>
         <!-- Width of the gap between each indicator line. -->
-        <attr name="gapWidth" format="dimension" />
+        <attr name="gapWidth" format="dimension"/>
         <!-- View background -->
-        <attr name="android:background" />
+        <attr name="android:background"/>
     </declare-styleable>
 
     <declare-styleable name="TitlePageIndicator">
         <!-- Screen edge padding. -->
-        <attr name="clipPadding" format="dimension" />
+        <attr name="clipPadding" format="dimension"/>
         <!-- Color of the footer line and indicator. -->
-        <attr name="footerColor" format="color" />
+        <attr name="footerColor" format="color"/>
         <!-- Height of the footer line. -->
-        <attr name="footerLineHeight" format="dimension" />
+        <attr name="footerLineHeight" format="dimension"/>
         <!-- Style of the indicator. Default is triangle. -->
         <attr name="footerIndicatorStyle">
-            <enum name="none" value="0" />
-            <enum name="triangle" value="1" />
-            <enum name="underline" value="2" />
+            <enum name="none" value="0"/>
+            <enum name="triangle" value="1"/>
+            <enum name="underline" value="2"/>
         </attr>
         <!-- Height of the indicator above the footer line. -->
-        <attr name="footerIndicatorHeight" format="dimension" />
+        <attr name="footerIndicatorHeight" format="dimension"/>
         <!-- Left and right padding of the underline indicator. -->
-        <attr name="footerIndicatorUnderlinePadding" format="dimension" />
+        <attr name="footerIndicatorUnderlinePadding" format="dimension"/>
         <!-- Padding between the bottom of the title and the footer. -->
-        <attr name="footerPadding" format="dimension" />
+        <attr name="footerPadding" format="dimension"/>
         <!-- Position of the line. -->
         <attr name="linePosition">
-            <enum name="bottom" value="0" />
-            <enum name="top" value="1" />
+            <enum name="bottom" value="0"/>
+            <enum name="top" value="1"/>
         </attr>
         <!-- Color of the selected title. -->
-        <attr name="selectedColor" />
+        <attr name="selectedColor"/>
         <!-- Whether or not the selected item is displayed as bold. -->
-        <attr name="selectedBold" format="boolean" />
+        <attr name="selectedBold" format="boolean"/>
         <!-- Color of regular titles. -->
-        <attr name="android:textColor" />
+        <attr name="android:textColor"/>
         <!-- Size of title text. -->
-        <attr name="android:textSize" />
+        <attr name="android:textSize"/>
         <!-- Padding between titles when bumping into each other. -->
-        <attr name="titlePadding" format="dimension" />
+        <attr name="titlePadding" format="dimension"/>
         <!-- Padding between titles and the top of the View. -->
-        <attr name="topPadding" format="dimension" />
+        <attr name="topPadding" format="dimension"/>
         <!-- View background -->
-        <attr name="android:background" />
+        <attr name="android:background"/>
     </declare-styleable>
 
     <declare-styleable name="UnderlinePageIndicator">
         <!-- Whether or not the selected indicator fades. -->
-        <attr name="fades" format="boolean" />
+        <attr name="fades" format="boolean"/>
         <!-- Length of the delay to fade the indicator. -->
-        <attr name="fadeDelay" format="integer" />
+        <attr name="fadeDelay" format="integer"/>
         <!-- Length of the indicator fade to transparent. -->
-        <attr name="fadeLength" format="integer" />
+        <attr name="fadeLength" format="integer"/>
         <!-- Color of the selected line that represents the current page. -->
-        <attr name="selectedColor" />
+        <attr name="selectedColor"/>
         <!-- View background -->
-        <attr name="android:background" />
+        <attr name="android:background"/>
     </declare-styleable>
 
     <declare-styleable name="ZPEditText">
-        <attr name="zlp_baseColor" format="color" />
-        <attr name="zlp_primaryColor" format="color" />
+        <attr name="zlp_baseColor" format="color"/>
+        <attr name="zlp_primaryColor" format="color"/>
         <attr name="zlp_floatingLabel">
-            <enum name="none" value="0" />
-            <enum name="normal" value="1" />
-            <enum name="highlight" value="2" />
+            <enum name="none" value="0"/>
+            <enum name="normal" value="1"/>
+            <enum name="highlight" value="2"/>
         </attr>
-        <attr name="zlp_paddingLeftLine" format="dimension" />
-        <attr name="zlp_paddingRightLine" format="dimension" />
-        <attr name="zlp_paddingBottomLine" format="dimension" />
-        <attr name="zlp_paddingTopLine" format="dimension" />
-        <attr name="zlp_errorColor" format="color" />
-        <attr name="zlp_minCharacters" format="integer" />
-        <attr name="zlp_maxCharacters" format="integer" />
-        <attr name="zlp_singleLineEllipsis" format="boolean" />
-        <attr name="zlp_minBottomTextLines" format="integer" />
-        <attr name="zlp_accentTypeface" format="string" />
-        <attr name="zlp_typeface" format="string" />
-        <attr name="zlp_floatingLabelText" format="string" />
-        <attr name="zlp_floatingLabelPadding" format="dimension" />
-        <attr name="zlp_hideUnderline" format="boolean" />
-        <attr name="zlp_underlineColor" format="color" />
-        <attr name="zlp_autoValidate" format="boolean" />
-        <attr name="zlp_iconLeft" format="reference" />
-        <attr name="zlp_iconRight" format="reference" />
-        <attr name="zlp_iconPadding" format="dimension" />
-        <attr name="zlp_clearButton" format="boolean" />
-        <attr name="zlp_clearButtonSize" format="dimension" />
-        <attr name="zlp_clearButtonPaddingRight" format="dimension" />
-        <attr name="zlp_floatingLabelTextSize" format="dimension" />
-        <attr name="zlp_floatingLabelTextColor" format="color" />
-        <attr name="zlp_bottomTextSize" format="dimension" />
-        <attr name="zlp_floatingLabelAlwaysShown" format="boolean" />
-        <attr name="zlp_helperTextAlwaysShown" format="boolean" />
-        <attr name="zlp_floatingLabelAnimating" format="boolean" />
-        <attr name="zlp_textColor" format="color" />
-        <attr name="zlp_textColorHint" format="color" />
-        <attr name="zlp_validateOnFocusLost" format="boolean" />
-        <attr name="zlp_checkCharactersCountAtBeginning" format="boolean" />
+        <attr name="zlp_paddingLeftLine" format="dimension"/>
+        <attr name="zlp_paddingRightLine" format="dimension"/>
+        <attr name="zlp_paddingBottomLine" format="dimension"/>
+        <attr name="zlp_paddingTopLine" format="dimension"/>
+        <attr name="zlp_errorColor" format="color"/>
+        <attr name="zlp_minCharacters" format="integer"/>
+        <attr name="zlp_maxCharacters" format="integer"/>
+        <attr name="zlp_singleLineEllipsis" format="boolean"/>
+        <attr name="zlp_minBottomTextLines" format="integer"/>
+        <attr name="zlp_accentTypeface" format="string"/>
+        <attr name="zlp_typeface" format="string"/>
+        <attr name="zlp_floatingLabelText" format="string"/>
+        <attr name="zlp_floatingLabelPadding" format="dimension"/>
+        <attr name="zlp_hideUnderline" format="boolean"/>
+        <attr name="zlp_underlineColor" format="color"/>
+        <attr name="zlp_autoValidate" format="boolean"/>
+        <attr name="zlp_iconLeft" format="reference"/>
+        <attr name="zlp_iconRight" format="reference"/>
+        <attr name="zlp_iconPadding" format="dimension"/>
+        <attr name="zlp_clearButton" format="boolean"/>
+        <attr name="zlp_clearButtonSize" format="dimension"/>
+        <attr name="zlp_clearButtonPaddingRight" format="dimension"/>
+        <attr name="zlp_floatingLabelTextSize" format="dimension"/>
+        <attr name="zlp_floatingLabelTextColor" format="color"/>
+        <attr name="zlp_bottomTextSize" format="dimension"/>
+        <attr name="zlp_floatingLabelAlwaysShown" format="boolean"/>
+        <attr name="zlp_helperTextAlwaysShown" format="boolean"/>
+        <attr name="zlp_floatingLabelAnimating" format="boolean"/>
+        <attr name="zlp_textColor" format="color"/>
+        <attr name="zlp_textColorHint" format="color"/>
+        <attr name="zlp_validateOnFocusLost" format="boolean"/>
+        <attr name="zlp_checkCharactersCountAtBeginning" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ZPTextInputLayout">
-        <attr name="autoValidate" format="boolean" />
-        <attr name="autoTrim" format="boolean" />
-        <attr name="isRequired" format="boolean" />
-        <attr name="requiredValidationMessage" format="string" />
+        <attr name="autoValidate" format="boolean"/>
+        <attr name="autoTrim" format="boolean"/>
+        <attr name="isRequired" format="boolean"/>
+        <attr name="requiredValidationMessage" format="string"/>
         <attr name="minLength" format="integer">
-            <enum name="zero" value="0" />
+            <enum name="zero" value="0"/>
         </attr>
         <attr name="maxLength" format="integer">
-            <enum name="indefinite" value="-1" />
+            <enum name="indefinite" value="-1"/>
         </attr>
-        <attr name="lengthValidationMessage" format="string" />
+        <attr name="lengthValidationMessage" format="string"/>
     </declare-styleable>
 
 
     <declare-styleable name="Rotate3dAnimation">
         <attr name="rollType" format="enum">
-            <enum name="x" value="0" />
-            <enum name="y" value="1" />
-            <enum name="z" value="2" />
+            <enum name="x" value="0"/>
+            <enum name="y" value="1"/>
+            <enum name="z" value="2"/>
         </attr>
-        <attr name="fromDeg" format="float" />
-        <attr name="toDeg" format="float" />
-        <attr name="pivotX" format="fraction" />
-        <attr name="pivotY" format="fraction" />
+        <attr name="fromDeg" format="float"/>
+        <attr name="toDeg" format="float"/>
+        <attr name="pivotX" format="fraction"/>
+        <attr name="pivotY" format="fraction"/>
     </declare-styleable>
     <declare-styleable name="AVLoadingIndicatorView">
         <attr name="indicator">
-            <flag name="BallPulse" value="0" />
+            <flag name="BallPulse" value="0"/>
         </attr>
-        <attr name="indicator_color" format="color" />
+        <attr name="indicator_color" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="PinCodeView">
-        <attr name="lp_empty_pin_dot" format="integer" />
-        <attr name="lp_full_pin_dot" format="integer" />
+        <attr name="lp_empty_pin_dot" format="integer"/>
+        <attr name="lp_full_pin_dot" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="KeyboardButtonView">
-        <attr name="lp_keyboard_button_text" format="string" />
-        <attr name="lp_keyboard_button_image" format="integer" />
-        <attr name="lp_keyboard_button_ripple_enabled" format="boolean" />
-        <attr name="lp_pin_forgot_dialog_title" format="string" />
-        <attr name="lp_pin_forgot_dialog_content" format="string" />
-        <attr name="lp_pin_forgot_dialog_positive" format="string" />
-        <attr name="lp_pin_forgot_dialog_negative" format="string" />
+        <attr name="lp_keyboard_button_text" format="string"/>
+        <attr name="lp_keyboard_button_image" format="integer"/>
+        <attr name="lp_keyboard_button_ripple_enabled" format="boolean"/>
+        <attr name="lp_pin_forgot_dialog_title" format="string"/>
+        <attr name="lp_pin_forgot_dialog_content" format="string"/>
+        <attr name="lp_pin_forgot_dialog_positive" format="string"/>
+        <attr name="lp_pin_forgot_dialog_negative" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="CustomPassCodeRoundView">
-        <attr name="lp_length_pin" format="integer" />
+        <attr name="lp_length_pin" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="FontTextView">
         <attr name="typefaceAsset" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="SwipeLayout">
+        <attr name="drag_edge">
+            <flag name="left" value="1"/>
+            <flag name="right" value="2"/>
+            <flag name="top" value="4"/>
+            <flag name="bottom" value="8"/>
+        </attr>
+        <attr name="leftEdgeSwipeOffset" format="dimension"/>
+        <attr name="rightEdgeSwipeOffset" format="dimension"/>
+        <attr name="topEdgeSwipeOffset" format="dimension"/>
+        <attr name="bottomEdgeSwipeOffset" format="dimension"/>
+        <attr name="show_mode" format="enum">
+            <enum name="lay_down" value="0"/>
+            <enum name="pull_out" value="1"/>
+        </attr>
+        <attr name="clickToClose" format="boolean"/>
     </declare-styleable>
 
 </resources>

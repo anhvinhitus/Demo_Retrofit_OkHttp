@@ -238,6 +238,11 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
+    public void startBankSupport(Fragment fragment, int requestCode) {
+        Intent intent = new Intent(fragment.getContext(), BankSupportSelectionActivity.class);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
     public void startBankSupportSelectionActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), BankSupportSelectionActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANK);

@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
-import vn.com.vng.zalopay.bank.ui.BankFragment;
+import vn.com.vng.zalopay.bank.list.BankListFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionFragment;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -215,11 +215,11 @@ public interface UserComponent {
 
     void inject(PaymentWrapper paymentWrapper);
 
-    void inject(BankFragment f);
-
     void inject(BankSupportSelectionFragment f);
 
     void inject(WebViewFromQRScanFragment f);
+
+    void inject(BankListFragment f);
 
       /* inject activity */
 

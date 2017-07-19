@@ -42,6 +42,10 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
         return null;
     }
 
+    public int indexOf(T item) {
+        return mItems.indexOf(item);
+    }
+
     public List<T> getItems() {
         return mItems;
     }

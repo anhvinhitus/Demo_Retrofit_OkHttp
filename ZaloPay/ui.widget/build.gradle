@@ -37,5 +37,5 @@ dependencies {
     compile libs.smarttablayout
     compile libs.smarttablayoutUtil
 
-    compile libs.epoxyAdapter	
+    compile libs.epoxyAdapter
 }
