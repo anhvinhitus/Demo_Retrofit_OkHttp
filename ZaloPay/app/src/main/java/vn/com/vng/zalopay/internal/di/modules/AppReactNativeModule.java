@@ -44,7 +44,7 @@ public class AppReactNativeModule {
         return new BundleServiceImpl((Application) context,
                 localResourceRepository,
                 appResourceRepository,
-                gson);
+                gson, BuildConfig.ZALOPAY_APP_ID);
     }
 
     @Provides

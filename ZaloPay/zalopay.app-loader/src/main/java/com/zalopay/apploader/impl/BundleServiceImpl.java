@@ -34,27 +34,26 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 public class BundleServiceImpl implements BundleService {
 
 
-    public static final long ZALOPAY_INTERNAL_APPLICATION_ID = 1;
-
-    private Application mApplication;
-    //    private String mCurrentInternalBundleFolder;
+    private final Application mApplication;
     private final LocalResourceRepository mLocalResourceRepository;
     private final AppResourceStore.Repository mAppResourceRepository;
-    private Gson mGson;
+    private final Gson mGson;
+    private final int mZaloPayAppId;
 
     public BundleServiceImpl(Application application,
                              LocalResourceRepository localResourceRepository,
                              AppResourceStore.Repository appResourceRepository,
-                             Gson gson) {
+                             Gson gson, int zalopayAppId) {
         this.mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
         this.mAppResourceRepository = appResourceRepository;
         this.mGson = gson;
+        mZaloPayAppId = zalopayAppId;
     }
 
     @Override
     public String getInternalBundleFolder() {
-        return getExternalBundleFolder(ZALOPAY_INTERNAL_APPLICATION_ID);
+        return getExternalBundleFolder(mZaloPayAppId);
     }
 
     @Override
