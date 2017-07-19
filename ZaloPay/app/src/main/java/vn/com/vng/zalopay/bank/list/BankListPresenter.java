@@ -369,6 +369,61 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         return data;
     }
 
+    // Fake data to test list mapped card/account
+//    private List<BaseMap> getFakeData() {
+//        List<BaseMap> linkedBankList = new ArrayList<>();
+//
+//        MapCard masterCard = new MapCard();
+//        masterCard.first6cardno = "445093";
+//        masterCard.last4cardno = "0161";
+//        masterCard.bankcode = CardType.MASTER;
+//        linkedBankList.add(masterCard);
+//
+//        MapCard visaCard = new MapCard();
+//        visaCard.first6cardno = "437474";
+//        visaCard.last4cardno = "0581";
+//        visaCard.bankcode = CardType.VISA;
+//        linkedBankList.add(visaCard);
+//
+//        MapCard vtbCard = new MapCard();
+//        vtbCard.bankcode = CardType.PVTB;
+//        vtbCard.first6cardno = "970415";
+//        vtbCard.last4cardno = "3538";
+//        linkedBankList.add(vtbCard);
+//
+//        MapCard vcbCard = new MapCard();
+//        vcbCard.bankcode = CardType.PVCB;
+//        vcbCard.first6cardno = "686868";
+//        vcbCard.last4cardno = "1231";
+//        linkedBankList.add(vcbCard);
+//
+//        MapCard sCard = new MapCard();
+//        sCard.bankcode = CardType.PSCB;
+//        sCard.first6cardno = "970403";
+//        sCard.last4cardno = "1234";
+//        linkedBankList.add(sCard);
+//
+//        MapCard sgCard = new MapCard();
+//        sgCard.bankcode = CardType.PSGCB;
+//        sgCard.first6cardno = "157979";
+//        sgCard.last4cardno = "9999";
+//        linkedBankList.add(sgCard);
+//
+//        MapCard bivdCard = new MapCard();
+//        bivdCard.first6cardno = "970418";
+//        bivdCard.last4cardno = "1231";
+//        bivdCard.bankcode = CardType.PBIDV;
+//        linkedBankList.add(bivdCard);
+//
+//        BankAccount vcbAccount = new BankAccount();
+//        vcbAccount.firstaccountno = "098765";
+//        vcbAccount.lastaccountno = "4321";
+//        vcbAccount.bankcode = CardType.PVCB;
+//        linkedBankList.add(vcbAccount);
+//
+//        return linkedBankList;
+//    }
+
     private Observable<List<BaseMap>> getCard(final User user) {
         return ObservableHelper.makeObservable(() -> {
             List<BaseMap> linkedBankList = new ArrayList<>();
