@@ -36,6 +36,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
@@ -72,7 +73,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private static final int ERR_CODE_OUT_OF_DATA = 2;
-    private static final int INTERNAL_REACT_NATIVE_APPID = 1;
+    protected final int mZaloPayAppId;
 
     ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, Navigator navigator,
                                      TransactionStore.Repository repository, AppResourceStore.Repository resourceRepository,
@@ -84,6 +85,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         this.mNotificationRepository = notificationRepository;
         this.mResourceRepository = resourceRepository;
         this.mNavigator = navigator;
+        mZaloPayAppId = BuildConfig.ZALOPAY_APP_ID;
 
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
@@ -438,7 +440,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                         if (aBoolean) {
                             startReactNativeApp(appid, transid);
                         } else {
-                            startReactNativeApp(INTERNAL_REACT_NATIVE_APPID, transid);
+                            startReactNativeApp(mZaloPayAppId, transid);
                         }
                         Helpers.promiseResolve(promise, 1);
                     }
@@ -446,7 +448,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private void startReactNativeApp(int appid, String transid) {
+    void startReactNativeApp(int appid, String transid) {
         Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
@@ -457,7 +459,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         options.put("transid", transid);
 
         Intent intent;
-        if (appid == INTERNAL_REACT_NATIVE_APPID) {
+        if (appid == mZaloPayAppId) {
             intent = mNavigator.intentMiniAppActivity(activity, ModuleName.TRANSACTION_LOGS, options);
         } else {
             intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
@@ -466,7 +468,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         activity.startActivity(intent);
     }
 
-    private Observable<TransactionResult> resolveTransactionFail(
+    protected Observable<TransactionResult> resolveTransactionFail(
             long timestamp, List<Integer> transTypes, int offset, int count, int sign, final Throwable error) {
         return mTransactionRepository.getTransactionsFailLocal(timestamp, transTypes, offset, count, sign)
                 .map(histories -> {
