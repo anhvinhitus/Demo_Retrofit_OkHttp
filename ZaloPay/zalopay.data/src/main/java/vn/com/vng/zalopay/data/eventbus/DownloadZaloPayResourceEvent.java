@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.eventbus;
 
+import android.support.annotation.NonNull;
+
 import vn.com.vng.zalopay.data.appresources.DownloadInfo;
 
 /**
@@ -9,11 +11,10 @@ import vn.com.vng.zalopay.data.appresources.DownloadInfo;
 
 public class DownloadZaloPayResourceEvent {
 
-    public boolean isDownloadSuccess;
+    @NonNull
     public DownloadInfo mDownloadInfo;
 
-    public DownloadZaloPayResourceEvent(boolean isDownloadSuccess, DownloadInfo mDownloadInfo) {
-        this.isDownloadSuccess = isDownloadSuccess;
+    public DownloadZaloPayResourceEvent(@NonNull DownloadInfo mDownloadInfo) {
         this.mDownloadInfo = mDownloadInfo;
     }
 }

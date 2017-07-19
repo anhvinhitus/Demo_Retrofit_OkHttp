@@ -5,10 +5,12 @@ import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 
 /**
@@ -19,25 +21,19 @@ public abstract class AbsDownloadService extends IntentService {
 
     protected abstract void doInject();
 
-    private int mZaloPayAppId;
-
     @Inject
     public DownloadAppResourceTaskQueue mTaskQueue;
 
     @Inject
     EventBus mEventBus;
 
+    private final Set<Long> mResourceZaloPayInApp;
+
     private final static String TAG = "DownloadService";
 
-    public AbsDownloadService(int zaloPayAppId) {
+    public AbsDownloadService() {
         super(TAG);
-        mZaloPayAppId = zaloPayAppId;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("onStartCommand");
-        return super.onStartCommand(intent, flags, startId);
+        mResourceZaloPayInApp = new HashSet<>();
     }
 
     @Override
@@ -76,10 +72,9 @@ public abstract class AbsDownloadService extends IntentService {
 
             boolean result = task.execute();
 
-            if (task.getDownloadInfo().appid == mZaloPayAppId) {
-                mEventBus.post(new DownloadZaloPayResourceEvent(result, task.getDownloadInfo()));
-            } else {
-                mEventBus.postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
+            long appid = task.getDownloadInfo().appid;
+            if (result && mResourceZaloPayInApp.contains(appid)) {
+                mEventBus.post(new DownloadZaloPayResourceEvent(task.getDownloadInfo()));
             }
 
             mTaskQueue.dequeue();
@@ -87,5 +82,9 @@ public abstract class AbsDownloadService extends IntentService {
 
         Timber.d("Download service stopping!");
         stopSelf(); // No more tasks are present. Stop.
+    }
+
+    protected void addResourceZaloPayInApp(long appid) {
+        mResourceZaloPayInApp.add(appid);
     }
 }

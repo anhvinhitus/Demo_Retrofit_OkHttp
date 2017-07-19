@@ -10,7 +10,9 @@ import vn.com.vng.zalopay.data.appresources.AbsDownloadService;
 public class DownloadService extends AbsDownloadService {
 
     public DownloadService() {
-        super(BuildConfig.ZALOPAY_APP_ID);
+        super();
+        addResourceZaloPayInApp(BuildConfig.ZALOPAY_APP_ID);
+        addResourceZaloPayInApp(BuildConfig.WITHDRAW_APP_ID);
     }
 
     @Override

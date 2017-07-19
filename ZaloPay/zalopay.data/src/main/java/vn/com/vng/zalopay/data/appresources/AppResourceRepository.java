@@ -389,13 +389,12 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
 
     @Override
-    public Boolean existAppResource(long appid) {
-        AppResourceEntity entity = mLocalStorage.get(appid);
-        return entity != null && entity.downloadState >= DownloadState.STATE_SUCCESS;
+    public Observable<Boolean> existAppResource(long appid) {
+        return makeObservable(() -> {
+            AppResourceEntity entity = mLocalStorage.get(appid);
+            return entity != null && entity.downloadState >= DownloadState.STATE_SUCCESS;
+        });
     }
-
-
-
 
     @Override
     public Exception exception(Exception pException) {

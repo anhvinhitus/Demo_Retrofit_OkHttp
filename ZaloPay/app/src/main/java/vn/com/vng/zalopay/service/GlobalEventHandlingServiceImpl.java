@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+import rx.Observable;
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
@@ -23,6 +25,7 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.ExceptionEvent;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -124,26 +127,32 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
-
-        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
-            return;
-        }
-
-        Timber.d("on Download app 1 resource success : url [%s]", event.mDownloadInfo.url);
-
-        if (!mAppRepository.existAppResource(event.mDownloadInfo.appid)) {
-            return;
-        }
-        Timber.d("begin load config");
-
-        ConfigLoader.loadConfigFromResource(BuildConfig.WITHDRAW_APP_ID);
-        AndroidApplication.instance().loadFontFromApp1();
+        Timber.d("on Download app %s resource success : url [%s]", event.mDownloadInfo.appid, event.mDownloadInfo.url);
+        mAppRepository.existAppResource(event.mDownloadInfo.appid)
+                .filter(Boolean::booleanValue)
+                .doOnError(Timber::d)
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        loadResourceInApp(event.mDownloadInfo.appid);
+                    }
+                });
     }
+
     @Subscribe
-    public void onExceptionEvent(ExceptionEvent event){
+    public void onExceptionEvent(ExceptionEvent event) {
         if (event != null && event.exception != null && event.exception.getMessage().matches(".* " + "ENOSPC" + " .*")) {
             enqueueMessage(SweetAlertDialog.WARNING_TYPE, "ĐÓNG", "Bộ nhớ đã đầy, không tải được dữ liệu.");
         }
 
+    }
+
+    protected void loadResourceInApp(long appid) {
+        Timber.d("begin load config in app [%s]", appid);
+        if (appid == BuildConfig.WITHDRAW_APP_ID) {
+            ConfigLoader.loadConfigFromResource(BuildConfig.WITHDRAW_APP_ID);
+        } else if (appid == BuildConfig.ZALOPAY_APP_ID) {
+            AndroidApplication.instance().loadFontFromApp1();
+        }
     }
 }
