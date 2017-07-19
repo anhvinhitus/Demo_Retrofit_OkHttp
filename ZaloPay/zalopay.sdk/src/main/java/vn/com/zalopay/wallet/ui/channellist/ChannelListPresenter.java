@@ -605,6 +605,16 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return paymentChannel;
     }
 
+    private boolean shouldAutoPayment() {
+        if (mSelectChannel == null || !mSelectChannel.isZaloPayChannel()) {
+            return false;
+        }
+        if(mActiveMapChannels == null || mCCMapChannel == null){
+            return false;
+        }
+        return  mActiveMapChannels.size() <= 0 && mCCMapChannel.size() <= 0;
+    }
+
     private void makeDefaultChannel() throws Exception {
         PaymentChannel selectChannel = getLastPaymentChannel();
         if (selectChannel != null) {
@@ -628,6 +638,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         if (selectChannel != null) {
             selectAndScrollToChannel(selectChannel, pos);
+        }
+        if(shouldAutoPayment()){
+            startPayment();
         }
         if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
