@@ -263,25 +263,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @Override
     public void setTransferInfo(TransferObject object, boolean amountDynamic) {
 
-        if (tvDisplayName != null) {
-            tvDisplayName.setText(object.displayName);
-        }
-
-        if (imgAvatar != null) {
-            imgAvatar.setImageURI(object.avatar);
-        }
-
-        if (mTextViewZaloPayName != null) {
-            mTextViewZaloPayName.setText(TextUtils.isEmpty(object.zalopayName) ? getString(R.string.not_update_zalopay_id) : object.zalopayName);
-        }
-
-       /* if (mEdtMessageView != null) {
-            mEdtMessageView.setText(object.message);
-        }
-
-        if (mAmountView != null) {
-            mAmountView.setText(String.valueOf(object.amount));
-        }*/
+        setUserView(object.displayName, object.avatar, object.zalopayName);
 
         if (amountDynamic) {
             setInitialDynamicValue(object.amount, object.message);
@@ -293,18 +275,23 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void setUserInfo(Person object) {
+        setUserView(object.displayName, object.avatar, object.zalopayname);
+    }
+
+    private void setUserView(String displayName, String avatar, String zalopayName) {
         if (tvDisplayName != null) {
-            tvDisplayName.setText(object.displayName);
+            tvDisplayName.setText(displayName);
         }
 
         if (imgAvatar != null) {
-            imgAvatar.setImageURI(object.avatar);
+            imgAvatar.setImageURI(avatar);
         }
+
+        String name = TextUtils.isEmpty(zalopayName) ? getString(R.string.not_update) : zalopayName;
 
         if (mTextViewZaloPayName != null) {
-            mTextViewZaloPayName.setText(TextUtils.isEmpty(object.zalopayname) ? getString(R.string.not_update_zalopay_id) : object.zalopayname);
+            mTextViewZaloPayName.setText(getString(R.string.account_format, name));
         }
-
     }
 
     @Override
