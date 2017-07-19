@@ -141,8 +141,6 @@ final class BankListAdapter extends AbstractSwipeAdapter<BankData, RecyclerView.
         @BindView(R.id.swipe)
         BankCardView mSwipeView;
 
-        private boolean isOpened = false;
-
         private OnItemClickListener mOnItemClickListener;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
@@ -155,17 +153,6 @@ final class BankListAdapter extends AbstractSwipeAdapter<BankData, RecyclerView.
         public void onClickDelete(View v) {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onListItemClick(v, getAdapterPosition());
-            }
-        }
-
-        @OnClick(R.id.card)
-        public void onCardClicked() {
-            if(isOpened) {
-                mSwipeView.close();
-                isOpened = false;
-            } else {
-                mSwipeView.open();
-                isOpened = true;
             }
         }
     }

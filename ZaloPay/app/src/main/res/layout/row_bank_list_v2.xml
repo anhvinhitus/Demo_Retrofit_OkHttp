@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/link.card.height"
     app:show_mode="pull_out"
-    app:rightEdgeSwipeOffset="140dp"
+    app:rightEdgeSwipeOffset="96dp"
     >
 
     <!-- Your secondary layout here -->

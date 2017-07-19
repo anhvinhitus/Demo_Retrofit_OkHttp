@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
@@ -69,6 +70,11 @@ public class BankCardView extends SwipeLayout {
         ButterKnife.bind(this);
     }
 
+    @OnClick(R.id.card)
+    public void onClickCard() {
+        toggle();
+    }
+
     @Override
     protected void layoutPullOut() {
         View surfaceView = getSurfaceView();
@@ -114,8 +120,9 @@ public class BankCardView extends SwipeLayout {
             return;
         }
 
-        GradientDrawable gradient = (GradientDrawable) drawable;
         int[] colors = new int[]{bankCardStyle.backgroundGradientStart, bankCardStyle.backgroundGradientEnd, bankCardStyle.backgroundGradientStart};
+        GradientDrawable gradient = (GradientDrawable) drawable;
+        gradient.mutate();
         gradient.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
         gradient.setColors(colors);
     }
