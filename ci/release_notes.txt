@@ -1,10 +1,5 @@
-Zalo Pay (Sandbox v2.16.0 - build 344) - Released on 2017-07-18 17:03
-+ [SDK] Update popup Card Support by lytm (#6598712)
-+ [Friend] Refactor code by hieuvm (#d4430fa)
-+ [SDK] VCB : Warning hạn mức trước khi show popup yêu cầu liên kết khi thanh toán by vo van chuc (#f93a44a)
-+ [React] Send user phone number to app 61 by khattn (#81862a7)
-+ [SDK] task#699 : Crash userinfo NULL trong ChannelListInteractor by vo van chuc (#f8ec645)
-+ [AppTransId] Update default value transid to -1L by vo van chuc (#2ac35c8)
-+ [SDK] Không show dialog confirm thoát nếu không có kênh giao dịch nào được hỗ trợ by vo van chuc (#fc3361c)
-+ [React] Send user phone number to app 61 by khattn (#ca54998)
-+ [Friend] Clean unused by hieuvm (#e59cb75)
+Zalo Pay (Sandbox v2.16.0 - build 345) - Released on 2017-07-19 09:21
++ [Friend] Update unit test friend by hieuvm (#2182d3b)
++ [SDK] Refactor SharePreferenceManager by vo van chuc (#0dd6419)
++ [Design] task#709: Update Text size by lytm (#c536fec)
++ [SDK] Update set Width popup in tablet by lytm (#ab32dd1)
