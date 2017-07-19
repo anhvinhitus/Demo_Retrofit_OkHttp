@@ -94,7 +94,7 @@ public class BankCardView extends SwipeLayout {
             bottomViewRect = computeBottomLayoutAreaViaSurface(ShowMode.PullOut, surfaceRect);
         }
 
-        if (mForegroundView != null && mCardView != null) {
+        if (mForegroundView != null) {
             //  Timber.d("layoutPullOut: %s %s", mForegroundView.getWidth(), mForegroundView.getPaddingLeft());
             bottomViewRect.left = mForegroundView.getWidth() - mForegroundView.getPaddingLeft();
         }
@@ -103,7 +103,7 @@ public class BankCardView extends SwipeLayout {
             currentBottomView.layout(bottomViewRect.left, bottomViewRect.top, bottomViewRect.right, bottomViewRect.bottom);
         }
 
-        Timber.d("layoutPullOut: [surfaceRect: %s bottomViewRect: %s] ", surfaceRect.toShortString(), bottomViewRect.toShortString());
+      //  Timber.d("layoutPullOut: [surfaceRect: %s bottomViewRect: %s] ", surfaceRect.toShortString(), bottomViewRect.toShortString());
     }
 
     void bindView(BankData data) {
