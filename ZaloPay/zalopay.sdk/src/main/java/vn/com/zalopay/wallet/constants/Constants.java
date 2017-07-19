@@ -131,4 +131,6 @@ public class Constants {
     public interface CHANNEL_CONST {
         String layout = "layout";
     }
+
+    public static int RESULT_TYPE2_APPID = 12;
 }

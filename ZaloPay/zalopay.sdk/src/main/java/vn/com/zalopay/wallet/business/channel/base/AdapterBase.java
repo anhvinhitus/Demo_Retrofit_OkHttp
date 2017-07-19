@@ -1302,6 +1302,65 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
+
+        renderSuccessInformation();
+
+        try {
+            processSaveCardOnResult();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+        //update password fingerprint
+        try {
+            if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
+                getView().showToast(R.layout.layout_update_password_toast);
+            }
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+        PaymentSnackBar.getInstance().dismiss();
+        try {
+            SdkUtils.hideSoftKeyboard(mContext, getActivity());
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+
+        //save payment card for show on channel list later
+        savePaymentCardIfAny();
+
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
+
+        handleSpecialAppResult();
+    }
+
+    private void savePaymentCardIfAny() {
+        String paymentCard = getCard() != null ? getCard().getCardKey() : null;
+        if (TextUtils.isEmpty(paymentCard)) {
+            paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
+        }
+        if (!TextUtils.isEmpty(paymentCard)) {
+            SDKApplication.getApplicationComponent()
+                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), paymentCard);
+        } else {
+            SDKApplication.getApplicationComponent()
+                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), null);
+        }
+    }
+
+    private void handleSpecialAppResult() {
+        if (mPaymentInfoHelper.getOrder() != null &&
+                mPaymentInfoHelper.getOrder().appid == Constants.RESULT_TYPE2_APPID) {
+            new Handler().postDelayed(() -> {
+                try {
+                    getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));
+                } catch (Exception e) {
+                    Timber.d(e);
+                }
+            }, 100);
+        }
+    }
+
+    private void renderSuccessInformation() {
         mPageName = PAGE_SUCCESS;
         try {
             getView().marginSubmitButtonTopSuccess(true);
@@ -1325,49 +1384,6 @@ public abstract class AdapterBase implements ISdkErrorContext {
             getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, receiverInfo, title);
         } catch (Exception e) {
             Log.e(this, e);
-        }
-        try {
-            processSaveCardOnResult();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        //update password fingerprint
-        try {
-            if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
-                getView().showToast(R.layout.layout_update_password_toast);
-            }
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-        PaymentSnackBar.getInstance().dismiss();
-        try {
-            SdkUtils.hideSoftKeyboard(mContext, getActivity());
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-        //save payment card for show on channe list later
-        String paymentCard = getCard() != null ? getCard().getCardKey() : null;
-        if (TextUtils.isEmpty(paymentCard)) {
-            paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
-        }
-        if (!TextUtils.isEmpty(paymentCard)) {
-            SDKApplication.getApplicationComponent()
-                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), paymentCard);
-        } else {
-            SDKApplication.getApplicationComponent()
-                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), null);
-        }
-
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
-
-        if (mPaymentInfoHelper.getOrder() != null && mPaymentInfoHelper.getOrder().appid == 12) {
-            new Handler().postDelayed(() -> {
-                try {
-                    getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }, 100);
         }
     }
 
