@@ -211,7 +211,8 @@ public abstract class AdapterBase implements ISdkErrorContext {
                         return;
                     }
                     numberOfRetryTimeout++;
-                    DialogManager.showSweetDialogOptionNotice(activity.get(),
+                    DialogManager.showConfirmDialog(activity.get(),
+                            mContext.getResources().getString(R.string.dialog_title_normal),
                             mContext.getResources().getString(R.string.sdk_load_data_timeout_mess),
                             mContext.getResources().getString(R.string.dialog_continue_load_button),
                             mContext.getResources().getString(R.string.dialog_cancel_button),
@@ -396,14 +397,6 @@ public abstract class AdapterBase implements ISdkErrorContext {
 
     public boolean isAuthenPayerPharse() {
         return getPageName().equals(PAGE_AUTHEN);
-    }
-
-    public boolean isFailProcessingPharse() {
-        return getPageName().equals(PAGE_FAIL_PROCESSING);
-    }
-
-    public boolean isFailNetworkingPharse() {
-        return getPageName().equals(PAGE_FAIL_NETWORKING);
     }
 
     public void onFinish() {
@@ -1142,8 +1135,8 @@ public abstract class AdapterBase implements ISdkErrorContext {
                 onProcessPhrase();
             }
         } catch (Exception ex) {
-            terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
-            Log.e(this, ex);
+            showTransactionFailView(mContext.getResources().getString(R.string.zpw_string_error_layout));
+            Timber.w(ex,"Exception click submit");
         }
     }
 

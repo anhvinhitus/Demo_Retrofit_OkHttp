@@ -21,9 +21,6 @@ import android.widget.ViewFlipper;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFontTextView;
-import com.zalopay.ui.widget.dialog.DialogManager;
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnDialogCustomEventListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.util.TimeUtils;
 
@@ -40,6 +37,7 @@ import vn.com.vng.zalopay.passport.widget.OnboardingEditTextView;
 import vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.VNPhoneValidate;
+import vn.com.vng.zalopay.utils.DialogHelper;
 
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
@@ -52,6 +50,70 @@ import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
  */
 public class OnboardingFragment extends RuntimePermissionFragment implements IOnboardingView {
 
+    public static final int INPUT_PASSWORD = 0;
+    public static final int REINPUT_PASSWORD = 1;
+    public static final int INPUT_PHONE = 2;
+    public static final int INPUT_OTP = 3;
+    private static final long ACTIVE_TIMEOUT = 3600;
+    private static final String ARGUMENT_ACTIVE_TIME = "active_time";
+    private static final String ARGUMENT_TAB_POSITION = "position";
+    private static final String ARGUMENT_PHONE_NUMBER = "phone";
+    @BindView(R.id.ivAvatar)
+    SimpleDraweeView mAvatarView;
+    @BindView(R.id.tvDisplayName)
+    TextView mDisplayNameView;
+    @BindView(R.id.tvGender)
+    IconFontTextView mGenderView;
+    @BindView(R.id.tvBirthday)
+    IconFontTextView mBirthDayView;
+    @BindView(R.id.keyboard)
+    CustomKeyboardView mKeyboardView;
+    @Inject
+    OnboardingPresenter mPresenter;
+    @BindView(R.id.flipper)
+    ViewFlipper mFlipperView;
+    @BindView(R.id.flipper1)
+    OnboardingPasswordRoundView mInputPwdView;
+    @BindView(R.id.flipper2)
+    OnboardingPasswordRoundView mReInputPwdView;
+    @BindView(R.id.flipper3)
+    OnboardingEditTextView mInputPhoneView;
+    @BindView(R.id.flipper4)
+    OnboardingEditTextView mInputOtpView;
+    @BindView(R.id.background)
+    SimpleDraweeView mBackgroundView;
+    @BindView(R.id.scroll)
+    ScrollView mScrollView;
+    @BindView(R.id.container)
+    View mContainerView;
+    private ZaloProfile mProfile;
+    private String oauthcode;
+    private CountDownTimer mCountDownTime = null;
+    private long mActiveTime;
+    private TextWatcher mOtpTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (!isScrollable()) {
+                return;
+            }
+
+            if (start == 0) {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     public static OnboardingFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -61,15 +123,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         return fragment;
     }
 
-    private static final long ACTIVE_TIMEOUT = 3600;
-    private static final String ARGUMENT_ACTIVE_TIME = "active_time";
-    private static final String ARGUMENT_TAB_POSITION = "position";
-    private static final String ARGUMENT_PHONE_NUMBER = "phone";
-    public static final int INPUT_PASSWORD = 0;
-    public static final int REINPUT_PASSWORD = 1;
-    public static final int INPUT_PHONE = 2;
-    public static final int INPUT_OTP = 3;
-
     public void setupFragmentComponent() {
         getAppComponent().inject(this);
     }
@@ -77,55 +130,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     public int getResLayoutId() {
         return R.layout.fragment_onboarding;
     }
-
-    @BindView(R.id.ivAvatar)
-    SimpleDraweeView mAvatarView;
-
-    @BindView(R.id.tvDisplayName)
-    TextView mDisplayNameView;
-
-    @BindView(R.id.tvGender)
-    IconFontTextView mGenderView;
-
-    @BindView(R.id.tvBirthday)
-    IconFontTextView mBirthDayView;
-
-    @BindView(R.id.keyboard)
-    CustomKeyboardView mKeyboardView;
-
-    @Inject
-    OnboardingPresenter mPresenter;
-
-    private ZaloProfile mProfile;
-    private String oauthcode;
-
-    @BindView(R.id.flipper)
-    ViewFlipper mFlipperView;
-
-    @BindView(R.id.flipper1)
-    OnboardingPasswordRoundView mInputPwdView;
-
-    @BindView(R.id.flipper2)
-    OnboardingPasswordRoundView mReInputPwdView;
-
-    @BindView(R.id.flipper3)
-    OnboardingEditTextView mInputPhoneView;
-
-    @BindView(R.id.flipper4)
-    OnboardingEditTextView mInputOtpView;
-
-    @BindView(R.id.background)
-    SimpleDraweeView mBackgroundView;
-
-    private CountDownTimer mCountDownTime = null;
-
-    private long mActiveTime;
-
-    @BindView(R.id.scroll)
-    ScrollView mScrollView;
-
-    @BindView(R.id.container)
-    View mContainerView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,22 +282,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         oauthcode = bundle.getString(ARGUMENT_KEY_OAUTHTOKEN);
     }
 
-    private class InputPasswordListener implements InputEnteredListener {
-        public void onPinEntered(@NonNull String pinCode) {
-            nextPage();
-        }
-    }
-
-    private class ReInputPasswordListener implements InputEnteredListener {
-        public void onPinEntered(@NonNull String pinCode) {
-            if (pinCode.equals(mInputPwdView.getInputText())) {
-                nextPage();
-            } else {
-                mReInputPwdView.setError(getString(R.string.password_not_match), true);
-            }
-        }
-    }
-
     private void register(boolean resend) {
         mPresenter.register(mProfile.userId, oauthcode, mReInputPwdView.getInputText(), mInputPhoneView.getInputText(), resend);
     }
@@ -339,25 +327,22 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     private void previousToPhone() {
         String msg = String.format(getString(R.string.ip_desc_confirm_change_phone), mInputPhoneView.getInputText());
-        DialogManager.showSweetDialogNormal(getActivity(),
+        DialogHelper.showConfirmDialog(getActivity(),
                 getString(R.string.confirm),
                 msg,
                 getString(R.string.cancel),
                 getString(R.string.accept),
-                SweetAlertDialog.WARNING_TYPE,
-                new ZPWOnDialogCustomEventListener() {
+                new ZPWOnEventConfirmDialogListener() {
                     @Override
-                    public void onLeftButtonClick() {
+                    public void onCancelEvent() {
                         if (!isAdded()) {
                             return;
                         }
-
                         previousPage();
                     }
 
                     @Override
-                    public void onRightButtonClick() {
-
+                    public void onOKEvent() {
                     }
                 });
     }
@@ -505,27 +490,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         mCountDownTime.start();
     }
 
-    private class ResendCountDown extends CountDownTimer {
-
-        ResendCountDown(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        public void onFinish() {
-            mInputOtpView.setTextSecondaryButton(getString(R.string.resend_otp));
-            mInputOtpView.setEnableSecondaryButton(true);
-            mInputOtpView.setIconSecondaryButton(getString(R.string.onboarding_refresh));
-        }
-
-        public void onTick(long millisUntilFinished) {
-            String msgFormat = getString(R.string.resend_otp_count_down_format);
-            mInputOtpView.setTextSecondaryButton(String.format(msgFormat, TimeUtils.formatCountDownTime(millisUntilFinished)));
-            mInputOtpView.setEnableSecondaryButton(false);
-            mInputOtpView.setIconSecondaryButton("");
-        }
-
-    }
-
     @Override
     public void resendOTPSuccess() {
         Toast toast = new Toast(getContext());
@@ -570,27 +534,40 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         return mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
     }
 
-    private TextWatcher mOtpTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+    private class InputPasswordListener implements InputEnteredListener {
+        public void onPinEntered(@NonNull String pinCode) {
+            nextPage();
         }
+    }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            if (!isScrollable()) {
-                return;
-            }
-
-            if (start == 0) {
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+    private class ReInputPasswordListener implements InputEnteredListener {
+        public void onPinEntered(@NonNull String pinCode) {
+            if (pinCode.equals(mInputPwdView.getInputText())) {
+                nextPage();
+            } else {
+                mReInputPwdView.setError(getString(R.string.password_not_match), true);
             }
         }
+    }
 
-        @Override
-        public void afterTextChanged(Editable s) {
+    private class ResendCountDown extends CountDownTimer {
 
+        ResendCountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
         }
-    };
+
+        public void onFinish() {
+            mInputOtpView.setTextSecondaryButton(getString(R.string.resend_otp));
+            mInputOtpView.setEnableSecondaryButton(true);
+            mInputOtpView.setIconSecondaryButton(getString(R.string.onboarding_refresh));
+        }
+
+        public void onTick(long millisUntilFinished) {
+            String msgFormat = getString(R.string.resend_otp_count_down_format);
+            mInputOtpView.setTextSecondaryButton(String.format(msgFormat, TimeUtils.formatCountDownTime(millisUntilFinished)));
+            mInputOtpView.setEnableSecondaryButton(false);
+            mInputOtpView.setIconSecondaryButton("");
+        }
+
+    }
 }

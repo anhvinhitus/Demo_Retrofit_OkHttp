@@ -258,14 +258,15 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showQuitConfirm(String message, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showSweetDialogConfirm(getActivity(), message,
+        DialogManager.showConfirmDialog(getActivity(),getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+                message,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), pListener);
     }
 
     @Override
     public void showDialogManyOption(ZPWOnSweetDialogListener pListener) {
-        DialogManager.showDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, null,
+        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, -1, null,
                 getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,
                 getResources().getString(R.string.dialog_khong_button),
                 getResources().getString(R.string.dialog_co_button),
@@ -274,7 +275,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showUpdateLevelDialog(String message, String btnCloseText, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showSweetDialogOptionNotice(getActivity(),
+        DialogManager.showConfirmDialog(getActivity(),
+                getResources().getString(com.zalopay.ui.widget.R.string.dialog_title_normal),
                 message,
                 getResources().getString(R.string.dialog_upgrade_button),
                 btnCloseText, pListener);
@@ -550,13 +552,13 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showSweetDialogRetry(getActivity(), pMessage, pListener);
+        DialogManager.showRetryDialog(getActivity(), pMessage, pListener);
     }
 
     @Override
     public void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener) {
         hideLoading();
-        DialogManager.showSweetDialog(getActivity(), SweetAlertDialog.NO_INTERNET,
+        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET,-1,
                 getString(R.string.sdk_dialog_nointernet_title),
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
@@ -574,7 +576,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showConfirmDialog(String pMessage, String pButtonLeftText, String pButtonRightText, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showSweetDialogConfirm(getActivity(), pMessage, pButtonLeftText, pButtonRightText, pListener);
+        DialogManager.showConfirmDialog(getActivity(),getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+                pMessage, pButtonLeftText, pButtonRightText, pListener);
     }
 
     @Override

@@ -23,18 +23,7 @@ import vn.com.vng.zalopay.R;
 
 public class DialogHelper {
 
-    public static void showNetworkErrorDialog(Activity activity,
-                                              ZPWOnSweetDialogListener listener) {
-        if (activity == null) {
-            return;
-        }
-        DialogManager.showDialog(activity,
-                activity.getString(R.string.txt_warning),
-                activity.getString(R.string.exception_no_connection_try_again),
-                R.drawable.ic_no_internet,
-                listener,
-                activity.getString(R.string.txt_close));
-    }
+    private static Dialog mProgressDialog;
 
     /*public static void showErrorDialog(Activity activity, String message) {
         DialogManager.showSweetDialogCustom(activity,
@@ -54,6 +43,19 @@ public class DialogHelper {
                 SweetAlertDialog.ERROR_TYPE,
                 cancelListener);
     }*/
+
+    public static void showNetworkErrorDialog(Activity activity,
+                                              ZPWOnSweetDialogListener listener) {
+        if (activity == null) {
+            return;
+        }
+        DialogManager.showDrawableDialog(activity,
+                activity.getString(R.string.txt_warning),
+                activity.getString(R.string.exception_no_connection_try_again),
+                R.drawable.ic_no_internet,
+                listener,
+                activity.getString(R.string.txt_close));
+    }
 
     public static void showErrorDialog(Activity activity,
                                        String title,
@@ -122,7 +124,7 @@ public class DialogHelper {
     public static void showRetryDialog(Activity activity,
                                        String retryMessage,
                                        ZPWOnEventConfirmDialogListener retryListener) {
-        DialogManager.showSweetDialogRetry(activity,
+        DialogManager.showRetryDialog(activity,
                 retryMessage,
                 retryListener);
     }
@@ -132,7 +134,22 @@ public class DialogHelper {
                                          String pOKButton,
                                          String pCancelButton,
                                          ZPWOnEventConfirmDialogListener callback) {
-        DialogManager.showSweetDialogConfirm(activity,
+        showConfirmDialog(activity,
+                "",
+                pMessage,
+                pOKButton,
+                pCancelButton,
+                callback);
+    }
+
+    public static void showConfirmDialog(Activity activity,
+                                         String pTitle,
+                                         String pMessage,
+                                         String pOKButton,
+                                         String pCancelButton,
+                                         ZPWOnEventConfirmDialogListener callback) {
+        DialogManager.showConfirmDialog(activity,
+                pTitle,
                 pMessage,
                 pOKButton,
                 pCancelButton,
@@ -169,14 +186,14 @@ public class DialogHelper {
             return;
         }
         if (forceUpdate) {
-            DialogManager.showSweetDialogUpdate(activity,
+            DialogManager.showVersionUpdateDialog(activity,
                     contentText,
                     newVersion,
                     activity.getString(R.string.btn_update),
                     null,
                     listener);
         } else {
-            DialogManager.showSweetDialogUpdate(activity,
+            DialogManager.showVersionUpdateDialog(activity,
                     contentText,
                     newVersion,
                     activity.getString(R.string.btn_update),
@@ -190,7 +207,7 @@ public class DialogHelper {
                                         String btnConfirm,
                                         String btnCancel,
                                         ZPWOnEventConfirmDialogListener listener) {
-        DialogManager.showSweetDialogOptionNotice(activity, message, btnConfirm, btnCancel, listener);
+        DialogManager.showConfirmDialog(activity, "", message, btnConfirm, btnCancel, listener);
     }
 
     public static void showCustomDialog(Activity activity,
@@ -199,15 +216,14 @@ public class DialogHelper {
                                         String message,
                                         ZPWOnSweetDialogListener listener,
                                         String[] btnNames) {
-        DialogManager.showDialog(activity,
+        DialogManager.showMultiButtonDialog(activity,
                 dialogType,
+                -1,
                 title,
                 message,
                 listener,
                 btnNames);
     }
-
-    private static Dialog mProgressDialog;
 
     private static boolean isShowingLoading() {
         return mProgressDialog != null && mProgressDialog.isShowing();
