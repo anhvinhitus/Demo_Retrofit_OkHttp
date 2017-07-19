@@ -6,6 +6,9 @@ import vn.com.vng.zalopay.data.appresources.AbsDownloadService;
 
 /**
  * Created by AnhHieu on 5/23/16.
+ * Download merchant resource;
+ * Có 2 app ZALOPAY_APP_ID & WITHDRAW_APP_ID chứa config của zalopay.
+ * Khi download thành công cần refresh lại config
  */
 public class DownloadService extends AbsDownloadService {
 

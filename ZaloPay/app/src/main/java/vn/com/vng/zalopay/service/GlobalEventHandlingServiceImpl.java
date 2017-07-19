@@ -128,7 +128,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
         Timber.d("on Download app %s resource success : url [%s]", event.mDownloadInfo.appid, event.mDownloadInfo.url);
-        mAppRepository.existAppResource(event.mDownloadInfo.appid)
+        mAppRepository.isAppResourceAvailable(event.mDownloadInfo.appid, false)
                 .filter(Boolean::booleanValue)
                 .doOnError(Timber::d)
                 .subscribe(new DefaultSubscriber<Boolean>() {

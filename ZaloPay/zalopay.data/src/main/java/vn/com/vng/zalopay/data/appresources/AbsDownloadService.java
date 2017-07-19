@@ -84,6 +84,9 @@ public abstract class AbsDownloadService extends IntentService {
         stopSelf(); // No more tasks are present. Stop.
     }
 
+    /**
+     * Add appid cần reload source
+     */
     protected void addResourceZaloPayInApp(long appid) {
         mResourceZaloPayInApp.add(appid);
     }

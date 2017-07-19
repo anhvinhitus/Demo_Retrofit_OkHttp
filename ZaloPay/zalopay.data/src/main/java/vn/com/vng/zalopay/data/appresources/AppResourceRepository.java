@@ -269,8 +269,13 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> isAppResourceAvailable(long appId, boolean downloadIfNeed) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
+            if (entity == null) {
+                Timber.d("Exist resource : appId [%s] state [false]", appId);
+                return false;
+            }
+
             Timber.d("Exist resource : appId [%s] state [%s]", appId, entity.downloadState);
-            boolean downloadSuccess = (entity.downloadState >= DownloadState.STATE_SUCCESS);
+            boolean downloadSuccess = entity.downloadState >= DownloadState.STATE_SUCCESS;
             if (!downloadSuccess && downloadIfNeed) {
                 startDownloadService(Collections.singletonList(entity));
             }
@@ -356,12 +361,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<List<AppResource>> getListAppHomeLocal() {
-        return getAppResourceLocal()
-                .map(this::listAppInHomePage);
-    }
-
-    @Override
     public Observable<List<AppResource>> fetchListAppHome() {
         return fetchAppResource()
                 .map(this::listAppInHomePage);
@@ -385,15 +384,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         listApp.removeAll(mListExcludeApp);
         Timber.d("app show in home page: %s", listApp.size());
         return listApp;
-    }
-
-
-    @Override
-    public Observable<Boolean> existAppResource(long appid) {
-        return makeObservable(() -> {
-            AppResourceEntity entity = mLocalStorage.get(appid);
-            return entity != null && entity.downloadState >= DownloadState.STATE_SUCCESS;
-        });
     }
 
     @Override
