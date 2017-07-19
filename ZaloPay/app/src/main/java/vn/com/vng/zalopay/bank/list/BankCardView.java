@@ -102,43 +102,51 @@ public class BankCardView extends SwipeLayout {
 
     void bindView(BankData data) {
         mNumberCardView.setText(Html.fromHtml(data.mBankInfo));
-//        setBackground(mCardView, data.mBankCardStyle);
-        setBankBackground(mCardView, data.mBankCardStyle, true);
+        setBackground(mCardView, data.mBankCardStyle);
+        // Datnt10 test ++
+//        setBankBackground(mCardView, data.mBankCardStyle, true);
+        // Datnt10 test --
         String logo = ResourceHelper
                 .getResource(mLogoView.getContext(), BuildConfig.ZALOPAY_APP_ID, data.mBankCardStyle.bankIcon);
         FrescoUtil.loadWrapContent(mLogoView, logo);
     }
 
-    private void setBankBackground(View mRoot, BankCardStyle bankCardStyle, boolean borderTopOnly) {
-        if (mRoot == null || bankCardStyle == null) {
+    private void setBackground(View foreground, BankCardStyle bankCardStyle) {
+        Drawable drawable = foreground.getBackground();
+        if (!(drawable instanceof GradientDrawable)) {
             return;
         }
 
+        GradientDrawable gradient = (GradientDrawable) drawable;
         int[] colors = new int[]{bankCardStyle.backgroundGradientStart, bankCardStyle.backgroundGradientEnd, bankCardStyle.backgroundGradientStart};
-
-        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
-        gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-        float radius = getContext().getResources().getDimension(R.dimen.border_link_card);
-        if (borderTopOnly) {
-            gradientDrawable.setCornerRadii(new float[]{radius, radius,
-                    radius, radius,
-                    0, 0,
-                    0, 0});
-        } else {
-            gradientDrawable.setCornerRadius(radius);
-        }
-        mRoot.setBackground(gradientDrawable);
+        gradient.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
+        gradient.setColors(colors);
     }
 
-//    private void setBackground(View foreground, BankCardStyle bankCardStyle) {
-//        Drawable drawable = foreground.getBackground();
-//        if (!(drawable instanceof GradientDrawable)) {
+    // Datnt10 test ++
+//    private void setBankBackground(View mRoot, BankCardStyle bankCardStyle, boolean borderTopOnly) {
+//        if (mRoot == null || bankCardStyle == null) {
 //            return;
 //        }
 //
-//        GradientDrawable gradient = (GradientDrawable) drawable;
+////        int[] colors = new int[3];
+////        colors[0] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientStart);
+////        colors[1] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientEnd);
+////        colors[2] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientStart);
 //        int[] colors = new int[]{bankCardStyle.backgroundGradientStart, bankCardStyle.backgroundGradientEnd, bankCardStyle.backgroundGradientStart};
-//        gradient.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
-//        gradient.setColors(colors);
+//
+//        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
+//        gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+//        float radius = getContext().getResources().getDimension(R.dimen.border_link_card);
+//        if (borderTopOnly) {
+//            gradientDrawable.setCornerRadii(new float[]{radius, radius,
+//                    radius, radius,
+//                    0, 0,
+//                    0, 0});
+//        } else {
+//            gradientDrawable.setCornerRadius(radius);
+//        }
+//        mRoot.setBackground(gradientDrawable);
 //    }
+    // Datnt10 test --
 }
