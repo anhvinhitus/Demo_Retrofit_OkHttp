@@ -46,11 +46,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private final List<AppResource> mListExcludeApp;
 
-    private long mLastTimeFetchApplication;
-
     private EventBus mEventBus;
-
-    private Exception mException;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -208,7 +204,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         List<Long> listAppId = resourceResponse.appidlist;
         mLocalStorage.updateAppList(listAppId);
-        mLastTimeFetchApplication = System.currentTimeMillis() / 1000;
     }
 
     private void updateInsideAppIndex(List<Long> orderedInsideApps) {

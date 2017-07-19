@@ -117,7 +117,7 @@ public class AndroidApplication extends Application {
                 .build();
         Fabric.with(this, crashlyticsKit);
 
-        ConfigLoader.initConfig(getAssets(), BuildConfig.ZALOPAY_APP_ID);
+        ConfigLoader.initConfig(getAssets(), BuildConfig.WITHDRAW_APP_ID);
         LocationProvider.init(appComponent.locationRepositoryFactory(), this);
 
     }

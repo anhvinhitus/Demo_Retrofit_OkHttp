@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -63,8 +64,10 @@ public class PaymentAppConfig {
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
 
         EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
-        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID,
+        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BuildConfig.ZALOPAY_APP_ID,
                 PaymentAppTypeEnum.REACT_NATIVE.value, "TK Zalo Pay"));
+        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BuildConfig.WITHDRAW_APP_ID,
+                PaymentAppTypeEnum.REACT_NATIVE.value, "Withdraw"));
 
         EXCEPT_LOAD_FONTS = new ArrayList<>();
         EXCEPT_LOAD_FONTS.add(Constants.FONT_FAMILY_NAME_ZALOPAY);
