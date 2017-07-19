@@ -40,7 +40,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
-import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.PreferentialNotificationEvent;
@@ -381,14 +380,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
-            mView.refreshIconFont();
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onCashBackEvent(PromotionEvent event) {
         mEventBus.removeStickyEvent(PromotionEvent.class);
@@ -437,25 +428,25 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    private void hideLoadingView() {
+    void hideLoadingView() {
         if (mView != null) {
             mView.hideLoading();
         }
     }
 
-    private void showErrorView(String mess) {
+    void showErrorView(String mess) {
         if (mView != null) {
             mView.showError(mess);
         }
     }
 
-    private void showNetworkError() {
+    void showNetworkError() {
         if (mView != null) {
             mView.showNetworkErrorDialog();
         }
     }
 
-    private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
+    void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
         Intent data = new Intent();
         data.putExtra("returncode", returnCode);
         data.putExtra("returnMessage", returnMessage);
@@ -529,7 +520,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 });
     }
 
-    private void removeNotification(NotificationData notify) {
+    void removeNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())

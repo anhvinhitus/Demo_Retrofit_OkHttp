@@ -4,10 +4,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,37 +20,19 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
 /**
  * Created by AnhHieu on 8/15/16.
  * *
  */
-public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> {
+final class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> {
 
-    private TransferStore.Repository mTransferRepository;
-    private EventBus mEventBus;
+    private final TransferStore.Repository mTransferRepository;
 
     @Inject
-    public TransferHomePresenter(TransferStore.Repository transferRepository,
-                                 EventBus eventBus) {
+    TransferHomePresenter(TransferStore.Repository transferRepository) {
         this.mTransferRepository = transferRepository;
-        this.mEventBus = eventBus;
-    }
-
-    @Override
-    public void attachView(ITransferHomeView view) {
-        super.attachView(view);
-        if (!mEventBus.isRegistered(this)) {
-            mEventBus.register(this);
-        }
-    }
-
-    @Override
-    public void detachView() {
-        mEventBus.unregister(this);
-        super.detachView();
     }
 
     @Override
@@ -72,6 +50,9 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
     }
 
     private class RecentSubscriber extends DefaultSubscriber<List<RecentTransaction>> {
+
+        RecentSubscriber() {
+        }
 
         @Override
         public void onNext(List<RecentTransaction> recentTransactions) {
@@ -129,14 +110,6 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
                     });
         } catch (Exception e) {
             Timber.e(e, "Load animation from resource throw exception.");
-        }
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
-            mView.reloadIntroAnimation();
         }
     }
 }

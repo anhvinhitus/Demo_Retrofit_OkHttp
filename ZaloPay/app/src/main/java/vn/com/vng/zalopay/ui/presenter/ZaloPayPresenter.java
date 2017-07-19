@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -282,15 +281,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             mView.hideNetworkError();
         } else {
             mView.showWsConnectError();
-        }
-    }
-
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
-            mView.refreshApps();
         }
     }
 }
