@@ -256,6 +256,7 @@ public class PayProxy extends SingletonBase {
                 moveToResultScreen();
                 break;
             case PaymentState.SECURITY:
+                hideLoading(null);
                 mAuthenActor.closeAuthen();
                 startChannelActivity();
                 break;
@@ -266,7 +267,7 @@ public class PayProxy extends SingletonBase {
                     try {
                         askToRetryGetStatus();
                     } catch (Exception e) {
-                        Log.e(this, e);
+                        Timber.w(e,"Exception show retry dialog status");
                         moveToResultScreen();
                     }
                 } else if (transStatusStart) {
@@ -358,7 +359,7 @@ public class PayProxy extends SingletonBase {
                 getView().showLoading(pMessage);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e,"Exception show loading");
         }
     }
 
@@ -369,7 +370,7 @@ public class PayProxy extends SingletonBase {
                 getView().hideLoading();
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e,"Exception hide loading");
         }
     }
 
