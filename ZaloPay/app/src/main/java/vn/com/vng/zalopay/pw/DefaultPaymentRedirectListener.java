@@ -3,8 +3,7 @@ package vn.com.vng.zalopay.pw;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by longlv on 2/10/17.
@@ -12,9 +11,9 @@ import vn.com.vng.zalopay.navigation.INavigator;
  */
 
 public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-    private INavigator mNavigator;
+    private Navigator mNavigator;
 
-    public DefaultPaymentRedirectListener(INavigator navigator) {
+    public DefaultPaymentRedirectListener(Navigator navigator) {
         mNavigator = navigator;
     }
 

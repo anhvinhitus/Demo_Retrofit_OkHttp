@@ -37,7 +37,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
-import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.pw.AbsPWResponseListener;
 import vn.com.vng.zalopay.pw.DefaultPaymentRedirectListener;
@@ -62,13 +62,13 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
-    final INavigator mNavigator;
+    final Navigator mNavigator;
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private final NotificationStore.Repository mNotificationRepository;
     private PaymentWrapper paymentWrapper;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
-                              INavigator navigator, NotificationStore.Repository mNotificationRepository,
+                              Navigator navigator, NotificationStore.Repository mNotificationRepository,
                               NetworkService networkServiceWithRetry
     ) {
         super(reactContext);

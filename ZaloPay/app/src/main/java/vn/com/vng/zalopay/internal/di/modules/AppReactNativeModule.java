@@ -22,8 +22,6 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
-import vn.com.vng.zalopay.navigation.INavigator;
-import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 5/12/16.
@@ -63,11 +61,4 @@ public class AppReactNativeModule {
                 return null;
         }
     }
-
-    @Provides
-    @Singleton
-    INavigator providesNavigator(Navigator navigator) {
-        return navigator;
-    }
-
 }

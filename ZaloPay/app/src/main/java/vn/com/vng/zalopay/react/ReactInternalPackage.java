@@ -22,8 +22,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.ReactRedPacketNativeModule;
@@ -34,24 +33,18 @@ import vn.com.vng.zalopay.react.redpacket.ReactRedPacketNativeModule;
  */
 public class ReactInternalPackage implements ReactPackage {
 
-    private TransactionStore.Repository mTransactionRepository;
-    private RedPacketStore.Repository mRedPackageRepository;
-    private FriendStore.Repository mFriendRepository;
-    private BalanceStore.Repository mBalanceRepository;
-    private IRedPacketPayService paymentService;
-    private AlertDialogProvider sweetAlertDialog;
-    private AppResourceStore.Repository resourceRepository;
-
-    private NotificationStore.Repository mNotificationRepository;
-
-    private INavigator navigator;
-
-    private EventBus mEventBus;
-
-    private ReactNativeHostable mReactNativeHostable;
-
-    private User mUser;
-
+    private final TransactionStore.Repository mTransactionRepository;
+    private final RedPacketStore.Repository mRedPackageRepository;
+    private final FriendStore.Repository mFriendRepository;
+    private final BalanceStore.Repository mBalanceRepository;
+    private final IRedPacketPayService paymentService;
+    private final AlertDialogProvider sweetAlertDialog;
+    private final AppResourceStore.Repository resourceRepository;
+    private final NotificationStore.Repository mNotificationRepository;
+    private final Navigator navigator;
+    private final EventBus mEventBus;
+    private final ReactNativeHostable mReactNativeHostable;
+    private final User mUser;
     private final NetworkService mNetworkServiceWithRetry;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
@@ -60,7 +53,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 BalanceStore.Repository balanceRepository,
                                 IRedPacketPayService paymentService,
                                 AlertDialogProvider sweetAlertDialog,
-                                INavigator navigator,
+                                Navigator navigator,
                                 EventBus eventBus,
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,

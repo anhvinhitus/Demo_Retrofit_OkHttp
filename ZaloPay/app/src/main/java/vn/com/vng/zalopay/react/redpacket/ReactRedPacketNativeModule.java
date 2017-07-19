@@ -51,17 +51,16 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
-    private User mUser;
-    RedPacketStore.Repository mRedPacketRepository;
-    private FriendStore.Repository mFriendRepository;
-    private BalanceStore.Repository mBalanceRepository;
+    protected final RedPacketStore.Repository mRedPacketRepository;
+    private final User mUser;
+    private final FriendStore.Repository mFriendRepository;
+    private final BalanceStore.Repository mBalanceRepository;
     private final IRedPacketPayService mPaymentService;
+
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private CountDownTimer mTimerGetStatus;
+    private boolean isRunningGetStatus;
     private AlertDialogProvider mDialogProvider;
-
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
-
-    CountDownTimer mTimerGetStatus;
-    boolean isRunningGetStatus;
 
     public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
                                       RedPacketStore.Repository redPackageRepository,
@@ -106,7 +105,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                                 }
                             }
                         });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     void pay(final BundleOrder bundleOrder, final Promise promise) {
@@ -140,7 +139,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                 Subscription subscription = updateBalance()
                         .subscribe(new DefaultSubscriber<>());
-                compositeSubscription.add(subscription);
+                mCompositeSubscription.add(subscription);
 
                 Helpers.promiseResolveSuccess(promise, data);
             }
@@ -216,7 +215,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         onGetBundleStatusFinish(promise, bundleID, true, 1);
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     Observable<Boolean> updateBalance() {
@@ -291,18 +290,18 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         onGetPackageStatus(packageId, packageStatus);
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
         Subscription subscription = mRedPacketRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue(), null)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
 
         Subscription balanceSub = updateBalance()
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(balanceSub);
+        mCompositeSubscription.add(balanceSub);
     }
 
     @ReactMethod
@@ -346,7 +345,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         startTaskGetTransactionStatus(submitOpenPackage.packageID, submitOpenPackage.zpTransID, promise);
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -356,7 +355,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 .map(DataMapper::transform)
 
                 .subscribe(new GetAllFriendSubscriber(promise, getReactApplicationContext()));
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -379,7 +378,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             promise.resolve(DataMapper.transform(receivePackage));
                         }
                     });
-            compositeSubscription.add(subscription);
+            mCompositeSubscription.add(subscription);
         } catch (Exception ex) {
             promise.reject("EXCEPTION", ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
         }
@@ -407,7 +406,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     }
                 });
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -443,7 +442,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             Subscription subscription = mFriendRepository.checkListZaloIdForClient()
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<>());
-            compositeSubscription.add(subscription);
+            mCompositeSubscription.add(subscription);
         }
     }
 
@@ -455,7 +454,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onHostDestroy() {
 
-        unSubscribeIfNotNull(compositeSubscription);
+        unSubscribeIfNotNull(mCompositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);

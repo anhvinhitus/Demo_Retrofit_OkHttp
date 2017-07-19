@@ -94,7 +94,7 @@ import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 * Navigator
 * */
 @Singleton
-public class Navigator implements INavigator {
+public class Navigator {
 
     private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
@@ -209,14 +209,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    @Override
     public void startDepositForResultActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
     }
 
-    @Override
     public void startDepositForResultActivity(Activity activity) {
         startDepositForResultActivity(activity, false);
     }
@@ -252,7 +250,7 @@ public class Navigator implements INavigator {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, true, false, false, false);
     }
 
-    @Override
+
     public void startLinkCardActivity(Context context) {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false, false);
     }
@@ -261,7 +259,6 @@ public class Navigator implements INavigator {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, false, false, false, true);
     }
 
-    @Override
     public void startLinkAccountActivity(Context context) {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_ACCOUNT, false, false, false, false);
     }
@@ -361,22 +358,18 @@ public class Navigator implements INavigator {
 
     }
 
-    @Override
     public void startLinkCardActivityForResult(final Activity activity, String bankCode) {
         startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD, bankCode);
     }
 
-    @Override
     public void startLinkCardActivityForResult(Fragment fragment, String bankCode) {
         startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_CARD, bankCode);
     }
 
-    @Override
     public void startLinkAccountActivityForResult(final Activity activity, String bankCode) {
         startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_ACCOUNT, bankCode);
     }
 
-    @Override
     public void startLinkAccountActivityForResult(final Fragment fragment, String bankCode) {
         startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_ACCOUNT, bankCode);
     }
@@ -453,7 +446,6 @@ public class Navigator implements INavigator {
         }
     }
 
-    @Override
     public void startProfileInfoActivity(Context context) {
         if (!mUserConfig.hasCurrentUser()) {
             return;
@@ -511,7 +503,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    @Override
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
         if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == User.MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
@@ -530,12 +521,10 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    @Override
     public Intent intentProfile(Context context) {
         return new Intent(context, ProfileActivity.class);
     }
 
-    @Override
     public Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions) {
         if (appResource == null) {
             return null;
@@ -626,7 +615,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    @Override
     public void startWebPromotionDetailActivity(Context context, String url) {
         Intent intent = new Intent(context, WebAppPromotionActivity.class);
         intent.putExtra(Constants.ARG_URL, url);
@@ -760,7 +748,6 @@ public class Navigator implements INavigator {
     }
 
 
-    @Override
     public boolean promptPIN(Context context, int channel, final Promise promise) {
         if (!shouldShowPinDialog()) {
             Helpers.promiseResolveSuccess(promise, null);

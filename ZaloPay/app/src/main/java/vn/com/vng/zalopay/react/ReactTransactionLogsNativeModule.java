@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Pair;
 
@@ -49,7 +48,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.TransHistory;
-import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.model.TransactionResult;
@@ -66,7 +65,7 @@ import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_TRANSACTION_N
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private final TransactionStore.Repository mTransactionRepository;
-    private final INavigator mNavigator;
+    private final Navigator mNavigator;
     private final EventBus mEventBus;
     private final NotificationStore.Repository mNotificationRepository;
     private final AppResourceStore.Repository mResourceRepository;
@@ -75,7 +74,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     private static final int ERR_CODE_OUT_OF_DATA = 2;
     private static final int INTERNAL_REACT_NATIVE_APPID = 1;
 
-    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, INavigator navigator,
+    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, Navigator navigator,
                                      TransactionStore.Repository repository, AppResourceStore.Repository resourceRepository,
                                      NotificationStore.Repository notificationRepository,
                                      EventBus eventBus) {
