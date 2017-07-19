@@ -3,10 +3,19 @@ package vn.com.vng.zalopay.user;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.passport.LoginZaloActivity;
@@ -88,5 +97,37 @@ public abstract class UserBaseActivity extends BaseActivity {
 
     protected boolean isUserSessionStarted() {
         return isUserSessionStarted;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
+        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
+        User user = getAppComponent().userConfig().getCurrentUser();
+        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        clearUserSession(getString(R.string.exception_token_expired_message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onForceUpdateApp(ForceUpdateAppEvent event) {
+        Timber.i("Force update app in Screen %s", TAG);
+        clearUserSession(null);
+    }
+
+    public boolean clearUserSession(String message) {
+        //Remove all sticky event in app
+        eventBus.removeAllStickyEvents();
+
+        if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            return false;
+        }
+
+        getAppComponent().applicationSession().setMessageAtLogin(message);
+        getAppComponent().applicationSession().clearUserSession();
+        return true;
     }
 }

@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -24,8 +22,8 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -110,7 +108,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         mSubscription.add(subscription);
     }
 
-    private void getProfileSuccess() {
+    void getProfileSuccess() {
         User user = mUser;
         if (user != null) {
             updateUserInfo(user);
@@ -164,11 +162,14 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             return;
         }
 
-        ((BaseActivity) mView.getActivity()).clearUserSession(null);
+        ((UserBaseActivity) mView.getActivity()).clearUserSession(null);
 
     }
 
     private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
+
+        ProfileSubscriber() {
+        }
 
         @Override
         public void onCompleted() {
