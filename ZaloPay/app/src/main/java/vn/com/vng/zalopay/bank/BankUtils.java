@@ -10,12 +10,11 @@ import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by longlv on 1/17/17.
@@ -110,23 +109,22 @@ public class BankUtils {
         if (TextUtils.isEmpty(bankCode)) {
             return "";
         }
-        String strBankConfig = "";
         try {
-            strBankConfig = SharedPreferencesManager.getInstance().getBankConfig(bankCode);
+            BankConfig bankConfig = SDKApplication.getApplicationComponent()
+                    .bankListInteractor()
+                    .getBankConfig(bankCode);
+            if (bankConfig == null || TextUtils.isEmpty(bankConfig.name)) {
+                return "";
+            }
+            if (bankConfig.name.startsWith("NH")) {
+                return bankConfig.name.substring(2);
+            } else {
+                return bankConfig.name;
+            }
+
         } catch (Exception e) {
             Timber.w(e, "Function getBankName throw exception [%s]", e.getMessage());
         }
-        if (TextUtils.isEmpty(strBankConfig)) {
-            return "";
-        }
-        BankConfig bankConfig = GsonUtils.fromJsonString(strBankConfig, BankConfig.class);
-        if (bankConfig == null || TextUtils.isEmpty(bankConfig.name)) {
-            return "";
-        }
-        if (bankConfig.name.startsWith("NH")) {
-            return bankConfig.name.substring(2);
-        } else {
-            return bankConfig.name;
-        }
+        return "";
     }
 }

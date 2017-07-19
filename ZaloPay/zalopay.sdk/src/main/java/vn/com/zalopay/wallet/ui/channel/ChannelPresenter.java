@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -33,7 +32,6 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
@@ -59,6 +57,7 @@ import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -84,6 +83,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public EventBus mBus;
     @Inject
     Context mContext;
+    @Inject
+    AppInfoStore.Interactor appInfoInteractor;
 
     boolean mTimerRunning = false;
     AdapterBase mAdapter = null;
@@ -240,7 +241,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private void reFillBidvCardNumber() {
         try {
-            String pCardNumber = SharedPreferencesManager.getInstance().pickCachedCardNumber();
+            String pCardNumber = SDKApplication.getApplicationComponent()
+                    .sharePreferences()
+                    .pickCachedCardNumber();
             if (!TextUtils.isEmpty(pCardNumber)) {
                 mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
             }
@@ -323,10 +326,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private MiniPmcTransType loadLinkConfig(boolean bankLink) {
-        return SDKApplication
-                .getApplicationComponent()
-                .appInfoInteractor()
-                .getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, null);
+        return appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, null);
     }
 
     private void startLink() {
@@ -394,8 +394,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private boolean createLinkAdapter(int pChannelId) {
         try {
-            MiniPmcTransType miniPmcTransType = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().
-                    getPmcConfigByPmcID(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, pChannelId, null), MiniPmcTransType.class);
+            MiniPmcTransType miniPmcTransType = appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, pChannelId, null);
             if (miniPmcTransType == null) {
                 return false;
             }

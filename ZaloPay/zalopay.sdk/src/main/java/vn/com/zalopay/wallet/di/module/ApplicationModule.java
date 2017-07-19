@@ -46,7 +46,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public SharedPreferencesManager providerSharePreferenceManager(Context pContext) {
-        return SharedPreferencesManager.shared(pContext);
+        return new SharedPreferencesManager(pContext);
     }
 
     @Provides

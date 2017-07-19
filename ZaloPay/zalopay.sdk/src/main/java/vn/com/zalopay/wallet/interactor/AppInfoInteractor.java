@@ -11,6 +11,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -20,6 +22,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
+import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
@@ -48,6 +51,39 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     @Override
     public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
         return this.mLocalStorage.getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
+    }
+
+    @Override
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode) {
+        return this.mLocalStorage.getPmcTranstype(pAppId, pTranstype, pPmcID, pBankCode);
+    }
+
+    @Override
+    public MiniPmcTransType getPmcConfigByPmcKey(String key) {
+        return this.mLocalStorage.getPmcConfigByPmcKey(key);
+    }
+
+    @Override
+    public MiniPmcTransType getPmcConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
+        String pmcConfig;
+        if (pTranstype == TransactionType.WITHDRAW) {
+            pmcConfig = this.mLocalStorage.sharePref().getZaloPayChannelConfig(pAppId, pTranstype, pBankCode);
+        } else if (BankAccountHelper.isBankAccount(pBankCode)) {
+            pmcConfig = this.mLocalStorage.sharePref().getBankAccountChannelConfig(pAppId, pTranstype, pBankCode);
+        } else if (BuildConfig.CC_CODE.equals(pBankCode)) {
+            pmcConfig = this.mLocalStorage.sharePref().getCreditCardChannelConfig(pAppId, pTranstype, pBankCode);
+        } else {
+            pmcConfig = this.mLocalStorage.sharePref().getATMChannelConfig(pAppId, pTranstype, pBankCode);
+        }
+        if (TextUtils.isEmpty(pmcConfig)) {
+            return null;
+        }
+        try {
+            return GsonUtils.fromJsonString(pmcConfig, MiniPmcTransType.class);
+        } catch (Exception e) {
+            Timber.w(e, "Exception get pmc config");
+        }
+        return null;
     }
 
     @Override
@@ -180,5 +216,10 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
             Timber.w(ex, "Exception get max value transtype");
         }
         return 0;
+    }
+
+    @Override
+    public long getBankMinAmountSupport(String key) {
+        return mLocalStorage.sharePref().getBankMinAmountSupport(key);
     }
 }

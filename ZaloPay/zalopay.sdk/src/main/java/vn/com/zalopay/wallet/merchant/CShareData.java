@@ -3,32 +3,23 @@ package vn.com.zalopay.wallet.merchant;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
-
-import java.util.List;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
-import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.zalopay.promotion.IPromotionResult;
@@ -204,29 +195,6 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    /***
-     * get map card list of user
-     *
-     * @param pUserID
-     * @return
-     */
-    public List<MapCard> getMappedCardList(String pUserID) {
-        try {
-            return SharedPreferencesManager.getInstance().getMapCardList(pUserID);
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return null;
-    }
-
-    public List<BankAccount> getMapBankAccountList(String pUserID) {
-        try {
-            return SharedPreferencesManager.getInstance().getBankAccountList(pUserID);
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return null;
-    }
     /***
      * support app detect type of visa card.
      * @param pCardNumber

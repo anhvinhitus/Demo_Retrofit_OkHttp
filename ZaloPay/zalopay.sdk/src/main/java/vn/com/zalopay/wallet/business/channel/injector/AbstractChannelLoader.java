@@ -7,14 +7,12 @@ import java.util.List;
 
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -29,6 +27,8 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
+import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
+import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 
 public abstract class AbstractChannelLoader {
     public static final int MIN_VALUE_CHANNEL = 1000000000;
@@ -37,6 +37,8 @@ public abstract class AbstractChannelLoader {
     protected List<String> pmcConfigList = new ArrayList<>();
     @TransactionType
     int mTranstype;
+    AppInfoStore.Interactor mAppinfoInteractor;
+    ILinkSourceInteractor mLinkInteractor;
     private double mMinValue = MIN_VALUE_CHANNEL, mMaxValue = MAX_VALUE_CHANNEL;
     private long mAppId;
     private String mUserId;
@@ -49,6 +51,8 @@ public abstract class AbstractChannelLoader {
         this.mAmount = pAmount;
         this.mBalance = pBalance;
         this.mTranstype = pTranstype;
+        this.mAppinfoInteractor = SDKApplication.getApplicationComponent().appInfoInteractor();
+        this.mLinkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
     }
 
     /***
@@ -89,13 +93,11 @@ public abstract class AbstractChannelLoader {
     protected void getChannelFromConfig() {
         for (String pmcKey : pmcConfigList) {
             try {
-                MiniPmcTransType activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getPmcConfigByPmcKey(pmcKey), MiniPmcTransType.class);
+                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfigByPmcKey(pmcKey);
                 if (activeChannel == null) {
                     continue;
                 }
                 PaymentChannel channel = new PaymentChannel(activeChannel);
-                /*if (channel.isBankAccount()
-                        && BankAccountHelper.hasBankAccountOnCache(mUserId, CardType.PVCB)) {*/
                 if (channel.isBankAccount()) {
                     continue;//skip bank account
                 }
@@ -115,7 +117,7 @@ public abstract class AbstractChannelLoader {
                 } else if (channel.isAtmChannel()) {
                     StringBuilder keyBuilder = new StringBuilder();
                     keyBuilder.append(mAppId).append(Constants.UNDERLINE).append(mTranstype);
-                    long bankMinAmountSupport = SharedPreferencesManager.getInstance().getBankMinAmountSupport(keyBuilder.toString());
+                    long bankMinAmountSupport = mAppinfoInteractor.getBankMinAmountSupport(keyBuilder.toString());
                     if (bankMinAmountSupport > 0 && mAmount < bankMinAmountSupport) {
                         channel.minvalue = bankMinAmountSupport;
                         channel.status = PaymentChannelStatus.DISABLE;
@@ -126,7 +128,7 @@ public abstract class AbstractChannelLoader {
                 findValue(channel); //get min/max amount
                 send(channel);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e, "Exception get channel from config");
             }
         }
     }
@@ -138,33 +140,13 @@ public abstract class AbstractChannelLoader {
      */
     protected void getMapBankAccount() throws Exception {
         try {
-            //get list of mapped bank account from cached.
-            String mapBankAccountKeyList = SharedPreferencesManager.getInstance().getBankAccountKeyList(mUserId);
-            if (TextUtils.isEmpty(mapBankAccountKeyList)) {
+            List<BankAccount> bankAccounts = mLinkInteractor.getBankAccountList(mUserId);
+            if (bankAccounts == null || bankAccounts.size() <= 0) {
                 Timber.d("get map bank account from cache is empty");
                 return;
             }
-            Timber.d("get map bank account from cache" + mapBankAccountKeyList);
-            for (String mapCardID : mapBankAccountKeyList.split(Constants.COMMA)) {
-                if (TextUtils.isEmpty(mapCardID)) {
-                    continue;
-                }
-                //get card info from cache.
-                String mapObject = SharedPreferencesManager.getInstance().getMap(mUserId, mapCardID);
-                if (TextUtils.isEmpty(mapObject)) {
-                    continue;
-                }
-                BankAccount bankAccount = GsonUtils.fromJsonString(mapObject, BankAccount.class);
-                if (bankAccount == null) {
-                    continue;
-                }
-
-                MiniPmcTransType activeChannel = null;
-                if (mTranstype == TransactionType.WITHDRAW) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mAppId, mTranstype, bankAccount.bankcode), MiniPmcTransType.class);
-                } else if (BankAccountHelper.isBankAccount(bankAccount.bankcode)) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(mAppId, mTranstype, bankAccount.bankcode), MiniPmcTransType.class);
-                }
+            for (BankAccount bankAccount : bankAccounts) {
+                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, bankAccount.bankcode);
                 Log.d(this, "active channel ", activeChannel);
                 if (activeChannel != null) {
                     //check this map card/map bankaccount is support or not
@@ -217,35 +199,13 @@ public abstract class AbstractChannelLoader {
      */
     protected void getMapCard() throws Exception {
         try {
-            //get list of mapped card from cached.
-            String mappCardIdList = SharedPreferencesManager.getInstance().getMapCardKeyList(mUserId);
-            if (TextUtils.isEmpty(mappCardIdList)) {
+            List<MapCard> mapCards = mLinkInteractor.getMapCardList(mUserId);
+            if (mapCards == null || mapCards.size() <= 0) {
                 Timber.d("get map card is null");
                 return;
             }
-            Timber.d("map card list " + mappCardIdList);
-            for (String mapCardID : mappCardIdList.split(Constants.COMMA)) {
-                if (TextUtils.isEmpty(mapCardID)) {
-                    continue;
-                }
-                String strMapCard = SharedPreferencesManager.getInstance().getMap(mUserId, mapCardID); //get card info from cache
-                if (TextUtils.isEmpty(strMapCard)) {
-                    continue;
-                }
-                MapCard mapCard = GsonUtils.fromJsonString(strMapCard, MapCard.class);
-                if (mapCard == null) {
-                    continue;
-                }
-                Log.d(this, "map card ", mapCard);
-                MiniPmcTransType activeChannel;
-                if (mTranstype == TransactionType.WITHDRAW) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
-                } else if (BuildConfig.CC_CODE.equals(mapCard.bankcode)) {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
-                } else {
-                    activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(mAppId, mTranstype, mapCard.bankcode), MiniPmcTransType.class);
-                }
-                Log.d(this, "active channel is", activeChannel);
+            for (MapCard mapCard : mapCards) {
+                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, mapCard.bankcode);
                 if (activeChannel != null) {
                     //check this map card is support or not
                     allowPaymentChannel(activeChannel);
@@ -387,9 +347,7 @@ public abstract class AbstractChannelLoader {
 
     public void getChannels() throws Exception {
         try {
-            pmcConfigList = SDKApplication.getApplicationComponent()
-                    .appInfoInteractor()
-                    .getPmcTranstypeKeyList(mAppId, mTranstype);
+            pmcConfigList = mAppinfoInteractor.getPmcTranstypeKeyList(mAppId, mTranstype);
             detectChannel();
         } catch (Exception ex) {
             throw ex;

@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.interactor;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscription;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -28,13 +27,23 @@ public interface ILinkSourceInteractor {
 
     void putCards(String userid, String checksum, List<MapCard> cardList);
 
+    void putCard(String userid, MapCard mapCard);
+
+    void putCardNumber(String cardNumber);
+
+    String getCardNumber();
+
     MapCard getCard(String userid, String cardKey);
 
     List<BankAccount> getBankAccountList(String userid);
 
+    List<MapCard> getMapCardList(String pUserID);
+
     Observable<Boolean> refreshMapList(String appVersion, String userId, String accessToken, String first6cardno, String last4cardno);
 
     void putBankAccounts(String userid, String checksum, List<BankAccount> bankAccountList);
+
+    void clearCheckSum();
 
     Observable<BaseResponse> removeMap(String userid, String accessToken, String cardname, String first6cardno, String last4cardno, String bankCode, String appVersion);
 }

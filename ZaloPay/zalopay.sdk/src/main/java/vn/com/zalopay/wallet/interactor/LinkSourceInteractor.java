@@ -16,6 +16,7 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.bankaccount.BankAccountStore;
 import vn.com.zalopay.wallet.repository.cardmap.CardStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
@@ -169,5 +170,37 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
 
     private BankAccount getBankAccount(String userid, String key) {
         return mBankAccountLocalStorage.getBankAccount(userid, key);
+    }
+
+    @Override
+    public void clearCheckSum() {
+        mCardMapLocalStorage.clearCheckSum();
+    }
+
+    @Override
+    public List<MapCard> getMapCardList(String pUserID) {
+        return mCardMapLocalStorage.sharePref().getMapCardList(pUserID);
+    }
+
+    @Override
+    public void putCard(String userId, MapCard mapCard) {
+        String mapCardKeyList = mCardMapLocalStorage.sharePref().getMapCardKeyList(userId);
+        if (TextUtils.isEmpty(mapCardKeyList)) {
+            mapCardKeyList = mapCard.getKey();
+        } else if (!mapCardKeyList.contains(mapCard.getKey())) {
+            mapCardKeyList += (Constants.COMMA + mapCard.getKey());
+        }
+        mCardMapLocalStorage.setCard(userId, mapCard);
+        mCardMapLocalStorage.setCardKeyList(userId, mapCardKeyList);
+    }
+
+    @Override
+    public void putCardNumber(String cardNumber) {
+        mCardMapLocalStorage.sharePref().setCachedCardNumber(cardNumber);
+    }
+
+    @Override
+    public String getCardNumber() {
+        return mCardMapLocalStorage.sharePref().pickCachedCardNumber();
     }
 }

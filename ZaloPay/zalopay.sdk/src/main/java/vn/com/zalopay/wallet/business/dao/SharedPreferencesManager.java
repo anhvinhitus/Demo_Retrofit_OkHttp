@@ -4,124 +4,65 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.SharePrefConstants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
-public class SharedPreferencesManager extends SingletonBase {
+public class SharedPreferencesManager {
     private static final String SHARE_PREFERENCES_NAME = "ZALO_PAY_CACHED";
-    private static SharedPreferencesManager mSharePreferencesManager = null;
-    private SharedPreferences mCommonSharedPreferences = null;
-    private WeakReference<Context> mContext;
-
-    public SharedPreferencesManager() throws Exception {
-        super();
-        if (GlobalData.getAppContext() == null)
-            throw new Exception("Truy cập không còn hợp lệ");
-        mContext = new WeakReference<>(GlobalData.getAppContext());
-    }
+    private SharedPreferences sharedPreferences = null;
 
     public SharedPreferencesManager(Context pContext) {
         super();
-        mContext = new WeakReference<>(pContext);
-    }
-
-    public static synchronized SharedPreferencesManager getInstance() throws Exception {
-        if (mSharePreferencesManager == null) {
-            mSharePreferencesManager = new SharedPreferencesManager();
-        }
-        return mSharePreferencesManager;
-    }
-
-    public static synchronized SharedPreferencesManager shared(Context pContext) {
-        if (mSharePreferencesManager == null) {
-            mSharePreferencesManager = new SharedPreferencesManager(pContext);
-        }
-        return mSharePreferencesManager;
-    }
-
-    public synchronized SharedPreferences getSharedPreferences() {
-        if (mContext == null || mContext.get() == null) {
-            Timber.d("mContext is null");
-            return null;
-        }
-        if (mCommonSharedPreferences != null) {
-            return mCommonSharedPreferences;
-        }
-        mCommonSharedPreferences = mContext.get().getSharedPreferences(SHARE_PREFERENCES_NAME, 0);
-        return mCommonSharedPreferences;
+        sharedPreferences = pContext.getSharedPreferences(SHARE_PREFERENCES_NAME, 0);
     }
 
     public String getString(String pKey) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null)
-            return sharedPreferences.getString(pKey, null);
-        return null;
+        return sharedPreferences.getString(pKey, null);
     }
 
     public boolean setString(String pKey, String pValue) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences != null && sharedPreferences.edit().putString(pKey, pValue).commit();
     }
 
     private long getLong(String pKey) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null)
-            return sharedPreferences.getLong(pKey, 0);
-        return 0;
+        return sharedPreferences.getLong(pKey, 0);
     }
 
-    public boolean setLong(String pKey, long pValue) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
+    private boolean setLong(String pKey, long pValue) {
         return sharedPreferences != null && sharedPreferences.edit().putLong(pKey, pValue).commit();
     }
 
     private int getInt(String pKey) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null) {
-            return sharedPreferences.getInt(pKey, Integer.MIN_VALUE);
-        }
-        return Integer.MIN_VALUE;
+        return sharedPreferences.getInt(pKey, Integer.MIN_VALUE);
     }
 
-    public boolean setInt(String pKey, int pValue) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-
+    private boolean setInt(String pKey, int pValue) {
         return sharedPreferences != null && sharedPreferences.edit().putInt(pKey, pValue).commit();
     }
 
     private boolean getBoolean(String pKey, boolean defaultValue) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null) {
-            return sharedPreferences.getBoolean(pKey, defaultValue);
-        }
-        return defaultValue;
+        return sharedPreferences.getBoolean(pKey, defaultValue);
     }
 
-    public boolean setBoolean(String pKey, boolean pValue) {
-        SharedPreferences sharedPreferences = getSharedPreferences();
-
+    private boolean setBoolean(String pKey, boolean pValue) {
         return sharedPreferences != null && sharedPreferences.edit().putBoolean(pKey, pValue).commit();
-
     }
 
     public String pickCachedCardNumber() {
-        String cardNumber = getString(mContext.get().getResources().getString(R.string.sdk_conf_cache_card_info));
+        String cardNumber = getString(SharePrefConstants.sdk_conf_cache_card_info);
         if (!TextUtils.isEmpty(cardNumber)) {
             setCachedCardNumber(null);
         }
@@ -129,202 +70,161 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public boolean setCachedCardNumber(String pCardNumber) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_cache_card_info), pCardNumber);
+        return setString(SharePrefConstants.sdk_conf_cache_card_info, pCardNumber);
     }
 
-    /***
-     * approve inside app
-     * @return
-     */
-    public String getApproveInsideApps() {
-
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_inside_app));
-    }
-
-    public boolean setApproveInsideApps(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_inside_app), pValue);
-    }
-
-    /***
-     * banner list,used by merchant
-     * @return
-     */
-    public String getBannerList() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_banner_list));
-    }
-
-    public boolean setBannerList(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_banner_list), pValue);
-    }
-
-    /***
-     * is maintenance withdraw
-     */
     public boolean setMaintenanceWithDraw(String pMessage) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_maintenance_withdraw), pMessage);
+        return setString(SharePrefConstants.sdk_conf_maintenance_withdraw, pMessage);
     }
 
     public String getMaintenanceWithDraw() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_maintenance_withdraw));
+        return getString(SharePrefConstants.sdk_conf_maintenance_withdraw);
     }
 
-    /***
-     * on/off deposite
-     * @param pEnableDeposite
-     * @return
-     */
     public boolean setEnableDeposite(boolean pEnableDeposite) {
-        return setBoolean(mContext.get().getResources().getString(R.string.sdk_conf_enable_deposite), pEnableDeposite);
+        return setBoolean(SharePrefConstants.sdk_conf_enable_deposite, pEnableDeposite);
     }
 
     public boolean getEnableDeposite() {
-        return getBoolean(mContext.get().getResources().getString(R.string.sdk_conf_enable_deposite), true);
+        return getBoolean(SharePrefConstants.sdk_conf_enable_deposite, true);
     }
 
-    /****
-     * platform info api in previous request time.
-     * @return
-     */
     public long getPlatformInfoExpriedTime() {
-        return getLong(mContext.get().getResources().getString(R.string.sdk_conf_platform_expired_time));
+        return getLong(SharePrefConstants.sdk_conf_platform_expired_time);
     }
 
     public boolean setPlatformInfoExpriedTime(long pValue) {
-        return setLong(mContext.get().getResources().getString(R.string.sdk_conf_platform_expired_time), pValue);
+        return setLong(SharePrefConstants.sdk_conf_platform_expired_time, pValue);
     }
 
-    /****
-     * platform info api in previous request time duration(ms from server)
-     * @return
-     */
     public long getPlatformInfoExpriedTimeDuration() {
-        return getLong(mContext.get().getResources().getString(R.string.sdk_conf_platform_expired_time_duration));
+        return getLong(SharePrefConstants.sdk_conf_platform_expired_time_duration);
     }
 
     public boolean setPlatformInfoExpriedTimeDuration(long pValue) {
-        return setLong(mContext.get().getResources().getString(R.string.sdk_conf_platform_expired_time_duration), pValue);
+        return setLong(SharePrefConstants.sdk_conf_platform_expired_time_duration, pValue);
     }
 
     public boolean setExpiredTimeAppChannel(String pAppID, long pExpiredTime) {
-        return setLong(mContext.get().getResources().getString(R.string.sdk_conf_app_info_expired_time) + pAppID, pExpiredTime);
+        return setLong(SharePrefConstants.sdk_conf_app_info_expired_time + pAppID, pExpiredTime);
     }
 
     public long getExpiredTimeAppChannel(String pAppID) {
-        return getLong(mContext.get().getResources().getString(R.string.sdk_conf_app_info_expired_time) + pAppID);
+        return getLong(SharePrefConstants.sdk_conf_app_info_expired_time + pAppID);
     }
 
     public boolean setExpiredBankList(long pExpiredTime) {
-        return setLong(mContext.get().getResources().getString(R.string.sdk_conf_banklist_expire_time), pExpiredTime);
-    }
-
-    public boolean setCheckSumBankList(String pCheckSum) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_banklist_checksum), pCheckSum);
+        return setLong(SharePrefConstants.sdk_conf_banklist_expire_time, pExpiredTime);
     }
 
     public long getExpiredBankList() {
-        return getLong(mContext.get().getResources().getString(R.string.sdk_conf_banklist_expire_time));
+        return getLong(SharePrefConstants.sdk_conf_banklist_expire_time);
+    }
+
+    public boolean setCheckSumBankList(String pCheckSum) {
+        return setString(SharePrefConstants.sdk_conf_banklist_checksum, pCheckSum);
     }
 
     public String getCheckSumBankList() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_banklist_checksum));
+        return getString(SharePrefConstants.sdk_conf_banklist_checksum);
     }
 
     public boolean setBankConfig(String pKey, String pBankConfig) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_bankconfig) + pKey, pBankConfig);
+        return setString(SharePrefConstants.sdk_conf_bankconfig + pKey, pBankConfig);
     }
 
     public String getBankConfig(String pKey) {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_bankconfig) + pKey);
+        return getString(SharePrefConstants.sdk_conf_bankconfig + pKey);
     }
 
     public boolean setBankPrefix(String pBankMap) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_bank_prefix), pBankMap);
+        return setString(SharePrefConstants.sdk_conf_bank_prefix, pBankMap);
     }
 
     public String getBankPrefix() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_bank_prefix));
+        return getString(SharePrefConstants.sdk_conf_bank_prefix);
     }
 
     public boolean setBankCodeList(String pBankCodeList) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_sorted_bankcode_list), pBankCodeList);
+        return setString(SharePrefConstants.sdk_conf_sorted_bankcode_list, pBankCodeList);
     }
 
     public String getBankCodeList() {
-        return getString(mContext.get().getString(R.string.sdk_conf_sorted_bankcode_list));
+        return getString(SharePrefConstants.sdk_conf_sorted_bankcode_list);
     }
 
     public boolean setCheckSumAppChannel(String pAppID, String pCheckSum) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_app_info_checksum) + pAppID, pCheckSum);
+        return setString(SharePrefConstants.sdk_conf_app_info_checksum + pAppID, pCheckSum);
     }
 
     public String getCheckSumAppChannel(String pAppID) {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_app_info_checksum) + pAppID);
+        return getString(SharePrefConstants.sdk_conf_app_info_checksum + pAppID);
     }
 
     //cache url download resource
     public String getResourceDownloadUrl() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_resource_download_url));
+        return getString(SharePrefConstants.sdk_conf_resource_download_url);
     }
 
     public boolean setResourceDownloadUrl(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_resource_download_url), pValue);
+        return setString(SharePrefConstants.sdk_conf_resource_download_url, pValue);
     }
 
     //current user id.
     public String getCurrentUserID() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_current_user_id));
+        return getString(SharePrefConstants.sdk_conf_current_user_id);
     }
 
     public boolean setCurrentUserID(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_current_user_id), pValue);
+        return setString(SharePrefConstants.sdk_conf_current_user_id, pValue);
     }
 
     public String getAppVersion() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_app_ver));
+        return getString(SharePrefConstants.sdk_conf_app_ver);
     }
 
     public boolean setAppVersion(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_app_ver), pValue);
+        return setString(SharePrefConstants.sdk_conf_app_ver, pValue);
     }
 
     public String getPlatformInfoCheckSum() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_platform_checksum));
+        return getString(SharePrefConstants.sdk_conf_platform_checksum);
     }
 
     public boolean setPlatformInfoCheckSum(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_platform_checksum), pValue);
+        return setString(SharePrefConstants.sdk_conf_platform_checksum, pValue);
     }
 
     public String getBankAccountCheckSum() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_bankaccount_checksum));
+        return getString(SharePrefConstants.sdk_conf_bankaccount_checksum);
     }
 
     public boolean setBankAccountCheckSum(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_bankaccount_checksum), pValue);
+        return setString(SharePrefConstants.sdk_conf_bankaccount_checksum, pValue);
     }
 
     public String getCardInfoCheckSum() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_cardinfo_checksum));
+        return getString(SharePrefConstants.sdk_conf_cardinfo_checksum);
     }
 
     public boolean setCardInfoCheckSum(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_cardinfo_checksum), pValue);
+        return setString(SharePrefConstants.sdk_conf_cardinfo_checksum, pValue);
     }
 
     public String getUnzipPath() throws Exception {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_resource_path));
+        return getString(SharePrefConstants.sdk_conf_resource_path);
     }
 
     public boolean setUnzipPath(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_resource_path), pValue);
+        return setString(SharePrefConstants.sdk_conf_resource_path, pValue);
     }
 
     public String getResourceVersion() {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_resource_ver));
+        return getString(SharePrefConstants.sdk_conf_resource_ver);
     }
 
     public boolean setResourceVersion(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_resource_ver), pValue);
+        return setString(SharePrefConstants.sdk_conf_resource_ver, pValue);
     }
 
     public boolean setMinValueChannel(String pKey, long pValue) {
@@ -369,12 +269,12 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public boolean setBankAccountKeyList(String pKey, String pBankAccountKeyList) {
-        return setString(pKey + mContext.get().getResources().getString(R.string.sdk_conf_bankaccount_list), pBankAccountKeyList);
+        return setString(pKey + SharePrefConstants.sdk_conf_bankaccount_list, pBankAccountKeyList);
     }
 
     public String getBankAccountKeyList(String pKey) {
         try {
-            return getString(pKey + mContext.get().getResources().getString(R.string.sdk_conf_bankaccount_list));
+            return getString(pKey + SharePrefConstants.sdk_conf_bankaccount_list);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -385,15 +285,11 @@ public class SharedPreferencesManager extends SingletonBase {
      * set map card list
      */
     public boolean setMapCardList(String pKey, String pMappedCardKeyList) {
-        return setString(pKey + mContext.get().getResources().getString(R.string.sdk_conf_mapcard_list), pMappedCardKeyList);
+        return setString(pKey + SharePrefConstants.sdk_conf_mapcard_list, pMappedCardKeyList);
     }
 
     public String getMapCardKeyList(String pKey) {
-        return getString(pKey + mContext.get().getResources().getString(R.string.sdk_conf_mapcard_list));
-    }
-
-    public boolean removeMappedCard(String pKey) {
-        return setString(pKey, "");
+        return getString(pKey + SharePrefConstants.sdk_conf_mapcard_list);
     }
 
     /***
@@ -466,15 +362,15 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public boolean setApp(String pId, String pConfig) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_appinfo) + pId, pConfig);
+        return setString(SharePrefConstants.sdk_conf_appinfo + pId, pConfig);
     }
 
     public String getAppById(String pID) {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_appinfo) + pID);
+        return getString(SharePrefConstants.sdk_conf_appinfo + pID);
     }
 
     public boolean setPmcConfig(String keyChannelID, String pConfig) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_channel_prefix) + keyChannelID, pConfig);
+        return setString(SharePrefConstants.sdk_conf_channel_prefix + keyChannelID, pConfig);
     }
 
     public String getPmcConfigByPmcID(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode) {
@@ -483,12 +379,12 @@ public class SharedPreferencesManager extends SingletonBase {
         if (!TextUtils.isEmpty(pBankCode)) {
             channelIDkey.append(Constants.UNDERLINE).append(pBankCode);
         }
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_channel_prefix) + channelIDkey.toString());
+        return getString(SharePrefConstants.sdk_conf_channel_prefix + channelIDkey.toString());
     }
 
 
     public String getPmcConfigByPmcKey(String pPmcKey) {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_channel_prefix) + pPmcKey);
+        return getString(SharePrefConstants.sdk_conf_channel_prefix + pPmcKey);
     }
 
     public boolean setPmcTranstypeKeyList(String pKey, List<String> pPmcIdList) {
@@ -499,12 +395,12 @@ public class SharedPreferencesManager extends SingletonBase {
                 pmcIdList.append(Constants.COMMA);
             }
         }
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_channel_list) + pKey, pmcIdList.toString());
+        return setString(SharePrefConstants.sdk_conf_channel_list + pKey, pmcIdList.toString());
     }
 
     public List<String> getPmcTranstypeKeyList(String pKey) {
         List<String> result = new ArrayList<>();
-        String raw = getString(mContext.get().getResources().getString(R.string.sdk_conf_channel_list) + pKey);
+        String raw = getString(SharePrefConstants.sdk_conf_channel_list + pKey);
         if (TextUtils.isEmpty(raw)) {
             return result;
         }
@@ -519,11 +415,11 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public boolean setTranstypePmcCheckSum(String pKey, String pCheckSum) {
-        return setString(mContext.get().getResources().getString(R.string.sdk_conf_transtype_list_checksum) + pKey, pCheckSum);
+        return setString(SharePrefConstants.sdk_conf_transtype_list_checksum + pKey, pCheckSum);
     }
 
     public String getTransypePmcCheckSum(String pKey) {
-        return getString(mContext.get().getResources().getString(R.string.sdk_conf_transtype_list_checksum) + pKey);
+        return getString(SharePrefConstants.sdk_conf_transtype_list_checksum + pKey);
     }
 
     public String getBankAccountChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {

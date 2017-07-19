@@ -8,6 +8,7 @@ import java.util.List;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
@@ -157,7 +158,35 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
             }
         } catch (Exception e) {
-            Timber.w(e,"Exception get pmc trans type");
+            Timber.w(e, "Exception get pmc trans type");
+        }
+        return pmcTransType;
+    }
+
+    @Override
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode) {
+        MiniPmcTransType pmcTransType = null;
+        try {
+            String pmc = mSharedPreferences.getPmcConfigByPmcID(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, pPmcID, pBankCode);
+            if (!TextUtils.isEmpty(pmc)) {
+                pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Exception get pmc trans type");
+        }
+        return pmcTransType;
+    }
+
+    @Override
+    public MiniPmcTransType getPmcConfigByPmcKey(String key) {
+        MiniPmcTransType pmcTransType = null;
+        try {
+            String pmc = mSharedPreferences.getPmcConfigByPmcKey(key);
+            if (!TextUtils.isEmpty(pmc)) {
+                pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Exception get pmc trans type by key");
         }
         return pmcTransType;
     }

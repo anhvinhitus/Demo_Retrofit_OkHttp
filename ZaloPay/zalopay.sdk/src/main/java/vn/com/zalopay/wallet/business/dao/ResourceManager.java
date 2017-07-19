@@ -30,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.ui.channel.ResourceRender;
@@ -80,13 +81,16 @@ public class ResourceManager extends SingletonBase {
         return resourceManager;
     }
 
-    private static String getUnzipFolderPath() throws Exception {
-        return SharedPreferencesManager.getInstance().getUnzipPath();
+    private static String getResourceFolderPath() {
+        return SDKApplication
+                .getApplicationComponent()
+                .platformInfoInteractor()
+                .getResourcePath();
     }
 
     private static String loadFile(String pathPrefix, String fileName) throws Exception {
         StringBuilder path = new StringBuilder();
-        path.append(getUnzipFolderPath())
+        path.append(getResourceFolderPath())
                 .append(File.separator);
         if (!TextUtils.isEmpty(pathPrefix)) {
             path.append(pathPrefix);
@@ -102,7 +106,7 @@ public class ResourceManager extends SingletonBase {
      */
     public static String loadJsonConfig() throws Exception {
         StringBuilder path = new StringBuilder();
-        path.append(getUnzipFolderPath())
+        path.append(getResourceFolderPath())
                 .append(File.separator)
                 .append(ResourceManager.CONFIG_FILE);
         return loadAbsolutePath(path.toString());
@@ -114,7 +118,7 @@ public class ResourceManager extends SingletonBase {
 
     public static synchronized void deleteResFolder() {
         try {
-            String resPath = getUnzipFolderPath();
+            String resPath = getResourceFolderPath();
             if (!TextUtils.isEmpty(resPath)) {
                 File file = new File(resPath);
                 if (file.exists()) {
@@ -182,7 +186,7 @@ public class ResourceManager extends SingletonBase {
         String imgLocalPath;
         Bitmap bitmap = null;
         try {
-            imgLocalPath = String.format("%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
+            imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
             bitmap = BitmapFactory.decodeFile(imgLocalPath);
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,7 +196,7 @@ public class ResourceManager extends SingletonBase {
 
     public static String getAbsoluteImagePath(String pImageName) {
         try {
-            return String.format("file://%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
+            return String.format("file://%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
         } catch (Exception e) {
             Log.e("getAbsolutePath", e);
         }
@@ -218,7 +222,7 @@ public class ResourceManager extends SingletonBase {
 
     public static String getPathFont() {
         try {
-            return getUnzipFolderPath() + PREFIX_FONT;
+            return getResourceFolderPath() + PREFIX_FONT;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

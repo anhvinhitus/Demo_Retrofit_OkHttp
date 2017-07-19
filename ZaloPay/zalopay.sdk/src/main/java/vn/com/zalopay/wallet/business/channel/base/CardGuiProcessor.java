@@ -1206,7 +1206,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public boolean preventNextIfLinkCardExisted() {
         try {
-            return getAdapter().existPaymentCardOnCache();
+            return getAdapter().existMapCardOnCache();
         } catch (Exception e) {
             Log.e(this, e);
             return false;

@@ -19,7 +19,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 /**
@@ -45,14 +44,18 @@ public class CShareDataWrapper {
         if (user == null) {
             return Collections.emptyList();
         }
-        return detectCCCard(CShareData.getInstance().getMappedCardList(user.zaloPayId), user);
+        List<MapCard> mapCards = SDKApplication.getApplicationComponent()
+                .linkInteractor().getMapCardList(user.zaloPayId);
+        return detectCCCard(mapCards, user);
     }
 
     public static List<BankAccount> getMapBankAccountList(User user) {
         if (user == null) {
             return Collections.emptyList();
         }
-        return CShareData.getInstance().getMapBankAccountList(user.zaloPayId);
+        return SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getBankAccountList(user.zaloPayId);
     }
 
     public static String detectCardType(UserInfo userInfo, String first6CardNo) {

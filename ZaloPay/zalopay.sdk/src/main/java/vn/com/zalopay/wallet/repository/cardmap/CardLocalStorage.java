@@ -145,4 +145,9 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
     public void clearCheckSum() {
         mSharedPreferences.setCardInfoCheckSum(null);
     }
+
+    @Override
+    public SharedPreferencesManager sharePref() {
+        return mSharedPreferences;
+    }
 }

@@ -15,7 +15,6 @@ import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -281,7 +280,6 @@ public class AdapterBankCard extends AdapterBase {
                     mPageName = (String) pAdditionParams[1];
                     getView().renderByResource(mPageName, response.staticView, response.dynamicView);
                     getGuiProcessor().checkEnableSubmitButton();
-
                 }
                 if (!response.isError()) {
                     if (!TextUtils.isEmpty(response.info)) {
@@ -427,35 +425,39 @@ public class AdapterBankCard extends AdapterBase {
         }
     }
 
-    public boolean hasBidvBankInMapCardList(String pCardNumber) {
+    public boolean existBIDVinMapCardList(String pCardNumber) {
         try {
+            if (mPaymentInfoHelper == null) {
+                return false;
+            }
             if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {
                 return false;
             }
-            List<MapCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
-            MapCard bidvCard = new MapCard();
-            bidvCard.first6cardno = pCardNumber.substring(0, 6);
-            bidvCard.last4cardno = pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
-            return mappedCardList != null && mappedCardList.contains(bidvCard);
+            String cardKey = pCardNumber.substring(0, 6) + pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
+            MapCard mapCard = mLinkInteractor.getCard(mPaymentInfoHelper.getUserId(), cardKey);
+            return mapCard != null;
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception check exist card number on map card list");
         }
         return false;
     }
 
-    public boolean hasBidvBankInMapCardList() {
+    public boolean existBIDVinMapCardList() {
+        if (mPaymentInfoHelper == null) {
+            return false;
+        }
         try {
-            List<MapCard> mappedCardList = SharedPreferencesManager.getInstance().getMapCardList(mPaymentInfoHelper.getUserId());
-
-            if (mappedCardList != null && mappedCardList.size() > 0) {
-                for (MapCard mappedCard : mappedCardList) {
-                    if (mappedCard.bankcode.equalsIgnoreCase(CardType.PBIDV)) {
-                        return true;
-                    }
+            List<MapCard> mapCards = mLinkInteractor.getMapCardList(mPaymentInfoHelper.getUserId());
+            if (mapCards == null || mapCards.size() <= 0) {
+                return false;
+            }
+            for (MapCard mappedCard : mapCards) {
+                if (CardType.PBIDV.equals(mappedCard.bankcode)) {
+                    return true;
                 }
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception check exist BIDV in map card list");
         }
         return false;
     }
@@ -463,14 +465,14 @@ public class AdapterBankCard extends AdapterBase {
     public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) throws Exception {
 
         //have some card bidv in map card list and have this card
-        if ((hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
-                && hasBidvBankInMapCardList(pCardNumber)) && getPresenter() != null) {
+        if ((existBIDVinMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
+                && existBIDVinMapCardList(pCardNumber)) && getPresenter() != null) {
 
             getPresenter().showMapBankDialog(true);
             return true;
         }
         //have some card bidv in map card list and but don't have this card
-        if (hasBidvBankInMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !hasBidvBankInMapCardList(pCardNumber)) {
+        if (existBIDVinMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !existBIDVinMapCardList(pCardNumber)) {
             getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
@@ -489,7 +491,7 @@ public class AdapterBankCard extends AdapterBase {
             return true;
         }
         //have no any card in map card list
-        if (!hasBidvBankInMapCardList()) {
+        if (!existBIDVinMapCardList()) {
             getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),

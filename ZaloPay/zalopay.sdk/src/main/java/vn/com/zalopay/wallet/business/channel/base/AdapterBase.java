@@ -38,7 +38,6 @@ import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.zalopay.AdapterZaloPay;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
@@ -66,6 +65,7 @@ import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -130,6 +130,7 @@ public abstract class AdapterBase {
     protected IPromotionResult mPromotionResult;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
+    protected ILinkSourceInteractor mLinkInteractor;
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -140,9 +141,6 @@ public abstract class AdapterBase {
         public void onOpenSettingDialogClicked() {
         }
     };
-    /*
-     * loading website so long,over timeout 40s
-     */
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
     private Action1<Throwable> loadCardException = throwable -> {
@@ -258,6 +256,8 @@ public abstract class AdapterBase {
         mPaymentInfoHelper = paymentInfoHelper;
         mTransactionAdapter = SDKTransactionAdapter.shared().setAdapter(this);
         mResponseStatus = statusResponse;
+        mLinkInteractor = SDKApplication.getApplicationComponent()
+                .linkInteractor();
         if (mResponseStatus != null) {
             mTransactionID = mResponseStatus.zptransid;
             mPageName = TransactionHelper.getPageName(paymentInfoHelper.getStatus());
@@ -1231,7 +1231,7 @@ public abstract class AdapterBase {
                 if (mMapCard == null) {
                     tranferPaymentCardToMapCard();
                 }
-                saveMappedCardToLocal(mMapCard);
+                saveMapCard(mMapCard);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -1467,13 +1467,8 @@ public abstract class AdapterBase {
         if (!message.equalsIgnoreCase(mContext.getResources().getString(R.string.sdk_error_mess_exist_mapcard))) {
             return;
         }
-        //clear checksum cardinfo
-        try {
-            SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
-            reloadMapCard(false);
-        } catch (Exception e) {
-            Timber.w(e);
-        }
+        mLinkInteractor.clearCheckSum();
+        reloadMapCard(false);
     }
 
     public void terminate(String pMessage, boolean pExitSDK) {
@@ -1571,23 +1566,18 @@ public abstract class AdapterBase {
      * make sure that reset card info checksum
      * @param mapCard
      */
-    protected void saveMappedCardToLocal(MapCard mapCard) throws Exception {
+    protected void saveMapCard(MapCard mapCard) throws Exception {
         try {
-            Log.d(this, "save map card to storage", mapCard);
-            String userId = mPaymentInfoHelper.getUserId();
-            String mappedCardList = SharedPreferencesManager.getInstance().getMapCardKeyList(userId);
-            if (TextUtils.isEmpty(mappedCardList)) {
-                mappedCardList = mapCard.getKey();
-            } else if (!mappedCardList.contains(mapCard.getKey())) {
-                mappedCardList += (Constants.COMMA + mapCard.getKey());
+            if (mPaymentInfoHelper == null || mapCard == null) {
+                return;
             }
-            SharedPreferencesManager.getInstance().setMap(userId, mapCard.getKey(), GsonUtils.toJsonString(mapCard));
-            SharedPreferencesManager.getInstance().setMapCardList(userId, mappedCardList);
+            Timber.d("start save map card to storage %s", mapCard);
+            String userId = mPaymentInfoHelper.getUserId();
+            mLinkInteractor.putCard(userId, mapCard);
+            //clear card info checksum for forcing reload api later
+            mLinkInteractor.clearCheckSum();
             mPaymentInfoHelper.setMapBank(mapCard);
-            //clear checksum cardinfo
-            SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
         } catch (Exception ex) {
-            sdkReportErrorOnPharse(Constants.RESULT_PHARSE, ex.getMessage());
             throw ex;
         }
     }
@@ -1596,24 +1586,20 @@ public abstract class AdapterBase {
      * reload map card list
      */
     protected void reloadMapCard(boolean showLoading) {
-        if (showLoading) {
-            try {
-                getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_load_card_info_mess));
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        String appVersion = SdkUtils.getAppVersion(mContext);
-        Subscription subscription = SDKApplication.getApplicationComponent()
-                .linkInteractor()
-                .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
-                .compose(SchedulerHelper.applySchedulers())
-                .subscribe(loadCardSubscriber, loadCardException);
         try {
+            if (showLoading) {
+                getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_load_card_info_mess));
+            }
+            UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+            String appVersion = SdkUtils.getAppVersion(mContext);
+            Subscription subscription = SDKApplication.getApplicationComponent()
+                    .linkInteractor()
+                    .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
+                    .compose(SchedulerHelper.applySchedulers())
+                    .subscribe(loadCardSubscriber, loadCardException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception reload map card list");
         }
     }
 
@@ -1627,41 +1613,46 @@ public abstract class AdapterBase {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             return false;
         }
-        return !existPaymentCardOnCache();
+        return !existMapCardOnCache();
     }
 
-    protected boolean existPaymentCardOnCache() {
-        if (getGuiProcessor() == null) {
-            Timber.d("getGuiProcessor() = null");
-            return false;
-        }
-        String cardNumber = getGuiProcessor().getCardNumber();
-        if (TextUtils.isEmpty(cardNumber) || cardNumber.length() <= 6) {
-            return false;
-        }
-        String first6cardno = cardNumber.substring(0, 6);
-        String last4cardno = cardNumber.substring(cardNumber.length() - 4);
-        //get card on cache
-        String strMappedCard = null;
+    protected boolean existMapCardOnCache() {
         try {
-            strMappedCard = SharedPreferencesManager.getInstance().getMap(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
+            if (getGuiProcessor() == null) {
+                Timber.d("getGuiProcessor() = null");
+                return false;
+            }
+            String cardNumber = getGuiProcessor().getCardNumber();
+            if (TextUtils.isEmpty(cardNumber) || cardNumber.length() <= 6) {
+                return false;
+            }
+            if (mPaymentInfoHelper == null) {
+                return false;
+            }
+            String first6cardno = cardNumber.substring(0, 6);
+            String last4cardno = cardNumber.substring(cardNumber.length() - 4);
+            MapCard mapCard = mLinkInteractor.getCard(mPaymentInfoHelper.getUserId(), first6cardno + last4cardno);
+            return mapCard != null;
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.w(e, "Exception check exist map card on cache");
         }
-        return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, MapCard.class) != null;
+        return false;
     }
 
     public void needLinkCardBeforePayment(String pBankCode) {
         //save card number to show again when user go to link card again
         try {
+            if (getGuiProcessor() == null) {
+                return;
+            }
             if (getGuiProcessor().isCardLengthMatchIdentifier(getGuiProcessor().getCardNumber())) {
-                SharedPreferencesManager.getInstance().setCachedCardNumber(getGuiProcessor().getCardNumber());
+                mLinkInteractor.putCardNumber(getGuiProcessor().getCardNumber());
             }
             if (CardType.PBIDV.equals(pBankCode)) {
                 getPresenter().callbackLinkThenPay(Link_Then_Pay.BIDV);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception check need link before payment");
         }
     }
 

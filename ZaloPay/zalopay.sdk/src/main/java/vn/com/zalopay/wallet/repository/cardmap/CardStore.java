@@ -13,13 +13,14 @@ import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 /**
  * Created by chucvv on 6/7/17.
  */
 
 public class CardStore {
-    public interface LocalStorage {
+    public interface LocalStorage extends AbstractLocalStorage.LocalStorage {
         void saveResponse(String pUserId, CardInfoListResponse cardInfoListResponse);
 
         void put(String pUserId, String checkSum, List<MapCard> cardList);

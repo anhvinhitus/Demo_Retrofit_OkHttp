@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -142,7 +141,7 @@ public class AdapterLinkAcc extends AdapterBase {
         public void call(Throwable throwable) {
             hideLoadingDialog();
             Log.d(this, "load bank account error", throwable);
-            String message = TransactionHelper.getMessage(mContext,throwable);
+            String message = TransactionHelper.getMessage(mContext, throwable);
             if (TextUtils.isEmpty(message)) {
                 message = mContext.getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
             }
@@ -301,7 +300,7 @@ public class AdapterLinkAcc extends AdapterBase {
         } else if (mPaymentInfoHelper.bankAccountUnlink()) {
             getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_unlink_acc_title));
             try {
-                mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
+                mBankAccountList = mLinkInteractor.getBankAccountList(mPaymentInfoHelper.getUserId());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -417,7 +416,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
 
             // get bankaccount from cache callback to app
-            List<BankAccount> dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(mPaymentInfoHelper.getUserId());
+            List<BankAccount> dBankAccountList = mLinkInteractor.getBankAccountList(mPaymentInfoHelper.getUserId());
             if (dBankAccountList != null && dBankAccountList.size() > 0) {
                 mPaymentInfoHelper.setMapBank(dBankAccountList.get(0));
             }

@@ -49,7 +49,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
         }
         Timber.d("start update bank account list on cache");
         mSharedPreferences.setBankAccountCheckSum(checkSum);
-        if(bankAccountList == null || bankAccountList.size() <= 0){
+        if (bankAccountList == null || bankAccountList.size() <= 0) {
             resetBankAccountCacheList(pUserId);
             return;
         }
@@ -138,5 +138,10 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     @Override
     public void clearCheckSum() {
         mSharedPreferences.setBankAccountCheckSum(null);
+    }
+
+    @Override
+    public SharedPreferencesManager sharePref() {
+        return mSharedPreferences;
     }
 }

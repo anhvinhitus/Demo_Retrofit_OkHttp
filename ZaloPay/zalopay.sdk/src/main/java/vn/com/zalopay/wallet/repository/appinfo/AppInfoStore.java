@@ -7,10 +7,10 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
  */
 
 public class AppInfoStore {
-    public interface LocalStorage extends AbstractLocalStorage.LocalStorage{
+    public interface LocalStorage extends AbstractLocalStorage.LocalStorage {
         void put(long pAppId, AppInfoResponse appInfo);
 
         Observable<AppInfo> get(long appid);
@@ -38,6 +38,10 @@ public class AppInfoStore {
 
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
 
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode);
+
+        MiniPmcTransType getPmcConfigByPmcKey(String key);
+
         List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
 
 
@@ -48,6 +52,12 @@ public class AppInfoStore {
 
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
 
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode);
+
+        MiniPmcTransType getPmcConfigByPmcKey(String key);
+
+        MiniPmcTransType getPmcConfig(long pAppId, @TransactionType int pTranstype, String pBankCode);
+
         AppInfo get(long appid);
 
         List<String> getPmcTranstypeKeyList(long pAppID, @TransactionType int pTransType);
@@ -55,7 +65,10 @@ public class AppInfoStore {
         Observable<AppInfo> loadAppInfo(long appid, @TransactionType int[] transtypes, String userid, String accesstoken, String appversion, long currentTime);
 
         long minAmountTransType(@TransactionType int transtype);
+
         long maxAmountTransType(@TransactionType int transtype);
+
+        long getBankMinAmountSupport(String key);
     }
 
     public interface RequestService {
