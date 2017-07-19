@@ -19,7 +19,9 @@ import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
 /**
@@ -28,7 +30,7 @@ import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
 public class FriendLocalStorageTest extends ApplicationTestCase {
 
-    private FriendLocalStorage mFriendLocalStorage;
+    private FriendStore.LocalStorage mFriendLocalStorage;
 
     @Before
     public void setUp() throws Exception {
@@ -37,14 +39,6 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         DaoSession daoSession = new DaoMaster(db).newSession();
 
         mFriendLocalStorage = new FriendLocalStorage(daoSession);
-    }
-
-    @Test
-    public void testSql() {
-        System.out.println(mFriendLocalStorage.getSelectDeep(true));
-        System.out.println(mFriendLocalStorage.searchUserZalo("hieuvm", true));
-
-        Assert.assertTrue(true);
     }
 
     private ZaloUserEntity createZalo(long zaloId) {
@@ -56,14 +50,17 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         return entity;
     }
 
-
-    private List<ZaloUserEntity> listZaloProfile() {
+    private List<ZaloUserEntity> listZaloProfile(int length) {
         List<ZaloUserEntity> ret = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < length; i++) {
             ret.add(createZalo(ZALO_ID_START + i));
         }
         return ret;
+    }
+
+    private List<ZaloUserEntity> listZaloProfile() {
+        return listZaloProfile(10);
     }
 
     private ZaloPayUserEntity createZaloPay(String zalopayId, long zaloId, long phonenumber) {
@@ -79,12 +76,17 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
     private static final long ZALO_ID_START = 900;
     private static final long PHONE_START = 123456;
 
-    private List<ZaloPayUserEntity> listZaloPayProfile() {
+
+    private List<ZaloPayUserEntity> listZaloPayProfile(int length) {
         List<ZaloPayUserEntity> ret = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < length; i++) {
             ret.add(createZaloPay("zp" + i, ZALO_ID_START + i, PHONE_START + i));
         }
         return ret;
+    }
+
+    private List<ZaloPayUserEntity> listZaloPayProfile() {
+        return listZaloPayProfile(8);
     }
 
     private Contact createContact(String name, long phone) {
@@ -143,22 +145,31 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
     @Test
     public void getZaloUserWithoutZaloPayId() {
-        List<ZaloUserEntity> zaloUser = listZaloProfile();
+
+        int length = 10;
+        int length_without_zalopayid = 2;
+        //Insert zalo user.
+        List<ZaloUserEntity> zaloUser = listZaloProfile(length);
         mFriendLocalStorage.putZaloUser(zaloUser);
 
-        List<ZaloUserEntity> result = mFriendLocalStorage.getZaloUserWithoutZaloPayId();
-        System.out.println("without zalopayid size : " + result.size());
-        Assert.assertTrue(result.size() == zaloUser.size());
+        List<Long> result = mFriendLocalStorage.getZaloUserWithoutZaloPayId();
 
-        List<ZaloPayUserEntity> entry = listZaloPayProfile();
+        Assert.assertTrue(result.size() == length)
+        ;
+        for (int i = 0; i < length; i++) {
+            Assert.assertTrue(zaloUser.get(i).userId == result.get(i));
+        }
+
+        //Insert zalopay user
+        List<ZaloPayUserEntity> entry = listZaloPayProfile(length - length_without_zalopayid);
         mFriendLocalStorage.putZaloPayUser(entry);
 
-        List<Contact> contacts = listContact();
-        mFriendLocalStorage.putContacts(contacts);
+        result = mFriendLocalStorage.getZaloUserWithoutZaloPayId();
 
-        List<ZaloUserEntity> result1 = mFriendLocalStorage.getZaloUserWithoutZaloPayId();
-        System.out.println("result1 without zalopayid size : " + result1.size());
-        Assert.assertTrue(result1.size() == 2);
+        Assert.assertTrue(result.size() == length_without_zalopayid);
+        for (int i = 0; i < length_without_zalopayid; i++) {
+            Assert.assertTrue(result.get(i) == zaloUser.get(length - length_without_zalopayid + i).userId);
+        }
     }
 
     @Test
@@ -220,7 +231,6 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         } else {
             Assert.fail("move to next fail");
         }
-
 
     }
 
