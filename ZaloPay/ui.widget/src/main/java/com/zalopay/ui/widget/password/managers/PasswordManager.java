@@ -51,7 +51,7 @@ public class PasswordManager {
             return;
         }
         mUiBottomSheetDialog = new UIBottomSheetDialog(mActivity.get(), com.zalopay.ui.widget.R.style.CoffeeDialog, mIBuilder.build());
-        mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
+        //mUiBottomSheetDialog.setCanceledOnTouchOutside(false);
     }
 
     public IBuilder getBuilder() {
