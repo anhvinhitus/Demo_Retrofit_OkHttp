@@ -539,6 +539,28 @@ public class Navigator {
         return intent;
     }
 
+    public Intent intentMiniAppActivity(Context context, String moduleName, Bundle launchOptions) {
+        Intent intent;
+        if (moduleName.equals(ModuleName.RED_PACKET)) {
+            intent = new Intent(context, RedPacketApplicationActivity.class);
+        } else {
+            intent = new Intent(context, MiniApplicationActivity.class);
+        }
+        intent.putExtra("moduleName", moduleName);
+        intent.putExtra("launchOptions", launchOptions);
+        return intent;
+    }
+
+    public Intent intentPaymentApp(Context context, AppResource appResource, Bundle launchOptions) {
+        if (appResource == null) {
+            return null;
+        }
+        Intent intent = new Intent(context, PaymentApplicationActivity.class);
+        intent.putExtra("appResource", appResource);
+        intent.putExtra("launchOptions", launchOptions);
+        return intent;
+    }
+
     public void startBalanceManagementActivity(Context context) {
         Intent intent = new Intent(context, BalanceManagementActivity.class);
         context.startActivity(intent);
