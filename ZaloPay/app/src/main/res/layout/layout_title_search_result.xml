@@ -18,7 +18,7 @@
         android:layout_marginLeft="@dimen/spacing.medium"
         android:layout_marginTop="@dimen/spacing.medium.m"
         android:text="@string/search_friend"
-        android:textSize="@dimen/font_size_medium" />
+        android:textSize="@dimen/personal_general_text_sub_l" />
 
     <View
         android:layout_width="match_parent"

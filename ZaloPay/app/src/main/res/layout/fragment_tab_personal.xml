@@ -81,7 +81,8 @@
                         app:iconLeftSize="@dimen/personal_iconfont"
                         app:iconRightColor="@color/arrow_right"
                         app:iconRightName="@string/general_arrowright"
-                        app:iconRightSize="@dimen/font_size_arrow_right" />
+                        app:iconRightSize="@dimen/font_size_arrow_right"
+                        android:textSize="@dimen/personal_general_text_main"/>
 
                     <TextView
                         android:id="@+id/tab_personal_tv_balance_value"
@@ -116,7 +117,8 @@
                         app:iconLeftSize="@dimen/personal_iconfont"
                         app:iconRightColor="@color/arrow_right"
                         app:iconRightName="@string/general_arrowright"
-                        app:iconRightSize="@dimen/font_size_arrow_right" />
+                        app:iconRightSize="@dimen/font_size_arrow_right"
+                        android:textSize="@dimen/personal_general_text_main"/>
 
                     <TextView
                         android:id="@+id/tab_personal_tv_bank_link_now"
@@ -159,7 +161,8 @@
                     app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
                     app:iconRightName="@string/general_arrowright"
-                    app:iconRightSize="@dimen/font_size_arrow_right" />
+                    app:iconRightSize="@dimen/font_size_arrow_right"
+                    android:textSize="@dimen/personal_general_text_main"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -177,7 +180,8 @@
                     app:iconLeftSize="@dimen/personal_iconfont"
                     app:iconRightColor="@color/arrow_right"
                     app:iconRightName="@string/general_arrowright"
-                    app:iconRightSize="@dimen/font_size_arrow_right" />
+                    app:iconRightSize="@dimen/font_size_arrow_right"
+                    android:textSize="@dimen/personal_general_text_main"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -211,7 +215,8 @@
                     android:textSize="@dimen/personal_general_text_main"
                     app:iconLeftColor="@color/personal_ic_support"
                     app:iconLeftName="@string/personal_logout"
-                    app:iconLeftSize="@dimen/personal_iconfont" />
+                    app:iconLeftSize="@dimen/personal_iconfont"
+                    />
 
                 <View
                     android:layout_width="match_parent"

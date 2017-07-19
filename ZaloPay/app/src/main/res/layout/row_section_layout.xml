@@ -22,6 +22,7 @@
         android:paddingTop="@dimen/default_padding_small"
         android:textAllCaps="true"
         android:textColor="@color/txt_item_sub"
+        android:textSize="@dimen/personal_general_text_sub_l"
         tools:text="A" />
 
 </LinearLayout>

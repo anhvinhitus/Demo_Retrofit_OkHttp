@@ -182,7 +182,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/profile_phone_and_zpid_update_hint_text"
                 android:textColor="@color/personal_text_steel_grey"
-                android:textSize="@dimen/personal_general_text_sub"
+                android:textSize="@dimen/personal_general_text_sub_l"
                 android:visibility="gone" />
 
             <View

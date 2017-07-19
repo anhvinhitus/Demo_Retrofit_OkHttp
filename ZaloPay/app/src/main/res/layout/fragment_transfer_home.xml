@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/app_padding"
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/app_padding"
             android:paddingLeft="@dimen/spacing.medium"
@@ -24,9 +25,9 @@
             android:paddingTop="@dimen/app_padding"
             android:text="@string/account.zalo.pay"
             android:textColor="@color/txt_item_main"
+            android:textSize="@dimen/personal_general_text_main"
             app:iconLeftColor="@color/menu_font_ic_green"
             app:iconLeftName="@string/sendmoney_zalopayid"
-            android:drawablePadding="@dimen/app_padding"
             app:iconLeftSize="@dimen/font_size_transfer_header"
             app:iconRightColor="@color/arrow_right"
             app:iconRightName="@string/general_arrowright"
@@ -44,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/app_padding"
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/app_padding"
             android:paddingLeft="@dimen/spacing.medium"
@@ -51,9 +53,9 @@
             android:paddingTop="@dimen/app_padding"
             android:text="@string/transfer_acc_zalopay"
             android:textColor="@color/txt_item_main"
+            android:textSize="@dimen/personal_general_text_main"
             app:iconLeftColor="@color/menu_font_ic_blue"
             app:iconLeftName="@string/sendmoney_friend"
-            android:drawablePadding="@dimen/app_padding"
             app:iconLeftSize="@dimen/font_size_transfer_header"
             app:iconRightColor="@color/arrow_right"
             app:iconRightName="@string/general_arrowright"
@@ -80,7 +82,8 @@
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.large.t"
             android:text="@string/transaction_recent"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/personal_general_text_sub_l" />
 
         <View
             android:layout_width="match_parent"

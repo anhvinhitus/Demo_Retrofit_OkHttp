@@ -33,7 +33,7 @@
         android:background="@color/background"
         android:text="@string/search_representative_app"
         android:textColor="@color/txt_item_sub"
-        android:textSize="@dimen/font_size_xnormal" />
+        android:textSize="@dimen/personal_general_text_sub_l" />
 
     <View
         android:layout_width="match_parent"

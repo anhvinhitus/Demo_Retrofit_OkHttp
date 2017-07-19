@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/personal_text_steel_grey"
-            android:textSize="@dimen/personal_general_text_sub" />
+            android:textSize="@dimen/personal_general_text_sub_l" />
     </LinearLayout>
 
     <com.zalopay.ui.widget.IconFont
