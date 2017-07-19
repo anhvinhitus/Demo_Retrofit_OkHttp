@@ -157,6 +157,7 @@
     <dimen name="personal_dashline_margin_left">50dp</dimen>
     <dimen name="personal_general_text_main">15sp</dimen>
     <dimen name="personal_general_text_sub">12sp</dimen>
+    <dimen name="personal_general_text_sub_l">13sp</dimen>
 
     <dimen name="personal_dashline_height">1dp</dimen>
 
