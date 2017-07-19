@@ -94,15 +94,7 @@ public class BankUtils {
         return "";
     }
 
-    private List<BankData> transform(List<MapCard> data) {
-        return Lists.transform(data, BankData::new);
-    }
-
-    private List<BankData> transform(List<BankAccount> data, String phone) {
-        return Lists.transform(data, bankAccount -> new BankData(bankAccount, phone));
-    }
-
-    private List<BankAccount> getFake() {
+    public static List<BankAccount> getFake() {
         List<BankAccount> linkedBankList = new ArrayList<>();
         BankAccount vcbAccount = new BankAccount();
         vcbAccount.firstaccountno = "098765";
@@ -112,7 +104,7 @@ public class BankUtils {
         return linkedBankList;
     }
 
-    private List<MapCard> getFakeData() {
+    public static List<MapCard> getFakeData() {
         List<MapCard> linkedBankList = new ArrayList<>();
 
         MapCard visaCard = new MapCard();
