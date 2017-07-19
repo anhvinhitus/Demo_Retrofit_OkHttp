@@ -53,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract BaseFragment getFragmentToHost();
 
     protected final String TAG = getClass().getSimpleName();
-    protected final EventBus eventBus = getAppComponent().eventBus();
+    protected final EventBus mEventBus = getAppComponent().eventBus();
     protected final Navigator navigator = getAppComponent().navigator();
 
     private Unbinder unbinder;
@@ -107,19 +107,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         mResumed = false;
-
-        if (eventBus.isRegistered(this)) {
-            eventBus.unregister(this);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mResumed = true;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
-        }
     }
 
     @Override

@@ -56,6 +56,22 @@ public abstract class UserBaseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+    }
+
     private void setupUserComponent(ApplicationComponent applicationComponent) {
         isUserSessionStarted = createUserComponent(applicationComponent);
 
@@ -120,7 +136,7 @@ public abstract class UserBaseActivity extends BaseActivity {
 
     public boolean clearUserSession(String message) {
         //Remove all sticky event in app
-        eventBus.removeAllStickyEvents();
+        mEventBus.removeAllStickyEvents();
 
         if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
             return false;
