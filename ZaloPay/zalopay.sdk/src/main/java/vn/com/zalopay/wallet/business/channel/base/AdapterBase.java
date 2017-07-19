@@ -133,6 +133,12 @@ public abstract class AdapterBase implements ISdkErrorContext {
     protected ILinkSourceInteractor mLinkInteractor;
     final SdkErrorReporter mSdkErrorReporter;
 
+    private enum HandleEventNextStepEnum {
+        RETURN_NULL,
+        RETURN_ADDITION_PARAMS,
+        CONTINUE
+    }
+
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -589,7 +595,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         processingOrder = false;
         try {
-            /***
+            /*
              * networking error
              * 1.offline
              * 2.not stable
@@ -632,152 +638,259 @@ public abstract class AdapterBase implements ISdkErrorContext {
                 getView().showMaintenanceServiceDialog(mResponseStatus.returnmessage);
                 return null;
             }
+
             //callback finish transation from webview
-            else if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
-                //ending timer loading site
-                mOtpEndTime = System.currentTimeMillis();
-                mCaptchaEndTime = System.currentTimeMillis();
-                getTransactionStatus(mTransactionID, false,
-                        mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-            }
-            //callback load site error from webview
-            //need to get status again if use submit otp or cc flow
-            else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
-                if (!ConnectionUtil.isOnline(mContext)) {
-                    showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
-                    return pAdditionParams;
-                }
-                //ending timer loading site
-                mOtpEndTime = System.currentTimeMillis();
-                mCaptchaEndTime = System.currentTimeMillis();
-
-                WebViewHelper webViewError = null;
-                if (pAdditionParams[0] instanceof WebViewHelper) {
-                    webViewError = (WebViewHelper) pAdditionParams[0];
-                }
-
-                if (webViewError != null && webViewError.code == WebViewHelper.SSL_ERROR) {
-                    showTransactionFailView(webViewError.getFriendlyMessage());
-                    return null;
-                }
-
-                if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
-                    isLoadWebTimeout = true;
+            HandleEventNextStepEnum nextStep = HandleEventNextStepEnum.CONTINUE;
+            switch (pEventType) {
+                case ON_PAYMENT_RESULT_BROWSER:
+                    //ending timer loading site
+                    mOtpEndTime = System.currentTimeMillis();
+                    mCaptchaEndTime = System.currentTimeMillis();
                     getTransactionStatus(mTransactionID, false,
                             mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                } else {
-                    String mess = (webViewError != null) ? webViewError.getFriendlyMessage() :
-                            mContext.getResources().getString(R.string.sdk_errormess_end_transaction);
-                    showTransactionFailView(mess);
-                }
-            }
-            //submit order response
-            else if (pEventType == EEventType.ON_SUBMIT_ORDER_COMPLETED) {
-                handleEventSubmitOrderCompleted();
-            }
-            //check status again if have issue while submitting order
-            else if (pEventType == EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE) {
-                if (mResponseStatus != null) {
-                    mTransactionID = mResponseStatus.zptransid;
-                }
-                //order haven't submitted to server yet.
-                //need to retry check 5 times to server
-                if (PaymentStatusHelper.isTransactionNotSubmit(mResponseStatus)) {
-                    try {
-                        mCountCheckStatus++;
-                        if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
-                            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_order_not_submit_mess));
-                        } else if (order != null) {
-                            //retry again
-                            checkTransactionStatusAfterSubmitFail(false, order.apptransid,
-                                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                        }
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                        terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
-                    }
+                    nextStep = HandleEventNextStepEnum.CONTINUE;
+                    break;
+                case ON_LOADSITE_ERROR:
+                case ON_BACK_WHEN_LOADSITE:
+                    //callback load site error from webview
+                    //need to get status again if use submit otp or cc flow
+                    nextStep = handleEventLoadSiteError(pAdditionParams[0]);
+                    break;
+                case ON_SUBMIT_ORDER_COMPLETED:
+                    //submit order response
+                    handleEventSubmitOrderCompleted();
+                    nextStep = HandleEventNextStepEnum.CONTINUE;
+                    break;
+                case ON_CHECK_STATUS_SUBMIT_COMPLETE:
+                    //check status again if have issue while submitting order
+                    nextStep = handleEventCheckStatusSubmitComplete(order);
+                    break;
+                case ON_VERIFY_MAPCARD_COMPLETE:
+                    //get transid after submit success
+                    handleEventSubmitOrderCompleted();
+                    nextStep = HandleEventNextStepEnum.CONTINUE;
+                    break;
+                case ON_GET_STATUS_COMPLETE:
+                    //get status after submit order or authen payer
+                    nextStep = handleEventGetStatusComplete();
+                    break;
+                case ON_NOTIFY_TRANSACTION_FINISH:
+                    handleEventNotifyTransactionFinish(pAdditionParams);
+                    nextStep = HandleEventNextStepEnum.CONTINUE;
+                    break;
+                case ON_PROMOTION:
+                    nextStep = handleEventPromotion(pAdditionParams);
+                    break;
 
+            }
+
+            switch (nextStep) {
+                case RETURN_NULL:
                     return null;
-                }
+                case RETURN_ADDITION_PARAMS:
+                    return pAdditionParams;
+                case CONTINUE:
+                    break;
+            }
+//            if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
+//                //ending timer loading site
+//                mOtpEndTime = System.currentTimeMillis();
+//                mCaptchaEndTime = System.currentTimeMillis();
+//                getTransactionStatus(mTransactionID, false,
+//                        mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+//            }
+//            //callback load site error from webview
+//            //need to get status again if use submit otp or cc flow
+//            else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
+//                HandleEventNextStepEnum result = handleEventLoadSiteError(pAdditionParams[0]);
+//                switch (result) {
+//                    case RETURN_NULL:
+//                        return null;
+//                    case RETURN_ADDITION_PARAMS:
+//                        return pAdditionParams;
+//                    case CONTINUE:
+//                        break;
+//                }
+//            }
+//            //submit order response
+//            else if (pEventType == EEventType.ON_SUBMIT_ORDER_COMPLETED) {
+//                handleEventSubmitOrderCompleted();
+//            }
+//            //check status again if have issue while submitting order
+//            else if (pEventType == EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE) {
+//                HandleEventNextStepEnum result = handleEventCheckStatusSubmitComplete(order);
+//                if (result == HandleEventNextStepEnum.RETURN_NULL) {
+//                    return null;
+//                }
+//            }
+//
+//            //mapcard submit response
+//            else if (pEventType == EEventType.ON_VERIFY_MAPCARD_COMPLETE) {
+//                //get transid after submit success
+//                handleEventSubmitOrderCompleted();
+//            }
+//            //get status after submit order or authen payer
+//            else if (pEventType == EEventType.ON_GET_STATUS_COMPLETE) {
+//                HandleEventNextStepEnum result = handleEventGetStatusComplete();
+//                switch (result) {
+//                    case RETURN_NULL:
+//                        return null;
+//                    case RETURN_ADDITION_PARAMS:
+//                        return pAdditionParams;
+//                    case CONTINUE:
+//                        break;
+//                }
+//            } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
+//                handleEventNotifyTransactionFinish(pAdditionParams);
+//            } else if (pEventType == EEventType.ON_PROMOTION) {
+//                if (handleEventPromotion(pAdditionParams)) {
+//                    return pAdditionParams;
+//                }
+//            }
+        } catch (Exception e) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_generic_mess));
+            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.UNDEFINE, e.getMessage());
+            Log.e(this, e);
+        }
 
-                if (mResponseStatus != null && mResponseStatus.isprocessing) {
-                    getTransactionStatus(mTransactionID, true, null);
-                } else {
-                    onCheckTransactionStatus(mResponseStatus);
+        return pAdditionParams;
+    }
+
+    private HandleEventNextStepEnum handleEventLoadSiteError(Object firstParam) {
+        if (!ConnectionUtil.isOnline(mContext)) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+        }
+        //ending timer loading site
+        mOtpEndTime = System.currentTimeMillis();
+        mCaptchaEndTime = System.currentTimeMillis();
+
+        WebViewHelper webViewError = null;
+        if (firstParam instanceof WebViewHelper) {
+            webViewError = (WebViewHelper) firstParam;
+        }
+
+        if (webViewError != null && webViewError.code == WebViewHelper.SSL_ERROR) {
+            showTransactionFailView(webViewError.getFriendlyMessage());
+            return HandleEventNextStepEnum.RETURN_NULL;
+        }
+
+        if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
+            isLoadWebTimeout = true;
+            getTransactionStatus(mTransactionID, false,
+                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+        } else {
+            String mess = (webViewError != null) ? webViewError.getFriendlyMessage() :
+                    mContext.getResources().getString(R.string.sdk_errormess_end_transaction);
+            showTransactionFailView(mess);
+        }
+
+        return HandleEventNextStepEnum.CONTINUE;
+    }
+
+    private HandleEventNextStepEnum handleEventCheckStatusSubmitComplete(AbstractOrder order) {
+        if (mResponseStatus != null) {
+            mTransactionID = mResponseStatus.zptransid;
+        }
+        //order haven't submitted to server yet.
+        //need to retry check 5 times to server
+        if (PaymentStatusHelper.isTransactionNotSubmit(mResponseStatus)) {
+            try {
+                mCountCheckStatus++;
+                if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
+                    showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_order_not_submit_mess));
+                } else if (order != null) {
+                    //retry again
+                    checkTransactionStatusAfterSubmitFail(false, order.apptransid,
+                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                 }
+            } catch (Exception e) {
+                Log.e(this, e);
+                terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
             }
 
-            //mapcard submit response
-            else if (pEventType == EEventType.ON_VERIFY_MAPCARD_COMPLETE) {
-                //get transid after submit success
-                handleEventSubmitOrderCompleted();
+            return HandleEventNextStepEnum.RETURN_NULL;
+        }
+
+        if (mResponseStatus != null && mResponseStatus.isprocessing) {
+            getTransactionStatus(mTransactionID, true, null);
+        } else {
+            onCheckTransactionStatus(mResponseStatus);
+        }
+
+        return HandleEventNextStepEnum.CONTINUE;
+    }
+
+    private HandleEventNextStepEnum handleEventGetStatusComplete() throws Exception {
+        getView().visibleCardViewNavigateButton(false);
+        getView().visibleSubmitButton(true);
+        //error
+        if (mResponseStatus == null) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+        }
+        //retry otp
+        if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
+            processWrongOtp();
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+        }
+        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
+            SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
+            //flow 3ds (atm + cc)
+            HandleEventNextStepEnum result = handleEventFlow3DS_Atm_cc(dataResponse);
+            if (result == HandleEventNextStepEnum.RETURN_NULL) {
+                return HandleEventNextStepEnum.RETURN_NULL;
             }
-            //get status after submit order or authen payer
-            else if (pEventType == EEventType.ON_GET_STATUS_COMPLETE) {
-                getView().visibleCardViewNavigateButton(false);
-                getView().visibleSubmitButton(true);
-                //error
-                if (mResponseStatus == null) {
-                    showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
-                    return pAdditionParams;
-                }
-                //retry otp
-                if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
-                    processWrongOtp();
-                    return pAdditionParams;
-                }
-                if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
-                    SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
-                    //flow 3ds (atm + cc)
-                    if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
-                        //no link for parsing
-                        if (TextUtils.isEmpty(dataResponse.redirecturl)) {
-                            showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_empty_url_mess));
-                            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
-                            return null;
-                        }
-                        //flow cover parse web (vietinbank)
-                        BankConfig bankConfig = null;
-                        String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
-                        if (!TextUtils.isEmpty(bankCode)) {
-                            bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(bankCode);
-                        }
-                        if (bankConfig == null && getGuiProcessor().getCardFinder() != null) {
-                            bankConfig = getGuiProcessor().getCardFinder().getDetectBankConfig();
-                        }
-                        if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
-                            setECardFlowType(BankFlow.PARSEWEB);
-                            showLoadindTimeout(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
-                            initWebView(dataResponse.redirecturl);
-                            endingCountTimeLoadCaptchaOtp();
-                        }
-                        //flow load web 3ds of cc
-                        else {
-                            try {
-                                setECardFlowType(BankFlow.LOADWEB);
-                                getGuiProcessor().loadUrl(dataResponse.redirecturl);
-                                getView().hideLoading();
-                                //begin count timer loading site until finish transaction
-                                mOtpBeginTime = System.currentTimeMillis();
-                                mCaptchaBeginTime = System.currentTimeMillis();
-                            } catch (Exception e) {
-                                showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_init_data));
-                                mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, e.getMessage());
-                                Log.e(this, e);
-                            }
-                        }
-                    }
-                    //otp flow
-                    else if (PaymentStatusHelper.isOtpResponse(dataResponse)) {
-                        mPageName = PAGE_AUTHEN;
-                        ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
-                        getView().hideLoading();
-                        //request permission read/view sms on android 6.0+
-                        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
-                            requestReadOtpPermission();
-                        }
-                        getView().renderKeyBoard();
-                        //testing broadcast otp viettinbak
+        } else {
+            if (isOrderProcessing()) {
+                askToRetryGetStatus(mTransactionID);
+            } else {
+                onCheckTransactionStatus(mResponseStatus);
+            }
+        }
+
+        return HandleEventNextStepEnum.CONTINUE;
+    }
+
+    private HandleEventNextStepEnum handleEventFlow3DS_Atm_cc(SecurityResponse dataResponse) throws Exception {
+        if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
+            //no link for parsing
+            if (TextUtils.isEmpty(dataResponse.redirecturl)) {
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_empty_url_mess));
+                mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
+                return HandleEventNextStepEnum.RETURN_NULL;
+            }
+            //flow cover parse web (vietinbank)
+            BankConfig bankConfig = null;
+            String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
+            if (!TextUtils.isEmpty(bankCode)) {
+                bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(bankCode);
+            }
+            if (bankConfig == null && getGuiProcessor().getCardFinder() != null) {
+                bankConfig = getGuiProcessor().getCardFinder().getDetectBankConfig();
+            }
+            if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
+                setECardFlowType(BankFlow.PARSEWEB);
+                showLoadindTimeout(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
+                initWebView(dataResponse.redirecturl);
+                endingCountTimeLoadCaptchaOtp();
+            }
+            //flow load web 3ds of cc
+            else {
+                handleEventLoadWeb3DS(dataResponse.redirecturl);
+            }
+        } else if (PaymentStatusHelper.isOtpResponse(dataResponse)) {
+            //otp flow
+
+            mPageName = PAGE_AUTHEN;
+            ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
+            getView().hideLoading();
+            //request permission read/view sms on android 6.0+
+            if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
+                requestReadOtpPermission();
+            }
+            getView().renderKeyBoard();
+            //testing broadcast otp viettinbak
                         /*
                         new Handler().postDelayed(new Runnable() {
 							@Override
@@ -796,31 +909,26 @@ public abstract class AdapterBase implements ISdkErrorContext {
 							}
 						},5000);
 						*/
-                    } else {
-                        showTransactionFailView(mContext.getResources().getString(R.string.sdk_undefine_error));
-                    }
-                } else {
-                    if (isOrderProcessing()) {
-                        askToRetryGetStatus(mTransactionID);
-                    } else {
-                        onCheckTransactionStatus(mResponseStatus);
-                    }
-                }
-            } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
-                handleEventNotifyTransactionFinish(pAdditionParams);
-            } else if (pEventType == EEventType.ON_PROMOTION) {
-                if (handleEventPromotion(pAdditionParams)) {
-                    return pAdditionParams;
-                }
-            }
-
-        } catch (Exception e) {
-            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_generic_mess));
-            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.UNDEFINE, e.getMessage());
-            Log.e(this, e);
+        } else {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_undefine_error));
         }
 
-        return pAdditionParams;
+        return HandleEventNextStepEnum.CONTINUE;
+    }
+
+    private void handleEventLoadWeb3DS(String redirecturl) {
+        try {
+            setECardFlowType(BankFlow.LOADWEB);
+            getGuiProcessor().loadUrl(redirecturl);
+            getView().hideLoading();
+            //begin count timer loading site until finish transaction
+            mOtpBeginTime = System.currentTimeMillis();
+            mCaptchaBeginTime = System.currentTimeMillis();
+        } catch (Exception e) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_init_data));
+            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, e.getMessage());
+            Log.e(this, e);
+        }
     }
 
     private void handleEventSubmitOrderCompleted() {
@@ -899,11 +1007,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
     }
 
-    private boolean handleEventPromotion(Object[] pAdditionParams) {
+    private HandleEventNextStepEnum handleEventPromotion(Object[] pAdditionParams) {
         Timber.d("got promotion from notification");
         if (pAdditionParams == null || pAdditionParams.length <= 0) {
             Timber.d("stopping processing promotion from notification because of empty pAdditionParams");
-            return true;
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
         }
 
         PromotionEvent promotionEvent = null;
@@ -913,11 +1021,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
         if (mPromotionBuilder != null) {
             Log.d(this, "promotion event is updated", promotionEvent);
             mPromotionBuilder.setPromotion(promotionEvent);
-            return true;
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
         }
         if (promotionEvent == null) {
             Timber.d("stopping processing promotion from notification because promotion event is null");
-            return true;
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
         }
         if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
             mPromotionResult = (IPromotionResult) pAdditionParams[1];
@@ -936,11 +1044,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
             if (mPromotionResult != null) {
                 mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
             }
-            return true;
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
         }
         if (!isTransactionSuccess()) {
             Timber.d("transaction is not success, skipping process promotion notification");
-            return true;
+            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
         }
 
         IResourceLoader resourceLoader = null;
@@ -981,7 +1089,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        return false;
+        return HandleEventNextStepEnum.CONTINUE;
     }
 
     /***
@@ -1318,12 +1426,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
-        PaymentSnackBar.getInstance().dismiss();
-        try {
-            SdkUtils.hideSoftKeyboard(mContext, getActivity());
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
+        dismissSnackBarAndKeyboard();
 
         //save payment card for show on channel list later
         savePaymentCardIfAny();
@@ -1331,6 +1434,16 @@ public abstract class AdapterBase implements ISdkErrorContext {
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
 
         handleSpecialAppResult();
+    }
+
+    private void dismissSnackBarAndKeyboard() {
+        PaymentSnackBar.getInstance().dismiss();
+        try {
+            SdkUtils.hideSoftKeyboard(mContext, getActivity());
+            getView().hideLoading();
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
     }
 
     private void savePaymentCardIfAny() {
@@ -1472,13 +1585,8 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } catch (Exception e) {
             Log.e(this, e);
         }
-        try {
-            SdkUtils.hideSoftKeyboard(mContext, getActivity());
-            getView().hideLoading();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        PaymentSnackBar.getInstance().dismiss();
+
+        dismissSnackBarAndKeyboard();
         reloadMapListOnResponseMessage(pMessage);
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
     }
