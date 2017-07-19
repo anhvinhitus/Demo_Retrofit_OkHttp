@@ -202,6 +202,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @Override
     public void onReceivedTitle(String title) {
 //        tvTitle.setText(title);
+        getActivity().setTitle(title);
     }
 
     @Override
