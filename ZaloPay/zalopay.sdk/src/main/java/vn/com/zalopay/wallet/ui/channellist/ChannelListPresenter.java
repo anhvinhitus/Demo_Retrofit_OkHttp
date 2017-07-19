@@ -819,7 +819,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public void onSuccessTrans(SdkSuccessTransEvent event) {
         if (mPayProxy != null) {
             try {
-                //mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
+                mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
             } catch (Exception e) {
                 Log.e(this, e);
             }
