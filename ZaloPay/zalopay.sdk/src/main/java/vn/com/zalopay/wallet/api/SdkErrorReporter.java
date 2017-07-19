@@ -23,37 +23,37 @@ public class SdkErrorReporter {
         mContext = context;
     }
 
-    public void sdkReportErrorOnPharse(ISdkErrorContext cardProcessor, int pPharse, String pMessage) {
+    public void sdkReportErrorOnPharse(ISdkErrorContext errorContext, int pPharse, String pMessage) {
         String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
         if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(mContext)) {
             return;
         }
         try {
             paymentError = String.format(paymentError, String.valueOf(pPharse), String.valueOf(200), pMessage);
-            sdkReportError(cardProcessor, SDKReportTask.TRANSACTION_FAIL, paymentError);
+            sdkReportError(errorContext, SDKReportTask.TRANSACTION_FAIL, paymentError);
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
     }
 
-    public void sdkReportErrorOnTransactionFail(ISdkErrorContext cardProcessor, String responseStatus) throws Exception {
+    public void sdkReportErrorOnTransactionFail(ISdkErrorContext errorContext, String responseStatus) throws Exception {
         if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(mContext)) {
             return;
         }
         String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
         if (!TextUtils.isEmpty(paymentError)) {
             paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, responseStatus);
-            sdkReportError(cardProcessor, SDKReportTask.TRANSACTION_FAIL, paymentError);
+            sdkReportError(errorContext, SDKReportTask.TRANSACTION_FAIL, paymentError);
         }
     }
 
-    public void sdkReportError(ISdkErrorContext cardProcessor, int pErrorCode, String pMessage) {
-        if (cardProcessor == null || !cardProcessor.hasCardGuiProcessor() || !ConnectionUtil.isOnline(mContext)) {
+    public void sdkReportError(ISdkErrorContext errorContext, int pErrorCode, String pMessage) {
+        if (errorContext == null || !errorContext.hasCardGuiProcessor() || !ConnectionUtil.isOnline(mContext)) {
             return;
         }
         try {
-            String bankCode = cardProcessor.getDetectedBankCode();
-            SDKReportTask.makeReportError(cardProcessor.getUserInfo(), pErrorCode, cardProcessor.getTransactionId(), pMessage, bankCode);
+            String bankCode = errorContext.getDetectedBankCode();
+            SDKReportTask.makeReportError(errorContext.getUserInfo(), pErrorCode, errorContext.getTransactionId(), pMessage, bankCode);
         } catch (Exception ex) {
             Timber.d(ex.getMessage());
         }
