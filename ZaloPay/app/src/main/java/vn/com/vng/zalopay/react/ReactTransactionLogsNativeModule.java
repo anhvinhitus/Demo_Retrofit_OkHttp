@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Pair;
 
@@ -13,6 +14,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -38,20 +42,18 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionDetailChangeEvent;
+import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.NotificationType;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.model.TransactionResult;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 
@@ -356,6 +358,35 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         return result;
     }
 
+    private Bundle transform(ReadableMap param) {
+        if (param == null) {
+            return null;
+        }
+        Bundle item = new Bundle();
+        ReadableMapKeySetIterator iterator = param.keySetIterator();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            ReadableType type = param.getType(key);
+            switch (type) {
+                case Boolean:
+                    item.putBoolean(key, param.getBoolean(key));
+                    break;
+                case String:
+                    item.putString(key, param.getString(key));
+                    break;
+                case Number:
+                    item.putDouble(key, param.getDouble(key));
+                    break;
+                case Null:
+                    item.putString(key, null);
+                case Map:
+                    item.putBundle(key, transform(param.getMap(key)));
+                    break;
+            }
+        }
+        return item;
+    }
+
     private void sendEvent(String eventName, Object param) {
         ReactApplicationContext reactContext = getReactApplicationContext();
         if (reactContext == null) {
@@ -448,7 +479,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    void startReactNativeApp(int appid, String transid) {
+    private void startReactNativeApp(int appid, String transid) {
         Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
@@ -458,6 +489,42 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         options.put("view", "history");
         options.put("transid", transid);
 
+        Intent intent;
+        if (appid == mZaloPayAppId) {
+            intent = mNavigator.intentMiniAppActivity(activity, ModuleName.TRANSACTION_LOGS, options);
+        } else {
+            intent = mNavigator.intentPaymentApp(activity, new AppResource(appid), options);
+        }
+
+        activity.startActivity(intent);
+    }
+
+    @ReactMethod
+    public void launchTransactionDetail(final int appid, final ReadableMap params, final Promise promise) {
+        Timber.d("Show detail : appid [%s]", appid);
+        Subscription subscription = mResourceRepository.isAppResourceAvailable(appid)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            startReactNativeApp(appid, params);
+                        } else {
+                            startReactNativeApp(mZaloPayAppId, params);
+                        }
+                        Helpers.promiseResolve(promise, 1);
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void startReactNativeApp(int appid, ReadableMap params) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Bundle options = transform(params);
         Intent intent;
         if (appid == mZaloPayAppId) {
             intent = mNavigator.intentMiniAppActivity(activity, ModuleName.TRANSACTION_LOGS, options);
