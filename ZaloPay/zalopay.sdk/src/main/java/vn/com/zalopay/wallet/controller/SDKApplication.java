@@ -13,6 +13,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
+import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -156,5 +157,9 @@ public class SDKApplication extends Application {
 
     public static SDKConfiguration.Builder getBuilder() {
         return getApplicationComponent().sdkConfiguration().getBuilder();
+    }
+
+    public static SdkErrorReporter sdkErrorReporter() {
+        return new SdkErrorReporter(getContext());
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -34,6 +35,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
@@ -179,7 +181,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                                 Log.e(this, e);
                             }
                             try {
-                                getAdapter().sdkReportError(ERROR_WEBSITE, error.toString());
+                                SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+                                reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, error.toString());
                             } catch (Exception e) {
                                 Log.e(this, e);
                             }
@@ -209,7 +212,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             errStringBuilder.append(description);
             errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
-            getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
+            SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+            reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, errStringBuilder.toString());
         }
         try {
             getAdapter().getView().hideLoading();

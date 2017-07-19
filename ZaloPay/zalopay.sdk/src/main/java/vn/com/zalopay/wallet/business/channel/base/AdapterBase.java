@@ -27,10 +27,11 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.ISdkErrorContext;
+import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.api.ServiceManager;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
-import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
@@ -40,7 +41,6 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.zalopay.AdapterZaloPay;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
@@ -96,7 +96,7 @@ import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
 import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.isTransNetworkError;
 
-public abstract class AdapterBase {
+public abstract class AdapterBase implements ISdkErrorContext {
     protected final DPaymentCard mCard;
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected WeakReference<ChannelPresenter> mPresenter = null;
@@ -131,6 +131,8 @@ public abstract class AdapterBase {
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
     protected ILinkSourceInteractor mLinkInteractor;
+    final SdkErrorReporter mSdkErrorReporter;
+
     public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -234,12 +236,12 @@ public abstract class AdapterBase {
                     getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess),
                             () -> showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
                 }
-                sdkReportError(TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
+                mSdkErrorReporter.sdkReportError(AdapterBase.this, TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
             } catch (Exception ex) {
                 Timber.w(ex.getMessage());
                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                 try {
-                    sdkReportError(GENERAL_EXCEPTION, ex.getMessage());
+                    mSdkErrorReporter.sdkReportError(AdapterBase.this, GENERAL_EXCEPTION, ex.getMessage());
                 } catch (Exception e) {
                     Timber.w(e.getMessage());
                 }
@@ -268,6 +270,8 @@ public abstract class AdapterBase {
         if (TextUtils.isEmpty(mPageName)) {
             mPageName = pPageName;
         }
+
+        mSdkErrorReporter = SDKApplication.sdkErrorReporter();
     }
 
     public void showLoadindTimeout(String pTitle) {
@@ -415,10 +419,13 @@ public abstract class AdapterBase {
     }
 
     protected void endingCountTimeLoadCaptchaOtp() {
-        if (mCaptchaEndTime == 0)
+        if (mCaptchaEndTime == 0) {
             mCaptchaBeginTime = System.currentTimeMillis();
-        if (mOtpEndTime == 0)
+        }
+
+        if (mOtpEndTime == 0) {
             mOtpBeginTime = System.currentTimeMillis();
+        }
     }
 
     public boolean isLoadWebTimeout() {
@@ -726,7 +733,7 @@ public abstract class AdapterBase {
                         //no link for parsing
                         if (TextUtils.isEmpty(dataResponse.redirecturl)) {
                             showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_empty_url_mess));
-                            sdkReportErrorOnPharse(Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
+                            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
                             return null;
                         }
                         //flow cover parse web (vietinbank)
@@ -755,7 +762,7 @@ public abstract class AdapterBase {
                                 mCaptchaBeginTime = System.currentTimeMillis();
                             } catch (Exception e) {
                                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_init_data));
-                                sdkReportErrorOnPharse(Constants.STATUS_PHARSE, e.getMessage());
+                                mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, e.getMessage());
                                 Log.e(this, e);
                             }
                         }
@@ -809,7 +816,7 @@ public abstract class AdapterBase {
 
         } catch (Exception e) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_generic_mess));
-            sdkReportErrorOnPharse(Constants.UNDEFINE, e.getMessage());
+            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.UNDEFINE, e.getMessage());
             Log.e(this, e);
         }
 
@@ -1445,7 +1452,7 @@ public abstract class AdapterBase {
         }
         //send log
         try {
-            sdkReportErrorOnTransactionFail();
+            mSdkErrorReporter.sdkReportErrorOnTransactionFail(this, GsonUtils.toJsonString(mResponseStatus));
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1578,6 +1585,7 @@ public abstract class AdapterBase {
             mLinkInteractor.clearCheckSum();
             mPaymentInfoHelper.setMapBank(mapCard);
         } catch (Exception ex) {
+            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.RESULT_PHARSE, ex.getMessage());
             throw ex;
         }
     }
@@ -1656,47 +1664,31 @@ public abstract class AdapterBase {
         }
     }
 
-    public void sdkReportErrorOnPharse(int pPharse, String pMessage) {
-        String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
-        if (TextUtils.isEmpty(paymentError) || !ConnectionUtil.isOnline(mContext)) {
-            return;
-        }
-        try {
-            paymentError = String.format(paymentError, String.valueOf(pPharse), String.valueOf(200), pMessage);
-            sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    public void sdkReportErrorOnTransactionFail() throws Exception {
-        if (!PaymentPermission.allowSendLogOnTransactionFail() && !ConnectionUtil.isOnline(mContext)) {
-            return;
-        }
-        String paymentError = mContext.getResources().getString(R.string.sdk_report_error_format);
-        if (!TextUtils.isEmpty(paymentError)) {
-            paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
-            sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
-        }
-    }
-
-    public void sdkReportError(int pErrorCode, String pMessage) {
-        if (getGuiProcessor() == null || !ConnectionUtil.isOnline(mContext)) {
-            return;
-        }
-        try {
-            String bankCode = getGuiProcessor().getDetectedBankCode();
-            SDKReportTask.makeReportError(mPaymentInfoHelper.getUserInfo(), pErrorCode, mTransactionID, pMessage, bankCode);
-        } catch (Exception ex) {
-            Timber.d(ex.getMessage());
-        }
-    }
-
     /***
      * * get status 1 oneshot to check status again in load website is timeout
      * */
     void getOneShotTransactionStatus() {
         isLoadWebTimeout = true;
         getStatusStrategy(mTransactionID, false, null);
+    }
+
+    @Override
+    public boolean hasCardGuiProcessor() {
+        return getGuiProcessor() != null;
+    }
+
+    @Override
+    public String getDetectedBankCode() {
+        return getGuiProcessor().getDetectedBankCode();
+    }
+
+    @Override
+    public String getTransactionId() {
+        return mTransactionID;
+    }
+
+    @Override
+    public UserInfo getUserInfo() {
+        return mPaymentInfoHelper.getUserInfo();
     }
 }

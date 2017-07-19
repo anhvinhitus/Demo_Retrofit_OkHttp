@@ -76,7 +76,8 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 /***
  * card processor class
  */
-public abstract class CardGuiProcessor extends SingletonBase implements ViewPager.OnPageChangeListener {
+public abstract class CardGuiProcessor extends SingletonBase
+        implements ViewPager.OnPageChangeListener {
     public final String VERTICAL_SEPERATOR = " ";
     protected Context mContext;
     protected WeakReference<AdapterBase> mAdapter;

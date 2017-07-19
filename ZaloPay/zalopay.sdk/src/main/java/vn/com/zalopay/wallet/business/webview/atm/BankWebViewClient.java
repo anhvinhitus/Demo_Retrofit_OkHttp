@@ -13,6 +13,7 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -28,6 +29,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 
@@ -124,8 +126,9 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
                 String inputScript = GsonUtils.toJsonString(input);
 
-                if (pType == EJavaScriptType.AUTO)
+                if (pType == EJavaScriptType.AUTO) {
                     executeJs(bankScript.autoJs, inputScript);
+                }
 
                 if (mCurrentUrlPattern != null && mCurrentUrlPattern.equals(bankScript.url)) {
                     continue;
@@ -133,8 +136,9 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
                 // Process this url
                 mCurrentUrlPattern = bankScript.url;
-                if (pType == EJavaScriptType.HIT)
+                if (pType == EJavaScriptType.HIT) {
                     executeJs(bankScript.hitJs, inputScript);
+                }
             }
         }
 
@@ -347,7 +351,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
                     }
 
                     try {
-                        getAdapter().sdkReportError(ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                        SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+                        reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
                     } catch (Exception e) {
                         Log.e(this, e);
                     }

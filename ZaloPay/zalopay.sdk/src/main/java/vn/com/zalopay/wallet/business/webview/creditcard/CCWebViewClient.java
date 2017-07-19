@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -20,6 +21,7 @@ import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.business.entity.base.WebViewHelper.SSL_ERROR;
@@ -98,7 +100,8 @@ public class CCWebViewClient extends PaymentWebViewClient {
             StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
             errStringBuilder.append(failingUrl);
-            getAdapter().sdkReportError(ERROR_WEBSITE, errStringBuilder.toString());
+            SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+            reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, errStringBuilder.toString());
         }
         Timber.d("errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
     }
@@ -108,7 +111,8 @@ public class CCWebViewClient extends PaymentWebViewClient {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewHelper(SSL_ERROR, null));
             new Handler().postDelayed(() -> {
                 try {
-                    getAdapter().sdkReportError(ERROR_WEBSITE, GsonUtils.toJsonString(error));
+                    SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+                    reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, GsonUtils.toJsonString(error));
                 } catch (Exception e) {
                     Timber.w(e.getMessage());
                 }
