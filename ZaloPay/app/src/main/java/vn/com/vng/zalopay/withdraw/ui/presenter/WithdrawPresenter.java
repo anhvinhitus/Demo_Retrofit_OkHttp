@@ -20,6 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -54,10 +55,9 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  */
 public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
-    private static final int WITHDRAW_APP_ID = 2;
     private final BalanceStore.Repository mBalanceRepository;
-    private final ZaloPayRepository mZaloPayRepository;
-    private final Navigator mNavigator;
+    protected final ZaloPayRepository mZaloPayRepository;
+    protected final Navigator mNavigator;
     private final User mUser;
     private final Context mContext;
     private final EventBus mEventBus;
@@ -137,7 +137,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
-    private void setBalanceAndCheckDenomination(long balance) {
+    void setBalanceAndCheckDenomination(long balance) {
         if (mView == null) {
             return;
         }
@@ -179,7 +179,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                         if (amount > balance) {
                             return Observable.error(new UserInputException(R.string.withdraw_exceed_balance));
                         } else {
-                            return mZaloPayRepository.createwalletorder(WITHDRAW_APP_ID, amount, TransactionType.WITHDRAW, mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
+                            return mZaloPayRepository.createwalletorder(BuildConfig.WITHDRAW_APP_ID, amount, TransactionType.WITHDRAW, mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
                         }
                     }
                 })
@@ -197,6 +197,9 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+
+        CreateWalletOrderSubscriber() {
+        }
 
         @Override
         public void onStart() {
@@ -223,7 +226,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
-    private void onCreateWalletOrderError(Throwable e) {
+    void onCreateWalletOrderError(Throwable e) {
         if (mView == null) {
             return;
         }
@@ -237,7 +240,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
-    private void onCreateWalletOrderSuccess(Order order) {
+    void onCreateWalletOrderSuccess(Order order) {
         if (mView == null) {
             return;
         }
@@ -247,6 +250,9 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+        }
+
         @Override
         protected ILoadDataView getView() {
             return mView;
@@ -276,7 +282,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
-    private void closeWithDraw() {
+    void closeWithDraw() {
         if (mView != null) {
             mView.finish(Activity.RESULT_OK);
         }
