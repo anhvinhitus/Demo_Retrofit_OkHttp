@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,11 +28,8 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
-
-
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -57,8 +53,9 @@ public abstract class BaseFragment extends Fragment {
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setupFragmentComponent();
     }
 
     @Nullable
@@ -66,7 +63,6 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getResLayoutId(), container, false);
         unbinder = ButterKnife.bind(this, view);
-        setupFragmentComponent();
         return view;
     }
 
@@ -124,17 +120,15 @@ public abstract class BaseFragment extends Fragment {
             mProgressDialog = new SweetAlertDialog(getContext(),
                     SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        Activity activity = getActivity();
-                        if (activity != null && !activity.isFinishing()) {
-                            activity.onBackPressed();
-                        }
-                        return true;
-                    } else {
-                        return false;
+            mProgressDialog.setOnKeyListener((dialogInterface, keyCode, keyEvent) -> {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    Activity activity = getActivity();
+                    if (activity != null && !activity.isFinishing()) {
+                        activity.onBackPressed();
                     }
+                    return true;
+                } else {
+                    return false;
                 }
             });
         }
@@ -231,11 +225,6 @@ public abstract class BaseFragment extends Fragment {
                 message,
                 cancelText,
                 cancelListener);
-    }
-
-    public void showRetryDialog(String retryMessage,
-                                final ZPWOnEventConfirmDialogListener retryListener) {
-        DialogHelper.showRetryDialog(getActivity(), retryMessage, retryListener);
     }
 
     public void showConfirmDialog(String pMessage,
