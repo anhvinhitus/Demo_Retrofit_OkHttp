@@ -1,102 +1,147 @@
 {
-  "phone_format": {
-    "min_length": 10,
-    "max_length": 11,
-    "patterns": [
+  "phone_format":{
+    "min_length":10,
+    "max_length":11,
+    "patterns":[
       "(0)([3-9]\\d{8})",
       "(01)\\d{9}"
     ],
-    "invalid_length_message": "Số điện thoại cần 10 hoặc 11 chữ số",
-    "general_message": "Số điện thoại không hợp lệ"
+    "invalid_length_message":"Số điện thoại cần 10 hoặc 11 chữ số",
+    "general_message":"Số điện thoại không hợp lệ"
   },
-  "api_route": "connector",
-  "number_search_app": 3,
-  "api_names": [
-    "v001/tpe/getbalance",
-    "v001/tpe/getorderinfo",
-    "um/verifyotpprofile"
-  ],
-  "inside_app": [
+  "friend_config":{
+    "enable_merge_contact_name":1
+  },
+  "inside_app":[
     {
-      "inside_app_id": 1,
-      "app_type": -1,
-      "app_name": "Rút tiền",
-      "icon_name": "notify_1_withdraw",
-      "icon_color": "#f6b501"
+      "inside_app_id":1,
+      "app_type":-1,
+      "app_name":"Rút tiền",
+      "icon_name":"notify_1_withdraw",
+      "icon_color":"#f6b501"
     },
     {
-      "inside_app_id": 2,
-      "app_type": -1,
-      "app_name": "Nạp tiền",
-      "icon_name": "notify_1_receivemoney",
-      "icon_color": "#129d5a"
+      "inside_app_id":2,
+      "app_type":-1,
+      "app_name":"Nạp tiền",
+      "icon_name":"notify_1_receivemoney",
+      "icon_color":"#129d5a"
     },
     {
-      "inside_app_id": 3,
-      "app_type": -1,
-      "app_name": "Liên kết thẻ",
-      "icon_name": "menu_linkcard",
-      "icon_color": "#f6b501"
+      "inside_app_id":3,
+      "app_type":-1,
+      "app_name":"Liên kết thẻ",
+      "icon_name":"menu_linkcard",
+      "icon_color":"#f6b501"
     },
     {
-      "inside_app_id": 4,
-      "app_type": -1,
-      "app_name": "Trả tiền",
-      "icon_name": "menu_payqrcode",
-      "icon_color": "#f6b501"
+      "inside_app_id":4,
+      "app_type":-1,
+      "app_name":"Trả tiền",
+      "icon_name":"menu_payqrcode",
+      "icon_color":"#f6b501"
     },
     {
-      "inside_app_id": 6,
-      "app_type": -2,
-      "app_name": "Trung tâm hỗ trợ",
-      "icon_name": "menu_supportcenter",
-      "icon_color": "#53718b",
-      "module_name": "SupportCenter"
+      "inside_app_id":6,
+      "app_type":-2,
+      "app_name":"Trung tâm hỗ trợ",
+      "icon_name":"menu_supportcenter",
+      "icon_color":"#53718b",
+      "module_name":"SupportCenter"
     },
     {
-      "inside_app_id": 7,
-      "app_type": -2,
-      "app_name": "Thông tin ứng dụng",
-      "icon_name": "menu_infomation",
-      "icon_color": "#53718b",
-      "module_name": "About"
+      "inside_app_id":7,
+      "app_type":-2,
+      "app_name":"Thông tin ứng dụng",
+      "icon_name":"menu_infomation",
+      "icon_color":"#53718b",
+      "module_name":"About"
     },
     {
-      "inside_app_id": 8,
-      "app_type": -1,
-      "app_name": "Thông tin tài khoản",
-      "icon_name": "profile_avatadefault",
-      "icon_color": "#53718b"
+      "inside_app_id":8,
+      "app_type":-1,
+      "app_name":"Thông tin tài khoản",
+      "icon_name":"profile_avatadefault",
+      "icon_color":"#4286F5"
     },
     {
-      "inside_app_id": 9,
-      "app_type": -2,
-      "app_name": "Thông báo",
-      "icon_name": "nav_notify",
-      "icon_color": "#53718b",
-      "module_name": "Notifications"
+      "inside_app_id":9,
+      "app_type":-2,
+      "app_name":"Thông báo",
+      "icon_name":"nav_notify",
+      "icon_color":"#DE4438",
+      "module_name":"Notifications"
     },
     {
-      "inside_app_id": 10,
-      "app_type": -1,
-      "app_name": "Số dư",
-      "icon_name": "header_overbalance",
-      "icon_color": "#53718b"
+      "inside_app_id":10,
+      "app_type":-1,
+      "app_name":"Số dư",
+      "icon_name":"header_overbalance",
+      "icon_color":"#4286F5"
     },
     {
-      "inside_app_id": 11,
-      "app_type": -1,
-      "app_name": "Đổi mật khẩu thanh toán",
-      "icon_name": "",
-      "icon_color": ""
+      "inside_app_id":11,
+      "app_type":-1,
+      "app_name":"Đổi mật khẩu thanh toán",
+      "icon_name":"personal_changepass",
+      "icon_color":"#53718B"
     },
     {
-      "inside_app_id": 12,
-      "app_type": -1,
-      "app_name": "Thiết lập bảo vệ tài khoản",
-      "icon_name": "personal_settingaccount",
-      "icon_color": "#53718b"
+      "inside_app_id":12,
+      "app_type":-1,
+      "app_name":"Thiết lập bảo vệ tài khoản",
+      "icon_name":"personal_settingaccount",
+      "icon_color":"#53718B"
     }
   ],
-  "withdraw_money": [100000, 200000, 500000, 1000000, 2000000, 5000000]
+  "api_route":"connector",
+  "api_names":[
+    "um/listcardinfoforclient",
+    "um/listbankaccountforclient",
+    "um/removeaccesstoken",
+    "um/verifycodetest",
+    "um/getuserinfo",
+    "um/updateprofile",
+    "um/verifyotpprofile",
+    "um/recoverypin",
+    "umupload/preupdateprofilelevel3",
+    "um/getuserinfobyzalopayid",
+    "um/verifyaccesstoken",
+    "um/sendnotification",
+    "um/checkzalopaynameexist",
+    "um/updatezalopayname",
+    "um/getuserinfobyzalopayname",
+    "um/validatepin",
+    "um/listcardinfo",
+    "um/getuserprofilelevel",
+    "ummerchant/getmerchantuserinfo",
+    "ummerchant/getlistmerchantuserinfo",
+    "v001/tpe/transhistory",
+    "v001/tpe/gettransstatus",
+    "v001/tpe/v001getplatforminfo",
+    "v001/tpe/getorderinfo",
+    "v001/tpe/createorder",
+    "v001/tpe/createwalletorder",
+    "v001/tpe/getappinfo",
+    "v001/tpe/getappinfov1",
+    "v001/tpe/getbanklist",
+    "v001/tpe/submittrans",
+    "v001/tpe/atmauthenpayer",
+    "v001/tpe/authcardholderformapping",
+    "v001/tpe/getstatusmapcard",
+    "v001/tpe/verifycardformapping",
+    "v001/tpe/getstatusbyapptransidforclient",
+    "v001/tpe/sdkwriteatmtime",
+    "v001/tpe/removemapcard",
+    "v001/tpe/sdkerrorreport",
+    "v001/tpe/submitmapaccount"
+  ],
+  "withdraw_money": [100000, 200000, 500000, 1000000, 2000000, 5000000],
+  "allow_urls": [
+    "^((.+)\\.)?zalopay\\.vn",
+    "^((.+)\\.)?zalopay\\.com\\.vn",
+    "^((.+)\\.)?zalopay\\.zing\\.vn",
+    "^((.+)\\.)?zpsandbox\\.zing\\.vn"
+  ],
+  "number_search_app": 3
 }
