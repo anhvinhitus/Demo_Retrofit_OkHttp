@@ -150,7 +150,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
         return this;
     }
 
-    @OnClick(R.id.personal_rl_setting)
+    @OnClick(R.id.tab_personal_tv_setting)
     public void goToProtectAccount() {
         navigator.startProtectAccount(getActivity());
     }

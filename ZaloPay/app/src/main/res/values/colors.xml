@@ -159,6 +159,7 @@
     <color name="personal_ic_bill">#4286f5</color>
     <color name="personal_ic_trans_history">#dd4337</color>
     <color name="personal_ic_support">#53718b</color>
+    <color name="personal_ic_setting">#53718b</color>
     <color name="personal_ic_link">#008fe5</color>
 
     <color name="blue.008fe5">#008FE5</color>

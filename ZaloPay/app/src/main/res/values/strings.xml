@@ -390,6 +390,7 @@
 
     <!-- tab personal -->
     <string name="personal_title">Cá nhân</string>
+    <string name="personal_item_setting_title">Thiết lập bảo vệ tài khoản</string>
     <string name="personal_item_balance_title">TK Zalo Pay</string>
     <string name="personal_item_bank_title">Ngân Hàng</string>
     <string name="personal_item_bill_title">Hoá Đơn</string>

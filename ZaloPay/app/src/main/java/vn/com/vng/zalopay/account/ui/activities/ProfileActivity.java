@@ -12,7 +12,6 @@ import com.zalopay.ui.widget.IconFont;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
@@ -58,10 +57,10 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         setZaloPayName(user.zalopayname);
     }
 
-    @OnClick(R.id.toolbar_profile_rl_setting)
-    public void goToProtectAccount() {
-        navigator.startProtectAccount(this);
-    }
+//    @OnClick(R.id.tab_personal_tv_setting)
+//    public void goToProtectAccount() {
+//        navigator.startProtectAccount(this);
+//    }
 
     @Override
     public void setZaloPayName(String zaloPayName) {

@@ -8,9 +8,7 @@
 
     <include layout="@layout/toolbar_profile" />
 
-    <include
-        android:id="@+id/profile_header_info"
-        layout="@layout/zp_header_profile_info" />
+    <include layout="@layout/zp_header_profile_info" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

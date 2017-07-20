@@ -23,22 +23,22 @@
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_xxlarge" />
 
-        <RelativeLayout
-            android:id="@+id/toolbar_profile_rl_setting"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/toolbar_profile_rl_setting"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentRight="true">-->
 
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/personal_margin_12"
-                android:gravity="center_vertical"
-                android:textColor="@color/white"
-                app:iconName="@string/personal_setting"
-                app:iconSize="@dimen/personal_iconfont" />
-        </RelativeLayout>
+            <!--<com.zalopay.ui.widget.IconFont-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginRight="@dimen/personal_margin_12"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textColor="@color/white"-->
+                <!--app:iconName="@string/personal_setting"-->
+                <!--app:iconSize="@dimen/personal_iconfont" />-->
+        <!--</RelativeLayout>-->
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
