@@ -42,14 +42,6 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
  */
 public class TransferFragment extends BaseFragment implements ITransferView, OnKeyboardStateChangeListener {
 
-    public static TransferFragment newInstance(TransferObject object) {
-        TransferFragment fragment = new TransferFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("transfer", object);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Inject
     TransferPresenter mPresenter;
 
@@ -100,6 +92,14 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     View btnContinue;
 
     TransferObject mTransferObject;
+
+    public static TransferFragment newInstance(TransferObject object) {
+        TransferFragment fragment = new TransferFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("transfer", object);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected void setupFragmentComponent() {
@@ -290,7 +290,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         String name = TextUtils.isEmpty(zalopayName) ? getString(R.string.not_update) : zalopayName;
 
         if (mTextViewZaloPayName != null) {
-            mTextViewZaloPayName.setText(getString(R.string.account_format, name));
+            mTextViewZaloPayName.setText(String.format(getString(R.string.account_format), name));
         }
     }
 
