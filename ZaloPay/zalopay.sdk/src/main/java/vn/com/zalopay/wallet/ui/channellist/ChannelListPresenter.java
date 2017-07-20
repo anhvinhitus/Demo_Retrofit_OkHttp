@@ -437,7 +437,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         getViewOrThrow().renderDynamicItemDetail(items);
     }
 
-    void send(PaymentChannel pChannel) {
+    void addToAdapter(PaymentChannel pChannel) {
         ChannelListAdapter.ItemType itemType;
         if (pChannel.isZaloPayChannel()) {
             itemType = ChannelListAdapter.ItemType.ZALOPAY;
@@ -455,30 +455,30 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mChannelAdapter.add(itemType, pChannel);
     }
 
-    private void sendMapChannelToAdapter() {
+    private void addMapChannelListToAdapter() {
         if (mActiveCCMapChannel.size() > 0) {
             for (Map.Entry<String, Object> channel : mActiveCCMapChannel.entrySet()) {
-                send((PaymentChannel) channel.getValue());
+                addToAdapter((PaymentChannel) channel.getValue());
             }
         }
         if (mActiveMapChannels.size() > 0) {
             for (Map.Entry<String, Object> channel : mActiveMapChannels.entrySet()) {
-                send((PaymentChannel) channel.getValue());
+                addToAdapter((PaymentChannel) channel.getValue());
             }
         }
         if (mInActiveCCMapChannel.size() > 0) {
             for (Map.Entry<String, Object> channel : mInActiveCCMapChannel.entrySet()) {
-                send((PaymentChannel) channel.getValue());
+                addToAdapter((PaymentChannel) channel.getValue());
             }
         }
         if (mInActiveMapChannels.size() > 0) {
             for (Map.Entry<String, Object> channel : mInActiveMapChannels.entrySet()) {
-                send((PaymentChannel) channel.getValue());
+                addToAdapter((PaymentChannel) channel.getValue());
             }
         }
     }
 
-    private void renderCC(String pmcNames) {
+    private void renderCC(boolean active, String pmcNames) {
         if (TextUtils.isEmpty(pmcNames)) {
             return;
         }
@@ -486,34 +486,34 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (pmcNameList.length <= 0) {
             return;
         }
-
+        Map<String, Object> channelList = active ? mActiveCCMapChannel : mInActiveCCMapChannel;
+        if (channelList == null || channelList.size() <= 0) {
+            return;
+        }
         for (String name : pmcNameList) {
             if (TextUtils.isEmpty(name)) {
                 continue;
             }
-            Object channel = mActiveCCMapChannel.get(name);
-            if(channel != null){
-                send((PaymentChannel) channel);
-            }
-            channel = mInActiveCCMapChannel.get(name);
-            if(channel != null){
-                send((PaymentChannel) channel);
+            Object channel = channelList.get(name);
+            if (channel != null) {
+                addToAdapter((PaymentChannel) channel);
             }
         }
     }
 
-    private void renderMapChannels(Map<String, Object> channels, String... bankCodes) {
+    private void renderMapChannels(boolean active, String... bankCodes) {
+        Map<String, Object> channels = active ? mActiveMapChannels : mInActiveMapChannels;
         for (String bankCode : bankCodes) {
             if (TextUtils.isEmpty(bankCode)) {
                 continue;
             }
             if (BuildConfig.CC_CODE.equals(bankCode)) {
-                renderCC((String) channels.get(bankCode));
+                renderCC(active, (String) channels.get(bankCode));
                 continue;
             }
             Object channel = channels.get(bankCode);
             if (channel instanceof PaymentChannel) {
-                send((PaymentChannel) channel);
+                addToAdapter((PaymentChannel) channel);
             }
         }
     }
@@ -531,8 +531,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private Observable<Boolean> sortChannels(String bankCodes) {
         return Observable.defer(() -> {
             String[] sortedBankCode = bankCodes.split(Constants.COMMA);
-            renderMapChannels(mActiveMapChannels, sortedBankCode);
-            renderMapChannels(mInActiveMapChannels, sortedBankCode);
+            renderMapChannels(true, sortedBankCode);
+            renderMapChannels(false, sortedBankCode);
             return Observable.just(true);
         });
 
@@ -584,7 +584,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     void loadChannelOnCompleted() {
         String sortedBankCodes = mBankInteractor.getBankCodeList();
         if (TextUtils.isEmpty(sortedBankCodes)) {
-            sendMapChannelToAdapter();
+            addMapChannelListToAdapter();
             collectChannelsToList();
             loadChannelOnDoLast();
         } else {
@@ -733,7 +733,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 if (!TextUtils.isEmpty(channel.bankcode) && channel.isMapValid()) {
                     queueChannel(channel);
                 } else {
-                    send(channel);
+                    addToAdapter(channel);
                 }
             }
         };
