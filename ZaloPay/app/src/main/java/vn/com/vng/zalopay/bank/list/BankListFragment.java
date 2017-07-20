@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.daimajia.swipe.util.Attributes;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -21,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.internal.DebouncingOnClickListener;
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -79,6 +81,7 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
         mListView.addOnScrollListener(mOnScrollListener);
         mAdapter.setMode(Attributes.Mode.Single);
         mListView.setAdapter(mAdapter);
+        setEmptyViewHeight();
     }
 
     @Override
@@ -157,7 +160,7 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
         }
 
         int index = mAdapter.indexOf(val);
-      //  Timber.d("close: [index:%s]", index);
+        //  Timber.d("close: [index:%s]", index);
 
         if (index < 0) {
             return;
@@ -241,5 +244,18 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
         }
         getActivity().setResult(result);
         getActivity().finish();
+    }
+
+    private void setEmptyViewHeight() {
+        Window window = getActivity().getWindow();
+        if (window == null) {
+            return;
+        }
+        int screenHeight = AndroidUtils.displaySize.y;
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = (int) (screenHeight * 0.5);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
+        params.gravity = Gravity.CENTER;
+        mEmptyView.setLayoutParams(params);
     }
 }
