@@ -81,7 +81,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private List<Object> mChannelList = new ArrayList<>();
     private Map<String, Object> mActiveMapChannels = new HashMap<>();
     private Map<String, Object> mInActiveMapChannels = new HashMap<>();
-    private Map<String, Object> mCCMapChannel = new HashMap<>();
+    private Map<String, Object> mActiveCCMapChannel = new HashMap<>();
+    private Map<String, Object> mInActiveCCMapChannel = new HashMap<>();
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
     private PaymentChannel mZaloPayChannel = null; //temp variable for checking active zalopay channel
@@ -454,14 +455,19 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mChannelAdapter.add(itemType, pChannel);
     }
 
-    private void renderMapChannels() {
-        if (mCCMapChannel.size() > 0) {
-            for (Map.Entry<String, Object> channel : mCCMapChannel.entrySet()) {
+    private void sendMapChannelToAdapter() {
+        if (mActiveCCMapChannel.size() > 0) {
+            for (Map.Entry<String, Object> channel : mActiveCCMapChannel.entrySet()) {
                 send((PaymentChannel) channel.getValue());
             }
         }
         if (mActiveMapChannels.size() > 0) {
             for (Map.Entry<String, Object> channel : mActiveMapChannels.entrySet()) {
+                send((PaymentChannel) channel.getValue());
+            }
+        }
+        if (mInActiveCCMapChannel.size() > 0) {
+            for (Map.Entry<String, Object> channel : mInActiveCCMapChannel.entrySet()) {
                 send((PaymentChannel) channel.getValue());
             }
         }
@@ -485,7 +491,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (TextUtils.isEmpty(name)) {
                 continue;
             }
-            send((PaymentChannel) mCCMapChannel.get(name));
+            Object channel = mActiveCCMapChannel.get(name);
+            if(channel != null){
+                send((PaymentChannel) channel);
+            }
+            channel = mInActiveCCMapChannel.get(name);
+            if(channel != null){
+                send((PaymentChannel) channel);
+            }
         }
     }
 
@@ -509,7 +522,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         //release variable after using
         mActiveMapChannels.clear();
         mInActiveMapChannels.clear();
-        mCCMapChannel.clear();
+        mActiveCCMapChannel.clear();
+        mInActiveCCMapChannel.clear();
         mChannelLoader = null;
         mZaloPayChannel = null;
     }
@@ -570,7 +584,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     void loadChannelOnCompleted() {
         String sortedBankCodes = mBankInteractor.getBankCodeList();
         if (TextUtils.isEmpty(sortedBankCodes)) {
-            renderMapChannels();
+            sendMapChannelToAdapter();
             collectChannelsToList();
             loadChannelOnDoLast();
         } else {
@@ -617,11 +631,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mSelectChannel == null) {
             return false;
         }
-        if (mActiveMapChannels == null || mCCMapChannel == null) {
+        if (mActiveMapChannels == null || mActiveCCMapChannel == null) {
             return false;
         }
         boolean hasZaloPayActive = mZaloPayChannel != null && mZaloPayChannel.meetPaymentCondition();
-        int channelActiveCount = mActiveMapChannels.size() + mCCMapChannel.size() + (hasZaloPayActive ? 1 : 0);
+        int channelActiveCount = mActiveMapChannels.size() + mActiveCCMapChannel.size() + (hasZaloPayActive ? 1 : 0);
         return channelActiveCount == 1;
     }
 
@@ -745,7 +759,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                         .append(value.toString());
                 object = valueBuilder.toString();
             }
-            mCCMapChannel.put(channel.pmcname, channel);
+            if (active) {
+                mActiveCCMapChannel.put(channel.pmcname, channel);
+            } else {
+                mInActiveCCMapChannel.put(channel.pmcname, channel);
+            }
         }
         if (active) {
             mActiveMapChannels.put(key, object);
