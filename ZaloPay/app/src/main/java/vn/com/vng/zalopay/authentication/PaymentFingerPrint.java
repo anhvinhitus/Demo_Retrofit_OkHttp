@@ -21,13 +21,11 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 public class PaymentFingerPrint implements IPaymentFingerPrint {
 
     private final KeyTools mKeyTools;
-    private final Navigator mNavigator;
 
     private final FingerprintManagerCompat mFingerprintManagerCompat;
 
     public PaymentFingerPrint(AndroidApplication context) {
         mKeyTools = new KeyTools();
-        mNavigator = context.getAppComponent().navigator();
         mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
     }
 
@@ -105,14 +103,5 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         }
         Timber.d("put new password %s", pNewPassword);
         return mKeyTools.storePassword(pNewPassword);
-    }
-
-    public void showSuggestionDialog(Activity activity, String hashPassword) {
-
-        if (activity == null) {
-            return;
-        }
-
-        mNavigator.showSuggestionDialog(activity, hashPassword);
     }
 }

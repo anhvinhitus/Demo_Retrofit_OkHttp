@@ -15,7 +15,6 @@ import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.ui.widget.util.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
@@ -36,9 +34,7 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
-import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
 import vn.com.vng.zalopay.authentication.Stage;
-import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
@@ -891,66 +887,6 @@ public class Navigator {
         }
 
         return false;
-    }
-
-    @Deprecated
-    public void showSuggestionDialog(Activity activity, String hashPassword) {
-        UserSession.mHashPassword = hashPassword;
-        showSuggestionDialog(activity);
-    }
-
-    @Deprecated
-    public void showSuggestionDialog(Activity activity) {
-
-        if (true) {
-            return; // Tạm tắt suggestion
-        }
-
-        if (!shouldShowSuggestDialog()) {
-            return;
-        }
-        FingerprintSuggestDialog dialog = new FingerprintSuggestDialog();
-        dialog.setPassword(UserSession.mHashPassword);
-        dialog.show(activity.getFragmentManager(), FingerprintSuggestDialog.TAG);
-        mPreferences.edit()
-                .putLong(Constants.PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST, System.currentTimeMillis())
-                .apply();
-    }
-
-    private boolean shouldShowSuggestDialog() {
-
-        if (TextUtils.isEmpty(UserSession.mHashPassword)) {
-            return false;
-        }
-
-        if (!mPreferences.getBoolean(Constants.PREF_SHOW_FINGERPRINT_SUGGEST, true)) {
-            Timber.d("Not show fingerprint suggest");
-            return false;
-        }
-
-        FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(AndroidApplication.instance());
-
-        if (!fingerprintManagerCompat.isFingerprintAvailable()) {
-            Timber.d("Fingerprint not available");
-            return false;
-        }
-
-        String password = mUserConfig.getEncryptedPassword();
-
-        if (!TextUtils.isEmpty(password)) {
-            Timber.d("Using fingerprint");
-            return false;
-        }
-
-        long lastTime = mPreferences.getLong(Constants.PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST, 0);
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime - lastTime < TimeUtils.DAY) {
-            Timber.d("less than one day");
-            return false;
-        }
-
-        return true;
     }
 
     private Intent intentProtectAccountActivity(Context context) {

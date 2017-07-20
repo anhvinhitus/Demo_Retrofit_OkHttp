@@ -251,7 +251,6 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         if (ModuleName.NOTIFICATIONS.equals(moduleName)) {
             markAllNotify();
         } else if (ModuleName.TRANSACTION_LOGS.equals(moduleName)) {
-            navigator.showSuggestionDialog(this);
         }
     }
 }

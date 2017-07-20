@@ -95,7 +95,6 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         }
 
         initView();
-        navigator.showSuggestionDialog(this);
     }
 
     private void initView() {
