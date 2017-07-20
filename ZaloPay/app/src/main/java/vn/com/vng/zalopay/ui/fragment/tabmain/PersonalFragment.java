@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
 import javax.inject.Inject;
 
@@ -219,24 +218,24 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
         navigator.startMiniAppActivity(getActivity(), ModuleName.ABOUT);
     }
 
-    @OnClick(R.id.tab_personal_rl_logout)
-    public void onLogOutClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_LOGOUT);
-        showConfirmSignOut();
-    }
+//    @OnClick(R.id.tab_personal_rl_logout)
+//    public void onLogOutClick() {
+//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_LOGOUT);
+//        showConfirmSignOut();
+//    }
 
-    private void showConfirmSignOut() {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText(getString(R.string.txt_confirm_sigout))
-                .setCancelText(getString(R.string.cancel))
-                .setTitleText(getString(R.string.confirm))
-                .setConfirmText(getString(R.string.txt_leftmenu_sigout))
-                .setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
-                    sweetAlertDialog.dismiss();
-                    presenter.logout();
-                })
-                .show();
-    }
+//    private void showConfirmSignOut() {
+//        new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+//                .setContentText(getString(R.string.txt_confirm_sigout))
+//                .setCancelText(getString(R.string.cancel))
+//                .setTitleText(getString(R.string.confirm))
+//                .setConfirmText(getString(R.string.txt_leftmenu_sigout))
+//                .setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
+//                    sweetAlertDialog.dismiss();
+//                    presenter.logout();
+//                })
+//                .show();
+//    }
 
     @Override
     public void onStartFragment() {

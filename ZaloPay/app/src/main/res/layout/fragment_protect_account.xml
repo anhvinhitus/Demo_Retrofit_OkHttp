@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingTop="10dp">
@@ -119,5 +120,40 @@
         android:singleLine="false"
         android:text="@string/change.password.description"
         android:textSize="@dimen/personal_general_text_sub_l" />
+
+    <RelativeLayout
+        android:id="@+id/protect_account_rl_logout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/personal_menu_item_height"
+        android:layout_marginTop="@dimen/personal_margin_18"
+        android:background="@drawable/default_white_selector">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/personal_dashline_height"
+            android:layout_alignParentTop="true"
+            android:background="@color/separate" />
+
+        <com.zalopay.ui.widget.IconFontTextView
+            android:id="@+id/tab_personal_tv_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/personal_margin_12"
+            android:gravity="center_vertical"
+            android:text="@string/txt_leftmenu_sigout"
+            android:textColor="@color/personal_text_dark_grey"
+            android:textSize="@dimen/personal_general_text_main"
+            app:iconLeftColor="@color/personal_ic_support"
+            app:iconLeftName="@string/personal_logout"
+            app:iconLeftSize="@dimen/personal_iconfont"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/personal_dashline_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/separate" />
+    </RelativeLayout>
 
 </LinearLayout>

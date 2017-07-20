@@ -23,13 +23,11 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
-import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -42,7 +40,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private User mUser;
     private EventBus mEventBus;
     private BalanceStore.Repository mBalanceRepository;
-    private PassportRepository mPassportRepository;
     private ZaloSdkApi mZaloSdkApi;
     private Navigator mNavigator;
 
@@ -60,13 +57,11 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     PersonalPresenter(User user
             , EventBus eventBus
             , BalanceStore.Repository balanceRepository
-            , PassportRepository passportRepository
             , ZaloSdkApi zaloSdkApi
             , Navigator navigator) {
         this.mUser = user;
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
-        this.mPassportRepository = passportRepository;
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
     }
@@ -185,23 +180,23 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mView.setBalance(balance);
     }
 
-    public void logout() {
-        Subscription subscription = mPassportRepository.logout()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-
-        if (mEventBus.isRegistered(this)) {
-            mEventBus.unregister(this);
-        }
-
-        if (mView == null) {
-            return;
-        }
-
-        ((UserBaseActivity) mView.getContext()).clearUserSession(null);
-
-    }
+//    public void logout() {
+//        Subscription subscription = mPassportRepository.logout()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new DefaultSubscriber<>());
+//        mSubscription.add(subscription);
+//
+//        if (mEventBus.isRegistered(this)) {
+//            mEventBus.unregister(this);
+//        }
+//
+//        if (mView == null) {
+//            return;
+//        }
+//
+//        ((UserBaseActivity) mView.getContext()).clearUserSession(null);
+//
+//    }
 
     private void checkLinkCardStatus() {
         List<MapCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);

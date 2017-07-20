@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -93,6 +92,11 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         navigator.startChangePin(getActivity());
     }
 
+    @OnClick(R.id.protect_account_rl_logout)
+    public void onClickLogout() {
+        mPresenter.showConfirmSignOut();
+    }
+
     @Override
     public void showLoading() {
     }
@@ -136,5 +140,4 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
         return false;
     }
-
 }

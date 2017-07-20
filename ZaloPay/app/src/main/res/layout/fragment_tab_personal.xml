@@ -190,40 +190,40 @@
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/tab_personal_rl_logout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/personal_menu_item_height"
-                android:layout_marginTop="@dimen/personal_margin_18"
-                android:background="@drawable/default_white_selector">
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/tab_personal_rl_logout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/personal_menu_item_height"-->
+                <!--android:layout_marginTop="@dimen/personal_margin_18"-->
+                <!--android:background="@drawable/default_white_selector">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal_dashline_height"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/separate" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="@dimen/personal_dashline_height"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/separate" />-->
 
-                <com.zalopay.ui.widget.IconFontTextView
-                    android:id="@+id/tab_personal_tv_logout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:drawablePadding="@dimen/personal_margin_12"
-                    android:gravity="center_vertical"
-                    android:text="@string/txt_leftmenu_sigout"
-                    android:textColor="@color/personal_text_dark_grey"
-                    android:textSize="@dimen/personal_general_text_main"
-                    app:iconLeftColor="@color/personal_ic_support"
-                    app:iconLeftName="@string/personal_logout"
-                    app:iconLeftSize="@dimen/personal_iconfont"
-                    />
+                <!--<com.zalopay.ui.widget.IconFontTextView-->
+                    <!--android:id="@+id/tab_personal_tv_logout"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:drawablePadding="@dimen/personal_margin_12"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/txt_leftmenu_sigout"-->
+                    <!--android:textColor="@color/personal_text_dark_grey"-->
+                    <!--android:textSize="@dimen/personal_general_text_main"-->
+                    <!--app:iconLeftColor="@color/personal_ic_support"-->
+                    <!--app:iconLeftName="@string/personal_logout"-->
+                    <!--app:iconLeftSize="@dimen/personal_iconfont"-->
+                    <!--/>-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal_dashline_height"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/separate" />
-            </RelativeLayout>
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="@dimen/personal_dashline_height"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:background="@color/separate" />-->
+            <!--</RelativeLayout>-->
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

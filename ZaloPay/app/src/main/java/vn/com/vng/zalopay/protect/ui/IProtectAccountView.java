@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.protect.ui;
 
+import android.app.Activity;
+
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -12,4 +14,6 @@ interface IProtectAccountView extends ILoadDataView {
     void setCheckedProtectAccount(boolean checked);
 
     void hideFingerprintLayout();
+
+    Activity getActivity();
 }
