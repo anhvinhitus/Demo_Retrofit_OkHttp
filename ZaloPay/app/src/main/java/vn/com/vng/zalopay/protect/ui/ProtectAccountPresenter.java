@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import javax.inject.Inject;
@@ -16,7 +15,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
-import vn.com.vng.zalopay.authentication.AuthenticationChangePassword;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
@@ -27,8 +25,6 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.vng.zalopay.utils.PasswordUtil;
-
-import static vn.com.zalopay.wallet.controller.SDKApplication.getContext;
 
 /**
  * Created by hieuvm on 12/26/16.
@@ -45,15 +41,16 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     UserConfig mUserConfig;
 
     private PassportRepository mPassportRepository;
-
+    private AccountStore.Repository mAccountRepository;
     private final FingerprintManagerCompat mFingerprintManagerCompat;
     private PasswordManager mPassword;
 
     @Inject
-    ProtectAccountPresenter(PassportRepository passportRepository) {
+    ProtectAccountPresenter(PassportRepository passportRepository, AccountStore.Repository accountRepository) {
         mKeyTools = new KeyTools();
         mFingerprintManagerCompat = FingerprintManagerCompat.from(AndroidApplication.instance());
         mPassportRepository = passportRepository;
+        mAccountRepository = accountRepository;
     }
 
     void useFingerprintToAuthenticate(boolean enable) {
@@ -195,7 +192,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         mUserConfig.removeFingerprint();
     }
 
-    public void logout() {
+    private void logout() {
         Subscription subscription = mPassportRepository.logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
