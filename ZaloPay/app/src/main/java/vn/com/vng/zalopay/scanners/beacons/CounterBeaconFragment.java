@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -38,7 +39,7 @@ import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
-public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
+public class CounterBeaconFragment extends UserBaseTabFragment implements FragmentLifecycle {
 
     private BeaconScanner mBeaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;

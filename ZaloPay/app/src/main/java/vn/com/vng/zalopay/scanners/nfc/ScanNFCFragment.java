@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
@@ -22,7 +23,7 @@ import vn.com.vng.zalopay.ui.widget.RippleBackground;
  * Use the {@link ScanNFCFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLifecycle {
+public class ScanNFCFragment extends UserBaseTabFragment implements NfcView, FragmentLifecycle {
 
 
     public ScanNFCFragment() {

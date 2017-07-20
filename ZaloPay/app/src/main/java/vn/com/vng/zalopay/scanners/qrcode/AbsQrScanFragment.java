@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
 import vn.com.vng.zalopay.qrcode.CustomViewfinderView;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
@@ -30,7 +31,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  * *
  */
 
-abstract class AbsQrScanFragment extends RuntimePermissionFragment implements CameraPreview.StateListener {
+abstract class AbsQrScanFragment extends UserBaseTabFragment implements CameraPreview.StateListener {
 
     protected abstract void handleResult(String result);
 

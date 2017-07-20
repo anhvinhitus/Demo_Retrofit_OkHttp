@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.scanners.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,7 +15,9 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnPageChange;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -31,9 +34,16 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
     @BindView(R.id.tabs)
     TabLayout mTabLayout;
 
-    int currentPosition = 0;
+    private int mCurrentPosition = 0;
 
     private ImageView mRadarView;
+
+    private UserComponent mUserComponent;
+
+    @Override
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        mUserComponent = userComponent;
+    }
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -48,7 +58,6 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (!isUserSessionStarted()) {
             return;
         }
@@ -71,12 +80,12 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
             ((FragmentLifecycle) fragmentToShow).onStartFragment();
         }
 
-        Fragment fragmentToHide = mSectionsPagerAdapter.getPage(currentPosition);
+        Fragment fragmentToHide = mSectionsPagerAdapter.getPage(mCurrentPosition);
         if (fragmentToHide instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToHide).onStopFragment();
         }
 
-        currentPosition = newPosition;
+        mCurrentPosition = newPosition;
     }
 
     private void radarAnimation(int newPosition) {
@@ -145,7 +154,7 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
             super.onDestroy();
             return;
         }
-
+        mUserComponent = null;
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.NFC_SCANNING);
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.BLE_SCANNING);
 //        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.SOUND_SCANNING);
@@ -163,9 +172,19 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
 
-        Fragment fragment = mSectionsPagerAdapter.getPage(currentPosition);
+        Fragment fragment = mSectionsPagerAdapter.getPage(mCurrentPosition);
         if (fragment instanceof ScanNFCFragment) {
             ((ScanNFCFragment) fragment).onNewIntent(intent);
         }
+    }
+
+    @Override
+    public UserComponent getUserComponent() {
+        UserComponent userComponent = super.getUserComponent();
+        if (userComponent != null) {
+            return userComponent;
+        }
+        Timber.d("Get Activity UserComponent");
+        return mUserComponent;
     }
 }
