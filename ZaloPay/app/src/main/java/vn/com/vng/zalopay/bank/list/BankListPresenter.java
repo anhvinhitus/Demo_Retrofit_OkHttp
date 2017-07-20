@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +22,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.AuthenticationCallback;
+import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.AuthenticationPassword;
+import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -42,6 +45,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -66,20 +70,21 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private final User mUser;
     private final PaymentWrapper mPaymentWrapper;
     private final Navigator mNavigator;
-
     private boolean mPayAfterLinkBank;
     private boolean mWithdrawAfterLinkBank;
     private boolean mGotoSelectBank = false;
     private String mLinkCardWithBankCode = "";
     private String mLinkAccountWithBankCode = "";
+    private UserConfig mUserConfig;
+    private AuthenticationPassword mAuthenticationPassword;
 
 
     @Inject
-    BankListPresenter(Context context, User user, Navigator navigator) {
+    BankListPresenter(Context context, UserConfig userConfig, User user, Navigator navigator) {
         mContext = context;
         mUser = user;
         mNavigator = navigator;
-
+        mUserConfig = userConfig;
         mPaymentWrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
@@ -225,34 +230,12 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
 
 
     void confirmAndRemoveCard(int type, BankData bankData) {
-        String message = mContext.getString(R.string.txt_confirm_remove_card);
-        mView.showConfirmDialog(message,
-                mContext.getString(R.string.btn_confirm),
-                mContext.getString(R.string.btn_cancel),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        if (mView != null) {
-                            mView.close(bankData);
-                        }
-                    }
-
-                    @Override
-                    public void onOKEvent() {
-                        if (mView == null || mView.getContext() == null) {
-                            Timber.d("ignore remove card - cause view null");
-                            return;
-                        }
-
-                        if (type == Constants.LinkBank.LINK_CARD) {
-                            removeCard(bankData);
-                        } else if (type == Constants.LinkBank.LINK_ACCOUNT) {
-                            unlinkBank(bankData);
-                        }
-                    }
-                });
-
+        if (mView.getContext() == null) {
+            return;
+        }
+        showAuthenticationDialog(type, bankData);
     }
+
 
     private class UnLinkBankSubscriber extends DefaultSubscriber<BaseResponse> {
         BankData mBankData;
@@ -545,4 +528,67 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
 
         Timber.w("Response success from sdk : BaseMap - other type: %s", baseMap);
     }
+
+    private void removeCard(int type, BankData bankData) {
+        if (mView == null || mView.getContext() == null) {
+            Timber.d("ignore remove card - cause view null");
+            return;
+        }
+
+        if (type == Constants.LinkBank.LINK_CARD) {
+            removeCard(bankData);
+        } else if (type == Constants.LinkBank.LINK_ACCOUNT) {
+            unlinkBank(bankData);
+        }
+    }
+
+    private void showAuthenticationDialog(int type, BankData bankData) {
+        if (mView.getContext() == null) {
+            Timber.w("showPasswordDialog get Context = null");
+            return;
+        }
+        if (PasswordUtil.detectShowFingerPrint((Activity) mView.getContext(), mUserConfig)) {
+            AuthenticationDialog dialog = AuthenticationDialog.newInstance();
+            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
+            dialog.setAuthenticationCallback(new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    removeCard(type, bankData);
+                }
+
+                @Override
+                public void onShowPassword() {
+                    //show password view
+                    showPassword((Activity) mView.getContext(), type, bankData);
+                }
+            });
+            dialog.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
+        } else {
+            //show password view
+            showPassword((Activity) mView.getContext(), type, bankData);
+        }
+    }
+
+    private void showPassword(Context pContext, int type, BankData bankData) {
+        String message = pContext.getString(R.string.txt_title_remove_card);
+        mAuthenticationPassword = new AuthenticationPassword(pContext, PasswordUtil.detectSuggestFingerprint(pContext, mUserConfig), new AuthenticationCallback() {
+            @Override
+            public void onAuthenticated(String password) {
+                removeCard(type, bankData);
+            }
+
+            @Override
+            public void onAuthenticationFailure() {
+                Timber.d(" Authentication password fail");
+            }
+        });
+        mAuthenticationPassword.initialize();
+        try {
+            mAuthenticationPassword.getPasswordManager().setTitle(message);
+        } catch (Exception e) {
+            Timber.d("Set title password error [%s]", e.getMessage());
+        }
+
+    }
+
 }
