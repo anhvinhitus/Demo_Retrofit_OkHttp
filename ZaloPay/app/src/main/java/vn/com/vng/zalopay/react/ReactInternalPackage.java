@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -49,6 +52,7 @@ public class ReactInternalPackage implements ReactPackage {
     private final NetworkService mNetworkServiceWithRetry;
     private final NotificationService mNotificationService;
 
+    @Inject
     public ReactInternalPackage(TransactionStore.Repository repository,
                                 NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
@@ -61,7 +65,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,
                                 User user,
-                                NetworkService networkServiceWithRetry,
+                                @Named("NetworkServiceWithRetry") NetworkService networkServiceWithRetry,
                                 NotificationService notificationService
 
     ) {

@@ -76,11 +76,6 @@ public class InternalReactFragment extends ReactBaseFragment {
         return fragment;
     }
 
-
-    @Inject
-    @Named("NetworkServiceWithRetry")
-    NetworkService mNetworkServiceWithRetry;
-
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -102,12 +97,7 @@ public class InternalReactFragment extends ReactBaseFragment {
     }
 
     protected ReactPackage reactInternalPackage() {
-        return new ReactInternalPackage(transactionRepository,
-                notificationRepository, redPackageRepository,
-                friendRepository, mBalanceRepository, paymentService,
-                sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser,
-                mNetworkServiceWithRetry, mNotificationService);
+        return mReactInternalPackage;
     }
 
     @Override
@@ -119,52 +109,17 @@ public class InternalReactFragment extends ReactBaseFragment {
     BundleReactConfig bundleReactConfig;
 
     @Inject
-    EventBus eventBus;
-
-    @Inject
-    NotificationStore.Repository notificationRepository;
-
-    @Inject
-    TransactionStore.Repository transactionRepository;
-
-    @Inject
-    RedPacketStore.Repository redPackageRepository;
-
-    @Inject
-    FriendStore.Repository friendRepository;
-
-    @Inject
-    IRedPacketPayService paymentService;
-
-    @Inject
-    AlertDialogProvider sweetAlertDialog;
-
-    @Inject
-    BalanceStore.Repository mBalanceRepository;
-
-    @Inject
-    AppResourceStore.Repository appRepository;
-
-    @Inject
-    Navigator navigator;
-
-    @Inject
     ReactNativeHostable mReactNativeHostable;
+
+    @Inject
+    ReactInternalPackage mReactInternalPackage;
 
     @Inject
     User mUser;
 
-    @Inject
-    NotificationService mNotificationService;
-
-    Bundle mLaunchOptions = null;
-
+    private Bundle mLaunchOptions = null;
     private String mModuleName;
-
-    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
-    @Inject
-    ZaloPayRepository mZaloPayRepository;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

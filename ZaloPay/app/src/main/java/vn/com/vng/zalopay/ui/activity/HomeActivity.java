@@ -73,7 +73,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (!isUserSessionStarted()) {
             return;
         }

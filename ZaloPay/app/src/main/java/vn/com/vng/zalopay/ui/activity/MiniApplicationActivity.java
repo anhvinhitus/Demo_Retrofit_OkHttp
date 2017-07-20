@@ -12,9 +12,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.apploader.network.NetworkService;
 
-import org.greenrobot.eventbus.EventBus;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
@@ -22,30 +20,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.ws.connection.NotificationService;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
-import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
-import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 
 
 /**
@@ -63,58 +48,16 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     BundleReactConfig bundleReactConfig;
 
     @Inject
-    GlobalEventHandlingService globalEventHandlingService;
-
-    @Inject
-    EventBus eventBus;
-
-    @Inject
     NotificationStore.Repository notificationRepository;
-
-    @Inject
-    TransactionStore.Repository transactionRepository;
-
-    @Inject
-    RedPacketStore.Repository redPackageRepository;
-
-    @Inject
-    FriendStore.Repository friendRepository;
-
-    @Inject
-    IRedPacketPayService paymentService;
-
-    @Inject
-    AlertDialogProvider sweetAlertDialog;
-
-    @Inject
-    BalanceStore.Repository mBalanceRepository;
-
-    @Inject
-    AppResourceStore.Repository appRepository;
-
-    @Inject
-    Navigator navigator;
 
     @Inject
     ReactNativeHostable mReactNativeHostable;
 
     @Inject
-    User mUser;
+    ReactInternalPackage mReactInternalPackage;
 
-    Bundle mLaunchOptions = null;
-
-
-    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
-    @Inject
-    ZaloPayRepository mZaloPayRepository;
-
-    @Inject
-    @Named("NetworkServiceWithRetry")
-    NetworkService mNetworkServiceWithRetry;
-
-    @Inject
-    NotificationService mNotificationService;
+    private Bundle mLaunchOptions = null;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,19 +161,12 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 new MainReactPackage(),
                 reactInternalPackage(),
                 new SQLitePluginPackage(),
-                // new ReactReceiveMoneyPackage(mUser, eventBus),
                 new RNDeviceInfo(),
                 new PickerViewPackage());
     }
 
     protected ReactPackage reactInternalPackage() {
-        return new ReactInternalPackage(transactionRepository,
-                notificationRepository, redPackageRepository,
-                friendRepository, mBalanceRepository, paymentService,
-                sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser,
-                mNetworkServiceWithRetry, mNotificationService
-        );
+        return mReactInternalPackage;
     }
 
     @Override
@@ -247,7 +183,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     private void markAllNotify() {
         Subscription subscription = notificationRepository.markViewAllNotify()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
