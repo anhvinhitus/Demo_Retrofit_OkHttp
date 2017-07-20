@@ -84,6 +84,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private Map<String, Object> mCCMapChannel = new HashMap<>();
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
+    private PaymentChannel mZaloPayChannel = null; //temp variable for checking active zalopay channel
     private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
     private long mCountClickPmc = 0;
@@ -439,6 +440,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         ChannelListAdapter.ItemType itemType;
         if (pChannel.isZaloPayChannel()) {
             itemType = ChannelListAdapter.ItemType.ZALOPAY;
+            mZaloPayChannel = pChannel;
         } else if (pChannel.isMapCardChannel() || pChannel.isBankAccountMap()) {
             itemType = ChannelListAdapter.ItemType.MAP;
         } else {
@@ -504,10 +506,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private void clearObjects() {
+        //release variable after using
         mActiveMapChannels.clear();
         mInActiveMapChannels.clear();
         mCCMapChannel.clear();
         mChannelLoader = null;
+        mZaloPayChannel = null;
     }
 
     private Observable<Boolean> sortChannels(String bankCodes) {
@@ -605,22 +609,41 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return paymentChannel;
     }
 
+    /*
+     * auto show payment password when
+     * has only 1 active map channel or zalopay channel
+     */
     private boolean shouldAutoPayment() {
-        if (mSelectChannel == null || !mSelectChannel.isZaloPayChannel()) {
+        if (mSelectChannel == null) {
             return false;
         }
-        if(mActiveMapChannels == null || mCCMapChannel == null){
+        if (mActiveMapChannels == null || mCCMapChannel == null) {
             return false;
         }
-        return  mActiveMapChannels.size() <= 0 && mCCMapChannel.size() <= 0;
+        boolean hasZaloPayActive = mZaloPayChannel != null && mZaloPayChannel.meetPaymentCondition();
+        int channelActiveCount = mActiveMapChannels.size() + mCCMapChannel.size() + (hasZaloPayActive ? 1 : 0);
+        return channelActiveCount == 1;
     }
 
-    private void makeDefaultChannel() throws Exception {
+    private boolean selectLastPaymentChannel() throws Exception {
         PaymentChannel selectChannel = getLastPaymentChannel();
         if (selectChannel != null) {
             selectAndScrollToChannel(selectChannel, selectChannel.position);
+        }
+        return selectChannel != null;
+    }
+
+    private void makeDefaultChannel() throws Exception {
+        //auto select recently payment or link bank
+        boolean hasLastPaymentChannel = selectLastPaymentChannel();
+        if (hasLastPaymentChannel) {
+            if (shouldAutoPayment()) {
+                startPayment();
+            }
             return;
         }
+
+        PaymentChannel selectChannel = null;
         int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
@@ -639,7 +662,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (selectChannel != null) {
             selectAndScrollToChannel(selectChannel, pos);
         }
-        if(shouldAutoPayment()){
+        if (shouldAutoPayment()) {
             startPayment();
         }
         if (!mHasActiveChannel) {
