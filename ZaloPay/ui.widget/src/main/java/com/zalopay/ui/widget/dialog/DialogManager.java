@@ -86,8 +86,9 @@ public class DialogManager {
                 @Override
                 public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (weakActivity.get() != null && !weakActivity.get().isFinishing())
+                        if (weakActivity.get() != null && !weakActivity.get().isFinishing()) {
                             weakActivity.get().onBackPressed();
+                        }
                         return true;
                     }
                     return false;
@@ -177,15 +178,14 @@ public class DialogManager {
                         break;
                 }
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             mAlertDialog.setConfirmText(pButtonText)
                     .setContentText(pMessage)
                     .setTitleText(pTitle);
             mAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mAlertDialog != null) {
-                        mAlertDialog.dismiss();
+                    if (sweetAlertDialog != null) {
+                        sweetAlertDialog.dismiss();
                         mAlertDialog = null;
                     }
                     if (callback != null) {
@@ -240,15 +240,14 @@ public class DialogManager {
                     pTitle = pActivity.getString(R.string.dialog_title_warning);
                     break;
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             mAlertDialog.setConfirmText(pButtonText)
                     .setContentHtmlText(pMessage)
                     .setTitleText(pTitle);
             mAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mAlertDialog != null) {
-                        mAlertDialog.dismiss();
+                    if (sweetAlertDialog != null) {
+                        sweetAlertDialog.dismiss();
                         mAlertDialog = null;
                     }
                     if (callback != null) {
@@ -281,7 +280,6 @@ public class DialogManager {
             if (TextUtils.isEmpty(title)) {
                 title = pActivity.getString(R.string.dialog_title_confirm);
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             mConfirmDialog.setContentHtmlText(pMessage)
                     .setCancelText(pCancelButton)
                     .setConfirmText(pOKButton)
@@ -290,8 +288,8 @@ public class DialogManager {
                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sDialog) {
-                            if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mConfirmDialog != null) {
-                                mConfirmDialog.dismiss();
+                            if (sDialog != null) {
+                                sDialog.dismiss();
                                 mConfirmDialog = null;
                             }
                             if (callback != null) {
@@ -302,8 +300,8 @@ public class DialogManager {
                     }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mConfirmDialog != null) {
-                        mConfirmDialog.dismiss();
+                    if (sDialog != null) {
+                        sDialog.dismiss();
                         mConfirmDialog = null;
                     }
                     if (callback != null) {
@@ -341,16 +339,14 @@ public class DialogManager {
                 mVersionUpdateDialog.setUpdatetext(pOKButton)
                         .showCancelButton(hasCancelButton);
             }
-
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             mVersionUpdateDialog.setContentHtmlText(pMessage)
                     .setVersionText(pVersion)
                     .setTitleText(pActivity.getString(R.string.dialog_title_update))
                     .setUpdateClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sDialog) {
-                            if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mVersionUpdateDialog != null) {
-                                mVersionUpdateDialog.dismiss();
+                            if (sDialog != null) {
+                                sDialog.dismiss();
                                 mVersionUpdateDialog = null;
                             }
                             if (callback != null) {
@@ -360,8 +356,8 @@ public class DialogManager {
                     }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                    if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mVersionUpdateDialog != null) {
-                        mVersionUpdateDialog.dismiss();
+                    if (sDialog != null) {
+                        sDialog.dismiss();
                         mVersionUpdateDialog = null;
                     }
                     if (callback != null) {
@@ -388,7 +384,6 @@ public class DialogManager {
             if (mRetrySweetDialog == null) {
                 mRetrySweetDialog = new SweetAlertDialog(pActivity);
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             mRetrySweetDialog.setContentText(pMessage)
                     .setCancelText(pActivity.getString(R.string.dialog_cancel_button))
                     .setConfirmText(pActivity.getString(R.string.dialog_retry_button))
@@ -399,8 +394,8 @@ public class DialogManager {
                             if (callback != null) {
                                 callback.onCancelEvent();
                             }
-                            if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mRetrySweetDialog != null) {
-                                mRetrySweetDialog.dismiss();
+                            if (sDialog != null) {
+                                sDialog.dismiss();
                                 mRetrySweetDialog = null;
                             }
 
@@ -412,8 +407,8 @@ public class DialogManager {
                         callback.onOKEvent();
 
                     }
-                    if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mRetrySweetDialog != null) {
-                        mRetrySweetDialog.dismiss();
+                    if (sDialog != null) {
+                        sDialog.dismiss();
                         mRetrySweetDialog = null;
                     }
                 }
@@ -447,7 +442,6 @@ public class DialogManager {
             if (pArrButton != null) {
                 mMultiButtonDialog.setArrButton(pArrButton);
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             if (pIcoDrawable != -1) {
                 mMultiButtonDialog.setCustomImage(pIcoDrawable);
             }
@@ -459,8 +453,8 @@ public class DialogManager {
                             if (pListener != null) {
                                 pListener.onClickDiaLog(pIndexClick);
                             }
-                            if (weakActivity.get() != null && !weakActivity.get().isFinishing() && mMultiButtonDialog != null) {
-                                mMultiButtonDialog.dismiss();
+                            if (sweetAlertDialog != null) {
+                                sweetAlertDialog.dismiss();
                                 mMultiButtonDialog = null;
                             }
                         }
