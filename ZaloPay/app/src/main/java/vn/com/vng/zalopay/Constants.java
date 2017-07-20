@@ -92,12 +92,6 @@ public interface Constants {
     String PREF_LINK_BANK_LAST_INDEX = "pref_link_bank_last_index";
     String BANK_DATA_RESULT_AFTER_LINK = "bank_data_after_link";
 
-    // Link bank status
-    int LINK_BANK_NONE = 0;
-    int LINK_BANK_CARD_LINKED = 1;
-    int LINK_BANK_ACCOUNT_LINKED = 2;
-    int LINK_BANK_CARD_ACCOUNT_LINKED = 3;
-
     // Bank result status
     int RESULT_DO_LINK_CARD = 10;
     int RESULT_DO_LINK_ACCOUNT = 11;

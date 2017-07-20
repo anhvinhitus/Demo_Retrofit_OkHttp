@@ -17,7 +17,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -47,7 +46,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private PassportRepository mPassportRepository;
     private ZaloSdkApi mZaloSdkApi;
     private Navigator mNavigator;
-    private int linkBankStatus;
 
     public int getAccounts() {
         return accounts;
@@ -58,14 +56,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     private int accounts;
-
-    public int getLinkBankStatus() {
-        return linkBankStatus;
-    }
-
-    private void setLinkBankStatus(int linkBankStatus) {
-        this.linkBankStatus = linkBankStatus;
-    }
 
     @Inject
     PersonalPresenter(User user
@@ -222,19 +212,15 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
-            setLinkBankStatus(Constants.LINK_BANK_NONE);
             setAccounts(0);
         } else if (!Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Đã liên kết thẻ, chưa liên kết tài khoản
-            setLinkBankStatus(Constants.LINK_BANK_CARD_LINKED);
             setAccounts(mapCardList.size());
         } else if (Lists.isEmptyOrNull(mapCardList) && !Lists.isEmptyOrNull(mapAccList)) {
             // Chưa liên kết thẻ, đã liên kết tài khoản
-            setLinkBankStatus(Constants.LINK_BANK_ACCOUNT_LINKED);
             setAccounts(mapAccList.size());
         } else {
             // Đã liên kết thẻ, liên kết tài khoản
-            setLinkBankStatus(Constants.LINK_BANK_CARD_ACCOUNT_LINKED);
             setAccounts(mapCardList.size() + mapAccList.size());
         }
 

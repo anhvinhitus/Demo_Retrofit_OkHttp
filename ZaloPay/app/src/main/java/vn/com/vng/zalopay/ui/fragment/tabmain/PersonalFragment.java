@@ -15,14 +15,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -158,26 +157,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         return this;
     }
 
-//    @Override
-//    public void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount) {
-//        if (tvBankLink != null) {
-//            switch (linkBankStatus) {
-//                case Constants.LINK_BANK_NONE:
-//                    tvBankLink.setText(getString(R.string.personal_link_now_text));
-//                    break;
-//                case Constants.LINK_BANK_CARD_LINKED:
-//                    tvBankLink.setText(cardAmount + " thẻ");
-//                    break;
-//                case Constants.LINK_BANK_ACCOUNT_LINKED:
-//                    tvBankLink.setText(accAmount + " tài khoản");
-//                    break;
-//                case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
-//                    tvBankLink.setText("Đã liên kết thẻ và tài khoản");
-//                    break;
-//            }
-//        }
-//    }
-
     @OnClick(R.id.personal_rl_setting)
     public void goToProtectAccount() {
         navigator.startProtectAccount(getActivity());
@@ -210,19 +189,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
             ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
             presenter.addLinkCard();
         }
-
-//        switch (presenter.getLinkBankStatus()) {
-//            case Constants.LINK_BANK_NONE:
-//                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-//                presenter.addLinkCard();
-//                break;
-//            case Constants.LINK_BANK_CARD_LINKED:
-//            case Constants.LINK_BANK_ACCOUNT_LINKED:
-//            case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
-//                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
-//                navigator.startLinkCardActivity(getContext());
-//                break;
-//        }
     }
 
 //    @OnClick(R.id.tab_personal_rl_bill)
