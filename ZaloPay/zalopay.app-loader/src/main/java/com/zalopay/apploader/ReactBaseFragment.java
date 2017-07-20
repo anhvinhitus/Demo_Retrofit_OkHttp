@@ -83,18 +83,13 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        setupFragmentComponent();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mReactRootView = new ReactRootView(getContext());
-        setupFragmentComponent();
         return mReactRootView;
     }
 

@@ -17,7 +17,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -30,7 +29,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Tab personal UI
  */
 
-public class PersonalFragment extends BaseFragment implements IPersonalView, FragmentLifecycle {
+public class PersonalFragment extends UserBaseTabFragment implements IPersonalView, FragmentLifecycle {
     @BindView(R.id.profile_iv_avatar)
     SimpleDraweeView ivAvatar;
 
@@ -66,11 +65,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_tab_personal;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -144,7 +138,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
     @Override
     public void setBankLinkText(int accounts) {
         if (tvBankLink != null) {
-            if(accounts > 0) {
+            if (accounts > 0) {
                 tvBankLink.setText(accounts + " liên kết");
             } else {
                 tvBankLink.setText(getString(R.string.personal_link_now_text));
@@ -182,7 +176,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
 
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
-        if(presenter.getAccounts() > 0) {
+        if (presenter.getAccounts() > 0) {
             ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
             navigator.startLinkCardActivity(getContext());
         } else {

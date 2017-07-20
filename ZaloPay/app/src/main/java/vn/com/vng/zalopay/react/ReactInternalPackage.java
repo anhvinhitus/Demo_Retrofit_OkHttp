@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -46,8 +47,10 @@ public class ReactInternalPackage implements ReactPackage {
     private final ReactNativeHostable mReactNativeHostable;
     private final User mUser;
     private final NetworkService mNetworkServiceWithRetry;
+    private final NotificationService mNotificationService;
 
-    public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
+    public ReactInternalPackage(TransactionStore.Repository repository,
+                                NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
                                 BalanceStore.Repository balanceRepository,
@@ -58,7 +61,8 @@ public class ReactInternalPackage implements ReactPackage {
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,
                                 User user,
-                                NetworkService networkServiceWithRetry
+                                NetworkService networkServiceWithRetry,
+                                NotificationService notificationService
 
     ) {
         this.mTransactionRepository = repository;
@@ -74,6 +78,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.resourceRepository = resourceRepository;
         this.mUser = user;
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
+        this.mNotificationService = notificationService;
 
     }
 
@@ -85,7 +90,7 @@ public class ReactInternalPackage implements ReactPackage {
         modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, mNotificationRepository, mNetworkServiceWithRetry));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, navigator, mTransactionRepository, resourceRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
-        modules.add(new ReactNotificationNativeModule(reactContext, mUser, mNotificationRepository, mEventBus));
+        modules.add(new ReactNotificationNativeModule(reactContext, mUser, mNotificationRepository, mEventBus, mNotificationService));
 
         return modules;
     }

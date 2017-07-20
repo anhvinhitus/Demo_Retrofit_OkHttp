@@ -20,12 +20,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 
 /**
  * Created by Datnt10 on 5/10/17.
@@ -33,8 +33,7 @@ import vn.com.vng.zalopay.widget.FragmentLifecycle;
  * Handle ui and events of list payment app
  */
 
-public class HomeListAppFragment extends BaseFragment implements IZaloPayView
-        , FragmentLifecycle
+public class HomeListAppFragment extends UserBaseTabFragment implements IZaloPayView
         , HomeAdapter.OnClickItemListener
         , SwipeRefreshLayout.OnRefreshListener {
 
@@ -58,6 +57,11 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
         HomeListAppFragment fragment = new HomeListAppFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -120,24 +124,8 @@ public class HomeListAppFragment extends BaseFragment implements IZaloPayView
     }
 
     @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
-    }
-
-    @Override
     protected int getResLayoutId() {
         return R.layout.fragment_home_list_app;
-    }
-
-
-    @Override
-    public void onStartFragment() {
-
-    }
-
-    @Override
-    public void onStopFragment() {
-
     }
 
     @Override

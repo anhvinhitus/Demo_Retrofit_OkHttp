@@ -51,12 +51,14 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
     ReactNotificationNativeModule(ReactApplicationContext reactContext, User user,
                                   NotificationStore.Repository notificationRepository,
-                                  EventBus eventBus) {
+                                  EventBus eventBus,
+                                  NotificationService notificationService
+    ) {
         super(reactContext);
         this.mNotificationRepository = notificationRepository;
         this.mEventBus = eventBus;
         mUser = user;
-        mNotificationService = AndroidApplication.instance().getUserComponent().notificationService();
+        mNotificationService = notificationService;
 
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);

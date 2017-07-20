@@ -18,7 +18,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
@@ -60,7 +59,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     @Inject
     PersonalPresenter(User user
             , EventBus eventBus
-            , UserConfig userConfig
             , BalanceStore.Repository balanceRepository
             , PassportRepository passportRepository
             , ZaloSdkApi zaloSdkApi
@@ -71,7 +69,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mPassportRepository = passportRepository;
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
-        Timber.d("accesstoken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     @Override

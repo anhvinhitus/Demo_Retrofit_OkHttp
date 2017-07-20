@@ -107,7 +107,7 @@ public abstract class UserBaseActivity extends BaseActivity {
         return isUserSessionStarted;
     }
 
-    protected UserComponent getUserComponent() {
+    public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
 

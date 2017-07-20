@@ -9,13 +9,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.presenter.HomeCollapseHeaderPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeCollapseHeaderView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -25,13 +24,9 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Handle ui and events of list payment app
  */
 
-public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCollapseHeaderView
-        , FragmentLifecycle {
+public class HomeCollapseHeaderFragment extends UserBaseTabFragment implements IHomeCollapseHeaderView {
     @Inject
     HomeCollapseHeaderPresenter presenter;
-
-//    @BindView(R.id.home_tv_balance)
-//    IconFontTextView mBalanceView;
 
     @BindView(R.id.tv_balance)
     TextView mBalanceView;
@@ -44,8 +39,8 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -75,7 +70,6 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated");
         presenter.attachView(this);
     }
 
@@ -87,23 +81,7 @@ public class HomeCollapseHeaderFragment extends BaseFragment implements IHomeCol
 
     @Override
     public void setBalance(long balance) {
-//        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
         mBalanceView.setText(CurrencyUtil.formatCurrency(balance, false));
-    }
-
-    @Override
-    public void onStartFragment() {
-
-    }
-
-    @Override
-    public void onStopFragment() {
-
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
     }
 
     @Override

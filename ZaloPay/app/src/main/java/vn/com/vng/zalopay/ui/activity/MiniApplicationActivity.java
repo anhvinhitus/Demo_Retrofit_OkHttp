@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -111,6 +112,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     @Named("NetworkServiceWithRetry")
     NetworkService mNetworkServiceWithRetry;
+
+    @Inject
+    NotificationService mNotificationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +229,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
                 mReactNativeHostable, appRepository, mUser,
-                mNetworkServiceWithRetry
+                mNetworkServiceWithRetry, mNotificationService
         );
     }
 

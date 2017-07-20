@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webapp.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
@@ -39,7 +39,7 @@ import vn.com.vng.zalopay.webview.widget.ZPWebViewPromotionProcessor;
  * Created by datnt10 on 6/28/17.
  * Fragment
  */
-public class WebViewPromotionFragment extends BaseFragment implements ZPWebViewPromotionProcessor.IWebViewPromotionListener,
+public class WebViewPromotionFragment extends UserBaseTabFragment implements ZPWebViewPromotionProcessor.IWebViewPromotionListener,
         WebBottomSheetDialogFragment.BottomSheetEventListener,
         SwipeRefreshLayout.OnRefreshListener {
 

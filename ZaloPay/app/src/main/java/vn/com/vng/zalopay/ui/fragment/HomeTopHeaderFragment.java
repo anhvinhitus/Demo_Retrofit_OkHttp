@@ -13,11 +13,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.presenter.HomeTopHeaderPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeTopHeaderView;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -26,8 +25,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Top header view (toolbar)
  */
 
-public class HomeTopHeaderFragment extends BaseFragment implements IHomeTopHeaderView
-        , FragmentLifecycle {
+public class HomeTopHeaderFragment extends UserBaseTabFragment implements IHomeTopHeaderView {
 
     @Inject
     HomeTopHeaderPresenter presenter;
@@ -49,9 +47,13 @@ public class HomeTopHeaderFragment extends BaseFragment implements IHomeTopHeade
     }
 
     @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated");
         presenter.attachView(this);
     }
 
@@ -104,7 +106,7 @@ public class HomeTopHeaderFragment extends BaseFragment implements IHomeTopHeade
 
     @Override
     public void setHeaderTopStatus(boolean isCollapsed, float alpha) {
-        if(isCollapsed) {
+        if (isCollapsed) {
             rlHeaderCollapsed.setVisibility(View.GONE);
             rlHeaderSearchView.setVisibility(View.VISIBLE);
             rlHeaderCollapsed.setAlpha(alpha);
@@ -117,21 +119,6 @@ public class HomeTopHeaderFragment extends BaseFragment implements IHomeTopHeade
             rlHeaderCollapsed.setAlpha(alpha);
             rlHeaderSearchView.setAlpha(1 - alpha);
         }
-    }
-
-    @Override
-    public void onStartFragment() {
-
-    }
-
-    @Override
-    public void onStopFragment() {
-
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
     }
 
     @Override

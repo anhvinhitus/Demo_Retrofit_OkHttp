@@ -12,8 +12,6 @@ import vn.zalopay.promotion.PromotionEvent;
 public interface IHomeView extends ILoadDataView {
     Activity getActivity();
 
-    void refreshIconFont();
-
     void showCashBackView(IBuilder builder, PromotionEvent event);
 
     void showBadgePreferential();

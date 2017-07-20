@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -40,6 +41,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
+import vn.com.vng.zalopay.user.UserBaseActivity;
 
 /**
  * Created by hieuvm on 2/22/17.
@@ -104,7 +107,7 @@ public class InternalReactFragment extends ReactBaseFragment {
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
                 mReactNativeHostable, appRepository, mUser,
-                mNetworkServiceWithRetry);
+                mNetworkServiceWithRetry, mNotificationService);
     }
 
     @Override
@@ -151,6 +154,9 @@ public class InternalReactFragment extends ReactBaseFragment {
     @Inject
     User mUser;
 
+    @Inject
+    NotificationService mNotificationService;
+
     Bundle mLaunchOptions = null;
 
     private String mModuleName;
@@ -179,7 +185,23 @@ public class InternalReactFragment extends ReactBaseFragment {
     }
 
     public UserComponent getUserComponent() {
-        return AndroidApplication.instance().getUserComponent();
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            return userComponent;
+        }
+
+        if (!(getContext() instanceof UserBaseActivity)) {
+            throw new IllegalStateException("This activity isn't an instance of UserBaseActivity");
+        }
+
+        userComponent = ((UserBaseActivity) getContext()).getUserComponent();
+
+        if (userComponent == null) {
+            throw new IllegalStateException("UserComponent already release");
+        }
+
+        return userComponent;
+
     }
 
     protected void initArgs(Bundle savedInstanceState) {

@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.HomeCollapseHeaderFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeTopHeaderFragment;
-import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.toolbar.HeaderView;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 
@@ -22,7 +21,7 @@ import vn.com.vng.zalopay.widget.FragmentLifecycle;
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends RuntimePermissionFragment implements
+public class ZaloPayFragment extends UserBaseTabFragment implements
         AppBarLayout.OnOffsetChangedListener, FragmentLifecycle {
 
     public static ZaloPayFragment newInstance() {
@@ -60,12 +59,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
@@ -89,7 +82,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        if(homeTopHeaderFragment == null) {
+        if (homeTopHeaderFragment == null) {
             return;
         }
 

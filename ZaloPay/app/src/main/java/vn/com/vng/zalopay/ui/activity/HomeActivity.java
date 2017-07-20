@@ -18,7 +18,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnPageChange;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
@@ -54,19 +57,17 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     HomePagerAdapter mHomePagerAdapter;
     private int mCurrentPosition = 0;
 
+    private UserComponent mUserComponent;
+
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_home_new;
     }
 
     @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
     protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
         userComponent.inject(this);
+        mUserComponent = userComponent;
     }
 
     @Override
@@ -80,8 +81,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mPresenter.attachView(this);
         mPresenter.initialize();
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
-//        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
-//        params.setMargins(0, 0, 0, (int) AndroidUtils.dpToPixels(this, 56));
         mViewPager.setAdapter(mHomePagerAdapter);
         mViewPager.setOffscreenPageLimit(mHomePagerAdapter.getCount() - 1);
         mBottomNavigationView.setViewPager(mViewPager);
@@ -161,6 +160,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
         mPresenter.detachView();
         mPresenter.destroy();
+        mUserComponent = null;
         super.onDestroy();
     }
 
@@ -185,10 +185,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     @Override
-    public void refreshIconFont() {
-        if (mBottomNavigationView != null) {
-            mBottomNavigationView.initTabIconFont();
-        }
+    public Activity getActivity() {
+        return this;
     }
 
     @Override
@@ -249,9 +247,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     public void setHiddenTabbar(boolean hiddenTabbar) {
-//        if (mBottomNavigationView != null) {
-//            mBottomNavigationView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
-//        }
         if (mTabbarView != null) {
             mTabbarView.setVisibility(hiddenTabbar ? View.GONE : View.VISIBLE);
         }
@@ -262,5 +257,15 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         if (mBottomNavigationView != null) {
             mBottomNavigationView.setBadgePromotion(true);
         }
+    }
+
+    @Override
+    public UserComponent getUserComponent() {
+        UserComponent userComponent = super.getUserComponent();
+        if (userComponent != null) {
+            return userComponent;
+        }
+        Timber.d("Get Activity UserComponent");
+        return mUserComponent;
     }
 }
