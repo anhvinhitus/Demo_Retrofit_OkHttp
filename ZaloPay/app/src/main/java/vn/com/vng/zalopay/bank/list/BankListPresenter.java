@@ -234,7 +234,11 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         if (mView.getContext() == null) {
             return;
         }
-        showAuthenticationDialog(type, bankData);
+        if (type == Constants.LinkBank.LINK_ACCOUNT) {
+            unlinkBank(bankData);
+        } else if (type == Constants.LinkBank.LINK_CARD) {
+            showAuthenticationDialog(bankData);
+        }
     }
 
 
@@ -530,20 +534,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         Timber.w("Response success from sdk : BaseMap - other type: %s", baseMap);
     }
 
-    private void removeCard(int type, BankData bankData) {
-        if (mView == null || mView.getContext() == null) {
-            Timber.d("ignore remove card - cause view null");
-            return;
-        }
-
-        if (type == Constants.LinkBank.LINK_CARD) {
-            removeCard(bankData);
-        } else if (type == Constants.LinkBank.LINK_ACCOUNT) {
-            unlinkBank(bankData);
-        }
-    }
-
-    private void showAuthenticationDialog(int type, BankData bankData) {
+    private void showAuthenticationDialog(BankData bankData) {
         if (mView.getContext() == null) {
             Timber.w("showPasswordDialog get Context = null");
             return;
@@ -554,28 +545,28 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             dialog.setAuthenticationCallback(new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
-                    removeCard(type, bankData);
+                    removeCard(bankData);
                 }
 
                 @Override
                 public void onShowPassword() {
                     //show password view
-                    showPassword((Activity) mView.getContext(), type, bankData);
+                    showPassword((Activity) mView.getContext(), bankData);
                 }
             });
             dialog.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
         } else {
             //show password view
-            showPassword((Activity) mView.getContext(), type, bankData);
+            showPassword((Activity) mView.getContext(), bankData);
         }
     }
 
-    private void showPassword(Context pContext, int type, BankData bankData) {
+    private void showPassword(Context pContext, BankData bankData) {
         String message = pContext.getString(R.string.txt_title_remove_card);
         mAuthenticationPassword = new AuthenticationPassword(pContext, PasswordUtil.detectSuggestFingerprint(pContext, mUserConfig), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
-                removeCard(type, bankData);
+                removeCard(bankData);
             }
 
             @Override
