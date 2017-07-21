@@ -10,6 +10,11 @@
 
     <include layout="@layout/zp_header_profile_info" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/personal_dashline_height"
+        android:background="@color/separate" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

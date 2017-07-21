@@ -54,6 +54,12 @@
 
                 <include layout="@layout/zp_header_profile_info" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/personal_dashline_height"
+                    android:layout_marginLeft="@dimen/personal_margin_12"
+                    android:background="@color/separate" />
+
                 <com.zalopay.ui.widget.IconFontTextView
                     android:id="@+id/tab_personal_tv_setting"
                     style="@style/TextView.Personal.Item"

@@ -55,9 +55,9 @@
         app:iconName="@string/general_arrowright"
         app:iconSize="@dimen/personal_margin_12" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/personal_dashline_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/separate" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/personal_dashline_height"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="@color/separate" />-->
 </RelativeLayout>
