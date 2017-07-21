@@ -8,7 +8,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 62;
+    private static final int APP_DB_VERSION = 61;
     private static final int GLOBAL_DB_VERSION = 4;
 
     /**
