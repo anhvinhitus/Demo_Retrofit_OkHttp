@@ -193,7 +193,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     }
 
     private void pay(Uri data) {
-        Timber.d("pay with uri [%s] isAppToApp [%s]", data);
+        Timber.d("pay with uri [%s]", data);
 
         String appid = data.getQueryParameter(Constants.APPID);
         String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
