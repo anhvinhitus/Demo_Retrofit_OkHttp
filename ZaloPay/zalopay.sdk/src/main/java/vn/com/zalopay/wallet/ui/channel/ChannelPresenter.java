@@ -227,7 +227,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private boolean isInProgress() {
-        return DialogManager.isShowingProgressDialog();
+        return DialogManager.showingLoadDialog();
     }
 
     public boolean onBackPressed() {
@@ -456,8 +456,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mAdapter.onDetach();
             mAdapter = null;
         }
-        if (DialogManager.isShowingProgressDialog()) {
-            DialogManager.closeProcessDialog();
+        if (DialogManager.showingLoadDialog()) {
+            DialogManager.closeLoadDialog();
         }
         cancelTransactionExpiredTimer();
     }

@@ -202,7 +202,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void hideLoading() {
-        DialogManager.closeProcessDialog();
+        DialogManager.closeLoadDialog();
         setTitle(mOriginTitle);
         Timber.w("mOriginTitle %s", mOriginTitle);
     }

@@ -7,11 +7,11 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import com.zalopay.ui.widget.R;
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventUpdateListener;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import java.lang.ref.WeakReference;
@@ -30,46 +30,24 @@ public class DialogManager {
     private static final int UPDATE_TYPE = 4;
     private static final int PROGRESS_DIALOG_TIMEOUT = 35000;//ms
 
-    static SweetAlertDialog mProgressDialog = null;
-    static SweetAlertDialog mRetrySweetDialog = null;
-    static SweetAlertDialog mConfirmDialog = null;
-    static SweetAlertDialog mSweetDialogNoInternet = null;
-    static SweetAlertDialog mAlertDialog = null;
-    static SweetAlertDialog mVersionUpdateDialog = null;
-    static SweetAlertDialog mMultiButtonDialog = null;
+    static SweetAlertDialog mLoadingDialog = null;
     static SweetAlertDialog mDialog = null;
     static long mLastShowProcessDialog = 0;
 
     public synchronized static void dismiss() {
-        closeProcessDialog();
+        closeLoadDialog();
     }
 
     public synchronized static void closeAllDialog() {
-        closeProcessDialog();
-
-        if (mRetrySweetDialog != null && mRetrySweetDialog.isShowing()) {
-            mRetrySweetDialog.dismiss();
-        }
-        if (mConfirmDialog != null && mConfirmDialog.isShowing()) {
-            mConfirmDialog.dismiss();
-        }
-        if (mSweetDialogNoInternet != null && mSweetDialogNoInternet.isShowing()) {
-            mSweetDialogNoInternet.dismiss();
-        }
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.dismiss();
-        }
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
-        if (mMultiButtonDialog != null && mMultiButtonDialog.isShowing()) {
-            mMultiButtonDialog.dismiss();
-        }
+        closeLoadDialog();
+        closeShowDialog();
     }
 
-    private synchronized static void showProcessDialog(Activity pActivity, final long pStartTime, final OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
+
+    private synchronized static void showProcessDialog(Activity pActivity, final long pStartTime,
+                                                       final OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
         try {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
                 Timber.d("There is a showing process dialog");
                 return;
             }
@@ -77,12 +55,12 @@ public class DialogManager {
                 Timber.d("activity is null or finish - skip show loading dialog");
                 return;
             }
-            if (mProgressDialog == null) {
-                mProgressDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            if (mLoadingDialog == null) {
+                mLoadingDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             }
             final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
             //delegate user back press to activity
-            mProgressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            mLoadingDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
                 @Override
                 public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -101,8 +79,8 @@ public class DialogManager {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (mProgressDialog != null && mProgressDialog.isShowing() && mLastShowProcessDialog == pStartTime) {
-                            closeProcessDialog();
+                        if (mLoadingDialog != null && mLoadingDialog.isShowing() && mLastShowProcessDialog == pStartTime) {
+                            closeLoadDialog();
                             if (timeoutLoading.get() != null) {
                                 timeoutLoading.get().onProgressTimeout();
                             }
@@ -110,7 +88,8 @@ public class DialogManager {
                     }
                 }, pTimeoutLoading);
             }
-            mProgressDialog.show();
+            closeShowDialog();
+            mLoadingDialog.show();
             Timber.d("start show loading dialog");
         } catch (Exception e) {
             Timber.w(e, "Exception show loading dialog");
@@ -125,20 +104,27 @@ public class DialogManager {
         showProcessDialog(pActivity, System.currentTimeMillis(), pCallback, PROGRESS_DIALOG_TIMEOUT);
     }
 
-    public synchronized static boolean isShowingProgressDialog() {
-        return DialogManager.mProgressDialog != null && DialogManager.mProgressDialog.isShowing();
+    public synchronized static boolean showingLoadDialog() {
+        return DialogManager.mLoadingDialog != null && DialogManager.mLoadingDialog.isShowing();
     }
 
-    public synchronized static void closeProcessDialog() {
+    public synchronized static void closeLoadDialog() {
         try {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
+            if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
+                mLoadingDialog = null;
                 mLastShowProcessDialog = 0;
-                Timber.d("close dialog");
+                Timber.d("close loading dialog");
             }
         } catch (Exception e) {
             Timber.w(e, "Exception close loading dialog");
+        }
+    }
+
+    public static void closeShowDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+            mDialog = null;
         }
     }
 
@@ -148,17 +134,16 @@ public class DialogManager {
     public synchronized static void showSweetDialogCustom(final Activity pActivity, final String pMessage, String pButtonText,
                                                           String pTitle, int pDialogType, final ZPWOnEventDialogListener callback) {
         try {
-            if (mAlertDialog != null && mAlertDialog.isShowing()) {
-                Timber.d("There are a sweet dialog is showing");
-                return;
-            }
             if (pActivity == null || pActivity.isFinishing()) {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mAlertDialog == null) {
-                mAlertDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
+            if (mDialog != null && mDialog.isShowing()) {
+                Timber.d("There are a dialog showing - dismiss dialog");
+                mDialog.dismiss();
+                mDialog = null;
             }
+            mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             if (TextUtils.isEmpty(pTitle)) {
                 switch (pDialogType) {
                     case NORMAL_TYPE:
@@ -178,22 +163,22 @@ public class DialogManager {
                         break;
                 }
             }
-            mAlertDialog.setConfirmText(pButtonText)
+            mDialog.setConfirmText(pButtonText)
                     .setContentText(pMessage)
                     .setTitleText(pTitle);
-            mAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            mDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                     if (sweetAlertDialog != null) {
                         sweetAlertDialog.dismiss();
-                        mAlertDialog = null;
+                        mDialog = null;
                     }
                     if (callback != null) {
                         callback.onOKEvent();
                     }
                 }
             });
-            mAlertDialog.show();
+            mDialog.show();
         } catch (Exception e) {
             Timber.w(e, "Exception show custom alert dialog");
         }
@@ -208,20 +193,18 @@ public class DialogManager {
      * @param pDialogType dialog type
      * @param callback    call back
      */
-    public synchronized static void showSweetDialogCustom(final Activity pActivity, final String pMessage, String pButtonText,
-                                                          int pDialogType, final ZPWOnEventDialogListener callback) {
+    public synchronized static void showSweetDialogCustom(final Activity pActivity, final String pMessage, String pButtonText, int pDialogType, final ZPWOnEventDialogListener callback) {
         try {
-            if (mAlertDialog != null && mAlertDialog.isShowing()) {
-                mAlertDialog.dismiss();
-                Timber.d("There're a custom dialog showing - dismiss");
-            }
             if (pActivity == null || pActivity.isFinishing()) {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mAlertDialog == null) {
-                mAlertDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
+                Timber.d("There're a custom dialog showing - dismiss");
             }
+            mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             String pTitle = null;
             switch (pDialogType) {
                 case NORMAL_TYPE:
@@ -240,22 +223,22 @@ public class DialogManager {
                     pTitle = pActivity.getString(R.string.dialog_title_warning);
                     break;
             }
-            mAlertDialog.setConfirmText(pButtonText)
+            mDialog.setConfirmText(pButtonText)
                     .setContentHtmlText(pMessage)
                     .setTitleText(pTitle);
-            mAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            mDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                     if (sweetAlertDialog != null) {
                         sweetAlertDialog.dismiss();
-                        mAlertDialog = null;
+                        mDialog = null;
                     }
                     if (callback != null) {
                         callback.onOKEvent();
                     }
                 }
             });
-            mAlertDialog.show();
+            mDialog.show();
 
         } catch (Exception e) {
             Timber.w(e, "Exception show custom alert dialog");
@@ -269,18 +252,17 @@ public class DialogManager {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mConfirmDialog != null && mConfirmDialog.isShowing()) {
-                mConfirmDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
                 Timber.d("There're a confirm dialog showing - dismiss");
             }
-            if (mConfirmDialog == null) {
-                mConfirmDialog = new SweetAlertDialog(pActivity);
-            }
+            mDialog = new SweetAlertDialog(pActivity);
             String title = pTitle;
             if (TextUtils.isEmpty(title)) {
                 title = pActivity.getString(R.string.dialog_title_confirm);
             }
-            mConfirmDialog.setContentHtmlText(pMessage)
+            mDialog.setContentHtmlText(pMessage)
                     .setCancelText(pCancelButton)
                     .setConfirmText(pOKButton)
                     .setTitleText(title)
@@ -290,7 +272,7 @@ public class DialogManager {
                         public void onClick(SweetAlertDialog sDialog) {
                             if (sDialog != null) {
                                 sDialog.dismiss();
-                                mConfirmDialog = null;
+                                mDialog = null;
                             }
                             if (callback != null) {
                                 callback.onCancelEvent();
@@ -302,7 +284,7 @@ public class DialogManager {
                 public void onClick(SweetAlertDialog sDialog) {
                     if (sDialog != null) {
                         sDialog.dismiss();
-                        mConfirmDialog = null;
+                        mDialog = null;
                     }
                     if (callback != null) {
                         callback.onOKEvent();
@@ -310,7 +292,7 @@ public class DialogManager {
                     }
                 }
             });
-            mConfirmDialog.show();
+            mDialog.show();
         } catch (Exception e) {
             Timber.w(e, "Exception show custom confirm dialog");
         }
@@ -323,23 +305,22 @@ public class DialogManager {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mVersionUpdateDialog != null && mVersionUpdateDialog.isShowing()) {
-                mVersionUpdateDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
                 Timber.d("There're a version update dialog showing - dismiss");
             }
-            if (mVersionUpdateDialog == null) {
-                boolean hasCancelButton = !TextUtils.isEmpty(pCancelButton);
-                if (hasCancelButton) {
-                    mVersionUpdateDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE, R.style.alert_dialog);
-                    mVersionUpdateDialog.setCancelText(pCancelButton)
-                            .showConfirmButton(true);
-                } else {
-                    mVersionUpdateDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE_TYPE, R.style.alert_dialog);
-                }
-                mVersionUpdateDialog.setUpdatetext(pOKButton)
-                        .showCancelButton(hasCancelButton);
+            boolean hasCancelButton = !TextUtils.isEmpty(pCancelButton);
+            if (hasCancelButton) {
+                mDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE, R.style.alert_dialog);
+                mDialog.setCancelText(pCancelButton)
+                        .showConfirmButton(true);
+            } else {
+                mDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.UPDATE_TYPE, R.style.alert_dialog);
             }
-            mVersionUpdateDialog.setContentHtmlText(pMessage)
+            mDialog.setUpdatetext(pOKButton)
+                    .showCancelButton(hasCancelButton);
+            mDialog.setContentHtmlText(pMessage)
                     .setVersionText(pVersion)
                     .setTitleText(pActivity.getString(R.string.dialog_title_update))
                     .setUpdateClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -347,7 +328,7 @@ public class DialogManager {
                         public void onClick(SweetAlertDialog sDialog) {
                             if (sDialog != null) {
                                 sDialog.dismiss();
-                                mVersionUpdateDialog = null;
+                                mDialog = null;
                             }
                             if (callback != null) {
                                 callback.onUpdateListenner();
@@ -358,14 +339,14 @@ public class DialogManager {
                 public void onClick(SweetAlertDialog sDialog) {
                     if (sDialog != null) {
                         sDialog.dismiss();
-                        mVersionUpdateDialog = null;
+                        mDialog = null;
                     }
                     if (callback != null) {
                         callback.onCancelListenner();
                     }
                 }
             });
-            mVersionUpdateDialog.show();
+            mDialog.show();
         } catch (Exception e) {
             Timber.w(e, "Exception show version update dialog");
         }
@@ -377,14 +358,13 @@ public class DialogManager {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mRetrySweetDialog != null && mRetrySweetDialog.isShowing()) {
-                mRetrySweetDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
                 Timber.d("There're a retry dialog showing - dismiss");
             }
-            if (mRetrySweetDialog == null) {
-                mRetrySweetDialog = new SweetAlertDialog(pActivity);
-            }
-            mRetrySweetDialog.setContentText(pMessage)
+            mDialog = new SweetAlertDialog(pActivity);
+            mDialog.setContentText(pMessage)
                     .setCancelText(pActivity.getString(R.string.dialog_cancel_button))
                     .setConfirmText(pActivity.getString(R.string.dialog_retry_button))
                     .showCancelButton(true)
@@ -396,7 +376,7 @@ public class DialogManager {
                             }
                             if (sDialog != null) {
                                 sDialog.dismiss();
-                                mRetrySweetDialog = null;
+                                mDialog = null;
                             }
 
                         }
@@ -409,12 +389,12 @@ public class DialogManager {
                     }
                     if (sDialog != null) {
                         sDialog.dismiss();
-                        mRetrySweetDialog = null;
+                        mDialog = null;
                     }
                 }
             });
-            closeProcessDialog();
-            mRetrySweetDialog.show();
+            closeLoadDialog();
+            mDialog.show();
         } catch (Exception e) {
             Timber.w(e, "Exception show retry dialog");
         }
@@ -432,20 +412,19 @@ public class DialogManager {
                 Timber.d("activity is null or finish");
                 return;
             }
-            if (mMultiButtonDialog != null && mMultiButtonDialog.isShowing()) {
-                mMultiButtonDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
                 Timber.d("There're a multi dialog showing - dismiss");
             }
-            if (mMultiButtonDialog == null) {
-                mMultiButtonDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
-            }
+            mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             if (pArrButton != null) {
-                mMultiButtonDialog.setArrButton(pArrButton);
+                mDialog.setArrButton(pArrButton);
             }
             if (pIcoDrawable != -1) {
-                mMultiButtonDialog.setCustomImage(pIcoDrawable);
+                mDialog.setCustomImage(pIcoDrawable);
             }
-            mMultiButtonDialog.setTitleText(pTitle)
+            mDialog.setTitleText(pTitle)
                     .setContentText(pContent)
                     .setCustomClickListener(new ZPWOnDialogListener() {
                         @Override
@@ -455,10 +434,11 @@ public class DialogManager {
                             }
                             if (sweetAlertDialog != null) {
                                 sweetAlertDialog.dismiss();
-                                mMultiButtonDialog = null;
+                                mDialog = null;
                             }
                         }
-                    }).show();
+                    });
+            mDialog.show();
         } catch (Exception e) {
             Timber.w(e, "Exception show multi button dialog");
         }

@@ -191,7 +191,7 @@ public class SDKPayment {
      * @param pMessage
      */
     private static void terminateSession(final String pMessage, @PaymentError int pPayError) {
-        DialogManager.closeProcessDialog();
+        DialogManager.closeLoadDialog();
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
         }

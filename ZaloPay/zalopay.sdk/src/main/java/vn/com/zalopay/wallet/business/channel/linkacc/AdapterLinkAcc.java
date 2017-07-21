@@ -617,7 +617,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     void visibleLoadingDialog(String pMessage) {
-        if (!DialogManager.isShowingProgressDialog()) {
+        if (!DialogManager.showingLoadDialog()) {
             showTimeoutProgressDialog(pMessage);
         }
     }

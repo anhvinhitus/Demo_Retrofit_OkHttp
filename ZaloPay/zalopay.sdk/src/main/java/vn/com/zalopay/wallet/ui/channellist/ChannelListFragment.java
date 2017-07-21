@@ -173,7 +173,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void hideLoading() {
-        DialogManager.closeProcessDialog();
+        DialogManager.closeLoadDialog();
         updateDefaultTitle();
     }
 

@@ -758,7 +758,7 @@ public abstract class CardGuiProcessor extends SingletonBase
                 public void run() {
                     try {
                         //dialog process is showing. so when process dialog close, need to show keyboard again.
-                        if (DialogManager.isShowingProgressDialog()) {
+                        if (DialogManager.showingLoadDialog()) {
                             return;
                         }
                         showKeyBoardOnCardNumberView();
