@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.repository;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import java.io.File;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -19,7 +18,6 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
-import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static vn.com.vng.zalopay.data.util.Utils.sha256Base;
@@ -47,22 +45,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         this.mUser = user;
         this.mUserConfig = userConfig;
         Timber.d("accessToken[%s]", mUser.accesstoken);
-    }
-
-    @Override
-    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber) {
-        pin = sha256Base(pin);
-        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber)
-                .map(baseResponse -> Boolean.TRUE);
-    }
-
-    @Override
-    public Observable<Boolean> verifyOTPProfile(String otp) {
-        return mRequestService.verifyOTPProfile(mUser.zaloPayId, mUser.accesstoken, otp)
-                .doOnNext(response -> savePermission(response.profilelevel, response.permisstion.toString()))
-                .flatMap(response -> clearProfileInfo2())
-                .map(response -> Boolean.TRUE)
-                ;
     }
 
     @Override
@@ -189,11 +171,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .map(baseResponse -> Boolean.TRUE);
     }
 
-    private RequestBody requestBodyFromFile(String filePath) {
-        File file = new File(filePath);
-        return RequestBody.create(MediaType.parse("image/*"), file);
-    }
-
     private RequestBody requestBodyFromData(byte[] data) {
         return RequestBody.create(MediaType.parse("image/*"), data);
     }
@@ -243,51 +220,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<ProfileLevel2> getProfileLevel2Cache() {
-        return ObservableHelper.makeObservable(() -> {
-            Map map = mLocalStore.getProfileLevel2();
-            Object phoneNumberObj = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
-            Object isReceivedOtpObj = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
-            Object timeReceivedOtpObj = map.get(Constants.ProfileLevel2.TIME_RECEIVE_OTP);
-
-            ProfileLevel2 profileLevel2 = new ProfileLevel2();
-            if (phoneNumberObj != null) {
-                profileLevel2.phoneNumber = phoneNumberObj.toString();
-            }
-            if (isReceivedOtpObj == null || timeReceivedOtpObj == null) {
-                return profileLevel2;
-            }
-            try {
-                boolean isReceivedOtp = Boolean.valueOf(isReceivedOtpObj.toString());
-                long timeReceiveOtp = Long.valueOf(timeReceivedOtpObj.toString());
-                profileLevel2.isReceivedOtp = (isReceivedOtp &&
-                        System.currentTimeMillis() - timeReceiveOtp <= TIMEOUT_CACHE_OTP_STATE);
-            } catch (NumberFormatException e) {
-                return profileLevel2;
-            }
-            return profileLevel2;
-        });
-    }
-
-    @Override
-    public Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
-        Timber.d("Save profile 2 : phone [%s] receiveOtp [%s]",
-                phoneNumber, receiveOtp);
-        return ObservableHelper.makeObservable(() -> {
-            mLocalStore.saveProfileInfo2(phoneNumber, receiveOtp);
-            return null;
-        });
-    }
-
-    @Override
-    public Observable<Void> clearProfileInfo2() {
-        return ObservableHelper.makeObservable(() -> {
-            mLocalStore.saveProfileInfo2("", false);
-            return null;
-        });
-    }
-
-    @Override
     public Observable<Boolean> getChangePinState() {
         return ObservableHelper.makeObservable(() -> {
             Map map = mLocalStore.getChangePinState();
@@ -318,12 +250,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Void> resetChangePinState() {
         return saveChangePinState(false);
-    }
-
-    @Override
-    public Observable<String> validatePin(String pin) {
-        return ObservableHelper.makeObservable(() -> sha256Base(pin))
-                .flatMap(this::validateHashPassword);
     }
 
     @Override

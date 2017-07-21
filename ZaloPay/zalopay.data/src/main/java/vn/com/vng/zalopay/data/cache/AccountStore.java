@@ -17,11 +17,9 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPIDResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPNameResponse;
-import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
-import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -42,26 +40,12 @@ public interface AccountStore {
 
         Map<String, String> getProfileInfo3();
 
-        Map<String, String> getProfileLevel2();
-
-        void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
-
         Map<String, String> getChangePinState();
 
         void saveChangePinState(boolean receiveOtp);
     }
 
     interface RequestService {
-
-        @API_NAME(https = ZPEvents.API_UM_UPDATEPROFILE, connector = ZPEvents.CONNECTOR_UM_UPDATEPROFILE)
-        @FormUrlEncoded
-        @POST(Constants.UM_API.UPDATEPROFILE)
-        Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
-
-        @API_NAME(https = ZPEvents.API_UM_VERIFYOTPPROFILE, connector = ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE)
-        @FormUrlEncoded
-        @POST(Constants.UM_API.VERIFYOTPPROFILE)
-        Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
         @API_NAME(https = ZPEvents.API_UM_RECOVERYPIN, connector = ZPEvents.CONNECTOR_UM_RECOVERYPIN)
         @FormUrlEncoded
@@ -112,13 +96,7 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<String> validatePin(String pin);
-
         Observable<String> validatePinSha256(String pin);
-
-        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
-
-        Observable<Boolean> verifyOTPProfile(String otp);
 
         Observable<String> changePassword(String newPassword, String oldPassword);
 
@@ -143,12 +121,6 @@ public interface AccountStore {
         Observable<ProfileInfo3> getProfileInfo3Cache();
 
         Observable<Boolean> saveProfileInfo3(String email, String identity, @Nullable String foregroundImg, @Nullable String backgroundImg, @Nullable String avatarImg);
-
-        Observable<ProfileLevel2> getProfileLevel2Cache();
-
-        Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp);
-
-        Observable<Void> clearProfileInfo2();
 
         Observable<Boolean> getChangePinState();
 

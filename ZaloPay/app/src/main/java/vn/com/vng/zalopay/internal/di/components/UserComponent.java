@@ -12,8 +12,6 @@ import vn.com.vng.zalopay.account.ui.fragment.ChangePinContainerFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
 import vn.com.vng.zalopay.account.ui.fragment.EditAccountNameFragment;
-import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
-import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
@@ -26,7 +24,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.feedback.FeedbackFragment;
 import vn.com.vng.zalopay.internal.di.modules.QRCodeModule;
@@ -122,15 +119,9 @@ public interface UserComponent {
 
     PaymentConnectorService connectorService();
 
-    NotificationService notificationService();
-
     /* inject Fragment */
 
     void inject(BalanceTopupFragment f);
-
-    void inject(PinProfileFragment f);
-
-    void inject(OtpProfileFragment f);
 
     void inject(ChangePinFragment f);
 
