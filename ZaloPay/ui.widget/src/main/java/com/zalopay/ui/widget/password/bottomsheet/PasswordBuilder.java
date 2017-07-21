@@ -18,6 +18,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected ISetDataToView mISetDataToView;
     protected IControl mControl;
     protected boolean mFingerPrint;
+    protected boolean isSupportInfoViewVisible;
     protected String mTitle;
     protected boolean mNeedHashPass = true;
 
@@ -110,7 +111,6 @@ public abstract class PasswordBuilder implements IBuilder {
         return this;
     }
 
-
     @Override
     public String getLogoPath() {
         return mIdLogo;
@@ -142,8 +142,38 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
+    public IBuilder showSupportInfo(boolean pShow) {
+        if (mISetDataToView != null) {
+            mISetDataToView.showSupportInfo(pShow);
+        }
+        isSupportInfoViewVisible = pShow;
+        return this;
+    }
+
+    @Override
+    public IBuilder resetPasswordInput() {
+        if (mISetDataToView != null) {
+            mISetDataToView.resetPasswordInput();
+        }
+        return this;
+    }
+
+    @Override
+    public IBuilder showOTPInputView() {
+        if (mISetDataToView != null) {
+            mISetDataToView.showOTPInputView();
+        }
+        return this;
+    }
+
+    @Override
     public boolean getFingerPrint() {
         return mFingerPrint;
+    }
+
+    @Override
+    public boolean isSupportInfoVisible() {
+        return isSupportInfoViewVisible;
     }
 
     @Override

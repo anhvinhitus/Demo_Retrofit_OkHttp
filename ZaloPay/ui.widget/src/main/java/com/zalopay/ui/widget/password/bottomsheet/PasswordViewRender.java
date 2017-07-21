@@ -2,9 +2,20 @@ package com.zalopay.ui.widget.password.bottomsheet;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Vibrator;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +39,8 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 
+import static java.security.AccessController.getContext;
+
 public class PasswordViewRender extends PasswordRender implements KeyboardButtonClickedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = PasswordViewRender.class.getSimpleName();
@@ -43,12 +56,15 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected TextView mTextViewPmcName;
     protected TextView mTextViewTitle;
     LoadingIndicatorView mLoadingIndicatorView;
+    protected TextView mTextViewSupportInfo;
+    protected TextView mTextViewOTPInput;
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
     private WeakReference<Context> mContext;
     private CheckBox mCheckBox;
     private LinearLayout mLayoutCheckBox;
+    private LinearLayout mLayoutSupportInfo;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
         public void setErrorMessage(String pError) {
@@ -115,8 +131,23 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
+        public void showSupportInfo(boolean pShow) {
+            showSupportInfoLayout(pShow);
+        }
+
+        @Override
         public void lockView(boolean islock) {
             enableView(!islock);
+        }
+
+        @Override
+        public void resetPasswordInput() {
+            onPinCodeError();
+        }
+
+        @Override
+        public void showOTPInputView() {
+            showOTPInput();
         }
     };
 
@@ -162,10 +193,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mRootView = pWView.findViewById(R.id.layout_root_view);
         mTextViewPmcName = (TextView) pWView.findViewById(R.id.textview_pmc_name);
         mTextViewTitle = (TextView) pWView.findViewById(R.id.textview_title);
+        mTextViewSupportInfo = (TextView) pWView.findViewById(R.id.text_support_info);
+        mTextViewOTPInput = (TextView) pWView.findViewById(R.id.tv_otp_input);
         mLogo = (SimpleDraweeView) pWView.findViewById(R.id.ic_content);
         mCheckBox = (CheckBox) pWView.findViewById(R.id.checkbox_fingerprint);
         mLoadingIndicatorView = (LoadingIndicatorView) pWView.findViewById(R.id.indicatorView_pin);
         mLayoutCheckBox = (LinearLayout) pWView.findViewById(R.id.layout_checkbox);
+        mLayoutSupportInfo = (LinearLayout) pWView.findViewById(R.id.layout_support_info);
         mRootView.setOnClickListener(this);
         mCancelImageView.setOnClickListener(this);
         mKeyboardView.setKeyboardButtonClickedListener(this);
@@ -179,7 +213,17 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             mLogo.setVisibility(View.GONE);
         }
         showSuggestFPCheckBox(mBuilder.getFingerPrint());
+        showSupportInfoLayout(mBuilder.isSupportInfoVisible());
         setTitleText(pContext);
+        setSpannedMessageToView(mTextViewSupportInfo,
+                pContext.getString(R.string.change_pin_support_info),
+                pContext.getString(R.string.change_pin_support_number), false, false,
+                ContextCompat.getColor(pContext, R.color.colorPrimary), new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+//                        navigator.startDialSupport(getContext());
+                    }
+                });
     }
 
     private void setTitleText(Context pContext) {
@@ -209,6 +253,17 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     }
 
+    void showSupportInfoLayout(boolean pShow) {
+        if (mLayoutSupportInfo == null) {
+            return;
+        }
+        if (pShow) {
+            mLayoutSupportInfo.setVisibility(View.VISIBLE);
+        } else {
+            mLayoutSupportInfo.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * Gets the number of digits in the pin code.  Subclasses can override this to change the
      * length of the pin.
@@ -233,16 +288,21 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     @Override
     public void onKeyboardClick(KeyboardButtonEnum keyboardButtonEnum) {
+
         if (mPinCode.length() < this.getPinLength()) {
             int value = keyboardButtonEnum.getButtonValue();
             if (value == KeyboardButtonEnum.BUTTON_CLEAR.getButtonValue()) {
                 if (!mPinCode.isEmpty()) {
                     setPinCode(mPinCode.substring(0, mPinCode.length() - 1));
+                    mTextViewOTPInput.setText(mPinCode.substring(0, mPinCode.length() - 1));
                 } else {
                     setPinCode("");
+                    mTextViewOTPInput.setText("");
                 }
             } else {
-                setPinCode(mPinCode + value);
+                String valueDUkel = mPinCode + value;
+                setPinCode(valueDUkel);
+                mTextViewOTPInput.setText(valueDUkel);
             }
         }
         if (mPinCode.length() == this.getPinLength()) {
@@ -271,6 +331,8 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             case 1:
                 onPinSuccess();
                 break;
+            case 2:
+                onOTPSuccess();
             default:
                 break;
         }
@@ -280,11 +342,22 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         if (isSuccess) {
             return;
         }
+
         Timber.d("onPinSuccess %s", isSuccess);
+        isSuccess = true;
         mBuilder.getIFPinCallBack().onComplete(mBuilder.needHashPass() ?
                 Encryptor.sha256(mPinCode) :
                 mPinCode);
+    }
+
+    public void onOTPSuccess() {
+        Timber.d("onPinSuccess %s", isSuccess);
+        if (isSuccess) {
+            return;
+        }
+
         isSuccess = true;
+        mBuilder.getIFPinCallBack().onComplete(mPinCode);
     }
 
     /**
@@ -326,5 +399,66 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mCancelImageView.setClickable(enable);
         mKeyboardView.enableInput(enable);
         Timber.d("enable password popup %s", enable);
+    }
+
+    void showOTPInput() {
+        mTextViewOTPInput.setText("");
+        mTextViewOTPInput.setVisibility(View.VISIBLE);
+        mPinCodeRoundView.setVisibility(View.GONE);
+        mType = 2;
+    }
+
+    void setSpannedMessageToView(TextView tv,
+                                 String message,
+                                 String spannedMessage,
+                                 boolean isUnderline,
+                                 boolean isMessageBold,
+                                 @ColorInt int linkColor,
+                                 ClickableSpan clickableSpan) {
+        if (tv != null) {
+            // set spannable for text view
+            int startIndex = message.indexOf("%s");
+            int endIndex = startIndex + spannedMessage.length();
+            message = String.format(message, spannedMessage);
+            Spannable span = Spannable.Factory.getInstance().newSpannable(message);
+            // set span color
+            span.setSpan(new ForegroundColorSpan(linkColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            // set span underline
+            if (isUnderline) {
+                span.setSpan(new UnderlineSpan(), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            // set bold message
+            if (isMessageBold) {
+                span.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            span.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            tv.setText(span);
+            tv.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+
+    private abstract class ClickableSpanNoUnderline extends ClickableSpan {
+
+        private int mLinkColor = 0;
+
+        protected ClickableSpanNoUnderline() {
+        }
+
+        protected ClickableSpanNoUnderline(int mLinkColor) {
+            super();
+            this.mLinkColor = mLinkColor;
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            if (mLinkColor != 0) {
+                ds.setColor(mLinkColor);
+            } else {
+                super.updateDrawState(ds);
+            }
+            ds.setUnderlineText(false);
+        }
     }
 }

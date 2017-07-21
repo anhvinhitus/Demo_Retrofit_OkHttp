@@ -38,7 +38,15 @@ public interface IBuilder {
 
     IBuilder showFPSuggestCheckBox(boolean pShow);
 
+    IBuilder showSupportInfo(boolean pShow);
+
+    IBuilder resetPasswordInput();
+
+    IBuilder showOTPInputView();
+
     boolean getFingerPrint();
+
+    boolean isSupportInfoVisible();
 
     void getCallBackToView(ISetDataToView pIfError);
 

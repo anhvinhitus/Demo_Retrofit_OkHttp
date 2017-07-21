@@ -1,6 +1,7 @@
 package com.zalopay.ui.widget.password.managers;
 
 import android.app.Activity;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
@@ -147,6 +148,33 @@ public class PasswordManager {
             @Override
             public void run() {
                 mIBuilder.setNeedHashPass(pNeedHashPass);
+            }
+        });
+    }
+
+    @UiThread void resetPasswordInput() throws Exception {
+        if (mIBuilder == null) {
+            Timber.d("mIBuilder is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.resetPasswordInput();
+            }
+        });
+    }
+
+    @UiThread
+    public void showOTPInputView() throws Exception {
+        if (mIBuilder == null) {
+            Timber.d("mIBuilder is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.showOTPInputView();
             }
         });
     }

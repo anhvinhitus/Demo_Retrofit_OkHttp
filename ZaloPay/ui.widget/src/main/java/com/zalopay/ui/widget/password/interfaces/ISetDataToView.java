@@ -19,5 +19,11 @@ public interface ISetDataToView {
 
     void showFingerPrintCheckBox(boolean pShow);
 
+    void showSupportInfo(boolean pShow);
+
     void lockView(boolean islock);
+
+    void resetPasswordInput();
+
+    void showOTPInputView();
 }
