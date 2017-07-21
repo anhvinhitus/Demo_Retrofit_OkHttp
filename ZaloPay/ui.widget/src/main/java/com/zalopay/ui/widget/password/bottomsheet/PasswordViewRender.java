@@ -42,12 +42,12 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected SimpleDraweeView mLogo;
     protected TextView mTextViewPmcName;
     protected TextView mTextViewTitle;
+    LoadingIndicatorView mLoadingIndicatorView;
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
     private WeakReference<Context> mContext;
     private CheckBox mCheckBox;
-    LoadingIndicatorView mLoadingIndicatorView;
     private LinearLayout mLayoutCheckBox;
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
@@ -277,11 +277,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     public void onPinSuccess() {
-        Timber.d("onPinSuccess %s", isSuccess);
         if (isSuccess) {
             return;
         }
-        mBuilder.getIFPinCallBack().onComplete(Encryptor.sha256(mPinCode));
+        Timber.d("onPinSuccess %s", isSuccess);
+        mBuilder.getIFPinCallBack().onComplete(mBuilder.needHashPass() ?
+                Encryptor.sha256(mPinCode) :
+                mPinCode);
         isSuccess = true;
     }
 

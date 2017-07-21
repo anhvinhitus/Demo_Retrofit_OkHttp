@@ -6,6 +6,10 @@ import com.zalopay.ui.widget.UIBottomSheetDialog;
 
 public interface IBuilder {
 
+    IBuilder setNeedHashPass(boolean needHash);
+
+    boolean needHashPass();
+
     IBuilder setPasswordCallBack(IPasswordCallBack pinListener);
 
     IPasswordCallBack getIFPinCallBack();

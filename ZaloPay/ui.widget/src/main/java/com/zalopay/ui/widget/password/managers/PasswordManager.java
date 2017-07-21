@@ -137,6 +137,20 @@ public class PasswordManager {
         });
     }
 
+    @UiThread
+    public void setNeedHashPassword(final boolean pNeedHashPass) throws Exception {
+        if (mIBuilder == null) {
+            Timber.d("mIBuilder is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.setNeedHashPass(pNeedHashPass);
+            }
+        });
+    }
+
     public void lock() throws Exception {
         disable(true);
     }

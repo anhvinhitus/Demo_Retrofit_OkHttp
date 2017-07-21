@@ -19,9 +19,21 @@ public abstract class PasswordBuilder implements IBuilder {
     protected IControl mControl;
     protected boolean mFingerPrint;
     protected String mTitle;
+    protected boolean mNeedHashPass = true;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
+    }
+
+    @Override
+    public IBuilder setNeedHashPass(boolean needHash) {
+        mNeedHashPass = needHash;
+        return this;
+    }
+
+    @Override
+    public boolean needHashPass() {
+        return mNeedHashPass;
     }
 
     @Override
