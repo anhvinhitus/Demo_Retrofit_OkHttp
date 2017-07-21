@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 
 
 /**
@@ -100,7 +101,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     private void trackApiTiming(int apiId, long startTime, long endTime, Throwable throwable) {
         try {
             int returnCode = -100;
-            if (throwable instanceof HttpEmptyResponseException) {
+            if (TransactionHelper.timeoutException(throwable)) {
                 returnCode = -1010;
                 Timber.w(throwable, "Exception apiId %s PC response null user id %s", apiId, GlobalData.getUserId());
             } else if (throwable instanceof HttpException) {

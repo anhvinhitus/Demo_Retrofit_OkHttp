@@ -3,6 +3,8 @@ package vn.com.zalopay.wallet.helper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.concurrent.TimeoutException;
+
 import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
@@ -42,7 +44,7 @@ public class TransactionHelper {
         if (throwable instanceof NetworkConnectionException) {
             return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
-        if(throwable instanceof HttpEmptyResponseException){
+        if(timeoutException(throwable)){
             return context.getResources().getString(R.string.sdk_error_api_emptybody);
         }
         if(throwable instanceof HttpException){
@@ -50,6 +52,10 @@ public class TransactionHelper {
         }
         Timber.w(throwable, "undefine exception");
         return context.getResources().getString(R.string.sdk_error_undefine);
+    }
+
+    public static boolean timeoutException(Throwable throwable){
+        return throwable instanceof HttpEmptyResponseException || throwable instanceof TimeoutException;
     }
 
     public static String getAppNameByTranstype(Context context, @TransactionType int transtype) {
