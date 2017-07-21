@@ -32,7 +32,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
-import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
+import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
@@ -314,7 +314,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener) {
+    public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
                 getString(R.string.sdk_dialog_nointernet_title),

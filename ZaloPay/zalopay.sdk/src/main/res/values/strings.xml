@@ -107,7 +107,6 @@
 
     <string name="sdk_error_parse_website">Không thể xử lý với ngân hàng, có thể do ngân hàng đang bảo trì.\nXin bạn vui lòng quay lại sau ít phút!</string>
 
-
     <string name="sdk_paymentinfo_error_mac_mess">Thông tin đơn hàng không hợp lệ.</string>
     <string name="sdk_paymentinfo_order_notfound_mess">Thiếu thông tin đơn hàng.</string>
     <string name="sdk_paymentinfo_invalid_appuser_mess">Thiếu thông tin user trong thông tin đơn hàng.</string>
@@ -332,9 +331,9 @@
 
     <string name="zpw_warning_bidv_select_linkcard_payment"><![CDATA[Ngân hàng <b>BIDV</b> chỉ hỗ trợ hình thức thanh toán qua thẻ liên kết. Vui lòng chọn thẻ liên kết <b>BIDV</b> để thanh toán.]]></string>
     <string name="zpw_warning_bidv_linkcard_before_payment"><![CDATA[<b>BIDV</b> chỉ hỗ trợ thanh toán qua thẻ đã liên kết. Bạn có muốn liên kết thẻ để tiếp tục thanh toán không?]]></string>
-    <string name="zpw_alert_networking_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng.\nVui lòng thực hiện lại giao dịch!</string>
-    <string name="zpw_alert_ssl_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng!</string>
-    <string name="zpw_loading_website_message">Tải website ngân hàng</string>
+    <string name="sdk_parsewebsite_error_mess">Có lỗi xảy ra trong quá trình xử lý website ngân hàng.\nVui lòng thực hiện lại giao dịch!</string>
+    <string name="sdk_parsewebsite_sslerror_mess">Có lỗi xảy ra trong quá trình xử lý website ngân hàng!</string>
+    <string name="sdk_parsewebsite_loading_mess">Tải website ngân hàng</string>
 
     <string name="sdk_vcb_bankscript_generate_captcha">^.+(vietcombank\\.com\\.vn).+(\\/Account\\/GenerateCaptcha).*$</string>
     <string name="sdk_vcb_bankscript_register_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/Dangky_Step2).*$</string>

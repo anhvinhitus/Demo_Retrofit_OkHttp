@@ -15,9 +15,9 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
@@ -120,11 +120,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
     }
 
     void onPostResult(StatusResponse pResponse) {
-        if (mAdapter != null) {
-            mAdapter.onEvent(EEventType.ON_GET_STATUS_COMPLETE, pResponse);
-        } else {
-            Log.e(this, "mAdapter = NULL");
-        }
+        mEventBus.postSticky(new SdkOrderStatusEvent(pResponse));
     }
 
     private void showProgress(boolean pIsShow) {
@@ -204,7 +200,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestFail(Throwable e) {
-        Timber.d(e != null ? e.getMessage() : "Exception");
         cancelTimer();
         showProgress(false);
         //can not get status response from server

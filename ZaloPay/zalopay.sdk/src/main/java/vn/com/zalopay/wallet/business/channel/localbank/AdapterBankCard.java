@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import rx.Subscription;
@@ -21,7 +24,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
@@ -31,6 +33,10 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -85,9 +91,8 @@ public class AdapterBankCard extends AdapterBase {
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             getGuiProcessor().initPager();
         }
-        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
-            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
-
+        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
+            handleEventGetStatusComplete(mStatusResponse);
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
     }
@@ -193,145 +198,169 @@ public class AdapterBankCard extends AdapterBase {
         }
     }
 
-    @Override
-    public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onAuthenPayerEvent(SdkAuthenPayerEvent event) {
+        mEventBus.removeStickyEvent(SdkAuthenPayerEvent.class);
+        handleAuthenPayerComplete(event.response);
+        Timber.d("on authen payer complete %s", GsonUtils.toJsonString(event.response));
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onParseWebsiteErrorEvent(SdkParseWebsiteErrorEvent event) {
+        mEventBus.removeStickyEvent(SdkParseWebsiteErrorEvent.class);
+        handleParseWebsiteErrorEvent();
+        Timber.d("on parse web error");
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onParseWebsiteRenderEvent(SdkParseWebsiteRenderEvent event) {
+        mEventBus.removeStickyEvent(SdkParseWebsiteRenderEvent.class);
         try {
-            super.onEvent(pEventType, pAdditionParams);
-            if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
-                //check result authen, otp code is 17: wrong otp, other code callback
-                if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
-                    getTransactionStatus(mTransactionID, false,
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
-                }
-                //retry otp
-                else if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
-                    processWrongOtp();
-                } else if (mResponseStatus != null) {
-                    showTransactionFailView(mResponseStatus.returnmessage);
-                } else if (shouldCheckStatusAgain()) {
-                    Timber.d("continue get status because response is null after authen payer");
-                    getTransactionStatus(mTransactionID, false,
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
-                } else {
-                    showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
-                }
-            }
-            //flow webview parse website
-            else if (pEventType == EEventType.ON_FAIL) {
-                //get status again if user input otp
-                if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                    getTransactionStatus(mTransactionID, false, null);
-                } else {
-                    String failMessage = null;
-                    if (mResponseStatus != null) {
-                        failMessage = mResponseStatus.returnmessage;
-                    }
+            handlerParseWebsiteRender(event.response, event.pageName);
+        } catch (Exception e) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_parsewebsite_error_mess));
+            Timber.w(e, "Exception render view parse web");
+        }
+    }
 
-                    if (!TextUtils.isEmpty(failMessage)) {
-                        failMessage = GlobalData.getAppContext().getResources().getString(R.string.zpw_alert_networking_error_parse_website);
-                    }
-                    showTransactionFailView(failMessage);
-                    getView().hideLoading();
-                }
-                //get website content and send to server
-                getWebViewProcessor().getSiteContent();
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onParseEventCompleteEvent(SdkParseWebsiteCompleteEvent event) {
+        mEventBus.removeStickyEvent(SdkParseWebsiteCompleteEvent.class);
+        handleParseWebsiteComplete(event.response);
+        Timber.d("on parse web complete %s", GsonUtils.toJsonString(event.response));
+    }
+
+    private void handleAuthenPayerComplete(StatusResponse statusResponse) {
+        mStatusResponse = statusResponse;
+        //check result authen, otp code is 17: wrong otp, other code callback
+        if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mStatusResponse)
+                && !PaymentStatusHelper.isWrongOtpResponse(mStatusResponse)) {
+            getTransactionStatus(mTransactionID, false,
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+        }
+        //retry otp
+        else if (PaymentStatusHelper.isWrongOtpResponse(mStatusResponse)) {
+            processWrongOtp();
+        } else if (mStatusResponse != null) {
+            showTransactionFailView(mStatusResponse.returnmessage);
+        } else if (shouldCheckStatusAgain()) {
+            Timber.d("continue get status because response is null after authen payer");
+            getTransactionStatus(mTransactionID, false,
+                    GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+        } else {
+            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
+        }
+    }
+
+    private void handleParseWebsiteErrorEvent() {
+        //get status again if user input otp
+        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+            getTransactionStatus(mTransactionID, false, null);
+        } else {
+            String failMessage = null;
+            if (mStatusResponse != null) {
+                failMessage = mStatusResponse.returnmessage;
             }
-            //flow webview parse website
-            else if (pEventType == EEventType.ON_PAYMENT_COMPLETED) {
-                mOtpEndTime = System.currentTimeMillis();
-                BaseResponse response = (BaseResponse) pAdditionParams[0];
-                if (response.returncode == ParseWebCode.ATM_VERIFY_OTP_SUCCESS) {
-                    getTransactionStatus(mTransactionID, false,
-                            GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
-                } else {
-                    showTransactionFailView(response.returnmessage);
-                }
+            if (!TextUtils.isEmpty(failMessage)) {
+                failMessage = GlobalData.getAppContext().getResources().getString(R.string.sdk_parsewebsite_error_mess);
             }
-            //render webview flow
-            else if (pEventType == EEventType.ON_REQUIRE_RENDER) {
-                if (isFinalScreen()) {
-                    Timber.d("EEventType.ON_REQUIRE_RENDER but in final screen now");
-                    return null;
+            showTransactionFailView(failMessage);
+        }
+        //get website content and send to server
+        //getWebViewProcessor().getSiteContent();
+    }
+
+    private void handleParseWebsiteComplete(BaseResponse response) {
+        mOtpEndTime = System.currentTimeMillis();
+        if (response.returncode == ParseWebCode.ATM_VERIFY_OTP_SUCCESS) {
+            getTransactionStatus(mTransactionID, false, GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_getstatus_mess));
+        } else {
+            showTransactionFailView(response.returnmessage);
+        }
+    }
+
+    private void handlerParseWebsiteRender(DAtmScriptOutput response, String pageName) throws Exception {
+        if (isFinalScreen()) {
+            Timber.d("callback render from parse website but in final screen now");
+            return;
+        }
+        if (paymentBIDV() && !continueProcessForBidvBank(response.message)) {
+            if (isCaptchaStep()) {
+                showTransactionFailView(response.message);
+            }
+            return;
+        }
+        // Reset captcha imediately
+        if (!TextUtils.isEmpty(response.otpimg)) {
+            if (numberRetryCaptcha >= Constants.MAX_COUNT_RETRY_CAPTCHA) {
+                String message = response.message;
+                if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
                 }
-                DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];
-                if (paymentBIDV() && !continueProcessForBidvBank(response.message)) {
-                    if (isCaptchaStep()) {
-                        showTransactionFailView(response.message);
-                    }
-                    return null;
-                }
-                // Reset captcha imediately
-                if (!TextUtils.isEmpty(response.otpimg)) {
-                    if (numberRetryCaptcha >= Constants.MAX_COUNT_RETRY_CAPTCHA) {
-                        String message = response.message;
-                        if (TextUtils.isEmpty(message)) {
-                            message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
+                showTransactionFailView(message);
+                return;
+            }
+            numberRetryCaptcha++;
+            ((BankCardGuiProcessor) getGuiProcessor()).setCaptchaImage(response.otpimg, response.otpimgsrc);
+        }
+        if (!TextUtils.isEmpty(pageName)) {
+            mPageName = PAGE_COVER_BANK_AUTHEN;
+            getView().renderByResource(mPageName);
+            mPageName = pageName;
+            getView().renderByResource(mPageName, response.staticView, response.dynamicView);
+            getGuiProcessor().checkEnableSubmitButton();
+        }
+        if (!response.isError()) {
+            if (!TextUtils.isEmpty(response.info)) {
+                showDialog(GlobalData.getStringResource(response.info));
+            }
+        }
+        //has an error on website(wrong captcha,otp)
+        else {
+            if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_vcb_invalid_captcha))) {
+                response.message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
+            }
+            showDialogWithCallBack(response.message,
+                    GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
+                        if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
+                            //reset otp and show keyboard again
+                            ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
+                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                        } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+                            //reset otp and show keyboard again
+                            ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
+                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
                         }
-                        showTransactionFailView(message);
-                        return null;
-                    }
-                    numberRetryCaptcha++;
-                    ((BankCardGuiProcessor) getGuiProcessor()).setCaptchaImage(response.otpimg, response.otpimgsrc);
-                }
-                // re-render from web bank
-                if (pAdditionParams.length > 1) {
-                    mPageName = PAGE_COVER_BANK_AUTHEN;
-                    getView().renderByResource(mPageName);
-                    mPageName = (String) pAdditionParams[1];
-                    getView().renderByResource(mPageName, response.staticView, response.dynamicView);
-                    getGuiProcessor().checkEnableSubmitButton();
-                }
-                if (!response.isError()) {
-                    if (!TextUtils.isEmpty(response.info)) {
-                        showDialog(GlobalData.getStringResource(response.info));
-                    }
-                }
-                //has an error on website(wrong captcha,otp)
-                else {
-                    if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_vcb_invalid_captcha))) {
-                        response.message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
-                    }
-                    showDialogWithCallBack(response.message,
-                            GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
-                                if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
-                                    //reset otp and show keyboard again
-                                    ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
-                                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
-                                } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                                    //reset otp and show keyboard again
-                                    ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
-                                }
-                            });
-                }
-                boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
-                getView().visiableOrderInfo(visibleOrderInfo);
-                getView().setVisible(R.id.order_info_line_view, false);
-                //set time process for otp and captcha to send log to server.
-                if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
-                    mOtpEndTime = System.currentTimeMillis();
-                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
-                }
-                if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
-                    mCaptchaEndTime = System.currentTimeMillis();
-                    //request permission read/view sms on android 6.0+
-                    requestReadOtpPermission();
-                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper
-                                .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
-                                .track();
-                    }
-                }
+                    });
+        }
+        boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
+        getView().visiableOrderInfo(visibleOrderInfo);
+        getView().setVisible(R.id.order_info_line_view, false);
+        //set time process for otp and captcha to send log to server.
+        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
+            mOtpEndTime = System.currentTimeMillis();
+            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
+        }
+        if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
+            mCaptchaEndTime = System.currentTimeMillis();
+            //request permission read/view sms on android 6.0+
+            requestReadOtpPermission();
+            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+            if (GlobalData.analyticsTrackerWrapper != null) {
+                GlobalData.analyticsTrackerWrapper
+                        .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
+                        .track();
+            }
+        }
 
-                if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                    getView().setVisible(R.id.txtOtpInstruction, true);
-                    if (GlobalData.analyticsTrackerWrapper != null) {
-                        GlobalData.analyticsTrackerWrapper
-                                .step(ZPPaymentSteps.OrderStep_WebOtp)
-                                .track();
-                    }
-                    //testing broadcast otp viettinbak
+        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+            getView().setVisible(R.id.txtOtpInstruction, true);
+            if (GlobalData.analyticsTrackerWrapper != null) {
+                GlobalData.analyticsTrackerWrapper
+                        .step(ZPPaymentSteps.OrderStep_WebOtp)
+                        .track();
+            }
+            //testing broadcast otp viettinbak
                     /*
                     new Handler().postDelayed(new Runnable() {
 						@Override
@@ -349,15 +378,9 @@ public class AdapterBankCard extends AdapterBase {
 					},5000);
 					*/
 
-                }
-                getView().hideLoading();
-                getView().renderKeyBoard();
-            }
-        } catch (Exception ex) {
-            Log.e(this, ex);
-            showTransactionFailView(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_fail_check_status_mess));
         }
-        return null;
+        getView().renderKeyBoard();
+        getView().hideLoading();
     }
 
     @Override
@@ -386,19 +409,27 @@ public class AdapterBankCard extends AdapterBase {
     public void onProcessPhrase() throws Exception {
         //authen payer atm
         if (isAuthenPayerPharse()) {
-            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_otp_mess));
-            processingOrder = true;
-            SDKTransactionAdapter.shared().authenPayer(mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
-            if (mOtpEndTime == 0)
+            if (!checkAndOpenNetworkingSetting()) {
+                return;
+            }
+            if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
+                return;
+            }
+            showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_otp_mess));
+            mOrderProcessing = true;
+            SDKTransactionAdapter.shared().authenPayer(mPaymentInfoHelper.getUserInfo(), mTransactionID,
+                    ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
+            if (mOtpEndTime == 0) {
                 mOtpBeginTime = System.currentTimeMillis();
+            }
             return;
         }
         //web flow
         if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
-            if (!openSettingNetworking()) {
+            if (!checkAndOpenNetworkingSetting()) {
                 return;
             }
-            showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
+            showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -412,14 +443,14 @@ public class AdapterBankCard extends AdapterBase {
         }
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
-            tranferPaymentCardToMapCard();
+            transformPaymentCard();
         }
         startSubmitTransaction();
     }
 
     @Override
-    public void onFinish() {
-        super.onFinish();
+    public void onDetach() {
+        super.onDetach();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.dispose();
         }

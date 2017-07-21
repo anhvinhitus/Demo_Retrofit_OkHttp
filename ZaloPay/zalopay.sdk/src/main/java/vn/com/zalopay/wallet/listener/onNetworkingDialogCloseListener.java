@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.listener;
 
-public interface ZPWPaymentOpenNetworkingDialogListener {
+public interface onNetworkingDialogCloseListener {
     void onCloseNetworkingDialog();
 
     void onOpenSettingDialogClicked();

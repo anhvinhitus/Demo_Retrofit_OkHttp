@@ -322,7 +322,7 @@ public class AdapterLinkAcc extends AdapterBase {
         Timber.d("on process phase " + mPageName);
         if (!ConnectionUtil.isOnline(mContext)) {
             try {
-                getView().showOpenSettingNetwokingDialog(closeSettingNetworkingListener);
+                getView().showOpenSettingNetwokingDialog(networkingDialogCloseListener);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -447,7 +447,7 @@ public class AdapterLinkAcc extends AdapterBase {
             mWebViewProcessor.stop();//stop loading website
             getView().renderByResource(mPageName);
             getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
-                    mResponseStatus, true, mContext.getResources().getString(R.string.sdk_link_acc_fail_title));
+                    mStatusResponse, true, mContext.getResources().getString(R.string.sdk_link_acc_fail_title));
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
@@ -487,7 +487,7 @@ public class AdapterLinkAcc extends AdapterBase {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
-            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mResponseStatus, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mStatusResponse, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
             if (GlobalData.shouldNativeWebFlow()) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
@@ -618,7 +618,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.isShowingProgressDialog()) {
-            showLoadindTimeout(pMessage);
+            showTimeoutProgressDialog(pMessage);
         }
     }
 
@@ -630,9 +630,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
-    @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
-        super.onEvent(pEventType, pAdditionParams);
         // show value progressing
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
@@ -655,8 +653,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }
 
         if (pEventType == EEventType.ON_SUBMIT_LINKACC_COMPLETED) {
-            mResponseStatus = (StatusResponse) pAdditionParams[0];
-            mTransactionID = String.valueOf(mResponseStatus.zptransid);
+            mStatusResponse = (StatusResponse) pAdditionParams[0];
+            mTransactionID = String.valueOf(mStatusResponse.zptransid);
             return null;
         }
 
@@ -1039,7 +1037,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 public void onOKEvent() {
                                                     //retry reload the previous page
                                                     if (!TextUtils.isEmpty(mUrlReload)) {
-                                                        visibleLoadingDialog(mContext.getResources().getString(R.string.zpw_loading_website_message));
+                                                        visibleLoadingDialog(mContext.getResources().getString(R.string.sdk_parsewebsite_loading_mess));
                                                         linkAccGuiProcessor.resetCaptchaConfirm();
                                                         linkAccGuiProcessor.resetOtp();
                                                         mWebViewProcessor.reloadWebView(mUrlReload);
@@ -1064,7 +1062,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             try {
                 if (pAdditionParams[0] instanceof StatusResponse) {
-                    mResponseStatus = (StatusResponse) pAdditionParams[0];
+                    mStatusResponse = (StatusResponse) pAdditionParams[0];
                 }
             } catch (Exception e) {
                 Timber.d(e != null ? e.getMessage() : "Exception");
@@ -1153,7 +1151,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
             } else {
                 // hide webview && show web parse
-                visibleLoadingDialog(mContext.getResources().getString(R.string.zpw_loading_website_message));//show loading view
+                visibleLoadingDialog(mContext.getResources().getString(R.string.sdk_parsewebsite_loading_mess));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
             try {

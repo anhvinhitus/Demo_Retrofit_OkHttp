@@ -28,6 +28,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader;
@@ -725,7 +726,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 if (channel == null) {
                     return;
                 }
-                Timber.d("load channel on next %s", channel);
+                Timber.d("load channel on next %s", GsonUtils.toJsonString(channel));
                 if (mPaymentInfoHelper.shouldIgnore(channel.pmcid)) {
                     Timber.d("this channel is not in filter list");
                     return;

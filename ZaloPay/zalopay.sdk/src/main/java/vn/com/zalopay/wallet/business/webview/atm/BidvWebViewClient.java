@@ -8,6 +8,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import timber.log.Timber;
@@ -15,7 +17,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -27,6 +28,11 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 public class BidvWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;
@@ -264,10 +270,13 @@ public class BidvWebViewClient extends PaymentWebViewClient {
                     mIsFirst = false;
                     hit();
                 } else {
+                    EventBus eventBus = SDKApplication.getApplicationComponent().eventBus();
                     if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
-                    } else {
-                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                        eventBus.postSticky(new SdkParseWebsiteRenderEvent(scriptOutput, mPageCode));
+                    } else if (eventType == EEventType.ON_FAIL) {
+                        eventBus.postSticky(new SdkParseWebsiteErrorEvent());
+                    } else if (eventType == EEventType.ON_PAYMENT_COMPLETED) {
+                        eventBus.postSticky(new SdkParseWebsiteCompleteEvent(response));
                     }
                 }
             });

@@ -1162,7 +1162,7 @@ public abstract class CardGuiProcessor extends SingletonBase
             clearHighLight();
 
             //just start submit if intener is online
-            if (getAdapter().openSettingNetworking()) {
+            if (getAdapter().checkAndOpenNetworkingSetting()) {
                 actionAfterFinishInputCard();
             }
         } else {
@@ -1796,7 +1796,7 @@ public abstract class CardGuiProcessor extends SingletonBase
 
     @Override
     public void onPageSelected(int position) {
-        Log.d(this, "onPageSelecte", position);
+        Timber.d("on page select %s", position);
         if (mCardAdapter == null) {
             Timber.d("mCardAdapter is null");
             return;

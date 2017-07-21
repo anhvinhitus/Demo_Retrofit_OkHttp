@@ -1,22 +1,19 @@
 package vn.com.zalopay.wallet.api.task;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 
 public class AuthenMapCardTask extends BaseTask<StatusResponse> {
-    private AdapterBase mAdapter;
     private String mTransID, mAuthenType, mAuthenValue;
 
-    public AuthenMapCardTask(AdapterBase pAdapter, String pTransID, String pAuthenType, String pAuthenValue) {
-        super(pAdapter.getPaymentInfoHelper().getUserInfo());
-        mAdapter = pAdapter;
+    public AuthenMapCardTask(UserInfo pUserInfo, String pTransID, String pAuthenType, String pAuthenValue) {
+        super(pUserInfo);
         mTransID = pTransID;
         mAuthenType = pAuthenType;
         mAuthenValue = pAuthenValue;
@@ -29,30 +26,19 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
-        if (mAdapter != null) {
-            mAdapter.onEvent(EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE, pResponse);
-        }
+        mEventBus.postSticky(new SdkAuthenPayerEvent(pResponse));
     }
 
     @Override
     public void onRequestFail(Throwable e) {
-        if (mAdapter != null) {
-            StatusResponse statusResponse = new StatusResponse();
-            statusResponse.returncode = -1;
-            statusResponse.returnmessage = getDefaulErrorNetwork();
-            mAdapter.onEvent(EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE, statusResponse);
-        }
+        StatusResponse statusResponse = new StatusResponse();
+        statusResponse.returncode = -1;
+        statusResponse.returnmessage = getDefaulErrorNetwork();
+        mEventBus.postSticky(new SdkAuthenPayerEvent(statusResponse));
     }
 
     @Override
     public void onRequestInProcess() {
-        if (mAdapter != null) {
-            try {
-                mAdapter.getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
     }
 
     @Override
@@ -62,20 +48,17 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.openSettingNetworking()) {
-            shareDataRepository().setTask(this).postData(new AuthenMapCardImpl(), getDataParams());
-        }
+        shareDataRepository().setTask(this).postData(new AuthenMapCardImpl(), getDataParams());
     }
 
     @Override
     protected boolean doParams() {
         try {
-            UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
-            DataParameter.prepareAtmAuthenPayer(getDataParams(), userInfo.zalopay_userid, userInfo.accesstoken, mTransID, mAuthenType, mAuthenValue);
+            DataParameter.prepareAtmAuthenPayer(getDataParams(), mUserInfo.zalopay_userid, mUserInfo.accesstoken, mTransID, mAuthenType, mAuthenValue);
             return true;
         } catch (Exception e) {
-            Log.e(this, e);
             onRequestFail(e);
+            Timber.w(e.getMessage());
             return false;
         }
     }

@@ -4,22 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.annotation.CallSuper;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ScrollView;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
@@ -32,6 +33,7 @@ import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.api.ServiceManager;
 import vn.com.zalopay.wallet.api.task.BaseTask;
 import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
+import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
@@ -48,7 +50,6 @@ import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -60,13 +61,18 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkCheckSubmitOrderEvent;
+import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
+import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
+import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
+import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
-import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
+import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -75,7 +81,6 @@ import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
-import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -83,33 +88,19 @@ import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
-import static vn.com.zalopay.wallet.api.task.SDKReportTask.GENERAL_EXCEPTION;
-import static vn.com.zalopay.wallet.api.task.SDKReportTask.TIMEOUT_WEBSITE;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_AUTHEN;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_BALANCE_ERROR;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_NETWORKING;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
-import static vn.com.zalopay.wallet.constants.Constants.PAGE_SUCCESS;
-import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
-import static vn.com.zalopay.wallet.constants.Constants.SCREEN_CC;
-import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
-import static vn.com.zalopay.wallet.helper.TransactionHelper.isTransNetworkError;
-
 public abstract class AdapterBase implements ISdkErrorContext {
     protected final DPaymentCard mCard;
-    public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
+    final SdkErrorReporter mSdkErrorReporter;
+    public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected WeakReference<ChannelPresenter> mPresenter = null;
     protected CardGuiProcessor mGuiProcessor = null;
-    protected StatusResponse mResponseStatus;
+    protected StatusResponse mStatusResponse;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
     protected MapCard mMapCard;
     protected String mTransactionID;
     protected String mPageName;
     protected boolean existTransWithoutConfirm = true;
-    //prevent duplicate many time
-    protected boolean isAlreadyCheckStatusFailSubmit = false;
     //count of retry check status if submit order fail
     protected int mCountCheckStatus = 0;
     //check data in response get status api
@@ -131,15 +122,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
     protected ILinkSourceInteractor mLinkInteractor;
-    final SdkErrorReporter mSdkErrorReporter;
-
-    private enum HandleEventNextStepEnum {
-        RETURN_NULL,
-        RETURN_ADDITION_PARAMS,
-        CONTINUE
-    }
-
-    public ZPWPaymentOpenNetworkingDialogListener closeSettingNetworkingListener = new ZPWPaymentOpenNetworkingDialogListener() {
+    protected onNetworkingDialogCloseListener networkingDialogCloseListener = new onNetworkingDialogCloseListener() {
         @Override
         public void onCloseNetworkingDialog() {
             whetherQuitPaymentOffline();
@@ -149,49 +132,10 @@ public abstract class AdapterBase implements ISdkErrorContext {
         public void onOpenSettingDialogClicked() {
         }
     };
+    protected EventBus mEventBus;
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
-    private Action1<Throwable> loadCardException = throwable -> {
-        Log.d(this, "load card list on error", throwable);
-        String message = null;
-        if (throwable instanceof RequestException) {
-            message = throwable.getMessage();
-        }
-        if (TextUtils.isEmpty(message)) {
-            message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
-        }
-        try {
-            getView().hideLoading();
-            getView().showInfoDialog(message);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    };
-    private Action1<Boolean> loadCardSubscriber = aBoolean -> {
-        Timber.d("load card list finish");
-        try {
-            getView().hideLoading();
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        String cardKey = getCard().getCardKey();
-        if (!TextUtils.isEmpty(cardKey)) {
-            MapCard mapCard = SDKApplication
-                    .getApplicationComponent()
-                    .linkInteractor()
-                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
-            if (mapCard != null) {
-                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
-                mPaymentInfoHelper.setMapCardResult(mapCardResult);
-                Log.d(this, "set map card to app", mapCardResult);
-            }
-        }
-        //quit sdk right away
-        if (mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket()) {
-            onClickSubmission();
-        }
-    };
-    public ZPWOnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new ZPWOnProgressDialogTimeoutListener() {
+    public OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
             try {
@@ -243,15 +187,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
                     getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess),
                             () -> showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
                 }
-                mSdkErrorReporter.sdkReportError(AdapterBase.this, TIMEOUT_WEBSITE, GsonUtils.toJsonString(mResponseStatus));
+                mSdkErrorReporter.sdkReportError(AdapterBase.this, SDKReportTask.TIMEOUT_WEBSITE, GsonUtils.toJsonString(mStatusResponse));
             } catch (Exception ex) {
-                Timber.w(ex.getMessage());
                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
-                try {
-                    mSdkErrorReporter.sdkReportError(AdapterBase.this, GENERAL_EXCEPTION, ex.getMessage());
-                } catch (Exception e) {
-                    Timber.w(e.getMessage());
-                }
+                mSdkErrorReporter.sdkReportError(AdapterBase.this, SDKReportTask.GENERAL_EXCEPTION, ex.getMessage());
+                Timber.w(ex.getMessage());
             }
         }
     };
@@ -264,24 +204,76 @@ public abstract class AdapterBase implements ISdkErrorContext {
         mCard = new DPaymentCard();
         mPaymentInfoHelper = paymentInfoHelper;
         mTransactionAdapter = SDKTransactionAdapter.shared().setAdapter(this);
-        mResponseStatus = statusResponse;
-        mLinkInteractor = SDKApplication.getApplicationComponent()
-                .linkInteractor();
-        if (mResponseStatus != null) {
-            mTransactionID = mResponseStatus.zptransid;
+        mStatusResponse = statusResponse;
+        mLinkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
+        if (mStatusResponse != null) {
+            mTransactionID = mStatusResponse.zptransid;
             mPageName = TransactionHelper.getPageName(paymentInfoHelper.getStatus());
-            if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
+            if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
                 mPageName = null;
             }
         }
         if (TextUtils.isEmpty(mPageName)) {
             mPageName = pPageName;
         }
-
         mSdkErrorReporter = SDKApplication.sdkErrorReporter();
+        mEventBus = SDKApplication.getApplicationComponent().eventBus();
     }
 
-    public void showLoadindTimeout(String pTitle) {
+    public void onStart() {
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+    }
+
+    public void onStop() {
+        if(mEventBus.isRegistered(this)){
+            mEventBus.unregister(this);
+        }
+    }
+
+    void onLoadMapCardListException(Throwable throwable) {
+        Timber.d(throwable, "load card list on error");
+        String message = null;
+        if (throwable instanceof RequestException) {
+            message = throwable.getMessage();
+        }
+        if (TextUtils.isEmpty(message)) {
+            message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
+        }
+        try {
+            getView().hideLoading();
+            getView().showInfoDialog(message);
+        } catch (Exception e) {
+            Timber.w(e, "Exception on load map card exception func");
+        }
+    }
+
+    void onLoadMapCardListSuccess(boolean finish) {
+        try {
+            Timber.d("load card list finish");
+            getView().hideLoading();
+            String cardKey = getCard().getCardKey();
+            if (!TextUtils.isEmpty(cardKey)) {
+                MapCard mapCard = SDKApplication
+                        .getApplicationComponent()
+                        .linkInteractor()
+                        .getCard(mPaymentInfoHelper.getUserId(), cardKey);
+                if (mapCard != null) {
+                    DMapCardResult mapCardResult = CardHelper.cast(mapCard);
+                    mPaymentInfoHelper.setMapCardResult(mapCardResult);
+                    Log.d(this, "set map card to app", mapCardResult);
+                }
+            }
+            //quit sdk right away
+            if (mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket()) {
+                onClickSubmission();
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void showTimeoutProgressDialog(String pTitle) {
         try {
             getView().showLoading(pTitle, mProgressDialogTimeoutListener);
         } catch (Exception e) {
@@ -297,10 +289,6 @@ public abstract class AdapterBase implements ISdkErrorContext {
         return mPaymentInfoHelper;
     }
 
-    public void setmPaymentInfoHelper(PaymentInfoHelper paymentInfoHelper) {
-        this.mPaymentInfoHelper = paymentInfoHelper;
-    }
-
     public void setMiniPmcTransType(MiniPmcTransType mMiniPmcTransType) {
         this.mMiniPmcTransType = mMiniPmcTransType;
     }
@@ -309,7 +297,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         try {
             getActivity().requestPermission(mContext);//request permission read/view sms on android 6.0+
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception on request read otp permission");
         }
     }
 
@@ -325,28 +313,20 @@ public abstract class AdapterBase implements ISdkErrorContext {
         return mMiniPmcTransType;
     }
 
-    /**
-     * getter and setter
-     */
     public StatusResponse getResponseStatus() {
-        return mResponseStatus;
+        return mStatusResponse;
     }
 
     public void init() throws Exception {
-        ScrollView scrollViewRoot = (ScrollView) getView().findViewById(R.id.zpw_scrollview_container);
-        if (scrollViewRoot != null) {
-            OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
-        }
-        //flow password payment
         if (hasTransId()) {
             existTransWithoutConfirm = false;
             if (isTransactionSuccess()) {
                 showTransactionSuccessView();
-            } else if (!TransactionHelper.isSecurityFlow(mResponseStatus)) {
-                showTransactionFailView(mResponseStatus.returnmessage);
+            } else if (!TransactionHelper.isSecurityFlow(mStatusResponse)) {
+                showTransactionFailView(mStatusResponse.returnmessage);
             }
         }
-        Log.d(this, "start adapter with page name", mPageName);
+        Timber.d("start adapter with page name %s", mPageName);
     }
 
     public abstract void onProcessPhrase() throws Exception;
@@ -392,21 +372,22 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean isBalanceErrorPharse() {
-        return getPageName().equals(PAGE_BALANCE_ERROR);
+        return getPageName().equals(Constants.PAGE_BALANCE_ERROR);
     }
 
     public boolean isAuthenPayerPharse() {
-        return getPageName().equals(PAGE_AUTHEN);
+        return getPageName().equals(Constants.PAGE_AUTHEN);
     }
 
-    public void onFinish() {
-        Timber.d("onFinish - release gui processor - release pmc config");
+    public void onDetach() {
+        Timber.d("onDetach - release gui processor - release pmc config - release presenter");
         if (getGuiProcessor() != null) {
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
         mMiniPmcTransType = null;
         mPresenter = null;
+        mEventBus.removeAllStickyEvents();
     }
 
     public void detectCard(String pCardNumber) {
@@ -421,7 +402,6 @@ public abstract class AdapterBase implements ISdkErrorContext {
         if (mCaptchaEndTime == 0) {
             mCaptchaBeginTime = System.currentTimeMillis();
         }
-
         if (mOtpEndTime == 0) {
             mOtpBeginTime = System.currentTimeMillis();
         }
@@ -476,7 +456,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         return this instanceof AdapterZaloPay;
     }
 
-    public void tranferPaymentCardToMapCard() {
+    public void transformPaymentCard() {
         mMapCard = new MapCard(mCard);
     }
 
@@ -518,18 +498,22 @@ public abstract class AdapterBase implements ISdkErrorContext {
         return mGuiProcessor;
     }
 
-    /***
-     * submit order to server
-     */
     protected void startSubmitTransaction() {
-        processingOrder = true;
+        if (!checkAndOpenNetworkingSetting()) {
+            return;
+        }
+        if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_paymentinfo_invalid_user_id_mess));
+            return;
+        }
+        mOrderProcessing = true;
         mIsOrderSubmit = true;
         mCanEditCardInfo = false;
         try {
             getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_submit_order_mess));
-            mTransactionAdapter.startTransaction();
+            mTransactionAdapter.startTransaction(getChannelID(), mPaymentInfoHelper.getUserInfo(), getCard(), mPaymentInfoHelper);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception submit order");
             showTransactionFailView(mContext.getResources().getString(R.string.zpw_string_error_layout));
         }
         if (GlobalData.analyticsTrackerWrapper != null) {
@@ -548,12 +532,12 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean isFinalStep() {
-        return !getPageName().equals(SCREEN_ATM)
-                && !getPageName().equals(SCREEN_CC)
-                && !getPageName().equals(PAGE_SUCCESS)
-                && !getPageName().equals(PAGE_FAIL)
-                && !getPageName().equals(PAGE_FAIL_NETWORKING)
-                && !getPageName().equals(PAGE_FAIL_PROCESSING);
+        return !getPageName().equals(Constants.SCREEN_ATM)
+                && !getPageName().equals(Constants.SCREEN_CC)
+                && !getPageName().equals(Constants.PAGE_SUCCESS)
+                && !getPageName().equals(Constants.PAGE_FAIL)
+                && !getPageName().equals(Constants.PAGE_FAIL_NETWORKING)
+                && !getPageName().equals(Constants.PAGE_FAIL_PROCESSING);
     }
 
     protected void processWrongOtp() {
@@ -563,7 +547,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_retry_otp_mess));
             return;
         }
-        showDialogWithCallBack(mResponseStatus.returnmessage,
+        showDialogWithCallBack(mStatusResponse.returnmessage,
                 mContext.getResources().getString(R.string.dialog_close_button), () -> {
                     //reset otp and show keyboard again
                     if (isCardFlow()) {
@@ -577,182 +561,70 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     protected boolean shouldCheckStatusAgain() {
-        return mResponseStatus == null && ConnectionUtil.isOnline(mContext) && hasTransId();
+        return mStatusResponse == null && ConnectionUtil.isOnline(mContext) && hasTransId();
     }
 
-    protected boolean isOrderProcessing() {
-        return mResponseStatus != null && mResponseStatus.isprocessing;
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onWebsite3dsComplete(SdkWebsite3dsEvent event) {
+        mEventBus.removeStickyEvent(SdkWebsite3dsEvent.class);
+        //ending timer loading site
+        mOtpEndTime = System.currentTimeMillis();
+        mCaptchaEndTime = System.currentTimeMillis();
+        getTransactionStatus(mTransactionID, false, mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+        Timber.d("on website 3ds complete");
     }
 
-    @CallSuper
-    public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
-        processingOrder = false;
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onSubmitOrderComplete(SdkSubmitOrderEvent event) {
+        mEventBus.removeStickyEvent(SdkSubmitOrderEvent.class);
         try {
-            /*
-             * networking error
-             * 1.offline
-             * 2.not stable
-             */
-            AbstractOrder order = mPaymentInfoHelper.getOrder();
-            if (pAdditionParams == null || pAdditionParams.length == 0 || (pAdditionParams.length >= 1 && pAdditionParams[0] == null)) {
-                getView().hideLoading();
-                //offline
-                if (!ConnectionUtil.isOnline(mContext)) {
-                    processNetworkingOffAfterSubmitTransaction();
-                    return pAdditionParams;
-                }
-                if (isAlreadyCheckStatusFailSubmit) {
-                    try {
-                        showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                        terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
-                    }
-                    return pAdditionParams;
-                }
-                if (shouldCheckTransactionStatusByClientId() && order != null) {
-                    checkTransactionStatusAfterSubmitFail(true, order.apptransid,
-                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                    return pAdditionParams;
-                }
-                mResponseStatus = null;
-            }
-
-            try {
-                if (pAdditionParams[0] instanceof StatusResponse) {
-                    mResponseStatus = (StatusResponse) pAdditionParams[0];
-                }
-            } catch (Exception e) {
-                Timber.d(e != null ? e.getMessage() : "Exception");
-            }
-
+            mOrderProcessing = false;
             //server is maintenance
-            if (PaymentStatusHelper.isServerInMaintenance(mResponseStatus)) {
-                getView().showMaintenanceServiceDialog(mResponseStatus.returnmessage);
-                return null;
+            if (PaymentStatusHelper.isServerInMaintenance(mStatusResponse)) {
+                getView().showMaintenanceServiceDialog(mStatusResponse.returnmessage);
+                return;
             }
-
-            //callback finish transation from webview
-            HandleEventNextStepEnum nextStep = HandleEventNextStepEnum.CONTINUE;
-            switch (pEventType) {
-                case ON_PAYMENT_RESULT_BROWSER:
-                    //ending timer loading site
-                    mOtpEndTime = System.currentTimeMillis();
-                    mCaptchaEndTime = System.currentTimeMillis();
-                    getTransactionStatus(mTransactionID, false,
-                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                    nextStep = HandleEventNextStepEnum.CONTINUE;
-                    break;
-                case ON_LOADSITE_ERROR:
-                case ON_BACK_WHEN_LOADSITE:
-                    //callback load site error from webview
-                    //need to get status again if use submit otp or cc flow
-                    nextStep = handleEventLoadSiteError(pAdditionParams[0]);
-                    break;
-                case ON_SUBMIT_ORDER_COMPLETED:
-                    //submit order response
-                    handleEventSubmitOrderCompleted();
-                    nextStep = HandleEventNextStepEnum.CONTINUE;
-                    break;
-                case ON_CHECK_STATUS_SUBMIT_COMPLETE:
-                    //check status again if have issue while submitting order
-                    nextStep = handleEventCheckStatusSubmitComplete(order);
-                    break;
-                case ON_VERIFY_MAPCARD_COMPLETE:
-                    //get transid after submit success
-                    handleEventSubmitOrderCompleted();
-                    nextStep = HandleEventNextStepEnum.CONTINUE;
-                    break;
-                case ON_GET_STATUS_COMPLETE:
-                    //get status after submit order or authen payer
-                    nextStep = handleEventGetStatusComplete();
-                    break;
-                case ON_NOTIFY_TRANSACTION_FINISH:
-                    handleEventNotifyTransactionFinish(pAdditionParams);
-                    nextStep = HandleEventNextStepEnum.CONTINUE;
-                    break;
-                case ON_PROMOTION:
-                    nextStep = handleEventPromotion(pAdditionParams);
-                    break;
-
-            }
-
-            switch (nextStep) {
-                case RETURN_NULL:
-                    return null;
-                case RETURN_ADDITION_PARAMS:
-                    return pAdditionParams;
-                case CONTINUE:
-                    break;
-            }
-//            if (pEventType == EEventType.ON_PAYMENT_RESULT_BROWSER) {
-//                //ending timer loading site
-//                mOtpEndTime = System.currentTimeMillis();
-//                mCaptchaEndTime = System.currentTimeMillis();
-//                getTransactionStatus(mTransactionID, false,
-//                        mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-//            }
-//            //callback load site error from webview
-//            //need to get status again if use submit otp or cc flow
-//            else if (pEventType == EEventType.ON_LOADSITE_ERROR || pEventType == EEventType.ON_BACK_WHEN_LOADSITE) {
-//                HandleEventNextStepEnum result = handleEventLoadSiteError(pAdditionParams[0]);
-//                switch (result) {
-//                    case RETURN_NULL:
-//                        return null;
-//                    case RETURN_ADDITION_PARAMS:
-//                        return pAdditionParams;
-//                    case CONTINUE:
-//                        break;
-//                }
-//            }
-//            //submit order response
-//            else if (pEventType == EEventType.ON_SUBMIT_ORDER_COMPLETED) {
-//                handleEventSubmitOrderCompleted();
-//            }
-//            //check status again if have issue while submitting order
-//            else if (pEventType == EEventType.ON_CHECK_STATUS_SUBMIT_COMPLETE) {
-//                HandleEventNextStepEnum result = handleEventCheckStatusSubmitComplete(order);
-//                if (result == HandleEventNextStepEnum.RETURN_NULL) {
-//                    return null;
-//                }
-//            }
-//
-//            //mapcard submit response
-//            else if (pEventType == EEventType.ON_VERIFY_MAPCARD_COMPLETE) {
-//                //get transid after submit success
-//                handleEventSubmitOrderCompleted();
-//            }
-//            //get status after submit order or authen payer
-//            else if (pEventType == EEventType.ON_GET_STATUS_COMPLETE) {
-//                HandleEventNextStepEnum result = handleEventGetStatusComplete();
-//                switch (result) {
-//                    case RETURN_NULL:
-//                        return null;
-//                    case RETURN_ADDITION_PARAMS:
-//                        return pAdditionParams;
-//                    case CONTINUE:
-//                        break;
-//                }
-//            } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
-//                handleEventNotifyTransactionFinish(pAdditionParams);
-//            } else if (pEventType == EEventType.ON_PROMOTION) {
-//                if (handleEventPromotion(pAdditionParams)) {
-//                    return pAdditionParams;
-//                }
-//            }
+            handleEventSubmitOrderCompleted(event.response);
+            Timber.d("on submit order complete %s", GsonUtils.toJsonString(event.response));
         } catch (Exception e) {
-            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_generic_mess));
-            mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.UNDEFINE, e.getMessage());
-            Log.e(this, e);
+            Timber.w(e, "Exception on submit order complete");
         }
-
-        return pAdditionParams;
     }
 
-    private HandleEventNextStepEnum handleEventLoadSiteError(Object firstParam) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onOrderStatusComplete(SdkOrderStatusEvent event) {
+        mEventBus.removeStickyEvent(SdkOrderStatusEvent.class);
+        try {
+            mOrderProcessing = false;
+            handleEventGetStatusComplete(event.response);
+            Timber.d("on status order complete %s", GsonUtils.toJsonString(event.response));
+        } catch (Exception e) {
+            Timber.w(e, "Exception on status order complete");
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onCheckSubmitOrderComplete(SdkCheckSubmitOrderEvent event) {
+        mEventBus.removeStickyEvent(SdkCheckSubmitOrderEvent.class);
+        try {
+            mOrderProcessing = false;
+            handleEventCheckStatusSubmitComplete(event.response);
+            Timber.d("on check submit order complete %s", GsonUtils.toJsonString(event.response));
+        } catch (Exception e) {
+            Timber.w(e, "Exception on checksubmit order complete");
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onWebsite3dsBackEvent(SdkWebsite3dsBackEvent event) {
+        mEventBus.removeStickyEvent(SdkWebsite3dsBackEvent.class);
+        handleEventLoadSiteError(event.info);
+    }
+
+    public void handleEventLoadSiteError(Object firstParam) {
         if (!ConnectionUtil.isOnline(mContext)) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
         //ending timer loading site
         mOtpEndTime = System.currentTimeMillis();
@@ -762,96 +634,89 @@ public abstract class AdapterBase implements ISdkErrorContext {
         if (firstParam instanceof WebViewHelper) {
             webViewError = (WebViewHelper) firstParam;
         }
-
         if (webViewError != null && webViewError.code == WebViewHelper.SSL_ERROR) {
             showTransactionFailView(webViewError.getFriendlyMessage());
-            return HandleEventNextStepEnum.RETURN_NULL;
+            return;
         }
 
         if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
             isLoadWebTimeout = true;
-            getTransactionStatus(mTransactionID, false,
-                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+            getTransactionStatus(mTransactionID, false, mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
         } else {
             String mess = (webViewError != null) ? webViewError.getFriendlyMessage() :
                     mContext.getResources().getString(R.string.sdk_errormess_end_transaction);
             showTransactionFailView(mess);
         }
-
-        return HandleEventNextStepEnum.CONTINUE;
     }
 
-    private HandleEventNextStepEnum handleEventCheckStatusSubmitComplete(AbstractOrder order) {
-        if (mResponseStatus != null) {
-            mTransactionID = mResponseStatus.zptransid;
+    private void handleEventCheckStatusSubmitComplete(StatusResponse statusResponse) {
+        mStatusResponse = statusResponse;
+        if (mStatusResponse != null) {
+            mTransactionID = mStatusResponse.zptransid;
         }
+        if (mPaymentInfoHelper == null || mPaymentInfoHelper.getOrder() == null) {
+            showTransactionFailView(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+            return;
+        }
+        AbstractOrder order = mPaymentInfoHelper.getOrder();
         //order haven't submitted to server yet.
-        //need to retry check 5 times to server
-        if (PaymentStatusHelper.isTransactionNotSubmit(mResponseStatus)) {
+        //need to retry check 30 times to server
+        if (PaymentStatusHelper.isTransactionNotSubmit(mStatusResponse)) {
             try {
                 mCountCheckStatus++;
-                if (mCountCheckStatus == TRANS_STATUS_MAX_RETRY) {
+                if (mCountCheckStatus == Constants.TRANS_STATUS_MAX_RETRY) {
                     showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_order_not_submit_mess));
                 } else if (order != null) {
                     //retry again
-                    checkTransactionStatusAfterSubmitFail(false, order.apptransid,
-                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+                    checkOrderSubmitStatus(order.apptransid, mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                 }
             } catch (Exception e) {
-                Log.e(this, e);
-                terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_fail_trans_status));
+                Timber.w(e, "Exception handle check order status");
             }
-
-            return HandleEventNextStepEnum.RETURN_NULL;
+            return;
         }
-
-        if (mResponseStatus != null && mResponseStatus.isprocessing) {
+        if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             getTransactionStatus(mTransactionID, true, null);
         } else {
-            onCheckTransactionStatus(mResponseStatus);
+            checkTransactionStatus(mStatusResponse);
         }
-
-        return HandleEventNextStepEnum.CONTINUE;
     }
 
-    private HandleEventNextStepEnum handleEventGetStatusComplete() throws Exception {
+    protected void handleEventGetStatusComplete(StatusResponse statusResponse) throws Exception {
+        mStatusResponse = statusResponse;
         getView().visibleCardViewNavigateButton(false);
         getView().visibleSubmitButton(true);
         //error
-        if (mResponseStatus == null) {
+        if (mStatusResponse == null) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
         //retry otp
-        if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
+        if (PaymentStatusHelper.isWrongOtpResponse(mStatusResponse)) {
             processWrongOtp();
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
-        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
-            SecurityResponse dataResponse = GsonUtils.fromJsonString(mResponseStatus.data, SecurityResponse.class);
+        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
+            SecurityResponse dataResponse = GsonUtils.fromJsonString(mStatusResponse.data, SecurityResponse.class);
             //flow 3ds (atm + cc)
-            HandleEventNextStepEnum result = handleEventFlow3DS_Atm_cc(dataResponse);
-            if (result == HandleEventNextStepEnum.RETURN_NULL) {
-                return HandleEventNextStepEnum.RETURN_NULL;
-            }
+            handleEventFlow3DS_Atm_cc(dataResponse);
         } else {
-            if (isOrderProcessing()) {
+            if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
                 askToRetryGetStatus(mTransactionID);
             } else {
-                onCheckTransactionStatus(mResponseStatus);
+                checkTransactionStatus(mStatusResponse);
             }
         }
-
-        return HandleEventNextStepEnum.CONTINUE;
     }
 
-    private HandleEventNextStepEnum handleEventFlow3DS_Atm_cc(SecurityResponse dataResponse) throws Exception {
+    private void handleEventFlow3DS_Atm_cc(SecurityResponse dataResponse) throws Exception {
         if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
             //no link for parsing
             if (TextUtils.isEmpty(dataResponse.redirecturl)) {
                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_empty_url_mess));
-                mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, GsonUtils.toJsonString(mResponseStatus));
-                return HandleEventNextStepEnum.RETURN_NULL;
+                mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, GsonUtils.toJsonString(mStatusResponse));
+                return;
             }
             //flow cover parse web (vietinbank)
             BankConfig bankConfig = null;
@@ -864,7 +729,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
             }
             if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                 setECardFlowType(BankFlow.PARSEWEB);
-                showLoadindTimeout(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
+                showTimeoutProgressDialog(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
                 initWebView(dataResponse.redirecturl);
                 endingCountTimeLoadCaptchaOtp();
             }
@@ -874,8 +739,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
             }
         } else if (PaymentStatusHelper.isOtpResponse(dataResponse)) {
             //otp flow
-
-            mPageName = PAGE_AUTHEN;
+            mPageName = Constants.PAGE_AUTHEN;
             ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
             getView().hideLoading();
             //request permission read/view sms on android 6.0+
@@ -905,8 +769,6 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } else {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_undefine_error));
         }
-
-        return HandleEventNextStepEnum.CONTINUE;
     }
 
     private void handleEventLoadWeb3DS(String redirecturl) {
@@ -920,30 +782,44 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } catch (Exception e) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_init_data));
             mSdkErrorReporter.sdkReportErrorOnPharse(this, Constants.STATUS_PHARSE, e.getMessage());
-            Log.e(this, e);
+            Timber.w(e, "Exception handle load 3ds");
         }
     }
 
-    private void handleEventSubmitOrderCompleted() {
-        if (mResponseStatus != null) {
-            mTransactionID = mResponseStatus.zptransid;
-        }
-        if (isOrderProcessing()) {
-            if (mPaymentInfoHelper.payByCardMap()) {
-                detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
+    private void handleEventSubmitOrderCompleted(StatusResponse response) {
+        if (response == null) {
+            //offline
+            if (!ConnectionUtil.isOnline(mContext)) {
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess));
+                return;
             }
+            AbstractOrder order = mPaymentInfoHelper.getOrder();
+            if (order == null) {
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
+            } else {
+                checkOrderSubmitStatus(order.apptransid,
+                        mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
+            }
+            return;
+        }
+        mStatusResponse = response;
+        mTransactionID = mStatusResponse.zptransid;
+        if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
+            /*if (mPaymentInfoHelper.payByCardMap()) {
+                detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
+            }*/
             try {
                 getPresenter().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e, "Exception start trans expire timer");
             }
             getTransactionStatus(mTransactionID, true, null);//get status transaction
         } else {
-            onCheckTransactionStatus(mResponseStatus);//check status
+            checkTransactionStatus(mStatusResponse);//check status
         }
     }
 
-    private void handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
+    public void handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
         Timber.d("processing result payment from notification");
         if (isTransactionSuccess()) {
             Timber.d("transaction is finish, skipping process notification");
@@ -974,9 +850,9 @@ public abstract class AdapterBase implements ISdkErrorContext {
                 ServiceManager.shareInstance().cancelRequest();//cancel current request
                 GetStatus.cancelRetryTimer();//cancel timer retry get status
                 DialogManager.closeAllDialog();//close dialog
-                if (mResponseStatus != null) {
-                    mResponseStatus.returncode = 1;
-                    mResponseStatus.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
+                if (mStatusResponse != null) {
+                    mStatusResponse.returncode = 1;
+                    mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
                 }
                 /***
                  *  get time from notification
@@ -1000,11 +876,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
     }
 
-    private HandleEventNextStepEnum handleEventPromotion(Object[] pAdditionParams) {
+    public void handleEventPromotion(Object[] pAdditionParams) {
         Timber.d("got promotion from notification");
         if (pAdditionParams == null || pAdditionParams.length <= 0) {
             Timber.d("stopping processing promotion from notification because of empty pAdditionParams");
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
 
         PromotionEvent promotionEvent = null;
@@ -1014,11 +890,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
         if (mPromotionBuilder != null) {
             Log.d(this, "promotion event is updated", promotionEvent);
             mPromotionBuilder.setPromotion(promotionEvent);
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
         if (promotionEvent == null) {
             Timber.d("stopping processing promotion from notification because promotion event is null");
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
         if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
             mPromotionResult = (IPromotionResult) pAdditionParams[1];
@@ -1037,11 +913,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
             if (mPromotionResult != null) {
                 mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
             }
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
         if (!isTransactionSuccess()) {
             Timber.d("transaction is not success, skipping process promotion notification");
-            return HandleEventNextStepEnum.RETURN_ADDITION_PARAMS;
+            return;
         }
 
         IResourceLoader resourceLoader = null;
@@ -1074,15 +950,13 @@ public abstract class AdapterBase implements ISdkErrorContext {
                         mPromotionBuilder = null;
                     }
                 });
-        UIBottomSheetDialog bottomSheetDialog = null;
         try {
-            bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
+            UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
             bottomSheetDialog.show();
             bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception show promotion view");
         }
-        return HandleEventNextStepEnum.CONTINUE;
     }
 
     /***
@@ -1090,21 +964,21 @@ public abstract class AdapterBase implements ISdkErrorContext {
      * if off then open dialog networking for requesting open network again
      * @return
      */
-    public boolean openSettingNetworking() {
-        boolean isNetworkingOpen = ConnectionUtil.isOnline(mContext);
-        if (!isNetworkingOpen) {
-            try {
-                getView().hideLoading();
-                getView().showOpenSettingNetwokingDialog(closeSettingNetworkingListener);
-            } catch (Exception e) {
-                Log.e(this, e);
+    public boolean checkAndOpenNetworkingSetting() {
+        try {
+            boolean isNetworkingOpen = ConnectionUtil.isOnline(mContext);
+            if (!isNetworkingOpen) {
+                getView().showOpenSettingNetwokingDialog(networkingDialogCloseListener);
             }
+            return isNetworkingOpen;
+        } catch (Exception e) {
+            Timber.w(e, "Exception check networking");
         }
-        return isNetworkingOpen;
+        return false;
     }
 
     private boolean shouldSendLogToServer() {
-        Timber.d("captcha " + (mCaptchaEndTime - mCaptchaBeginTime) + " ms" + ", otp " + (mOtpEndTime - mOtpBeginTime) + " ms");
+        Timber.d("captcha %s ms, otp %s ms", (mCaptchaEndTime - mCaptchaBeginTime), (mOtpEndTime - mOtpBeginTime));
         return ((mCaptchaEndTime - mCaptchaBeginTime) >= 0) || ((mOtpEndTime - mOtpBeginTime) > 0);
     }
 
@@ -1116,13 +990,12 @@ public abstract class AdapterBase implements ISdkErrorContext {
             BaseTask sendLogTask = new SendLogTask(mPaymentInfoHelper.getUserInfo(), getChannelID(), mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
             sendLogTask.makeRequest();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception send log to loading time website (captcha - otp)");
         }
     }
 
     public void onClickSubmission() {
         try {
-            Log.d(this, "page name", getPageName());
             SdkUtils.hideSoftKeyboard(mContext, getActivity());
             //fail transaction
             if (isTransactionFail()) {
@@ -1136,7 +1009,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
             }
         } catch (Exception ex) {
             showTransactionFailView(mContext.getResources().getString(R.string.zpw_string_error_layout));
-            Timber.w(ex,"Exception click submit");
+            Timber.w(ex, "Exception click submit");
         }
     }
 
@@ -1145,9 +1018,9 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean isFinalScreen() {
-        return getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_SUCCESS)
-                || getPageName().equals(PAGE_FAIL_NETWORKING)
-                || getPageName().equals(PAGE_FAIL_PROCESSING);
+        return getPageName().equals(Constants.PAGE_FAIL) || getPageName().equals(Constants.PAGE_SUCCESS)
+                || getPageName().equals(Constants.PAGE_FAIL_NETWORKING)
+                || getPageName().equals(Constants.PAGE_FAIL_PROCESSING);
     }
 
     public boolean isTransactionFail() {
@@ -1159,7 +1032,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean isPaymentSuccess() {
-        return getPageName().equals(PAGE_SUCCESS);
+        return getPageName().equals(Constants.PAGE_SUCCESS);
     }
 
     public boolean isLinkAccSuccess() {
@@ -1185,27 +1058,11 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean exitWithoutConfirm() {
-        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_FAIL) ||
-                getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)) {
+        if (getPageName().equals(Constants.PAGE_SUCCESS) || getPageName().equals(Constants.PAGE_FAIL) ||
+                getPageName().equals(Constants.PAGE_FAIL_NETWORKING) || getPageName().equals(Constants.PAGE_FAIL_PROCESSING)) {
             existTransWithoutConfirm = true;
         }
         return existTransWithoutConfirm;
-    }
-
-    /***
-     * internet if offline,move to result screen
-     */
-    protected void processNetworkingOffAfterSubmitTransaction() {
-        try {
-            showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess));
-        } catch (Exception e) {
-            Log.e(this, e);
-            terminate(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
-        }
-    }
-
-    public boolean shouldCheckTransactionStatusByClientId() {
-        return !hasTransId();
     }
 
     protected boolean hasTransId() {
@@ -1221,7 +1078,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
      */
     protected void getTransactionStatus(String pTransID, boolean pCheckData, String pMessage) {
         existTransWithoutConfirm = false;
-        processingOrder = true;
+        mOrderProcessing = true;
         isCheckDataInStatus = pCheckData;
         getStatusStrategy(pTransID, pCheckData, pMessage);
     }
@@ -1238,7 +1095,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
     }
 
-    protected void onCheckTransactionStatus(StatusResponse pStatusResponse) {
+    protected void checkTransactionStatus(StatusResponse pStatusResponse) {
         try {
             if (pStatusResponse != null && pStatusResponse.returncode < 0) {
                 mPaymentInfoHelper.updateTransactionResult(pStatusResponse.returncode);
@@ -1262,15 +1119,10 @@ public abstract class AdapterBase implements ISdkErrorContext {
             getView().hideLoading();
         } catch (Exception e) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
-            Log.e(this, e);
+            Timber.w(e, "Exception check trans status");
         }
     }
 
-    /***
-     * show fail screen
-     *
-     * @param pMessage
-     */
     protected void showFailScreen(String pMessage) {
         String message = pMessage;
         if (TextUtils.isEmpty(message)) {
@@ -1284,40 +1136,28 @@ public abstract class AdapterBase implements ISdkErrorContext {
         try {
             String title = mPaymentInfoHelper.getFailTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mResponseStatus, true, title);
+            getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mStatusResponse, true, title);
         } catch (Exception e) {
             Log.e(this, e);
         }
-    }
-
-    private void makeRequestCheckStatusAfterSubmitFail(String pAppTransID) {
-        BaseTask getStatusTask = new CheckOrderStatusFailSubmit(this, pAppTransID);
-        getStatusTask.makeRequest();
     }
 
     /***
      * networking occur an error on the way,
      * client haven't get response from server,need to check to server
      */
-    protected void checkTransactionStatusAfterSubmitFail(boolean shouldDelay, final String pAppTransID, String pMessage) {
+    protected void checkOrderSubmitStatus(final String pAppTransID, String pMessage) {
         try {
-            isAlreadyCheckStatusFailSubmit = true;
-            getView().showLoading(TextUtils.isEmpty(pMessage) ?
-                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess) :
-                    pMessage);
-            if (shouldDelay) {
-                //delay 1s before continue check
-                new Handler().postDelayed(() -> {
-                    Timber.d("continue check transtatus by client id after 1s - because response submit order is null");
-                    makeRequestCheckStatusAfterSubmitFail(pAppTransID);
-                }, 1000);
-            } else {
-                makeRequestCheckStatusAfterSubmitFail(pAppTransID);
+            getView().showLoading(pMessage);
+            if (mPaymentInfoHelper == null) {
+                showTransactionFailView(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+                return;
             }
-
+            BaseTask getStatusTask = new CheckOrderStatusFailSubmit(pAppTransID, mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getUserInfo());
+            getStatusTask.makeRequest();
         } catch (Exception ex) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
-            Log.e(this, ex);
+            Timber.w(ex, "Exception check order submit status");
         }
     }
 
@@ -1325,50 +1165,22 @@ public abstract class AdapterBase implements ISdkErrorContext {
         try {
             getPresenter().setPaymentStatusAndCallback(PaymentStatus.SUCCESS);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception finish trans");
         }
     }
 
-    private boolean processSaveCardOnResult() throws Exception {
-        if (isCardFlowWeb()) {
-            sendLogTransaction();
-        }
-        //link card channel, server auto save card , client only save card to local cache without hit server
-        if (mPaymentInfoHelper.isLinkTrans()) {
-            try {
-                if (mMapCard == null) {
-                    tranferPaymentCardToMapCard();
-                }
-                saveMapCard(mMapCard);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-            getView().hideLoading();
-            return false;
-        }
-        if (needReloadCardMapAfterPayment()) {
-            reloadMapCard(false);
-        } else {
-            getView().hideLoading();
-        }
-        return true;
-    }
-
-    /***
-     * if this is redpacket,then close sdk and callback to app
-     *
-     * @return
+    /*
+     link card channel, server auto save card , client only save card to local cache without hit server
      */
-    protected boolean processResultRedPacket() {
-        boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
-        if (isRedPacket) {
-            if (needReloadCardMapAfterPayment()) {
-                reloadMapCard(false);
-            } else {
-                onClickSubmission();
+    private void saveMapCardToLocal() {
+        try {
+            if (mMapCard == null) {
+                transformPaymentCard();
             }
+            saveMapCard(mMapCard);
+        } catch (Exception e) {
+            Timber.w(e, "Exception save map card to local");
         }
-        return isRedPacket;
     }
 
     private AppInfo getAppInfoCache(long appId) {
@@ -1396,21 +1208,26 @@ public abstract class AdapterBase implements ISdkErrorContext {
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onPreComplete(true, mTransactionID, mPaymentInfoHelper.getAppTransId());
         }
+        if (needReloadCardMapAfterPayment()) {
+            reloadMapCard(false);
+        }
         //if this is redpacket,then close sdk and callback to app
-        if (processResultRedPacket()) {
+        boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
+        if (isRedPacket) {
+            dismissShowingView();
             finishTransaction();
             return;
         }
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
-
         renderSuccessInformation();
-
-        try {
-            processSaveCardOnResult();
-        } catch (Exception e) {
-            Log.e(this, e);
+        saveLastPaymentBank();//save payment card for show on channel list later
+        handleSpecialAppResult();
+        if (isCardFlowWeb()) {
+            sendLogTransaction();
         }
+        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
+        dismissShowingView();
         //update password fingerprint
         try {
             if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
@@ -1419,19 +1236,14 @@ public abstract class AdapterBase implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
-        dismissSnackBarAndKeyboard();
-
-        //save payment card for show on channel list later
-        savePaymentCardIfAny();
-
-        trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
-
-        handleSpecialAppResult();
+        if (mPaymentInfoHelper.isLinkTrans()) {
+            saveMapCardToLocal();
+        }
     }
 
-    private void dismissSnackBarAndKeyboard() {
-        PaymentSnackBar.getInstance().dismiss();
+    private void dismissShowingView() {
         try {
+            PaymentSnackBar.getInstance().dismiss();
             SdkUtils.hideSoftKeyboard(mContext, getActivity());
             getView().hideLoading();
         } catch (Exception e) {
@@ -1439,7 +1251,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
     }
 
-    private void savePaymentCardIfAny() {
+    private void saveLastPaymentBank() {
         String paymentCard = getCard() != null ? getCard().getCardKey() : null;
         if (TextUtils.isEmpty(paymentCard)) {
             paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
@@ -1467,36 +1279,30 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     private void renderSuccessInformation() {
-        mPageName = PAGE_SUCCESS;
         try {
-            getView().marginSubmitButtonTopSuccess(true);
+            mPageName = Constants.PAGE_SUCCESS;
+            //getView().marginSubmitButtonTopSuccess(true);
             getView().renderByResource(mPageName);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-
-        AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
-        String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
-        if (TextUtils.isEmpty(appName)) {
-            appName = appInfo != null ? appInfo.appname : null;
-        }
-        try {
+            AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
+            String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
+            if (TextUtils.isEmpty(appName)) {
+                appName = appInfo != null ? appInfo.appname : null;
+            }
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             boolean isTransfer = mPaymentInfoHelper.isMoneyTranferTrans();
             UserInfo receiverInfo = mPaymentInfoHelper.getMoneyTransferReceiverInfo();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            boolean hideAmount = isLink;
-            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, hideAmount, isTransfer, receiverInfo, title);
+            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, isLink, isTransfer, receiverInfo, title);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception render success info");
         }
     }
 
     protected void trackingTransactionEvent(int pResult) {
-        int returnCode = mResponseStatus != null ? mResponseStatus.returncode : -1;
-        String bankCode = null;
-        if (getGuiProcessor() != null) {
+        int returnCode = mStatusResponse != null ? mStatusResponse.returncode : -1;
+        String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
+        if (TextUtils.isEmpty(bankCode) && getGuiProcessor() != null) {
             bankCode = getGuiProcessor().getDetectedBankCode();
         }
         if (TextUtils.isEmpty(bankCode)) {
@@ -1529,7 +1335,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
     }
 
     public boolean isTransactionInProgress() {
-        return mResponseStatus != null && mResponseStatus.isprocessing;
+        return mStatusResponse != null && mStatusResponse.isprocessing;
     }
 
     public synchronized void showTransactionFailView(String pMessage) {
@@ -1547,41 +1353,40 @@ public abstract class AdapterBase implements ISdkErrorContext {
             getGuiProcessor().useWebView(false);
         }
         if (isTransactionProcessing(pMessage)) {
-            mPageName = PAGE_FAIL_PROCESSING;
-        } else if (isTransNetworkError(mContext, pMessage)) {
-            mPageName = PAGE_FAIL_NETWORKING;
+            mPageName = Constants.PAGE_FAIL_PROCESSING;
+        } else if (TransactionHelper.isTransNetworkError(mContext, pMessage)) {
+            mPageName = Constants.PAGE_FAIL_NETWORKING;
             mPaymentInfoHelper.updateResultNetworkingError(mContext, pMessage); //update payment status to no internet to app know
         } else {
-            mPageName = PAGE_FAIL;
+            mPageName = Constants.PAGE_FAIL;
         }
         int status = mPaymentInfoHelper.getStatus();
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
-            mPaymentInfoHelper.setResult(mPageName.equals(PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
+            mPaymentInfoHelper.setResult(mPageName.equals(Constants.PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
         }
 
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
         try {
-            getView().marginSubmitButtonTop(true);
+            //getView().marginSubmitButtonTop(true);
             getView().renderByResource(mPageName);
+            showFailScreen(pMessage);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception show trans fail");
         }
-        showFailScreen(pMessage);
         //send log captcha, otp
         if (isCardFlowWeb()) {
             sendLogTransaction();
         }
         //send log
         try {
-            mSdkErrorReporter.sdkReportErrorOnTransactionFail(this, GsonUtils.toJsonString(mResponseStatus));
+            mSdkErrorReporter.sdkReportErrorOnTransactionFail(this, GsonUtils.toJsonString(mStatusResponse));
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception send error log");
         }
-
-        dismissSnackBarAndKeyboard();
         reloadMapListOnResponseMessage(pMessage);
         trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
+        dismissShowingView();
     }
 
     private void reloadMapListOnResponseMessage(String message) {
@@ -1721,7 +1526,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
                     .linkInteractor()
                     .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .compose(SchedulerHelper.applySchedulers())
-                    .subscribe(loadCardSubscriber, loadCardException);
+                    .subscribe(this::onLoadMapCardListSuccess, this::onLoadMapCardListException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Timber.w(e, "Exception reload map card list");
@@ -1781,9 +1586,9 @@ public abstract class AdapterBase implements ISdkErrorContext {
         }
     }
 
-    /***
-     * * get status 1 oneshot to check status again in load website is timeout
-     * */
+    /*
+     * get status 1 oneshot to check status again in load website is timeout
+     */
     void getOneShotTransactionStatus() {
         isLoadWebTimeout = true;
         getStatusStrategy(mTransactionID, false, null);
@@ -1796,7 +1601,7 @@ public abstract class AdapterBase implements ISdkErrorContext {
 
     @Override
     public String getDetectedBankCode() {
-        return getGuiProcessor().getDetectedBankCode();
+        return getGuiProcessor() != null ? getGuiProcessor().getDetectedBankCode() : "";
     }
 
     @Override

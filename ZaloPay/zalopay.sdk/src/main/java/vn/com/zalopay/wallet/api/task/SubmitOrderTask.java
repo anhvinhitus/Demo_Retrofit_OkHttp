@@ -5,57 +5,51 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
-    protected AdapterBase mAdapter;
+    PaymentInfoHelper mPaymentHelper;
+    int mChannelId;
+    DPaymentCard mCard;
     private long startTime = 0;
 
-    public SubmitOrderTask(AdapterBase pAdapter) {
-        super(pAdapter.getPaymentInfoHelper().getUserInfo());
-        mAdapter = pAdapter;
+    public SubmitOrderTask(int pChannelId, DPaymentCard pCard, PaymentInfoHelper paymentInfoHelper) {
+        super(paymentInfoHelper.getUserInfo());
+        mPaymentHelper = paymentInfoHelper;
+        mChannelId = pChannelId;
+        mCard = pCard;
     }
 
     @Override
     public void onDoTaskOnResponse(StatusResponse pResponse) {
-        Timber.d("onDoTaskOnResponse nothing");
         ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS, startTime, pResponse);
     }
 
     @Override
     public void onRequestSuccess(StatusResponse pResponse) {
-        if (mAdapter != null) {
-            mAdapter.onEvent(EEventType.ON_SUBMIT_ORDER_COMPLETED, pResponse);
-        } else {
-            Log.e(this, "mAdapter = NULL");
-        }
+        mEventBus.postSticky(new SdkSubmitOrderEvent(pResponse));
     }
 
     @Override
     public void onRequestFail(Throwable e) {
-        if (mAdapter != null) {
-            StatusResponse statusResponse = new StatusResponse();
-            statusResponse.isprocessing = false;
-            statusResponse.returncode = -1;
-            statusResponse.returnmessage = getDefaulErrorNetwork();
-            mAdapter.onEvent(EEventType.ON_SUBMIT_ORDER_COMPLETED, statusResponse);
-        }
-        Timber.d(e != null ? e.getMessage() : "Exception");
+        StatusResponse statusResponse = new StatusResponse();
+        statusResponse.isprocessing = false;
+        statusResponse.returncode = -1;
+        statusResponse.returnmessage = getDefaulErrorNetwork();
+        mEventBus.postSticky(new SdkSubmitOrderEvent(statusResponse));
     }
 
     @Override
     public void onRequestInProcess() {
-        Timber.d("onRequestInProcess");
     }
 
     @Override
@@ -65,29 +59,25 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
     @Override
     protected void doRequest() {
-        if (mAdapter.openSettingNetworking()) {
-            startTime = System.currentTimeMillis();
-            shareDataRepository().setTask(this).postData(new SubmitOrderImpl(), getDataParams());
-        }
+        startTime = System.currentTimeMillis();
+        shareDataRepository().setTask(this).postData(new SubmitOrderImpl(), getDataParams());
     }
 
     @Override
     protected boolean doParams() {
         try {
-            int channeId = mAdapter.getChannelID();
-            PaymentInfoHelper paymentInfoHelper = mAdapter.getPaymentInfoHelper();
-            long appId = paymentInfoHelper.getAppId();
-            AbstractOrder order = paymentInfoHelper.getOrder();
-            UserInfo userInfo = paymentInfoHelper.getUserInfo();
-            PaymentLocation location = paymentInfoHelper.getLocation();
-            @TransactionType int transtype = paymentInfoHelper.getTranstype();
-            String chargeInfo = paymentInfoHelper.getChargeInfo(mAdapter.getCard());
+            long appId = mPaymentHelper.getAppId();
+            AbstractOrder order = mPaymentHelper.getOrder();
+            UserInfo userInfo = mPaymentHelper.getUserInfo();
+            PaymentLocation location = mPaymentHelper.getLocation();
+            @TransactionType int transtype = mPaymentHelper.getTranstype();
+            String chargeInfo = mPaymentHelper.getChargeInfo(mCard);
             String hashPassword = null;
-            return DataParameter.prepareSubmitTransactionParams(channeId, appId, chargeInfo, hashPassword,
+            return DataParameter.prepareSubmitTransactionParams(mChannelId, appId, chargeInfo, hashPassword,
                     order, userInfo, location, transtype, getDataParams());
         } catch (Exception e) {
             onRequestFail(e);
-            Log.e(this, e);
+            Timber.w(e, "Exception do params submit order");
             return false;
         }
     }

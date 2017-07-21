@@ -13,15 +13,16 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
+import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.business.entity.base.WebViewHelper.SSL_ERROR;
@@ -60,10 +61,10 @@ public class CCWebViewClient extends PaymentWebViewClient {
             return true;
         }
         if (shouldStopFlow(url)) {
-            getAdapter().onEvent(EEventType.ON_PAYMENT_RESULT_BROWSER, new Object());
+            SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkWebsite3dsEvent());
             return true;
         }
-        getAdapter().showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
+        getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         view.loadUrl(url);
         mWebView = view;
         return true;
@@ -73,7 +74,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void onLoadResource(WebView view, String url) {
         Timber.d("load resource %s", url);
         if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.sdk_website123pay_domain)) && getAdapter() != null) {
-            getAdapter().showLoadindTimeout(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
+            getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         }
         super.onLoadResource(view, url);
     }
@@ -93,8 +94,9 @@ public class CCWebViewClient extends PaymentWebViewClient {
     }
 
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
-            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewHelper(errorCode, description));
+        if (WebViewHelper.isLoadSiteError(description)) {
+            SDKApplication.getApplicationComponent().eventBus()
+                    .postSticky(new SdkWebsite3dsBackEvent(new WebViewHelper(errorCode, description)));
         }
         if (getAdapter() != null) {
             StringBuffer errStringBuilder = new StringBuffer();
@@ -107,18 +109,17 @@ public class CCWebViewClient extends PaymentWebViewClient {
     }
 
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        if (getAdapter() != null) {
-            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewHelper(SSL_ERROR, null));
-            new Handler().postDelayed(() -> {
-                try {
-                    SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
-                    reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, GsonUtils.toJsonString(error));
-                } catch (Exception e) {
-                    Timber.w(e.getMessage());
-                }
-            }, 500);
-        }
-        Log.d(this, "there're error ssl on page", error);
+        SDKApplication.getApplicationComponent().eventBus()
+                .postSticky(new SdkWebsite3dsBackEvent(new WebViewHelper(SSL_ERROR, null)));
+        new Handler().postDelayed(() -> {
+            try {
+                SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+                reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, GsonUtils.toJsonString(error));
+            } catch (Exception e) {
+                Timber.w(e.getMessage());
+            }
+        }, 500);
+        Timber.w("there're error ssl on page %s", GsonUtils.toJsonString(error));
     }
 
     public void BIDVWebFlow(String pOtp, String pUrl, WebView pView) {

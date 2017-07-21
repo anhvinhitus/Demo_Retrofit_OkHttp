@@ -26,7 +26,7 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ import vn.com.zalopay.wallet.dialog.MapBankDialogFragment;
 import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
-import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
+import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
@@ -192,7 +192,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void showLoading(String pTitle, ZPWOnProgressDialogTimeoutListener timeoutListener) {
+    public void showLoading(String pTitle, OnProgressDialogTimeoutListener timeoutListener) {
         Timber.w("pTitle %s", pTitle);
         if (getActivity() != null) {
             setTitle(pTitle);
@@ -497,7 +497,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         }
     }
 
-    public void marginSubmitButtonTopSuccess(boolean viewEnd) {
+  /*  public void marginSubmitButtonTopSuccess(boolean viewEnd) {
         View submitButton = findViewById(R.id.zpw_submit_view);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -517,7 +517,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             }
             Timber.d("setMarginSubmitButtonTop  Tab");
         }
-    }
+    }*/
 
     public void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) throws Exception {
         List<View> views = genDynamicItemDetail(getContext(), nameValuePairList);
@@ -556,7 +556,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void showOpenSettingNetwokingDialog(ZPWPaymentOpenNetworkingDialogListener pListener) {
+    public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET,-1,
                 getString(R.string.sdk_dialog_nointernet_title),

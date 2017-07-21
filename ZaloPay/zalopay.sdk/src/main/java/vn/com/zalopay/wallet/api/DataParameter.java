@@ -12,9 +12,8 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -132,11 +131,10 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
     }
 
-    public static void prepareVerifyMapCardParams(AdapterBase pAdapter, Map<String, String> params) throws Exception {
-        UserInfo userInfo = pAdapter.getPaymentInfoHelper().getUserInfo();
-        params.put(ConstantParams.ACCESS_TOKEN, userInfo.accesstoken);
-        params.put(ConstantParams.USER_ID, userInfo.zalopay_userid);
-        params.put(ConstantParams.ZALO_ID, userInfo.zalo_userid);
+    public static void prepareVerifyMapCardParams(UserInfo pUserInfo, DPaymentCard pCard, Map<String, String> params) throws Exception {
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
+        params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
+        params.put(ConstantParams.ZALO_ID, pUserInfo.zalo_userid);
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
@@ -145,7 +143,7 @@ public class DataParameter {
         params.put(ConstantParams.OS_VERSION, Build.VERSION.RELEASE);
         params.put(ConstantParams.CONN_TYPE, ConnectionUtil.getConnectionType(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
-        params.put(ConstantParams.CARDINFO, GsonUtils.toJsonString(pAdapter.getCard()));
+        params.put(ConstantParams.CARDINFO, GsonUtils.toJsonString(pCard));
     }
 
     public static boolean prepareSubmitTransactionParams(int channelId, long appId, String charge_info, String hashPassword, AbstractOrder order, UserInfo userInfo,

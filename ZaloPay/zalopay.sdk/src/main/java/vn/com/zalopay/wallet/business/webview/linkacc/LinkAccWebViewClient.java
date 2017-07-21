@@ -21,7 +21,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -36,6 +35,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
@@ -51,14 +51,13 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
+    AdapterLinkAcc mAdapter = null;
     // value is used for
     // detect valid url
     // in the case
     // webview on
     // Android 2.3
     private boolean isRedirected = false;
-
-    AdapterLinkAcc mAdapter = null;
     private PaymentWebView mWebPaymentBridge = null;
 
     private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
@@ -168,7 +167,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         try {
             getAdapter().getView().hideLoading();
             getAdapter().getView().showConfirmDialog(
-                    GlobalData.getAppContext().getString(R.string.zpw_alert_ssl_error_parse_website),
+                    GlobalData.getAppContext().getString(R.string.sdk_parsewebsite_sslerror_mess),
                     GlobalData.getAppContext().getString(R.string.dialog_continue_button),
                     GlobalData.getAppContext().getString(R.string.dialog_close_button),
                     new ZPWOnEventConfirmDialogListener() {
@@ -205,7 +204,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             return;
         }
         if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
-            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewHelper(errorCode, description));
+            SDKApplication.getApplicationComponent()
+                    .eventBus().postSticky(new WebViewHelper(errorCode, description));
         }
         if (getAdapter() != null) {
             StringBuffer errStringBuilder = new StringBuffer();

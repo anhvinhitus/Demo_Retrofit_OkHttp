@@ -8,6 +8,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import timber.log.Timber;
@@ -16,7 +18,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -30,6 +31,10 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 
@@ -143,7 +148,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
 
         if (!isMatched) {
-            getAdapter().onEvent(EEventType.ON_FAIL);
+            SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkParseWebsiteErrorEvent());
         }
     }
 
@@ -256,16 +261,18 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
-
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;
                     hit();
                 } else {
+                    EventBus eventBus = SDKApplication.getApplicationComponent().eventBus();
                     if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
-                    } else {
-                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
+                        eventBus.postSticky(new SdkParseWebsiteRenderEvent(scriptOutput, mPageCode));
+                    } else if (eventType == EEventType.ON_FAIL) {
+                        eventBus.postSticky(new SdkParseWebsiteErrorEvent());
+                    } else if (eventType == EEventType.ON_PAYMENT_COMPLETED) {
+                        eventBus.postSticky(new SdkParseWebsiteCompleteEvent(response));
                     }
                 }
 

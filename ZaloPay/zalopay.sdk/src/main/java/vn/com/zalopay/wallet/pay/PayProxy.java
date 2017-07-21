@@ -81,6 +81,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -95,14 +103,6 @@ public class PayProxy extends SingletonBase {
             startChannelActivity();
         }
         Timber.d(throwable, "trans status on error");
-    };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -267,7 +267,7 @@ public class PayProxy extends SingletonBase {
                     try {
                         askToRetryGetStatus();
                     } catch (Exception e) {
-                        Timber.w(e,"Exception show retry dialog status");
+                        Timber.w(e, "Exception show retry dialog status");
                         moveToResultScreen();
                     }
                 } else if (transStatusStart) {
@@ -359,7 +359,7 @@ public class PayProxy extends SingletonBase {
                 getView().showLoading(pMessage);
             }
         } catch (Exception e) {
-            Timber.w(e,"Exception show loading");
+            Timber.w(e, "Exception show loading");
         }
     }
 
@@ -370,7 +370,7 @@ public class PayProxy extends SingletonBase {
                 getView().hideLoading();
             }
         } catch (Exception e) {
-            Timber.w(e,"Exception hide loading");
+            Timber.w(e, "Exception hide loading");
         }
     }
 
@@ -657,6 +657,12 @@ public class PayProxy extends SingletonBase {
         if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
             mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
             Timber.d("update transaction time from notification");
+        }
+        //update status repsonse to success too
+        if (mStatusResponse != null) {
+            mStatusResponse.returncode = 1;
+            mStatusResponse.isprocessing = false;
+            mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_pay_success_title);
         }
         //mark trans as success
         mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);

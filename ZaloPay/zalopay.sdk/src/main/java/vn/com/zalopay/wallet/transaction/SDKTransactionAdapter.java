@@ -3,7 +3,10 @@ package vn.com.zalopay.wallet.transaction;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.behavior.interfaces.ISDKTransaction;
 
 
@@ -33,11 +36,11 @@ public class SDKTransactionAdapter extends SingletonBase {
         return this;
     }
 
-    public void startTransaction() throws Exception {
-        if (mSDKTransaction == null || mAdapter.get() == null) {
-            throw new Exception("mSDKTransaction null or adapter null");
+    public void startTransaction(int channelId, UserInfo userInfo, DPaymentCard card, PaymentInfoHelper paymentInfoHelper) throws Exception {
+        if (mSDKTransaction == null) {
+            throw new Exception("mSDKTransaction null");
         }
-        mSDKTransaction.doSubmit(mAdapter.get());
+        mSDKTransaction.doSubmit(channelId, userInfo, card, paymentInfoHelper);
     }
 
     public void getTransactionStatus(String pZmpTransID, boolean pCheckData, String pMessage) throws Exception {
@@ -47,10 +50,10 @@ public class SDKTransactionAdapter extends SingletonBase {
         mSDKTransaction.getStatus(mAdapter.get(), pZmpTransID, pCheckData, pMessage);
     }
 
-    public void authenPayer(String pTransID, String authenType, String authenValue) throws Exception {
-        if (mSDKTransaction == null || mAdapter.get() == null) {
-            throw new Exception("mSDKTransaction null or adapter null");
+    public void authenPayer(UserInfo pUserInfo, String pTransID, String authenType, String authenValue) throws Exception {
+        if (mSDKTransaction == null) {
+            throw new Exception("mSDKTransaction null");
         }
-        mSDKTransaction.authenPayer(mAdapter.get(), pTransID, authenType, authenValue);
+        mSDKTransaction.authenPayer(pUserInfo, pTransID, authenType, authenValue);
     }
 }

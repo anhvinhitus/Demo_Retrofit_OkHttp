@@ -36,7 +36,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
@@ -60,6 +59,7 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -91,7 +91,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     private CountDownTimer mExpireTransTimer;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAdapter != null) {
-            mAdapter.openSettingNetworking();
+            mAdapter.checkAndOpenNetworkingSetting();
         }
     };
     private boolean mIsSwitching = false;
@@ -106,7 +106,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 callback();
                 break;
             case 2:
-                mAdapter.onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
+                mAdapter.handleEventLoadSiteError(new Object());
                 break;
         }
     };
@@ -136,7 +136,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public ChannelPresenter() {
         try {
             mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if (mPaymentInfoHelper == null) {
             mPaymentInfoHelper = GlobalData.paymentInfoHelper;
@@ -150,8 +150,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private boolean hasChannelList() {
-        return BaseActivity.getChannelListActivity() != null &&
-                !BaseActivity.getChannelListActivity().isFinishing();
+        ChannelListActivity channelListActivity = BaseActivity.getChannelListActivity();
+        return channelListActivity != null && !channelListActivity.isFinishing();
     }
 
     private void setResult(int code, Intent data) throws Exception {
@@ -175,7 +175,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return true;
         }
         //order is processing
-        if (mAdapter != null && mAdapter.processingOrder) {
+        if (mAdapter != null && mAdapter.mOrderProcessing) {
             Timber.d("can not back, order still request api");
             return true;
         }
@@ -382,13 +382,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (!createLinkAdapter(pChannelID)) {
             return;
         }
-        try {
-            this.mIsSwitching = true;
-            if (mAdapter.isCardFlow()) {
-                mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
-            }
-        } catch (Exception e) {
-            Timber.w(e, "Exception on switching channel");
+        this.mIsSwitching = true;
+        if (mAdapter.isCardFlow() && mAdapter.getGuiProcessor() != null) {
+            mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
         }
     }
 
@@ -401,7 +397,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             Timber.d("create new adapter pmc id = %s", pChannelId);
             //release old adapter
             if (mAdapter != null) {
-                mAdapter.onFinish();
+                //mAdapter.onDetach();
                 mAdapter = null;
             }
             mAdapter = AdapterFactory.createByPmc(mContext, this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
@@ -409,7 +405,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mMiniPmcTransType = miniPmcTransType;
         } catch (Exception e) {
             Timber.w(e, "Exception on create adapter by channel id %s", pChannelId);
-            onExit(mContext.getResources().getString(R.string.sdk_config_invalid), true);
+            onExit(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
         }
         return true;
     }
@@ -417,11 +413,17 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Override
     public void onStart() {
         mBus.register(this);
+        if (mAdapter != null) {
+            mAdapter.onStart();
+        }
     }
 
     @Override
     public void onStop() {
         mBus.unregister(this);
+        if (mAdapter != null) {
+            mAdapter.onStop();
+        }
     }
 
     @Override
@@ -451,7 +453,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         super.onDetach();
         Timber.d("onDetach - release adapter - close loading - cancel timer");
         if (mAdapter != null) {
-            mAdapter.onFinish();
+            mAdapter.onDetach();
             mAdapter = null;
         }
         if (DialogManager.isShowingProgressDialog()) {
@@ -493,8 +495,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             Timber.d("start init channel %s", mAdapter.getClass().getSimpleName());
             mAdapter.init();
+            mAdapter.onStart();
             getViewOrThrow().renderByResource(mAdapter.getPageName());
-            getViewOrThrow().marginSubmitButtonTop(false);
+            //getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().updateCardNumberFont();
         } catch (Exception e) {
             Timber.w(e, "Exception init channel");
@@ -522,7 +525,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
             public void onFinish() {
                 mTimerRunning = false;
-                Timber.d("Timer is onFinish");
+                Timber.d("Timer is onDetach");
                 if (mAdapter != null && !mAdapter.isFinalScreen()) {
                     DialogManager.closeAllDialog();
                     mAdapter.showTransactionFailView(mContext.getResources().getString(R.string.sdk_expire_transaction_mess));

@@ -8,7 +8,6 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -44,8 +43,8 @@ public class AdapterCreditCard extends AdapterBase {
         if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
             this.mGuiProcessor.initPager();
         }
-        if (TransactionHelper.isSecurityFlow(mResponseStatus)) {
-            onEvent(EEventType.ON_GET_STATUS_COMPLETE, mResponseStatus);
+        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
+            handleEventGetStatusComplete(mStatusResponse);
             detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
     }
@@ -70,7 +69,7 @@ public class AdapterCreditCard extends AdapterBase {
     public void onProcessPhrase() {
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
-            tranferPaymentCardToMapCard();
+            transformPaymentCard();
         }
         startSubmitTransaction();
     }

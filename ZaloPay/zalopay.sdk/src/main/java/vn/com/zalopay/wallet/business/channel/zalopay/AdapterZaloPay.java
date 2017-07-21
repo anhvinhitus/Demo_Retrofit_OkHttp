@@ -29,19 +29,6 @@ public class AdapterZaloPay extends AdapterBase {
         return channelId != -1 ? channelId : getDefaultChannelId();
     }
 
-    /***
-     * if this is redpackage,then close sdk
-     * @return
-     */
-    @Override
-    public boolean processResultRedPacket() {
-        boolean isReqPackage = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
-        if (isReqPackage) {
-            onClickSubmission();
-        }
-        return isReqPackage;
-    }
-
     @Override
     public void onProcessPhrase() {
         if (isBalanceErrorPharse()) {
