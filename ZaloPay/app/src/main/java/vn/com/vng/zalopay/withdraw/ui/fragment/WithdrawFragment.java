@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;

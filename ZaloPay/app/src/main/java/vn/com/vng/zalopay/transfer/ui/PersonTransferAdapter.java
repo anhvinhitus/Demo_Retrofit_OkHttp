@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * Created by AnhHieu on 8/31/16.

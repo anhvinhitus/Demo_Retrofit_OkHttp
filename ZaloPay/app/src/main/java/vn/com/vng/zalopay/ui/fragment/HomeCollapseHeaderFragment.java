@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.presenter.HomeCollapseHeaderPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeCollapseHeaderView;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 

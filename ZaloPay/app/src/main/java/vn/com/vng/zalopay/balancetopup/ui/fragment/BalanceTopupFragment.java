@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;

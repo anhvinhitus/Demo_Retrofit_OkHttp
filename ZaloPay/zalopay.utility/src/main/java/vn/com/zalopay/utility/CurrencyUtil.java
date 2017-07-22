@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.utils;
+package vn.com.zalopay.utility;
 
 import android.graphics.Typeface;
 import android.text.SpannableString;

@@ -12,7 +12,7 @@ import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * Created by hieuvm on 6/18/17.

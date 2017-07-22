@@ -11,7 +11,7 @@ import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * Created by hieuvm on 11/12/16.

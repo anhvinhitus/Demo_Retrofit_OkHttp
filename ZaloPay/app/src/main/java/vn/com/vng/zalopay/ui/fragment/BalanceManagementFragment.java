@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
 /**

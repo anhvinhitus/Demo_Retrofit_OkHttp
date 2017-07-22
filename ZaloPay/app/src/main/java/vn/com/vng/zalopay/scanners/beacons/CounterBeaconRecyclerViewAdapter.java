@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
