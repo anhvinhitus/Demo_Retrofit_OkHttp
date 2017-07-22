@@ -24,5 +24,5 @@ public interface IWithdrawView extends ILoadDataView {
 
     void showVisibleStubView();
 
-    void initStubView(View view);
+    void initStubView();
 }

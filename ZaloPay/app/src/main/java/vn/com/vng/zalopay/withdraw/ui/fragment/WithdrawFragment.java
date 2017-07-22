@@ -178,17 +178,20 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     @Override
     public void showVisibleStubView() {
         listview.setVisibility(View.INVISIBLE);
+        if (mViewStub == null) {
+            return;
+        }
         if (mViewStub.getParent() != null) {
             mView = mViewStub.inflate();
         } else {
             mViewStub.setVisibility(View.VISIBLE);
         }
         mViewStub.setEnabled(true);
-        initStubView(mViewStub);
+        initStubView();
     }
 
     @Override
-    public void initStubView(View view) {
+    public void initStubView() {
         if (mView == null) {
             return;
         }
