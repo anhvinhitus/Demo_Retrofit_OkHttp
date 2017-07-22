@@ -266,14 +266,14 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
     private void verify(String password) {
         mOldPassword = password;
-        Subscription subscription = mAccountRepository.validatePin(password)
+        Subscription subscription = mAccountRepository.validatePinSha256(password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProtectAccountPresenter.ValidatePinSubscriber());
         mSubscription.add(subscription);
     }
 
-    private final class ValidatePinSubscriber extends DefaultSubscriber<String> {
+    final class ValidatePinSubscriber extends DefaultSubscriber<String> {
 
         @Override
         public void onError(Throwable e) {
@@ -304,7 +304,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
             mPassword.getBuilder().resetPasswordInput().clearText();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.w(e);
         }
     }
 
@@ -317,7 +317,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
             mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.w(e);
         }
     }
 
@@ -327,7 +327,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             mPassword.getBuilder().resetPasswordInput();
             mPassword.getBuilder().clearText();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.w(e);
         }
     }
 
@@ -337,7 +337,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             mPassword.getBuilder().resetPasswordInput();
             mPassword.getBuilder().clearText();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.w(e);
         }
     }
 
@@ -456,7 +456,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 mPassword.showLoading(true);
             } catch (Exception e) {
-                e.printStackTrace();
+                Timber.w(e);
             }
         }
 
@@ -466,7 +466,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 setChangePasswordViewStatus(STATUS_OTP, "");
             } catch (Exception e) {
-                e.printStackTrace();
+                Timber.w(e);
             }
 
         }
@@ -478,7 +478,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 setError(message);
             } catch (Exception exception) {
-                exception.printStackTrace();
+                Timber.w(exception);
             }
         }
     }
@@ -490,7 +490,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 mPassword.showLoading(true);
             } catch (Exception e) {
-                e.printStackTrace();
+                Timber.w(e);
             }
         }
 
@@ -500,7 +500,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 mPassword.close();
             } catch (Exception exception) {
-                exception.printStackTrace();
+                Timber.w(exception);
             }
 //            ChangePinPresenter.this.onVerifyOTPSuccess();
         }
@@ -511,7 +511,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 setChangePasswordViewStatus(STATUS_OTP_INVALID, "");
             } catch (Exception exception) {
-                exception.printStackTrace();
+                Timber.w(exception);
             }
         }
     }
