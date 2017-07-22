@@ -126,6 +126,7 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
         if (appResource != null) {
             if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID|| appResource.appid == RECHARGE_MONEY_PHONE_V2_APP_ID) {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
+                launchOption.putString("zalopay_userid", String.valueOf(mUser.zaloPayId));
             } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
                 launchOption.putString("url", BuildConfig.APP22_URL);
             }
