@@ -57,9 +57,9 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private PassportRepository mPassportRepository;
     private AccountStore.Repository mAccountRepository;
     private final FingerprintManagerCompat mFingerprintManagerCompat;
-    private PasswordManager mPassword;
-    private String mOldPassword;
-    private String mNewPassword;
+    PasswordManager mPassword;
+    String mOldPassword;
+    String mNewPassword;
 
     public int getViewStatus() {
         return viewStatus;
@@ -207,11 +207,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         });
     }
 
-    private void setUseProtectAccount(boolean enable) {
+    void setUseProtectAccount(boolean enable) {
         mUserConfig.useProtectAccount(enable);
     }
 
-    private void setUseFingerprint(boolean enable) {
+    void setUseFingerprint(boolean enable) {
         if (enable) {
             return;
         }
@@ -264,7 +264,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         }
     }
 
-    private void verify(String password) {
+    void verify(String password) {
         mOldPassword = password;
         Subscription subscription = mAccountRepository.validatePinSha256(password)
                 .subscribeOn(Schedulers.io())
@@ -449,7 +449,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         mSubscription.add(subscription);
     }
 
-    private class ChangePinSubscriber extends DefaultSubscriber<String> {
+    class ChangePinSubscriber extends DefaultSubscriber<String> {
 
         @Override
         public void onStart() {
@@ -483,7 +483,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         }
     }
 
-    private final class VerifySubscriber extends DefaultSubscriber<Boolean> {
+    final class VerifySubscriber extends DefaultSubscriber<Boolean> {
 
         @Override
         public void onStart() {
