@@ -28,10 +28,10 @@ import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 
 public class WithdrawFragment extends BaseFragment implements IWithdrawView, WithdrawAdapter.OnClickDenominationListener {
@@ -180,7 +180,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @Override
     public void showVisibleStubView() {
-        listview.setVisibility(View.GONE);
+        listview.setVisibility(View.INVISIBLE);
         if (mViewStub == null) {
             return;
         }

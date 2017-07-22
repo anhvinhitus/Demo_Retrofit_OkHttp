@@ -54,22 +54,21 @@
                 </android.support.design.widget.CollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
 
-            <ViewStub
-                android:id="@+id/stub"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent"
-                android:inflatedId="@+id/layout_input_withdraw_money"
-                android:layout="@layout/layout_input_withdraw_money"
-                android:paddingBottom="16dp"
-                app:behavior_overlapTop="40dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listview"
                 style="@style/RecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="16dp"
+                app:behavior_overlapTop="40dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <ViewStub
+                android:id="@+id/stub"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:layout="@layout/layout_input_withdraw_money"
                 android:paddingBottom="16dp"
                 app:behavior_overlapTop="40dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
