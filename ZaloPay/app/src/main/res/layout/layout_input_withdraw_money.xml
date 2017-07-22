@@ -1,36 +1,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
     android:orientation="vertical"
     android:tag="input_layout_withdraw">
 
-    <vn.com.vng.zalopay.ui.widget.MoneyEditText
-        android:id="@+id/edtAmount"
-        style="@style/ZaloPayEditText.Money"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_amount"
-        android:maxLength="@integer/max_length_edittext_money"
-        app:zlp_underlineColor="@color/gray" />
+        android:background="@color/white"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="8dp"
-        android:text="Tối thiểu từ 100.000 VND và là bội số của 10.000 VND"
-        android:textColor="@color/personal_text_steel_grey"
-        android:textSize="@dimen/personal_general_text_sub_l" />
+        <vn.com.vng.zalopay.ui.widget.MoneyEditText
+            android:id="@+id/edtAmount"
+            style="@style/ZaloPayEditText.Money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_amount"
+            android:maxLength="@integer/max_length_edittext_money"
+            app:zlp_underlineColor="@color/gray" />
 
-    <Button
-        android:id="@+id/btnContinue"
-        style="@style/Button.Default.New"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button.height"
-        android:text="@string/btn_continue" />
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="8dp"
+            android:text="Tối thiểu từ 100.000 VND và là bội số của 10.000 VND"
+            android:textColor="@color/personal_text_steel_grey"
+            android:textSize="@dimen/personal_general_text_sub_l" />
+
+        <Button
+            android:id="@+id/btnContinue"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:text="@string/btn_continue" />
+    </LinearLayout>
 </LinearLayout>

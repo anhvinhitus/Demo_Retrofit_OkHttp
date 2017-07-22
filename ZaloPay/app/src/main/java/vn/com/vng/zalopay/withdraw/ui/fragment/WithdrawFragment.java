@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
@@ -39,8 +40,10 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     private View mView;
     private MoneyEditText mEdtAmount;
     private Button btnContinue;
+    private TextView mDescription;
     @BindView(R.id.listview)
     RecyclerView listview;
+
     @BindView(R.id.tvMoney)
     TextView mMoneyView;
     @Inject
@@ -177,7 +180,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
 
     @Override
     public void showVisibleStubView() {
-        listview.setVisibility(View.INVISIBLE);
+        listview.setVisibility(View.GONE);
         if (mViewStub == null) {
             return;
         }
@@ -196,6 +199,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
             return;
         }
         mEdtAmount = (MoneyEditText) mView.findViewById(R.id.edtAmount);
+        mDescription = (TextView) mView.findViewById(R.id.description);
         initLimitAmount();
         btnContinue = (Button) mView.findViewById(R.id.btnContinue);
         btnContinue.setOnClickListener(v -> {
@@ -213,6 +217,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         });
         btnContinue.setEnabled(mEdtAmount.isValid());
         mEdtAmount.addTextChangedListener(textWatcher);
+        showKeyboard();
     }
 
     @Override
@@ -230,6 +235,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     private void initLimitAmount() {
         long minDepositAmount = ConfigLoader.getMinMoneyWithdraw();
         long maxDepositAmount = ConfigLoader.getMaxMoneyWithdraw();
+        long multipleMoneyWithdraw = ConfigLoader.getMultipleMoneyWithdraw();
+        String description = "Tối thiểu từ " + CurrencyUtil.formatCurrency(minDepositAmount, false) + "VND và là bội số của " + CurrencyUtil.formatCurrency(multipleMoneyWithdraw, false) + " VND";
+        mDescription.setText(description);
         mEdtAmount.setMinMaxMoney(minDepositAmount, maxDepositAmount);
     }
 
@@ -249,6 +257,20 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
             if (btnContinue != null && mEdtAmount != null) {
                 btnContinue.setEnabled(mEdtAmount.isValid());
             }
+        }
+    };
+    public void showKeyboard() {
+        AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
+    }
+
+    private Runnable mKeyboardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mEdtAmount != null) {
+                mEdtAmount.requestFocus();
+                AndroidUtils.showKeyboard(mEdtAmount);
+            }
+
         }
     };
 }
