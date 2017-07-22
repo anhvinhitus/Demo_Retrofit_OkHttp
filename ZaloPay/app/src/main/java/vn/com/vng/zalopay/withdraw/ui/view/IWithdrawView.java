@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.withdraw.ui.view;
 
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import java.util.List;
 
@@ -20,4 +21,8 @@ public interface IWithdrawView extends ILoadDataView {
     void finish(int result);
 
     void showEnoughView(boolean isShow);
+
+    void showVisibleStubView();
+
+    void initStubView(View view);
 }

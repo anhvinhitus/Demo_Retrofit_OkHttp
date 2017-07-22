@@ -140,7 +140,27 @@ public class ConfigLoader {
             return mConfig.denominationWithdraw;
         }
     }
-
+    public static long getMinMoneyWithdraw() {
+        if (mConfig == null || mConfig.minWithdrawMoney <= 0) {
+            return 20000L;
+        } else {
+            return mConfig.minWithdrawMoney;
+        }
+    }
+    public static long getMaxMoneyWithdraw() {
+        if (mConfig == null || mConfig.minWithdrawMoney <= 0) {
+            return 20000000L;
+        } else {
+            return mConfig.maxWithdrawMoney;
+        }
+    }
+    public static long getMultipleMoneyWithdraw() {
+        if (mConfig == null || mConfig.multipleWithdrawMoney <= 0) {
+            return 10000L;
+        } else {
+            return mConfig.multipleWithdrawMoney;
+        }
+    }
     public static List<String> getAllowUrls() {
         if (mConfig == null || Lists.isEmptyOrNull(mConfig.allowUrls)) {
             return Arrays.asList("^((.+)\\.)?zalopay\\.vn",

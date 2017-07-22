@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 
 /**
@@ -47,10 +48,16 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
 
     @Override
     public void bind(ViewHolder holder) {
-        holder.mMoneyView.setText(CurrencyUtil.formatCurrency(money, false));
+        boolean isValid = balance >= money;
+        if (money == 0) {
+            holder.mMoneyView.setText(R.string.input_money_text);
+            isValid = balance >= ConfigLoader.getMinMoneyWithdraw();
+
+        } else {
+            holder.mMoneyView.setText(CurrencyUtil.formatCurrency(money, false));
+        }
         holder.mItemLayout.setOnClickListener(viewClickListener);
 
-        boolean isValid = balance >= money;
         holder.mItemLayout.setEnabled(isValid);
         holder.mMoneyView.setEnabled(isValid);
         holder.mMaskView.setVisibility(isValid ? View.GONE : View.VISIBLE);

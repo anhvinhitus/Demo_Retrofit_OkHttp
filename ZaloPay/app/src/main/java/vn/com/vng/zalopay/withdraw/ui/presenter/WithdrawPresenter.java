@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,7 +62,8 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     private final EventBus mEventBus;
 
     private final List<Long> mDenominationMoney = ConfigLoader.getDenominationWithdraw();
-
+    private final long mConfigMinWithdrawAmount = ConfigLoader.getMinMoneyWithdraw();
+    private final long mConfigMultipleWithdrawAmount = ConfigLoader.getMultipleMoneyWithdraw();
     private long minWithdrawAmount;
     private long maxWithdrawAmount;
 
@@ -131,7 +131,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 denominations.add(denomination);
             }
         }
-
+        denominations.add(0l);
         if (mView != null) {
             mView.addDenominationMoney(denominations);
         }
@@ -142,9 +142,8 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             return;
         }
         mView.setBalance(balance);
-        long minDenominationMoney = ConvertHelper.unboxValue(Collections.min(mDenominationMoney), 0);
-        Timber.d("Min denomination money : %s", minDenominationMoney);
-        mView.showEnoughView(balance < minDenominationMoney);
+        Timber.d("Min denomination money : %s", mConfigMinWithdrawAmount);
+        mView.showEnoughView(balance < mConfigMinWithdrawAmount);
     }
 
     private void getBalance() {
@@ -169,6 +168,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
     public void withdraw(final long amount) {
         if (amount <= 0) {
+            mView.showVisibleStubView();
             return;
         }
 

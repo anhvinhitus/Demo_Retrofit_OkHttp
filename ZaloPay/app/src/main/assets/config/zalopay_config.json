@@ -136,7 +136,10 @@
     "v001/tpe/sdkerrorreport",
     "v001/tpe/submitmapaccount"
   ],
-  "withdraw_money": [100000, 200000, 500000, 1000000, 2000000, 5000000],
+  "withdraw_money": [100000, 200000, 500000, 1000000, 2000000],
+  "multiple_withdraw_money": 10000,
+  "min_withdraw_money": 20000,
+  "max_withdraw_money": 20000000,
   "allow_urls": [
     "^((.+)\\.)?zalopay\\.vn",
     "^((.+)\\.)?zalopay\\.com\\.vn",

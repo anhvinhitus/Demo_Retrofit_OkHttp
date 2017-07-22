@@ -65,6 +65,15 @@
                 android:paddingBottom="16dp"
                 app:behavior_overlapTop="40dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            <ViewStub
+                android:id="@+id/stub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:layout="@layout/layout_input_withdraw_money"
+                android:visibility="gone"
+                app:behavior_overlapTop="40dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />-
         </android.support.design.widget.CoordinatorLayout>
     </LinearLayout>
 

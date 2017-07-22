@@ -38,6 +38,16 @@ public class Config {
     @SerializedName("withdraw_money")
     public List<Long> denominationWithdraw;
 
+    @SerializedName("min_withdraw_money")
+    public long minWithdrawMoney;
+
+    @SerializedName("max_withdraw_money")
+    public long maxWithdrawMoney;
+
+    @SerializedName("multiple_withdraw_money")
+    public long multipleWithdrawMoney;
+
+
     @SerializedName("allow_urls")
     public List<String> allowUrls;
 
