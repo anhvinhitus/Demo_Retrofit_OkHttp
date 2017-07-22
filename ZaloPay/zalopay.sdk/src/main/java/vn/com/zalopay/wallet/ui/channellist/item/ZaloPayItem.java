@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
-import vn.com.zalopay.utility.StringUtil;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -47,7 +47,7 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
 
     public void renderBalance(ViewHolder holder) {
         balance = balance > 0 ? balance : 0;
-        holder.balance_textview.setText(StringUtil.formatVnCurrence(String.valueOf(balance)));
+        holder.balance_textview.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     public void renderBalanceError(ZaloPayItem.ViewHolder holder, String warningDesc) {

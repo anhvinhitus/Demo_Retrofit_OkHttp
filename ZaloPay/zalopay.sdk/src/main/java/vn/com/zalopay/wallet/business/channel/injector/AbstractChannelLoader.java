@@ -7,8 +7,8 @@ import java.util.List;
 
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -77,10 +77,10 @@ public abstract class AbstractChannelLoader {
         String strAlert = "";
         if (hasMinValueChannel() && amount < getMinValueChannel()) {
             strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_min_amount_mess),
-                    StringUtil.formatVnCurrence(String.valueOf(getMinValueChannel())));
+                    CurrencyUtil.formatCurrency(getMinValueChannel()));
         } else if (hasMaxValueChannel() && amount > getMaxValueChannel()) {
             strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_max_amount_mess),
-                    StringUtil.formatVnCurrence(String.valueOf(getMaxValueChannel())));
+                    CurrencyUtil.formatCurrency(getMaxValueChannel()));
         }
         return strAlert;
     }

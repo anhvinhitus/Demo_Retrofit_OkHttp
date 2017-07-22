@@ -35,6 +35,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
@@ -338,7 +339,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
-            String txtFee = StringUtil.formatVnCurrence(String.valueOf(fee));
+            String txtFee = CurrencyUtil.formatCurrency(fee,false);
             setText(R.id.order_fee_txt, txtFee);
         } else {
             setText(R.id.order_fee_txt, getResources().getString(R.string.sdk_order_fee_free));
@@ -346,7 +347,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         //order amount
         boolean hasAmount = total_amount > 0;
         if (hasAmount) {
-            String order_amount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
+            String order_amount = CurrencyUtil.formatCurrency(total_amount, false);
             setText(R.id.order_amount_total_txt, order_amount);
             ((TextView) findViewById(R.id.order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
         }
@@ -639,7 +640,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         TextView transaction_time_txt = (TextView) viewContainer.findViewById(R.id.transaction_time_txt);
         transaction_time_txt.setText(SdkUtils.convertDateTime(paymentTime));
         //trans fee
-        String transFee = order != null && order.fee > 0 ? String.format(getResources().getString(R.string.sdk_fee_format), StringUtil.formatVnCurrence(String.valueOf(order.fee))) :
+        String transFee = order != null && order.fee > 0 ?
+                CurrencyUtil.formatCurrency(order.fee):
                 getResources().getString(R.string.sdk_order_fee_free);
         TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
         order_fee_txt.setText(transFee);
@@ -661,7 +663,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
             applyFont(findViewById(R.id.success_order_amount_total_txt), GlobalData.getStringResource(RS.string.sdk_font_medium));
-            setTextHtml(R.id.success_order_amount_total_txt, StringUtil.formatVnCurrence(String.valueOf(order.amount_total)));
+            setTextHtml(R.id.success_order_amount_total_txt, CurrencyUtil.formatCurrency(order.amount_total,false));
             ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
         if (!hasAmount || hideAmount) {

@@ -43,8 +43,8 @@
     <string name="sdk_card_link_format">%s ••• </string>
     <string name="sdk_card_link_default_format">Thẻ đã liên kết ••• </string>
 
-    <string name="sdk_trans_min_amount_mess">Số tiền giao dịch tối thiểu là %s VND</string>
-    <string name="sdk_trans_max_amount_mess">Số tiền giao dịch tối đa là %s VND</string>
+    <string name="sdk_trans_min_amount_mess">Số tiền giao dịch tối thiểu là %s</string>
+    <string name="sdk_trans_max_amount_mess">Số tiền giao dịch tối đa là %s</string>
 
     <string name="sdk_trans_submit_order_mess">Đang gửi hóa đơn</string>
     <string name="sdk_trans_getstatus_mess">Nhận trạng thái giao dịch</string>
@@ -226,8 +226,7 @@
 
     <string name="zpw_string_tittle_account_list">CHỌN TÀI KHOẢN NGÂN HÀNG</string>
 
-    <string name="sdk_channel_fee_format">Phí: %1$s VND</string>
-    <string name="sdk_fee_format">%1$s VND</string>
+    <string name="sdk_channel_fee_format">Phí: %1$s</string>
 
     <string name="zpw_string_error_layout">Lỗi khởi tạo dữ liệu.\nVui lòng thử lại</string>
 
@@ -354,7 +353,7 @@
     <string name="sdk_warning_version_support_payment"><![CDATA[Vui lòng nâng cấp phiên bản mới nhất để thực hiện giao dịch với <b>%1$s</b>]]></string>
 
     <string name="default_message_pmc_fee">Phí tính theo ngân hàng</string>
-    <string name="invalid_order_amount_bank">%1$s không hỗ trợ mệnh giá %2$s VND</string>
+    <string name="invalid_order_amount_bank">%1$s không hỗ trợ mệnh giá %2$s</string>
 
     <string name="sdk_warning_pmc_transtype_disable_payment"><![CDATA[<b>%1$s</b> hiện không hỗ trợ loại giao dịch bạn đã chọn. Vui lòng thử lại sau!]]></string>
     <string name="sdk_warning_pmc_transtype_disable_link"><![CDATA[<b>%1$s</b> hiện tại không hỗ trợ liên kết. Vui lòng thử lại sau!]]></string>

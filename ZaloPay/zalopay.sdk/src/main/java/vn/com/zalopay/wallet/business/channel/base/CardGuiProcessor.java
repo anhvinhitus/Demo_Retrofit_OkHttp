@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -826,7 +827,9 @@ public abstract class CardGuiProcessor extends SingletonBase
                     CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
                     String invalidAmountMessage = mContext.getResources().getString(R.string.invalid_order_amount_bank);
                     double amount_total = mPaymentInfoHelper.getAmountTotal();
-                    cardNumberView.setError(String.format(invalidAmountMessage, getBankCardFinder().getShortBankName(), StringUtil.formatVnCurrence(String.valueOf(amount_total))));
+                    cardNumberView.setError(String.format(invalidAmountMessage,
+                            getBankCardFinder().getShortBankName(),
+                            CurrencyUtil.formatCurrency(amount_total)));
                     disableNext();
                     return;
                 }

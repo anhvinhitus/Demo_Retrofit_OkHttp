@@ -17,6 +17,7 @@ import com.zalopay.ui.widget.mutilview.recyclerview.DataBinder;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.repository.ResourceManager;
@@ -63,7 +64,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     protected String getFeeDesc(PaymentChannel pChannel) {
         String fee_desc = mContext.getString(R.string.sdk_channel_free_mess);
         if (pChannel.hasFee()) {
-            fee_desc = StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee));
+            fee_desc = CurrencyUtil.formatCurrency(pChannel.totalfee,false);
         }
         return fee_desc;
     }
@@ -135,7 +136,8 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         } else if (!pChannel.isAllowOrderAmount()) {
             StringBuilder builder = new StringBuilder();
             if (pChannel.hasFee()) {
-                builder.append(String.format(mContext.getString(R.string.sdk_channel_fee_format), StringUtil.formatVnCurrence(String.valueOf(pChannel.totalfee))));
+                builder.append(String.format(mContext.getString(R.string.sdk_channel_fee_format),
+                        CurrencyUtil.formatCurrency(pChannel.totalfee)));
             }
             builder.append(mContext.getString(R.string.sdk_channel_not_allow_by_balance));
             mess = builder.toString();

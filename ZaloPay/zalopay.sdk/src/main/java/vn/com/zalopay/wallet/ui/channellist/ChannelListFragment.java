@@ -23,6 +23,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -237,7 +238,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
-            String txtFee = String.format(getString(R.string.sdk_fee_format), StringUtil.formatVnCurrence(String.valueOf(fee)));
+            String txtFee = CurrencyUtil.formatCurrency(fee);
             order_fee_txt.setText(txtFee);
         } else {
             order_fee_txt.setText(getResources().getString(R.string.sdk_order_fee_free));
@@ -245,7 +246,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         //order amount
         boolean hasAmount = total_amount > 0;
         if (hasAmount) {
-            String txtAmount = StringUtil.formatVnCurrence(String.valueOf(total_amount));
+            String txtAmount = CurrencyUtil.formatCurrency(total_amount,false);
             order_amount_txt.setText(txtAmount);
             order_amount_txt.setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
         }
