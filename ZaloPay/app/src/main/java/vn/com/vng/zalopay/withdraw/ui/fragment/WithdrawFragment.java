@@ -236,7 +236,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
         long minDepositAmount = ConfigLoader.getMinMoneyWithdraw();
         long maxDepositAmount = ConfigLoader.getMaxMoneyWithdraw();
         long multipleMoneyWithdraw = ConfigLoader.getMultipleMoneyWithdraw();
-        String description = "Tối thiểu từ " + CurrencyUtil.formatCurrency(minDepositAmount, false) + "VND và là bội số của " + CurrencyUtil.formatCurrency(multipleMoneyWithdraw, false) + " VND";
+        String description = String.format(getString(R.string.withdraw_inputmoney_hint,
+                CurrencyUtil.formatCurrency(minDepositAmount, false),
+                CurrencyUtil.formatCurrency(multipleMoneyWithdraw, false)));
         mDescription.setText(description);
         mEdtAmount.setMinMaxMoney(minDepositAmount, maxDepositAmount);
     }
