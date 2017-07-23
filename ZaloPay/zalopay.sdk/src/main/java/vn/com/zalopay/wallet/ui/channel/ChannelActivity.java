@@ -3,17 +3,18 @@ package vn.com.zalopay.wallet.ui.channel;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.PermissionUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.ToolbarActivity;
 
-/***
+/*
  * payment channel list screen.
  */
 public class ChannelActivity extends ToolbarActivity {
@@ -42,7 +43,7 @@ public class ChannelActivity extends ToolbarActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case Constants.REQUEST_CODE_SMS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -58,10 +59,10 @@ public class ChannelActivity extends ToolbarActivity {
         }
     }
 
-    public AdapterBase getAdapter() {
-        android.support.v4.app.Fragment fragment = getActiveFragment();
+    public AbstractWorkFlow getWorkFlow() {
+        Fragment fragment = getActiveFragment();
         if (fragment instanceof ChannelFragment) {
-            return ((ChannelFragment) fragment).sharePresenter().getAdapter();
+            return ((ChannelFragment) fragment).sharePresenter().getWorkFlow();
         }
         return null;
     }

@@ -2,10 +2,10 @@ package vn.com.zalopay.wallet.transaction;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.behavior.interfaces.ISDKTransaction;
 
@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.transaction.behavior.interfaces.ISDKTransaction;
 public class SDKTransactionAdapter extends SingletonBase {
     private static SDKTransactionAdapter _object;
     protected ISDKTransaction mSDKTransaction;
-    protected WeakReference<AdapterBase> mAdapter;
+    protected WeakReference<AbstractWorkFlow> mAdapter;
 
     public SDKTransactionAdapter() {
         super();
@@ -26,7 +26,7 @@ public class SDKTransactionAdapter extends SingletonBase {
         return SDKTransactionAdapter._object;
     }
 
-    public SDKTransactionAdapter setAdapter(AdapterBase adapterBase) {
+    public SDKTransactionAdapter setAdapter(AbstractWorkFlow adapterBase) {
         mAdapter = new WeakReference<>(adapterBase);
         if (mAdapter.get().getPaymentInfoHelper().isLinkTrans()) {
             mSDKTransaction = SDKMapCard.shared();

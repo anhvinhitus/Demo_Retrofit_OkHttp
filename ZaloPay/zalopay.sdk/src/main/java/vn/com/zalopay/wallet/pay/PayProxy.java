@@ -30,7 +30,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentState;
@@ -42,6 +41,7 @@ import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.transaction.StatusByAppTrans;
@@ -59,7 +59,7 @@ import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.getGenericExceptionMessage;
 import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
 
-/***
+/*
  * pre check before start payment channel
  */
 public class PayProxy extends SingletonBase {
@@ -537,24 +537,22 @@ public class PayProxy extends SingletonBase {
             lock.lock();
             Intent intent = getPresenter().getChannelIntent();
             if (mStatusResponse != null) {
-                /***
+                /*
                  * re-assign trans id again because of some case
                  * trans id = null when get status
                  */
                 mStatusResponse.zptransid = mTransId;
                 intent.putExtra(STATUS_RESPONSE, mStatusResponse);
-                Log.d(this, "start channel status response", mStatusResponse);
             }
             intent.putExtra(PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));
             getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
-
             if (shouldCloseChannelList()) {
                 getView().terminate();
                 Timber.d("release channel list activity");
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -699,7 +697,7 @@ public class PayProxy extends SingletonBase {
         markTransFail(getGenericExceptionMessage(mContext));
     }
 
-    public void onComleteFingerPrint(String pHashPassword) {
+    public void onCompleteFingerPrint(String pHashPassword) {
         if (preventSubmitOrder()) {
             Timber.d("order is submit - skip");
             return;

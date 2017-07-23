@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import vn.com.vng.zalopay.feedback.FeedbackActivity;
 import vn.com.zalopay.feedback.FeedbackCollector;
-import vn.com.zalopay.wallet.business.feedback.IFeedBack;
+import vn.com.zalopay.wallet.feedback.IFeedBack;
 
 /**
  * Created by hieuvm on 5/12/17.

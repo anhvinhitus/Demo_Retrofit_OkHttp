@@ -8,9 +8,8 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;
@@ -55,7 +54,7 @@ public class PaymentWebView extends WebView {
         }
     }
 
-    public void setPaymentWebViewClient(AdapterBase pAdapter) {
+    public void setPaymentWebViewClient(AbstractWorkFlow pAdapter) {
         mCCWebViewClient = new CCWebViewClient(pAdapter);
         setWebViewClient(mCCWebViewClient);
     }
@@ -71,14 +70,14 @@ public class PaymentWebView extends WebView {
     }
 
     public void loadPaymentUrl(String pUrl) {
-        Timber.d("load url " + pUrl);
+        Timber.d("load url %s", pUrl);
         mRecentLoadingUrl = pUrl;
         loadUrl(pUrl);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent) {
-        Timber.d("runScript: " + scriptContent);
+        Timber.d("runScript: %s", scriptContent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript(scriptContent, null);
         } else {

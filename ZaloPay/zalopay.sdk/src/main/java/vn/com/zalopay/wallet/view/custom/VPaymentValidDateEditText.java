@@ -13,7 +13,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdittext;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -181,7 +181,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
             if (channelActivity == null || channelActivity.isFinishing()) {
                 return false;
             }
-            AdapterBase adapterBase = channelActivity.getAdapter();
+            AbstractWorkFlow adapterBase = channelActivity.getWorkFlow();
             if (adapterBase == null) {
                 return false;
             }

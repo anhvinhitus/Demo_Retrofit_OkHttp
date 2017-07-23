@@ -12,7 +12,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -34,7 +34,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     private WebView mWebView = null;
 
 
-    public CCWebViewClient(AdapterBase pAdapter) {
+    public CCWebViewClient(AbstractWorkFlow pAdapter) {
         super(pAdapter);
         this.mMerchantPrefix = GlobalData.getStringResource(RS.string.sdk_website3ds_callback_url);
     }
@@ -47,6 +47,13 @@ public class CCWebViewClient extends PaymentWebViewClient {
     @Override
     public void hit() {
 
+    }
+
+    @Override
+    public void stop() {
+        if (mWebView != null) {
+            mWebView.stopLoading();
+        }
     }
 
     private boolean shouldStopFlow(String url) {
@@ -84,7 +91,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
         Timber.d("load page finish %s", url);
         if (getAdapter() != null) {
             try {
-                getAdapter().getView().hideLoading();
+                getAdapter().getGuiProcessor().getView().hideLoading();
             } catch (Exception e) {
                 Log.e(this, e);
             }

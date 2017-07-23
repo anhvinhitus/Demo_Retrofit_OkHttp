@@ -19,8 +19,8 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
-import static vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader.MAX_VALUE_CHANNEL;
-import static vn.com.zalopay.wallet.business.channel.injector.AbstractChannelLoader.MIN_VALUE_CHANNEL;
+import static vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader.MAX_VALUE_CHANNEL;
+import static vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader.MIN_VALUE_CHANNEL;
 
 /**
  * Created by chucvv on 6/7/17.

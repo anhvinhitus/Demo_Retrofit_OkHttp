@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
+import vn.com.zalopay.wallet.card.CreditCardCheck;
+import vn.com.zalopay.wallet.card.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;

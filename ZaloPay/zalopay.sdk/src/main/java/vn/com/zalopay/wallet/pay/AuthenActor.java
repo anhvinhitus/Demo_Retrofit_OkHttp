@@ -92,7 +92,7 @@ public class AuthenActor {
         public void onComplete(String pHashPassword) {
             closeAuthen();
             try {
-                getProxy().onComleteFingerPrint(pHashPassword);
+                getProxy().onCompleteFingerPrint(pHashPassword);
             } catch (Exception e) {
                 Log.e(this, e);
             }

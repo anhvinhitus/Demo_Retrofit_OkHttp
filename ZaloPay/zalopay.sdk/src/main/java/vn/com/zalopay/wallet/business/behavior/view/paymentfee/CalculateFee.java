@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.behavior.view.paymentfee;
 
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 
 public class CalculateFee extends SingletonBase {
     private ICalculateFee mCalculator;

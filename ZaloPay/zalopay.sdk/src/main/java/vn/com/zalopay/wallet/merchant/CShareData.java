@@ -7,14 +7,14 @@ import android.os.Looper;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
-import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
+import vn.com.zalopay.wallet.card.CreditCardCheck;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -123,8 +123,8 @@ public class CShareData extends SingletonBase {
     private void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
         Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
         ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity != null && !activity.isFinishing() && activity.getAdapter() instanceof AdapterLinkAcc) {
-            ((AdapterLinkAcc)activity.getAdapter()).onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
+        if (activity != null && !activity.isFinishing() && activity.getWorkFlow() instanceof AccountLinkWorkFlow) {
+            ((AccountLinkWorkFlow)activity.getWorkFlow()).onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
@@ -147,8 +147,8 @@ public class CShareData extends SingletonBase {
         //user in sdk now.
         Log.d(this, "start send notify finish transaction into sdk", pObject);
         ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity != null && !activity.isFinishing() && activity.getAdapter() != null) {
-            activity.getAdapter().handleEventNotifyTransactionFinish(pObject);
+        if (activity != null && !activity.isFinishing() && activity.getWorkFlow() != null) {
+            activity.getWorkFlow().handleEventNotifyTransactionFinish(pObject);
         } else {
             try {
                 SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
@@ -184,8 +184,8 @@ public class CShareData extends SingletonBase {
 
     private void sendNotifyPromotionEventToAdapter(Object... pObject) {
         ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity != null && !activity.isFinishing() && activity.getAdapter() != null) {
-            activity.getAdapter().handleEventPromotion(pObject);
+        if (activity != null && !activity.isFinishing() && activity.getWorkFlow() != null) {
+            activity.getWorkFlow().handleEventPromotion(pObject);
         } else if (pObject[1] instanceof IPromotionResult) {
             IPromotionResult promotionResult = (IPromotionResult) pObject[1];
             promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available

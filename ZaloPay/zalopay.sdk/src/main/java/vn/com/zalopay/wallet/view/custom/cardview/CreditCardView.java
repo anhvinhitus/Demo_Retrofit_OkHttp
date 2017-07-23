@@ -23,13 +23,12 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
-
-import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 public class CreditCardView extends FrameLayout {
     private static final int TEXTVIEW_CARD_HOLDER_ID = R.id.front_card_holder_name;
@@ -73,9 +72,7 @@ public class CreditCardView extends FrameLayout {
 
     public void setCardHolderName(String cardHolderName) {
         cardHolderName = cardHolderName == null ? "" : cardHolderName;
-
         this.mCardHolderName = cardHolderName;
-
         ((TextView) findViewById(TEXTVIEW_CARD_HOLDER_ID)).setText(Html.fromHtml(createHighLightText(cardHolderName, mCardColorText)));
         // Clear text set HintText Color
         if (TextUtils.isEmpty(cardHolderName)) {
@@ -87,8 +84,15 @@ public class CreditCardView extends FrameLayout {
         return mCVV;
     }
 
-    public void setCVV(int cvvInt) {
+    public void setCVV(String cvv) {
+        if (cvv == null) {
+            cvv = "";
+        }
+        this.mCVV = cvv;
+        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
+    }
 
+    public void setCVV(int cvvInt) {
         if (cvvInt == 0) {
             setCVV("");
         } else {
@@ -98,25 +102,14 @@ public class CreditCardView extends FrameLayout {
 
     }
 
-    public void setCVV(String cvv) {
-        if (cvv == null) {
-            cvv = "";
-        }
-        this.mCVV = cvv;
-        ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
-    }
-
     public String getCardDate() {
         return mCardDate;
     }
 
     public void setCardDate(String dateYear) {
-
         dateYear = dateYear == null ? "" : CreditCardUtils.handleExpiration(dateYear);
-
         this.mCardDate = dateYear;
         ((TextView) findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setText(Html.fromHtml(createHighLightText(dateYear, mCardColorText)));
-        // Clear text set HintText Color
         if (TextUtils.isEmpty(dateYear)) {
             setDefaultShadowColor();
         }
@@ -124,19 +117,14 @@ public class CreditCardView extends FrameLayout {
 
     private void init() {
         mRawCardNumber = "";
-
-        LayoutInflater inflater = (LayoutInflater) getContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.view_creditcard, this, true);
 
     }
 
     private void init(AttributeSet attrs) {
-
         init();
-
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.creditcard, 0, 0);
-
         String cardHolderName = a.getString(R.styleable.creditcard_card_holder_name);
         String expiry = a.getString(R.styleable.creditcard_card_expiration);
         String cardNumber = a.getString(R.styleable.creditcard_card_number);
@@ -161,106 +149,72 @@ public class CreditCardView extends FrameLayout {
         if (cardSide == CreditCardUtils.CARD_SIDE_BACK) {
             showBackImmediate();
         }
-
         paintCard();
-        applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.sdk_font_unisec));
+        FontHelper.applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.sdk_font_unisec));
         resizeFontCardNumber(mWidthCardView);
-
         a.recycle();
 
     }
 
     public void setOnClickOnCardView(CardGuiProcessor pGuiProcessor) {
-        if (pGuiProcessor != null) {
-            (findViewById(TEXTVIEW_CARD_NUMBER_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
-            (findViewById(TEXTVIEW_CARD_HOLDER_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
-            (findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
+        if (pGuiProcessor == null) {
+            return;
         }
+        (findViewById(TEXTVIEW_CARD_NUMBER_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
+        (findViewById(TEXTVIEW_CARD_HOLDER_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
+        (findViewById(TEXTVIEW_CARD_EXPIRY_ID)).setOnTouchListener(pGuiProcessor.getOnTouchOnCardView());
     }
 
-    public TextView getViewCardNumNer() {
-        return (TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID);
-    }
-
-    public float getPercentWitdh() {
-        return mPercentWitdh;
-    }
-
-    /***
-     * resize font size cardnumber
-     *
-     * @param desiredWidth
-     */
     private void resizeFontCardNumber(int desiredWidth) {
         if (desiredWidth > 0) {
-            //reset font size
             desiredWidth -= GlobalData.getAppContext().getResources().getDimension(R.dimen.card_margin_left) * 2;
-
             ViewUtils.correctTextView((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID), desiredWidth);
         }
     }
 
     public void resize(float pPercentWidth) {
         mPercentWitdh = pPercentWidth;
-
         if (mPercentWitdh == -1) {
             mPercentWitdh = 0.8f;
         }
-
         final View frontContentView = findViewById(FRONT_CARD_ID);
         View cardViewLayout = findViewById(CARD_VIEW_ID);
-
         ViewUtils.resizeViewByPercent(GlobalData.getAppContext(), cardViewLayout, mPercentWitdh);
-
         mWidthCardView = ViewUtils.resizeViewByPercent(GlobalData.getAppContext(), frontContentView, mPercentWitdh);
     }
 
     private void flip(final boolean ltr, boolean isImmediate) {
-
         View layoutContainer = findViewById(R.id.card_outline_container);
         View frontView = findViewById(FRONT_CARD_OUTLINE_ID);
         View backView = findViewById(BACK_CARD_OUTLINE_ID);
-
         final View frontContentView = findViewById(FRONT_CARD_ID);
         final View backContentView = findViewById(BACK_CARD_ID);
-
         View layoutContentContainer = findViewById(R.id.card_container);
-
-
         if (isImmediate) {
             frontContentView.setVisibility(ltr ? VISIBLE : GONE);
             backContentView.setVisibility(ltr ? GONE : VISIBLE);
 
         } else {
-
             int duration = 600;
-
             FlipAnimator flipAnimator = new FlipAnimator(frontView, backView, frontView.getWidth() / 2, backView.getHeight() / 2);
             flipAnimator.setInterpolator(new OvershootInterpolator(0.5f));
             flipAnimator.setDuration(duration);
-
             if (ltr) {
                 flipAnimator.reverse();
             }
-
             flipAnimator.setTranslateDirection(FlipAnimator.DIRECTION_Z);
             flipAnimator.setRotationDirection(FlipAnimator.DIRECTION_Y);
             layoutContainer.startAnimation(flipAnimator);
-
             FlipAnimator flipAnimator1 = new FlipAnimator(frontContentView, backContentView, frontContentView.getWidth() / 2, backContentView.getHeight() / 2);
             flipAnimator1.setInterpolator(new OvershootInterpolator(0.5f));
             flipAnimator1.setDuration(duration);
-
             if (ltr) {
                 flipAnimator1.reverse();
             }
-
             flipAnimator1.setTranslateDirection(FlipAnimator.DIRECTION_Z);
             flipAnimator1.setRotationDirection(FlipAnimator.DIRECTION_Y);
-
             layoutContentContainer.startAnimation(flipAnimator1);
         }
-
     }
 
     protected String createHightLighCardNumber(String pCardNumber) {
@@ -268,9 +222,7 @@ public class CreditCardView extends FrameLayout {
         StringBuilder number = new StringBuilder();
         char[] number_arr = pCardNumber.toCharArray();
         int lastXX = 0;
-
         boolean hasSpace = false;
-
         for (int i = 0; i < number_arr.length; i++) {
             if (number_arr[i] != CreditCardUtils.CHAR_X) {
                 number.append(String.valueOf(number_arr[i]));
@@ -307,62 +259,49 @@ public class CreditCardView extends FrameLayout {
     }
 
     protected String createHighLightText(String pText, CardColorText pCardColorText) {
+        if(TextUtils.isEmpty(pText) || pCardColorText == null){
+            return pText;
+        }
+        String colorHighline = SdkUtils.getStringColor(getResources().getColor(pCardColorText.highlineColor));
+        if (pText.length() == 1) {
+            pText = "<font color='" + colorHighline + "'>" + pText + "</font>";
+            return pText;
+        }
+        int indexCharacter = pText.length() - 1;
+        //get last character
+        String lastCharacter = pText.substring(indexCharacter);
+        String lastLeave = "";
+        if (!Character.isLetterOrDigit(lastCharacter.toCharArray()[0])) {
+            //get next character
+            if (pText.length() - 2 > 0 && !pText.substring(pText.length() - 1).equalsIgnoreCase(CreditCardUtils.SLASH_SEPERATOR)) {
+                indexCharacter = pText.length() - 2;
+                lastCharacter = pText.substring(indexCharacter);
+                lastLeave = pText.substring(pText.length() - 1);
 
-        if (!TextUtils.isEmpty(pText) && pCardColorText != null) {
-            String colorHighline = SdkUtils.getStringColor(getResources().getColor(pCardColorText.highlineColor));
-            if (pText.length() == 1) {
-                pText = "<font color='" + colorHighline + "'>" + pText + "</font>";
-            } else {
-                int indexCharacter = pText.length() - 1;
-
-                //get last character
-                String lastCharacter = pText.substring(indexCharacter);
-
-                String lastLeave = "";
-
-                if (!Character.isLetterOrDigit(lastCharacter.toCharArray()[0])) {
-                    //get next character
-
-                    if (pText.length() - 2 > 0 && !pText.substring(pText.length() - 1).equalsIgnoreCase(CreditCardUtils.SLASH_SEPERATOR)) {
-                        indexCharacter = pText.length() - 2;
+                if (lastCharacter.equalsIgnoreCase(CreditCardUtils.SPACE_SEPERATOR)) {
+                    if (pText.length() - 3 > 0) {
+                        indexCharacter = pText.length() - 3;
                         lastCharacter = pText.substring(indexCharacter);
-                        lastLeave = pText.substring(pText.length() - 1);
-
-                        if (lastCharacter.equalsIgnoreCase(CreditCardUtils.SPACE_SEPERATOR)) {
-                            if (pText.length() - 3 > 0) {
-                                indexCharacter = pText.length() - 3;
-                                lastCharacter = pText.substring(indexCharacter);
-                                lastLeave = pText.substring(pText.length() - 2);
-                            }
-                        }
-
+                        lastLeave = pText.substring(pText.length() - 2);
                     }
                 }
 
-                lastCharacter = "<font color='" + colorHighline + "'>" + lastCharacter + "</font>";
-
-                pText = pText.substring(0, indexCharacter) + lastCharacter + lastLeave;
             }
         }
-
+        lastCharacter = "<font color='" + colorHighline + "'>" + lastCharacter + "</font>";
+        pText = pText.substring(0, indexCharacter) + lastCharacter + lastLeave;
         return pText;
     }
 
     public void setCardNumberNoPaintCard(String rawCardNumber) {
         this.mRawCardNumber = rawCardNumber == null ? "" : rawCardNumber;
-
         String newCardNumber = mRawCardNumber;
-
         for (int i = mRawCardNumber.length(); i < 16; i++) {
             newCardNumber += CreditCardUtils.CHAR_X;
         }
-
         String cardNumber = CreditCardUtils.handleCardNumber(newCardNumber, CreditCardUtils.SPACE_SEPERATOR);
-
         ((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID)).setText(Html.fromHtml(createHightLighCardNumber(cardNumber)));
-
         resize(mPercentWitdh);
-
         if (newCardNumber.length() >= 16) {
             resizeFontCardNumber(mWidthCardView);
         }
@@ -370,17 +309,12 @@ public class CreditCardView extends FrameLayout {
 
     public void clearHighLightCardNumber() {
         this.mRawCardNumber = getCardNumber();
-
         String newCardNumber = mRawCardNumber;
-
         for (int i = mRawCardNumber.length(); i < 16; i++) {
             newCardNumber += CreditCardUtils.CHAR_X;
         }
-
         String cardNumber = CreditCardUtils.handleCardNumber(newCardNumber, CreditCardUtils.SPACE_SEPERATOR);
-
         ((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID)).setText(cardNumber);
-
     }
 
     public void showFront() {
@@ -421,12 +355,9 @@ public class CreditCardView extends FrameLayout {
 
     public void paintCard() {
         CardSelector card = selectCard();
-
         if (card == null) {
-            Timber.d("===card=NULL===");
             return;
         }
-
         mCardColorText = card.getCardColorText();
         //can not detect
         if (!mNeedToReveal && card.getResCardId() == R.drawable.card_color_round_rect_default) {
@@ -437,8 +368,6 @@ public class CreditCardView extends FrameLayout {
 
         if (mNeedToReveal && card.getResCardId() != R.drawable.card_color_round_rect_default) {
             mNeedToReveal = false;
-
-
             revealCardAnimation(card);
             setCardNumber(getCardNumber());
             return;
@@ -459,7 +388,7 @@ public class CreditCardView extends FrameLayout {
         setDefaultShadowColor();
     }
 
-    /***
+    /*
      * Set Hint text color
      */
     public void setDefaultShadowColor() {
@@ -485,19 +414,13 @@ public class CreditCardView extends FrameLayout {
     }
 
     public void showAnimation(final View cardContainer, final View v, final int drawableId) {
-
         final View mRevealView = v;
         mRevealView.setBackgroundResource(drawableId);
-
         int duration = 1000;
         int cx = mRevealView.getLeft();
         int cy = mRevealView.getTop();
-
         int radius = Math.max(mRevealView.getWidth(), mRevealView.getHeight()) * 4;
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-
-
             Animator animator =
                     ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, 0, radius);
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -530,25 +453,16 @@ public class CreditCardView extends FrameLayout {
 
     public void setCardNumber(String rawCardNumber) {
         this.mRawCardNumber = rawCardNumber == null ? "" : rawCardNumber;
-
         String newCardNumber = mRawCardNumber;
-
         for (int i = mRawCardNumber.length(); i < 16; i++) {
             newCardNumber += CreditCardUtils.CHAR_X;
         }
-
         String cardNumber = CreditCardUtils.handleCardNumber(newCardNumber, CreditCardUtils.SPACE_SEPERATOR);
-
         ((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID)).setText(Html.fromHtml(createHightLighCardNumber(cardNumber)));
-
         paintCard();
-
         resize(mPercentWitdh);
-
         if (newCardNumber.length() >= 16) {
             resizeFontCardNumber(mWidthCardView);
         }
     }
-
-
 }

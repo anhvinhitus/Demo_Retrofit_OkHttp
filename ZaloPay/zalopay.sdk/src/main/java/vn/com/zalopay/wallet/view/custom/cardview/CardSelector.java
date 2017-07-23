@@ -7,13 +7,11 @@ import android.util.ArrayMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.card.BankCardCheck;
+import vn.com.zalopay.wallet.card.CreditCardCheck;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -21,7 +19,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class CardSelector {
     private static CardColorText CardColorTextDefault = new CardColorText(R.color.default_color_text_normal, R.color.default_color_text_highline, R.color.default_color_text_selected);
-    public static final CardSelector DEFAULT = new CardSelector(R.drawable.card_color_round_rect_default, android.R.color.transparent, R.drawable.bg_logo_card_default, CardColorTextDefault);
+    private static final CardSelector DEFAULT = new CardSelector(R.drawable.card_color_round_rect_default, android.R.color.transparent, R.drawable.bg_logo_card_default, CardColorTextDefault);
     private static Map<String, CardSelector> cardSelectorHashMap;
     private static CardSelector _object;
     private int mResCardId;
@@ -52,7 +50,7 @@ public class CardSelector {
         return CardSelector._object;
     }
 
-    public CardSelector detectCardType(@TransactionType int pTranstype) {
+    private CardSelector detectCardType(@TransactionType int pTranstype) {
         String bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
 
         if (pTranstype == TransactionType.LINK) {
@@ -72,16 +70,14 @@ public class CardSelector {
             return DEFAULT;
     }
 
-    public CardSelector selectCard(String pCardNumber) {
+    CardSelector selectCard(String pCardNumber) {
         if (!TextUtils.isEmpty(pCardNumber) && pCardNumber.length() >= 1) {
-            CardSelector selector = detectCardType(GlobalData.transtype());
-            return selector;
+            return detectCardType(GlobalData.transtype());
         }
-        Timber.d("Return DEFAULT ");
         return DEFAULT;
     }
 
-    protected CardSelector createCardSelector(String pBankCode) {
+    private CardSelector createCardSelector(String pBankCode) {
         CardSelector card = null;
         CardColorText cardColorText;
         switch (pBankCode) {
@@ -117,14 +113,14 @@ public class CardSelector {
         return card;
     }
 
-    protected void addCardSelectorToHashMap(String pBankCode) {
+    private void addCardSelectorToHashMap(String pBankCode) {
         CardSelector cardSelector = createCardSelector(pBankCode);
         if (cardSelector != null) {
             cardSelectorHashMap.put(pBankCode, cardSelector);
         }
     }
 
-    protected void populateCardSelector() {
+    private void populateCardSelector() {
         Map<String, String> bankPrefix = SDKApplication.getApplicationComponent()
                 .bankListInteractor()
                 .getBankPrefix();
@@ -137,7 +133,6 @@ public class CardSelector {
                 }
             }
         }
-
         //credit card
         String bankCodeVisa = CardType.VISA;
         String bankCodeMaster = CardType.MASTER;
@@ -149,21 +144,21 @@ public class CardSelector {
         }
     }
 
-    public int getResCardId() {
+    int getResCardId() {
         return mResCardId;
     }
 
-    public int getResCenterImageId() {
+    int getResCenterImageId() {
         return mResCenterImageId;
     }
 
 
-    public int getResLogoId() {
+    int getResLogoId() {
         return mResLogoId;
     }
 
 
-    public CardColorText getCardColorText() {
+    CardColorText getCardColorText() {
         return mCardColorText;
     }
 }

@@ -9,9 +9,10 @@ import android.widget.EditText;
 import java.util.List;
 import java.util.Map.Entry;
 
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
+import timber.log.Timber;
+import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.card.BankCardCheck;
 import vn.com.zalopay.wallet.repository.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
@@ -39,36 +40,37 @@ public class ResourceRender {
 
     public void renderKeyBoard() {
         List<DKeyBoardConfig> keyBoardConfigs = mResourceManager.getKeyBoardConfig();
-        if (keyBoardConfigs != null && keyBoardConfigs.size() > 0 && mView != null) {
-            for (DKeyBoardConfig keyboard : keyBoardConfigs) {
-                Log.d("renderKeyBoard", "preparing to set keyboard ", keyboard);
-
-                /***
-                 * "keyboard":[
-                 * //set keyboad for bank's view with bankcode
-                 {
-                 "bankcode":"123PVTB",
-                 "view": "zpsdk_otp_ctl",
-                 "type": "1"
-                 },
-                 //set keyboard for someview
-                 {
-                 "view": "edittext_localcard_number",
-                 "type": "2"
-                 }
-                 ],
-                 */
-                //set keyboard for some view
-                if (TextUtils.isEmpty(keyboard.bankcode)) {
-                    mView.setKeyBoard(keyboard.view, keyboard.type);
-                    Log.d("renderKeyBoard", "set keyboard for view", keyboard);
-                    continue;
-                }
-                //set keyboard by bank
-                if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
-                    mView.setKeyBoard(keyboard.view, keyboard.type);
-                    Log.d("renderKeyBoard", "set keyboard for bank " + BankCardCheck.getInstance().getDetectBankCode(), keyboard);
-                }
+        if(keyBoardConfigs == null || keyBoardConfigs.size() <= 0){
+            return;
+        }
+        if(mView == null){
+            return;
+        }
+        for (DKeyBoardConfig keyboard : keyBoardConfigs) {
+            Timber.d("render keyboard %s", GsonUtils.toJsonString(keyboard));
+            /***
+             * "keyboard":[
+             * //set keyboad for bank's view with bankcode
+             {
+             "bankcode":"123PVTB",
+             "view": "zpsdk_otp_ctl",
+             "type": "1"
+             },
+             //set keyboard for someview
+             {
+             "view": "edittext_localcard_number",
+             "type": "2"
+             }
+             ],
+             */
+            //set keyboard for some view
+            if (TextUtils.isEmpty(keyboard.bankcode)) {
+                mView.setKeyBoard(keyboard.view, keyboard.type);
+                continue;
+            }
+            //set keyboard by bank
+            if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
+                mView.setKeyBoard(keyboard.view, keyboard.type);
             }
         }
     }
@@ -81,7 +83,6 @@ public class ResourceRender {
         if (contentView != null) {
             renderStaticView(pStaticViewGroup);
             renderDynamicView(pDynamicViewGroup);
-            renderKeyBoard();
         }
     }
 

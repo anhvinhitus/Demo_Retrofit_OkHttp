@@ -12,7 +12,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,9 +23,9 @@ import android.widget.Toast;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import java.util.Arrays;
@@ -37,9 +36,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -55,16 +52,17 @@ import vn.com.zalopay.wallet.dialog.MapBankDialogFragment;
 import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -84,20 +82,17 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             new Handler().postDelayed(() -> allowClick = true, 3000);
         }
     };
-    private View.OnClickListener itemSupportButtonClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            try {
-                int i = view.getId();
-                if (i == R.id.question_button) {
-                    startCenterSupport();
-                } else if (i == R.id.support_button) {
-                    mPresenter.startSupportScreen();
-                }
-                closeSupportView();
-            } catch (Exception ex) {
-                Log.e(this, ex);
+    private View.OnClickListener itemSupportButtonClick = view -> {
+        try {
+            int i = view.getId();
+            if (i == R.id.question_button) {
+                startCenterSupport();
+            } else if (i == R.id.support_button) {
+                mPresenter.startSupportScreen();
             }
+            closeSupportView();
+        } catch (Exception e) {
+            Timber.w(e);
         }
     };
     private View.OnClickListener supportClick = view -> showSupportView();
@@ -212,7 +207,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     public void showError(String pMessage) {
         hideLoading();
         DialogManager.showSweetDialogCustom(getActivity(), pMessage, getResources().getString(R.string.dialog_close_button),
-                SweetAlertDialog.WARNING_TYPE, () -> callbackThenTerminate());
+                SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
     }
 
     @Override
@@ -259,7 +254,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showQuitConfirm(String message, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showConfirmDialog(getActivity(),getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+        DialogManager.showConfirmDialog(getActivity(), getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
                 message,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), pListener);
@@ -300,7 +295,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 v.startAnimation(hyperspaceJumpAnimation);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e.getMessage());
         }
     }
 
@@ -328,18 +323,9 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     }
 
     @Override
-    public void renderAppInfo(String appName) {
-        boolean hasAppName = !TextUtils.isEmpty(appName);
-        if (hasAppName) {
-            setText(R.id.appname_txt, appName);
-        }
-        setVisible(R.id.appname_relativelayout, hasAppName);
-    }
-
-    @Override
     public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
-            String txtFee = CurrencyUtil.formatCurrency(fee,false);
+            String txtFee = CurrencyUtil.formatCurrency(fee, false);
             setText(R.id.order_fee_txt, txtFee);
         } else {
             setText(R.id.order_fee_txt, getResources().getString(R.string.sdk_order_fee_free));
@@ -376,7 +362,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         try {
             renderByResource(screenName, null, null);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
             showError(getString(R.string.zpw_string_error_layout));
         }
     }
@@ -400,28 +386,8 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             }
             Log.d(this, "render resource: Total time:", (System.currentTimeMillis() - time));
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
             showError(getString(R.string.zpw_string_error_layout));
-        }
-    }
-
-    @Override
-    public void renderResourceAfterDelay(String screenName) {
-        final View buttonWrapper = findViewById(R.id.zpw_switch_card_button);
-        if (buttonWrapper != null) {
-            ViewTreeObserver vto = buttonWrapper.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver obs = buttonWrapper.getViewTreeObserver();
-                    obs.removeGlobalOnLayoutListener(this);
-                    renderByResource(screenName);
-                    Timber.d("renderSuccess() renderResourceAfterDelay");
-                }
-            });
-        } else {
-            Timber.d("reader resource after delaying 500ms");
-            new Handler().postDelayed(() -> renderByResource(screenName), 500);
         }
     }
 
@@ -464,62 +430,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         new Handler().postDelayed(() -> applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.sdk_font_medium)), 500);
     }
 
-    @Override
-    public void marginSubmitButtonTop(boolean viewEnd) {
-        View submitButton = findViewById(R.id.zpw_submit_view);
-        View authenLocalView = findViewById(R.id.linearlayout_selection_authen);
-        View authenInputCardView = findViewById(R.id.linearlayout_authenticate_local_card);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        int paddingButtom = (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone);
-        if (!SdkUtils.isTablet(getActivity())) {
-            params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
-            if (submitButton != null) {
-                submitButton.setLayoutParams(params);
-                submitButton.requestLayout();
-            }
-            if (authenLocalView != null) {
-                authenLocalView.setPadding(0, 0, 0, paddingButtom);
-                authenLocalView.requestLayout();
-            }
-            if (authenInputCardView != null) {
-                authenInputCardView.setPadding(0, 0, 0, paddingButtom);
-                authenInputCardView.requestLayout();
-            }
-            Timber.d("setMarginSubmitButtonTop  Phone");
-        } else {
-            if (submitButton != null) {
-                params.setMargins(0, (int) ((viewEnd) ? getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone) : getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab)), 0, 0);
-                submitButton.setLayoutParams(params);
-                submitButton.requestLayout();
-            }
-            Timber.d("setMarginSubmitButtonTop  Tab");
-        }
-    }
-
-  /*  public void marginSubmitButtonTopSuccess(boolean viewEnd) {
-        View submitButton = findViewById(R.id.zpw_submit_view);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        if (!SdkUtils.isTablet(getActivity())) {
-            params.setMargins(0, 0, 0, 0);
-            if (submitButton != null) {
-                submitButton.setLayoutParams(params);
-                submitButton.requestLayout();
-            }
-            Timber.d("setMarginSubmitButtonTop  Phone");
-        } else {
-            if (submitButton != null) {
-                params.setMargins(0, (int) ((viewEnd) ? getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone) : getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab)), 0, 0);
-                submitButton.setLayoutParams(params);
-                submitButton.requestLayout();
-            }
-            Timber.d("setMarginSubmitButtonTop  Tab");
-        }
-    }*/
-
     public void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) throws Exception {
         List<View> views = genDynamicItemDetail(getContext(), nameValuePairList);
         boolean hasView = views != null && views.size() > 0;
@@ -559,7 +469,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
     @Override
     public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
         hideLoading();
-        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET,-1,
+        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
                 getString(R.string.sdk_dialog_nointernet_title),
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
@@ -577,7 +487,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
 
     @Override
     public void showConfirmDialog(String pMessage, String pButtonLeftText, String pButtonRightText, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showConfirmDialog(getActivity(),getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+        DialogManager.showConfirmDialog(getActivity(), getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
                 pMessage, pButtonLeftText, pButtonRightText, pListener);
     }
 
@@ -641,7 +551,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         transaction_time_txt.setText(SdkUtils.convertDateTime(paymentTime));
         //trans fee
         String transFee = order != null && order.fee > 0 ?
-                CurrencyUtil.formatCurrency(order.fee):
+                CurrencyUtil.formatCurrency(order.fee) :
                 getResources().getString(R.string.sdk_order_fee_free);
         TextView order_fee_txt = (TextView) viewContainer.findViewById(R.id.order_fee_txt);
         order_fee_txt.setText(transFee);
@@ -663,7 +573,7 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
         boolean hasAmount = order != null && order.amount_total > 0;
         if (hasAmount) {
             applyFont(findViewById(R.id.success_order_amount_total_txt), GlobalData.getStringResource(RS.string.sdk_font_medium));
-            setTextHtml(R.id.success_order_amount_total_txt, CurrencyUtil.formatCurrency(order.amount_total,false));
+            setTextHtml(R.id.success_order_amount_total_txt, CurrencyUtil.formatCurrency(order.amount_total, false));
             ((TextView) findViewById(R.id.success_order_amount_total_txt)).setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order.amount_total)));
         }
         if (!hasAmount || hideAmount) {
@@ -699,11 +609,9 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
             try {
                 renderTransDetail(trans_detail_view, isLink, pTransID, order, appName, true);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
         }
-        //anim success icon
-        //ViewUtils.animIcon(getActivity(), R.id.success_imageview);
         changeSubmitButtonBackground(order);
         updateToolBar();
         enableSubmitBtn();
@@ -740,7 +648,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
             }*/
         }
-        // ViewUtils.animIcon(getActivity(), R.id.fail_imageview);
         changeSubmitButtonBackground(order);
         updateToolBar();
         enableSubmitBtn();
@@ -775,7 +682,6 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                 if (close_btn != null) {
                     close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_grey));
                     close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
-                    return;
                 }
         }
     }
@@ -824,11 +730,17 @@ public class ChannelFragment extends RenderFragment<ChannelPresenter> implements
                     .show();
 
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
     }
 
     public void showDialogWarningLinkCardAndResetCardNumber() {
-        showInfoDialog(getResources().getString(R.string.sdk_error_linkcard_not_support_mess), () -> mPresenter.resetCardNumberAndShowKeyBoard());
+        showInfoDialog(getResources().getString(R.string.sdk_error_linkcard_not_support_mess), () -> {
+            try {
+                mPresenter.resetCardNumberAndShowKeyBoard();
+            } catch (Exception e) {
+                Timber.w(e.getMessage());
+            }
+        });
     }
 }

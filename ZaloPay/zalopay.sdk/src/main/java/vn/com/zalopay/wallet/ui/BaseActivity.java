@@ -14,7 +14,7 @@ import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 

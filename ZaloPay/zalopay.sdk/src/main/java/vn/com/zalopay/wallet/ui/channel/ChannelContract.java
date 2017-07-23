@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -37,8 +37,6 @@ public interface ChannelContract extends IContract {
 
         String getFailMess();
 
-        void renderAppInfo(String appName);
-
         void renderOrderInfo(AbstractOrder order);
 
         void renderTotalAmountAndFee(double total_amount, double fee);
@@ -46,8 +44,6 @@ public interface ChannelContract extends IContract {
         void renderByResource(String screenName);
 
         void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup, DDynamicViewGroup pAdditionDynamicViewGroup);
-
-        void renderResourceAfterDelay(String screenName);
 
         void enableSubmitBtn();
 
@@ -60,8 +56,6 @@ public interface ChannelContract extends IContract {
         void overrideFont();
 
         void changeBgSubmitButton(boolean finalStep);
-
-        void marginSubmitButtonTop(boolean viewEnd);
 
         void visiableOrderInfo(boolean visible);
 

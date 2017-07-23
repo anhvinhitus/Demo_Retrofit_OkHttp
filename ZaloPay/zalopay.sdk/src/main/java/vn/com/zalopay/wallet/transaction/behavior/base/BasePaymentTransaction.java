@@ -1,9 +1,9 @@
 package vn.com.zalopay.wallet.transaction.behavior.base;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.behavior.interfaces.IAuthenPayer;
 import vn.com.zalopay.wallet.transaction.behavior.interfaces.IDoSubmit;
@@ -36,7 +36,7 @@ public abstract class BasePaymentTransaction extends SingletonBase implements IS
     }
 
     @Override
-    public void getStatus(AdapterBase pAdapter, String pTransID, boolean pCheckData, String pMessage) {
+    public void getStatus(AbstractWorkFlow pAdapter, String pTransID, boolean pCheckData, String pMessage) {
         this.mGetTransactionStatus.getStatus(pAdapter, pTransID, pCheckData, pMessage);
     }
 

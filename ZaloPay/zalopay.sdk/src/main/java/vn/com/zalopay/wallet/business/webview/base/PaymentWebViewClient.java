@@ -4,30 +4,31 @@ import android.webkit.WebViewClient;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
+import timber.log.Timber;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebView;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
 import vn.com.zalopay.wallet.business.webview.atm.BidvWebViewClient;
 
 public abstract class PaymentWebViewClient extends WebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
-    protected WeakReference<AdapterBase> mAdapter;
+    protected WeakReference<AbstractWorkFlow> mAdapter;
     protected BankWebView mWebPaymentBridge = null;
 
-    public PaymentWebViewClient(AdapterBase pAdapter) {
+    public PaymentWebViewClient(AbstractWorkFlow pAdapter) {
         mAdapter = new WeakReference<>(pAdapter);
     }
 
-    public static PaymentWebViewClient createPaymentWebViewClientByBank(AdapterBase pAdapter) {
-        if (pAdapter instanceof AdapterBankCard && ((AdapterBankCard) pAdapter).paymentBIDV()) {
+    public static PaymentWebViewClient createPaymentWebViewClientByBank(AbstractWorkFlow pAdapter) {
+        if (pAdapter instanceof BankCardWorkFlow && ((BankCardWorkFlow) pAdapter).paymentBIDV()) {
             return new BidvWebViewClient(pAdapter);
         } else {
             return new BankWebViewClient(pAdapter);
         }
     }
 
-    protected AdapterBase getAdapter() {
+    protected AbstractWorkFlow getAdapter() {
         if (mAdapter != null) {
             return mAdapter.get();
         }
@@ -47,6 +48,7 @@ public abstract class PaymentWebViewClient extends WebViewClient {
             mWebPaymentBridge.freeMemory();
             mWebPaymentBridge.destroy();
             mWebPaymentBridge = null;
+            Timber.w("release webview client");
         }
     }
 
@@ -55,6 +57,8 @@ public abstract class PaymentWebViewClient extends WebViewClient {
     }
 
     public abstract void start(String pUrl);
+
+    public abstract void stop();
 
     public abstract void hit();
 }

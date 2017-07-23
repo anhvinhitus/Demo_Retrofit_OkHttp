@@ -11,7 +11,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -33,12 +33,12 @@ public class GetStatus extends BaseTask<StatusResponse> {
     int mRetryCount = 1;
     private String mTransID;
     private boolean mIsNeedToCheckDataInResponse;
-    private AdapterBase mAdapter;
+    private AbstractWorkFlow mAdapter;
     private boolean isTimerStated = false;
     private String mMessage;
     private long startTime = 0;
 
-    public GetStatus(AdapterBase pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
+    public GetStatus(AbstractWorkFlow pAdapter, String pTransID, boolean pIsCheckData, String pMessage) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         this.mTransID = pTransID;
         this.mIsNeedToCheckDataInResponse = pIsCheckData;
@@ -101,7 +101,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         try {
-            mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
+            mAdapter.getGuiProcessor().getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
                     onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
@@ -129,16 +129,16 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
         try {
             if (pIsShow) {
-                mAdapter.getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
+                mAdapter.getGuiProcessor().getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
             } else {
-                mAdapter.getView().hideLoading();
+                mAdapter.getGuiProcessor().getView().hideLoading();
             }
         } catch (Exception e) {
             Log.e(this, e);
         }
     }
 
-    protected StatusResponse createReponse(int pCode, String pMessage) {
+    private StatusResponse createReponse(int pCode, String pMessage) {
         StatusResponse statusResponse = new StatusResponse();
         statusResponse.isprocessing = false;
         statusResponse.returncode = pCode;

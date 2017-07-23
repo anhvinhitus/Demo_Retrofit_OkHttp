@@ -38,17 +38,18 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
+import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
-public class ChannelListFragment extends GenericFragment<ChannelListPresenter> implements ChannelListContract.IView {
+public class ChannelListFragment extends RenderFragment<ChannelListPresenter> implements ChannelListContract.IView {
     private boolean delayClick = false;
     private View.OnClickListener mConfirmClick = view -> {
         if (!delayClick) {
@@ -108,6 +109,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onViewBound(View view) {
         super.onViewBound(view);
+        mRootView = view;
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);

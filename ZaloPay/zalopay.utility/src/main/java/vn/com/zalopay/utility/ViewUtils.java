@@ -47,11 +47,6 @@ public class ViewUtils {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
-    /***
-     * @param pContext
-     * @param pView
-     * @param pPercent
-     */
     public static int resizeViewByPercent(Context pContext, View pView, float pPercent) {
         try {
             Display display = ((WindowManager) pContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -61,16 +56,11 @@ public class ViewUtils {
             params.height = getHeightByRate(params.width);
             pView.setLayoutParams(params);
             return params.width;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return 0;
     }
 
-    /***
-     * set Height view with (width and height old)
-     * @param pNewWidth
-     * @return
-     */
     public static int getHeightByRate(int pNewWidth) {
         float rate = 1.6f;
         return (int) (pNewWidth / rate);

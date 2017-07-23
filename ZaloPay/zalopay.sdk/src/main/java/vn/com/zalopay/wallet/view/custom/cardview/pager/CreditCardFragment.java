@@ -9,13 +9,15 @@ import android.widget.EditText;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 public abstract class CreditCardFragment extends Fragment {
     public String tag;
@@ -41,31 +43,29 @@ public abstract class CreditCardFragment extends Fragment {
     }
 
     public void onChangeTextHintColor(EditText pEditText) {
-        if (pEditText instanceof VPaymentEditText && ((VPaymentEditText) pEditText).getTextInputLayout() instanceof TextInputLayout) {
-            try {
-                int color = GlobalData.getAppContext().getResources().getColor(R.color.color_primary);
+        if (!(pEditText instanceof VPaymentEditText) || (((VPaymentEditText) pEditText).getTextInputLayout() == null)) {
+            return;
+        }
+        try {
+            int color = GlobalData.getAppContext().getResources().getColor(R.color.color_primary);
+            int textColor = GlobalData.getAppContext().getResources().getColor(R.color.text_color);
+            TextInputLayout textInputLayout = ((VPaymentEditText) pEditText).getTextInputLayout();
 
-                int textColor = GlobalData.getAppContext().getResources().getColor(R.color.text_color);
+            Field fDefaultTextColor = TextInputLayout.class.getDeclaredField("mDefaultTextColor");
+            fDefaultTextColor.setAccessible(true);
+            fDefaultTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{textColor}));
 
-                TextInputLayout textInputLayout = ((VPaymentEditText) pEditText).getTextInputLayout();
+            Field fFocusedTextColor = TextInputLayout.class.getDeclaredField("mFocusedTextColor");
+            fFocusedTextColor.setAccessible(true);
+            fFocusedTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
 
-                Field fDefaultTextColor = TextInputLayout.class.getDeclaredField("mDefaultTextColor");
-                fDefaultTextColor.setAccessible(true);
-                fDefaultTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{textColor}));
-
-                Field fFocusedTextColor = TextInputLayout.class.getDeclaredField("mFocusedTextColor");
-                fFocusedTextColor.setAccessible(true);
-                fFocusedTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
-
-            } catch (Exception ex) {
-                Log.e(this, ex);
-            }
+        } catch (Exception ex) {
+            Timber.w(ex);
         }
     }
 
     public void onSelectText() {
         EditText editText = getEditText();
-
         if (editText != null && !TextUtils.isEmpty(editText.getText())) {
             editText.setSelection(editText.getText().length());
         }
@@ -77,7 +77,7 @@ public abstract class CreditCardFragment extends Fragment {
                 mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
                 return mGuiProcessor.get();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
         }
         return mGuiProcessor.get();
@@ -90,33 +90,27 @@ public abstract class CreditCardFragment extends Fragment {
         throw new Exception();
     }
 
-    public AdapterBase getPaymentAdapter() throws Exception {
+    public AbstractWorkFlow getPaymentAdapter() throws Exception {
         ChannelActivity channelActivity = getHostActivity();
         if (channelActivity != null && !channelActivity.isFinishing()) {
-            return channelActivity.getAdapter();
+            return channelActivity.getWorkFlow();
         }
         throw new Exception();
     }
 
     protected void setErrorHint(EditText pEditText, String pMessage) {
         try {
-            AdapterBase adapterBase = getPaymentAdapter();
-            if (adapterBase != null) {
-                adapterBase.getView().setTextInputLayoutHintError(pEditText, pMessage, GlobalData.getAppContext());
-            }
+            RenderHelper.setTextInputLayoutHintError(pEditText, pMessage, GlobalData.getAppContext());
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
     }
 
     protected void setHint(EditText pEditText, String pMessage) {
         try {
-            AdapterBase adapterBase = getPaymentAdapter();
-            if (adapterBase != null) {
-                adapterBase.getView().setTextInputLayoutHint(pEditText, pMessage, GlobalData.getAppContext());
-            }
+            RenderHelper.setTextInputLayoutHint(pEditText, pMessage, GlobalData.getAppContext());
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
     }
 }

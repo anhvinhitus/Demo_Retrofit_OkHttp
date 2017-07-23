@@ -16,8 +16,8 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -67,7 +67,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     private boolean mIsFirst = true;
 
-    public BankWebViewClient(AdapterBase pAdapter) {
+    public BankWebViewClient(AbstractWorkFlow pAdapter) {
         super(pAdapter);
         initWebViewBridge();
     }
@@ -79,9 +79,17 @@ public class BankWebViewClient extends PaymentWebViewClient {
     }
 
     public void start(String pUrl) {
+        if (mWebPaymentBridge != null) {
+            mWebPaymentBridge.loadUrl(pUrl);
+            mIsFirst = true;
+        }
+    }
 
-        mWebPaymentBridge.loadUrl(pUrl);
-        mIsFirst = true;
+    @Override
+    public void stop() {
+        if (mWebPaymentBridge != null) {
+            mWebPaymentBridge.stopLoading();
+        }
     }
 
     public void hit() {
@@ -96,7 +104,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
-    public DAtmScriptInput genJsInput() {
+    public DAtmScriptInput genJsInput() throws Exception{
         DAtmScriptInput input = new DAtmScriptInput();
 
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
@@ -126,7 +134,13 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                DAtmScriptInput input = genJsInput();
+                DAtmScriptInput input = null;
+                try {
+                    input = genJsInput();
+                } catch (Exception e) {
+                    Timber.w(e.getMessage());
+                    SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkParseWebsiteErrorEvent());
+                }
                 input.isAjax = pIsAjax;
 
                 String inputScript = GsonUtils.toJsonString(input);

@@ -10,8 +10,8 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
-import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
-import vn.com.zalopay.wallet.business.feedback.IFeedBack;
+import vn.com.zalopay.wallet.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -92,7 +92,7 @@ public class GlobalData {
         boolean isTransactionHasInputCard = !paymentInfoHelper.payByCardMap() && !paymentInfoHelper.payByBankAccountMap() && !paymentInfoHelper.isWithDrawTrans();
         boolean isChannelHasInputCard = true;
         if (BaseActivity.getCurrentActivity() instanceof ChannelActivity
-                && ((ChannelActivity) BaseActivity.getCurrentActivity()).getAdapter().isZaloPayFlow()) {
+                && ((ChannelActivity) BaseActivity.getCurrentActivity()).getWorkFlow().isZaloPayFlow()) {
             isChannelHasInputCard = false;
         }
         return isTransactionHasInputCard && isChannelHasInputCard;

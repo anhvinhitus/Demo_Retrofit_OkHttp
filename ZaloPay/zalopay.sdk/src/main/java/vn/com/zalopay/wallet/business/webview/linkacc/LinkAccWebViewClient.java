@@ -19,8 +19,8 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -51,7 +51,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
-    AdapterLinkAcc mAdapter = null;
+    AccountLinkWorkFlow mAdapter = null;
     // value is used for
     // detect valid url
     // in the case
@@ -82,10 +82,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
     };
 
-    public LinkAccWebViewClient(AdapterBase pAdapter) {
+    public LinkAccWebViewClient(AbstractWorkFlow pAdapter) {
         super(pAdapter);
         if (pAdapter != null) {
-            mAdapter = (AdapterLinkAcc) pAdapter;
+            mAdapter = (AccountLinkWorkFlow) pAdapter;
             mWebPaymentBridge = new PaymentWebView(GlobalData.getAppContext());
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
@@ -94,10 +94,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
 
-    public LinkAccWebViewClient(AdapterBase pAdapter, PaymentWebView pWeb) {
+    public LinkAccWebViewClient(AbstractWorkFlow pAdapter, PaymentWebView pWeb) {
         super(pAdapter);
         if (pAdapter != null) {
-            mAdapter = (AdapterLinkAcc) pAdapter;
+            mAdapter = (AccountLinkWorkFlow) pAdapter;
             mWebPaymentBridge = pWeb;
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
@@ -165,8 +165,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + error.toString());
         try {
-            getAdapter().getView().hideLoading();
-            getAdapter().getView().showConfirmDialog(
+            getAdapter().getGuiProcessor().getView().hideLoading();
+            getAdapter().getGuiProcessor().getView().showConfirmDialog(
                     GlobalData.getAppContext().getString(R.string.sdk_parsewebsite_sslerror_mess),
                     GlobalData.getAppContext().getString(R.string.dialog_continue_button),
                     GlobalData.getAppContext().getString(R.string.dialog_close_button),
@@ -216,7 +216,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, errStringBuilder.toString());
         }
         try {
-            getAdapter().getView().hideLoading();
+            getAdapter().getGuiProcessor().getView().hideLoading();
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -257,8 +257,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
     }
 
+    @Override
     public void stop() {
-        mWebPaymentBridge.stopLoading();
+        if (mWebPaymentBridge != null) {
+            mWebPaymentBridge.stopLoading();
+        }
     }
 
 

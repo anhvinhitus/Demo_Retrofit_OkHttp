@@ -10,15 +10,15 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.error.CError;
-import vn.com.zalopay.wallet.business.feedback.IFeedBack;
+import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.business.validation.IValidate;
-import vn.com.zalopay.wallet.business.validation.PaymentInfoValidation;
+import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.validation.IValidate;
+import vn.com.zalopay.wallet.validation.PaymentInfoValidation;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -54,7 +54,7 @@ public class SDKPayment {
             if (channelActivity == null || channelActivity.isFinishing()) {
                 return true;
             }
-            AdapterBase adapterBase = channelActivity.getAdapter();
+            AbstractWorkFlow adapterBase = channelActivity.getWorkFlow();
             return adapterBase != null && adapterBase.isFinalScreen();
         } catch (Exception ex) {
             Timber.w(ex, "Exception check close SDK");
@@ -79,7 +79,7 @@ public class SDKPayment {
         try {
             ChannelActivity channelActivity = BaseActivity.getChannelActivity();
             if (channelActivity != null && !channelActivity.isFinishing()) {
-                AdapterBase adapterBase = channelActivity.getAdapter();
+                AbstractWorkFlow adapterBase = channelActivity.getWorkFlow();
                 if (adapterBase != null) {
                     adapterBase.onClickSubmission();
                 }

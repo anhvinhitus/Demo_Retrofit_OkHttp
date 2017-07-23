@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.transaction.behavior.interfaces;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public interface IGetTransactionStatus {
-    void getStatus(AdapterBase pAdapter, String pZmpTransID, boolean pCheckData, String pMessage);
+    void getStatus(AbstractWorkFlow pAdapter, String pZmpTransID, boolean pCheckData, String pMessage);
 }

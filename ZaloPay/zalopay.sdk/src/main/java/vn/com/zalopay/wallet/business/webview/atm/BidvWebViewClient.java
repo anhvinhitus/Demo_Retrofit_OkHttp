@@ -15,8 +15,8 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -59,7 +59,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     private boolean mIsFirst = true;
 
-    public BidvWebViewClient(AdapterBase pAdapter) {
+    public BidvWebViewClient(AbstractWorkFlow pAdapter) {
         super(pAdapter);
         if (getAdapter() != null) {
             try {
@@ -79,12 +79,19 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     }
 
     @Override
+    public void stop() {
+        if(mWebPaymentBridge != null){
+            mWebPaymentBridge.stopLoading();
+        }
+    }
+
+    @Override
     public void hit() {
         mLastStartPageTime = System.currentTimeMillis();
         matchAndRunJs(EJavaScriptType.HIT, false);
     }
 
-    public DAtmScriptInput genJsInput() {
+    public DAtmScriptInput genJsInput() throws Exception{
         DAtmScriptInput input = new DAtmScriptInput();
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
             input.cardHolderName = getAdapter().getGuiProcessor().getCardName();
@@ -126,7 +133,12 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         mEventID = mCurrentBankScript.eventID;
         mPageCode = mCurrentBankScript.pageCode;
 
-        DAtmScriptInput input = genJsInput();
+        DAtmScriptInput input = null;
+        try {
+            input = genJsInput();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
         input.isAjax = pIsAjax;
 
         String inputScript = GsonUtils.toJsonString(input);

@@ -27,11 +27,11 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
-import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.WorkFlowFactoryCreator;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
@@ -39,7 +39,7 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.business.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
@@ -74,7 +74,7 @@ import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
 import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -87,11 +87,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     AppInfoStore.Interactor appInfoInteractor;
 
     boolean mTimerRunning = false;
-    AdapterBase mAdapter = null;
+    AbstractWorkFlow mAbstractWorkFlow = null;
     private CountDownTimer mExpireTransTimer;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
-        if (mAdapter != null) {
-            mAdapter.checkAndOpenNetworkingSetting();
+        if (mAbstractWorkFlow != null) {
+            mAbstractWorkFlow.checkAndOpenNetworkingSetting();
         }
     };
     private boolean mIsSwitching = false;
@@ -106,7 +106,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 callback();
                 break;
             case 2:
-                mAdapter.handleEventLoadSiteError(new Object());
+                try {
+                    mAbstractWorkFlow.handleEventLoadSiteError(new Object());
+                } catch (Exception e) {
+                    Timber.w(e.getMessage());
+                }
                 break;
         }
     };
@@ -127,8 +131,13 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         @Override
         public void onCancel(int pReturnCode) {
             Timber.d("cancel popup map selection");
-            if (mAdapter != null && mAdapter.getGuiProcessor() != null) {
-                mAdapter.getGuiProcessor().clearCardNumberAndShowKeyBoard();
+            try {
+                if (mAbstractWorkFlow == null || mAbstractWorkFlow.getGuiProcessor() == null) {
+                    return;
+                }
+                mAbstractWorkFlow.getGuiProcessor().clearCardNumberAndShowKeyBoard();
+            } catch (Exception e) {
+                Timber.w(e.getMessage());
             }
         }
     };
@@ -145,8 +154,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         Timber.d("call constructor ChannelPresenter");
     }
 
-    public AdapterBase getAdapter() {
-        return mAdapter;
+    public AbstractWorkFlow getWorkFlow() {
+        return mAbstractWorkFlow;
     }
 
     private boolean hasChannelList() {
@@ -154,7 +163,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return channelListActivity != null && !channelListActivity.isFinishing();
     }
 
-    private void setResult(int code, Intent data) throws Exception {
+    void setResult(int code, Intent data) throws Exception {
         Activity activity = getViewOrThrow().getActivity();
         if (activity != null && !activity.isFinishing()) {
             activity.setResult(code, data);
@@ -175,28 +184,28 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return true;
         }
         //order is processing
-        if (mAdapter != null && mAdapter.mOrderProcessing) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.mOrderProcessing) {
             Timber.d("can not back, order still request api");
             return true;
         }
         //get status again if user back when payment in bank's site
-        if (mAdapter != null && !mAdapter.isFinalScreen() && mAdapter.isCardFlowWeb() &&
-                (mAdapter.isCCFlow() || (mAdapter.isATMFlow() && ((BankCardGuiProcessor) mAdapter.getGuiProcessor()).isOtpWebProcessing()))) {
+        if (mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen() && mAbstractWorkFlow.isCardFlowWeb() &&
+                (mAbstractWorkFlow.isCCFlow() || (mAbstractWorkFlow.isATMFlow() && ((BankCardGuiProcessor) mAbstractWorkFlow.getGuiProcessor()).isOtpWebProcessing()))) {
             getViewOrThrow().showDialogManyOption(dialogManyOptionClick);
             return true;
         }
-        if (mAdapter != null && mAdapter.isATMFlow() && mAdapter.isCanEditCardInfo()) {
-            ((BankCardGuiProcessor) mAdapter.getGuiProcessor()).goBackInputCard();
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.isATMFlow() && mAbstractWorkFlow.isCanEditCardInfo()) {
+            ((BankCardGuiProcessor) mAbstractWorkFlow.getGuiProcessor()).goBackInputCard();
             return true;
         }
-        if (mAdapter != null && mAdapter.isZaloPayFlow() && mAdapter.isBalanceErrorPharse()) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.isZaloPayFlow() && mAbstractWorkFlow.isBalanceErrorPharse()) {
             setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             return false;
         }
-        if (mAdapter != null && mAdapter.exitWithoutConfirm() && !isInProgress()) {
-            if (mAdapter.isTransactionSuccess()) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.exitWithoutConfirm() && !isInProgress()) {
+            if (mAbstractWorkFlow.isTransactionSuccess()) {
                 setPaymentStatusAndCallback(PaymentStatus.SUCCESS);
-            } else if (mAdapter.isTransactionFail()) {
+            } else if (mAbstractWorkFlow.isTransactionFail()) {
                 setPaymentStatusAndCallback(PaymentStatus.FAILURE);
             } else {
                 setCallBack(Activity.RESULT_CANCELED);
@@ -245,7 +254,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     .sharePreferences()
                     .pickCachedCardNumber();
             if (!TextUtils.isEmpty(pCardNumber)) {
-                mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
+                mAbstractWorkFlow.getGuiProcessor().setCardInfo(pCardNumber);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -253,7 +262,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void onUserInteraction() {
-        if (mTimerRunning && !mAdapter.isFinalScreen()) {
+        if (mTimerRunning && !mAbstractWorkFlow.isFinalScreen()) {
             Timber.d("user tap on UI restart payment transaction countdown");
             startTransactionExpiredTimer();
         }
@@ -286,8 +295,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             Timber.d("start payment channel %s", mMiniPmcTransType);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
-            mAdapter = AdapterFactory.create(mContext, this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
-            if (mAdapter == null) {
+            mAbstractWorkFlow = WorkFlowFactoryCreator.create(mContext, this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            if (mAbstractWorkFlow == null) {
                 onExit(mContext.getResources().getString(R.string.sdk_invalid_payment_data), true);
                 return;
             }
@@ -341,14 +350,14 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 onExit(mContext.getResources().getString(R.string.sdk_config_invalid), true);
                 return;
             }
-            mAdapter = AdapterFactory.create(mContext, this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
-            if (mAdapter == null) {
+            mAbstractWorkFlow = WorkFlowFactoryCreator.create(mContext, this, mMiniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            if (mAbstractWorkFlow == null) {
                 onExit(mContext.getResources().getString(R.string.sdk_invalid_payment_data), true);
                 return;
             }
             initAdapter();
-            if (mAdapter instanceof AdapterLinkAcc) {
-                ((AdapterLinkAcc) mAdapter).startFlow();
+            if (mAbstractWorkFlow instanceof AccountLinkWorkFlow) {
+                ((AccountLinkWorkFlow) mAbstractWorkFlow).startFlow();
             } else {
                 reFillBidvCardNumber();
                 showKeyBoard();
@@ -359,18 +368,18 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public void switchCardLinkAdapter(int pChannelID, final String pCardNumber) {
-        if (mAdapter == null) {
+    public void switchCardLinkAdapter(int pChannelID, final String pCardNumber) throws Exception {
+        if (mAbstractWorkFlow == null) {
             return;
         }
-        if (mAdapter.isATMFlow() && pChannelID == BuildConfig.channel_atm) {
+        if (mAbstractWorkFlow.isATMFlow() && pChannelID == BuildConfig.channel_atm) {
             return;
         }
-        if (mAdapter.isCCFlow() && pChannelID == BuildConfig.channel_credit_card) {
+        if (mAbstractWorkFlow.isCCFlow() && pChannelID == BuildConfig.channel_credit_card) {
             return;
         }
         //prevent user move to next if input existed card in link card
-        CardGuiProcessor cardGuiProcessor = mAdapter.getGuiProcessor();
+        CardGuiProcessor cardGuiProcessor = mAbstractWorkFlow.getGuiProcessor();
         if (cardGuiProcessor != null && cardGuiProcessor.preventNextIfLinkCardExisted()) {
             try {
                 cardGuiProcessor.showHintError(cardGuiProcessor.getCardNumberView(), cardGuiProcessor.warningCardExist());
@@ -383,8 +392,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         this.mIsSwitching = true;
-        if (mAdapter.isCardFlow() && mAdapter.getGuiProcessor() != null) {
-            mAdapter.getGuiProcessor().setCardInfo(pCardNumber);
+        if (mAbstractWorkFlow.isCardFlow() && mAbstractWorkFlow.getGuiProcessor() != null) {
+            mAbstractWorkFlow.getGuiProcessor().setCardInfo(pCardNumber);
         }
     }
 
@@ -396,11 +405,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             Timber.d("create new adapter pmc id = %s", pChannelId);
             //release old adapter
-            if (mAdapter != null) {
-                //mAdapter.onDetach();
-                mAdapter = null;
+            if (mAbstractWorkFlow != null) {
+                mAbstractWorkFlow.onDetach();
+                mAbstractWorkFlow = null;
             }
-            mAdapter = AdapterFactory.createByPmc(mContext, this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
+            mAbstractWorkFlow = WorkFlowFactoryCreator.createByPmc(mContext, this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
             initAdapter();
             mMiniPmcTransType = miniPmcTransType;
         } catch (Exception e) {
@@ -413,16 +422,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Override
     public void onStart() {
         mBus.register(this);
-        if (mAdapter != null) {
-            mAdapter.onStart();
+        if (mAbstractWorkFlow != null) {
+            mAbstractWorkFlow.onStart();
         }
     }
 
     @Override
     public void onStop() {
         mBus.unregister(this);
-        if (mAdapter != null) {
-            mAdapter.onStop();
+        if (mAbstractWorkFlow != null) {
+            mAbstractWorkFlow.onStop();
         }
     }
 
@@ -432,15 +441,15 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Override
     public void onResume() {
-        if (mAdapter == null) {
+        if (mAbstractWorkFlow == null) {
             return;
         }
-        if (!mAdapter.isFinalScreen()) {
+        if (!mAbstractWorkFlow.isFinalScreen()) {
             showKeyBoard();
         }
         if (ConnectionUtil.isOnline(mContext)) {
             PaymentSnackBar.getInstance().dismiss();
-        } else if (!mAdapter.isFinalScreen()) {
+        } else if (!mAbstractWorkFlow.isFinalScreen()) {
             showNetworkOfflineSnackBar(mContext.getResources().getString(R.string.sdk_offline_networking_mess),
                     mContext.getResources().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE);
@@ -452,9 +461,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void onDetach() {
         super.onDetach();
         Timber.d("onDetach - release adapter - close loading - cancel timer");
-        if (mAdapter != null) {
-            mAdapter.onDetach();
-            mAdapter = null;
+        if (mAbstractWorkFlow != null) {
+            mAbstractWorkFlow.onDetach();
+            mAbstractWorkFlow = null;
         }
         if (DialogManager.showingLoadDialog()) {
             DialogManager.closeLoadDialog();
@@ -462,20 +471,23 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         cancelTransactionExpiredTimer();
     }
 
-    /***
-     * focus on current view
-     */
     void showKeyBoard() {
-        if (mAdapter != null && mAdapter.getGuiProcessor() != null && (mAdapter.isCardFlow() || mAdapter.isLinkAccFlow())) {
+        try {
+            if (mAbstractWorkFlow == null || mAbstractWorkFlow.getGuiProcessor() == null) {
+                return;
+            }
+            if (!(mAbstractWorkFlow.isCardFlow() && mAbstractWorkFlow.isLinkAccFlow())) {
+                return;
+            }
             //auto show keyboard
-            if (mAdapter.isInputStep() || mAdapter.shouldFocusAfterCloseQuitDialog()) {
+            if (mAbstractWorkFlow.isInputStep() || mAbstractWorkFlow.shouldFocusAfterCloseQuitDialog()) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            mAdapter.getGuiProcessor().onFocusView();
-                            if (!mAdapter.isLinkAccFlow()) {
-                                mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
+                            mAbstractWorkFlow.getGuiProcessor().onFocusView();
+                            if (!mAbstractWorkFlow.isLinkAccFlow()) {
+                                mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
                             }
                         } catch (Exception e) {
                             Log.e(this, e);
@@ -483,20 +495,22 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     }
                 }, 300);
             } else if (!GlobalData.shouldNativeWebFlow()) {
-                mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();
+                mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
     private void initAdapter() throws Exception {
         try {
-            if (mAdapter == null) {
+            if (mAbstractWorkFlow == null) {
                 return;
             }
-            Timber.d("start init channel %s", mAdapter.getClass().getSimpleName());
-            mAdapter.init();
-            mAdapter.onStart();
-            getViewOrThrow().renderByResource(mAdapter.getPageName());
+            Timber.d("start init channel %s", mAbstractWorkFlow.getClass().getSimpleName());
+            mAbstractWorkFlow.init();
+            mAbstractWorkFlow.onStart();
+            getViewOrThrow().renderByResource(mAbstractWorkFlow.getPageName());
             //getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().updateCardNumberFont();
         } catch (Exception e) {
@@ -526,9 +540,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             public void onFinish() {
                 mTimerRunning = false;
                 Timber.d("Timer is onDetach");
-                if (mAdapter != null && !mAdapter.isFinalScreen()) {
+                if (mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen()) {
                     DialogManager.closeAllDialog();
-                    mAdapter.showTransactionFailView(mContext.getResources().getString(R.string.sdk_expire_transaction_mess));
+                    mAbstractWorkFlow.showTransactionFailView(mContext.getResources().getString(R.string.sdk_expire_transaction_mess));
                     Timber.d("Moving to expired transaction screen because expiration");
                 }
             }
@@ -572,7 +586,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public String getTransId() {
-        return mAdapter != null ? mAdapter.getTransactionID() : "";
+        return mAbstractWorkFlow != null ? mAbstractWorkFlow.getTransactionID() : "";
     }
 
     @Override
@@ -599,11 +613,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void onSubmitClick() {
-        if (mAdapter == null) {
+        if (mAbstractWorkFlow == null) {
             callback();
             return;
         }
-        mAdapter.onClickSubmission();
+        mAbstractWorkFlow.onClickSubmission();
     }
 
     private Feedback collectFeedBack() {
@@ -616,8 +630,8 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             byte[] byteArray = stream.toByteArray();
             String transactionTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
-            int errorcode = mAdapter.getResponseStatus() != null ? mAdapter.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
-            feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAdapter.getTransactionID(), errorcode);
+            int errorcode = mAbstractWorkFlow.getResponseStatus() != null ? mAbstractWorkFlow.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
+            feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAbstractWorkFlow.getTransactionID(), errorcode);
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
@@ -642,9 +656,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         callback();
     }
 
-    void resetCardNumberAndShowKeyBoard() {
-        if (mAdapter != null) {
-            mAdapter.getGuiProcessor().resetCardNumberAndShowKeyBoard();
+    void resetCardNumberAndShowKeyBoard() throws Exception {
+        if (mAbstractWorkFlow != null) {
+            mAbstractWorkFlow.getGuiProcessor().resetCardNumberAndShowKeyBoard();
         }
     }
 
@@ -656,7 +670,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         this.mIsSwitching = pSwitching;
     }
 
-    public void showMapBankDialog(boolean isBIDVBank) {
+    public void showMapBankDialog(boolean isBIDVBank) throws Exception {
         if (mPaymentInfoHelper == null) {
             return;
         }
@@ -665,37 +679,39 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
             bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
             bundle.putString(BANKCODE_EXTRA, CardType.PVCB);
-            getView().showMapBankDialog(bundle, resultCallBackListener);
-        } else {
-            if (getAdapter().getGuiProcessor() != null) {
-                Bundle bundle = new Bundle();
-                bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
-                bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
-                bundle.putString(BANKCODE_EXTRA, CardType.PBIDV);
-                bundle.putString(CARDNUMBER_EXTRA, getAdapter().getGuiProcessor().getCardNumber());
-                bundle.putString(NOTICE_CONTENT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment));
-                getView().showMapBankDialog(bundle, resultCallBackListener);
-            }
+            getViewOrThrow().showMapBankDialog(bundle, resultCallBackListener);
+        } else if (getWorkFlow().getGuiProcessor() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
+            bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
+            bundle.putString(BANKCODE_EXTRA, CardType.PBIDV);
+            bundle.putString(CARDNUMBER_EXTRA, getWorkFlow().getGuiProcessor().getCardNumber());
+            bundle.putString(NOTICE_CONTENT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment));
+            getViewOrThrow().showMapBankDialog(bundle, resultCallBackListener);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {
-        if (mAdapter != null && mAdapter.isCardFlow()) {
-            mAdapter.getGuiProcessor().moveScrollViewToCurrentFocusView();
+        try {
+            if (mAbstractWorkFlow != null && mAbstractWorkFlow.isCardFlow()) {
+                mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();
+            }
+            mBus.removeStickyEvent(SdkUnlockScreenMessage.class);
+        } catch (Exception e) {
+            Timber.w(e);
         }
-        mBus.removeStickyEvent(SdkUnlockScreenMessage.class);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void OnPaymentSms(SdkSmsMessage message) {
-        if (mAdapter == null) {
+        if (mAbstractWorkFlow == null) {
             return;
         }
         String sender = message.sender;
         String body = message.message;
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-            mAdapter.autoFillOtp(sender, body);
+            mAbstractWorkFlow.autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
         Timber.d("on payment otp event %s", message);
@@ -703,7 +719,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnNetworkChanged(SdkNetworkEvent message) {
-        if (mAdapter.isFinalScreen()) {
+        if (mAbstractWorkFlow.isFinalScreen()) {
             Timber.d("onNetworkMessageEvent user is on fail screen...");
             return;
         }

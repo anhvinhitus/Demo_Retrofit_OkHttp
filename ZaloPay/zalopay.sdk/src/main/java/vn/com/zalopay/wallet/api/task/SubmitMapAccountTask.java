@@ -2,8 +2,7 @@ package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -15,8 +14,8 @@ import vn.com.zalopay.wallet.api.implement.SubmitMapAccountImpl;
 
 public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
     protected String mBankAccInfo;
-    protected AdapterLinkAcc mAdapter;
-    public SubmitMapAccountTask(AdapterLinkAcc pAdapter, String pBankAccInfo) {
+    protected AccountLinkWorkFlow mAdapter;
+    public SubmitMapAccountTask(AccountLinkWorkFlow pAdapter, String pBankAccInfo) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
         mBankAccInfo = pBankAccInfo;
