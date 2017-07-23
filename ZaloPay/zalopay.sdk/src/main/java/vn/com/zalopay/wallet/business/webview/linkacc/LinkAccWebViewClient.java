@@ -165,8 +165,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + error.toString());
         try {
-            getAdapter().getGuiProcessor().getView().hideLoading();
-            getAdapter().getGuiProcessor().getView().showConfirmDialog(
+            getAdapter().getView().hideLoading();
+            getAdapter().getView().showConfirmDialog(
                     GlobalData.getAppContext().getString(R.string.sdk_parsewebsite_sslerror_mess),
                     GlobalData.getAppContext().getString(R.string.dialog_continue_button),
                     GlobalData.getAppContext().getString(R.string.dialog_close_button),
@@ -216,9 +216,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, errStringBuilder.toString());
         }
         try {
-            getAdapter().getGuiProcessor().getView().hideLoading();
+            getAdapter().getView().hideLoading();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
     }
 

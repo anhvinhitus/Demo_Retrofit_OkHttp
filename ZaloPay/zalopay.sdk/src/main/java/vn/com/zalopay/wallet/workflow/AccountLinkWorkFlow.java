@@ -45,11 +45,10 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
-import vn.com.zalopay.wallet.helper.RenderHelper;
-import vn.com.zalopay.wallet.workflow.ui.LinkAccGuiProcessor;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -57,6 +56,7 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+import vn.com.zalopay.wallet.workflow.ui.LinkAccGuiProcessor;
 
 import static vn.com.zalopay.wallet.constants.BankAccountError.ACCOUNT_LOCKED;
 import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_CAPCHA;
@@ -297,9 +297,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
         // show title bar
         if (mPaymentInfoHelper.bankAccountLink()) {
-            getGuiProcessor().getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_link_acc_title));
+            getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_link_acc_title));
         } else if (mPaymentInfoHelper.bankAccountUnlink()) {
-            getGuiProcessor().getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_unlink_acc_title));
+            getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_unlink_acc_title));
             try {
                 mBankAccountList = mLinkInteractor.getBankAccountList(mPaymentInfoHelper.getUserId());
             } catch (Exception e) {
@@ -323,9 +323,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         Timber.d("on process phase " + mPageName);
         if (!ConnectionUtil.isOnline(mContext)) {
             try {
-                getGuiProcessor().getView().showOpenSettingNetwokingDialog(networkingDialogCloseListener);
+                getView().showOpenSettingNetwokingDialog(networkingDialogCloseListener);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
             Timber.d("networking is offline, stop processing click event");
             return;
@@ -405,15 +405,15 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     private void linkAccSuccess() {
         try {
             mPageName = PAGE_LINKACC_SUCCESS;
-            getGuiProcessor().getView().renderByResource(mPageName);
+            getView().renderByResource(mPageName);
             String descLink = getDescLinkAccount();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            getGuiProcessor().getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
-            getGuiProcessor().getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
+            getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
+            getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
-                getGuiProcessor().getView().setVisible(R.id.zpw_threesecurity_webview, false);
-                getGuiProcessor().getView().setVisible(R.id.ll_test_rootview, true);
+                getView().setVisible(R.id.zpw_threesecurity_webview, false);
+                getView().setVisible(R.id.ll_test_rootview, true);
             }
 
             // get bankaccount from cache callback to app
@@ -441,13 +441,13 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         try {
             mPageName = PAGE_LINKACC_FAIL;
             mWebViewProcessor.stop();//stop loading website
-            getGuiProcessor().getView().renderByResource(mPageName);
-            getGuiProcessor().getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
+            getView().renderByResource(mPageName);
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
                     mStatusResponse, true, mContext.getResources().getString(R.string.sdk_link_acc_fail_title));
             // enable web parse. disable webview
             if (GlobalData.shouldNativeWebFlow()) {
-                getGuiProcessor().getView().setVisible(R.id.zpw_threesecurity_webview, false);
-                getGuiProcessor().getView().setVisible(R.id.ll_test_rootview, true);
+                getView().setVisible(R.id.zpw_threesecurity_webview, false);
+                getView().setVisible(R.id.ll_test_rootview, true);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -461,11 +461,11 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     private void unlinkAccSuccess() throws Exception {
         mPageName = PAGE_UNLINKACC_SUCCESS;
         mWebViewProcessor.stop();//stop loading website
-        getGuiProcessor().getView().renderByResource(mPageName);
-        getGuiProcessor().getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null,
+        getView().renderByResource(mPageName);
+        getView().renderSuccess(true, mTransactionID, mPaymentInfoHelper.getUserInfo(), null,
                 getActivity().getString(R.string.sdk_unlink_account_service), getDescLinkAccount(), true,
                 false, null, mContext.getResources().getString(R.string.sdk_unlink_acc_success_title));
-        getGuiProcessor().getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
+        getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
@@ -479,8 +479,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     void unlinkAccFail(String pMessage, String pTransID) {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
-            getGuiProcessor().getView().renderByResource(mPageName);
-            getGuiProcessor().getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mStatusResponse, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
+            getView().renderByResource(mPageName);
+            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mStatusResponse, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
             if (GlobalData.shouldNativeWebFlow()) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
@@ -616,9 +616,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     void hideLoadingDialog() {
         try {
-            getGuiProcessor().getView().hideLoading();
+            getView().hideLoading();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.w(e);
         }
     }
 
@@ -732,8 +732,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     linkAccGuiProcessor.setMessage(response.message);
                 }
                 try {
-                    getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disablePaymentButton();
+                    getView().renderByResource(mPageName);
+                    getView().disablePaymentButton();
                 } catch (Exception e) {
                     Timber.w(e);
                 }
@@ -836,10 +836,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                         submitMapAccount(getAccNumValue());
                     }
                     try {
-                        getGuiProcessor().getView().renderByResource(mPageName);
-                        getGuiProcessor().getView().disablePaymentButton();
+                        getView().renderByResource(mPageName);
+                        getView().disablePaymentButton();
                     } catch (Exception e) {
-                        Log.e(this, e);
+                        Timber.w(e);
                     }
                     return null;
                 } else {
@@ -860,8 +860,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
                                 } else {
                                     try {
-                                       RenderHelper.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(),
-                                               getActivity().getString(R.string.sdk_vcb_error_captcha_mess), getActivity());
+                                        RenderHelper.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(),
+                                                getActivity().getString(R.string.sdk_vcb_error_captcha_mess), getActivity());
                                     } catch (Exception e) {
                                         Timber.w(e.getMessage());
                                     }
@@ -901,10 +901,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus(); // focus captcha confirm
                 try {
-                    getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disablePaymentButton();
+                    getView().renderByResource(mPageName);
+                    getView().disablePaymentButton();
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.w(e);
                 }
                 requestReadOtpPermission();
                 return null;
@@ -983,10 +983,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
                 try {
-                    getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disablePaymentButton();
+                    getView().renderByResource(mPageName);
+                    getView().disablePaymentButton();
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.w(e);
                 }
                 return null;
             }
@@ -1015,7 +1015,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                             hideLoadingDialog();
                             if (!GlobalData.shouldNativeWebFlow()) {
                                 try {
-                                    getGuiProcessor().getView().showConfirmDialog(response.message,
+                                    getView().showConfirmDialog(response.message,
                                             getActivity().getString(R.string.dialog_retry_button),
                                             getActivity().getString(R.string.dialog_close_button),
                                             new ZPWOnEventConfirmDialogListener() {
@@ -1124,9 +1124,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     private void showMessage(String pTitle, String pMessage, int pDuration) {
         try {
-            getGuiProcessor().getView().showMessageSnackBar(getGuiProcessor().getView().findViewById(R.id.supperRootView), pTitle, pMessage, pDuration, null);
+            getView().showMessageSnackBar(getView().findViewById(R.id.supperRootView), pTitle, pMessage, pDuration, null);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
     }
 
@@ -1137,7 +1137,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             if (nativeFlow) {
                 // show webview && hide web parse
                 try {
-                    mWebViewProcessor = new LinkAccWebViewClient(this, (PaymentWebView) getGuiProcessor().getView().findViewById(R.id.zpw_threesecurity_webview));
+                    mWebViewProcessor = new LinkAccWebViewClient(this,
+                            (PaymentWebView) getView().findViewById(R.id.zpw_threesecurity_webview));
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
@@ -1147,10 +1148,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
             try {
-                getGuiProcessor().getView().setVisible(R.id.zpw_threesecurity_webview, nativeFlow);
-                getGuiProcessor().getView().setVisible(R.id.ll_test_rootview, !nativeFlow);
+                getView().setVisible(R.id.zpw_threesecurity_webview, nativeFlow);
+                getView().setVisible(R.id.ll_test_rootview, !nativeFlow);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
         }
         //networking is offline

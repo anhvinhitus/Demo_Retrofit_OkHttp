@@ -206,7 +206,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                             getGuiProcessor().bidvAutoFillOtp(otp);
                         }
                         ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
-                        getGuiProcessor().getView().setVisible(R.id.txtOtpInstruction, false);
+                        getView().setVisible(R.id.txtOtpInstruction, false);
                         break;
                     }
                 }
@@ -327,9 +327,9 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
         if (!TextUtils.isEmpty(pageName)) {
             mPageName = PAGE_COVER_BANK_AUTHEN;
-            getGuiProcessor().getView().renderByResource(mPageName);
+            getView().renderByResource(mPageName);
             mPageName = pageName;
-            getGuiProcessor().getView().renderByResource(mPageName, response.staticView, response.dynamicView);
+            getView().renderByResource(mPageName, response.staticView, response.dynamicView);
             getGuiProcessor().checkEnableSubmitButton();
         }
         if (!response.isError()) {
@@ -360,8 +360,8 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                     });
         }
         boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
-        getGuiProcessor().getView().visibleOrderInfo(visibleOrderInfo);
-        getGuiProcessor().getView().setVisible(R.id.order_info_line_view, false);
+        getView().visibleOrderInfo(visibleOrderInfo);
+        getView().setVisible(R.id.order_info_line_view, false);
         //set time process for otp and captcha to send log to server.
         if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
             mOtpEndTime = System.currentTimeMillis();
@@ -380,7 +380,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
 
         if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-            getGuiProcessor().getView().setVisible(R.id.txtOtpInstruction, true);
+            getView().setVisible(R.id.txtOtpInstruction, true);
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper
                         .step(ZPPaymentSteps.OrderStep_WebOtp)
@@ -405,8 +405,8 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 					*/
 
         }
-        getGuiProcessor().getView().renderKeyBoard();
-        getGuiProcessor().getView().hideLoading();
+        getView().renderKeyBoard();
+        getView().hideLoading();
     }
 
     @Override
@@ -538,7 +538,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
         //have some card bidv in map card list and but don't have this card
         if (existBIDVinMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !existBIDVinMapCardList(pCardNumber)) {
-            getGuiProcessor().getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
+            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventConfirmDialogListener() {
@@ -561,7 +561,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
         //have no any card in map card list
         if (!existBIDVinMapCardList()) {
-            getGuiProcessor().getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
+            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
                     GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
                     new ZPWOnEventConfirmDialogListener() {

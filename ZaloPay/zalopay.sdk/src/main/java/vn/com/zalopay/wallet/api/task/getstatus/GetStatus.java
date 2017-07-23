@@ -101,7 +101,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         try {
-            mAdapter.getGuiProcessor().getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
+            mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
                     onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
@@ -129,9 +129,9 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
         try {
             if (pIsShow) {
-                mAdapter.getGuiProcessor().getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
+                mAdapter.getView().showLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_atm_mess));
             } else {
-                mAdapter.getGuiProcessor().getView().hideLoading();
+                mAdapter.getView().hideLoading();
             }
         } catch (Exception e) {
             Log.e(this, e);

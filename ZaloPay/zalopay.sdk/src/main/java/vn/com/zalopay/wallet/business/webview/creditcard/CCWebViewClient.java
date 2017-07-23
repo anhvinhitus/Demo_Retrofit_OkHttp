@@ -91,7 +91,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
         Timber.d("load page finish %s", url);
         if (getAdapter() != null) {
             try {
-                getAdapter().getGuiProcessor().getView().hideLoading();
+                getAdapter().getView().hideLoading();
             } catch (Exception e) {
                 Log.e(this, e);
             }
