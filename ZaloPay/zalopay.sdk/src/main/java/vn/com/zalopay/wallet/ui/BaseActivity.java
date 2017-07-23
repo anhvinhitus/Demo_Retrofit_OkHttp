@@ -133,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void hostFragment(BaseFragment fragment) {
+    public void hostFragment(BaseFragment fragment) {
         hostFragment(fragment, R.id.fragment_container);
     }
 

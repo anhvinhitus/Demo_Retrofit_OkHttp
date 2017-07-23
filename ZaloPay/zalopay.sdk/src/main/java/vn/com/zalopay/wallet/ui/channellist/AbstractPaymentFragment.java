@@ -1,11 +1,14 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,12 +29,13 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.IPresenter;
-import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.ui.ToolbarActivity;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
@@ -43,13 +47,85 @@ import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 
 public abstract class AbstractPaymentFragment<T extends IPresenter> extends RenderFragment<T> {
 
-    public abstract void enablePaymentButton();
+    boolean allowClick = true;
+    protected View.OnClickListener mPaymentButtonClick = view -> {
+        if (allowClick) {
+            allowClick = false;
+            onPaymentButtonClick();
+            new Handler().postDelayed(() -> allowClick = true, 1000);
+        }
+    };
+    private boolean isShowSupportView = false;
+    private View.OnClickListener mSupportItemClick = view -> {
+        try {
+            int i = view.getId();
+            if (i == R.id.question_button) {
+                onStartCenterSupport();
+            } else if (i == R.id.support_button) {
+                onStartFeedbackSupport();
+            }
+            onCloseSupportView();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+    };
+    protected View.OnClickListener mSupportViewClick = view -> showSupportView();
+
+    public boolean visualSupportView() {
+        return isShowSupportView;
+    }
+
+    public void onCloseSupportView() {
+        View v = findViewById(R.id.layout_spview_animation);
+        if (v != null) {
+            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            v.startAnimation(hyperspaceJumpAnimation);
+        }
+        isShowSupportView = false;
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> setVisible(R.id.zpw_pay_support_buttom_view, false), 300);
+    }
+
+    void onStartCenterSupport() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.SUPPORT_INTRO_ACTION_SUPPORT_CENTER);
+        startActivity(intent);
+    }
+
+    private void showSupportView() {
+        try {
+            isShowSupportView = true;
+            setVisible(R.id.zpw_pay_support_buttom_view, true);
+            findViewById(R.id.zpw_pay_support_buttom_view).setOnClickListener(mSupportItemClick);
+            findViewById(R.id.question_button).setOnClickListener(mSupportItemClick);
+            findViewById(R.id.support_button).setOnClickListener(mSupportItemClick);
+            findViewById(R.id.cancel_spview_button).setOnClickListener(mSupportItemClick);
+            View v = findViewById(R.id.layout_spview_animation);
+            if (v != null) {
+                Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_bottom);
+                v.startAnimation(hyperspaceJumpAnimation);
+            }
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+    }
+
+    public void enablePaymentButton() {
+        View view = findViewById(R.id.zpsdk_btn_submit);
+        if (view != null) {
+            view.setEnabled(true);
+        }
+    }
 
     public abstract void setTitle(String pTitle);
 
+    public abstract void onPaymentButtonClick();
+
+    public abstract void onStartFeedbackSupport();
+
     private void updateToolBar() {
-        ((ChannelActivity) getActivity()).hideDisplayHome();
-        ((ChannelActivity) getActivity()).centerTitle();
+        ((ToolbarActivity) getActivity()).hideDisplayHome();
+        ((ToolbarActivity) getActivity()).centerTitle();
     }
 
     private void changeSubmitButtonBackground(AbstractOrder order) {

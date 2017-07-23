@@ -12,15 +12,18 @@ import vn.com.vng.zalopay.network.exception.HttpEmptyResponseException;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransAuthenType;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -44,17 +47,17 @@ public class TransactionHelper {
         if (throwable instanceof NetworkConnectionException) {
             return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
-        if(timeoutException(throwable)){
+        if (timeoutException(throwable)) {
             return context.getResources().getString(R.string.sdk_error_api_emptybody);
         }
-        if(throwable instanceof HttpException){
+        if (throwable instanceof HttpException) {
             return context.getResources().getString(R.string.sdk_error_system);
         }
         Timber.w(throwable, "undefine exception");
         return context.getResources().getString(R.string.sdk_error_undefine);
     }
 
-    public static boolean timeoutException(Throwable throwable){
+    public static boolean timeoutException(Throwable throwable) {
         return throwable instanceof HttpEmptyResponseException || throwable instanceof TimeoutException;
     }
 
@@ -182,5 +185,17 @@ public class TransactionHelper {
                 || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_link_account))
                 || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_alert_networking_off_in_unlink_account))
                 || pMessage.equalsIgnoreCase(context.getString(R.string.sdk_trans_network_onfline_warning_mess));
+    }
+
+    public static boolean isTransactionProcessing(Context pContext, String pMessage, @TransactionType int transType) {
+        return pMessage.equalsIgnoreCase(pContext.getString(GlobalData.getTransProcessingMessage(transType)))
+                || pMessage.equalsIgnoreCase(pContext.getString(R.string.sdk_expire_transaction_mess))
+                || pMessage.equals(pContext.getString(R.string.sdk_error_generic_submitorder));
+    }
+
+    public static AppInfo getAppInfoCache(long appId) {
+        return SDKApplication.getApplicationComponent()
+                .appInfoInteractor()
+                .get(appId);
     }
 }

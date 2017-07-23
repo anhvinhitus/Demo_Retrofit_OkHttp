@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.ui.channel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -17,21 +16,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.ByteArrayOutputStream;
-
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.workflow.WorkFlowFactoryCreator;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
-import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
-import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
@@ -39,7 +30,6 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
@@ -51,6 +41,7 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
+import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -62,6 +53,11 @@ import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
+import vn.com.zalopay.wallet.workflow.WorkFlowFactoryCreator;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.API;
@@ -180,7 +176,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private boolean canQuit() throws Exception {
         if (getViewOrThrow().visualSupportView()) {
-            getViewOrThrow().closeSupportView();
+            getViewOrThrow().onCloseSupportView();
             return true;
         }
         //order is processing
@@ -620,33 +616,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         mAbstractWorkFlow.onClickSubmission();
     }
 
-    private Feedback collectFeedBack() {
-        Feedback feedBack = null;
-        try {
-            Bitmap mBitmap = SdkUtils.CaptureScreenshot(getViewOrThrow().getActivity());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            if (mBitmap != null) {
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
-            }
-            byte[] byteArray = stream.toByteArray();
-            String transactionTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
-            int errorcode = mAbstractWorkFlow.getResponseStatus() != null ? mAbstractWorkFlow.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
-            feedBack = new Feedback(byteArray, getViewOrThrow().getFailMess(), transactionTitle, mAbstractWorkFlow.getTransactionID(), errorcode);
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-        return feedBack;
-    }
-
-    public void startSupportScreen() throws Exception {
+    public void showFeedbackDialog() throws Exception {
         FeedBackCollector feedBackCollector = FeedBackCollector.shared();
-        Feedback feedBack = collectFeedBack();
+        String transTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
+        int errorCode = mAbstractWorkFlow.getResponseStatus() != null ? mAbstractWorkFlow.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
+        Feedback feedBack = Feedback.collectFeedBack(getViewOrThrow().getActivity(), transTitle,
+                getViewOrThrow().getFailMess(), errorCode, mAbstractWorkFlow.getTransactionID());
         if (feedBack != null) {
             FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
             collector.setScreenShot(feedBack.imgByteArray);
             collector.setTransaction(feedBack.category, feedBack.transID, feedBack.errorCode, feedBack.description);
-        } else {
-            Timber.d("IFeedBack is null");
         }
         feedBackCollector.showDialog(getViewOrThrow().getActivity());
     }

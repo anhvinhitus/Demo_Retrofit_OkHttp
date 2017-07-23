@@ -36,7 +36,6 @@ import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
-import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -51,7 +50,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -77,6 +75,8 @@ import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
@@ -1133,7 +1133,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
         if (TextUtils.isEmpty(appName)) {
-            AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
+            AppInfo appInfo = TransactionHelper.getAppInfoCache(mPaymentInfoHelper.getAppId());
             appName = appInfo != null ? appInfo.appname : null;
         }
         try {
@@ -1141,7 +1141,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             getGuiProcessor().getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mStatusResponse, true, title);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
     }
 
@@ -1186,12 +1186,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    private AppInfo getAppInfoCache(long appId) {
-        return SDKApplication.getApplicationComponent()
-                .appInfoInteractor()
-                .get(appId);
-    }
-
     /*
      * show success view base
      */
@@ -1208,10 +1202,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.w(e, "Exception hide webview");
         }
-        //notify to app to do some background task
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onPreComplete(true, mTransactionID, mPaymentInfoHelper.getAppTransId());
-        }
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         if (needReloadCardMapAfterPayment()) {
             reloadMapCard(false);
         }
@@ -1241,11 +1232,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         if (mPaymentInfoHelper.isLinkTrans()) {
             saveMapCardToLocal();
-        }
-        try {
-            trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Success);
-        } catch (Exception e) {
-            Timber.w(e);
         }
     }
 
@@ -1290,7 +1276,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             mPageName = Constants.PAGE_SUCCESS;
             getGuiProcessor().getView().renderByResource(mPageName);
-            AppInfo appInfo = getAppInfoCache(mPaymentInfoHelper.getAppId());
+            AppInfo appInfo = TransactionHelper.getAppInfoCache(mPaymentInfoHelper.getAppId());
             String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
             if (TextUtils.isEmpty(appName)) {
                 appName = appInfo != null ? appInfo.appname : null;
@@ -1306,41 +1292,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    private void trackingTransactionEvent(int pResult) throws Exception {
-        int returnCode = mStatusResponse != null ? mStatusResponse.returncode : -1;
-        String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
-        if (TextUtils.isEmpty(bankCode) && getGuiProcessor() != null) {
-            bankCode = getGuiProcessor().getDetectedBankCode();
-        }
-        if (TextUtils.isEmpty(bankCode)) {
-            bankCode = "";
-        }
-        Long transId = -1L;
-        try {
-            if (!TextUtils.isEmpty(mTransactionID)) {
-                transId = Long.parseLong(mTransactionID);
-            }
-        } catch (Exception e) {
-            Timber.w(e.getMessage());
-            transId = -1L;
-        }
-        if (GlobalData.analyticsTrackerWrapper != null) {
-            GlobalData.analyticsTrackerWrapper
-                    .step(ZPPaymentSteps.OrderStep_OrderResult)
-                    .transId(transId)
-                    .bankCode(bankCode)
-                    .server_result(returnCode)
-                    .step_result(pResult)
-                    .track();
-        }
-    }
-
-    public boolean isTransactionProcessing(String pMessage) {
-        return pMessage.equalsIgnoreCase(mContext.getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())))
-                || pMessage.equalsIgnoreCase(mContext.getString(R.string.sdk_expire_transaction_mess))
-                || pMessage.equals(mContext.getString(R.string.sdk_error_generic_submitorder));
-    }
-
     public boolean isTransactionInProgress() {
         return mStatusResponse != null && mStatusResponse.isprocessing;
     }
@@ -1352,9 +1303,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.w(e, "Exception cancel trans timer");
         }
-        if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onPreComplete(false, mTransactionID, mPaymentInfoHelper.getAppTransId());
-        }
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         //hide webview
         if (mGuiProcessor != null && (isCardFlow() || (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()))) {
             try {
@@ -1363,14 +1312,15 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 Timber.w(e, "Exception hide webview");
             }
         }
-        if (isTransactionProcessing(pMessage)) {
+
+        mPageName = Constants.PAGE_FAIL;
+        if (TransactionHelper.isTransactionProcessing(mContext, pMessage, mPaymentInfoHelper.getTranstype())) {
             mPageName = Constants.PAGE_FAIL_PROCESSING;
         } else if (TransactionHelper.isTransNetworkError(mContext, pMessage)) {
             mPageName = Constants.PAGE_FAIL_NETWORKING;
             mPaymentInfoHelper.updateResultNetworkingError(mContext, pMessage); //update payment status to no internet to app know
-        } else {
-            mPageName = Constants.PAGE_FAIL;
         }
+
         int status = mPaymentInfoHelper.getStatus();
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
             mPaymentInfoHelper.setResult(mPageName.equals(Constants.PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
@@ -1379,7 +1329,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
         try {
-            //getView().marginSubmitButtonTop(true);
             getGuiProcessor().getView().renderByResource(mPageName);
             showFailScreen(pMessage);
         } catch (Exception e) {
@@ -1391,17 +1340,13 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         //send log
         try {
-            mSdkErrorReporter.sdkReportErrorOnTransactionFail(this, GsonUtils.toJsonString(mStatusResponse));
+            mSdkErrorReporter.sdkReportErrorOnTransactionFail(this,
+                    GsonUtils.toJsonString(mStatusResponse));
         } catch (Exception e) {
             Timber.w(e, "Exception send error log");
         }
         reloadMapListOnResponseMessage(pMessage);
         dismissShowingView();
-        try {
-            trackingTransactionEvent(ZPPaymentSteps.OrderStepResult_Fail);
-        } catch (Exception e) {
-            Timber.w(e);
-        }
     }
 
     private void reloadMapListOnResponseMessage(String message) {

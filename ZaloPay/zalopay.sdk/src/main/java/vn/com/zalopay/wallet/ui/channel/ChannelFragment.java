@@ -9,10 +9,6 @@ import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,17 +19,12 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
-import java.util.Arrays;
-
 import timber.log.Timber;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.dialog.BaseDialogFragment;
@@ -43,7 +34,6 @@ import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.channellist.AbstractPaymentFragment;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -60,30 +50,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     @LayoutRes
     int mLayoutId = R.layout.screen__card;
     private String mOriginTitle;
-    private boolean allowClick = true;
-    private boolean visualSupportView = false;
     private Bundle mData;
-    private View.OnClickListener onSubmitClick = view -> {
-        if (allowClick) {
-            allowClick = false;
-            mPresenter.onSubmitClick();
-            new Handler().postDelayed(() -> allowClick = true, 3000);
-        }
-    };
-    private View.OnClickListener itemSupportButtonClick = view -> {
-        try {
-            int i = view.getId();
-            if (i == R.id.question_button) {
-                startCenterSupport();
-            } else if (i == R.id.support_button) {
-                mPresenter.startSupportScreen();
-            }
-            closeSupportView();
-        } catch (Exception e) {
-            Timber.w(e);
-        }
-    };
-    private View.OnClickListener supportClick = view -> showSupportView();
 
     public static BaseFragment newInstance() {
         return new ChannelFragment();
@@ -97,14 +64,22 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         return fragment;
     }
 
-    public ChannelPresenter sharePresenter() {
-        return mPresenter;
+    @Override
+    public void onStartFeedbackSupport() {
+        try {
+            mPresenter.showFeedbackDialog();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
     }
 
-    void startCenterSupport() {
-        Intent intent = new Intent();
-        intent.setAction(Constants.SUPPORT_INTRO_ACTION_SUPPORT_CENTER);
-        startActivity(intent);
+    @Override
+    public void onPaymentButtonClick() {
+        mPresenter.onSubmitClick();
+    }
+
+    public ChannelPresenter sharePresenter() {
+        return mPresenter;
     }
 
     public void onUserInteraction() {
@@ -135,8 +110,8 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     protected void onViewBound(View view) {
         super.onViewBound(view);
         mRootView = view;
-        findViewById(R.id.zpsdk_btn_submit).setOnClickListener(onSubmitClick);
-        findViewById(R.id.zpw_payment_fail_rl_support).setOnClickListener(supportClick);
+        findViewById(R.id.zpsdk_btn_submit).setOnClickListener(mPaymentButtonClick);
+        findViewById(R.id.zpw_payment_fail_rl_support).setOnClickListener(mSupportViewClick);
         //findViewById(R.id.zpw_payment_fail_rl_update_info).setOnClickListener(updateInfoClick);
         mPresenter.pushArgument(mData);
 
@@ -257,41 +232,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
                 getResources().getString(R.string.dialog_getstatus_button));
     }
 
-    private void showSupportView() {
-        try {
-            visualSupportView = true;
-            setVisible(R.id.zpw_pay_support_buttom_view, true);
-            findViewById(R.id.zpw_pay_support_buttom_view).setOnClickListener(itemSupportButtonClick);
-            findViewById(R.id.question_button).setOnClickListener(itemSupportButtonClick);
-            findViewById(R.id.support_button).setOnClickListener(itemSupportButtonClick);
-            findViewById(R.id.cancel_spview_button).setOnClickListener(itemSupportButtonClick);
-            View v = findViewById(R.id.layout_spview_animation);
-            if (v != null) {
-                Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_bottom);
-                v.startAnimation(hyperspaceJumpAnimation);
-            }
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    @Override
-    public void closeSupportView() {
-        View v = findViewById(R.id.layout_spview_animation);
-        if (v != null) {
-            Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-            v.startAnimation(hyperspaceJumpAnimation);
-        }
-        visualSupportView = false;
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> setVisible(R.id.zpw_pay_support_buttom_view, false), 300);
-    }
-
-    @Override
-    public boolean visualSupportView() {
-        return visualSupportView;
-    }
-
     @Override
     public String getFailMess() {
         TextView textView = (TextView) findViewById(R.id.sdk_trans_fail_reason_message_textview);
@@ -331,48 +271,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         //order amount
         order.amount_total = order.amount + order.fee;
         renderTotalAmountAndFee(order.amount_total, order.fee);
-    }
-
-    @Override
-    public void renderByResource(String screenName) {
-        try {
-            renderByResource(screenName, null, null);
-        } catch (Exception e) {
-            Timber.d(e);
-            showError(getString(R.string.zpw_string_error_layout));
-        }
-    }
-
-    @Override
-    public void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup, DDynamicViewGroup pAdditionDynamicViewGroup) {
-        try {
-            Log.d(this, "start render screen name", screenName);
-            long time = System.currentTimeMillis();
-            ResourceManager resourceManager = ResourceManager.getInstance(screenName);
-            if (resourceManager != null) {
-                mResourceRender = resourceManager.produceRendering(this);
-                if (mResourceRender != null) {
-                    mResourceRender.render();
-                    mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
-                } else {
-                    Timber.d("resource render is null");
-                }
-            } else {
-                Timber.d("resource manager is null");
-            }
-            Log.d(this, "render resource: Total time:", (System.currentTimeMillis() - time));
-        } catch (Exception e) {
-            Timber.d(e);
-            showError(getString(R.string.zpw_string_error_layout));
-        }
-    }
-
-    @Override
-    public void enablePaymentButton() {
-        View view = findViewById(R.id.zpsdk_btn_submit);
-        if (view != null) {
-            view.setEnabled(true);
-        }
     }
 
     @Override

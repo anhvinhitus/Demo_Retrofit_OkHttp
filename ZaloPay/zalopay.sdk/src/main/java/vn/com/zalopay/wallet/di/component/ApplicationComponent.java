@@ -29,6 +29,7 @@ import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
+import vn.com.zalopay.wallet.ui.channellist.ResultPaymentPresenter;
 
 @Singleton
 @Component(modules = {ApplicationModule.class,
@@ -45,6 +46,8 @@ public interface ApplicationComponent {
     void inject(ChannelListPresenter channelListPresenter);
 
     void inject(ChannelPresenter channelPresenter);
+
+    void inject(ResultPaymentPresenter resultPaymentPresenter);
 
     Application application();
 

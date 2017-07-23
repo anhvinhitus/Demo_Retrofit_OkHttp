@@ -39,8 +39,6 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 
-import static java.security.AccessController.getContext;
-
 public class PasswordViewRender extends PasswordRender implements KeyboardButtonClickedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = PasswordViewRender.class.getSimpleName();
@@ -55,9 +53,9 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     protected SimpleDraweeView mLogo;
     protected TextView mTextViewPmcName;
     protected TextView mTextViewTitle;
-    LoadingIndicatorView mLoadingIndicatorView;
     protected TextView mTextViewSupportInfo;
     protected TextView mTextViewOTPInput;
+    LoadingIndicatorView mLoadingIndicatorView;
     private int backgroundResource;
     private boolean isSuccess = false;
     private View mRootView;
@@ -288,13 +286,13 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     @Override
     public void onKeyboardClick(KeyboardButtonEnum keyboardButtonEnum) {
-
         if (mPinCode.length() < this.getPinLength()) {
             int value = keyboardButtonEnum.getButtonValue();
+            int length = mPinCode.length() - 1;
             if (value == KeyboardButtonEnum.BUTTON_CLEAR.getButtonValue()) {
-                if (!mPinCode.isEmpty()) {
-                    setPinCode(mPinCode.substring(0, mPinCode.length() - 1));
-                    mTextViewOTPInput.setText(mPinCode.substring(0, mPinCode.length() - 1));
+                if (!mPinCode.isEmpty() && length >= 0) {
+                    setPinCode(mPinCode.substring(0, length));
+                    mTextViewOTPInput.setText(mPinCode.substring(0, length));
                 } else {
                     setPinCode("");
                     mTextViewOTPInput.setText("");

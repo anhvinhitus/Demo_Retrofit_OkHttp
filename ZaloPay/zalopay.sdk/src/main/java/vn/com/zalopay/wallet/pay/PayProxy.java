@@ -81,14 +81,6 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -100,9 +92,17 @@ public class PayProxy extends SingletonBase {
                 moveToResultScreen();
             }
         } catch (Exception e) {
-            startChannelActivity();
+            showResultScreen();
         }
         Timber.d(throwable, "trans status on error");
+    };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(getGenericExceptionMessage(mContext));
+        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -306,7 +306,7 @@ public class PayProxy extends SingletonBase {
             mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_fail_trans_status);
         }
         mAuthenActor.closeAuthen();
-        startChannelActivity();
+        showResultScreen();
     }
 
     public PayProxy setChannel(PaymentChannel pChannel) {
@@ -529,6 +529,28 @@ public class PayProxy extends SingletonBase {
 
     private boolean shouldCloseChannelList() {
         return mStatusResponse != null;
+    }
+
+    private void showResultScreen() {
+        try {
+            if (mStatusResponse == null) {
+                return;
+            }
+            mStatusResponse.zptransid = mTransId;
+            //redpacket return callback without show result screen
+            if (TransactionHelper.isTransactionSuccess(mStatusResponse)
+                    && mPaymentInfoHelper != null
+                    && mPaymentInfoHelper.isRedPacket()) {
+                String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
+                GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
+                getView().callbackThenTerminate();
+                return;
+            }
+            getPresenter().showResultPayment(mStatusResponse);
+        } catch (Exception e) {
+            Timber.d("show result screen error - skip to show channel activity");
+            startChannelActivity();
+        }
     }
 
     private void startChannelActivity() {

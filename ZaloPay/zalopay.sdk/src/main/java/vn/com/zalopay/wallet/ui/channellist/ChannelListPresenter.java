@@ -31,10 +31,9 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
@@ -63,6 +62,7 @@ import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+import vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader;
 
 
 /*
@@ -904,18 +904,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void showResultPayment(StatusResponse pResponse){
-        if(TransactionHelper.isTransactionSuccess(pResponse)){
-            showSuccessPayment(pResponse);
-        }else{
-            showFailurePayment(pResponse);
-        }
-    }
-
-    private void showSuccessPayment(StatusResponse pResponse){
-
-    }
-    private void showFailurePayment(StatusResponse pResponse){
-
+    public void showResultPayment(StatusResponse pResponse) throws Exception {
+        getViewOrThrow().switchToResultScreen(pResponse);
     }
 }

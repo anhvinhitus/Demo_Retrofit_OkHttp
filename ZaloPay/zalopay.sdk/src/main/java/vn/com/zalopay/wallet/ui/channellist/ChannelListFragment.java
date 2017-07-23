@@ -29,12 +29,15 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
@@ -419,5 +422,16 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void scrollToPos(int position) {
         channel_list_recycler.scrollToPosition(position);
+    }
+
+    @Override
+    public void switchToResultScreen(StatusResponse pResponse) throws Exception {
+        if (!(getActivity() instanceof BaseActivity) || getActivity().isFinishing()) {
+            throw new IllegalStateException("Activity is finish");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.STATUS_RESPONSE, pResponse);
+        BaseFragment fragment = ResultPaymentFragment.newInstance(bundle);
+        ((BaseActivity) getActivity()).hostFragment(fragment);
     }
 }

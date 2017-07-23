@@ -201,27 +201,21 @@ public class SdkUtils {
         return (i % 10) + (i / 10);
     }
 
-    /***
+    /*
      * check user using the default keyboard
-     * @param context
-     * @return
      */
     public static boolean useDefaultKeyBoard(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD).matches(context.getResources().getString(R.string.zpsdk_inputmethod_mane));
     }
 
-    /**
+    /*
      * Capture screen fail
-     *
-     * @param pActivity
-     * @return
      */
     public static Bitmap CaptureScreenshot(Activity pActivity) {
-
         try {
             View rootView = pActivity.getWindow().getDecorView().getRootView();
             rootView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = null;
+            Bitmap bitmap;
             if (rootView.getWidth() > 1000) {
                 bitmap = Bitmap.createScaledBitmap(rootView.getDrawingCache(), rootView.getWidth() / 2, rootView.getHeight() / 2, true);
             } else {
@@ -229,8 +223,7 @@ public class SdkUtils {
             }
             rootView.setDrawingCacheEnabled(false);
             return bitmap;
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (Throwable ignored) {
         }
         return null;
     }

@@ -2,16 +2,17 @@ package vn.com.zalopay.wallet.business.data;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
-import vn.com.zalopay.wallet.feedback.FeedBackCollector;
-import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -21,8 +22,12 @@ import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
+import vn.com.zalopay.wallet.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.feedback.IFeedBack;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -217,6 +222,49 @@ public class GlobalData {
 
     public static void setCurrentBankFunction(@BankFunctionCode int pBankFunction) {
         bankFunction = pBankFunction;
+    }
+
+    public static void extraJobOnPaymentCompleted(StatusResponse pStatusResponse, String pBankCode) {
+        if (pStatusResponse == null || paymentInfoHelper == null) {
+            return;
+        }
+        try {
+            //notify to app to do some background task
+            if (GlobalData.getPaymentListener() != null) {
+                GlobalData.getPaymentListener().onPreComplete(false, pStatusResponse.zptransid, paymentInfoHelper.getAppTransId());
+            }
+            boolean success = TransactionHelper.isTransactionSuccess(pStatusResponse);
+            GlobalData.trackingTransactionEvent(success ? ZPPaymentSteps.OrderStepResult_Success : ZPPaymentSteps.OrderStepResult_Fail
+                    , pStatusResponse
+                    , pBankCode);
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+    }
+
+    public static void trackingTransactionEvent(int pResult, StatusResponse pResponse, String bankCode) throws Exception {
+        if(pResponse == null){
+            return;
+        }
+        int returnCode = pResponse.returncode;
+        if (TextUtils.isEmpty(bankCode)) {
+            bankCode = "";
+        }
+        Long transId;
+        try {
+            transId = Long.parseLong(pResponse.zptransid);
+        } catch (Exception e) {
+            transId = -1L;
+        }
+        if (GlobalData.analyticsTrackerWrapper != null) {
+            GlobalData.analyticsTrackerWrapper
+                    .step(ZPPaymentSteps.OrderStep_OrderResult)
+                    .transId(transId)
+                    .bankCode(bankCode)
+                    .server_result(returnCode)
+                    .step_result(pResult)
+                    .track();
+        }
     }
     //endregion
 }

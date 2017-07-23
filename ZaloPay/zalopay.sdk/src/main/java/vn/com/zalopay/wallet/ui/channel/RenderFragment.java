@@ -15,20 +15,54 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.ui.IPresenter;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
-/**
+/*
  * Created by chucvv on 6/24/17.
  */
 
 public abstract class RenderFragment<T extends IPresenter> extends GenericFragment<T> {
     protected ResourceRender mResourceRender;
     protected View mRootView;
+
+    public void renderByResource(String screenName) throws Exception {
+        try {
+            renderByResource(screenName, null, null);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup,
+                                 DDynamicViewGroup pAdditionDynamicViewGroup) throws Exception {
+        try {
+            Log.d(this, "start render screen name", screenName);
+            long time = System.currentTimeMillis();
+            ResourceManager resourceManager = ResourceManager.getInstance(screenName);
+            if (resourceManager != null) {
+                mResourceRender = resourceManager.produceRendering(this);
+                if (mResourceRender != null) {
+                    mResourceRender.render();
+                    mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
+                } else {
+                    Timber.d("resource render is null");
+                }
+            } else {
+                Timber.d("resource manager is null");
+            }
+            Log.d(this, "render resource: Total time:", (System.currentTimeMillis() - time));
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     public void renderKeyBoard() {
         if (mResourceRender != null) {
