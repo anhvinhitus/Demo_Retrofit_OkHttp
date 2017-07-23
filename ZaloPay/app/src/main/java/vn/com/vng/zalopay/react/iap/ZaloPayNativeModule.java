@@ -133,7 +133,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 //                reportInvalidParameter(promise, Constants.ITEM);
 //                return;
 //            }
-            if (TextUtils.isEmpty(order.description)) {
+            // allow empty description
+            if (order.description == null) {
                 reportInvalidParameter(promise, Constants.DESCRIPTION);
                 return;
             }
