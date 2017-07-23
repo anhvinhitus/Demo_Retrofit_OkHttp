@@ -198,11 +198,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             if (isValidCardNumber()
                     && !TextUtils.isEmpty(getCardCVV())
                     && !TextUtils.isEmpty(getCardExpire())) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {

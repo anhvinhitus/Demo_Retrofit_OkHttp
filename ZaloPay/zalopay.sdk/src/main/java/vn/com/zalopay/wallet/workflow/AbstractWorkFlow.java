@@ -1192,7 +1192,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 .get(appId);
     }
 
-    /***
+    /*
      * show success view base
      */
     protected synchronized void showTransactionSuccessView() {
@@ -1202,7 +1202,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception cancel trans timer");
         }
         try {
-            if (isCardFlow() && getGuiProcessor() != null) {
+            if (isCardFlow() && mGuiProcessor != null) {
                 mGuiProcessor.useWebView(false);
             }
         } catch (Exception e) {
@@ -1278,7 +1278,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 mPaymentInfoHelper.getOrder().appid == Constants.RESULT_TYPE2_APPID) {
             new Handler().postDelayed(() -> {
                 try {
-                    getGuiProcessor().getView().setTextSubmitBtn(getActivity().getString(R.string.sdk_button_show_info_txt));
+                    getGuiProcessor().getView().setTextPaymentButton(getActivity().getString(R.string.sdk_button_show_info_txt));
                 } catch (Exception e) {
                     Timber.d(e);
                 }

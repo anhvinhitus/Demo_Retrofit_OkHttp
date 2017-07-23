@@ -39,7 +39,6 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.card.CardCheck;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
-import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -742,11 +741,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         boolean isLoginPassword = checkValidRequiredEditText(getLoginHolder().getEdtPassword());
         try {
             if (isLoginPassword && isLoginName && isLoginCaptcha) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {
@@ -759,11 +758,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         boolean isConfirmCaptcha = checkValidRequiredEditText(getRegisterHolder().getEdtCaptcha());
         try {
             if (isConfirmCaptcha) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {
@@ -776,11 +775,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         boolean isConfirmOtp = checkValidRequiredEditText(getConfirmOTPHolder().getEdtConfirmOTP());
         try {
             if (isConfirmOtp) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {
@@ -793,11 +792,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         boolean isUnRegisterPassword = checkValidRequiredEditText(getUnregisterHolder().getEdtPassword());
         try {
             if (isUnRegisterPassword) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {

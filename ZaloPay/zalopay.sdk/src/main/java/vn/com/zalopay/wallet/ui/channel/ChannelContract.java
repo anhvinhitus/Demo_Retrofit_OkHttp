@@ -2,9 +2,9 @@ package vn.com.zalopay.wallet.ui.channel;
 
 import android.os.Bundle;
 
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
@@ -19,7 +19,6 @@ import vn.com.zalopay.wallet.ui.IContract;
 
 public interface ChannelContract extends IContract {
     interface IView extends IContract {
-        void setTitle(String title);
 
         void showLoading(String pTitle, OnProgressDialogTimeoutListener timeoutListener);
 
@@ -45,19 +44,15 @@ public interface ChannelContract extends IContract {
 
         void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup, DDynamicViewGroup pAdditionDynamicViewGroup);
 
-        void enableSubmitBtn();
+        void setTextPaymentButton(String pText);
 
-        void setTextSubmitBtn(String pText);
-
-        void disableSubmitBtn();
+        void disablePaymentButton();
 
         void updateCardNumberFont();
 
-        void overrideFont();
+        void changeBgPaymentButton(boolean finalStep);
 
-        void changeBgSubmitButton(boolean finalStep);
-
-        void visiableOrderInfo(boolean visible);
+        void visibleOrderInfo(boolean visible);
 
         void showMaintenanceServiceDialog(String message);
 

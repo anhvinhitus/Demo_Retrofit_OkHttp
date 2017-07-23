@@ -431,7 +431,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mButtonNext = (Button) getView().findViewById(R.id.next);
         getView().visibleCardViewNavigateButton(true);
         getView().visibleSubmitButton(false);
-        getView().visiableOrderInfo(false);
+        getView().visibleOrderInfo(false);
         getView().visibleCardInfo(true);
         if (mButtonNext != null && mButtonPre != null) {
             mButtonNext.setOnClickListener(mNextButtonClick);

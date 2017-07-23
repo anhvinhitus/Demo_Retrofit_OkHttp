@@ -360,7 +360,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                     });
         }
         boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
-        getGuiProcessor().getView().visiableOrderInfo(visibleOrderInfo);
+        getGuiProcessor().getView().visibleOrderInfo(visibleOrderInfo);
         getGuiProcessor().getView().setVisible(R.id.order_info_line_view, false);
         //set time process for otp and captcha to send log to server.
         if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {

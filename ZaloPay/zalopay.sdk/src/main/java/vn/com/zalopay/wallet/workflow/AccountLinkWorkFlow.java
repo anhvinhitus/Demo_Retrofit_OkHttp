@@ -733,7 +733,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 }
                 try {
                     getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disableSubmitBtn();
+                    getGuiProcessor().getView().disablePaymentButton();
                 } catch (Exception e) {
                     Timber.w(e);
                 }
@@ -837,7 +837,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     }
                     try {
                         getGuiProcessor().getView().renderByResource(mPageName);
-                        getGuiProcessor().getView().disableSubmitBtn();
+                        getGuiProcessor().getView().disablePaymentButton();
                     } catch (Exception e) {
                         Log.e(this, e);
                     }
@@ -902,7 +902,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus(); // focus captcha confirm
                 try {
                     getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disableSubmitBtn();
+                    getGuiProcessor().getView().disablePaymentButton();
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
@@ -984,7 +984,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
                 try {
                     getGuiProcessor().getView().renderByResource(mPageName);
-                    getGuiProcessor().getView().disableSubmitBtn();
+                    getGuiProcessor().getView().disablePaymentButton();
                 } catch (Exception e) {
                     Log.e(this, e);
                 }

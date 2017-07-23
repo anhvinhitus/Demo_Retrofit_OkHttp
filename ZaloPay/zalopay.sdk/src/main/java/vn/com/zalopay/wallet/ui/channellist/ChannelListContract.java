@@ -33,13 +33,13 @@ public interface ChannelListContract extends IContract {
 
         void showSupportBankVersionDialog(String pMessage);
 
-        void enableConfirmButton(int buttonTextId, int bgResourceId);
-
         void disableConfirmButton();
 
         void showQuitConfirm();
 
         void scrollToPos(int position);
+
+        void enablePaymentButton(int buttonTextId, int bgResourceId);
 
         ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }

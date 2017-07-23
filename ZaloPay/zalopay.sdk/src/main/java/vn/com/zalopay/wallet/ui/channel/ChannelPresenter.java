@@ -284,7 +284,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             initTimer();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
-            getViewOrThrow().visiableOrderInfo(!mPaymentInfoHelper.isLinkTrans());
+            getViewOrThrow().visibleOrderInfo(!mPaymentInfoHelper.isLinkTrans());
             if (mPaymentInfoHelper.isLinkTrans()) {
                 startSubscribePaymentReadyMessage();
                 return;

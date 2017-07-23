@@ -25,7 +25,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -33,12 +32,11 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
-import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
@@ -49,7 +47,7 @@ import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
  * Created by chucvv on 6/12/17.
  */
 
-public class ChannelListFragment extends RenderFragment<ChannelListPresenter> implements ChannelListContract.IView {
+public class ChannelListFragment extends GenericFragment<ChannelListPresenter> implements ChannelListContract.IView {
     private boolean delayClick = false;
     private View.OnClickListener mConfirmClick = view -> {
         if (!delayClick) {
@@ -109,7 +107,6 @@ public class ChannelListFragment extends RenderFragment<ChannelListPresenter> im
     @Override
     protected void onViewBound(View view) {
         super.onViewBound(view);
-        mRootView = view;
         view_top_linearlayout = view.findViewById(R.id.view_top_linearlayout);
 
         order_amount_linearlayout = view.findViewById(R.id.order_amount_total_linearlayout);
@@ -248,7 +245,7 @@ public class ChannelListFragment extends RenderFragment<ChannelListPresenter> im
         //order amount
         boolean hasAmount = total_amount > 0;
         if (hasAmount) {
-            String txtAmount = CurrencyUtil.formatCurrency(total_amount,false);
+            String txtAmount = CurrencyUtil.formatCurrency(total_amount, false);
             order_amount_txt.setText(txtAmount);
             order_amount_txt.setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
         }
@@ -283,15 +280,6 @@ public class ChannelListFragment extends RenderFragment<ChannelListPresenter> im
                 getResources().getString(R.string.sdk__app_not_allow_payment_mess),
                 getResources().getString(R.string.dialog_close_button),
                 SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
-    }
-
-    @Override
-    public void showUpdateLevelDialog(String message, String btnCloseText, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showConfirmDialog(getActivity(),
-                getResources().getString(com.zalopay.ui.widget.R.string.dialog_title_normal),
-                message,
-                getResources().getString(R.string.dialog_upgrade_button),
-                btnCloseText, pListener);
     }
 
     @Override
@@ -412,7 +400,7 @@ public class ChannelListFragment extends RenderFragment<ChannelListPresenter> im
     }
 
     @Override
-    public void enableConfirmButton(int buttonTextId, int bgResourceId) {
+    public void enablePaymentButton(int buttonTextId, int bgResourceId) {
         confirm_button.setEnabled(true);
         if (buttonTextId != -1) {
             confirm_button.setText(getString(buttonTextId));

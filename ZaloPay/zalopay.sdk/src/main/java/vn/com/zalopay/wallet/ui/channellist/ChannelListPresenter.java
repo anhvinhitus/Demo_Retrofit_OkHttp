@@ -31,6 +31,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -64,7 +65,7 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -699,7 +700,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             //update text by trans type
             int btnTextId = ChannelHelper.btnConfirmText(channel, mPaymentInfoHelper.getTranstype());
             int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
-            getViewOrThrow().enableConfirmButton(btnTextId, btnBgDrawableId);
+            getViewOrThrow().enablePaymentButton(btnTextId, btnBgDrawableId);
         }
     }
 
@@ -744,7 +745,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
      * visa/mastercard has same bankcode 123PCC
      * need another storage for him
      * then key is pmc name instead of bank code
-     * @param channel
      */
     void queueChannel(PaymentChannel channel) {
         String key = channel.bankcode;
@@ -902,5 +902,20 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_39);
                 break;
         }
+    }
+
+    public void showResultPayment(StatusResponse pResponse){
+        if(TransactionHelper.isTransactionSuccess(pResponse)){
+            showSuccessPayment(pResponse);
+        }else{
+            showFailurePayment(pResponse);
+        }
+    }
+
+    private void showSuccessPayment(StatusResponse pResponse){
+
+    }
+    private void showFailurePayment(StatusResponse pResponse){
+
     }
 }

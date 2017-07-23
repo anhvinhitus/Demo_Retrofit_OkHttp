@@ -6,7 +6,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -20,8 +20,6 @@ public interface IContract {
     void showInfoDialog(String pMessage);
 
     void showInfoDialog(String pMessage, ZPWOnEventDialogListener zpwOnEventDialogListener);
-
-    void showUpdateLevelDialog(String message, String btnCloseText, ZPWOnEventConfirmDialogListener pListener);
 
     void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener);
 

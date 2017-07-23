@@ -284,8 +284,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 getView().setVisible(R.id.linearlayout_input_local_card, false);
                 getView().visibleCardViewNavigateButton(false);
                 getView().visibleSubmitButton(true);
-                getView().enableSubmitBtn();
-                getView().visiableOrderInfo(false);
+                getView().enablePaymentButton();
+                getView().visibleOrderInfo(false);
                 getAdapter().onClickSubmission();
             }
         } catch (Exception e) {
@@ -381,7 +381,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             getView().setVisible(R.id.linearlayout_input_local_card, true);
             getView().visibleCardViewNavigateButton(true);
             getView().visibleSubmitButton(false);
-            getView().disableSubmitBtn();
+            getView().disablePaymentButton();
             visualOtpToken(false);
             getAdapter().setCanEditCardInfo(false);
             SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
@@ -397,7 +397,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                     mContext.getResources().getString(R.string.sdk_button_submit_text));
             if (getAdapter().getPaymentInfoHelper().payByCardMap()
                     || getAdapter().getPaymentInfoHelper().payByBankAccountMap()) {
-                getView().visiableOrderInfo(true);
+                getView().visibleOrderInfo(true);
             }
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -542,12 +542,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     private void moveToAuthenOptionView() throws Exception {
         SdkUtils.hideSoftKeyboard(mContext, getAdapter().getActivity());
-        getView().visiableOrderInfo(false);
+        getView().visibleOrderInfo(false);
         getView().setVisible(R.id.linearlayout_input_local_card, false);
         getView().visibleCardViewNavigateButton(false);
         getView().visibleSubmitButton(true);
-        getView().enableSubmitBtn();
-        getView().changeBgSubmitButton(getAdapter().isFinalStep());
+        getView().enablePaymentButton();
+        getView().changeBgPaymentButton(getAdapter().isFinalStep());
         visualOtpToken(true);
     }
 
@@ -619,11 +619,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         }
         try {
             if (isOtp && isToken && isCoverBankOtp && isCoverBankCaptcha && isAccountName && isAccountPassword && isOnlinePassword) {
-                getView().enableSubmitBtn();
-                getView().changeBgSubmitButton(getAdapter().isFinalStep());
+                getView().enablePaymentButton();
+                getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
             } else {
-                getView().disableSubmitBtn();
+                getView().disablePaymentButton();
                 return false;
             }
         } catch (Exception e) {
