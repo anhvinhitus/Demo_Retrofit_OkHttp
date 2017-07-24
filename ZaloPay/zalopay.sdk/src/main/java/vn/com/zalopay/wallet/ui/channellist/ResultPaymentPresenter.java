@@ -2,17 +2,13 @@ package vn.com.zalopay.wallet.ui.channellist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
-
-import java.io.ByteArrayOutputStream;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.ISdkErrorContext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -26,6 +22,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 
@@ -38,7 +35,8 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     Context mContext;
-    StatusResponse mResponse;
+    StatusResponse mStatusResponse;
+    boolean mShowFingerPrintToast = false;
 
     public ResultPaymentPresenter() {
         Timber.d("call constructor ResultPaymentPresenter");
@@ -89,12 +87,12 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         }
     }
 
-    public void showFeedbackDialog() throws Exception {
+    void showFeedbackDialog() throws Exception {
         FeedBackCollector feedBackCollector = FeedBackCollector.shared();
         String transTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
-        int errorCode = mResponse != null ? mResponse.returncode : Constants.NULL_ERRORCODE;
-        String transFailReason = mResponse != null ? mResponse.returnmessage : "";
-        String transId = mResponse != null ? mResponse.zptransid : "";
+        int errorCode = mStatusResponse != null ? mStatusResponse.returncode : Constants.NULL_ERRORCODE;
+        String transFailReason = mStatusResponse != null ? mStatusResponse.returnmessage : "";
+        String transId = mStatusResponse != null ? mStatusResponse.zptransid : "";
         Feedback feedBack = Feedback.collectFeedBack(getViewOrThrow().getActivity(), transTitle, transFailReason, errorCode, transId);
         if (feedBack != null) {
             FeedbackCollector collector = feedBackCollector.getFeedbackCollector();
@@ -109,29 +107,54 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         mView.terminate();
     }
 
-    void showResultPayment(StatusResponse pResponse) {
+    private String getPaymentCardKey() {
+        return mPaymentInfoHelper != null && mPaymentInfoHelper.getMapBank() != null ?
+                mPaymentInfoHelper.getMapBank().getKey() : "";
+    }
+
+    void showResultPayment(StatusResponse pResponse, boolean pShowFingerPrintToast) {
         try {
-            mResponse = pResponse;
-            GlobalData.extraJobOnPaymentCompleted(mResponse, getDetectedBankCode());
+            mStatusResponse = pResponse;
+            mShowFingerPrintToast = pShowFingerPrintToast;
+            GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
             boolean success = TransactionHelper.isTransactionSuccess(pResponse);
             if (success) {
-                showSuccessPayment(pResponse);
+                doOnSuccessPayment();
             } else {
-                showFailurePayment(pResponse);
-                try {
-                    SDKApplication
-                            .sdkErrorReporter()
-                            .sdkReportErrorOnTransactionFail(this, GsonUtils.toJsonString(mResponse));
-                } catch (Exception e) {
-                    Timber.w(e, "Exception send error log");
-                }
+                doOnFailurePayment();
             }
+            getViewOrThrow().dismissShowingView();
         } catch (Exception e) {
             Timber.w(e, "Exception show result payment");
         }
     }
 
-    private void showSuccessPayment(StatusResponse pResponse) throws Exception {
+    private void doOnSuccessPayment() throws Exception {
+        renderSuccessPaymentView(mStatusResponse);
+        //save payment card for show on channel list later
+        String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
+        String paymentCard = getPaymentCardKey();
+        if (TextUtils.isEmpty(userId)) {
+            SDKApplication
+                    .getApplicationComponent()
+                    .bankListInteractor()
+                    .setPaymentBank(userId, paymentCard);
+        }
+        //update password fingerprint
+        if (mShowFingerPrintToast) {
+            getViewOrThrow().showToast(R.layout.layout_update_password_toast);
+        }
+    }
+
+    private void doOnFailurePayment() throws Exception {
+        renderFailurePaymentView(mStatusResponse);
+        SDKApplication
+                .sdkErrorReporter()
+                .sdkReportErrorOnTransactionFail(this,
+                        GsonUtils.toJsonString(mStatusResponse));
+    }
+
+    private void renderSuccessPaymentView(StatusResponse pResponse) throws Exception {
         try {
             String pageName = Constants.PAGE_SUCCESS;
             mView.renderByResource(pageName);
@@ -152,7 +175,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         }
     }
 
-    private void showFailurePayment(StatusResponse pResponse) throws Exception {
+    private void renderFailurePaymentView(StatusResponse pResponse) throws Exception {
         try {
             String message = pResponse.returnmessage;
             if (TextUtils.isEmpty(message)) {
@@ -201,7 +224,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
 
     @Override
     public String getTransactionId() {
-        return mResponse != null ? mResponse.zptransid : "";
+        return mStatusResponse != null ? mStatusResponse.zptransid : "";
     }
 
     @Override

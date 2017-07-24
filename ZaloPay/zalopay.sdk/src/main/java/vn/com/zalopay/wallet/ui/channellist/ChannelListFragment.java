@@ -425,12 +425,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void switchToResultScreen(StatusResponse pResponse) throws Exception {
+    public void switchToResultScreen(StatusResponse pResponse,boolean pShouldShowFingerPrintToast) throws Exception {
         if (!(getActivity() instanceof BaseActivity) || getActivity().isFinishing()) {
             throw new IllegalStateException("Activity is finish");
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.STATUS_RESPONSE, pResponse);
+        bundle.putBoolean(Constants.SHOWFFTOAST, pShouldShowFingerPrintToast);
         BaseFragment fragment = ResultPaymentFragment.newInstance(bundle);
         ((BaseActivity) getActivity()).hostFragment(fragment);
     }

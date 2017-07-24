@@ -34,8 +34,6 @@ public interface ChannelContract extends IContract {
 
         void renderTotalAmountAndFee(double total_amount, double fee);
 
-        void setTextPaymentButton(String pText);
-
         void disablePaymentButton();
 
         void updateCardNumberFont();

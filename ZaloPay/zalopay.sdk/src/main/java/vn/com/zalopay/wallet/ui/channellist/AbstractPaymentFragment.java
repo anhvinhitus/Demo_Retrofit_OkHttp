@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
@@ -11,10 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.Arrays;
+import com.zalopay.ui.widget.dialog.DialogManager;
+
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.FontHelper;
@@ -37,6 +38,7 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.IPresenter;
 import vn.com.zalopay.wallet.ui.ToolbarActivity;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
+import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
@@ -285,7 +287,32 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         new Handler().postDelayed(() -> setTitle(pToolBarTitle), 300);
     }
 
-    private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
+    public void showToast(int layout) {
+        Toast toast = new Toast(getContext());
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(View.inflate(getContext(), layout, null));
+        toast.show();
+    }
+
+    public void setTextPaymentButton(String pText) {
+        setText(R.id.zpsdk_btn_submit, pText);
+    }
+
+    public void handleSpecialAppResult(long appId) {
+        if (appId == Constants.RESULT_TYPE2_APPID) {
+            return;
+        }
+        new Handler().postDelayed(() -> setTextPaymentButton(getResources().getString(R.string.sdk_button_show_info_txt)), 100);
+    }
+
+    public void dismissShowingView() throws Exception {
+        PaymentSnackBar.getInstance().dismiss();
+        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+        DialogManager.closeLoadDialog();
+    }
+
+    /*private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
         // Define view to set view position based on suggest action from server response
         View rlUpdateInfo = findViewById(R.id.zpw_payment_fail_rl_update_info);
         View rlSupport = findViewById(R.id.zpw_payment_fail_rl_support);
@@ -310,5 +337,5 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
             pUpdateInfo.addRule(RelativeLayout.BELOW, rlSupport.getId());
             rlUpdateInfo.setLayoutParams(pUpdateInfo);
         }
-    }
+    }*/
 }

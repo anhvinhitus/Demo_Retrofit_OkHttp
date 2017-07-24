@@ -904,7 +904,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void showResultPayment(StatusResponse pResponse) throws Exception {
-        getViewOrThrow().switchToResultScreen(pResponse);
+    public void showResultPayment(StatusResponse pResponse,boolean pShouldShowFingerPrintToast) throws Exception {
+        getViewOrThrow().switchToResultScreen(pResponse, pShouldShowFingerPrintToast);
     }
 }
