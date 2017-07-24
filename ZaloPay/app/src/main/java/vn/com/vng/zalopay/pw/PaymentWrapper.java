@@ -66,7 +66,9 @@ public class PaymentWrapper {
     TransactionStore.Repository transactionRepository;
     @Inject
     Navigator mNavigator;
-    private User mCurrentUser;
+    @Inject
+    User mCurrentUser;
+
     Activity mActivity;
     boolean mShowNotificationLinkCard;
     private AbstractOrder mPendingOrder;
@@ -82,7 +84,6 @@ public class PaymentWrapper {
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
-        this.mCurrentUser = getUserComponent().currentUser();
         this.mPaymentInfoBuilder = PaymentInfo.newBuilder().setLocation(transform(LocationProvider.getLocation()));
     }
 
