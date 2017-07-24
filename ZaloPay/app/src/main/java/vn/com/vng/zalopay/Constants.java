@@ -98,6 +98,7 @@ public interface Constants {
 
     String ARGUMENT_KEY_ZALOPROFILE = "zaloprofile";
     String ARGUMENT_KEY_OAUTHTOKEN = "oauthtoken";
+    String ARGUMENT_KEY_TRANSFER = "transfer";
 
     interface MoneyTransfer {
         int STAGE_PRETRANSFER = 1;

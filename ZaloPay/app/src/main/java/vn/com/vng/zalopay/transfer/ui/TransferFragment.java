@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
@@ -93,11 +94,9 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     TransferObject mTransferObject;
 
-    public static TransferFragment newInstance(TransferObject object) {
+    public static TransferFragment newInstance(Bundle args) {
         TransferFragment fragment = new TransferFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("transfer", object);
-        fragment.setArguments(bundle);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -130,7 +129,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         super.onSaveInstanceState(outState);
         mTransferObject.amount = getAmount();
         mTransferObject.message = getMessage();
-        outState.putParcelable("transfer", mTransferObject);
+        outState.putParcelable(Constants.ARGUMENT_KEY_TRANSFER, mTransferObject);
     }
 
     @Override
@@ -359,7 +358,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     private void handleData(Bundle bundle) {
-        TransferObject object = bundle.getParcelable("transfer");
+        TransferObject object = bundle.getParcelable(Constants.ARGUMENT_KEY_TRANSFER);
         if (object != null) {
             mTransferObject = object;
         }

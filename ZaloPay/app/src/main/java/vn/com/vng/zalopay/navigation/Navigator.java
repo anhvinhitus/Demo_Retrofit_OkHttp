@@ -237,11 +237,6 @@ public class Navigator {
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public void startBankSupportSelectionActivity(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), BankSupportSelectionActivity.class);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_BANK);
-    }
-
     public void startBankSupportSelectionActivityWithoutBank(Context context) {
         startLinkCardActivity(context, LinkBankType.LINK_BANK_CARD, true, false, false, false);
     }
@@ -352,14 +347,6 @@ public class Navigator {
             showPinDialog(context, callback);
         }
 
-    }
-
-    public void startLinkCardActivityForResult(final Activity activity, String bankCode) {
-        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD, bankCode);
-    }
-
-    public void startLinkCardActivityForResult(Fragment fragment, String bankCode) {
-        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_CARD, bankCode);
     }
 
     public void startLinkAccountActivityForResult(final Activity activity, String bankCode) {
@@ -478,25 +465,28 @@ public class Navigator {
     }
 
     public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {
-        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
-        intent.putExtra("transfer", object);
+        Intent intent = getTransferIntent(fragment.getContext(), object);
         fragment.startActivityForResult(intent, requestCode);
     }
 
     public void startTransferActivity(Context context, TransferObject object) {
-        Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtra("transfer", object);
+        Intent intent = getTransferIntent(context, object);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     public void startTransferActivity(Context context, TransferObject object, boolean forwardResult) {
-        Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtra("transfer", object);
+        Intent intent = getTransferIntent(context, object);
         if (forwardResult) {
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         }
         context.startActivity(intent);
+    }
+
+    private Intent getTransferIntent(Context context, TransferObject object) {
+        Intent intent = new Intent(context, TransferActivity.class);
+        intent.putExtra(Constants.ARGUMENT_KEY_TRANSFER, object);
+        return intent;
     }
 
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
