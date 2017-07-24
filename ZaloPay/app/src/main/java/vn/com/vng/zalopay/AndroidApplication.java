@@ -26,6 +26,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -175,7 +176,12 @@ public class AndroidApplication extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .build();
 
-        appComponent.userConfig().loadConfig();
+        UserConfig userConfig = appComponent.userConfig();
+        userConfig.loadConfig();
+        if (userConfig.hasCurrentUser() && userComponent == null) {
+            createUserComponent(userConfig.getCurrentUser());
+        }
+
         appComponent.threadExecutor().execute(this::backgroundInitialization);
     }
 
