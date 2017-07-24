@@ -1499,8 +1499,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     void showKeyBoardOnCardNumberView() {
         try {
             SdkUtils.focusAndSoftKeyboard(getActivity(), getCardNumberView());
-        } catch (Exception e) {
-            Timber.w(e, "Exception show keyboard on card number view");
+        } catch (Exception ignored) {
         }
     }
 

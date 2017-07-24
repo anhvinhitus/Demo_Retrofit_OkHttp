@@ -1,27 +1,32 @@
 package vn.com.zalopay.wallet.merchant;
 
-import android.os.Build;
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.UiThread;
+import android.text.TextUtils;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
-import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.card.CreditCardCheck;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
+import vn.com.zalopay.wallet.ui.channellist.ResultPaymentFragment;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.zalopay.promotion.IPromotionResult;
 
 /***
@@ -52,7 +57,6 @@ public class CShareData extends SingletonBase {
 
     /***
      * load config from json file
-     * @return
      */
     public static DConfigFromServer loadConfigBundle() {
         if (mConfigFromServer == null || mConfigFromServer.CCIdentifier == null) {
@@ -67,17 +71,8 @@ public class CShareData extends SingletonBase {
     }
 
     public void notifyPromotionEvent(Object... pObjects) {
-        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
-        if (!isUiThread) {
-            Timber.d("notification promotion event coming from background, switching thread to main thread...");
-            new Handler(Looper.getMainLooper()).post(() -> {
-                //this runs on the UI thread
-                sendNotifyPromotionEventToAdapter(pObjects);
-            });
-        } else {
-            sendNotifyPromotionEventToAdapter(pObjects);
-        }
+        //this runs on the UI thread
+        new Handler(Looper.getMainLooper()).post(() -> sendNotifyPromotionEventToSDK(pObjects));
     }
 
     /***
@@ -85,17 +80,7 @@ public class CShareData extends SingletonBase {
      * @param pObjects (ZPWNotication, IReloadMapInfoListener)
      */
     public void notifyLinkBankAccountFinish(Object... pObjects) {
-        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
-        if (!isUiThread) {
-            Timber.d("notification coming from background, switching thread to main thread...");
-            new Handler(Looper.getMainLooper()).post(() -> {
-                //this runs on the UI thread
-                sendNotifyBankAccountFinishToAdapter(pObjects);
-            });
-        } else {
-            sendNotifyBankAccountFinishToAdapter(pObjects);
-        }
+        new Handler(Looper.getMainLooper()).post(() -> sendNotifyBankAccountFinishToSDK(pObjects));
     }
 
     /***
@@ -104,27 +89,17 @@ public class CShareData extends SingletonBase {
      * 2. user in fail screen by networking -> reload to success screen
      * app can call this  in main thread or background thread so need to check for switch to main
      * thread
-     * @param pObject
      */
     public void notifyTransactionFinish(Object... pObject) {
-        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
-        if (!isUiThread) {
-            Timber.d("notification coming from background, switching thread to main thread...");
-            new Handler(Looper.getMainLooper()).post(() -> {
-                //this runs on the UI thread
-                sendNotifyTransactionFinishIntoSDK(pObject);
-            });
-        } else {
-            sendNotifyTransactionFinishIntoSDK(pObject);
-        }
+        new Handler(Looper.getMainLooper()).post(() -> sendNotifyTransactionFinishIntoSDK(pObject));
     }
 
-    private void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
+    @UiThread
+    private void sendNotifyBankAccountFinishToSDK(Object... pObject) {
         Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
         ChannelActivity activity = BaseActivity.getChannelActivity();
         if (activity != null && !activity.isFinishing() && activity.getWorkFlow() instanceof AccountLinkWorkFlow) {
-            ((AccountLinkWorkFlow)activity.getWorkFlow()).onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
+            ((AccountLinkWorkFlow) activity.getWorkFlow()).onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
@@ -143,6 +118,7 @@ public class CShareData extends SingletonBase {
         }
     }
 
+    @UiThread
     private void sendNotifyTransactionFinishIntoSDK(Object... pObject) {
         //user in sdk now.
         Log.d(this, "start send notify finish transaction into sdk", pObject);
@@ -182,22 +158,51 @@ public class CShareData extends SingletonBase {
         return successTransEvent;
     }
 
-    private void sendNotifyPromotionEventToAdapter(Object... pObject) {
-        ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity != null && !activity.isFinishing() && activity.getWorkFlow() != null) {
-            activity.getWorkFlow().handleEventPromotion(pObject);
-        } else if (pObject[1] instanceof IPromotionResult) {
-            IPromotionResult promotionResult = (IPromotionResult) pObject[1];
-            promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available
-        } else {
-            Timber.d("skip post notification promotion event because user quit sdk");
+    @UiThread
+    private void sendNotifyPromotionEventToSDK(Object... pObject) {
+        try {
+            Activity sdkCurrentActivity = BaseActivity.getCurrentActivity();
+            String transactionID = null;
+            boolean successPayment = false;
+            //flow 2 activity channellist -> channel
+            if ((sdkCurrentActivity instanceof ChannelActivity)
+                    && !sdkCurrentActivity.isFinishing()
+                    && ((ChannelActivity) sdkCurrentActivity).getWorkFlow() != null) {
+                AbstractWorkFlow workFlow = ((ChannelActivity) sdkCurrentActivity).getWorkFlow();
+                transactionID = workFlow.getTransactionID();
+                successPayment = workFlow.isTransactionSuccess();
+            }
+            //flow 1 activity channellist
+            if ((sdkCurrentActivity instanceof ChannelListActivity)
+                    && !sdkCurrentActivity.isFinishing()) {
+                android.support.v4.app.Fragment currentFragment = ((ChannelListActivity) sdkCurrentActivity).getActiveFragment();
+                if (currentFragment instanceof ResultPaymentFragment) {
+                    transactionID = ((ResultPaymentFragment) currentFragment).getSuccessTransId();
+                    successPayment = !TextUtils.isEmpty(transactionID);
+                }
+            }
+
+            if (successPayment && !TextUtils.isEmpty(transactionID)) {
+                SdkPromotion promotion = SdkPromotion.shared()
+                        .plant(sdkCurrentActivity)
+                        .setTransId(transactionID);
+                promotion.handlePromotion(pObject);
+                return;
+            }
+
+            if (pObject != null && pObject.length >= 2 && pObject[1] instanceof IPromotionResult) {
+                IPromotionResult promotionResult = (IPromotionResult) pObject[1];
+                promotionResult.onReceiverNotAvailable();//callback again to notify that sdk not available
+                return;
+            }
+            Timber.d("skip post notification promotion event because user quit sdk and listener is null");
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
     /***
      * support app detect type of visa card.
-     * @param pCardNumber
-     * @return type card
      */
     public String detectCardType(String pCardNumber) {
         loadConfigBundle();
