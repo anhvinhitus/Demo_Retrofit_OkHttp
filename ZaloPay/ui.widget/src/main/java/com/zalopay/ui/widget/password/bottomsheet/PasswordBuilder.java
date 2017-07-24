@@ -9,9 +9,11 @@ import com.zalopay.ui.widget.password.interfaces.IBuilder;
 import com.zalopay.ui.widget.password.interfaces.IControl;
 import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.interfaces.ISetDataToView;
+import com.zalopay.ui.widget.password.interfaces.OnCallSupportListener;
 
 public abstract class PasswordBuilder implements IBuilder {
     protected IPasswordCallBack mIPinCallBack;
+    protected OnCallSupportListener mCallSupportListener;
     protected View mView;
     protected String mIdLogo;
     protected String mTextPmcName;
@@ -44,8 +46,18 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
+    public IBuilder setOnCallSupportListener(OnCallSupportListener callSupportListener) {
+        mCallSupportListener = callSupportListener;
+        return this;
+    }
+
+    @Override
     public IPasswordCallBack getIFPinCallBack() {
         return mIPinCallBack;
+    }
+
+    public OnCallSupportListener getCallSupportListener() {
+        return mCallSupportListener;
     }
 
     @Override

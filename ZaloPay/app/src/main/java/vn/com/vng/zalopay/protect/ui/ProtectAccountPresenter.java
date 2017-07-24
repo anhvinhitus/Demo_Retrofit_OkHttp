@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
+import com.zalopay.ui.widget.password.interfaces.OnCallSupportListener;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +34,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.vng.zalopay.utils.PasswordUtil;
@@ -53,6 +55,9 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
     @Inject
     public Context mContext;
+
+    @Inject
+    Navigator navigator;
 
     KeyTools mKeyTools;
 
@@ -269,7 +274,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 .show();
     }
 
-    void changePassword() {
+    void processChangePassword() {
         try {
             if (mPassword != null && mPassword.isShowing()) {
                 return;
@@ -280,7 +285,13 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     .showFPSuggestCheckBox(false)
                     .showSupportInfo(true)
                     .setNeedHashPass(true)
-                    .setPasswordCallBack(changePasswordCallBack);
+                    .setPasswordCallBack(changePasswordCallBack)
+                    .setOnCallSupportListener(() -> {
+                        if (mContext == null) {
+                            return;
+                        }
+                        navigator.startDialSupport(mContext);
+                    });
             mPassword.buildDialog();
 
             mPassword.show();
