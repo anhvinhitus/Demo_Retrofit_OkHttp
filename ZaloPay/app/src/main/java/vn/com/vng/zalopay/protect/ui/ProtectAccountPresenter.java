@@ -376,7 +376,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
             mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
-//            mPassword.lock();
+            mPassword.lock();
         } catch (Exception e) {
             Timber.w("View otp error [%s]", e.getMessage());
         }
