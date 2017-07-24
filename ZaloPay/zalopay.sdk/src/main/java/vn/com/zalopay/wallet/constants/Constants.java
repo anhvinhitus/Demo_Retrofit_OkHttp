@@ -104,6 +104,7 @@ public class Constants {
     public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
     public static final String PMC_CONFIG = "config";
     public static final String STATUS_RESPONSE = "status";
+    public static final String SHOWFFTOAST = "fftoast";
     public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
     public static final String BANKCODE_EXTRA = "bankcode";
     public static final String CARDNUMBER_EXTRA = "cardnumber";
@@ -132,5 +133,5 @@ public class Constants {
         String layout = "layout";
     }
 
-    public static int RESULT_TYPE2_APPID = 12;
+    public static long RESULT_TYPE2_APPID = 12;
 }

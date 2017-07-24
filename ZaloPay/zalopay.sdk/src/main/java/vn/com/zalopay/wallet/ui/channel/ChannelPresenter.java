@@ -77,11 +77,11 @@ import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     public EventBus mBus;
+    public boolean mShowFingerPrintToast = false;
     @Inject
     Context mContext;
     @Inject
     AppInfoStore.Interactor appInfoInteractor;
-
     boolean mTimerRunning = false;
     AbstractWorkFlow mAbstractWorkFlow = null;
     private CountDownTimer mExpireTransTimer;
@@ -270,6 +270,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
         mMiniPmcTransType = bundle.getParcelable(PMC_CONFIG);
         mStatusResponse = bundle.getParcelable(STATUS_RESPONSE);
+        mShowFingerPrintToast = bundle.getBoolean(Constants.SHOWFFTOAST);
     }
 
     public void startPayment() {

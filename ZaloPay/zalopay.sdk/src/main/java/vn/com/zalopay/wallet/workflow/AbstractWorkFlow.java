@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.workflow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
@@ -68,14 +67,12 @@ import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
-import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
-import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 import vn.zalopay.promotion.CashBackRender;
@@ -1195,7 +1192,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     /*
      * show success view base
      */
-    protected synchronized void showTransactionSuccessView() {
+    private synchronized void showTransactionSuccessView() {
+        showDialogOnChannelList = false;
+        existTransWithoutConfirm = true;
         try {
             getPresenter().cancelTransactionExpiredTimer();
         } catch (Exception e) {
@@ -1212,25 +1211,42 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         if (needReloadCardMapAfterPayment()) {
             reloadMapCard(false);
         }
-        //if this is redpacket,then close sdk and callback to app
-        boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
-        if (isRedPacket) {
-            dismissShowingView();
-            finishTransaction();
-            return;
+        //save payment card for show on channel list later
+        String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
+        if (TextUtils.isEmpty(userId)) {
+            String paymentCard = getCard() != null ? getCard().getCardKey() : null;
+            SDKApplication.getApplicationComponent()
+                    .bankListInteractor().setPaymentBank(userId, paymentCard);
         }
-        showDialogOnChannelList = false;
-        existTransWithoutConfirm = true;
-        renderSuccessInformation();
-        saveLastPaymentBank();//save payment card for show on channel list later
-        handleSpecialAppResult();
         if (isCardFlowWeb()) {
             sendLogTransaction();
         }
-        dismissShowingView();
+        try {
+            getView().dismissShowingView();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+        //if this is redpacket,then close sdk and callback to app
+        boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
+        if (isRedPacket) {
+            finishTransaction();
+            return;
+        }
+        renderSuccessInformation();
+        try {
+            //change button text for whitelist app id
+            long appId = -1;
+            if (mPaymentInfoHelper != null) {
+                appId = mPaymentInfoHelper.getAppId();
+            }
+            getView().handleSpecialAppResult(appId);
+        } catch (Exception e) {
+            Timber.w(e);
+        }
         //update password fingerprint
         try {
-            if (PayProxy.get().getAuthenActor() != null && PayProxy.get().getAuthenActor().updatePassword()) {
+            boolean shouldShowFFToast = getPresenter().mShowFingerPrintToast;
+            if (shouldShowFFToast) {
                 getView().showToast(R.layout.layout_update_password_toast);
             }
         } catch (Exception e) {
@@ -1238,43 +1254,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         if (mPaymentInfoHelper.isLinkTrans()) {
             saveMapCardToLocal();
-        }
-    }
-
-    private void dismissShowingView() {
-        try {
-            PaymentSnackBar.getInstance().dismiss();
-            SdkUtils.hideSoftKeyboard(mContext, getActivity());
-            getView().hideLoading();
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-    }
-
-    private void saveLastPaymentBank() {
-        String paymentCard = getCard() != null ? getCard().getCardKey() : null;
-        if (TextUtils.isEmpty(paymentCard)) {
-            paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
-        }
-        if (!TextUtils.isEmpty(paymentCard)) {
-            SDKApplication.getApplicationComponent()
-                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), paymentCard);
-        } else {
-            SDKApplication.getApplicationComponent()
-                    .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), null);
-        }
-    }
-
-    private void handleSpecialAppResult() {
-        if (mPaymentInfoHelper.getOrder() != null &&
-                mPaymentInfoHelper.getOrder().appid == Constants.RESULT_TYPE2_APPID) {
-            new Handler().postDelayed(() -> {
-                try {
-                    getView().setTextPaymentButton(getActivity().getString(R.string.sdk_button_show_info_txt));
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
-            }, 100);
         }
     }
 
@@ -1352,7 +1331,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception send error log");
         }
         reloadMapListOnResponseMessage(pMessage);
-        dismissShowingView();
+        try {
+            getView().dismissShowingView();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
     }
 
     private void reloadMapListOnResponseMessage(String message) {

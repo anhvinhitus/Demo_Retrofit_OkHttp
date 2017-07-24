@@ -42,7 +42,7 @@ public interface ChannelListContract extends IContract {
 
         void enablePaymentButton(int buttonTextId, int bgResourceId);
 
-        void switchToResultScreen(StatusResponse pResponse) throws Exception;
+        void switchToResultScreen(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception;
 
         ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }

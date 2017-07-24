@@ -384,19 +384,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
-    public void showToast(int layout) {
-        Toast toast = new Toast(getContext());
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(View.inflate(getContext(), layout, null));
-        toast.show();
-    }
-
-    @Override
-    public void setTextPaymentButton(String pText) {
-        setText(R.id.zpsdk_btn_submit, pText);
-    }
-
     public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
         PaymentSnackBar.getInstance().dismiss();
         try {

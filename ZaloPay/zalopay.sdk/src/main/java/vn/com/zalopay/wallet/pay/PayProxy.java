@@ -51,14 +51,6 @@ import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 
-import static vn.com.zalopay.wallet.constants.Constants.CHANNEL_PAYMENT_REQUEST_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.MAX_RETRY_GETSTATUS;
-import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
-import static vn.com.zalopay.wallet.constants.Constants.RETRY_PASSWORD_MAX;
-import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
-import static vn.com.zalopay.wallet.helper.TransactionHelper.getGenericExceptionMessage;
-import static vn.com.zalopay.wallet.helper.TransactionHelper.getSubmitExceptionMessage;
-
 /*
  * pre check before start payment channel
  */
@@ -80,13 +72,13 @@ public class PayProxy extends SingletonBase {
     private boolean transStatusStart = false;
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
-    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(getSubmitExceptionMessage(mContext));
+    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
         }
         try {
-            if (showRetryDialogCount < MAX_RETRY_GETSTATUS) {
+            if (showRetryDialogCount < Constants.MAX_RETRY_GETSTATUS) {
                 askToRetryGetStatus();
             } else {
                 moveToResultScreen();
@@ -101,7 +93,7 @@ public class PayProxy extends SingletonBase {
             processStatus(statusResponse);
         } catch (Exception e) {
             Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
@@ -112,7 +104,7 @@ public class PayProxy extends SingletonBase {
                 processStatus(statusResponse);
             } catch (Exception e) {
                 Log.e(this, e);
-                markTransFail(getGenericExceptionMessage(mContext));
+                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         }
     };
@@ -120,8 +112,6 @@ public class PayProxy extends SingletonBase {
     private PayProxy() {
         super();
     }
-
-    ;
 
     public static PayProxy get() throws Exception {
         if (PayProxy._object == null) {
@@ -157,7 +147,7 @@ public class PayProxy extends SingletonBase {
                 processStatus(statusResponse);
             } catch (Exception e) {
                 Log.e(this, e);
-                markTransFail(getGenericExceptionMessage(mContext));
+                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         }
     }
@@ -185,7 +175,7 @@ public class PayProxy extends SingletonBase {
     private boolean networkException(Throwable throwable) {
         boolean networkError = throwable instanceof NetworkConnectionException;
         if (networkError) {
-            markTransFail(getSubmitExceptionMessage(mContext));
+            markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
         }
         return networkError;
     }
@@ -263,7 +253,7 @@ public class PayProxy extends SingletonBase {
             case PaymentState.PROCESSING:
                 mPaymentInfoHelper.setResult(PaymentStatus.PROCESSING);
                 //continue get trans status
-                if (transStatusStart && showRetryDialogCount < MAX_RETRY_GETSTATUS) {
+                if (transStatusStart && showRetryDialogCount < Constants.MAX_RETRY_GETSTATUS) {
                     try {
                         askToRetryGetStatus();
                     } catch (Exception e) {
@@ -283,7 +273,7 @@ public class PayProxy extends SingletonBase {
                 moveToResultScreen();
                 break;
             case PaymentState.INVALID_PASSWORD:
-                if (retryPassword >= RETRY_PASSWORD_MAX) {
+                if (retryPassword >= Constants.RETRY_PASSWORD_MAX) {
                     moveToResultScreen();
                 } else {
                     showPassword(getActivity());
@@ -546,11 +536,16 @@ public class PayProxy extends SingletonBase {
                 getView().callbackThenTerminate();
                 return;
             }
-            getPresenter().showResultPayment(mStatusResponse);
+            boolean showFingerPrintToast = shouldShowFingerPrintToast();
+            getPresenter().showResultPayment(mStatusResponse, showFingerPrintToast);
         } catch (Exception e) {
             Timber.d("show result screen error - skip to show channel activity");
             startChannelActivity();
         }
+    }
+
+    private boolean shouldShowFingerPrintToast() {
+        return mAuthenActor != null && mAuthenActor.updatePassword();
     }
 
     private void startChannelActivity() {
@@ -564,11 +559,13 @@ public class PayProxy extends SingletonBase {
                  * trans id = null when get status
                  */
                 mStatusResponse.zptransid = mTransId;
-                intent.putExtra(STATUS_RESPONSE, mStatusResponse);
+                intent.putExtra(Constants.STATUS_RESPONSE, mStatusResponse);
+                boolean showFingerPrintToast = shouldShowFingerPrintToast();
+                intent.putExtra(Constants.SHOWFFTOAST, showFingerPrintToast);
             }
-            intent.putExtra(PMC_CONFIG, mChannel);
+            intent.putExtra(Constants.PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));
-            getView().startActivityForResult(intent, CHANNEL_PAYMENT_REQUEST_CODE);
+            getView().startActivityForResult(intent, Constants.CHANNEL_PAYMENT_REQUEST_CODE);
             if (shouldCloseChannelList()) {
                 getView().terminate();
                 Timber.d("release channel list activity");
@@ -599,7 +596,7 @@ public class PayProxy extends SingletonBase {
             showPassword(getActivity());
         } catch (Exception e) {
             Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
 
@@ -608,7 +605,7 @@ public class PayProxy extends SingletonBase {
             mAuthenActor.showPasswordPopup(pActivity, mChannel);
         } catch (Exception e) {
             Log.e(this, e);
-            markTransFail(getGenericExceptionMessage(mContext));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
 
@@ -716,7 +713,7 @@ public class PayProxy extends SingletonBase {
     }
 
     public void onErrorPasswordPopup() {
-        markTransFail(getGenericExceptionMessage(mContext));
+        markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
     }
 
     public void onCompleteFingerPrint(String pHashPassword) {
@@ -730,7 +727,7 @@ public class PayProxy extends SingletonBase {
                 showPassword(getActivity());
             } catch (Exception e) {
                 Log.e(this, e);
-                markTransFail(getGenericExceptionMessage(mContext));
+                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         } else {
             //submit password
@@ -748,13 +745,13 @@ public class PayProxy extends SingletonBase {
                         showPassword(getActivity());
                     } catch (Exception e) {
                         Log.e(this, e);
-                        markTransFail(getGenericExceptionMessage(mContext));
+                        markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
                     }
                 }
             });
         } catch (Exception e) {
             Timber.w(e, "Exception show FingerPrint");
-            markTransFail(getGenericExceptionMessage(mContext));
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
 
@@ -774,7 +771,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    public void resetResponse() {
+    void resetResponse() {
         mStatusResponse = null;
     }
 }
