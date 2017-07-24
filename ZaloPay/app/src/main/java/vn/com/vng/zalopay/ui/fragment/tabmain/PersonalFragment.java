@@ -15,13 +15,14 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
-import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * Created by datnt10 on 3/27/17.
@@ -207,10 +208,12 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
         navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
     }
 
-//    @OnClick(R.id.tab_personal_tv_quick_feedback)
-//    public void onQuickFeedbackClick() {
-//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
-//    }
+    @OnClick(R.id.tab_personal_tv_quick_feedback)
+    public void onQuickFeedbackClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
+        String feedback_url = ConfigLoader.getFeedbackUrl();
+        navigator.startWebViewFromQRScanActivity(getContext(), feedback_url);
+    }
 
     @OnClick(R.id.tab_personal_tv_app_info)
     public void onAppInfoClick() {
