@@ -285,7 +285,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
             mPassword.show();
         } catch (Exception e) {
-            Timber.w("AuthenticationPassword show password [%s]", e.getMessage());
+            Timber.d("AuthenticationPassword show password [%s]", e.getMessage());
         }
     }
 
@@ -348,7 +348,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.unlock();
             }
         } catch (Exception e) {
-            Timber.w("AuthenticationPassword setError() [%s]", e.getMessage());
+            Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
         }
     }
 
@@ -359,6 +359,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
             mPassword.getBuilder().resetPasswordInput().clearText();
+            mPassword.unlock();
         } catch (Exception e) {
             Timber.d("View set old password success error [%s]", e.getMessage());
         }
@@ -376,29 +377,29 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
             mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
-            mPassword.lock();
+            mPassword.unlock();
         } catch (Exception e) {
-            Timber.w("View otp error [%s]", e.getMessage());
+            Timber.d("View otp error [%s]", e.getMessage());
         }
     }
 
     void onNewPassword() {
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
-            mPassword.getBuilder().resetPasswordInput();
-            mPassword.getBuilder().clearText();
+            mPassword.getBuilder().resetPasswordInput().clearText();
+            mPassword.unlock();
         } catch (Exception e) {
-            Timber.w("View set new password error [%s]", e.getMessage());
+            Timber.d("View set new password error [%s]", e.getMessage());
         }
     }
 
     void onConfirmNewPassword() {
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_confirm_new_password));
-            mPassword.getBuilder().resetPasswordInput();
-            mPassword.getBuilder().clearText();
+            mPassword.getBuilder().resetPasswordInput().clearText();
+            mPassword.unlock();
         } catch (Exception e) {
-            Timber.w("View set confirm new password error [%s]", e.getMessage());
+            Timber.d("View set confirm new password error [%s]", e.getMessage());
         }
     }
 
@@ -442,6 +443,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private void verifyPassword(String password) {
         try {
             mPassword.showLoading(true);
+            mPassword.lock();
         } catch (Exception e) {
             Timber.d("verifyPassword show loading error [%s]", e.getMessage());
         }
@@ -501,8 +503,9 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onStart() {
             try {
                 mPassword.showLoading(true);
+                mPassword.lock();
             } catch (Exception e) {
-                Timber.w("ChangePinSubscriber onStart exception [%s]", e.getMessage());
+                Timber.d("ChangePinSubscriber onStart exception [%s]", e.getMessage());
             }
         }
 
@@ -512,7 +515,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 setChangePasswordViewStatus(STATUS_OTP);
             } catch (Exception e) {
-                Timber.w("ChangePinSubscriber onNext exception [%s]", e.getMessage());
+                Timber.d("ChangePinSubscriber onNext exception [%s]", e.getMessage());
             }
 
         }
@@ -524,7 +527,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 setError(message);
             } catch (Exception exception) {
-                Timber.w("ChangePinSubscriber onError exception [%s]", exception.getMessage());
+                Timber.d("ChangePinSubscriber onError exception [%s]", exception.getMessage());
             }
         }
     }
@@ -535,8 +538,9 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onStart() {
             try {
                 mPassword.showLoading(true);
+                mPassword.lock();
             } catch (Exception e) {
-                Timber.w("VerifySubscriberOTP onStart exception [%s]", e.getMessage());
+                Timber.d("VerifySubscriberOTP onStart exception [%s]", e.getMessage());
             }
         }
 
@@ -545,10 +549,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 mPassword.showLoading(false);
                 mPassword.close();
+                mPassword.unlock();
                 ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
                 setViewStatus(0);
             } catch (Exception e) {
-                Timber.w("VerifySubscriberOTP onNext exception [%s]", e.getMessage());
+                Timber.d("VerifySubscriberOTP onNext exception [%s]", e.getMessage());
             }
         }
 
@@ -560,7 +565,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 setError(message);
                 setChangePasswordViewStatus(STATUS_OTP_INVALID);
             } catch (Exception exception) {
-                Timber.w("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
+                Timber.d("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
             }
         }
     }
