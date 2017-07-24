@@ -145,6 +145,14 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     }
 
     @Override
+    public void showInputError(String message) {
+        if (mEdtAmount == null) {
+            return;
+        }
+        mEdtAmount.setError(message);
+    }
+
+    @Override
     public Fragment getFragment() {
         return this;
     }
@@ -261,6 +269,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
             }
         }
     };
+
     public void showKeyboard() {
         AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
     }
