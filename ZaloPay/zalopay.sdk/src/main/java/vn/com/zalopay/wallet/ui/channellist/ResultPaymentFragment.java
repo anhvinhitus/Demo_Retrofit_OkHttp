@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ScrollView;
@@ -9,8 +10,10 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.ui.BaseFragment;
@@ -23,7 +26,7 @@ import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 
 public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPaymentPresenter> implements IContract {
 
-    StatusResponse mStatusResponse;
+    public StatusResponse mStatusResponse;
     boolean mShowFingerPrintToast;
 
     public static BaseFragment newInstance() {
@@ -36,6 +39,13 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
             fragment.setArguments(args);
         }
         return fragment;
+    }
+
+    public String getSuccessTransId(){
+        if(TransactionHelper.isTransactionSuccess(mStatusResponse)){
+            return mStatusResponse.zptransid;
+        }
+        return null;
     }
 
     @Override
@@ -158,6 +168,9 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     public void callbackThenTerminate() {
-
+        if (mPresenter != null) {
+            mPresenter.callback();
+        }
+        terminate();
     }
 }

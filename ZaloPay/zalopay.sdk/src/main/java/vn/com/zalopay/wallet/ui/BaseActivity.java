@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
@@ -111,7 +111,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    protected Fragment getActiveFragment() {
+    public Fragment getActiveFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 

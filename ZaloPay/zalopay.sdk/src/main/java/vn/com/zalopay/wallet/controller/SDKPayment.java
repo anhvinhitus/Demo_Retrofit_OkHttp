@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -10,25 +11,26 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.error.CError;
-import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
-import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.validation.IValidate;
-import vn.com.zalopay.wallet.validation.PaymentInfoValidation;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListActivity;
+import vn.com.zalopay.wallet.ui.channellist.ResultPaymentFragment;
+import vn.com.zalopay.wallet.validation.IValidate;
+import vn.com.zalopay.wallet.validation.PaymentInfoValidation;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 /***
  * payment controller class
@@ -37,7 +39,6 @@ public class SDKPayment {
     /***
      * merchant check whether
      * use is opening sdk for payment
-     * @return
      */
     public synchronized static boolean isOpenSdk() {
         return GlobalData.isUserInSDK();
@@ -46,16 +47,22 @@ public class SDKPayment {
     /***
      * merchant need to call this to check whether
      * can close sdk right away before calling closeSdk()
-     * @return
      */
     public synchronized static boolean canCloseSdk() {
         try {
-            ChannelActivity channelActivity = BaseActivity.getChannelActivity();
-            if (channelActivity == null || channelActivity.isFinishing()) {
+            Activity sdkCurrentActivity = BaseActivity.getCurrentActivity();
+            if (sdkCurrentActivity == null || sdkCurrentActivity.isFinishing()) {
                 return true;
             }
-            AbstractWorkFlow adapterBase = channelActivity.getWorkFlow();
-            return adapterBase != null && adapterBase.isFinalScreen();
+            if (sdkCurrentActivity instanceof ChannelListActivity) {
+                Fragment fragment = ((ChannelListActivity) sdkCurrentActivity).getActiveFragment();
+                return fragment instanceof ResultPaymentFragment;
+            }
+            if (sdkCurrentActivity instanceof ChannelActivity) {
+                AbstractWorkFlow adapterBase = ((ChannelActivity) sdkCurrentActivity).getWorkFlow();
+                return adapterBase != null && adapterBase.isFinalScreen();
+            }
+            return true;
         } catch (Exception ex) {
             Timber.w(ex, "Exception check close SDK");
         }
@@ -64,8 +71,6 @@ public class SDKPayment {
 
     /***
      * merchant call this to close sdk right away
-     *
-     * @throws Exception
      */
     public synchronized static void closeSdk() throws Exception {
         if (!isOpenSdk()) {
@@ -77,9 +82,17 @@ public class SDKPayment {
             return;
         }
         try {
-            ChannelActivity channelActivity = BaseActivity.getChannelActivity();
-            if (channelActivity != null && !channelActivity.isFinishing()) {
-                AbstractWorkFlow adapterBase = channelActivity.getWorkFlow();
+            Activity sdkCurrentActivity = BaseActivity.getCurrentActivity();
+            if (sdkCurrentActivity == null || sdkCurrentActivity.isFinishing()) {
+                return;
+            }
+            if (sdkCurrentActivity instanceof ChannelListActivity) {
+                Fragment fragment = ((ChannelListActivity) sdkCurrentActivity).getActiveFragment();
+                if (fragment instanceof ResultPaymentFragment) {
+                    ((ResultPaymentFragment) fragment).callbackThenTerminate();
+                }
+            } else if (sdkCurrentActivity instanceof ChannelActivity) {
+                AbstractWorkFlow adapterBase = ((ChannelActivity) sdkCurrentActivity).getWorkFlow();
                 if (adapterBase != null) {
                     adapterBase.onClickSubmission();
                 }

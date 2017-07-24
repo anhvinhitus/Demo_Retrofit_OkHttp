@@ -120,7 +120,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 setResult(MAP_POPUP_RESULT_CODE, intent);
                 getViewOrThrow().terminate();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
         }
 

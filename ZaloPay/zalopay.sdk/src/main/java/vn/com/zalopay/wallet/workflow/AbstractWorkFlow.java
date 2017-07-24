@@ -83,40 +83,38 @@ import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AbstractWorkFlow implements ISdkErrorContext {
-    protected final DPaymentCard mCard;
+    private final DPaymentCard mCard;
     final SdkErrorReporter mSdkErrorReporter;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected ChannelPresenter mPresenter = null;
-    protected CardGuiProcessor mGuiProcessor = null;
-    protected StatusResponse mStatusResponse;
-    protected boolean isLoadWebTimeout = false;
-    protected int numberRetryOtp = 0;
-    protected MapCard mMapCard;
-    protected String mTransactionID;
-    protected String mPageName;
-    protected boolean existTransWithoutConfirm = true;
+    CardGuiProcessor mGuiProcessor = null;
+    StatusResponse mStatusResponse;
+    private boolean isLoadWebTimeout = false;
+    private int numberRetryOtp = 0;
+    private MapCard mMapCard;
+    String mTransactionID;
+    String mPageName;
+    boolean existTransWithoutConfirm = true;
     //count of retry check status if submit order fail
-    protected int mCountCheckStatus = 0;
+    private int mCountCheckStatus = 0;
     //check data in response get status api
-    protected boolean isCheckDataInStatus = false;
+    private boolean isCheckDataInStatus = false;
     //submit log load website to server
-    protected long mCaptchaBeginTime = 0, mCaptchaEndTime = 0;
-    protected long mOtpBeginTime = 0, mOtpEndTime = 0;
+    long mCaptchaBeginTime = 0, mCaptchaEndTime = 0;
+    long mOtpBeginTime = 0, mOtpEndTime = 0;
     //whether show dialog or not?
-    protected boolean showDialogOnChannelList = true;
+    private boolean showDialogOnChannelList = true;
     //need to switch to cc or atm
-    protected boolean mNeedToSwitchChannel = false;
-    protected boolean mIsOrderSubmit = false;
-    protected boolean mCanEditCardInfo = false;
+    private boolean mNeedToSwitchChannel = false;
+    private boolean mIsOrderSubmit = false;
+    private boolean mCanEditCardInfo = false;
     @BankFlow
-    protected int mECardFlowType;
-    protected MiniPmcTransType mMiniPmcTransType;
-    protected IBuilder mPromotionBuilder;
-    protected IPromotionResult mPromotionResult;
+    private int mECardFlowType;
+    MiniPmcTransType mMiniPmcTransType;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
-    protected ILinkSourceInteractor mLinkInteractor;
-    protected onNetworkingDialogCloseListener networkingDialogCloseListener = new onNetworkingDialogCloseListener() {
+    ILinkSourceInteractor mLinkInteractor;
+    onNetworkingDialogCloseListener networkingDialogCloseListener = new onNetworkingDialogCloseListener() {
         @Override
         public void onCloseNetworkingDialog() {
             whetherQuitPaymentOffline();
@@ -129,7 +127,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     protected EventBus mEventBus;
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
-    public OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
+    private OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
             try {
@@ -882,93 +880,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    public void handleEventPromotion(Object[] pAdditionParams) {
-        Timber.d("got promotion from notification");
-        if (pAdditionParams == null || pAdditionParams.length <= 0) {
-            Timber.d("stopping processing promotion from notification because of empty pAdditionParams");
-            return;
-        }
-
-        PromotionEvent promotionEvent = null;
-        if (pAdditionParams[0] instanceof PromotionEvent) {
-            promotionEvent = (PromotionEvent) pAdditionParams[0];
-        }
-        if (mPromotionBuilder != null) {
-            Log.d(this, "promotion event is updated", promotionEvent);
-            mPromotionBuilder.setPromotion(promotionEvent);
-            return;
-        }
-        if (promotionEvent == null) {
-            Timber.d("stopping processing promotion from notification because promotion event is null");
-            return;
-        }
-        if (pAdditionParams.length >= 2 && pAdditionParams[1] instanceof IPromotionResult) {
-            mPromotionResult = (IPromotionResult) pAdditionParams[1];
-        }
-
-        long transId = -1;
-        if (!TextUtils.isEmpty(mTransactionID)) {
-            try {
-                transId = Long.parseLong(mTransactionID);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-        }
-        if (transId == -1) {
-            Timber.d("stopping processing promotion from notification because transid is not same");
-            if (mPromotionResult != null) {
-                mPromotionResult.onReceiverNotAvailable();//callback again to notify that sdk don't accept this notification
-            }
-            return;
-        }
-        if (!isTransactionSuccess()) {
-            Timber.d("transaction is not success, skipping process promotion notification");
-            return;
-        }
-
-        IResourceLoader resourceLoader = null;
-        if (pAdditionParams.length >= 3 && pAdditionParams[2] instanceof IResourceLoader) {
-            resourceLoader = (IResourceLoader) pAdditionParams[2];
-        }
-
-
-        View contentView = View.inflate(mContext, vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
-        mPromotionBuilder = CashBackRender.getBuilder()
-                .setPromotion(promotionEvent)
-                .setView(contentView)
-                .setResourceProvider(resourceLoader)
-                .setInteractPromotion(new IInteractPromotion() {
-                    @Override
-                    public void onUserInteract(PromotionEvent pPromotionEvent) {
-                        if (mPromotionResult != null) {
-                            try {
-                                mPromotionResult.onNavigateToAction(getActivity(), pPromotionEvent);
-                            } catch (Exception e) {
-                                Log.e(this, e);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onClose() {
-                        mPromotionResult = null;
-                        mPromotionBuilder.release();
-                        mPromotionBuilder = null;
-                    }
-                });
-        try {
-            UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mPromotionBuilder.build());
-            bottomSheetDialog.show();
-            bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
-        } catch (Exception e) {
-            Timber.w(e, "Exception show promotion view");
-        }
-    }
-
     /***
      * check networking is on/off
      * if off then open dialog networking for requesting open network again
-     * @return
      */
     public boolean checkAndOpenNetworkingSetting() {
         try {
@@ -988,7 +902,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return ((mCaptchaEndTime - mCaptchaBeginTime) >= 0) || ((mOtpEndTime - mOtpBeginTime) > 0);
     }
 
-    protected void sendLogTransaction() {
+    private void sendLogTransaction() {
         try {
             if (!shouldSendLogToServer()) {
                 return;
