@@ -100,6 +100,8 @@ public interface AccountStore {
 
         Observable<String> changePassword(String newPassword, String oldPassword);
 
+        Observable<String> changePasswordSha256(String oldHashedPassword, String newHashedPassword);
+
         Observable<Boolean> verifyChangePassword(String otp);
 
         Observable<Person> getUserInfoByZaloPayId(String zaloPayId);

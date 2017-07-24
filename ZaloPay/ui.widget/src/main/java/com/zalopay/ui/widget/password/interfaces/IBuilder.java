@@ -44,6 +44,8 @@ public interface IBuilder {
 
     IBuilder showOTPInputView();
 
+    IBuilder setOTPValue(String otpValue);
+
     boolean getFingerPrint();
 
     boolean isSupportInfoVisible();

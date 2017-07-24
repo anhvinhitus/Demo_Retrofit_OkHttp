@@ -453,7 +453,10 @@
     <string name="protect_account_current_password">Nhập mật khẩu thanh toán hiện tại</string>
     <string name="protect_account_new_password">Nhập mật khẩu thanh toán mới</string>
     <string name="protect_account_confirm_new_password">Xác nhận mật khẩu thanh toán mới</string>
+    <string name="protect_account_confirm_new_password_invalid">Mật khẩu thanh toán không trùng khớp</string>
     <string name="protect_account_otp">Nhập mã OTP</string>
+    <string name="protect_account_otp_invalid">Mã OTP không đúng</string>
+    <string name="protect_account_password_changed">Đổi mật khẩu thanh toán thành công</string>
 
 </resources>
 

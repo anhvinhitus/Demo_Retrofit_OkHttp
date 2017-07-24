@@ -26,4 +26,6 @@ public interface ISetDataToView {
     void resetPasswordInput();
 
     void showOTPInputView();
+
+    void setOTPValue(String otpValue);
 }

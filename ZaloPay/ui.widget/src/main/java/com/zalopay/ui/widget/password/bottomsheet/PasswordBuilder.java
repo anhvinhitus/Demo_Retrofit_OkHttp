@@ -167,6 +167,14 @@ public abstract class PasswordBuilder implements IBuilder {
     }
 
     @Override
+    public IBuilder setOTPValue(String otpValue) {
+        if (mISetDataToView != null) {
+            mISetDataToView.setOTPValue(otpValue);
+        }
+        return this;
+    }
+
+    @Override
     public boolean getFingerPrint() {
         return mFingerPrint;
     }

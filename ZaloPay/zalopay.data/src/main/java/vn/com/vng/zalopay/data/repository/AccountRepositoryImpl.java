@@ -102,6 +102,16 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
+    public Observable<String> changePasswordSha256(String oldHashedPassword, String newHashedPassword) {
+        return ObservableHelper.makeObservable(() -> new Pair<>(oldHashedPassword, newHashedPassword))
+                .flatMap(pair ->
+                        mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, pair.first, pair.second, null)
+                                .doOnNext(baseResponse -> mLocalStore.saveChangePinState(true))
+                                .map(baseResponse -> pair.second))
+                ;
+    }
+
+    @Override
     public Observable<Boolean> verifyChangePassword(String otp) {
         return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, null, null, otp)
                 .flatMap(baseResponse -> resetChangePinState())
