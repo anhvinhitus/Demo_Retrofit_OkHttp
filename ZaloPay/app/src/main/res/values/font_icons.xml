@@ -37,6 +37,7 @@
     <string name="general_arrowright">general_arrowright</string>
     <string name="general_search">general_search</string>
     <string name="general_delete_card">general_delete_card</string>
+    <string name="general_check">general_check</string>
 
     <string name="profile_lock">profile_lock</string>
     <string name="profile_camera">profile_camera</string>

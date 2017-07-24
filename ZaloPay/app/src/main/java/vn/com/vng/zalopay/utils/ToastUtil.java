@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
+
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by longlv on 10/6/15.
@@ -51,6 +55,14 @@ public class ToastUtil {
 
         Toast toast = Toast.makeText(context, message, duration);
         toast.setGravity(gravity, 0, 0);
+        toast.show();
+    }
+
+    public static void showToastOTPSuccess(Context context, CharSequence message) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_toast_opt_success, null);
+        toast.setView(view);
+        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 

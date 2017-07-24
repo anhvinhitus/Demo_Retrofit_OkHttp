@@ -328,7 +328,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     break;
                 case STATUS_OTP:
                 case STATUS_OTP_INVALID:
-                    if(!TextUtils.isEmpty(pHashPin)) {
+                    if (!TextUtils.isEmpty(pHashPin)) {
                         verifyOTP(pHashPin);
                     }
                     break;
@@ -376,7 +376,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
             mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
-            mPassword.lock();
+//            mPassword.lock();
         } catch (Exception e) {
             Timber.w("View otp error [%s]", e.getMessage());
         }
@@ -545,7 +545,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 mPassword.showLoading(false);
                 mPassword.close();
-                ToastUtil.showToast(getActivity(), mContext.getString(R.string.protect_account_password_changed));
+                ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
             } catch (Exception e) {
                 Timber.w("VerifySubscriberOTP onNext exception [%s]", e.getMessage());
             }
@@ -578,7 +578,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             Matcher m = r.matcher(message.body);
             if (m.find()) {
                 Timber.d("Found OTP: %s", m.group(2));
-                    mPassword.getBuilder().setOTPValue(m.group(2));
+                mPassword.getBuilder().setOTPValue(m.group(2));
             }
         }
 

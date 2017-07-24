@@ -141,7 +141,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
         @Override
         public void resetPasswordInput() {
-            onPinCodeError();
+            clearPinView();
         }
 
         @Override
@@ -375,6 +375,12 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             Vibrator v = (Vibrator) mContext.get().getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(500);// Vibrate for 500 milliseconds
         }
+    }
+
+    private void clearPinView() {
+        isSuccess = false;
+        mPinCode = "";
+        mPinCodeRoundView.refresh(mPinCode.length());
     }
 
     public void setErrorMessageToView(String pMessage) {
