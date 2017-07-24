@@ -126,27 +126,23 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     public abstract void onStartFeedbackSupport();
 
     private void updateToolBar() {
+        if(getActivity() == null){
+            return;
+        }
         ((ToolbarActivity) getActivity()).hideDisplayHome();
         ((ToolbarActivity) getActivity()).centerTitle();
     }
 
-    private void changeSubmitButtonBackground(AbstractOrder order) {
-        int appID = (order != null) ? (int) order.appid : 0;
+    private void changeSubmitButtonBackgroundByApp(long appId) {
         Button close_btn = (Button) findViewById(R.id.zpsdk_btn_submit);
-        switch (appID) {
-            case 12:
-                if (close_btn != null) {
-                    close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.button_text_color));
-                    close_btn.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
-                    return;
-                }
-                break;
-            default:
-                if (close_btn != null) {
-                    close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_grey));
-                    close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
-                }
+        if (close_btn == null) {
+            return;
         }
+        if (appId != Constants.RESULT_TYPE2_APPID) {
+            return;
+        }
+        close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.button_text_color));
+        close_btn.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
     }
 
     public void renderDynamicItemDetail(View viewContainer, List<NameValuePair> nameValuePairList) throws Exception {
@@ -246,10 +242,11 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
                 Timber.d(e);
             }
         }
-        changeSubmitButtonBackground(order);
+        long appId = order != null ? order.appid : 0;
+        changeSubmitButtonBackgroundByApp(appId);
         updateToolBar();
         enablePaymentButton();
-        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 300);
+        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 100);
     }
 
     public void renderFail(boolean isLink, String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
@@ -277,14 +274,12 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
                 setText(R.id.sdk_sugguest_action_message_textview, statusResponse.suggestmessage);
             }
             setVisible(R.id.sdk_sugguest_action_message_textview, hasSuggestActionMessage);
-            /*if (statusResponse.hasSuggestAction()) {
-                setLayoutBasedOnSuggestActions(statusResponse.suggestaction);
-            }*/
         }
-        changeSubmitButtonBackground(order);
+        long appId = order != null ? order.appid : 0;
+        changeSubmitButtonBackgroundByApp(appId);
         updateToolBar();
         enablePaymentButton();
-        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 300);
+        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 100);
     }
 
     public void showToast(int layout) {
@@ -311,31 +306,4 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         DialogManager.closeLoadDialog();
     }
-
-    /*private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
-        // Define view to set view position based on suggest action from server response
-        View rlUpdateInfo = findViewById(R.id.zpw_payment_fail_rl_update_info);
-        View rlSupport = findViewById(R.id.zpw_payment_fail_rl_support);
-
-        RelativeLayout.LayoutParams pUpdateInfo = (RelativeLayout.LayoutParams) rlUpdateInfo.getLayoutParams();
-        RelativeLayout.LayoutParams pSupport = (RelativeLayout.LayoutParams) rlSupport.getLayoutParams();
-
-        if (Arrays.equals(ESuggestActionType.UPDATE_INFO_DISPLAY.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_support, false);
-            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
-        } else if (Arrays.equals(ESuggestActionType.SUPPORT_DISPLAY.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_support, true);
-            setVisible(R.id.zpw_payment_fail_rl_update_info, false);
-        } else if (Arrays.equals(ESuggestActionType.UPDATE_INFO_ABOVE.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
-            setVisible(R.id.zpw_payment_fail_rl_support, true);
-            pSupport.addRule(RelativeLayout.BELOW, rlUpdateInfo.getId());
-            rlSupport.setLayoutParams(pSupport);
-        } else if (Arrays.equals(ESuggestActionType.SUPPORT_ABOVE.getValue(), suggestActions)) {
-            setVisible(R.id.zpw_payment_fail_rl_support, true);
-            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
-            pUpdateInfo.addRule(RelativeLayout.BELOW, rlSupport.getId());
-            rlUpdateInfo.setLayoutParams(pUpdateInfo);
-        }
-    }*/
 }
