@@ -104,25 +104,6 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         feedBackCollector.showDialog(getViewOrThrow().getActivity());
     }
 
-
-    private Feedback collectFeedBack() {
-        Feedback feedBack = null;
-        try {
-            Bitmap mBitmap = SdkUtils.CaptureScreenshot(getViewOrThrow().getActivity());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            if (mBitmap != null) {
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
-            }
-            byte[] byteArray = stream.toByteArray();
-            String transactionTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
-            int errorcode = mResponse.returncode;
-            feedBack = new Feedback(byteArray, mResponse.returnmessage, transactionTitle, mResponse.zptransid, errorcode);
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
-        return feedBack;
-    }
-
     void onPaymentButtonClick() {
         callback();
         mView.terminate();
