@@ -114,10 +114,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         }
     };
 
-    public static OnboardingFragment newInstance() {
-
-        Bundle args = new Bundle();
-
+    public static OnboardingFragment newInstance(Bundle args) {
         OnboardingFragment fragment = new OnboardingFragment();
         fragment.setArguments(args);
         return fragment;
@@ -134,7 +131,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shouldFinish(savedInstanceState);
-        initArgs(savedInstanceState == null ? getActivity().getIntent().getExtras() : savedInstanceState);
+        initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
     }
 
     private void shouldFinish(Bundle savedInstanceState) {
@@ -529,18 +526,24 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
                 });
     }
 
-    private boolean isScrollable() {
+    protected boolean isScrollable() {
         int childHeight = mContainerView.getHeight();
         return mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
     }
 
     private class InputPasswordListener implements InputEnteredListener {
+        InputPasswordListener() {
+        }
+
         public void onPinEntered(@NonNull String pinCode) {
             nextPage();
         }
     }
 
     private class ReInputPasswordListener implements InputEnteredListener {
+        ReInputPasswordListener() {
+        }
+
         public void onPinEntered(@NonNull String pinCode) {
             if (pinCode.equals(mInputPwdView.getInputText())) {
                 nextPage();

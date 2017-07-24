@@ -13,18 +13,26 @@ public class TransferActivity extends UserBaseToolBarActivity {
 
     Constants.ActivateSource mActivateSource = Constants.ActivateSource.FromTransferActivity;
 
+
+    /**
+     * Tham khảo crash get intent null
+     * https://fabric.io/zalo-pay/android/apps/vn.com.vng.zalopay/issues/59751e43be077a4dcc05f9c9?time=last-seven-days
+     */
     @Override
     public BaseFragment getFragmentToHost() {
-        TransferObject object = getIntent().getParcelableExtra("transfer");
-        mActivateSource = object.activateSource;
-        return TransferFragment.newInstance(object);
+        if (getIntent() == null) {
+            Timber.e("Intent transfer activity is null");
+            return null;
+        }
+
+        getActivateSource(getIntent());
+        return TransferFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        TransferObject object = intent.getParcelableExtra("transfer");
-        mActivateSource = object.activateSource;
+        getActivateSource(intent);
     }
 
     @Override
@@ -51,5 +59,14 @@ public class TransferActivity extends UserBaseToolBarActivity {
             super.finish();
         }
 
+    }
+
+    private void getActivateSource(Intent intent) {
+        TransferObject object = intent.getParcelableExtra(Constants.ARGUMENT_KEY_TRANSFER);
+        if (object == null) {
+            throw new RuntimeException("you should add transfer object.");
+        }
+
+        mActivateSource = object.activateSource;
     }
 }
