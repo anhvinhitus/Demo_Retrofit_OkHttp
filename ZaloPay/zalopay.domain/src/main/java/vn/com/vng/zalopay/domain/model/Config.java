@@ -47,8 +47,10 @@ public class Config {
     @SerializedName("multiple_withdraw_money")
     public long multipleWithdrawMoney;
 
-
     @SerializedName("allow_urls")
     public List<String> allowUrls;
+
+    @SerializedName("quick_comment_url")
+    public String mFeedbackUrl;
 
 }

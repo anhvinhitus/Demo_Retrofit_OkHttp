@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.domain.model.Config;
 public class ConfigLoader {
     private final static String CONFIG_FILE_PATH = "config/zalopay_config.json";
     private static Config mConfig;
+    private static String FEEDBACK_URL = "https://goo.gl/forms/FCO642guFSbpYwlt2";
 
     static {
         mConfig = new Config();
@@ -135,11 +136,12 @@ public class ConfigLoader {
 
     public static List<Long> getDenominationWithdraw() {
         if (mConfig == null || Lists.isEmptyOrNull(mConfig.denominationWithdraw)) {
-           return Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
+            return Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
         } else {
             return mConfig.denominationWithdraw;
         }
     }
+
     public static long getMinMoneyWithdraw() {
         if (mConfig == null || mConfig.minWithdrawMoney <= 0) {
             return 20000L;
@@ -147,6 +149,7 @@ public class ConfigLoader {
             return mConfig.minWithdrawMoney;
         }
     }
+
     public static long getMaxMoneyWithdraw() {
         if (mConfig == null || mConfig.minWithdrawMoney <= 0) {
             return 20000000L;
@@ -154,6 +157,7 @@ public class ConfigLoader {
             return mConfig.maxWithdrawMoney;
         }
     }
+
     public static long getMultipleMoneyWithdraw() {
         if (mConfig == null || mConfig.multipleWithdrawMoney <= 0) {
             return 10000L;
@@ -161,6 +165,15 @@ public class ConfigLoader {
             return mConfig.multipleWithdrawMoney;
         }
     }
+
+    public static String getFeedbackUrl() {
+        if (mConfig == null || TextUtils.isEmpty(mConfig.mFeedbackUrl)) {
+            return FEEDBACK_URL;
+        } else {
+            return mConfig.mFeedbackUrl;
+        }
+    }
+
     public static List<String> getAllowUrls() {
         if (mConfig == null || Lists.isEmptyOrNull(mConfig.allowUrls)) {
             return Arrays.asList("^((.+)\\.)?zalopay\\.vn",
