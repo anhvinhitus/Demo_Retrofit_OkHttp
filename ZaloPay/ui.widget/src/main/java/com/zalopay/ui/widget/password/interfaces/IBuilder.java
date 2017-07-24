@@ -12,7 +12,11 @@ public interface IBuilder {
 
     IBuilder setPasswordCallBack(IPasswordCallBack pinListener);
 
+    IBuilder setOnCallSupportListener(OnCallSupportListener callSupportListener);
+
     IPasswordCallBack getIFPinCallBack();
+
+    OnCallSupportListener getCallSupportListener();
 
     View getView();
 

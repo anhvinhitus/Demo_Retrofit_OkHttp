@@ -225,7 +225,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                 ContextCompat.getColor(pContext, R.color.colorPrimary), new ClickableSpanNoUnderline() {
                     @Override
                     public void onClick(View widget) {
-//                        navigator.startDialSupport(getContext());
+                        mBuilder.getCallSupportListener().onCallSupport();
                     }
                 });
     }
