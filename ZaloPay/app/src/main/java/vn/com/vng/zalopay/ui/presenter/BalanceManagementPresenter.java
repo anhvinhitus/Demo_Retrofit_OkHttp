@@ -17,6 +17,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -200,6 +201,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     private void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onNext(Long aLong) {
