@@ -1,10 +1,3 @@
-Zalo Pay (Sandbox v2.16.0 - build 349) - Released on 2017-07-24 09:52
-+ [App] Create UserComponent in Application by hieuvm (#229c777)
-+ [App] task#716 [UI] Cập nhật tính năng đổi mật khẩu thanh toán (cont) by datnt10 (#7603b80)
-+ [SDK] Cleanup by vo van chuc (#b9c487d)
-+ [SDK] Optimize work flow UI khi giao dịch dùng zalopay hoặc thẻ lưu by vo van chuc (#288d6c9)
-+ [SDK] Refactor fragment để chuẩn bị optimize màn hình show kết quả by vo van chuc (#c8c9fa0)
-+ [SDK] Refactor packages by vo van chuc (#508fa7d)
-+ [PaymentApp] Allow empty description in order to payment by Nguyen Huu Hoa (#fea81cb)
-+ [App] Change private variable to package private to allow faster access and reduce method counts by Nguyen Huu Hoa (#2d8e6c8)
-+ [App] Fix compiler errors for using wrong api AccountStore.Repository.validatePinSha256 by Nguyen Huu Hoa (#528151d)
+Zalo Pay (Staging v2.16.0 - build 350) - Released on 2017-07-24 10:46
++ [UserComponent] Revert setupFragmentComponent in onCreateView. by hieuvm (#727989e)
++ [Balance] Update balance on main thread by vo van chuc (#ee7b6d4)
