@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,12 +15,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.FrescoUtil;
 
 /**
@@ -76,34 +73,36 @@ public class BankCardView extends SwipeLayout {
     }
 
     @Override
-    protected void layoutPullOut() {
-        View surfaceView = getSurfaceView();
-        Rect surfaceRect = mViewBoundCache.get(surfaceView);
-        if (surfaceRect == null) {
-            surfaceRect = computeSurfaceLayoutArea(false);
+    protected Rect computeBottomLayoutAreaViaSurface(ShowMode mode, Rect surfaceArea) {
+        Rect rect = super.computeBottomLayoutAreaViaSurface(mode, surfaceArea);
+        View foregroundView = getSurfaceView();
+        int paddingRight = 0;
+        if (foregroundView != null) {
+            paddingRight = foregroundView.getPaddingRight();
         }
 
-        if (surfaceView != null) {
-            surfaceView.layout(surfaceRect.left, surfaceRect.top, surfaceRect.right, surfaceRect.bottom);
-            bringChildToFront(surfaceView);
+        rect.left -= paddingRight;
+        return rect;
+    }
+
+    @Override
+    protected Rect computeSurfaceLayoutArea(boolean open) {
+        Rect rect = super.computeSurfaceLayoutArea(open);
+        View foregroundView = getSurfaceView();
+        int paddingRight = 0;
+        if (foregroundView != null) {
+            paddingRight = foregroundView.getPaddingRight();
         }
 
-        View currentBottomView = getCurrentBottomView();
-        Rect bottomViewRect = mViewBoundCache.get(currentBottomView);
-        if (bottomViewRect == null) {
-            bottomViewRect = computeBottomLayoutAreaViaSurface(ShowMode.PullOut, surfaceRect);
+        if (!open) {
+            rect.left = 0;
+            rect.right = getMeasuredWidth();
+        } else {
+            int offset = (int) getCurrentOffset() - paddingRight;
+            rect.left = -offset;
+            rect.right = getMeasuredWidth() - offset;
         }
-
-        if (mForegroundView != null) {
-            //  Timber.d("layoutPullOut: %s %s", mForegroundView.getWidth(), mForegroundView.getPaddingLeft());
-            bottomViewRect.left = mForegroundView.getWidth() - mForegroundView.getPaddingLeft();
-        }
-
-        if (currentBottomView != null) {
-            currentBottomView.layout(bottomViewRect.left, bottomViewRect.top, bottomViewRect.right, bottomViewRect.bottom);
-        }
-
-      //  Timber.d("layoutPullOut: [surfaceRect: %s bottomViewRect: %s] ", surfaceRect.toShortString(), bottomViewRect.toShortString());
+        return rect;
     }
 
     void bindView(BankData data) {

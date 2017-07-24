@@ -68,6 +68,7 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new BankListAdapter(getContext(), this);
+        mAdapter.setMode(Attributes.Mode.Single);
         setHasOptionsMenu(true);
     }
 
@@ -79,7 +80,6 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
         mListView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(16)));
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
         mListView.addOnScrollListener(mOnScrollListener);
-        mAdapter.setMode(Attributes.Mode.Single);
         mListView.setAdapter(mAdapter);
         setEmptyViewHeight();
     }

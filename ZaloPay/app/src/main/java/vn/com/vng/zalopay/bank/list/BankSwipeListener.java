@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 
 /**
@@ -19,9 +18,11 @@ import vn.com.vng.zalopay.R;
 final class BankSwipeListener extends SimpleSwipeListener {
 
     private float border = 0;
+    private float edgeSwipeOffset = 1;
 
     BankSwipeListener(Context context) {
         border = context.getResources().getDimension(R.dimen.border_link_card);
+        edgeSwipeOffset = context.getResources().getDimension(R.dimen.edge_swipe_offset);
     }
 
     @Override
@@ -66,27 +67,19 @@ final class BankSwipeListener extends SimpleSwipeListener {
     @Override
     public void onViewPositionChanged(SwipeLayout layout, View changedView, int left, int top, int dx, int dy) {
 
-        if (layout.mDragDistance == 0) {
-            return;
-        }
-
         View background = layout.getCurrentBottomView();
 
         if (background == null) {
             return;
         }
 
-        float alpha = Math.abs((float) left / layout.mDragDistance);
+        float alpha = Math.abs((float) left / edgeSwipeOffset);
 
         if (alpha > 1) {
             alpha = 1;
         } else if (alpha < 0) {
             alpha = 0;
         }
-
-       /* if (alpha == 0 || alpha == 1) {
-            Timber.d("onViewPositionChanged: %s", alpha);
-        }*/
 
         background.setAlpha(alpha);
     }

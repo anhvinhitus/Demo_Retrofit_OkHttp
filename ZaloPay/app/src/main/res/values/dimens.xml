@@ -169,4 +169,5 @@
     <!-- Override default bottom navigation view title size (trick to remove zoom out size animation) -->
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
+    <dimen name="edge_swipe_offset">96dp</dimen>
 </resources>
