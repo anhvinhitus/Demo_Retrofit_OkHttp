@@ -5,8 +5,9 @@
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="@dimen/link.card.height"
+    app:drag_edge="right"
+    app:rightEdgeSwipeOffset="@dimen/edge_swipe_offset"
     app:show_mode="pull_out"
-    app:rightEdgeSwipeOffset="96dp"
     >
 
     <!-- Your secondary layout here -->
@@ -19,7 +20,7 @@
         <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/deleteView"
             style="@style/HomePage.Title"
-            android:layout_width="96dp"
+            android:layout_width="@dimen/edge_swipe_offset"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center"
             android:drawablePadding="@dimen/spacing.small"

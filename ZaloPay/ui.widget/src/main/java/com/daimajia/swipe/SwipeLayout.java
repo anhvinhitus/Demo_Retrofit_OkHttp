@@ -1639,7 +1639,7 @@ public class SwipeLayout extends FrameLayout {
         addDrag(DragEdge.Bottom, findViewById(bottomId));
     }
 
-    private float getCurrentOffset() {
+    protected float getCurrentOffset() {
         if (mCurrentDragEdge == null) return 0;
         return mEdgeSwipesOffset[mCurrentDragEdge.ordinal()];
     }
