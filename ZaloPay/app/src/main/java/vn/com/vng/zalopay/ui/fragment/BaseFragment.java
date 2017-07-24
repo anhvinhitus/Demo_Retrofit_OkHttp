@@ -52,17 +52,12 @@ public abstract class BaseFragment extends Fragment {
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        setupFragmentComponent();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getResLayoutId(), container, false);
         unbinder = ButterKnife.bind(this, view);
+        setupFragmentComponent();
         return view;
     }
 

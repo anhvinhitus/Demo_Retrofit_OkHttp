@@ -80,16 +80,11 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
 
     private boolean mReactInstanceError;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        setupFragmentComponent();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mReactRootView = new ReactRootView(getContext());
+        setupFragmentComponent();
         return mReactRootView;
     }
 
