@@ -300,7 +300,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     }
 
     public void handleSpecialAppResult(long appId) {
-        if (appId == Constants.RESULT_TYPE2_APPID) {
+        if (appId != Constants.RESULT_TYPE2_APPID) {
             return;
         }
         new Handler().postDelayed(() -> setTextPaymentButton(getResources().getString(R.string.sdk_button_show_info_txt)), 100);
