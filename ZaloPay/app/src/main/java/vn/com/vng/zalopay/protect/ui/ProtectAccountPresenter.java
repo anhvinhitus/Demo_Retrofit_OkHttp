@@ -546,6 +546,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 mPassword.close();
                 ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
+                setViewStatus(0);
             } catch (Exception e) {
                 Timber.w("VerifySubscriberOTP onNext exception [%s]", e.getMessage());
             }
