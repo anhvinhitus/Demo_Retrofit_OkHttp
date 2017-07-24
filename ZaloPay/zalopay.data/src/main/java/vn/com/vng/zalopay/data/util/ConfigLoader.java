@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -52,8 +50,8 @@ public class ConfigLoader {
         try {
             String jsonConfig = FileUtil.readAssetToString(assetManager, CONFIG_FILE_PATH);
             return loadConfig(jsonConfig);
-        } catch (IOException e) {
-            Timber.e(e, "Read config from assets throw exception.");
+        } catch (Exception e) {
+            Timber.d(e, "Read config from assets throw exception.");
             return false;
         }
     }
@@ -65,7 +63,7 @@ public class ConfigLoader {
 
             String jsonConfig = FileUtil.readFileToString(filePath);
             return loadConfig(jsonConfig);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Timber.d(e, "Read config from resource app 1 throw exception.");
             return false;
         }
@@ -87,8 +85,8 @@ public class ConfigLoader {
                 FriendConfig.sEnableSyncContact = isSyncContact();
                 return true;
             }
-        } catch (JsonSyntaxException e) {
-            Timber.w(e, "Fail to load config with config: %s", jsonConfig);
+        } catch (Exception e) {
+            Timber.d(e, "Fail to load config with config: %s", jsonConfig);
             return false;
         }
 
