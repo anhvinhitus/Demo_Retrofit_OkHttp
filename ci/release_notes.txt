@@ -1,3 +1,13 @@
-Zalo Pay (Staging v2.16.0 - build 350) - Released on 2017-07-24 10:46
-+ [UserComponent] Revert setupFragmentComponent in onCreateView. by hieuvm (#727989e)
-+ [Balance] Update balance on main thread by vo van chuc (#ee7b6d4)
+Zalo Pay (Staging v2.16.0 - build 351) - Released on 2017-07-24 16:59
++ [SDK] Refactor flow payment by vo van chuc (#165afea)
++ [App] Change password: handling locking input view while verify functions is running by datnt10 (#f018788)
++ [App] Refactor code by hieuvm (#d243a28)
++ [Configloader] Redue timber level by hieuvm (#322325a)
++ [Feedback] task#724: Thêm góp ý nhanh by lytm (#c58547f)
++ [App] Change password: lock view input otp by datnt10 (#8cb29bd)
++ [App] Change password: reset view state when password changed -> close input view by datnt10 (#ed00ef7)
++ [App] Change password by datnt10 (#804fdac)
++ [App] Fabric#1018: Fix getIntent NPE by hieuvm (#c1274fd)
++ [Withdraw] Update show message error by lytm (#0f2e884)
++ [SDK] Cleanup by vo van chuc (#1447dc7)
++ [App] Change password: modify handling otp UI by datnt10 (#c75736f)
