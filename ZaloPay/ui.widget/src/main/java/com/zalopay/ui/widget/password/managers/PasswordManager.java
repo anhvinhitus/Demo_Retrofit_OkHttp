@@ -179,6 +179,20 @@ public class PasswordManager {
         });
     }
 
+    @UiThread
+    public void setOTP(final String otp) throws Exception {
+        if (mIBuilder == null) {
+            Timber.d("mIBuilder is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.setOTPValue(otp);
+            }
+        });
+    }
+
     public void lock() throws Exception {
         disable(true);
     }

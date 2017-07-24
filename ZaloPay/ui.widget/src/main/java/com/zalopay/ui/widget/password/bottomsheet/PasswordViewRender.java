@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
@@ -149,7 +150,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         }
 
         @Override
-        public void setOTPValue(String otpValue) {
+        public void setOTPValue(final String otpValue) {
             setOTP(otpValue);
         }
     };
@@ -303,9 +304,9 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
                     mTextViewOTPInput.setText("");
                 }
             } else {
-                String valueDUkel = mPinCode + value;
-                setPinCode(valueDUkel);
-                mTextViewOTPInput.setText(valueDUkel);
+                String keyboardValue = mPinCode + value;
+                setPinCode(keyboardValue);
+                mTextViewOTPInput.setText(keyboardValue);
             }
         }
         if (mPinCode.length() == this.getPinLength()) {
@@ -412,9 +413,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     void setOTP(String otp) {
+        showOTPInput();
         mTextViewOTPInput.setText(otp);
+        mPinCode = otp;
         if (otp.length() == this.getPinLength()) {
-            showOTPInput();
             onPasswordComplete();
         }
     }
