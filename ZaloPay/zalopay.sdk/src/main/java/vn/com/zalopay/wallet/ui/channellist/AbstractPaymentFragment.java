@@ -138,6 +138,9 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         if (close_btn == null) {
             return;
         }
+        close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_grey));
+        close_btn.setBackgroundResource(R.drawable.bg_btn_light_blue_border_selector);
+
         if (appId != Constants.RESULT_TYPE2_APPID) {
             return;
         }
@@ -232,7 +235,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
             }
             loadIntoView(R.id.arrow_imageview, ResourceManager.getAbsoluteImagePath(RS.drawable.ic_arrow));
         }
-        //inflat trans detail layout
+        //inflate trans detail layout
         ViewStub success_trans_detail_stub = (ViewStub) findViewById(R.id.success_trans_detail_stub);
         if (success_trans_detail_stub != null) {
             View trans_detail_view = success_trans_detail_stub.inflate();
