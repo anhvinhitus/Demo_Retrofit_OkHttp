@@ -1,5 +1,6 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/withdraw_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
@@ -10,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <vn.com.vng.zalopay.ui.widget.MoneyEditText
@@ -38,6 +40,8 @@
             style="@style/Button.Default.New"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="40dp"
             android:text="@string/btn_continue" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
