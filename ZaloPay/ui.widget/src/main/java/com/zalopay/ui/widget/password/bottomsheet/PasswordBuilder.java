@@ -23,6 +23,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected boolean isSupportInfoViewVisible;
     protected String mTitle;
     protected boolean mNeedHashPass = true;
+    protected boolean isConfirmClose = false;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
@@ -184,6 +185,17 @@ public abstract class PasswordBuilder implements IBuilder {
             mISetDataToView.setOTPValue(otpValue);
         }
         return this;
+    }
+
+    @Override
+    public IBuilder setConfirmClose(boolean confirmClose) {
+        isConfirmClose = confirmClose;
+        return this;
+    }
+
+    @Override
+    public boolean isConfirmClose() {
+        return isConfirmClose;
     }
 
     @Override

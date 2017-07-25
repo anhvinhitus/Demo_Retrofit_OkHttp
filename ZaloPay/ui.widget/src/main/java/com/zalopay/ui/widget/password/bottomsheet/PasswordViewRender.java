@@ -289,7 +289,11 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.cancel_action) {
-            close();
+            if (mBuilder.isConfirmClose()) {
+                mBuilder.getIFPinCallBack().onClose();
+            } else{
+                close();
+            }
         }
     }
 

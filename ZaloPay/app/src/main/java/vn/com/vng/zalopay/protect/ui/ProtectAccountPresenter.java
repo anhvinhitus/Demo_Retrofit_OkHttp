@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
 import com.zalopay.ui.widget.password.interfaces.OnCallSupportListener;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
@@ -37,6 +38,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.user.UserBaseActivity;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -285,6 +287,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     .showFPSuggestCheckBox(false)
                     .showSupportInfo(true)
                     .setNeedHashPass(true)
+                    .setConfirmClose(true)
                     .setPasswordCallBack(changePasswordCallBack)
                     .setOnCallSupportListener(() -> {
                         if (mContext == null) {
@@ -314,7 +317,29 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
         @Override
         public void onClose() {
-            setViewStatus(0);
+            if(mPassword.getBuilder().isConfirmClose()) {
+                DialogHelper.showConfirmDialog(getActivity(),
+                        getActivity().getString(R.string.notification),
+                        getActivity().getString(R.string.protect_account_confirm_close_dialog),
+                        getActivity().getString(R.string.accept),
+                        getActivity().getString(R.string.txt_close),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKEvent() {
+                                try {
+                                    mPassword.close();
+                                } catch (Exception e) {
+                                    Timber.d("Confirm close dialog error [%s]", e.getMessage());
+                                }
+                                setViewStatus(0);
+                            }
+                        });
+            }
         }
 
         @Override
@@ -332,7 +357,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 case STATUS_CONFIRM_PASS_INVALID:
                     if (pHashPin.equals(mNewPassword)) {
                         changePin(mOldPassword, mNewPassword);
-//                        setChangePasswordViewStatus(STATUS_OTP);
                     } else {
                         setChangePasswordViewStatus(STATUS_CONFIRM_PASS_INVALID);
                     }
