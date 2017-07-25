@@ -360,8 +360,8 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private Observable<List<BaseMap>> getCard(final User user) {
         return ObservableHelper.makeObservable(() -> {
             List<BaseMap> linkedBankList = new ArrayList<>();
-            List<MapCard> linkedCardList = BankUtils.getFakeData();
-            List<BankAccount> linkedAccList = BankUtils.getFake();
+            List<MapCard> linkedCardList = CShareDataWrapper.getMappedCardList(user);
+            List<BankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(user);
 
             if (!Lists.isEmptyOrNull(linkedCardList)) {
                 linkedBankList.addAll(linkedCardList);
