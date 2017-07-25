@@ -120,24 +120,18 @@ public class CShareData extends SingletonBase {
 
     @UiThread
     private void sendNotifyTransactionFinishIntoSDK(Object... pObject) {
-        //user in sdk now.
-        Log.d(this, "start send notify finish transaction into sdk", pObject);
-        ChannelActivity activity = BaseActivity.getChannelActivity();
-        if (activity != null && !activity.isFinishing() && activity.getWorkFlow() != null) {
-            activity.getWorkFlow().handleEventNotifyTransactionFinish(pObject);
-        } else {
-            try {
-                SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
-                if (successTransEvent != null) {
-                    SDKApplication
-                            .getApplicationComponent()
-                            .eventBus()
-                            .post(successTransEvent);
-                    Timber.d("send event notification into event bus");
-                }
-            } catch (Exception e) {
-                Log.e(this, e);
+        try {
+            Log.d(this, "start send notify finish transaction into sdk", pObject);
+            SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
+            if (successTransEvent != null) {
+                SDKApplication
+                        .getApplicationComponent()
+                        .eventBus()
+                        .post(successTransEvent);
+                Timber.d("send event notification into event bus");
             }
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 

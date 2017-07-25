@@ -671,18 +671,19 @@ public class PayProxy extends SingletonBase {
             mSubscription.unsubscribe();
             Timber.d("cancel api trans status");
         }
-        if (mPaymentInfoHelper.isMoneyTranferTrans() && pEvent.trans_time > 0) {
-            mPaymentInfoHelper.getOrder().apptime = pEvent.trans_time;
-            Timber.d("update transaction time from notification");
+        if (mPaymentInfoHelper != null) {
+            mPaymentInfoHelper.updateOrderTime(pEvent.trans_time);
         }
         //update status repsonse to success too
         if (mStatusResponse != null) {
             mStatusResponse.returncode = 1;
             mStatusResponse.isprocessing = false;
-            mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_pay_success_title);
+            mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
         }
         //mark trans as success
-        mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+        if (mPaymentInfoHelper != null) {
+            mPaymentInfoHelper.setResult(PaymentStatus.SUCCESS);
+        }
         moveToResultScreen();
         Timber.d("trans success from notification");
     }
