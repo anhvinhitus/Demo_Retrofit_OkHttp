@@ -67,11 +67,6 @@ public class BankCardView extends SwipeLayout {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.card)
-    public void onClickCard() {
-        toggle();
-    }
-
     @Override
     protected Rect computeBottomLayoutAreaViaSurface(ShowMode mode, Rect surfaceArea) {
         Rect rect = super.computeBottomLayoutAreaViaSurface(mode, surfaceArea);
@@ -103,6 +98,27 @@ public class BankCardView extends SwipeLayout {
             rect.right = getMeasuredWidth() - offset;
         }
         return rect;
+    }
+
+    @Override
+    public Status getOpenStatus() {
+        View surfaceView = getSurfaceView();
+        if (surfaceView == null) {
+            return Status.Close;
+        }
+
+        int surfaceLeft = surfaceView.getLeft();
+        int surfaceTop = surfaceView.getTop();
+        if (surfaceLeft == getPaddingLeft() && surfaceTop == getPaddingTop()) {
+            return Status.Close;
+
+        }
+
+        if (surfaceLeft == surfaceView.getPaddingLeft() - getCurrentOffset()) {
+            return Status.Open;
+        }
+
+        return Status.Middle;
     }
 
     void bindView(BankData data) {

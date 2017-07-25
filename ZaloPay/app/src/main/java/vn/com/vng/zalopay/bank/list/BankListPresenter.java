@@ -66,7 +66,7 @@ import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
 final class BankListPresenter extends AbstractPresenter<IBankListView> {
 
-    final Context mContext;
+    protected final Context mContext;
     private final User mUser;
     private final PaymentWrapper mPaymentWrapper;
     private final Navigator mNavigator;
@@ -360,8 +360,8 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private Observable<List<BaseMap>> getCard(final User user) {
         return ObservableHelper.makeObservable(() -> {
             List<BaseMap> linkedBankList = new ArrayList<>();
-            List<MapCard> linkedCardList = CShareDataWrapper.getMappedCardList(user);
-            List<BankAccount> linkedAccList = CShareDataWrapper.getMapBankAccountList(user);
+            List<MapCard> linkedCardList = BankUtils.getFakeData();
+            List<BankAccount> linkedAccList = BankUtils.getFake();
 
             if (!Lists.isEmptyOrNull(linkedCardList)) {
                 linkedBankList.addAll(linkedCardList);

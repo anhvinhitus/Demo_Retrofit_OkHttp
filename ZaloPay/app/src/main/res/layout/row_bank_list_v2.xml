@@ -5,6 +5,7 @@
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="@dimen/link.card.height"
+    app:clickToClose="true"
     app:drag_edge="right"
     app:rightEdgeSwipeOffset="@dimen/edge_swipe_offset"
     app:show_mode="pull_out"
@@ -18,7 +19,6 @@
         android:background="@color/red">
 
         <com.zalopay.ui.widget.IconFontTextView
-            android:id="@+id/deleteView"
             style="@style/HomePage.Title"
             android:layout_width="@dimen/edge_swipe_offset"
             android:layout_height="wrap_content"
