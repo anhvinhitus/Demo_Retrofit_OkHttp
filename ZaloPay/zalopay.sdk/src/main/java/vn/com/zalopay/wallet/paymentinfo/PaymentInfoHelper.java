@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.paymentinfo;
 import android.content.Context;
 import android.text.TextUtils;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -18,11 +19,11 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
@@ -384,7 +385,7 @@ public class PaymentInfoHelper extends SingletonBase {
         return isOffNetworking;
     }
 
-    public String getMessage(Context context,Throwable throwable) {
+    public String getMessage(Context context, Throwable throwable) {
         String message = null;
         if (throwable instanceof RequestException) {
             RequestException requestException = (RequestException) throwable;
@@ -414,6 +415,21 @@ public class PaymentInfoHelper extends SingletonBase {
 
     public boolean isRedPacket() {
         return getAppId() == BuildConfig.REDPACKET_APPID;
+    }
+
+    public void updateOrderTime(long timestamp) {
+        AbstractOrder order = getOrder();
+        if (order == null) {
+            return;
+        }
+        if (!isMoneyTranferTrans()) {
+            return;
+        }
+        if (timestamp <= 0) {
+            return;
+        }
+        order.apptime = timestamp;
+        Timber.d("update transaction time to %s", timestamp);
     }
 
 }

@@ -3,11 +3,8 @@ package vn.com.zalopay.wallet.workflow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -58,6 +55,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkCheckSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
+import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -75,45 +73,39 @@ import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
-import vn.zalopay.promotion.CashBackRender;
-import vn.zalopay.promotion.IBuilder;
-import vn.zalopay.promotion.IInteractPromotion;
-import vn.zalopay.promotion.IPromotionResult;
-import vn.zalopay.promotion.IResourceLoader;
-import vn.zalopay.promotion.PromotionEvent;
 
 public abstract class AbstractWorkFlow implements ISdkErrorContext {
-    private final DPaymentCard mCard;
     final SdkErrorReporter mSdkErrorReporter;
+    private final DPaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected ChannelPresenter mPresenter = null;
+    protected PaymentInfoHelper mPaymentInfoHelper;
+    protected Context mContext;
+    protected EventBus mEventBus;
     CardGuiProcessor mGuiProcessor = null;
     StatusResponse mStatusResponse;
-    private boolean isLoadWebTimeout = false;
-    private int numberRetryOtp = 0;
-    private MapCard mMapCard;
     String mTransactionID;
     String mPageName;
     boolean existTransWithoutConfirm = true;
+    //submit log load website to server
+    long mCaptchaBeginTime = 0, mCaptchaEndTime = 0;
+    long mOtpBeginTime = 0, mOtpEndTime = 0;
+    MiniPmcTransType mMiniPmcTransType;
+    ILinkSourceInteractor mLinkInteractor;
+    int numberOfRetryTimeout = 1;
+    SDKTransactionAdapter mTransactionAdapter;
+    private boolean isLoadWebTimeout = false;
+    private int numberRetryOtp = 0;
+    private MapCard mMapCard;
     //count of retry check status if submit order fail
     private int mCountCheckStatus = 0;
     //check data in response get status api
     private boolean isCheckDataInStatus = false;
-    //submit log load website to server
-    long mCaptchaBeginTime = 0, mCaptchaEndTime = 0;
-    long mOtpBeginTime = 0, mOtpEndTime = 0;
     //whether show dialog or not?
     private boolean showDialogOnChannelList = true;
     //need to switch to cc or atm
     private boolean mNeedToSwitchChannel = false;
     private boolean mIsOrderSubmit = false;
-    private boolean mCanEditCardInfo = false;
-    @BankFlow
-    private int mECardFlowType;
-    MiniPmcTransType mMiniPmcTransType;
-    protected PaymentInfoHelper mPaymentInfoHelper;
-    protected Context mContext;
-    ILinkSourceInteractor mLinkInteractor;
     onNetworkingDialogCloseListener networkingDialogCloseListener = new onNetworkingDialogCloseListener() {
         @Override
         public void onCloseNetworkingDialog() {
@@ -124,9 +116,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         public void onOpenSettingDialogClicked() {
         }
     };
-    protected EventBus mEventBus;
-    int numberOfRetryTimeout = 1;
-    SDKTransactionAdapter mTransactionAdapter;
+    private boolean mCanEditCardInfo = false;
+    @BankFlow
+    private int mECardFlowType;
     private OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
@@ -825,7 +817,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    public void handleEventNotifyTransactionFinish(Object[] pAdditionParams) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEventNotifyTransactionFinish(SdkSuccessTransEvent event) {
         Timber.d("processing result payment from notification");
         if (isTransactionSuccess()) {
             Timber.d("transaction is finish, skipping process notification");
@@ -835,49 +828,34 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.d("transaction is ending, skipping process notification");
             return;
         }
-        if (pAdditionParams == null || pAdditionParams.length <= 0) {
-            Timber.d("stopping processing result payment from notification because of empty pAdditionParams");
+        if (event == null) {
+            Timber.d("stopping processing result payment from notification because of empty event");
             return;
         }
-
-        long notificationType = -1;
-        try {
-            notificationType = Long.parseLong(String.valueOf(pAdditionParams[0]));
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
+        if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(event.notification_type)) {
             Timber.d("notification type is not accepted for this kind of transaction");
             return;
         }
         try {
-            String transId = String.valueOf(pAdditionParams[1]);
-            if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                ServiceManager.shareInstance().cancelRequest();//cancel current request
-                GetStatus.cancelRetryTimer();//cancel timer retry get status
-                DialogManager.closeAllDialog();//close dialog
-                if (mStatusResponse != null) {
-                    mStatusResponse.returncode = 1;
-                    mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
-                }
-                /***
-                 *  get time from notification
-                 *  in transfer money case
-                 */
-                if (mPaymentInfoHelper.isMoneyTranferTrans() && pAdditionParams.length >= 3) {
-                    try {
-                        mPaymentInfoHelper.getOrder().apptime = Long.parseLong(pAdditionParams[2].toString());
-                        Timber.d("update transaction time from notification");
-                    } catch (Exception ex) {
-                        Log.e(this, ex);
-                    }
-                }
-                showTransactionSuccessView();
-            } else {
-                Timber.d("transId is null");
+            if (TextUtils.isEmpty(mTransactionID) || mTransactionID.equals(String.valueOf(event.transid))) {
+                Timber.d("Transaction id not same");
+                return;
             }
+            ServiceManager.shareInstance().cancelRequest();//cancel current request
+            GetStatus.cancelRetryTimer();//cancel timer retry get status
+            DialogManager.closeAllDialog();//close dialog
+            if (mStatusResponse != null) {
+                mStatusResponse.returncode = 1;
+                mStatusResponse.isprocessing = false;
+                mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_trans_success_mess);
+            }
+            if (mPaymentInfoHelper != null) {
+                mPaymentInfoHelper.updateOrderTime(event.trans_time);
+            }
+            showTransactionSuccessView();
+            Timber.d("trans success from notification");
         } catch (Exception ex) {
-            Log.e(this, ex);
+            Timber.w(ex);
         }
     }
 
