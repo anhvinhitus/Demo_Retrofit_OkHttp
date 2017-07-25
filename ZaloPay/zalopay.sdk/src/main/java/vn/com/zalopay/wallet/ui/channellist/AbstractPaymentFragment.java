@@ -126,7 +126,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     public abstract void onStartFeedbackSupport();
 
     private void updateToolBar() {
-        if(getActivity() == null){
+        if (getActivity() == null) {
             return;
         }
         ((ToolbarActivity) getActivity()).hideDisplayHome();
@@ -249,7 +249,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         changeSubmitButtonBackgroundByApp(appId);
         updateToolBar();
         enablePaymentButton();
-        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 100);
+        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 300);
     }
 
     public void renderFail(boolean isLink, String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
