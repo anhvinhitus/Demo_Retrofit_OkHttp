@@ -1,57 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:gravity="center"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <com.zalopay.ui.widget.IconFont
-        android:layout_width="@dimen/font_size_home_function"
-        android:layout_height="@dimen/font_size_home_function"
-        android:layout_marginTop="30dp"
-        android:adjustViewBounds="true"
-        android:gravity="center"
-        android:textColor="@color/blue.008fe5"
-        app:iconName="@string/header_overbalance"
-        app:iconSize="@dimen/font_size_home_function"/>
+        <com.zalopay.ui.widget.IconFont
+            android:layout_width="@dimen/font_size_home_function"
+            android:layout_height="@dimen/font_size_home_function"
+            android:layout_marginTop="30dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:textColor="@color/blue.008fe5"
+            app:iconName="@string/header_overbalance"
+            app:iconSize="@dimen/font_size_home_function" />
 
-    <TextView
-        android:id="@+id/tv_balance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:textColor="@color/blue.008fe5"
-        android:textSize="40sp"
-        tools:text="0"
-        />
+        <TextView
+            android:id="@+id/tv_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/blue.008fe5"
+            android:textSize="40sp"
+            tools:text="0" />
 
-    <TextView
-        android:id="@+id/tvAccountName"
-        style="@style/TextView.Item.Main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawablePadding="6dp"
-        android:gravity="center"
-        android:hint="@string/zalopayid.not.update.format"
-        android:textColor="@color/txt_item_sub"
-        android:textColorHint="@color/blue.008fe5"
-        tools:text="Zalo Pay ID: hieuvm"/>
+        <TextView
+            android:id="@+id/tvAccountName"
+            style="@style/TextView.Item.Main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:hint="@string/zalopayid.not.update.format"
+            android:textColor="@color/txt_item_sub"
+            android:textColorHint="@color/blue.008fe5"
+            tools:text="Zalo Pay ID: hieuvm" />
+
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/background"
         style="@style/CoverDraweeView"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/height_background_withdraw_header"
         android:layout_marginTop="@dimen/spacing.medium.t"
-        android:layout_height="100dp"
         app:failureImage="@color/white"
         app:placeholderImage="@drawable/cover_large"
-        app:placeholderImageScaleType="focusCrop"
-        />
+        app:placeholderImageScaleType="focusCrop" />
+
+
 </LinearLayout>
 
