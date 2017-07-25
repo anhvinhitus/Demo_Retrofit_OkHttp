@@ -1,2 +1,12 @@
-Zalo Pay (Staging v2.16.0 - build 354) - Released on 2017-07-25 09:19
-
+Zalo Pay (Sandbox v2.16.0 - build 355) - Released on 2017-07-25 17:02
++ [Background] ZPF-324: Không có hình nền phần thông tin số dư by lytm (#d035ef3)
++ [App] Change password: set view cannot touch out side to dimiss by datnt10 (#de342d0)
++ [App] Change password: disable view drag down by datnt10 (#c4155c7)
++ [SDK] Update lại background button default by vo van chuc (#122cc6c)
++ [SDK] Clean code by vo van chuc (#6ae93a5)
++ [SDK] Dùng eventbus để nhận notification transaction success by vo van chuc (#3d14648)
++ [Change Password] ZPF-312 Đổi Mật khẩu thanh toán: hiển thị confirmation messsage nếu user muốn hủy flow by datnt10 (#d105d66)
++ [SDK] #ZPF-309 : [Android-Real-2.14(store)]Nạp tiền, thanh toán: 3 triệu cho sacombank => nhập OTP, màn hình có 1 dòng trắng by vo van chuc (#7b7e9be)
++ [Withdraw] Update UI input money by lytm (#e27407b)
++ [App] Change password: standardize font size by datnt10 (#995ebcf)
++ [Change Password] ZPF-316: Đổi Mật khẩu thanh toán: phần nhập mã OTP phải có con trỏ by datnt10 (#b375484)
