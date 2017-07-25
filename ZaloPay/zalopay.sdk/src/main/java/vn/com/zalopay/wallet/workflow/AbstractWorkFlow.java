@@ -751,6 +751,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 requestReadOtpPermission();
             }
             getView().renderKeyBoard();
+            getView().setVisible(R.id.order_info_line_view, false);
+
             //testing broadcast otp viettinbak
                         /*
                         new Handler().postDelayed(new Runnable() {
@@ -860,12 +862,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 }
                 /***
                  *  get time from notification
-                 *  in tranferring money case
+                 *  in transfer money case
                  */
                 if (mPaymentInfoHelper.isMoneyTranferTrans() && pAdditionParams.length >= 3) {
                     try {
-                        Long paymentTime = Long.parseLong(pAdditionParams[2].toString());
-                        mPaymentInfoHelper.getOrder().apptime = paymentTime;
+                        mPaymentInfoHelper.getOrder().apptime = Long.parseLong(pAdditionParams[2].toString());
                         Timber.d("update transaction time from notification");
                     } catch (Exception ex) {
                         Log.e(this, ex);
