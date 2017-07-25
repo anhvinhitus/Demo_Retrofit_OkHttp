@@ -299,6 +299,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
             mPassword.show();
             mPassword.setViewDraggable(false);
+            mPassword.setCanTouchOutside(false);
         } catch (Exception e) {
             Timber.d("AuthenticationPassword show password [%s]", e.getMessage());
         }
