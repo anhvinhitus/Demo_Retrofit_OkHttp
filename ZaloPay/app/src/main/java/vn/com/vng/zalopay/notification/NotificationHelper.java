@@ -59,6 +59,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
 import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.zalopay.promotion.IPromotionResult;
@@ -407,20 +408,9 @@ public class NotificationHelper {
             if (embeddata == null) {
                 return;
             }
-            int type = embeddata.get("type").getAsInt();
-            String title = embeddata.get("title").getAsString();
-            long amount = embeddata.get("amount").getAsLong();
-            String campaign = embeddata.get("campaign").getAsString();
-            List<PromotionAction> actions = new ArrayList<>();
-            JsonArray jsonArrayActions = embeddata.get("actions").getAsJsonArray();
-            for (int i = 0; i < jsonArrayActions.size(); i++) {
-                JsonObject jsonObjectAction = jsonArrayActions.get(i).getAsJsonObject();
-                String titleAction = jsonObjectAction.get("title").getAsString();
-                int action = jsonObjectAction.get("action").getAsInt();
-                PromotionAction promotionAction = new PromotionAction(titleAction, action);
-                actions.add(promotionAction);
-            }
-            PromotionEvent promotionEvent = new PromotionEvent(type, title, amount, campaign, actions, data.transid, data.notificationId);
+            PromotionEvent promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), PromotionEvent.class);
+            promotionEvent.transid = data.transid;
+            promotionEvent.notificationId = data.notificationId;
             if (SDKPayment.isOpenSdk()) {
                 CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
@@ -439,7 +429,7 @@ public class NotificationHelper {
                 Timber.d("post promotion event from notification to subscriber");
             }
         } catch (Exception ex) {
-            Timber.e(ex, "Extract PromotionEvent data error");
+            Timber.w(ex, "Extract PromotionEvent data error");
         }
     }
 
