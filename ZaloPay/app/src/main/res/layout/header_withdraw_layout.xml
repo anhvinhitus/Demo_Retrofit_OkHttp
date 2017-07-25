@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLayout"
@@ -8,17 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/header_padding_bottom">
 
     <com.zalopay.ui.widget.IconFont
-        android:layout_width="@dimen/font_size_home_function"
-        android:layout_height="@dimen/font_size_home_function"
+        android:layout_width="@dimen/font_size_withdraw_function"
+        android:layout_height="@dimen/font_size_withdraw_function"
         android:layout_marginBottom="20dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:textColor="@color/white"
         app:iconName="@string/header_overbalance"
-        app:iconSize="@dimen/font_size_home_function"/>
+        app:iconSize="@dimen/font_size_withdraw_function" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -34,8 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="26sp"
-            tools:text="5.000.000"/>
+            android:textSize="30sp"
+            tools:text="5.000.000" />
 
         <TextView
             style="@style/TextView.Item.Title"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text="@string/free.withdrawal"
             android:textColor="@color/white"
-            android:textSize="12sp"/>
+            android:textSize="@dimen/personal_general_text_sub_l" />
 
     </LinearLayout>
 </LinearLayout>

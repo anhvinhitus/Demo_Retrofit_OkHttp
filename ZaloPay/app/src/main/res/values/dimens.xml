@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="font_size_home_function">46dp</dimen>
+    <dimen name="font_size_withdraw_function">55dp</dimen>
     <dimen name="font_size_home_inside_app">30dp</dimen>
     <dimen name="font_size_menu">26dp</dimen>
     <dimen name="font_size_menu_item">18dp</dimen>
@@ -165,9 +166,11 @@
     <dimen name="link.bank.empty.text.size">17sp</dimen>
     <dimen name="link.bank.empty.iconfont.padding">30dp</dimen>
     <dimen name="bank_support_selection_maintain_notice">11sp</dimen>
+    <dimen name="header_padding_bottom">10dp</dimen>
 
     <!-- Override default bottom navigation view title size (trick to remove zoom out size animation) -->
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
     <dimen name="edge_swipe_offset">96dp</dimen>
+
 </resources>
