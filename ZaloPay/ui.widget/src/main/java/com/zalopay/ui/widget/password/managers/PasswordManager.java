@@ -210,6 +210,20 @@ public class PasswordManager {
         });
     }
 
+    @UiThread
+    public void setCanTouchOutside(final boolean canTouch) throws Exception {
+        if (mUiBottomSheetDialog == null) {
+            Timber.d("mUiBottomSheetDialog is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mUiBottomSheetDialog.setCanceledOnTouchOutside(canTouch);
+            }
+        });
+    }
+
     public void lock() throws Exception {
         disable(true);
     }
