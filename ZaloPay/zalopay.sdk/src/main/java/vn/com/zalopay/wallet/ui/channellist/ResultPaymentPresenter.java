@@ -33,7 +33,6 @@ import vn.com.zalopay.wallet.ui.AbstractPresenter;
 
 public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragment> implements ISdkErrorContext {
     protected PaymentInfoHelper mPaymentInfoHelper;
-    @Inject
     Context mContext;
     StatusResponse mStatusResponse;
     boolean mShowFingerPrintToast = false;
@@ -41,7 +40,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     public ResultPaymentPresenter() {
         Timber.d("call constructor ResultPaymentPresenter");
         mPaymentInfoHelper = GlobalData.paymentInfoHelper;
-        SDKApplication.getApplicationComponent().inject(this);
+        mContext = GlobalData.getAppContext();
     }
 
     public boolean onBackPressed() {

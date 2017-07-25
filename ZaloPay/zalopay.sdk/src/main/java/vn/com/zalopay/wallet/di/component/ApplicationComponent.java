@@ -47,8 +47,6 @@ public interface ApplicationComponent {
 
     void inject(ChannelPresenter channelPresenter);
 
-    void inject(ResultPaymentPresenter resultPaymentPresenter);
-
     Application application();
 
     SDKConfiguration sdkConfiguration();

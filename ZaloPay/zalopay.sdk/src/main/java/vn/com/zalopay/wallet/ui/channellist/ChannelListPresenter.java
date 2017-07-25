@@ -863,7 +863,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             try {
                 mPayProxy.OnTransEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, event);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
         }
     }
