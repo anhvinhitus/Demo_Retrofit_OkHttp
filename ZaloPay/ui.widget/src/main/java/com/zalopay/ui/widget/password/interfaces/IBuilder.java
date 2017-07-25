@@ -50,6 +50,10 @@ public interface IBuilder {
 
     IBuilder setOTPValue(String otpValue);
 
+    IBuilder setConfirmClose(boolean confirmed);
+
+    boolean isConfirmClose();
+
     boolean getFingerPrint();
 
     boolean isSupportInfoVisible();

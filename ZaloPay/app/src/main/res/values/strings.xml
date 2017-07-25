@@ -457,6 +457,7 @@
     <string name="protect_account_otp">Nhập mã OTP</string>
     <string name="protect_account_otp_invalid">Mã OTP không đúng</string>
     <string name="protect_account_password_changed">Đổi mật khẩu thanh toán thành công</string>
+    <string name="protect_account_confirm_close_dialog">Bạn có muốn huỷ đổi mật khẩu thanh toán không?</string>
 
 </resources>
 
