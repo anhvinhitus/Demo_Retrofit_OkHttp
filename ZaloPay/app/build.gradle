@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 apply plugin: 'io.fabric'
@@ -28,6 +29,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://dl.bintray.com/jjhesk/maven" }
     maven { url "https://jitpack.io" }
+    mavenCentral()
 }
 
 // allows the developer to set minSdk at build in order to take
@@ -502,6 +504,7 @@ dependencies {
     compile project(':zalopay.sdk')
 
     compile project(':zalopay.promotion')
+    compile libs.kotlin
 }
 
 apply plugin: 'com.google.gms.google-services'

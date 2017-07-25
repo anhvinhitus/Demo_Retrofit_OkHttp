@@ -11,8 +11,9 @@ public class Info {
     public static final String CHANNEL_ATM_NAME = "Thẻ ATM mới";
     public static final String CHANNEL_CC_NAME = "Thẻ Visa/MasterCard/JCB mới";
 
-    public static final String PASSWORD = "111111";
+    public static final String PASSWORD = "000999";
 
-    public static final String ZALOPAY_NAME_TRANFER = "lytm";
-    public static final long AMOUNT_TRANFER = 10000;
+    public static final String ZALOPAY_NAME_TRANFER = "thanhntm";
+    public static final long AMOUNT_TRANSFER = 100000;
+    public static final String MESSAGE_TRANSFER = "message transfer";
 }
