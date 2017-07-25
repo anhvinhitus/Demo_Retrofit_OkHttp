@@ -8,8 +8,9 @@
         android:id="@+id/background"
         style="@style/CoverDraweeView"
         android:layout_width="match_parent"
-        android:layout_height="102dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:minHeight="@dimen/height_background_withdraw"
         app:failureImage="@color/white"
         app:placeholderImage="@drawable/cover_large"
         app:placeholderImageScaleType="focusCrop" />

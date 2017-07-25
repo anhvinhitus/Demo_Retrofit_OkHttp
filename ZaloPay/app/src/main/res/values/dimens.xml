@@ -173,4 +173,8 @@
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
     <dimen name="edge_swipe_offset">96dp</dimen>
 
+    <!-- Dimen background layout -->
+    <dimen name="height_background_withdraw">150dp</dimen>
+    <dimen name="height_background_withdraw_header">110dp</dimen>
+
 </resources>
