@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.utils.FrescoUtil;
 
 /**
  * Created by hieuvm on 7/11/17.
- * *
+ * * Custom view for bank card list
  */
 
 public class BankCardView extends SwipeLayout {
@@ -119,6 +119,34 @@ public class BankCardView extends SwipeLayout {
         }
 
         return Status.Middle;
+    }
+
+    @Override
+    protected void layoutPullOut() {
+        View surfaceView = getSurfaceView();
+        Rect surfaceRect = mViewBoundCache.get(surfaceView);
+        if (surfaceRect == null) {
+            surfaceRect = computeSurfaceLayoutArea(false);
+        }
+
+        if (surfaceView != null) {
+            surfaceView.layout(surfaceRect.left, surfaceRect.top, surfaceRect.right, surfaceRect.bottom);
+            bringChildToFront(surfaceView);
+        }
+
+        View currentBottomView = getCurrentBottomView();
+        Rect bottomViewRect = mViewBoundCache.get(currentBottomView);
+        if (bottomViewRect == null) {
+            bottomViewRect = computeBottomLayoutAreaViaSurface(ShowMode.PullOut, surfaceRect);
+        }
+
+        if (surfaceView != null) {
+            bottomViewRect.left = getMeasuredWidth() - surfaceView.getPaddingRight();
+        }
+
+        if (currentBottomView != null) {
+            currentBottomView.layout(bottomViewRect.left, bottomViewRect.top, bottomViewRect.right, bottomViewRect.bottom);
+        }
     }
 
     void bindView(BankData data) {
