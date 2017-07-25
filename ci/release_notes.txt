@@ -1,2 +1,7 @@
-Zalo Pay (Sandbox v2.16.0 - build 352) - Released on 2017-07-24 17:14
-
+Zalo Pay (Sandbox v2.16.0 - build 353) - Released on 2017-07-25 09:03
++ [Promotion] Add SerializedName để parse object by vo van chuc (#87c9149)
++ [Notification] Update theo flow payment 1 activity by vo van chuc (#751e0f9)
++ [Bank] Fix ui bank card by hieuvm (#5d5ac8e)
++ [SDK] Clean code by vo van chuc (#1ea19dc)
++ [App] Change password: handle call support action by datnt10 (#4fb933a)
++ [SDK] Fix lỗi render button text theo app id by vo van chuc (#db5693d)
