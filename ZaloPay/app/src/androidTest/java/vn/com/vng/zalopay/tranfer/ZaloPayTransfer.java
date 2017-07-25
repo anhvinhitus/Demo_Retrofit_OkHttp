@@ -55,7 +55,7 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         //delay for check user name
         SystemClock.sleep(500);
         //input amount tranfer
-        onView(withId(R.id.edtAmount)).perform(replaceText(String.valueOf(Info.AMOUNT_TRANFER)));
+        onView(withId(R.id.edtAmount)).perform(replaceText(String.valueOf(Info.AMOUNT_TRANSFER)));
         //click button
         onView(withId(R.id.btnContinue)).perform(click());
 
@@ -80,6 +80,6 @@ public class ZaloPayTransfer extends AbtractZaloPayTesting {
         SystemClock.sleep(1000);
         //asset balance again
         long updatedBalance = Long.parseLong(getText(withId(R.id.tv_balance)).replace(".", ""));
-        Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANFER);
+        Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANSFER);
     }
 }

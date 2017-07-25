@@ -71,6 +71,8 @@ ext {
     epoxyAdatperVersion = "2.0.0"
     smarttabVersion = "1.6.1@aar"
 
+    kotlinVersion = "1.1.2-5"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
@@ -127,7 +129,8 @@ ext {
             epoxyAnnotation        : "com.airbnb.android:epoxy-processor:${epoxyAdatperVersion}",
 
             smarttablayout         : "com.ogaclejapan.smarttablayout:library:${smarttabVersion}",
-            smarttablayoutUtil     : "com.ogaclejapan.smarttablayout:utils-v4:${smarttabVersion}"
+            smarttablayoutUtil     : "com.ogaclejapan.smarttablayout:utils-v4:${smarttabVersion}",
+            kotlin                 : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlinVersion}"
     ]
 
     testingLibraries = [
