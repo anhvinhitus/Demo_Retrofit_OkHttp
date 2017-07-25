@@ -44,6 +44,8 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     public static final String TAG = PasswordViewRender.class.getSimpleName();
     private static final int DEFAULT_PIN_LENGTH = 6;
+    private final String DEFAULT_OTP_EMPTY_CHARACTER = "|";
+    private final String DEFAULT_EMPTY = "";
 
     protected PassCodeRoundView mPinCodeRoundView;
     protected KeyboardView mKeyboardView;
@@ -64,6 +66,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private CheckBox mCheckBox;
     private LinearLayout mLayoutCheckBox;
     private LinearLayout mLayoutSupportInfo;
+
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
         public void setErrorMessage(String pError) {
@@ -187,7 +190,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = pContext.obtainStyledAttributes(attrs);
         backgroundResource = typedArray.getResourceId(0, 0);
-        mPinCode = "";
+        mPinCode = DEFAULT_EMPTY;
         mPinCodeRoundView = (PassCodeRoundView) pWView.findViewById(R.id.pin_code_round_view);
         mPinCodeRoundView.setPinLength(this.getPinLength());
         mKeyboardView = (KeyboardView) pWView.findViewById(R.id.pin_code_keyboard_view);
@@ -298,10 +301,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             if (value == KeyboardButtonEnum.BUTTON_CLEAR.getButtonValue()) {
                 if (!mPinCode.isEmpty() && length >= 0) {
                     setPinCode(mPinCode.substring(0, length));
-                    mTextViewOTPInput.setText(mPinCode.substring(0, length));
+                    mTextViewOTPInput.setText(length == 0 ? DEFAULT_OTP_EMPTY_CHARACTER : mPinCode.substring(0, length));
                 } else {
-                    setPinCode("");
-                    mTextViewOTPInput.setText("");
+                    setPinCode(DEFAULT_EMPTY);
+                    mTextViewOTPInput.setText("|");
                 }
             } else {
                 String keyboardValue = mPinCode + value;
@@ -319,7 +322,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     public void close() {
-        mPinCode = "";
+        mPinCode = DEFAULT_EMPTY;
         mPinCodeRoundView.refresh(mPinCode.length());
         isSuccess = false;
         if (mBuilder != null && mBuilder.getIFControl() != null) {
@@ -369,7 +372,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
      */
     public void onPinCodeError() {
         isSuccess = false;
-        mPinCode = "";
+        mPinCode = DEFAULT_EMPTY;
         mPinCodeRoundView.refresh(mPinCode.length());
         if (mContext.get() != null) {
             Vibrator v = (Vibrator) mContext.get().getSystemService(Context.VIBRATOR_SERVICE);
@@ -379,7 +382,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
 
     private void clearPinView() {
         isSuccess = false;
-        mPinCode = "";
+        mPinCode = DEFAULT_EMPTY;
         mPinCodeRoundView.refresh(mPinCode.length());
     }
 
@@ -412,7 +415,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     }
 
     void showOTPInput() {
-        mTextViewOTPInput.setText("");
+        mTextViewOTPInput.setText(DEFAULT_OTP_EMPTY_CHARACTER);
         mTextViewOTPInput.setVisibility(View.VISIBLE);
         mPinCodeRoundView.setVisibility(View.GONE);
         mType = 2;
