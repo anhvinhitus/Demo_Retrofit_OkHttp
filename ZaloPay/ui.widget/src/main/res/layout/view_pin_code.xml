@@ -90,7 +90,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:scaleX="1.5"
                     android:textColor="@color/text_color_bold"
                     android:textSize="30sp"
                     android:visibility="gone"/>
