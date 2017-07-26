@@ -14,6 +14,7 @@ public class Info {
     public static final String PASSWORD = "000999";
 
     public static final String ZALOPAY_NAME_TRANFER = "thanhntm";
-    public static final long AMOUNT_TRANSFER = 100000;
+    public static final long AMOUNT_10K = 10000;
+    public static final long AMOUNT_100K = 100000;
     public static final String MESSAGE_TRANSFER = "message transfer";
 }
