@@ -9,7 +9,9 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -369,7 +371,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 linkedBankList.addAll(linkedAccList);
             }
 
-            Collections.sort(linkedBankList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
+            Collections.sort(linkedBankList, (item1, item2) -> item1.displayorder > item2.displayorder ? 1 : -1);
             return linkedBankList;
         });
     }
