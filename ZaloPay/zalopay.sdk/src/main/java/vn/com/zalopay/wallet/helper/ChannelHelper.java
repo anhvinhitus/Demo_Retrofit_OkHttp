@@ -3,9 +3,13 @@ package vn.com.zalopay.wallet.helper;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 
+import java.util.Collection;
+import java.util.List;
+
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -71,4 +75,17 @@ public class ChannelHelper {
             return R.drawable.bg_btn_blue_border_selector;
         }
     }
+
+    public static List<PaymentChannel> getChannels(String pKey, MultiValueMap<String, Object> pMap) throws Exception {
+        if (pMap == null || pMap.size() <= 0) {
+            return null;
+        }
+        List<PaymentChannel> channelList = null;
+        Object objects = pMap.get(pKey);
+        if (objects instanceof Collection) {
+            channelList = (List<PaymentChannel>) objects;
+        }
+        return channelList;
+    }
+
 }
