@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
-import com.zalopay.ui.widget.password.interfaces.OnCallSupportListener;
 import com.zalopay.ui.widget.password.managers.PasswordManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -281,6 +280,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             if (mPassword != null && mPassword.isShowing()) {
                 return;
             }
+
             mPassword = new PasswordManager(getActivity());
             mPassword.getBuilder()
                     .setTitle(mContext.getString(R.string.protect_account_current_password))
@@ -323,8 +323,8 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 DialogHelper.showConfirmDialog(getActivity(),
                         getActivity().getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
-                        getActivity().getString(R.string.accept),
-                        getActivity().getString(R.string.txt_close),
+                        getActivity().getString(R.string.txt_later),
+                        getActivity().getString(R.string.txt_continue),
                         new ZPWOnEventConfirmDialogListener() {
                             @Override
                             public void onCancelEvent() {
