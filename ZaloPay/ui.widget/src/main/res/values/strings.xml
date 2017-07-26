@@ -139,5 +139,6 @@
     <string name="toolbar_search_hint">Tìm kiếm</string>
     <string name="change_pin_support_info">Quên mật khẩu thanh toán vui lòng gọi %s</string>
     <string name="change_pin_support_number">1900 54 54 36</string>
+    <string name="transfer_message_max_length">Lời nhắn không được vượt quá %s kí tự</string>
 
 </resources>
