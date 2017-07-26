@@ -487,7 +487,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             getGuiProcessor().populateCard();
-            transformPaymentCard();
         }
         startSubmitTransaction();
     }

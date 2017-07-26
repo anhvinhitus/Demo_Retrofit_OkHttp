@@ -2,17 +2,24 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
+
+import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -55,14 +62,15 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 setCheckSum(pResponse.platforminfochecksum);
             }
-            /*MapCard mapCard = new MapCard();
+
+            /*if (pResponse.cardinfos == null) {
+                pResponse.cardinfos = new ArrayList<>();
+            }
+            MapCard mapCard = new MapCard();
             mapCard.bankcode = CardType.PVTB;
             mapCard.cardname = "VO VAN CHUC";
             mapCard.last4cardno = "8156";
             mapCard.first6cardno = "970415";
-            if (pResponse.cardinfos == null) {
-                pResponse.cardinfos = new ArrayList<>();
-            }
             pResponse.cardinfos.add(mapCard);
 
             mapCard = new MapCard();
@@ -91,14 +99,14 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             mapCard.cardname = "DO NGOC PHI CUONG";
             mapCard.last4cardno = "1195";
             mapCard.first6cardno = "970403";
-            pResponse.cardinfos.add(mapCard);*/
+            pResponse.cardinfos.add(mapCard);
 
             // Test in case already linked account Vietcombank
-//        BankAccount dBankAccount = new BankAccount();
-//        dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
-//        dBankAccount.firstaccountno = "093490";
-//        dBankAccount.lastaccountno = "9460";
-//        pResponse.bankaccounts.add(dBankAccount);
+            BankAccount dBankAccount = new BankAccount();
+            dBankAccount.bankcode = CardType.PVCB;
+            dBankAccount.firstaccountno = "093490";
+            dBankAccount.lastaccountno = "9460";
+            pResponse.bankaccounts.add(dBankAccount);*/
             //update card and bank account info again on cache
             ILinkSourceInteractor linkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
             linkInteractor.putCards(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
