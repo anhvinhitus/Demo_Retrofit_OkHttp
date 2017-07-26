@@ -133,11 +133,12 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         String paymentCard = getPaymentCardKey();
-        if (TextUtils.isEmpty(userId)) {
+        if (!TextUtils.isEmpty(userId)) {
             SDKApplication
                     .getApplicationComponent()
                     .bankListInteractor()
                     .setPaymentBank(userId, paymentCard);
+            Timber.d("update recently payment bank for auto select %s", paymentCard);
         }
         //update password fingerprint
         if (mShowFingerPrintToast) {
