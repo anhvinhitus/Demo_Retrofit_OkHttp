@@ -49,7 +49,7 @@ public class CreditCardWorkFlow extends AbstractWorkFlow {
     @Override
     public void init() throws Exception {
         super.init();
-        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
+        if (isChannelHasInputCard()) {
             initializeGuiProcessor();
         }
         if (TransactionHelper.isSecurityFlow(mStatusResponse)) {

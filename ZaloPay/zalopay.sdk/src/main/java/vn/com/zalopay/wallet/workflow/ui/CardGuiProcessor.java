@@ -401,7 +401,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         try {
             mAdapter = new WeakReference<>(pAdapter);
             mView = new WeakReference<>(pChannelFragment);
-            if (GlobalData.isChannelHasInputCard(getAdapter().getPaymentInfoHelper())) {
+            if (mAdapter.get().isChannelHasInputCard()) {
                 initForInputCard();
                 if (GlobalData.analyticsTrackerWrapper != null) {
                     GlobalData.analyticsTrackerWrapper
@@ -1125,7 +1125,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void dispose() {
         mCardAdapter = null;
         mBankSupportAdapter = null;
-        mView = null;
         mAdapter = null;
         if (mWebView != null) {
             mWebView.getCCWebViewClient().dispose();

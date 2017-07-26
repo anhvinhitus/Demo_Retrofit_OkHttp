@@ -79,7 +79,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     final SdkErrorReporter mSdkErrorReporter;
     private final DPaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
-    protected ChannelPresenter mPresenter = null;
+    protected WeakReference<ChannelPresenter> mPresenter = null;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
     protected EventBus mEventBus;
@@ -183,7 +183,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public AbstractWorkFlow(Context pContext, String pPageName, ChannelPresenter pPresenter,
                             MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
         mContext = pContext;
-        mPresenter = pPresenter;
+        mPresenter = new WeakReference<>(pPresenter);
         mMiniPmcTransType = pMiniPmcTransType;
         mCard = new DPaymentCard();
         mPaymentInfoHelper = paymentInfoHelper;
@@ -360,6 +360,16 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return getPageName().equals(Constants.PAGE_BALANCE_ERROR);
     }
 
+    public boolean isChannelHasInputCard() {
+        if (mPaymentInfoHelper == null) {
+            return false;
+        }
+        boolean isTransactionHasInputCard = !mPaymentInfoHelper.payByCardMap()
+                && !mPaymentInfoHelper.payByBankAccountMap()
+                && !mPaymentInfoHelper.isWithDrawTrans();
+        return isTransactionHasInputCard && !isZaloPayFlow();
+    }
+
     public boolean isAuthenPayerPharse() {
         return getPageName().equals(Constants.PAGE_AUTHEN);
     }
@@ -458,10 +468,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     public ChannelPresenter getPresenter() throws Exception {
-        if (mPresenter == null) {
-            throw new IllegalAccessException("presenter is invalid");
+        if (mPresenter == null || mPresenter.get() == null) {
+            throw new IllegalAccessException("Presenter is invalid");
         }
-        return mPresenter;
+        return mPresenter.get();
     }
 
     public ChannelActivity getActivity() throws Exception {
@@ -470,7 +480,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     public CardGuiProcessor getGuiProcessor() throws Exception {
         if (mGuiProcessor == null) {
-            throw new IllegalAccessException("GuiProcess is invalid");
+            throw new IllegalAccessException("GuiProcessor is invalid");
         }
         return mGuiProcessor;
     }
@@ -892,17 +902,19 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     public void onClickSubmission() {
         try {
+            Timber.d("page name %s", mPageName);
             SdkUtils.hideSoftKeyboard(mContext, getActivity());
             //fail transaction
             if (isTransactionFail()) {
                 terminate(null, true);
+                return;
             }
             //pay successfully
-            else if (isTransactionSuccess()) {
+            if (isTransactionSuccess()) {
                 finishTransaction();
-            } else {
-                onProcessPhrase();
+                return;
             }
+            onProcessPhrase();
         } catch (Exception ex) {
             showTransactionFailView(mContext.getResources().getString(R.string.zpw_string_error_layout));
             Timber.w(ex, "Exception click submit");

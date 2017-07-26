@@ -89,7 +89,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     @Override
     public void init() throws Exception {
         super.init();
-        if (GlobalData.isChannelHasInputCard(mPaymentInfoHelper)) {
+        if (isChannelHasInputCard()) {
             initializeGuiProcessor();
         }
         if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
@@ -369,7 +369,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                         }
                     });
         }
-        boolean visibleOrderInfo = !GlobalData.isChannelHasInputCard(mPaymentInfoHelper);
+        boolean visibleOrderInfo = !isChannelHasInputCard();
         getView().visibleOrderInfo(visibleOrderInfo);
         getView().setVisible(R.id.order_info_line_view, false);
         //set time process for otp and captcha to send log to server.

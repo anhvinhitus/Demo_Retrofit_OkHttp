@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
@@ -79,7 +80,7 @@ public class ResourceRender {
         if (pStaticViewGroup == null && pDynamicViewGroup == null) {
             return;
         }
-        View contentView = mView.getActivity().findViewById(android.R.id.content).getRootView();
+        View contentView = mView.findViewById(R.id.supperRootView);
         if (contentView != null) {
             renderStaticView(pStaticViewGroup);
             renderDynamicView(pDynamicViewGroup);
