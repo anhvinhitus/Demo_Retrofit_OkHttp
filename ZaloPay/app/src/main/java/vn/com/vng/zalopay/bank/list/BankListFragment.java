@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.util.Attributes;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.recyclerview.SpacesItemDecoration;
@@ -39,11 +38,31 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 
 public class BankListFragment extends BaseFragment implements IBankListView, BankListAdapter.OnBankListClickListener {
 
+    protected BankListAdapter mAdapter;
     @BindView(R.id.listview)
     RecyclerView mListView;
-
     @BindView(R.id.link_card_empty_view)
     View mEmptyView;
+    @Inject
+    BankListPresenter mPresenter;
+    RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState != RecyclerView.SCROLL_STATE_SETTLING) {
+                return;
+            }
+
+            if (mAdapter != null) {
+                mAdapter.closeAllItems();
+            }
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+        }
+    };
 
     public static BankListFragment newInstance(Bundle args) {
         BankListFragment fragment = new BankListFragment();
@@ -60,11 +79,6 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     protected int getResLayoutId() {
         return R.layout.fragment_bank_list;
     }
-
-    @Inject
-    BankListPresenter mPresenter;
-
-    protected BankListAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,8 +209,8 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     }
 
     @Override
-    public void insert(BankData val) {
-        mAdapter.insert(val);
+    public void insert(int position, BankData val) {
+        mAdapter.insert(val, position);
         checkIfEmpty();
     }
 
@@ -213,25 +227,6 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     public void onClickRemoveCard(BankData card, int position) {
         mPresenter.confirmAndRemoveBank(card);
     }
-
-    RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (newState != RecyclerView.SCROLL_STATE_SETTLING) {
-                return;
-            }
-
-            if (mAdapter != null) {
-                mAdapter.closeAllItems();
-            }
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-        }
-    };
 
     @Override
     public void showConfirmDialogAfterLinkBank(String message) {

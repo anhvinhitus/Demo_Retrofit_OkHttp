@@ -16,7 +16,7 @@ interface IBankListView extends ILoadDataView {
 
     void remove(BankData val);
 
-    void insert(BankData val);
+    void insert(int position, BankData val);
 
     void close(BankData val);
 
