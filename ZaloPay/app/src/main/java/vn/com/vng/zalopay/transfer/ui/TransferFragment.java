@@ -94,6 +94,20 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     TransferObject mTransferObject;
 
+    @OnTextChanged(value = R.id.edtTransferMsg, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onMessageChanged(CharSequence text) {
+        int maxLength = getResources().getInteger(R.integer.max_length_message);
+        if (text.length() >= maxLength) {
+            if (text.length() >= maxLength) {
+                if (mEdtMessageView == null) {
+                    return;
+                }
+                String errorMessage = getResources().getString(R.string.transfer_message_max_length, String.valueOf(maxLength));
+                mEdtMessageView.setError(errorMessage);
+            }
+        }
+    }
+
     public static TransferFragment newInstance(Bundle args) {
         TransferFragment fragment = new TransferFragment();
         fragment.setArguments(args);
