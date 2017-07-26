@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
 // Runs all tranfer tests.
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ZaloPayTransfer10K.class,
-        ZaloPayTransfer100K.class})
-public class TranferTestSuite {
+        ZaloPayTransfer100K.class,
+        ZaloPayTransferSearch.class})
+public class TransferTestSuite {
 }
