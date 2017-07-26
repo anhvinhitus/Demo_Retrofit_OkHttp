@@ -52,6 +52,7 @@
     <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
     <string name="txt_warning">Cảnh báo</string>
+    <string name="txt_later">Để sau</string>
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
@@ -457,7 +458,7 @@
     <string name="protect_account_otp">Nhập mã OTP</string>
     <string name="protect_account_otp_invalid">Mã OTP không đúng</string>
     <string name="protect_account_password_changed">Đổi mật khẩu thanh toán thành công</string>
-    <string name="protect_account_confirm_close_dialog">Bạn có muốn huỷ đổi mật khẩu thanh toán không?</string>
+    <string name="protect_account_confirm_close_dialog">Bạn có muốn tiếp tục đổi mật khẩu thanh toán không?</string>
 
 </resources>
 
