@@ -403,7 +403,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             Timber.d("create new adapter pmc id = %s", pChannelId);
             //release old adapter
             if (mAbstractWorkFlow != null) {
-               // mAbstractWorkFlow.onDetach();
+                mAbstractWorkFlow.onDetach();
                 mAbstractWorkFlow = null;
             }
             mAbstractWorkFlow = WorkFlowFactoryCreator.createByPmc(mContext, this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);
@@ -508,7 +508,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             mAbstractWorkFlow.init();
             mAbstractWorkFlow.onStart();
             getViewOrThrow().renderByResource(mAbstractWorkFlow.getPageName());
-            //getViewOrThrow().marginSubmitButtonTop(false);
             getViewOrThrow().updateCardNumberFont();
         } catch (Exception e) {
             Timber.w(e, "Exception init channel");

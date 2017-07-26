@@ -93,16 +93,6 @@ public class GlobalData {
         return BaseActivity.getActivityCount() > 0;
     }
 
-    public static boolean isChannelHasInputCard(PaymentInfoHelper paymentInfoHelper) {
-        boolean isTransactionHasInputCard = !paymentInfoHelper.payByCardMap() && !paymentInfoHelper.payByBankAccountMap() && !paymentInfoHelper.isWithDrawTrans();
-        boolean isChannelHasInputCard = true;
-        if (BaseActivity.getCurrentActivity() instanceof ChannelActivity
-                && ((ChannelActivity) BaseActivity.getCurrentActivity()).getWorkFlow().isZaloPayFlow()) {
-            isChannelHasInputCard = false;
-        }
-        return isTransactionHasInputCard && isChannelHasInputCard;
-    }
-
     @BankFunctionCode
     public static int updateBankFuncByPayType() {
         if (paymentInfoHelper.payByBankAccountMap()) {

@@ -144,7 +144,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         if (appId != Constants.RESULT_TYPE2_APPID) {
             return;
         }
-        close_btn.setTextColor(ContextCompat.getColor(getContext(), R.color.button_text_color));
+        close_btn.setTextColor(getResources().getColor(R.color.button_text_color));
         close_btn.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
     }
 
