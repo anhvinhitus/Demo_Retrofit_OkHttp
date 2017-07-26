@@ -1,4 +1,2 @@
-Zalo Pay (Sandbox v2.16.0 - build 357) - Released on 2017-07-26 09:13
-+ [SDK] Refactor phần check card by vo van chuc (#4c94ded)
-+ [Bank] Fix bank card view by hieuvm (#dd2dbe1)
-+ [SDK] Update time set title by lytm (#dc00c56)
+Zalo Pay (Staging v2.16.0 - build 358) - Released on 2017-07-26 09:13
+
