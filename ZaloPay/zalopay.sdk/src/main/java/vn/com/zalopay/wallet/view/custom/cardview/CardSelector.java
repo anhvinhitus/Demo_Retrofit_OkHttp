@@ -10,8 +10,8 @@ import java.util.Map;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
-import vn.com.zalopay.wallet.card.BankCardCheck;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -51,17 +51,17 @@ public class CardSelector {
     }
 
     private CardSelector detectCardType(@TransactionType int pTranstype) {
-        String bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
+        String bankCode = BankDetector.getInstance().getCodeBankForVerifyCC();
 
         if (pTranstype == TransactionType.LINK) {
-            bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
+            bankCode = BankDetector.getInstance().getCodeBankForVerifyCC();
             if (TextUtils.isEmpty(bankCode)) {
-                bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();
+                bankCode = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
             }
         } else if (GlobalData.cardChannelType == CardChannel.ATM) {
-            bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
+            bankCode = BankDetector.getInstance().getCodeBankForVerifyCC();
         } else if (GlobalData.cardChannelType == CardChannel.CREDIT) {
-            bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();
+            bankCode = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
         }
 
         if (!TextUtils.isEmpty(bankCode)) {

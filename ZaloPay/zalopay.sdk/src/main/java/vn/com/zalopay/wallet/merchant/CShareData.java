@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -201,9 +201,9 @@ public class CShareData extends SingletonBase {
     public String detectCardType(String pCardNumber) {
         loadConfigBundle();
         if (mConfigFromServer != null) {
-            CreditCardCheck cardCheck = new CreditCardCheck(mConfigFromServer.CCIdentifier);
+            CreditCardDetector cardCheck = new CreditCardDetector(mConfigFromServer.CCIdentifier);
             cardCheck.detectOnSync(pCardNumber);
-            return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
+            return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerifyCC());
         } else {
             return CardType.UNDEFINE;
         }

@@ -26,6 +26,6 @@ public class CardTypeUtils {
     }
 
     public static boolean isBankAccount(@CardType String pCardType) {
-        return pCardType == CardType.PVCB;
+        return CardType.PVCB.equals(pCardType);
     }
 }

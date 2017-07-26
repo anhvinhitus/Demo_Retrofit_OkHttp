@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
-import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
+import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DPage;
@@ -253,14 +253,14 @@ public class ResourceManager extends SingletonBase {
     }
 
 
-    public List<DCardIdentifier> getCreditCardIdentifier() {
+    public List<CardRule> getCreditCardIdentifier() {
         if (mConfigFromServer == null) {
             return null;
         }
         return mConfigFromServer.CCIdentifier;
     }
 
-    public List<DCardIdentifier> getBankCardIdentifier() {
+    public List<CardRule> getBankCardIdentifier() {
         if (mConfigFromServer == null) {
             return null;
         }
@@ -289,13 +289,13 @@ public class ResourceManager extends SingletonBase {
     }
 
     //get otp pattern for each of bank.
-    public DCardIdentifier getBankIdentifier(String pCode) {
+    public CardRule getBankIdentifier(String pCode) {
         if (mConfigFromServer == null || mConfigFromServer.BankIdentifier == null) {
             Timber.d("mConfigFromServer is null");
             return null;
         }
-        DCardIdentifier cardIdentifier = null;
-        for (DCardIdentifier item : mConfigFromServer.BankIdentifier) {
+        CardRule cardIdentifier = null;
+        for (CardRule item : mConfigFromServer.BankIdentifier) {
             if (item.code.equalsIgnoreCase(pCode)) {
                 cardIdentifier = item;
                 break;

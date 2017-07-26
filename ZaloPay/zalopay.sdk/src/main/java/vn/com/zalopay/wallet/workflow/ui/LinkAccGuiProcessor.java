@@ -36,7 +36,7 @@ import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.card.CardCheck;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -696,7 +696,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    public CardCheck getCardFinder() {
+    public AbstractCardDetector getCardFinder() {
         return null;
     }
 

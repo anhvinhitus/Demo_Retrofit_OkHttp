@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.business.entity.staticconfig;
 
 import vn.com.zalopay.wallet.business.entity.base.BaseEntity;
 
-public class DCardIdentifier extends BaseEntity<DCardIdentifier> {
+public class CardRule extends BaseEntity<CardRule> {
     public String code;
     public String name;
     public String startPin;

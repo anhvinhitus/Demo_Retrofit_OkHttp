@@ -17,8 +17,8 @@ import android.widget.ImageView;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
-import vn.com.zalopay.wallet.card.BankCardCheck;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -210,12 +210,12 @@ public class CardNumberFragment extends CreditCardFragment {
         }
         if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(warning)) {
             try {
-                if ((getPaymentAdapter().isATMFlow() && (BankCardCheck.getInstance().isDetected()
-                        || CreditCardCheck.getInstance().isDetected()))) {
+                if ((getPaymentAdapter().isATMFlow() && (BankDetector.getInstance().detected()
+                        || CreditCardDetector.getInstance().detected()))) {
                     errorMess = null;
 
-                } else if (getPaymentAdapter().isCCFlow() && (CreditCardCheck.getInstance().isDetected()
-                        || BankCardCheck.getInstance().isDetected())) {
+                } else if (getPaymentAdapter().isCCFlow() && (CreditCardDetector.getInstance().detected()
+                        || BankDetector.getInstance().detected())) {
                     errorMess = null;
                 }
 

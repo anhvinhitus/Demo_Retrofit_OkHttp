@@ -8,12 +8,11 @@ import android.widget.EditText;
 import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.workflow.CreditCardWorkFlow;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.card.CardCheck;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardFragmentAdapter;
@@ -24,6 +23,8 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardCVVFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardExpiryFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.CreditCardWorkFlow;
 
 public class CreditCardGuiProcessor extends CardGuiProcessor {
     public CreditCardGuiProcessor(Context pContext, CreditCardWorkFlow pAdapterCreditCard, ChannelFragment pChannelFragment) {
@@ -54,20 +55,22 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     public void continueDetectCardForLinkCard() {
         try {
-            Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber(), detected -> {
-                try {
-                    getAdapter().setNeedToSwitchChannel(detected);
-                } catch (Exception e) {
-                    Timber.w(e.getMessage());
-                }
-                populateTextOnCardView();
-                if (detected) {
-                    setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
-                    checkAutoMoveCardNumberFromBundle = true;
-                } else {
-                    setDetectedCard();
-                }
-            });
+            Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber())
+                    .compose(SchedulerHelper.applySchedulers())
+                    .subscribe(detected -> {
+                        try {
+                            getAdapter().setNeedToSwitchChannel(detected);
+                        } catch (Exception e) {
+                            Timber.w(e.getMessage());
+                        }
+                        populateTextOnCardView();
+                        if (detected) {
+                            setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
+                            checkAutoMoveCardNumberFromBundle = true;
+                        } else {
+                            setDetectedCard();
+                        }
+                    }, Timber::d);
             getAdapter().getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -75,7 +78,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    public CardCheck getCardFinder() {
+    public AbstractCardDetector getCardFinder() {
         return getCreditCardFinder();
     }
 
@@ -97,7 +100,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     protected boolean validateCardNumberLength() {
         try {
             return getAdapter().getPaymentInfoHelper().isLinkTrans()
-                    && getBankCardFinder().isDetected()
+                    && getBankCardFinder().detected()
                     || getCreditCardFinder().isValidCardLength();
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -125,7 +128,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         int errorFragmentIndex = mCardAdapter.hasError();
         if (errorFragmentIndex > -1)
             return errorFragmentIndex;
-        if (!getCardFinder().isValidCardLength() || !getCardFinder().isDetected()) {
+        if (!getCardFinder().isValidCardLength() || !getCardFinder().detected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
             } catch (Exception e) {
