@@ -4,8 +4,6 @@ import android.content.res.Resources;
 import android.support.annotation.CallSuper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -29,8 +27,6 @@ import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 
 import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
 /**
  * To ensure that espresso works as expected on your test device or emulator,
@@ -98,27 +94,27 @@ public abstract class AbtractZaloPayTesting {
         };
     }
 
-    protected String getText(final Matcher<View> matcher) {
-        final String[] stringHolder = {null};
-        onView(matcher).perform(new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isAssignableFrom(TextView.class);
-            }
-
-            @Override
-            public String getDescription() {
-                return "getting text from a TextView";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                TextView tv = (TextView) view; //Save, because of check in getConstraints()
-                stringHolder[0] = tv.getText().toString();
-            }
-        });
-        return stringHolder[0];
-    }
+//    protected String getText(final Matcher<View> matcher) {
+//        final String[] stringHolder = {null};
+//        onView(matcher).perform(new ViewAction() {
+//            @Override
+//            public Matcher<View> getConstraints() {
+//                return isAssignableFrom(TextView.class);
+//            }
+//
+//            @Override
+//            public String getDescription() {
+//                return "getting text from a TextView";
+//            }
+//
+//            @Override
+//            public void perform(UiController uiController, View view) {
+//                TextView tv = (TextView) view; //Save, because of check in getConstraints()
+//                stringHolder[0] = tv.getText().toString();
+//            }
+//        });
+//        return stringHolder[0];
+//    }
 
     /***
      *  init neccesary things before testing
@@ -161,4 +157,59 @@ public abstract class AbtractZaloPayTesting {
             }
         };
     }
+
+//    /**
+//     * Original source from Espresso library, modified to handle spanned fields
+//     *
+//     * Returns a matcher that matches a descendant of {@link TextView} that is
+//     * displaying the string associated with the given resource id.
+//     *
+//     * @param resourceId
+//     *            the string resource the text view is expected to hold.
+//     */
+//    public static Matcher<View> withText(final int resourceId) {
+//
+//        return new BoundedMatcher<View, TextView>(TextView.class) {
+//            private String resourceName = null;
+//            private String expectedText = null;
+//
+//            @Override
+//            public void describeTo(Description description) {
+//                description.appendText("with string from resource id: ");
+//                description.appendValue(resourceId);
+//                if (null != this.resourceName) {
+//                    description.appendText("[");
+//                    description.appendText(this.resourceName);
+//                    description.appendText("]");
+//                }
+//                if (null != this.expectedText) {
+//                    description.appendText(" value: ");
+//                    description.appendText(this.expectedText);
+//                }
+//            }
+//
+//            @Override
+//            public boolean matchesSafely(TextView textView) {
+//                if (null == this.expectedText) {
+//                    try {
+//                        this.expectedText = textView.getResources().getString(
+//                                resourceId);
+//                        this.resourceName = textView.getResources()
+//                                .getResourceEntryName(resourceId);
+//                    } catch (Resources.NotFoundException ignored) {
+//                    /*
+//                     * view could be from a context unaware of the resource
+//                     * id.
+//                     */
+//                    }
+//                }
+//                if (null != this.expectedText) {
+//                    return this.expectedText.equals(textView.getText()
+//                            .toString());
+//                } else {
+//                    return false;
+//                }
+//            }
+//        };
+//    }
 }
