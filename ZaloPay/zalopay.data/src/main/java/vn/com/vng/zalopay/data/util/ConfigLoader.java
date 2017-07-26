@@ -182,5 +182,13 @@ public class ConfigLoader {
             return mConfig.allowUrls;
         }
     }
+
+    public static List<Integer> getListVibrateNotificationType() {
+        if (mConfig == null || Lists.isEmptyOrNull(mConfig.mVibrateNotificationType)) {
+            return Arrays.asList(6, 7, 9, 105, 106, 111);
+        } else {
+            return mConfig.mVibrateNotificationType;
+        }
+    }
 }
 

@@ -10,19 +10,17 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Base64;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +43,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -64,7 +63,6 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
-import vn.zalopay.promotion.PromotionAction;
 import vn.zalopay.promotion.PromotionEvent;
 
 /**
@@ -220,6 +218,9 @@ public class NotificationHelper {
             this.putNotification(notify);
         }
 
+        if(ConfigLoader.getListVibrateNotificationType().contains(notificationType)) {
+            vibrate();
+        }
     }
 
     private void refreshMapList(NotificationData notify) {
@@ -282,6 +283,7 @@ public class NotificationHelper {
                     skipStorage = true;
                     break;
                 case NotificationType.AppP2PNotificationType.SEND_THANK_MESSAGE:
+                    vibrate();
                     long transId = embeddata.get("transid").getAsLong();
                     String zalopayid = embeddata.get("zalopayid").getAsString();
 
@@ -684,6 +686,15 @@ public class NotificationHelper {
         public void onNext(Integer integer) {
             showNotificationSystem(integer);
         }
+    }
+
+    private void vibrate() {
+        if(mContext == null) {
+            return;
+        }
+
+        Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);// Vibrate for 500 milliseconds
     }
 
 }

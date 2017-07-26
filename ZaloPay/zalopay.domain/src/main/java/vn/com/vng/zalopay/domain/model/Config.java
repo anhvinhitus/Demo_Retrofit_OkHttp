@@ -53,4 +53,7 @@ public class Config {
     @SerializedName("quick_comment_url")
     public String mFeedbackUrl;
 
+    @SerializedName("notification_types_vibrate")
+    public List<Integer> mVibrateNotificationType;
+
 }
