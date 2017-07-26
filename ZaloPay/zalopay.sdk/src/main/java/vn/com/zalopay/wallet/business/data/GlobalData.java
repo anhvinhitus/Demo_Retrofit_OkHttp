@@ -229,11 +229,11 @@ public class GlobalData {
             return;
         }
         try {
+            boolean success = TransactionHelper.isTransactionSuccess(pStatusResponse);
             //notify to app to do some background task
             if (GlobalData.getPaymentListener() != null) {
-                GlobalData.getPaymentListener().onPreComplete(false, pStatusResponse.zptransid, paymentInfoHelper.getAppTransId());
+                GlobalData.getPaymentListener().onPreComplete(success, pStatusResponse.zptransid, paymentInfoHelper.getAppTransId());
             }
-            boolean success = TransactionHelper.isTransactionSuccess(pStatusResponse);
             GlobalData.trackingTransactionEvent(success ? ZPPaymentSteps.OrderStepResult_Success : ZPPaymentSteps.OrderStepResult_Fail
                     , pStatusResponse
                     , pBankCode);
