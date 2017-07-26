@@ -35,7 +35,7 @@ final class BankListAdapter extends AbstractSwipeAdapter<BankData, RecyclerView.
     }
 
     private final SwipeLayout.SwipeListener mSwipeListener;
-    final OnBankListClickListener mListener;
+    protected final OnBankListClickListener mListener;
 
     BankListAdapter(Context context, OnBankListClickListener listener) {
         super(context);
@@ -70,13 +70,6 @@ final class BankListAdapter extends AbstractSwipeAdapter<BankData, RecyclerView.
             return false;
         }
     };
-
-    @Override
-    public void remove(int location) {
-        super.remove(location);
-        // notifyItemRangeChanged(location, getItemCount());
-        // mItemManger.closeAllItems();
-    }
 
     @Override
     public int getSwipeLayoutResourceId(int position) {

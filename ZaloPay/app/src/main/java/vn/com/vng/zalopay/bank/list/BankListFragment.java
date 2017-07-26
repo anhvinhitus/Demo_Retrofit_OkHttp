@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.util.Attributes;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.recyclerview.SpacesItemDecoration;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.internal.DebouncingOnClickListener;
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -149,7 +151,19 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
 
     @Override
     public void remove(BankData val) {
-        mAdapter.remove(val);
+
+        int index = mAdapter.indexOf(val);
+
+        if (index < 0) {
+            Timber.d("Bank card not found");
+            return;
+        }
+
+        Timber.d("Remove bank [index:%s]", index);
+        mAdapter.closeItem(index);
+        mAdapter.remove(index);
+        mAdapter.notifyItemRangeChanged(index, mAdapter.getItemCount());
+        mAdapter.closeAllItems();
         checkIfEmpty();
     }
 

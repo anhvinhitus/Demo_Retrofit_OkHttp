@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * SwipeItemMangerImpl is a helper class to help all the adapters to maintain open status.
  */
@@ -94,15 +96,22 @@ public class SwipeItemMangerImpl implements SwipeItemMangerInterface {
             if (mOpenPosition == position)
                 mOpenPosition = INVALID_POSITION;
         }
-        
+
         swipeAdapterInterface.notifyItemChanged(position);
     }
 
     @Override
     public void closeAllExcept(SwipeLayout layout) {
         for (SwipeLayout s : mShownLayouts) {
-            if (s != layout)
-                s.close();
+            if (s == layout) {
+                continue;
+            }
+
+            if (s.getOpenStatus() == SwipeLayout.Status.Close) {
+                continue;
+            }
+
+            s.close();
         }
     }
 
@@ -113,14 +122,28 @@ public class SwipeItemMangerImpl implements SwipeItemMangerInterface {
         } else {
             mOpenPosition = INVALID_POSITION;
         }
+
         for (SwipeLayout s : mShownLayouts) {
+
+            if (s.getOpenStatus() == SwipeLayout.Status.Close) {
+                continue;
+            }
+
             s.close();
         }
     }
 
     @Override
     public void removeShownLayouts(SwipeLayout layout) {
-        mShownLayouts.remove(layout);
+        boolean isRemoved = mShownLayouts.remove(layout);
+        Timber.d("Remove swipe layout [isRemoved:%s]", isRemoved);
+    }
+
+    @Override
+    public void cleanUp() {
+        mOpenPositions.clear();
+        mShownLayouts.clear();
+        mOpenPosition = INVALID_POSITION;
     }
 
     @Override

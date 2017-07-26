@@ -26,4 +26,6 @@ public interface SwipeItemMangerInterface {
     Attributes.Mode getMode();
 
     void setMode(Attributes.Mode mode);
+
+    void cleanUp();
 }

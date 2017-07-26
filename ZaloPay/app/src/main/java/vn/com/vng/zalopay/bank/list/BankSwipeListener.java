@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 
 /**
@@ -27,26 +28,20 @@ final class BankSwipeListener extends SimpleSwipeListener {
 
     @Override
     public void onStartOpen(SwipeLayout layout) {
+        setCornerRadii(layout, new float[]{border, border, 0, 0, 0, 0, 0, 0});
+    }
 
-        View foreground = layout.getSurfaceView();
-        if (!(foreground instanceof ViewGroup)) {
-            return;
-        }
-
-        View card = ((ViewGroup) foreground).getChildAt(0);
-
-        if (card == null) {
-            return;
-        }
-
-        GradientDrawable drawable = (GradientDrawable) card.getBackground();
-        if (drawable != null) {
-            drawable.setCornerRadii(new float[]{border, border, 0, 0, 0, 0, 0, 0});
-        }
+    @Override
+    public void onOpen(SwipeLayout layout) {
+        setCornerRadii(layout, new float[]{border, border, 0, 0, 0, 0, 0, 0});
     }
 
     @Override
     public void onClose(SwipeLayout layout) {
+        setCornerRadii(layout, new float[]{border, border, border, border, 0, 0, 0, 0});
+    }
+
+    private void setCornerRadii(SwipeLayout layout, float[] radii) {
         View foreground = layout.getSurfaceView();
         if (!(foreground instanceof ViewGroup)) {
             return;
@@ -60,7 +55,8 @@ final class BankSwipeListener extends SimpleSwipeListener {
 
         GradientDrawable drawable = (GradientDrawable) card.getBackground();
         if (drawable != null) {
-            drawable.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
+            drawable.mutate();
+            drawable.setCornerRadii(radii);
         }
     }
 
