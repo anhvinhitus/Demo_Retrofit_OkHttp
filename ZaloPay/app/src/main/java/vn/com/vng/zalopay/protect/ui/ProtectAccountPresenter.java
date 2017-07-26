@@ -382,7 +382,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             if (mPassword != null) {
                 mPassword.setError(pError);
-                mPassword.unlock();
+                mPassword.lockElementView(false);
             }
         } catch (Exception e) {
             Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
@@ -396,7 +396,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
             mPassword.getBuilder().resetPasswordInput().clearText();
-            mPassword.unlock();
+            mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View set old password success error [%s]", e.getMessage());
         }
@@ -414,7 +414,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
             mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
-            mPassword.unlock();
+            mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View otp error [%s]", e.getMessage());
         }
@@ -424,7 +424,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
             mPassword.getBuilder().resetPasswordInput().clearText();
-            mPassword.unlock();
+            mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View set new password error [%s]", e.getMessage());
         }
@@ -434,7 +434,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_confirm_new_password));
             mPassword.getBuilder().resetPasswordInput().clearText();
-            mPassword.unlock();
+            mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View set confirm new password error [%s]", e.getMessage());
         }
@@ -480,7 +480,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private void verifyPassword(String password) {
         try {
             mPassword.showLoading(true);
-            mPassword.lock();
+            mPassword.lockElementView(true);
         } catch (Exception e) {
             Timber.d("verifyPassword show loading error [%s]", e.getMessage());
         }
@@ -540,7 +540,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onStart() {
             try {
                 mPassword.showLoading(true);
-                mPassword.lock();
+                mPassword.lockElementView(true);
             } catch (Exception e) {
                 Timber.d("ChangePinSubscriber onStart exception [%s]", e.getMessage());
             }
@@ -575,7 +575,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onStart() {
             try {
                 mPassword.showLoading(true);
-                mPassword.lock();
+                mPassword.lockElementView(true);
             } catch (Exception e) {
                 Timber.d("VerifySubscriberOTP onStart exception [%s]", e.getMessage());
             }
@@ -586,7 +586,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 mPassword.showLoading(false);
                 mPassword.close();
-                mPassword.unlock();
+                mPassword.lockElementView(false);
                 ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
                 setViewStatus(0);
             } catch (Exception e) {

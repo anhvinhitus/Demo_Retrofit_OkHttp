@@ -224,6 +224,20 @@ public class PasswordManager {
         });
     }
 
+    @UiThread
+    public void lockElementView(final boolean disable) throws Exception {
+        if (mUiBottomSheetDialog == null) {
+            Timber.d("mUiBottomSheetDialog is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.lockView(disable);
+            }
+        });
+    }
+
     public void lock() throws Exception {
         disable(true);
     }
