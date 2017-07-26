@@ -7,9 +7,7 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /**
  * class for detect working with
@@ -82,6 +80,65 @@ public class CreditCardDetector extends AbstractCardDetector {
         return getBankName();
     }
 
+    private boolean isJCB(CardRule cardRule, String pCardNumber) throws Exception {
+        if (TextUtils.isEmpty(pCardNumber)) {
+            return false;
+        }
+        String prefixDetector = cardRule.startPin;
+        if (TextUtils.isEmpty(prefixDetector)) {
+            return false;
+        }
+        if (!prefixDetector.contains("-")) {
+            return false;
+        }
+        String[] prefixNumbs = prefixDetector.split("-");
+        long minStart = Integer.parseInt(prefixNumbs[0]);
+        long maxStart = Integer.parseInt(prefixNumbs[1]);
+
+        for (int i = 3; i < pCardNumber.length() + 1; i++) {
+            String sub = pCardNumber.substring(0, i);
+            Long value = Long.parseLong(sub);
+            if (value <= maxStart && value >= minStart) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isMasterCard(CardRule cardRule, String pCardNumber) throws Exception {
+        if (TextUtils.isEmpty(pCardNumber)) {
+            return false;
+        }
+        String prefixDetector = cardRule.startPin;
+        if (TextUtils.isEmpty(prefixDetector)) {
+            return false;
+        }
+        if (!prefixDetector.contains(",")) {
+            return false;
+        }
+        String[] prefixNums = prefixDetector.split(",");
+        if (prefixNums.length <= 0) {
+            return false;
+        }
+        for (String preNum : prefixNums) {
+            if (!TextUtils.isEmpty(preNum) && (pCardNumber.equals(preNum) || pCardNumber.startsWith(preNum))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isVisa(CardRule cardRule, String pCardNumber) throws Exception {
+        if (TextUtils.isEmpty(pCardNumber)) {
+            return false;
+        }
+        String prefixDetector = cardRule.startPin;
+        if (TextUtils.isEmpty(prefixDetector)) {
+            return false;
+        }
+        return pCardNumber.equals(prefixDetector) || pCardNumber.startsWith(prefixDetector);
+    }
+
     @Override
     protected boolean detect(String pCardNumber) {
         mCardNumber = pCardNumber;
@@ -92,34 +149,14 @@ public class CreditCardDetector extends AbstractCardDetector {
         mValidLuhnFormula = true;
         try {
             for (CardRule cardRule : mCardRules) {
-                String[] startPin;
-                String strStartPin = cardRule.startPin;
-                //master card start with 51,52,53,54,55
-                if (strStartPin.contains(",")) {
-                    startPin = strStartPin.split(",");
-                    for (String aStartPin : startPin) {
-                        if (pCardNumber.equals(aStartPin) || pCardNumber.startsWith(aStartPin)) {
-                            mFoundCardRule = cardRule;
-                            break;
-                        }
-                    }
-                } else if (strStartPin.contains("-")) {  //JCB in range of 3528-3589
-                    startPin = strStartPin.split("-");
-                    long minStart = Integer.parseInt(startPin[0]);
-                    long maxStart = Integer.parseInt(startPin[1]);
-                    for (int i = 3; i < pCardNumber.length() + 1; i++) {
-                        String sub = pCardNumber.substring(0, i);
-                        Long value = Long.parseLong(sub);
-                        if (value <= maxStart && value >= minStart) {
-                            mFoundCardRule = cardRule;
-                            break;
-                        }
-                    }
-                } else if (pCardNumber.equals(strStartPin) || pCardNumber.startsWith(strStartPin)) { // visa start with 4
+                boolean isMasterCard = isMasterCard(cardRule, pCardNumber);
+                if (isMasterCard) {
                     mFoundCardRule = cardRule;
                     break;
                 }
-                if(mFoundCardRule != null){
+                boolean isVisa = isVisa(cardRule, pCardNumber);
+                if (isVisa) {
+                    mFoundCardRule = cardRule;
                     break;
                 }
             }
@@ -132,10 +169,10 @@ public class CreditCardDetector extends AbstractCardDetector {
             mValid = matchCardLength(pCardNumber, mFoundCardRule);
             Timber.d("found card %s", GsonUtils.toJsonString(mFoundCardRule));
         }
-        return !TextUtils.isEmpty(mCardName);
+        return mFoundCardRule != null;
     }
 
     private boolean matchCardLength(String pCardNumber, CardRule pIdentifier) {
-        return  ((pCardNumber.length() >= pIdentifier.min_length) && (pCardNumber.length() <= pIdentifier.max_length));
+        return ((pCardNumber.length() >= pIdentifier.min_length) && (pCardNumber.length() <= pIdentifier.max_length));
     }
 }
