@@ -33,6 +33,7 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
@@ -81,8 +82,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private ChannelListAdapter mChannelAdapter;
     private PayProxy mPayProxy;
     private List<Object> mChannelList = new ArrayList<>();
-    private Map<String, Object> mActiveMapChannels = new HashMap<>();
-    private Map<String, Object> mInActiveMapChannels = new HashMap<>();
+    private MultiValueMap<String, Object> mActiveMapChannels = new MultiValueMap<>();
+    private MultiValueMap<String, Object> mInActiveMapChannels = new MultiValueMap<>();
     private Map<String, Object> mActiveCCMapChannel = new HashMap<>();
     private Map<String, Object> mInActiveCCMapChannel = new HashMap<>();
     private AbstractChannelLoader mChannelLoader;
@@ -99,14 +100,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private
     @PaymentStatus
     int tempPaymentStatus;
-    private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
-        @Override
-        public void onClose() {
-            try {
-                getViewOrThrow().showOpenSettingNetwokingDialog(null);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+    private onCloseSnackBar mOnCloseSnackBarListener = () -> {
+        try {
+            getViewOrThrow().showOpenSettingNetwokingDialog(null);
+        } catch (Exception e) {
+            Timber.w(e);
         }
     };
     private ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
@@ -236,14 +234,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public String getQuitMessage() {
+    String getQuitMessage() {
         if (mPaymentInfoHelper == null) {
             return null;
         }
         return mPaymentInfoHelper.getQuitMessByTrans(mContext);
     }
 
-    public boolean quitWithoutConfirm() {
+    boolean quitWithoutConfirm() {
         return !mHasActiveChannel;
     }
 
@@ -457,27 +455,38 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mChannelAdapter.add(itemType, pChannel);
     }
 
-    private void addMapChannelListToAdapter() {
+    private void traverseListAndAddToAdapter(MultiValueMap<String, Object> pMap) {
+        if (pMap == null || pMap.size() <= 0) {
+            return;
+        }
+        for (String key : pMap.keySet()) {
+            try {
+                List<PaymentChannel> channelList = ChannelHelper.getChannels(key, pMap);
+                if (channelList == null || channelList.size() <= 0) {
+                    continue;
+                }
+                for (PaymentChannel channel : channelList) {
+                    addToAdapter(channel);
+                }
+            } catch (Exception e) {
+                Timber.w(e);
+            }
+        }
+    }
+
+    private void addAllMapChannelListIntoAdapter() {
         if (mActiveCCMapChannel.size() > 0) {
             for (Map.Entry<String, Object> channel : mActiveCCMapChannel.entrySet()) {
                 addToAdapter((PaymentChannel) channel.getValue());
             }
         }
-        if (mActiveMapChannels.size() > 0) {
-            for (Map.Entry<String, Object> channel : mActiveMapChannels.entrySet()) {
-                addToAdapter((PaymentChannel) channel.getValue());
-            }
-        }
+        traverseListAndAddToAdapter(mActiveMapChannels);
         if (mInActiveCCMapChannel.size() > 0) {
             for (Map.Entry<String, Object> channel : mInActiveCCMapChannel.entrySet()) {
                 addToAdapter((PaymentChannel) channel.getValue());
             }
         }
-        if (mInActiveMapChannels.size() > 0) {
-            for (Map.Entry<String, Object> channel : mInActiveMapChannels.entrySet()) {
-                addToAdapter((PaymentChannel) channel.getValue());
-            }
-        }
+        traverseListAndAddToAdapter(mInActiveMapChannels);
     }
 
     private void renderCC(boolean active, String pmcNames) {
@@ -503,19 +512,29 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    private void renderMapChannels(boolean active, String... bankCodes) {
-        Map<String, Object> channels = active ? mActiveMapChannels : mInActiveMapChannels;
+    private void addMapChannelIntoAdapter(boolean active, String... bankCodes) {
+        MultiValueMap<String, Object> mapChannels = active ? mActiveMapChannels : mInActiveMapChannels;
+        if(mapChannels == null || mapChannels.size() <= 0){
+            return;
+        }
         for (String bankCode : bankCodes) {
             if (TextUtils.isEmpty(bankCode)) {
                 continue;
             }
             if (BuildConfig.CC_CODE.equals(bankCode)) {
-                renderCC(active, (String) channels.get(bankCode));
+                renderCC(active, (String) mapChannels.get(bankCode));
                 continue;
             }
-            Object channel = channels.get(bankCode);
-            if (channel instanceof PaymentChannel) {
-                addToAdapter((PaymentChannel) channel);
+            try {
+                List<PaymentChannel> channelList = ChannelHelper.getChannels(bankCode, mapChannels);
+                if (channelList == null) {
+                    continue;
+                }
+                for (PaymentChannel channel : channelList) {
+                    addToAdapter(channel);
+                }
+            } catch (Exception e) {
+                Timber.w(e);
             }
         }
     }
@@ -530,11 +549,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         mZaloPayChannel = null;
     }
 
-    private Observable<Boolean> sortChannels(String bankCodes) {
+    private Observable<Boolean> sortChannelsThenAddIntoAdapter(String bankCodes) {
         return Observable.defer(() -> {
             String[] sortedBankCode = bankCodes.split(Constants.COMMA);
-            renderMapChannels(true, sortedBankCode);
-            renderMapChannels(false, sortedBankCode);
+            addMapChannelIntoAdapter(true, sortedBankCode);
+            addMapChannelIntoAdapter(false, sortedBankCode);
             return Observable.just(true);
         });
 
@@ -586,11 +605,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     void loadChannelOnCompleted() {
         String sortedBankCodes = mBankInteractor.getBankCodeList();
         if (TextUtils.isEmpty(sortedBankCodes)) {
-            addMapChannelListToAdapter();
+            addAllMapChannelListIntoAdapter();
             collectChannelsToList();
             loadChannelOnDoLast();
         } else {
-            sortChannels(sortedBankCodes)
+            sortChannelsThenAddIntoAdapter(sortedBankCodes)
                     .doOnNext(aBoolean -> collectChannelsToList())
                     .subscribe(aBoolean -> loadChannelOnDoLast(), throwable -> {
                         try {
@@ -733,7 +752,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     return;
                 }
                 if (!TextUtils.isEmpty(channel.bankcode) && channel.isMapValid()) {
-                    queueChannel(channel);
+                    enqueueChannel(channel);
                 } else {
                     addToAdapter(channel);
                 }
@@ -746,7 +765,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
      * need another storage for him
      * then key is pmc name instead of bank code
      */
-    void queueChannel(PaymentChannel channel) {
+    void enqueueChannel(PaymentChannel channel) {
         String key = channel.bankcode;
         Object object = channel;
         boolean active = channel.meetPaymentCondition();
@@ -766,10 +785,18 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 mInActiveCCMapChannel.put(channel.pmcname, channel);
             }
         }
-        if (active) {
-            mActiveMapChannels.put(key, object);
-        } else {
-            mInActiveMapChannels.put(key, object);
+        putChannel(active, key, object);
+    }
+
+    private void putChannel(boolean active, String key, Object object) {
+        MultiValueMap<String, Object> map = active ? mActiveMapChannels : mInActiveMapChannels;
+        if (map == null) {
+            return;
+        }
+        try {
+            map.put(key, object);
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
@@ -785,7 +812,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             Timber.w(e, "Exception load channels");
             getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_init_data));
         }
-
     }
 
     public boolean isUniqueChannel() {
@@ -904,7 +930,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void showResultPayment(StatusResponse pResponse,boolean pShouldShowFingerPrintToast) throws Exception {
+    public void showResultPayment(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception {
         getViewOrThrow().switchToResultScreen(pResponse, pShouldShowFingerPrintToast);
     }
 }
