@@ -150,6 +150,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
             return;
         }
         mEdtAmount.setError(message);
+        showKeyboard();
     }
 
     @Override
