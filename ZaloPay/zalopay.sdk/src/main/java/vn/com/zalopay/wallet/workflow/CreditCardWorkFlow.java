@@ -3,11 +3,13 @@ package vn.com.zalopay.wallet.workflow;
 import android.content.Context;
 
 import rx.Subscription;
+import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.workflow.ui.CreditCardGuiProcessor;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -29,7 +31,15 @@ public class CreditCardWorkFlow extends AbstractWorkFlow {
             getGuiProcessor().getBankCardFinder().reset();
             Subscription subscription = getGuiProcessor()
                     .getCardFinder()
-                    .detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
+                    .detectOnAsync(pCardNumber)
+                    .compose(SchedulerHelper.applySchedulers())
+                    .subscribe(detected -> {
+                        try {
+                            getGuiProcessor().onDetectCardComplete(detected);
+                        } catch (Exception e) {
+                            Timber.w(e);
+                        }
+                    }, Timber::d);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Timber.w(e.getMessage());

@@ -22,9 +22,11 @@ import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.card.CardCheck;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
@@ -171,22 +173,24 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public void continueDetectCardForLinkCard() {
-        Subscription subscription = getCreditCardFinder().detectOnAsync(getCardNumber(), detected -> {
-            try {
-                getAdapter().setNeedToSwitchChannel(detected);
-                populateTextOnCardView();
-                if (detected) {
-                    setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
-                    checkAutoMoveCardNumberFromBundle = false;
-                    getCardView().visibleCardDate();
-                    isInputBankMaintenance();
-                } else {
-                    setDetectedCard();
-                }
-            } catch (Exception e) {
-                Timber.w(e.getMessage());
-            }
-        });
+        Subscription subscription = getCreditCardFinder().detectOnAsync(getCardNumber())
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(detected -> {
+                    try {
+                        getAdapter().setNeedToSwitchChannel(detected);
+                        populateTextOnCardView();
+                        if (detected) {
+                            setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
+                            checkAutoMoveCardNumberFromBundle = false;
+                            getCardView().visibleCardDate();
+                            isInputBankMaintenance();
+                        } else {
+                            setDetectedCard();
+                        }
+                    } catch (Exception e) {
+                        Timber.w(e.getMessage());
+                    }
+                }, Timber::d);
         try {
             getAdapter().getPresenter().addSubscription(subscription);
         } catch (Exception e) {
@@ -195,7 +199,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    public CardCheck getCardFinder() {
+    public AbstractCardDetector getCardFinder() {
         return getBankCardFinder();
     }
 
@@ -238,7 +242,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (errorFragmentIndex > -1)
             return errorFragmentIndex;
 
-        if (!getCardFinder().isDetected()) {
+        if (!getCardFinder().detected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
 
@@ -339,13 +343,17 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void populateBankCode() {
         try {
-            if (!getCardFinder().isDetected()) {
+            if (!getCardFinder().detected()) {
                 return;
             }
-            BankConfig bankConfig = getCardFinder().getDetectBankConfig();
-            if (bankConfig != null) {
-                getAdapter().getCard().setBankcode(bankConfig.code);
+            if(!(getCardFinder() instanceof BankDetector)){
+                return;
             }
+            BankConfig bankConfig = ((BankDetector) getCardFinder()).getFoundBankConfig();
+            if(bankConfig == null){
+                return;
+            }
+            getAdapter().getCard().setBankcode(bankConfig.code);
         } catch (Exception e) {
             Timber.w(e, "Exception populate bank code");
         }

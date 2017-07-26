@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -720,8 +721,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             if (!TextUtils.isEmpty(bankCode)) {
                 bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(bankCode);
             }
-            if (bankConfig == null && getGuiProcessor().getCardFinder() != null) {
-                bankConfig = getGuiProcessor().getCardFinder().getDetectBankConfig();
+            if (bankConfig == null && getGuiProcessor().getCardFinder() instanceof BankDetector) {
+                bankConfig = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundBankConfig();
             }
             if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
                 setECardFlowType(BankFlow.PARSEWEB);

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.card.BankCardCheck;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
@@ -69,7 +69,7 @@ public class ResourceRender {
                 continue;
             }
             //set keyboard by bank
-            if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
+            if (BankDetector.getInstance().detected() && BankDetector.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
                 mView.setKeyBoard(keyboard.view, keyboard.type);
             }
         }

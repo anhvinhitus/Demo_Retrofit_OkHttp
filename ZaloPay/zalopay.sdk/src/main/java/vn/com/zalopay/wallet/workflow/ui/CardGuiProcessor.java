@@ -25,7 +25,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.CurrencyUtil;
@@ -41,11 +40,11 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
+import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
-import vn.com.zalopay.wallet.card.BankCardCheck;
-import vn.com.zalopay.wallet.card.CardCheck;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -82,7 +81,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected WeakReference<AbstractWorkFlow> mAdapter;
     protected WeakReference<ChannelFragment> mView;
     protected PaymentWebView mWebView;
-    private ViewPager mViewPager;
     ScrollView mScrollViewRoot;
     int mLastPageSelected = 0;
     boolean checkAutoMoveCardNumberFromBundle = true;
@@ -110,6 +108,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     int mMaxPagerCount;
     String lastValue = "";
     boolean isInputValidWithWhiteSpace = true;
+    private ViewPager mViewPager;
     private BankSupportAdapter mBankSupportAdapter;
     private View mLayoutSwitch;
     private int mLengthBeforeChange;
@@ -289,7 +288,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     };
     private View.OnClickListener mOnQuestionIconClick = view -> {
-        if(supportCard()){
+        if (supportCard()) {
             return;
         }
         try {
@@ -310,7 +309,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }, 400);
 
-    private Action1<Boolean> mDetectCardSubscriber = detected -> {
+    public CardGuiProcessor(Context context) {
+        this.mContext = context;
+    }
+
+    ;
+
+    public void onDetectCardComplete(Boolean detected) {
         Timber.d("card number %s is detected %s", getCardNumber(), detected);
         try {
             if (getAdapter().getPaymentInfoHelper().payByCardMap() || getAdapter().getPaymentInfoHelper().payByBankAccountMap()) {
@@ -339,10 +344,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } catch (Exception e) {
             Timber.w(e.getMessage());
         }
-    };
-
-    public CardGuiProcessor(Context context) {
-        this.mContext = context;
     }
 
     public ChannelActivity getActivity() throws Exception {
@@ -376,7 +377,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract boolean needToWarningNotSupportCard();
 
-    public abstract CardCheck getCardFinder();
+    public abstract AbstractCardDetector getCardFinder();
 
     public abstract boolean isAllowValidateCardNumberByLuhn();
 
@@ -392,7 +393,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract boolean validateCardNumberLength();
 
-    protected CardFragmentBaseAdapter onCreateCardFragmentAdapter(){
+    protected CardFragmentBaseAdapter onCreateCardFragmentAdapter() {
         return null;
     }
 
@@ -542,9 +543,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public String warningCardExist() {
         String message = getCardFinder().warningCardExistMessage();
-        if (getBankCardFinder().isDetected()) {
+        if (getBankCardFinder().detected()) {
             message = getBankCardFinder().warningCardExistMessage();
-        } else if (getCreditCardFinder().isDetected()) {
+        } else if (getCreditCardFinder().detected()) {
             message = getCreditCardFinder().warningCardExistMessage();
         }
         return message;
@@ -690,11 +691,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      * check formula Luhn card number
      */
     private boolean validateCardNumberLuhn() throws Exception {
-        boolean isDetected = getCardFinder().isDetected();
+        boolean isDetected = getCardFinder().detected();
         if (getAdapter().getPaymentInfoHelper().isLinkTrans() && !isDetected) {
-            isDetected = getCreditCardFinder().isDetected() ? getCreditCardFinder().isDetected() : getBankCardFinder().isDetected();
+            isDetected = getCreditCardFinder().detected() ? getCreditCardFinder().detected() : getBankCardFinder().detected();
         }
-        return !(isAllowValidateCardNumberByLuhn() && isDetected) || getCardFinder().isValidCardLuhn(getCardNumber());
+        return !(isAllowValidateCardNumberByLuhn() && isDetected) || getCardFinder().validCardNumberLuhnFormula(getCardNumber());
     }
 
     /*
@@ -800,12 +801,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
             //check bank future feature
-            if (getCardFinder().isDetected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
+            if (getCardFinder().detected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
                 showWarningBankVersionSupport();
                 return;
             }
             //check disable pmc
-            if (getCardFinder().isDetected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
+            if (getCardFinder().detected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
                 showWarningDisablePmc(bankName);
                 return;
             }
@@ -823,7 +824,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             //move to next page if detect a card
-            if (getCardFinder().isDetected()) {
+            if (getCardFinder().detected()) {
                 autoMoveToNextFragment();
             }
         } catch (Exception e) {
@@ -844,7 +845,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     private void showWarningBankVersionSupport() throws Exception {
-        BankConfig bankConfig = getCardFinder().getDetectBankConfig();
+        if (!(getCardFinder() instanceof BankDetector)) {
+            return;
+        }
+        BankConfig bankConfig = ((BankDetector) getCardFinder()).getFoundBankConfig();
         if (bankConfig == null) {
             Timber.d("bank config is null");
             return;
@@ -895,7 +899,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                     try {
                                         //callback bankcode to app , app will direct user to link bank account to right that bank
                                         BankAccount dBankAccount = new BankAccount();
-                                        dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
+                                        dBankAccount.bankcode = BankDetector.getInstance().getDetectBankCode();
                                         getAdapter().getPaymentInfoHelper().setMapBank(dBankAccount);
                                         getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT);
                                     } catch (Exception e) {
@@ -940,13 +944,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 miniPmcTransType = getAdapter().getConfig(pBankCode);
             }
 
-            if (getCardFinder().isDetected() && miniPmcTransType != null &&
+            if (getCardFinder().detected() && miniPmcTransType != null &&
                     !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
                 showWarningBankVersionSupport();
                 return;
             }
             //check disable pmc
-            if (getCardFinder().isDetected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
+            if (getCardFinder().detected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
                 showWarningDisablePmc(pBankName);
                 return;
             }
@@ -955,9 +959,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     && getAdapter() != null && getActivity() != null) {
                 showWarningBankAccount();
             }
-            if (getAdapter().isCCFlow() && getBankCardFinder().isDetected()) {
+            if (getAdapter().isCCFlow() && getBankCardFinder().detected()) {
                 autoMoveToNextFragment();
-            } else if (getAdapter().isATMFlow() && getCreditCardFinder().isDetected()) {
+            } else if (getAdapter().isATMFlow() && getCreditCardFinder().detected()) {
                 autoMoveToNextFragment();
             }
         } catch (Exception e) {
@@ -977,12 +981,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return getCardFinder().getDetectBankCode();
     }
 
-    public BankCardCheck getBankCardFinder() {
-        return BankCardCheck.getInstance();
+    public BankDetector getBankCardFinder() {
+        return BankDetector.getInstance();
     }
 
-    public CreditCardCheck getCreditCardFinder() {
-        return CreditCardCheck.getInstance();
+    public CreditCardDetector getCreditCardFinder() {
+        return CreditCardDetector.getInstance();
     }
 
     private void setMinHeightSwitchCardButton() {
@@ -1001,35 +1005,39 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      * after detected a card type
      */
     void showViewByBankType() {
-        if (getCardFinder().isDetected()) {
-            BankConfig bank = getCardFinder().getDetectBankConfig();
-            //parser otp:token here otp:SMS|token:Token
-            mUseOtpToken = !TextUtils.isEmpty(bank.otptype) &&
-                    bank.otptype.contains(GlobalData.getStringResource(RS.string.sms_option))
-                    && bank.otptype.contains(GlobalData.getStringResource(RS.string.token_option));
-            switch (bank.banktype) {
-                case 1:
-                    //password
-                    break;
-                case 2:
-                    //issue day
-                    mCardAdapter.addIssueDateFragment();
-                    mCardAdapter.notifyDataSetChanged();
-                    updateDots();
-                    break;
-                case 4:
-                    //expire day
-                    mCardAdapter.addExpireDateFragment();
-                    mCardAdapter.notifyDataSetChanged();
-                    updateDots();
-                    break;
-                default:
-                    mCardAdapter.removeFragment(CardIssueFragment.class.getName());
-                    mCardAdapter.removeFragment(CardExpiryFragment.class.getName());
-                    mCardAdapter.notifyDataSetChanged();
-                    updateDots();
-                    break;
-            }
+        if (!getCardFinder().detected()) {
+            return;
+        }
+        if (!(getCardFinder() instanceof BankDetector)) {
+            return;
+        }
+        BankConfig bank = ((BankDetector) getCardFinder()).getFoundBankConfig();
+        //parser otp:token here otp:SMS|token:Token
+        mUseOtpToken = !TextUtils.isEmpty(bank.otptype) &&
+                bank.otptype.contains(GlobalData.getStringResource(RS.string.sms_option))
+                && bank.otptype.contains(GlobalData.getStringResource(RS.string.token_option));
+        switch (bank.banktype) {
+            case 1:
+                //password
+                break;
+            case 2:
+                //issue day
+                mCardAdapter.addIssueDateFragment();
+                mCardAdapter.notifyDataSetChanged();
+                updateDots();
+                break;
+            case 4:
+                //expire day
+                mCardAdapter.addExpireDateFragment();
+                mCardAdapter.notifyDataSetChanged();
+                updateDots();
+                break;
+            default:
+                mCardAdapter.removeFragment(CardIssueFragment.class.getName());
+                mCardAdapter.removeFragment(CardExpiryFragment.class.getName());
+                mCardAdapter.notifyDataSetChanged();
+                updateDots();
+                break;
         }
     }
 
@@ -1310,11 +1318,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     boolean isInputBankMaintenance() {
-        boolean isBankDetect = BankCardCheck.getInstance().isDetected();
-        boolean isCCDetect = CreditCardCheck.getInstance().isDetected();
+        boolean isBankDetect = BankDetector.getInstance().detected();
+        boolean isCCDetect = CreditCardDetector.getInstance().detected();
         if (isBankDetect && GlobalData.shouldUpdateBankFuncbyPayType()) {
             GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_CARD);
-            if (BankCardCheck.getInstance().isBankAccount()) {
+            if (BankDetector.getInstance().isBankAccount()) {
                 GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_BANK_ACCOUNT);
             }
         }
@@ -1415,10 +1423,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     View.OnFocusChangeListener getOnOtpCaptchaFocusChangeListener() {
         return mOnOtpCaptchFocusChangeListener;
-    }
-
-    public Action1<Boolean> getOnDetectCardSubscriber() {
-        return mDetectCardSubscriber;
     }
 
     public TextView.OnEditorActionListener getEditorActionListener() {
@@ -1563,16 +1567,16 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    private DCardIdentifier getSelectBankCardIdentifier() {
+    private CardRule getSelectBankCardIdentifier() {
         try {
-            DCardIdentifier cardIdentifier;
+            CardRule cardIdentifier;
             if (getAdapter().getPaymentInfoHelper().isLinkTrans()) {
-                cardIdentifier = getBankCardFinder().getCardIdentifier();
+                cardIdentifier = getBankCardFinder().getFoundCardRule();
                 if (cardIdentifier == null) {
-                    cardIdentifier = getCreditCardFinder().getCardIdentifier();
+                    cardIdentifier = getCreditCardFinder().getFoundCardRule();
                 }
             } else {
-                cardIdentifier = getCardFinder().getCardIdentifier();
+                cardIdentifier = getCardFinder().getFoundCardRule();
             }
             return cardIdentifier;
         } catch (Exception e) {
@@ -1585,7 +1589,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (TextUtils.isEmpty(pCardNumber)) {
             return false;
         }
-        DCardIdentifier cardIdentifier = getSelectBankCardIdentifier();
+        CardRule cardIdentifier = getSelectBankCardIdentifier();
         if (cardIdentifier != null) {
             if (cardIdentifier.isMatchMaxLengthCard(pCardNumber.length())) {
 

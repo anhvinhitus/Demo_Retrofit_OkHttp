@@ -11,8 +11,8 @@ public class DConfigFromServer extends BaseEntity<DConfigFromServer> {
     public HashMap<String, String> stringMap;
     public List<DPage> pageList;
     public HashMap<String, HashMap<String, String>> pattern;
-    public List<DCardIdentifier> CCIdentifier;
-    public List<DCardIdentifier> BankIdentifier;
+    public List<CardRule> CCIdentifier;
+    public List<CardRule> BankIdentifier;
     public List<DBankScript> bankScripts;
     public List<DOtpReceiverPattern> otpReceiverPattern;
     public List<DKeyBoardConfig> keyboard;

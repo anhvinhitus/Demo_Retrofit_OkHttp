@@ -17,7 +17,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -28,7 +27,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -40,10 +39,12 @@ import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
@@ -121,12 +122,18 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     public void detectCard(String pCardNumber) {
         try {
             getGuiProcessor().getCreditCardFinder().reset();
-            Subscription subscription = getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardSubscriber());
-            try {
-                getPresenter().addSubscription(subscription);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+            Subscription subscription = getGuiProcessor()
+                    .getCardFinder()
+                    .detectOnAsync(pCardNumber)
+                    .compose(SchedulerHelper.applySchedulers())
+                    .subscribe(detected -> {
+                        try {
+                            getGuiProcessor().onDetectCardComplete(detected);
+                        } catch (Exception e) {
+                            Timber.w(e);
+                        }
+                    }, Timber::d);
+            getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -150,11 +157,14 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     public void autoFillOtp(String pSender, String pOtp) {
         Timber.d("sender " + pSender + " otp " + pOtp);
         try {
+            if(getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)){
+                return;
+            }
             if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
                 Timber.d("user is not in otp phase, skip auto fill otp");
                 return;
             }
-            List<DOtpReceiverPattern> patternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
+            List<DOtpReceiverPattern> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
             if (patternList != null && patternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
@@ -585,13 +595,13 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     }
 
     public boolean paymentBIDV() {
-        BankCardCheck atmCardCheck = null;
+        BankDetector atmCardCheck = null;
         try {
             atmCardCheck = getGuiProcessor().getBankCardFinder();
         } catch (Exception e) {
             Timber.w(e.getMessage());
         }
-        return atmCardCheck != null && atmCardCheck.isDetected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
+        return atmCardCheck != null && atmCardCheck.detected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
     }
 
     private boolean continueProcessForBidvBank(String pMessage) {

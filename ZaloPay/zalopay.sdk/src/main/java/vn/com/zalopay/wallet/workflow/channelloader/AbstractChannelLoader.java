@@ -11,8 +11,8 @@ import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
-import vn.com.zalopay.wallet.card.BankCardCheck;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -228,21 +228,21 @@ public abstract class AbstractChannelLoader {
                     }
 
                     if (BuildConfig.CC_CODE.equals(channel.bankcode)) {
-                        CreditCardCheck.getInstance().detectOnSync(channel.f6no);
-                        if (CreditCardCheck.getInstance().isDetected()) {
+                        CreditCardDetector.getInstance().detectOnSync(channel.f6no);
+                        if (CreditCardDetector.getInstance().detected()) {
                             //populate channel name
-                            channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), CreditCardCheck.getInstance().getBankName()) + mapCard.last4cardno;
-                            String cardType = CreditCardCheck.getInstance().getCodeBankForVerify();
+                            channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), CreditCardDetector.getInstance().getBankName()) + mapCard.last4cardno;
+                            String cardType = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
                             ChannelHelper.inflatChannelIcon(channel, cardType);
                         }
                     }
                     //this is atm
                     else {
                         ChannelHelper.inflatChannelIcon(channel, mapCard.bankcode);
-                        BankCardCheck.getInstance().detectOnSync(channel.f6no);
-                        if (BankCardCheck.getInstance().isDetected()) {
+                        BankDetector.getInstance().detectOnSync(channel.f6no);
+                        if (BankDetector.getInstance().detected()) {
                             //populate channel name
-                            String bankName = BankCardCheck.getInstance().getShortBankName();
+                            String bankName = BankDetector.getInstance().getShortBankName();
                             if (TextUtils.isEmpty(bankName)) {
                                 bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format);
                             } else {
@@ -251,7 +251,7 @@ public abstract class AbstractChannelLoader {
                             channel.pmcname = bankName + mapCard.last4cardno;
                         }
                     }
-                    if (!CreditCardCheck.getInstance().isDetected() && !BankCardCheck.getInstance().isDetected()) {
+                    if (!CreditCardDetector.getInstance().detected() && !BankDetector.getInstance().detected()) {
                         channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format) + mapCard.last4cardno;
                     }
                     send(channel);

@@ -4,11 +4,11 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.CreditCardCheck;
-import vn.com.zalopay.wallet.card.BankCardCheck;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 
 public class CardHelper {
@@ -20,17 +20,17 @@ public class CardHelper {
         //this is atm card
         if (!BuildConfig.CC_CODE.equals(saveCardInfo.bankcode)) {
             mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
-            bankName = BankCardCheck.getInstance().getShortBankName();
+            bankName = BankDetector.getInstance().getShortBankName();
             if (!TextUtils.isEmpty(bankName)) {
                 bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), bankName);
             }
         }
         //cc
         else {
-            CreditCardCheck cardCheck = CreditCardCheck.getInstance();
+            CreditCardDetector cardCheck = CreditCardDetector.getInstance();
             cardCheck.detectOnSync(saveCardInfo.first6cardno);
-            if (cardCheck.isDetected()) {
-                String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
+            if (cardCheck.detected()) {
+                String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerifyCC());
                 mapCardResult.setCardLogo(ChannelHelper.makeCardIconNameFromBankCode(cardType));
                 bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), cardCheck.getBankName());
             }
