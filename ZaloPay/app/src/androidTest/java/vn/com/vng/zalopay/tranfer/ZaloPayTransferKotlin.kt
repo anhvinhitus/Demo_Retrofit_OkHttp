@@ -26,10 +26,17 @@ class ZaloPayTransferKotlin : AbtractZaloPayTesting() {
     }
 
     @Test
-    fun transfer_with_zalopayID_HAPPYCASE() {
+    fun transfer_with_zalopayID_10k_HAPPYCASE() {
+        process(java.lang.Long.parseLong(getText(withId(R.id.tv_balance)).replace(".", "")), Info.AMOUNT_10K)
+    }
+
+    @Test
+    fun transfer_with_zalopayID_100k_HAPPYCASE() {
+        process(java.lang.Long.parseLong(getText(withId(R.id.tv_balance)).replace(".", "")), Info.AMOUNT_100K)
+    }
+
+    private fun process(balance: Long, amount: Long){
         SystemClock.sleep(5000)
-        var transfer_item_name = mResource.getString(R.string.transfer_money)
-        val balance = java.lang.Long.parseLong(getText(withId(R.id.tv_balance)).replace(".", ""))
         //select tranfer
         onView(withId(R.id.home_rcv_list_app)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         //click item tranfer by zalopay name
@@ -41,31 +48,31 @@ class ZaloPayTransferKotlin : AbtractZaloPayTesting() {
         //delay for check user name
         SystemClock.sleep(500)
         //input amount tranfer
-        onView(withId(R.id.edtAmount)).perform(replaceText(Info.AMOUNT_TRANSFER.toString()))
+        onView(withId(R.id.edtAmount)).perform(replaceText(amount.toString()))
         //input message tranfer
         onView(withId(R.id.edtTransferMsg)).perform(replaceText(Info.MESSAGE_TRANSFER))
         //click button
         onView(withId(R.id.btnContinue)).perform(click())
 
-        transfer_happen_insdk(balance)
+        transfer_happen_insdk(balance, amount)
     }
 
-    private fun transfer_happen_insdk(balance: Long) {
+    private fun transfer_happen_insdk(balance: Long, amount : Long) {
         //delay for sdk check payment info
         SystemClock.sleep(2000)
         try {
-            inputPin(balance)
+            inputPin(balance, amount)
         } catch (e: NoMatchingViewException) {
             //onRow(Info.CHANNEL_ZALOPAY_NAME).perform(click());
             onView(withId(R.id.channel_list_recycler)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
             SystemClock.sleep(2000)
             //click confirm button
             onView(withId(R.id.confirm_button)).perform(click())
-            inputPin(balance)
+            inputPin(balance, amount)
         }
     }
 
-    fun inputPin(balance: Long) {
+    fun inputPin(balance: Long, amount : Long) {
         // check if show popup
         onView(withId(R.id.pin_code_button_0)).check(matches(isDisplayed()))
         // type pin
@@ -78,9 +85,12 @@ class ZaloPayTransferKotlin : AbtractZaloPayTesting() {
         SystemClock.sleep(1000)
         //asset balance again
         val updatedBalance = java.lang.Long.parseLong(getText(withId(R.id.tv_balance)).replace(".", ""))
-        Assert.assertEquals(updatedBalance, balance - Info.AMOUNT_TRANSFER)
+        Assert.assertEquals(updatedBalance, balance - amount)
     }
 
+    /***
+     * type pin
+     */
     private fun typePin(pin: String) {
         SystemClock.sleep(100)
         for (s in pin) {
