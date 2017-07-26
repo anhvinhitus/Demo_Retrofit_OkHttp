@@ -1,3 +1,4 @@
-Zalo Pay (Staging v2.16.0 - build 356) - Released on 2017-07-25 17:45
-+ [Bank] Remove test code by datnt10 (#8d1d0a9)
-+ [Bank] Fix click bank card by hieuvm (#4c92971)
+Zalo Pay (Sandbox v2.16.0 - build 357) - Released on 2017-07-26 09:13
++ [SDK] Refactor phần check card by vo van chuc (#4c94ded)
++ [Bank] Fix bank card view by hieuvm (#dd2dbe1)
++ [SDK] Update time set title by lytm (#dc00c56)
