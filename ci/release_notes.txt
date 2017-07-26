@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.16.0 - build 359) - Released on 2017-07-26 09:30
-+ [SDK] Clean up by vo van chuc (#8746325)
+Zalo Pay (Staging v2.16.0 - build 360) - Released on 2017-07-26 09:37
+
