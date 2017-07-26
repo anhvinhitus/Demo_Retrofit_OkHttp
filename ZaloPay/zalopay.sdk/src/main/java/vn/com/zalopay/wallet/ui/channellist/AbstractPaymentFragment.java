@@ -249,7 +249,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         changeSubmitButtonBackgroundByApp(appId);
         updateToolBar();
         enablePaymentButton();
-        new Handler().postDelayed(() -> setTitle(pToolbarTitle), 300);
+        setTitle(pToolbarTitle);
     }
 
     public void renderFail(boolean isLink, String pMessage, String pTransID, AbstractOrder order, String appName, StatusResponse statusResponse,
@@ -282,7 +282,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         changeSubmitButtonBackgroundByApp(appId);
         updateToolBar();
         enablePaymentButton();
-        new Handler().postDelayed(() -> setTitle(pToolBarTitle), 100);
+        setTitle(pToolBarTitle);
     }
 
     public void showToast(int layout) {

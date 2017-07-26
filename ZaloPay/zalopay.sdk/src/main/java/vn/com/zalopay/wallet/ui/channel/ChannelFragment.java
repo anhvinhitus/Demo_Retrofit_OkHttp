@@ -127,6 +127,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void setTitle(String title) {
+        Timber.d("pTitle %s", title);
         if (TextUtils.isEmpty(mOriginTitle) && !TextUtils.isEmpty(title)) {
             mOriginTitle = title;
         }
@@ -152,7 +153,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void showLoading(String pTitle, OnProgressDialogTimeoutListener timeoutListener) {
-        Timber.w("pTitle %s", pTitle);
         if (getActivity() != null) {
             setTitle(pTitle);
             DialogManager.showProcessDialog(getActivity(), timeoutListener);
