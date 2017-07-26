@@ -66,6 +66,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private final NotificationStore.Repository mNotificationRepository;
     private PaymentWrapper paymentWrapper;
+    private boolean mClickMore = true;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
                               Navigator navigator, NotificationStore.Repository mNotificationRepository,
@@ -136,8 +137,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 if (getCurrentActivity() == null) {
                     return;
                 }
-                boolean pinSuccess = mNavigator.promptPIN(getCurrentActivity(), channel, promise);
-                Timber.d("pinSuccess %s", pinSuccess);
+                if (mClickMore) {
+                    mClickMore = false;
+                    boolean pinSuccess = mNavigator.promptPIN(getCurrentActivity(), channel, promise);
+                    Timber.d("pinSuccess %s", pinSuccess);
+                }
+                AndroidUtils.runOnUIThread(() -> mClickMore = true, 300);
             }
         });
     }

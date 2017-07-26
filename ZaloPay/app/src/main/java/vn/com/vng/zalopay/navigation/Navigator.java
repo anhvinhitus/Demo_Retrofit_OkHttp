@@ -723,6 +723,9 @@ public class Navigator {
                 @Override
                 public void onShowPassword() {
                     //show password view
+                    if (checkPasswordShowing()) {
+                        return;
+                    }
                     mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
                         @Override
                         public void onAuthenticated(String password) {
@@ -740,6 +743,9 @@ public class Navigator {
             dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
         } else {
             //show password view
+            if (checkPasswordShowing()) {
+                return;
+            }
             mAuthenticationPassword = new AuthenticationPassword(context, PasswordUtil.detectSuggestFingerprint(context, mUserConfig), new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
@@ -755,6 +761,9 @@ public class Navigator {
         }
     }
 
+    private boolean checkPasswordShowing() {
+        return (mAuthenticationPassword != null && mAuthenticationPassword.getPasswordManager().isShowing());
+    }
 
     public boolean promptPIN(Context context, int channel, final Promise promise) {
         if (!shouldShowPinDialog()) {
