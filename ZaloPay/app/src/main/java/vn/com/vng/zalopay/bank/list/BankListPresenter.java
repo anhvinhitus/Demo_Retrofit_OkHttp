@@ -9,9 +9,7 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,6 +58,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
+import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 /**
  * Created by hieuvm on 7/10/17.
@@ -78,7 +77,8 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private String mLinkCardWithBankCode = "";
     private String mLinkAccountWithBankCode = "";
     private UserConfig mUserConfig;
-
+    List<BankData> mBankMapList;
+    private BankStore.Interactor mBankInteractor;
 
     @Inject
     BankListPresenter(Context context, UserConfig userConfig, User user, Navigator navigator) {
@@ -92,6 +92,15 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 .setShowNotificationLinkCard(false)
                 .build();
         mPaymentWrapper.initializeComponents();
+        mBankInteractor = SDKApplication
+                .getApplicationComponent()
+                .bankListInteractor();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        mBankMapList = null;
     }
 
     void handleBundle(Fragment fragment, Bundle bundle) {
@@ -126,6 +135,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 .subscribe(new DefaultSubscriber<List<BankData>>() {
                     @Override
                     public void onNext(List<BankData> data) {
+                        mBankMapList = data;
                         if (mView != null) {
                             mView.setData(data);
                         }
@@ -149,10 +159,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     }
 
     private String getVCBMaintenanceMessage() {
-        BankConfig bankConfig = SDKApplication
-                .getApplicationComponent()
-                .bankListInteractor()
-                .getBankConfig(CardType.PVCB);
+        BankConfig bankConfig = mBankInteractor.getBankConfig(CardType.PVCB);
         if (bankConfig != null && bankConfig.isBankMaintenence(BankFunctionCode.LINK_BANK_ACCOUNT)) {
             return bankConfig.getMaintenanceMessage(BankFunctionCode.LINK_BANK_ACCOUNT);
         }
@@ -197,40 +204,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         mSubscription.add(subscription);
     }
 
-    private class MaintainBankSubscriber extends DefaultSubscriber<String> {
-        BankData mBankAccount;
-
-        MaintainBankSubscriber(BankData bankData) {
-            mBankAccount = bankData;
-        }
-
-        @Override
-        public void onNext(String maintainMessage) {
-            if (TextUtils.isEmpty(maintainMessage)) {
-                confirmAndRemoveCard(Constants.LinkBank.LINK_ACCOUNT, mBankAccount);
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            mView.close(mBankAccount);
-            mView.showNotificationDialog(maintainMessage);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (mView == null) {
-                return;
-            }
-
-            mView.close(mBankAccount);
-            mView.showError(ErrorMessageFactory.create(mContext, e));
-        }
-    }
-
-
     void confirmAndRemoveCard(int type, BankData bankData) {
         if (mView.getContext() == null) {
             return;
@@ -239,65 +212,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             unlinkBank(bankData);
         } else if (type == Constants.LinkBank.LINK_CARD) {
             showAuthenticationDialog(bankData);
-        }
-    }
-
-
-    private class UnLinkBankSubscriber extends DefaultSubscriber<BaseResponse> {
-        BankData mBankData;
-
-        UnLinkBankSubscriber(BankData bankData) {
-            mBankData = bankData;
-        }
-
-        @Override
-        public void onStart() {
-            if (mView != null) {
-                mView.showLoading();
-            }
-        }
-
-        @Override
-        public void onNext(BaseResponse response) {
-
-            if (response == null) {
-                onError(new HttpEmptyResponseException());
-                return;
-            }
-
-            if (response.returncode != 0) {
-                onError(new BodyException(response.returncode, response.returnmessage));
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            mView.hideLoading();
-            mView.remove(mBankData);
-            mView.showNotificationDialog(mContext.getString(R.string.txt_remove_link_successfully));
-        }
-
-        @Override
-        public void onCompleted() {
-            if (mView != null) {
-                mView.hideLoading();
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (mView == null) {
-                return;
-            }
-
-            mView.hideLoading();
-            if (NetworkHelper.isNetworkAvailable(mContext)) {
-                mView.showNetworkErrorDialog();
-            } else {
-                mView.showError(ErrorMessageFactory.create(mContext, e));
-            }
         }
     }
 
@@ -403,70 +317,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         }
     }
 
-    private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
-
-        WeakReference<BankListPresenter> mPresenter;
-
-        LinkCardListener(BankListPresenter presenter) {
-            mPresenter = new WeakReference<>(presenter);
-        }
-
-        @Override
-        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
-            if (mPresenter.get() == null) {
-                return;
-            }
-
-            try {
-                mPresenter.get().onErrorLinkCardButInputBankAccount(bankInfo);
-            } catch (Exception e) {
-                Timber.d(e);
-            }
-        }
-    }
-
-    private class PaymentResponseListener extends DefaultPaymentResponseListener {
-
-        PaymentResponseListener() {
-        }
-
-        @Override
-        protected ILoadDataView getView() {
-            return mView;
-        }
-
-        @Override
-        public void onParameterError(String param) {
-            showErrorView(param);
-        }
-
-        @Override
-        public void onResponseError(PaymentError paymentError) {
-            if (paymentError != PaymentError.ERR_CODE_INTERNET) {
-                return;
-            }
-
-            if (mView != null) {
-                mView.showNetworkErrorDialog();
-            }
-        }
-
-        @Override
-        public void onResponseSuccess(IBuilder builder) {
-            onResponseSuccessFromSDK(builder);
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            showErrorView(msg);
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
-            Timber.d("onPreComplete payment, transactionId %s isSuccessful [%s] pAppTransId [%s]", tId, isSuccessful, pAppTransId);
-        }
-    }
-
     private void showConfirmPayAfterLinkBank(BaseMap bankInfo) {
         if (mView == null) {
             return;
@@ -491,15 +341,48 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     }
 
     void onUnLinkBankAccountSuccess(BankAccount bankAccount) {
+        BankData bankData = new BankData(bankAccount, String.valueOf(mUser.phonenumber));
         if (mView != null) {
-            mView.remove(new BankData(bankAccount, String.valueOf(mUser.phonenumber)));
+            mView.remove(bankData);
+        }
+        if(mBankMapList != null){
+            mBankMapList.remove(bankData);
         }
     }
 
+    private int getInsertPosition(BankData pBankData) {
+        if (Lists.isEmptyOrNull(mBankMapList)) {
+            return 0;
+        }
+        if (pBankData == null) {
+            return 0;
+        }
+        String bankCode = pBankData.mBaseMap.bankcode;
+        if (TextUtils.isEmpty(bankCode)) {
+            return 0;
+        }
+        BankConfig bankConfig = mBankInteractor.getBankConfig(bankCode);
+        if (bankConfig == null) {
+            return 0;
+        }
+        int position = 0;
+        for (BankData bankData : mBankMapList) {
+            if (bankData == null) {
+                continue;
+            }
+            if (bankData.mBaseMap.displayorder >= bankConfig.displayorder) {
+                break;
+            }
+            position++;
+        }
+        return position;
+    }
 
     private void onAddBankSuccess(BankData bankData) {
         if (mView != null) {
-            mView.insert(bankData);
+            int pos = getInsertPosition(bankData);
+            Timber.d("insert map bank into %s", pos);
+            mView.insert(pos, bankData);
         }
         if (mPayAfterLinkBank) {
             showConfirmPayAfterLinkBank(bankData.mBaseMap);
@@ -585,6 +468,165 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             Timber.d("Set title password error [%s]", e.getMessage());
         }
 
+    }
+
+    private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+
+        WeakReference<BankListPresenter> mPresenter;
+
+        LinkCardListener(BankListPresenter presenter) {
+            mPresenter = new WeakReference<>(presenter);
+        }
+
+        @Override
+        public void onErrorLinkCardButInputBankAccount(BaseMap bankInfo) {
+            if (mPresenter.get() == null) {
+                return;
+            }
+
+            try {
+                mPresenter.get().onErrorLinkCardButInputBankAccount(bankInfo);
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    private class MaintainBankSubscriber extends DefaultSubscriber<String> {
+        BankData mBankAccount;
+
+        MaintainBankSubscriber(BankData bankData) {
+            mBankAccount = bankData;
+        }
+
+        @Override
+        public void onNext(String maintainMessage) {
+            if (TextUtils.isEmpty(maintainMessage)) {
+                confirmAndRemoveCard(Constants.LinkBank.LINK_ACCOUNT, mBankAccount);
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+
+            mView.close(mBankAccount);
+            mView.showNotificationDialog(maintainMessage);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mView == null) {
+                return;
+            }
+
+            mView.close(mBankAccount);
+            mView.showError(ErrorMessageFactory.create(mContext, e));
+        }
+    }
+
+    private class UnLinkBankSubscriber extends DefaultSubscriber<BaseResponse> {
+        BankData mBankData;
+
+        UnLinkBankSubscriber(BankData bankData) {
+            mBankData = bankData;
+        }
+
+        @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
+
+        @Override
+        public void onNext(BaseResponse response) {
+
+            if (response == null) {
+                onError(new HttpEmptyResponseException());
+                return;
+            }
+
+            if (response.returncode != 0) {
+                onError(new BodyException(response.returncode, response.returnmessage));
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+
+            if(mBankMapList != null){
+                mBankMapList.remove(mBankData);
+            }
+
+            mView.hideLoading();
+            mView.remove(mBankData);
+            mView.showNotificationDialog(mContext.getString(R.string.txt_remove_link_successfully));
+        }
+
+        @Override
+        public void onCompleted() {
+            if (mView != null) {
+                mView.hideLoading();
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mView == null) {
+                return;
+            }
+
+            mView.hideLoading();
+            if (NetworkHelper.isNetworkAvailable(mContext)) {
+                mView.showNetworkErrorDialog();
+            } else {
+                mView.showError(ErrorMessageFactory.create(mContext, e));
+            }
+        }
+    }
+
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+
+        PaymentResponseListener() {
+        }
+
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
+        }
+
+        @Override
+        public void onParameterError(String param) {
+            showErrorView(param);
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (paymentError != PaymentError.ERR_CODE_INTERNET) {
+                return;
+            }
+
+            if (mView != null) {
+                mView.showNetworkErrorDialog();
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(IBuilder builder) {
+            onResponseSuccessFromSDK(builder);
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            showErrorView(msg);
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
+            Timber.d("onPreComplete payment, transactionId %s isSuccessful [%s] pAppTransId [%s]", tId, isSuccessful, pAppTransId);
+        }
     }
 
 }
