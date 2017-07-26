@@ -153,5 +153,6 @@
     "^((.+)\\.)?zalopay\\.zing\\.vn",
     "^((.+)\\.)?zpsandbox\\.zing\\.vn"
   ],
-  "number_search_app": 3
+  "number_search_app": 3,
+  "notification_types_vibrate": [6, 7, 9, 105, 106, 111]
 }
