@@ -1,2 +1,19 @@
-Zalo Pay (Staging v2.16.0 - build 360) - Released on 2017-07-26 09:37
-
+Zalo Pay (Staging v2.16.0 - build 361) - Released on 2017-07-26 18:16
++ [Trasfer] ZPF-337: Thông báo khi user nhập quá 50 ký tự trong lời nhắn by lytm (#59d1e6f)
++ [Testcase] search & process transfer by sinhtt (#c2b7933)
++ [Bank] Fix ui bank card by hieuvm (#26955d0)
++ [SDK] Fix lỗi onPreComplete by vo van chuc (#53a2e54)
++ [Withdraw] ZPF-311: Show lại ban phím khi số dư không đủ by lytm (#f0a61ef)
++ [Widget] ZPF-339: fix bàn phím nhập PIN không có grid by lytm (#0a26b4c)
++ [Testcase] Transfer money with main screen by sinhtt (#6ef57a9)
++ [Notification] task#735 [Notification] Thực hiện rung khi nhận được notification by datnt10 (#ebc52f9)
++ [App] Change password: change confirmation dialog text content by datnt10 (#081374d)
++ [App] Clean unused by hieuvm (#2ce95e8)
++ [App] Change password: handle lock/unlock view (ZPF-312) by datnt10 (#370804c)
++ [Password] ZPF-333: Fix show màn hình password nhiều lần khi click vào thông báo. by lytm (#0da6147)
++ [SDK] #ZPF-334: [Android-STG-2.16-351] Thanh toán: không tự động chọn thẻ thanh toán cuối cùng by vo van chuc (#837c817)
++ [SDK] Hỗ trợ show nhiều thẻ lưu của cùng 1 ngân hàng by vo van chuc (#603e4a3)
++ [Bank] Fix ui card view by hieuvm (#e985ba9)
++ [Testcase] remove ZaloPayTransfer.java by sinhtt (#af6f087)
++ [TestCase] Transfer: 10k & 100k by sinhtt (#b203f60)
++ [Testcase] Transfer money through zalopayID by sinhtt (#ce0d691)
