@@ -79,6 +79,7 @@ import vn.com.vng.zalopay.webview.ui.WebViewFromQRScanActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -808,7 +809,7 @@ public class Navigator {
     }
 
     public void startNotificationLinkCardActivity(Context context, DMapCardResult mapCardResult) {
-        Timber.d("startNotificationLinkCardActivity context [%s] card [%s]", context, mapCardResult);
+        Timber.d("startNotificationLinkCardActivity context [%s] card [%s]", context, GsonUtils.toJsonString(mapCardResult));
         if (context == null || mapCardResult == null) {
             return;
         }

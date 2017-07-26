@@ -97,7 +97,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     SDKTransactionAdapter mTransactionAdapter;
     private boolean isLoadWebTimeout = false;
     private int numberRetryOtp = 0;
-    private MapCard mMapCard;
     //count of retry check status if submit order fail
     private int mCountCheckStatus = 0;
     //check data in response get status api
@@ -218,43 +217,44 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     void onLoadMapCardListException(Throwable throwable) {
-        Timber.d(throwable, "load card list on error");
-        String message = null;
-        if (throwable instanceof RequestException) {
-            message = throwable.getMessage();
-        }
-        if (TextUtils.isEmpty(message)) {
-            message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
-        }
         try {
-            getView().hideLoading();
+            Timber.d(throwable, "load card list on error");
+            String message = null;
+            if (throwable instanceof RequestException) {
+                message = throwable.getMessage();
+            }
+            if (TextUtils.isEmpty(message)) {
+                message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
+            }
             getView().showInfoDialog(message);
         } catch (Exception e) {
-            Timber.w(e, "Exception on load map card exception func");
+            Timber.d(e);
         }
     }
 
     void onLoadMapCardListSuccess(boolean finish) {
         try {
-            Timber.d("load card list finish");
-            getView().hideLoading();
-            String cardKey = getCard().getCardKey();
-            if (!TextUtils.isEmpty(cardKey)) {
-                MapCard mapCard = SDKApplication
-                        .getApplicationComponent()
-                        .linkInteractor()
-                        .getCard(mPaymentInfoHelper.getUserId(), cardKey);
-                if (mapCard != null) {
-                    DMapCardResult mapCardResult = CardHelper.cast(mapCard);
-                    mPaymentInfoHelper.setMapCardResult(mapCardResult);
-                    Log.d(this, "set map card to app", mapCardResult);
-                }
+            if(mPaymentInfoHelper == null){
+                return;
             }
-            //quit sdk right away
-            if (mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket()) {
-                onClickSubmission();
+            String cardKey = null;
+            if(getCard() != null){
+                cardKey = getCard().getCardKey();
             }
-        } catch (Exception ignored) {
+            if(TextUtils.isEmpty(cardKey)){
+                return;
+            }
+            MapCard mapCard = SDKApplication
+                    .getApplicationComponent()
+                    .linkInteractor()
+                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
+            if (mapCard != null) {
+                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
+                mPaymentInfoHelper.setMapCardResult(mapCardResult);
+                Timber.d("send map card to app %s", GsonUtils.toJsonString(mapCardResult));
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 
@@ -443,10 +443,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     public boolean isZaloPayFlow() {
         return this instanceof ZaloPayWorkFlow;
-    }
-
-    public void transformPaymentCard() {
-        mMapCard = new MapCard(mCard);
     }
 
     public boolean isOrderSubmit() {
@@ -1074,10 +1070,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
      */
     private void saveMapCardToLocal() {
         try {
-            if (mMapCard == null) {
-                transformPaymentCard();
+            if (mCard == null) {
+                return;
             }
-            saveMapCard(mMapCard);
+            MapCard mapCard = new MapCard(mCard);
+            saveMapCard(mapCard);
         } catch (Exception e) {
             Timber.w(e, "Exception save map card to local");
         }
@@ -1103,7 +1100,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         if (needReloadCardMapAfterPayment()) {
-            reloadMapCard(false);
+            reloadMapCard();
         }
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
@@ -1240,7 +1237,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             return;
         }
         mLinkInteractor.clearCheckSum();
-        reloadMapCard(false);
+        reloadMapCard();
     }
 
     public void terminate(String pMessage, boolean pExitSDK) {
@@ -1344,6 +1341,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             }
             Timber.d("start save map card to storage %s", mapCard);
             String userId = mPaymentInfoHelper.getUserId();
+            if(TextUtils.isEmpty(userId)){
+                return;
+            }
             mLinkInteractor.putCard(userId, mapCard);
             //clear card info checksum for forcing reload api later
             mLinkInteractor.clearCheckSum();
@@ -1357,11 +1357,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     /*
      * reload map card list
      */
-    private void reloadMapCard(boolean showLoading) {
+    private void reloadMapCard() {
         try {
-            if (showLoading) {
-                getView().showLoading(mContext.getResources().getString(R.string.sdk_trans_load_card_info_mess));
-            }
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             String appVersion = SdkUtils.getAppVersion(mContext);
             Subscription subscription = SDKApplication.getApplicationComponent()
@@ -1383,6 +1380,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             return false;
         }
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
+            return false;
+        }
+        if(mPaymentInfoHelper.isLinkTrans()){
             return false;
         }
         return !existMapCardOnCache();

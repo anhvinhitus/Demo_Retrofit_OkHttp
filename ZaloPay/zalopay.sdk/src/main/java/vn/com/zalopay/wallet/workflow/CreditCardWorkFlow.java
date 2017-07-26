@@ -86,7 +86,6 @@ public class CreditCardWorkFlow extends AbstractWorkFlow {
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             try {
                 mGuiProcessor.populateCard();
-                transformPaymentCard();
             } catch (Exception e) {
                 Timber.w(e, "Exception populate payment card");
             }
