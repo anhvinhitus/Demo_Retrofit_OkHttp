@@ -425,14 +425,15 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             Log.e(this, e);
         }
         String accountInfo = getAccNumValue();
-        if (accountInfo != null) {
+        String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
+        if (!TextUtils.isEmpty(accountInfo) && !TextUtils.isEmpty(userId)) {
             String first6No;
             String last4No;
             first6No = StringUtil.getFirstStringWithSize(accountInfo, 6);
             last4No = StringUtil.getLastStringWithSize(accountInfo, 4);
             if (!TextUtils.isEmpty(first6No) && !TextUtils.isEmpty(last4No)) {
                 SDKApplication.getApplicationComponent()
-                        .bankListInteractor().setPaymentBank(mPaymentInfoHelper.getUserId(), first6No + last4No);
+                        .bankListInteractor().setPaymentBank(userId, first6No + last4No);
             }
         }
     }

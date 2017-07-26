@@ -1107,7 +1107,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
-        if (TextUtils.isEmpty(userId)) {
+        if (!TextUtils.isEmpty(userId)) {
             String paymentCard = getCard() != null ? getCard().getCardKey() : null;
             SDKApplication.getApplicationComponent()
                     .bankListInteractor().setPaymentBank(userId, paymentCard);
