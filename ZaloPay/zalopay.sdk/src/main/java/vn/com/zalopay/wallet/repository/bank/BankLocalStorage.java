@@ -100,7 +100,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         mSharedPreferences.setCheckSumBankList(pResponse.checksum);
         //sort by order
         List<BankConfig> bankConfigList = pResponse.banklist;
-        Collections.sort(bankConfigList, (item1, item2) -> Integer.valueOf(item1.displayorder).compareTo(item2.displayorder));
+        Collections.sort(bankConfigList, (item1, item2) -> item1.displayorder > item2.displayorder ? 1 : -1);
         StringBuilder bankCodeList = new StringBuilder();
         for (BankConfig bankConfig : bankConfigList) {
             //for testing
