@@ -234,14 +234,14 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     void onLoadMapCardListSuccess(boolean finish) {
         try {
-            if(mPaymentInfoHelper == null){
+            if (mPaymentInfoHelper == null) {
                 return;
             }
             String cardKey = null;
-            if(getCard() != null){
+            if (getCard() != null) {
                 cardKey = getCard().getCardKey();
             }
-            if(TextUtils.isEmpty(cardKey)){
+            if (TextUtils.isEmpty(cardKey)) {
                 return;
             }
             MapCard mapCard = SDKApplication
@@ -834,7 +834,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             return;
         }
         try {
-            if (TextUtils.isEmpty(mTransactionID) || mTransactionID.equals(String.valueOf(event.transid))) {
+            if (TextUtils.isEmpty(mTransactionID) || !mTransactionID.equals(String.valueOf(event.transid))) {
                 Timber.d("Transaction id not same");
                 return;
             }
@@ -1098,6 +1098,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.w(e, "Exception hide webview");
         }
+        try {
+            getView().dismissShowingView();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         if (needReloadCardMapAfterPayment()) {
             reloadMapCard();
@@ -1111,11 +1116,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         if (isCardFlowWeb()) {
             sendLogTransaction();
-        }
-        try {
-            getView().dismissShowingView();
-        } catch (Exception e) {
-            Timber.w(e);
         }
         //if this is redpacket,then close sdk and callback to app
         boolean isRedPacket = mPaymentInfoHelper != null && mPaymentInfoHelper.isRedPacket();
@@ -1173,6 +1173,13 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     public synchronized void showTransactionFailView(String pMessage) {
+        showDialogOnChannelList = false;
+        existTransWithoutConfirm = true;
+        try {
+            getView().dismissShowingView();
+        } catch (Exception e) {
+            Timber.w(e);
+        }
         //stop timer
         try {
             getPresenter().cancelTransactionExpiredTimer();
@@ -1201,9 +1208,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
             mPaymentInfoHelper.setResult(mPageName.equals(Constants.PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
         }
-
-        showDialogOnChannelList = false;
-        existTransWithoutConfirm = true;
         try {
             getView().renderByResource(mPageName);
             showFailScreen(pMessage);
@@ -1222,11 +1226,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception send error log");
         }
         reloadMapListOnResponseMessage(pMessage);
-        try {
-            getView().dismissShowingView();
-        } catch (Exception e) {
-            Timber.w(e);
-        }
     }
 
     private void reloadMapListOnResponseMessage(String message) {
@@ -1341,7 +1340,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             }
             Timber.d("start save map card to storage %s", mapCard);
             String userId = mPaymentInfoHelper.getUserId();
-            if(TextUtils.isEmpty(userId)){
+            if (TextUtils.isEmpty(userId)) {
                 return;
             }
             mLinkInteractor.putCard(userId, mapCard);
@@ -1382,7 +1381,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
             return false;
         }
-        if(mPaymentInfoHelper.isLinkTrans()){
+        if (mPaymentInfoHelper.isLinkTrans()) {
             return false;
         }
         return !existMapCardOnCache();
