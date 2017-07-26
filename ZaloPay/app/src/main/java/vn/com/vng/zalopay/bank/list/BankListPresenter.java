@@ -76,7 +76,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private String mLinkCardWithBankCode = "";
     private String mLinkAccountWithBankCode = "";
     private UserConfig mUserConfig;
-    private AuthenticationPassword mAuthenticationPassword;
 
 
     @Inject
@@ -513,6 +512,11 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             return;
         }
 
+        if (!AndroidUtils.isMainThread()) {
+            AndroidUtils.runOnUIThread(() -> onResponseSuccessFromSDK(builder));
+            return;
+        }
+
         BaseMap baseMap = builder.getMapBank();
 
         if (baseMap instanceof MapCard) {
@@ -550,20 +554,18 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
 
                 @Override
                 public void onShowPassword() {
-                    //show password view
-                    showPassword((Activity) mView.getContext(), bankData);
+                    showPassword(mView.getContext(), bankData);
                 }
             });
             dialog.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
         } else {
-            //show password view
-            showPassword((Activity) mView.getContext(), bankData);
+            showPassword(mView.getContext(), bankData);
         }
     }
 
-    private void showPassword(Context pContext, BankData bankData) {
+    protected void showPassword(Context pContext, BankData bankData) {
         String message = pContext.getString(R.string.txt_title_remove_card);
-        mAuthenticationPassword = new AuthenticationPassword(pContext, PasswordUtil.detectSuggestFingerprint(pContext, mUserConfig), new AuthenticationCallback() {
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword(pContext, PasswordUtil.detectSuggestFingerprint(pContext, mUserConfig), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
                 removeCard(bankData);
@@ -574,9 +576,9 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 Timber.d(" Authentication password fail");
             }
         });
-        mAuthenticationPassword.initialize();
+        authenticationPassword.initialize();
         try {
-            mAuthenticationPassword.getPasswordManager().setTitle(message);
+            authenticationPassword.getPasswordManager().setTitle(message);
         } catch (Exception e) {
             Timber.d("Set title password error [%s]", e.getMessage());
         }

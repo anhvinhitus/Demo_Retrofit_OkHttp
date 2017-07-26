@@ -80,4 +80,15 @@ public abstract class AbstractSwipeAdapter<T, VH extends RecyclerView.ViewHolder
     public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
     }
+
+    @Override
+    public void cleanUp() {
+        mItemManger.cleanUp();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        cleanUp();
+    }
 }
