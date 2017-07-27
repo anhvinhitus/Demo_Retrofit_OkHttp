@@ -1,300 +1,321 @@
 EventId,Category,Action
-1000,Startup,App_Launch
-1100,Login,Tap_Login
-1101,Login,LoginFailed_NoNetwork
-1102,Login,LoginFailed_UserDenied
-1110,Login,LoginSuccess_Zalo
-1111,Login,LoginFailed_API_Error
-1112,Login,NeedInvitationCode
-1113,Login,AppLaunchHomeFromLogin
-1114,Login,InvitationFromLogin
-1200,Invitation,InputInvitationCode
-1201,Invitation,InvitationCodeWrong
-1202,Invitation,InvitationCodeReused
-1203,Invitation,InvitationCodeSuccess
-1204,Invitation,AppLaunchHomeFromInvitation
-1300,Home,AppLaunchHome
-1301,Home,TapScanQR
-1302,Home,TapAddCash
-1303,Home,TapManageCards
-1304,Home,TapMenuButton
-1305,Home,TapNotificationButton
-1306,Home,TapBannerPosition1
-1307,Home,TapBannerPosition2
-1308,Home,TapBannerPosition3
-1309,Home,TapAppIcon_1_1
-1310,Home,TapAppIcon_1_2
-1311,Home,TapAppIcon_1_3
-1312,Home,TapAppIcon_1_4
-1313,Home,TapAppIcon_2_1
-1314,Home,TapAppIcon_2_2
-1315,Home,TapAppIcon_2_3
-1316,Home,TapAppIcon_2_4
-1317,Home,TapAppIcon_3_1
-1318,Home,TapAppIcon_3_2
-1319,Home,TapAppIcon_3_3
-1320,Home,TapAppIcon_3_4
-1321,Home,TapAppIcon_4_1
-1322,Home,TapAppIcon_4_2
-1323,Home,TapAppIcon_4_3
-1324,Home,TapAppIcon_4_4
-1325,Home,TapAppIcon_5_1
-1326,Home,TapAppIcon_5_2
-1327,Home,TapAppIcon_5_3
-1328,Home,TapAppIcon_5_4
-1329,Home,TapBannerPosition4
-1330,Home,TouchTabHome
-1331,Home,TouchTabNearby
-1332,Home,TouchTabPromotion
-1333,Home,TouchTabMe
-1334,Home,TouchTabHomeFirst
-1335,Home,TouchTabNearbyFirst
-1336,Home,TouchTabPromotionFirst
-1337,Home,TouchTabMeFirst
-1400,Left Menu,OpenLeftMenu
-1401,Left Menu,TapLeftMenuUserProfile
-1402,Left Menu,TapLeftMenuHome
-1403,Left Menu,TapLeftMenuNotification
-1404,Left Menu,TapLeftMenuScanQR
-1405,Left Menu,TapLeftMenuAddCash
-1406,Left Menu,TapLeftMenuTransferMoney
-1407,Left Menu,TapLeftMenuAddCard
-1408,Left Menu,TapLeftMenuTransactionLogs
-1409,Left Menu,TapLeftMenuFAQ
-1410,Left Menu,TapLeftMenuHelp
-1411,Left Menu,TapLeftMenuAbout
-1412,Left Menu,TapLeftMenuLogout
-1413,Left Menu,TapLeftMenuReceiveMoney
-1414,Left Menu,TapLeftMenuTermOfUse
-1415,Left Menu,TapLeftMenuFeedBack
-1500,Scan QR,ScanQR_Launch
-1501,Scan QR,ScanQR_AccessDenied
-1502,Scan QR,ScanQR_NavigateBack
-1503,Scan QR,ScanQR_GetCode
-1504,Scan QR,ScanQR_WrongCode
-1505,Scan QR,ScanQR_GetOrder
-1506,Scan QR,ScanQR_NoOrder
-1507,Scan QR,ScanQR_MoneyTransfer
-1508,Scan QR,ScanQR_PL_TouchIcon
-1509,Scan QR,ScanQR_PL_GetMTCode
-1510,Scan QR,ScanQR_PL_NoQRCode
-1511,Scan QR,ScanQR_PL_NoPhoto
-1512,Scan QR,ScanQR_Type2
-1513,Scan QR,ScanQR_PL_Type2
-1514,Scan QR,ScanQR_ZaloPay_Unknown
-1515,Scan QR,ScanQR_PL_ZaloPay_Unknown
-1516,Scan QR,ScanQR_URL_Type2
-1600,Money Transfer,MoneyTransfer_Launch
-1601,Money Transfer,MoneyTransfer_NavigateBack
-1602,Money Transfer,MoneyTransfer_ChooseRecentTransaction
-1603,Money Transfer,MoneyTransfer_InputSmallAmount
-1604,Money Transfer,MoneyTransfer_InputBigAmount
-1605,Money Transfer,MoneyTransfer_InputNoDescription
-1606,Money Transfer,MoneyTransfer_InputDescription
-1607,Money Transfer,MoneyTransfer_TapContinue
-1608,Money Transfer,MoneyTransfer_ChangeReceiver
-1700,Add Cash,AddCash_Launch
-1701,Add Cash,AddCash_NavigateBack
-1702,Add Cash,AddCash_InputSmallAmount
-1703,Add Cash,AddCash_InputBigAmount
-1704,Add Cash,AddCash_InputWrongAmount
-1705,Add Cash,AddCash_InputAmountOK
-1800,Manage Card,ManageCard_Launch
-1801,Manage Card,ManageCard_NavigateBack
-1802,Manage Card,ManageCard_AddCard_Launch
-1803,Manage Card,ManageCard_DeleteCard
-1804,Manage Card,ManageCard_TapAddCard
-1900,Notifications,Notifications_Launch
-1901,Notifications,Notifications_NavigateBack
-1902,Notifications,Notifications_TapTransactionItem
-1903,Notifications,Notifications_TapProfileItem
-1904,Notifications,Notifications_TapPromotionItem
+1000,Startup,app_launch
+1100,Login,login_touch
+1101,Login,login_result
+1300,Home,home_launch
+1301,Home,home_touch_scanqr
+1302,Home,home_touch_balance
+1303,Home,home_touch_linkbank
+1304,Home,home_touch_notification
+1305,Home,home_touch_home
+1306,Home,home_touch_promotion
+1307,Home,home_touch_me
+1308,Home,home_touch_search
+1309,Home,home_touch_transactionlog
+1500,Scan QR,scanqr_touch_back
+1501,Scan QR,scanqr_result
+1502,Scan QR,scanqr_touch_photo
+1503,Scan QR,scanqr_touch_nfc
+1504,Scan QR,scanqr_nfc_touch_back
+1505,Scan QR,scanqr_touch_bluetooth
+1506,Scan QR,scanqr_bluetooth_touch_back
+1800,Bank,linkbank_launch
+1801,Bank,linkbank_touch_back
+1802,Bank,linkbank_touch_add
+1803,Bank,linkbank_touch_add_icon
+1804,Bank,linkbank_add_launch
+1805,Bank,linkbank_add_touch_back
+1806,Bank,linkbank_add_select_bank
+1807,Bank,linkbank_add_result
+1808,Bank,linkbank_delete
+3000,Topup,topup_launch_from_home
+3001,Topup,topup_launch_from_promotion
+3002,Topup,topup_touch_back
+3003,Topup,topup_touch_history
+3004,Topup,topup_history_touch_item
+3005,Topup,topup_input_phonenumber
+3006,Topup,topup_touch_phonebook
+3007,Topup,topup_phonebook_cancel
+3008,Topup,topup_recent_touch_item
+3009,Topup,topup_select_value
+3010,Topup,topup_payment_method_launch
+3011,Topup,topup_payment_method_cancel
+3012,Topup,topup_payment_method_confirm
+3013,Topup,topup_result
+4100,Search,search_touch_result
+4101,Search,search_touch_suggest
+4102,Search,search_touch_back
+1901,Notifications,notification_touch_back
+1902,Notifications,notification_touch_transactionitem
+1700,Balance,balance_touch_back
+1701,Balance_AddCash,balance_touch_addcash
+1702,Balance_AddCash,balance_addcash_touch_back
+1703,Balance_AddCash,balance_addcash_input
+1704,Balance_AddCash,balance_addcash_continue
+1705,Balance_AddCash,balance_addcash_payment_method_launch
+1706,Balance_AddCash,balance_addcash_payment_method_cancel
+1707,Balance_AddCash,balance_addcash_payment_method_confirm
+1708,Balance_AddCash,balance_addcash_result
+1709,Balance_Withdraw,balance_touch_withdraw
+1710,Balance_Withdraw,balance_withdraw_touch_back
+1711,Balance_Withdraw,balance_withdraw_amount
+1712,Balance_Withdraw,balance_withdraw_amount_other
+1713,Balance_Withdraw,balance_withdraw_payment_method_launch
+1714,Balance_Withdraw,balance_withdraw_payment_method_cancel
+1715,Balance_Withdraw,balance_withdraw_payment_method_confirm
+1716,Balance_Withdraw,balance_withdraw_result
+1600,Money Transfer,moneytransfer_launch
+1601,Money Transfer,moneytransfer_touch_back
+1602,Money Transfer,moneytransfer_touch_zpid
+1603,Money Transfer,moneytransfer_zpid_touch_back
+1604,Money Transfer,moneytransfer_touch_zfriend
+1605,Money Transfer,moneytransfer_zfriend_touch_back
+1606,Money Transfer,moneytransfer_input_amount
+1607,Money Transfer,moneytransfer_touch_continue
+1608,Money Transfer,moneytransfer_payment_method_launch
+1609,Money Transfer,moneytransfer_payment_method_cancel
+1610,Money Transfer,moneytransfer_payment_method_confirm
+1611,Money Transfer,moneytransfer_result
+1612,Money Transfer,moneytransfer_touch_recent
+2400,ReceiveMoney,receivemoney_launch
+2401,ReceiveMoney,receivemoney_touch_back
+2402,ReceiveMoney,receivemoney_ressult
+2403,ReceiveMoney,receivemoney_touch_setamount
+2404,ReceiveMoney,receivemoney_setamount_back
+2405,ReceiveMoney,receivemoney_setamout_input
+2406,ReceiveMoney,receivemoney_setamout_input_confirm
+2407,ReceiveMoney,receivemoney_touch_clear
+3100,RedPacket,redpacket_launch
+3101,RedPacket,redpacket_touch_back
+3102,RedPacket,redpacket_touch_equal
+3103,RedPacket,redpacket_touch_random
+3104,RedPacket,redpacket_equal_touch_back
+3105,RedPacket,redpacket_equal_confirm
+3106,RedPacket,redpacket_equal_touch_send
+3107,RedPacket,redpacket_equal_result
+3108,RedPacket,redpacket_random_touch_back
+3109,RedPacket,redpacket_random_confirm
+3110,RedPacket,redpacket_random_touch_send
+3111,RedPacket,redpacket_random_result
+3112,RedPacket,redpacket_touch_history
+3200,Service,service_launch
+3201,Service,service_touch_back
+3202,Service,service_search
+3203,Service,service_touch_history
+3204,Service,service_select_item
+3205,Service,service_item_touch_back
+3206,Service,service_item_input
+3207,Service,service_item_touch_confirm
+3208,Service,service_payment_method_launch
+3209,Service,service_payment_method_cancel
+3210,Service,service_payment_method_confirm
+3211,Service,service_result
+3300,PhoneCard,phonecard_launch
+3301,PhoneCard,phonecard_touch_back
+3302,PhoneCard,phonecard_touch_carrier
+3303,PhoneCard,phonecard_touch_select_amount
+3304,PhoneCard,phonecard_touch_select_number
+3305,PhoneCard,phonecard_touch_confirm
+3306,PhoneCard,phonecard_payment_method_launch
+3307,PhoneCard,phonecard_payment_method_cancel
+3308,PhoneCard,phonecard_payment_method_confirm
+3309,PhoneCard,phonecard_result
+3310,PhoneCard,phonecard_touch_history
+3311,PhoneCard,phonecard_history_select_time
+3312,PhoneCard,phonecard_history_select_carrier
+3313,PhoneCard,phonecard_history_touch_item
+3400,Water,water_launch
+3401,Water,water_touch_back
+3402,Water,water_input
+3403,Water,water_continue
+3404,Water,water_payment_method_launch
+3405,Water,water_payment_method_cancel
+3406,Water,water_payment_method_confirm
+3407,Water,water_result
+3408,Water,water_touch_history
+3409,Water,water_history_touch_item
+3500,Electric,electric_launch
+3501,Electric,electric_touch_back
+3502,Electric,electric_select_provider
+3503,Electric,electric_provider_back
+3504,Electric,electric_provider_input
+3505,Electric,electric_continue
+3506,Electric,electric_payment_method_launch
+3507,Electric,electric_payment_method_cancel
+3508,Electric,electric_payment_method_confirm
+3509,Electric,electric_result
+3510,Electric,electric_touch_history
+3511,Electric,electric_history_touch_item
+3600,Internet,internet_launch
+3601,Internet,internet_touch_back
+3602,Internet,internet_input
+3603,Internet,internet_continue
+3604,Internet,internet_payment_method_launch
+3605,Internet,internet_payment_method_cancel
+3606,Internet,internet_payment_method_confirm
+3607,Internet,internet_result
+3608,Internet,internet_touch_history
+3609,Internet,internet_history_touch_item
+3700,TV,tv_launch
+3701,TV,tv_touch_back
+3702,TV,tv_input
+3703,TV,tv_continue
+3704,TV,tv_payment_method_launch
+3705,TV,tv_payment_method_cancel
+3706,TV,tv_payment_method_confirm
+3707,TV,tv_result
+3708,TV,tv_touch_history
+3709,TV,tv_history_touch_item
+3800,Nearby,nearby_launch
+3801,Nearby,nearby_touch_back
+3802,Nearby,nearby_select_distance
+3803,Nearby,nearby_touch_merchant
+3804,Nearby,nearby_merchant_touch_back
+3805,Nearby,nearby_merchant_touch_viewall
+3806,Nearby,nearby_touch_search
+2900,Transaction Logs,transactionlog_launch
+2901,Transaction Logs,transactionlog_touch_back
+2902,Transaction Logs,transactionlog_touch_detail
+2903,Transaction Logs,transactionlog_touch_filter
+3900,Promotion,promotion_touch_detail
+3901,Promotion,promotion_detail_touch_back
+3902,Promotion,promotion_detail_touch_more
+3903,Promotion,promotion_detail_touch_share
+3904,Promotion,promotion_detail_share_zalo
+3905,Promotion,promotion_detail_share_urlcopy
+3906,Promotion,promotion_detail_share_refresh
+3907,Promotion,promotion_detail_share_tobrowser
+3908,Promotion,promotion_detail_share_touch_close
+2800,Me,me_touch_balance
+2801,Me,me_touch_bank
+2802,Me,me_touch_billing
+2803,Me,me_touch_supportcenter
+2804,Me,me_touch_feedback
+2805,Me,me_touch_about
+2806,Me,me_touch_logout
+2807,Me_Security,me_touch_security
+2808,Me_Security,me_security_touch_back
+2809,Me_Security,me_security_touch_touchid
+2810,Me_Security,me_security_touch_privacy
+2811,Me_Security,me_security_touch_changepassword
+2812,Me_Security,me_security_changepassword_back
+2813,Me_Security,me_security_changepassword_input
+2814,Me_Security,me_security_changepassword_continue
+2815,Me_Security,me_security_changepassword_result
+2816,Me_Profile,me_touch_profile
+2817,Me_Profile,me_profile_zpid_launch
+2818,Me_Profile,me_profile_zpid_touch_back
+2819,Me_Profile,me_profile_zpid_touch_register
+2820,Me_Profile,me_profile_touch_identity
+2821,Me_Profile,me_profile_identity_back
+2822,Me_Profile,me_profile_identity_input
+4000,Onboarding,onboarding_input_password
+4001,Onboarding,onboarding_input_phone
+4002,Onboarding,onboarding_input_otp
+4003,Onboarding,onboarding_otp_touch_confirm
 2000,Timing Get Order,Timing_GetOrder
 2001,Timing Scan QR,Timing_ScanQR
-2002,Timing TPE,api_v001_tpe_getbalance
-2003,Timing TPE,api_v001_tpe_createwalletorder
-2004,Timing TPE,api_v001_tpe_getinsideappresource
-2005,Timing TPE,api_v001_tpe_getorderinfo
-2006,Timing TPE,api_v001_tpe_gettransstatus
-2007,Timing TPE,api_v001_tpe_transhistory
-2008,Timing UM,api_um_createaccesstoken
-2009,Timing UM,api_um_removeaccesstoken
-2010,Timing UM,api_um_verifycodetest
-2011,Timing UM,api_um_updateprofile
-2012,Timing UM,api_um_verifyotpprofile
-2013,Timing UM,api_um_recoverypin
-2014,Timing UM,api_um_getuserinfo
-2015,Timing UM,api_um_getuserprofilelevel
-2016,Timing UM,api_um_getuserinfobyzalopayname
-2017,Timing UM,api_um_getuserinfobyzalopayid
-2018,Timing UM,api_um_checkzalopaynameexist
-2019,Timing UM,api_um_updatezalopayname
-2020,Timing UM,api_um_validatepin
-2021,Timing UM,api_um_sendnotification
-2022,Timing UM,api_um_checklistzaloidforclient
-2023,Timing UM,api_ummerchant_getmerchantuserinfo
-2024,Timing UM,api_ummerchant_getlistmerchantuserinfo
-2025,Timing UM,api_umupload_preupdateprofilelevel3
-2026,Timing RedPacket,api_redpackage_createbundleorder
-2027,Timing RedPacket,api_redpackage_submittosendbundle
-2028,Timing RedPacket,api_redpackage_submitopenpackage
-2029,Timing RedPacket,api_redpackage_getsentbundlelist
-2030,Timing RedPacket,api_redpackage_getrevpackagelist
-2031,Timing RedPacket,api_redpackage_getpackagesinbundle
-2032,Timing RedPacket,api_redpackage_getappinfo
-2033,Timing RedPacket,api_redpackage_submittosendbundlebyzalopayinfo
-2034,Timing RedPacket,api_redpackage_getlistpackagestatus
-2035,Timing TPE,api_v001_tpe_v001getplatforminfo
-2036,Timing TPE,api_v001_tpe_getappinfo
-2037,Timing TPE,api_v001_tpe_getbanklist
-2038,Timing TPE,api_v001_tpe_submittrans
-2039,Timing TPE,api_v001_tpe_atmauthenpayer
-2040,Timing TPE,api_v001_tpe_authcardholderformapping
-2041,Timing TPE,api_v001_tpe_getstatusmapcard
-2042,Timing TPE,api_v001_tpe_verifycardformapping
-2043,Timing TPE,api_v001_tpe_getstatusbyapptransidforclient
-2044,Timing TPE,api_v001_tpe_sdkwriteatmtime
-2045,Timing TPE,api_v001_tpe_removemapcard
-2046,Timing TPE,api_v001_tpe_sdkerrorreport
-2047,Timing UM,api_um_listcardinfoforclient
-2048,Timing Notification,api_notification_ping_pong
-2049,Timing TPE,api_v001_tpe_submitmapaccount
-2050,Timing TPE,api_v001_zp_upload_clientlogs
-2051,Timing UM,api_um_listbankaccountforclient
-2052,Timing UM,api_um_loginviazalo
-2053,Timing UM,api_um_registerphonenumber
-2054,Timing UM,api_um_authenphonenumber
-2100,UpdateProfile2,UpdateProfile2_Launch
-2101,UpdateProfile2,UpdateProfile2_NavigateBack
-2102,UpdateProfile2,UpdateProfile2_PressCheck
-2103,UpdateProfile2,UpdateProfile2_ZPN_Edit_Invalid
-2104,UpdateProfile2,UpdateProfile2_ZPN_Empty
-2105,UpdateProfile2,UpdateProfile2_ZPN_Valid
-2106,UpdateProfile2,UpdateProfile2_ZPN_InUsed
-2107,UpdateProfile2,UpdateProfile2_ZPN_InUsed2
-2108,UpdateProfile2,UpdateProfile2_ZPN_Edit_Delete
-2200,UpdateZPN,UpdateZPN_Launch
-2201,UpdateZPN,UpdateZPN_Back
-2202,UpdateZPN,UpdateZPN_Launch_FromHeader
-2203,UpdateZPN,UpdateZPN_Launch_FromProfile
-2204,UpdateZPN,UpdateZPN_PressCheck
-2205,UpdateZPN,UpdateZPN_Edit_Invalid
-2206,UpdateZPN,UpdateZPN_Valid
-2207,UpdateZPN,UpdateZPN_InUsed
-2208,UpdateZPN,UpdateZPN_InUsed2
-2209,UpdateZPN,UpdateZPN_Edit_Delete
-2210,UpdateZPN,UpdateZPN_Edit_AfterCheck
-2300,OTP,OTP_ChangePassword_Request
-2301,OTP,OTP_ChangePassword_InputNone
-2302,OTP,OTP_ChangePassword_InputWrong
-2303,OTP,OTP_ChangePassword_InputOK
-2304,OTP,OTP_Level2_Request
-2305,OTP,OTP_Level2_InputNone
-2306,OTP,OTP_Level2_InputWrong
-2307,OTP,OTP_Level2_InputOK
-2400,ReceiveMoney,ReceiveMoney_Launch
-2401,ReceiveMoney,ReceiveMoney_Back
-2402,ReceiveMoney,ReceiveMoney_SetAmount
-2403,ReceiveMoney,ReceiveMoney_SetMessage
-2404,ReceiveMoney,ReceiveMoney_SetAmountMessage
-2405,ReceiveMoney,ReceiveMoney_ClearInfo
-2406,ReceiveMoney,ReceiveMoney_Received_1
-2407,ReceiveMoney,ReceiveMoney_Received_2
-2408,ReceiveMoney,ReceiveMoney_Received_3
-2409,ReceiveMoney,ReceiveMoney_Received_4
-2410,ReceiveMoney,ReceiveMoney_Received_5
-2411,ReceiveMoney,ReceiveMoney_Received_6
-2412,ReceiveMoney,ReceiveMoney_Received_7
-2413,ReceiveMoney,ReceiveMoney_Received_8
-2414,ReceiveMoney,ReceiveMoney_Received_9
-2415,ReceiveMoney,ReceiveMoney_Received_More
-2500,Timing ESALE,esale_api_v4_getshopitemlist
-2501,Timing ESALE,esale_api_v4_createorder
-2502,Timing ESALE,esale_api_v4_gethistory
-2503,Timing ESALE,esale_api_v4_getresult
-2504,Timing ESALE,esale_api_v4_carddetail
-2505,Timing ESALE,esale_api_v4_getproviders
-2506,Timing ESALE,esale_api_v4_querybill
-2600,Zalo Integration,Zalo_Launch_28
-2601,Zalo Integration,Zalo_Back
-2602,Zalo Integration,Zalo_NotLogin
-2603,Zalo Integration,Zalo_Payment_Completed
-2604,Zalo Integration,Zalo_Receiver_Not_Found
-2605,Zalo Integration,Zalo_Payment_IsInProgress
-2606,Zalo Integration,Zalo_Payment_IsInCompleted
-2607,Zalo Integration,Zalo_Launch_29
-2702,Timing TPE,connector_v001_tpe_getbalance
-2703,Timing TPE,connector_v001_tpe_createwalletorder
-2704,Timing TPE,connector_v001_tpe_getinsideappresource
-2705,Timing TPE,connector_v001_tpe_getorderinfo
-2706,Timing TPE,connector_v001_tpe_gettransstatus
-2707,Timing TPE,connector_v001_tpe_transhistory
-2708,Timing UM,connector_um_createaccesstoken
-2709,Timing UM,connector_um_removeaccesstoken
-2710,Timing UM,connector_um_verifycodetest
-2711,Timing UM,connector_um_updateprofile
-2712,Timing UM,connector_um_verifyotpprofile
-2713,Timing UM,connector_um_recoverypin
-2714,Timing UM,connector_um_getuserinfo
-2715,Timing UM,connector_um_getuserprofilelevel
-2716,Timing UM,connector_um_getuserinfobyzalopayname
-2717,Timing UM,connector_um_getuserinfobyzalopayid
-2718,Timing UM,connector_um_checkzalopaynameexist
-2719,Timing UM,connector_um_updatezalopayname
-2720,Timing UM,connector_um_validatepin
-2721,Timing UM,connector_um_sendnotification
-2722,Timing UM,connector_um_checklistzaloidforclient
-2723,Timing UM,connector_ummerchant_getmerchantuserinfo
-2724,Timing UM,connector_ummerchant_getlistmerchantuserinfo
-2725,Timing UM,connector_umupload_preupdateprofilelevel3
-2726,Timing RedPacket,connector_redpackage_createbundleorder
-2727,Timing RedPacket,connector_redpackage_submittosendbundle
-2728,Timing RedPacket,connector_redpackage_submitopenpackage
-2729,Timing RedPacket,connector_redpackage_getsentbundlelist
-2730,Timing RedPacket,connector_redpackage_getrevpackagelist
-2731,Timing RedPacket,connector_redpackage_getpackagesinbundle
-2732,Timing RedPacket,connector_redpackage_getappinfo
-2733,Timing RedPacket,connector_redpackage_submittosendbundlebyzalopayinfo
-2734,Timing RedPacket,connector_redpackage_getlistpackagestatus
-2735,Timing TPE,connector_v001_tpe_v001getplatforminfo
-2736,Timing TPE,connector_v001_tpe_getappinfo
-2737,Timing TPE,connector_v001_tpe_getbanklist
-2738,Timing TPE,connector_v001_tpe_submittrans
-2739,Timing TPE,connector_v001_tpe_atmauthenpayer
-2740,Timing TPE,connector_v001_tpe_authcardholderformapping
-2741,Timing TPE,connector_v001_tpe_getstatusmapcard
-2742,Timing TPE,connector_v001_tpe_verifycardformapping
-2743,Timing TPE,connector_v001_tpe_getstatusbyapptransidforclient
-2744,Timing TPE,connector_v001_tpe_sdkwriteatmtime
-2745,Timing TPE,connector_v001_tpe_removemapcard
-2746,Timing TPE,connector_v001_tpe_sdkerrorreport
-2747,Timing UM,connector_um_listcardinfoforclient
-2749,Timing TPE,connector_v001_tpe_submitmapaccount
-2750,Timing UM,connector_um_listbankaccountforclient
-2751,Timing UM,connector_um_loginviazalo
-2752,Timing UM,connector_um_registerphonenumber
-2753,Timing UM,connector_um_authenphonenumber
-2800,Tab Me,Touch_Me_Profile
-2801,Tab Me,Touch_Me_Balance
-2802,Tab Me,Touch_Me_Bank
-2803,Tab Me,Touch_Me_Bank_QuickAction
-2804,Tab Me,Touch_Me_Billing
-2805,Tab Me,Touch_Me_Billing_QuickAction
-2806,Tab Me,Touch_Me_Transactions
-2807,Tab Me,Touch_Me_SupportCenter
-2808,Tab Me,Touch_Me_Feedback
-2809,Tab Me,Touch_Me_AboutApp
-2810,Tab Me,Touch_Me_Logout
-2900,Transaction Logs,TransactionLog_Launch
-2901,Transaction Logs,TransactionLog_Back
-2902,Transaction Logs,TransactionLog_Detail
-2903,Transaction Logs,TransactionLog_Filter_Touch
-2904,Transaction Logs,TransactionLog_SlideOpenMenu
-2905,Transaction Logs,TransactionLog_Filter_TouchOutside
-2906,Transaction Logs,TransactionLog_Filter_Done
-2907,Transaction Logs,TransactionLog_Filter_Reset
-3000,Payment Channel,User_Select_Payment_Channel_36
-3001,Payment Channel,User_Select_Payment_Channel_37
-3002,Payment Channel,User_Select_Payment_Channel_38
-3003,Payment Channel,User_Select_Payment_Channel_39
-3004,Payment Channel,User_Action_Number
+2010,Timing UM,api_um_createaccesstoken
+2011,Timing UM,api_um_removeaccesstoken
+2012,Timing UM,api_um_verifycodetest
+2013,Timing UM,api_um_updateprofile
+2014,Timing UM,api_um_verifyotpprofile
+2015,Timing UM,api_um_recoverypin
+2016,Timing UM,api_um_getUserinfo
+2017,Timing UM,api_um_getUserprofilelevel
+2018,Timing UM,api_um_getUserinfobyzalopayname
+2019,Timing UM,api_um_getUserinfobyzalopayid
+2020,Timing UM,api_um_checkzalopaynameexist
+2021,Timing UM,api_um_updatezalopayname
+2022,Timing UM,api_um_validatepin
+2023,Timing UM,api_um_sendnotification
+2024,Timing UM,api_um_checklistzaloidforclient
+2025,Timing UM,api_ummerchant_getmerchantUserinfo
+2026,Timing UM,api_ummerchant_getlistmerchantUserinfo
+2027,Timing UM,api_umupload_preupdateprofilelevel3
+2028,Timing UM,api_um_listcardinfoforclient
+2029,Timing UM,api_um_listbankaccountforclient
+2030,Timing UM,api_um_loginviazalo
+2031,Timing UM,api_um_registerphonenumber
+2032,Timing UM,api_um_authenphonenumber
+2040,Timing UM,connector_um_createaccesstoken
+2041,Timing UM,connector_um_removeaccesstoken
+2042,Timing UM,connector_um_verifycodetest
+2043,Timing UM,connector_um_updateprofile
+2044,Timing UM,connector_um_verifyotpprofile
+2045,Timing UM,connector_um_recoverypin
+2046,Timing UM,connector_um_getUserinfo
+2047,Timing UM,connector_um_getUserprofilelevel
+2048,Timing UM,connector_um_getUserinfobyzalopayname
+2049,Timing UM,connector_um_getUserinfobyzalopayid
+2050,Timing UM,connector_um_checkzalopaynameexist
+2051,Timing UM,connector_um_updatezalopayname
+2052,Timing UM,connector_um_validatepin
+2053,Timing UM,connector_um_sendnotification
+2054,Timing UM,connector_um_checklistzaloidforclient
+2055,Timing UM,connector_ummerchant_getmerchantUserinfo
+2056,Timing UM,connector_ummerchant_getlistmerchantUserinfo
+2057,Timing UM,connector_umupload_preupdateprofilelevel3
+2058,Timing UM,connector_um_listcardinfoforclient
+2059,Timing UM,connector_um_listbankaccountforclient
+2060,Timing UM,connector_um_loginviazalo
+2061,Timing UM,connector_um_registerphonenumber
+2062,Timing UM,connector_um_authenphonenumber
+2070,Timing TPE,api_v001_tpe_getbalance
+2071,Timing TPE,api_v001_tpe_createwalletorder
+2072,Timing TPE,api_v001_tpe_getinsideappresource
+2073,Timing TPE,api_v001_tpe_getorderinfo
+2074,Timing TPE,api_v001_tpe_gettransstatus
+2075,Timing TPE,api_v001_tpe_transhistory
+2076,Timing TPE,api_v001_tpe_v001getplatforminfo
+2077,Timing TPE,api_v001_tpe_getappinfo
+2078,Timing TPE,api_v001_tpe_getbanklist
+2079,Timing TPE,api_v001_tpe_submittrans
+2080,Timing TPE,api_v001_tpe_atmauthenpayer
+2081,Timing TPE,api_v001_tpe_authcardholderformapping
+2082,Timing TPE,api_v001_tpe_getstatusmapcard
+2083,Timing TPE,api_v001_tpe_verifycardformapping
+2084,Timing TPE,api_v001_tpe_getstatusbyapptransidforclient
+2085,Timing TPE,api_v001_tpe_sdkwriteatmtime
+2086,Timing TPE,api_v001_tpe_removemapcard
+2087,Timing TPE,api_v001_tpe_sdkerrorreport
+2088,Timing TPE,api_v001_tpe_submitmapaccount
+2089,Timing TPE,api_v001_zp_upload_clientlogs
+2100,Timing TPE,connector_v001_tpe_getbalance
+2101,Timing TPE,connector_v001_tpe_createwalletorder
+2102,Timing TPE,connector_v001_tpe_getinsideappresource
+2103,Timing TPE,connector_v001_tpe_getorderinfo
+2104,Timing TPE,connector_v001_tpe_gettransstatus
+2105,Timing TPE,connector_v001_tpe_transhistory
+2106,Timing TPE,connector_v001_tpe_v001getplatforminfo
+2107,Timing TPE,connector_v001_tpe_getappinfo
+2108,Timing TPE,connector_v001_tpe_getbanklist
+2109,Timing TPE,connector_v001_tpe_submittrans
+2110,Timing TPE,connector_v001_tpe_atmauthenpayer
+2111,Timing TPE,connector_v001_tpe_authcardholderformapping
+2112,Timing TPE,connector_v001_tpe_getstatusmapcard
+2113,Timing TPE,connector_v001_tpe_verifycardformapping
+2114,Timing TPE,connector_v001_tpe_getstatusbyapptransidforclient
+2115,Timing TPE,connector_v001_tpe_sdkwriteatmtime
+2116,Timing TPE,connector_v001_tpe_removemapcard
+2117,Timing TPE,connector_v001_tpe_sdkerrorreport
+2118,Timing TPE,connector_v001_tpe_submitmapaccount
+2200,Timing RedPacket,api_redpackage_createbundleorder
+2201,Timing RedPacket,api_redpackage_submittosendbundle
+2202,Timing RedPacket,api_redpackage_submitopenpackage
+2203,Timing RedPacket,api_redpackage_getsentbundlelist
+2204,Timing RedPacket,api_redpackage_getrevpackagelist
+2205,Timing RedPacket,api_redpackage_getpackagesinbundle
+2206,Timing RedPacket,api_redpackage_getappinfo
+2207,Timing RedPacket,api_redpackage_submittosendbundlebyzalopayinfo
+2208,Timing RedPacket,api_redpackage_getlistpackagestatus
+2210,Timing RedPacket,connector_redpackage_createbundleorder
+2211,Timing RedPacket,connector_redpackage_submittosendbundle
+2212,Timing RedPacket,connector_redpackage_submitopenpackage
+2213,Timing RedPacket,connector_redpackage_getsentbundlelist
+2214,Timing RedPacket,connector_redpackage_getrevpackagelist
+2215,Timing RedPacket,connector_redpackage_getpackagesinbundle
+2216,Timing RedPacket,connector_redpackage_getappinfo
+2217,Timing RedPacket,connector_redpackage_submittosendbundlebyzalopayinfo
+2218,Timing RedPacket,connector_redpackage_getlistpackagestatus
+2300,Timing Notification,api_notification_ping_pong
