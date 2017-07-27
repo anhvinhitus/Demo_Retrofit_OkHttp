@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -31,6 +32,12 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
+    }
+
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return "";
     }
 
     @Override

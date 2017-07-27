@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.feedback;
 
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -34,4 +35,9 @@ public class FeedbackActivity extends UserBaseToolBarActivity {
         }
     }
 
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return "";
+    }
 }

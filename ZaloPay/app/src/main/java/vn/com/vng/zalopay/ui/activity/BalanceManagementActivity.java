@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.support.annotation.NonNull;
+
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -12,6 +14,7 @@ public class BalanceManagementActivity extends UserBaseToolBarActivity {
         return BalanceManagementFragment.newInstance();
     }
 
+    @NonNull
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.BALANCE;

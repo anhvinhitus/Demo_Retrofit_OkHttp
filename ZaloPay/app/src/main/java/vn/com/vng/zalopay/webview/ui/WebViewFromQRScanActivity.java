@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.widget.TextView;
 
@@ -43,6 +44,7 @@ public class WebViewFromQRScanActivity extends UserBaseToolBarActivity {
         return WebViewFromQRScanFragment.newInstance(getIntent().getExtras());
     }
 
+    @NonNull
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.SCANQR_WEBVIEW;

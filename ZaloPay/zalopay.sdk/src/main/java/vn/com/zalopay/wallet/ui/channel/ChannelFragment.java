@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -62,6 +64,12 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
             fragment.setArguments(args);
         }
         return fragment;
+    }
+
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.BANK_INPUTCARDINFO;
     }
 
     @Override

@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
@@ -34,6 +35,12 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
+    }
+
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return "";
     }
 
     @Override

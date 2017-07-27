@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.widget.TextView;
 
@@ -16,6 +17,12 @@ public class WebAppActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         return WebAppFragment.newInstance(getIntent().getExtras());
+    }
+
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return "";
     }
 
     @BindView(R.id.title)
@@ -58,13 +65,6 @@ public class WebAppActivity extends UserBaseToolBarActivity {
         btnClose.setIcon(R.string.webapp_ico_delete);
         btnClose.setIconColor(R.color.colorWebAppPrimaryText);
         btnClose.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-
-//        getToolbar().setNavigationIcon(
-//                new IconFontDrawable(this)
-//                        .setIcon(R.string.general_backandroid)
-//                        .setResourcesColor(R.color.colorWebAppPrimaryText)
-//                        .setDpSize(18)
-//        );
     }
 
     @Override

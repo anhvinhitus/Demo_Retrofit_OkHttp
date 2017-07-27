@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.searchcategory;
 
+import android.support.annotation.NonNull;
+
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -21,6 +23,7 @@ public class SearchCategoryActivity extends UserBaseToolBarActivity {
         return R.layout.activity_common_searchbox;
     }
 
+    @NonNull
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.SEARCH;
