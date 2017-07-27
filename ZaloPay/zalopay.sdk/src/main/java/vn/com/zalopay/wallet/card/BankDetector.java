@@ -11,15 +11,14 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 public class BankDetector extends AbstractCardDetector {
     private static BankDetector _object;
-    private Map<String, String> nBankPrefix;
-    private BankStore.Interactor mBankInteractor;
     BankConfig mFoundBank;
     List<DOtpReceiverPattern> mFoundOtpRules;
+    private Map<String, String> nBankPrefix;
+    private BankStore.Interactor mBankInteractor;
 
     public BankDetector() {
         super();
@@ -73,7 +72,11 @@ public class BankDetector extends AbstractCardDetector {
 
     @Override
     public String getShortBankName() {
-        return mFoundBank != null ? mFoundBank.getShortBankName() : null;
+        String bankName = mFoundBank != null ? mFoundBank.getShortBankName() : null;
+        if (!TextUtils.isEmpty(bankName)) {
+            bankName = bankName.trim();
+        }
+        return bankName;
     }
 
     private String getBankCode(String pCardNumber) {
