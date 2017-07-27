@@ -7,7 +7,9 @@ import android.text.TextUtils;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -224,9 +226,13 @@ public class GlobalData {
             if (GlobalData.getPaymentListener() != null) {
                 GlobalData.getPaymentListener().onPreComplete(success, pStatusResponse.zptransid, paymentInfoHelper.getAppTransId());
             }
+            //track app trans id
             GlobalData.trackingTransactionEvent(success ? ZPPaymentSteps.OrderStepResult_Success : ZPPaymentSteps.OrderStepResult_Fail
                     , pStatusResponse
                     , pBankCode);
+            //track screen name
+            String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
+            ZPAnalytics.trackScreen(screenName);
         } catch (Exception e) {
             Timber.w(e);
         }
