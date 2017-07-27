@@ -65,4 +65,8 @@ public class WebViewActivity extends UserBaseToolBarActivity {
         }
     }
 
+    @Override
+    protected String getTrackingScreenName() {
+        return null;
+    }
 }

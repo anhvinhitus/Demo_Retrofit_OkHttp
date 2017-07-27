@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 public class TransferActivity extends UserBaseToolBarActivity {
 
@@ -68,5 +69,10 @@ public class TransferActivity extends UserBaseToolBarActivity {
         }
 
         mActivateSource = object.activateSource;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.MONEYTRANSFER_INPUTAMOUNT;
     }
 }

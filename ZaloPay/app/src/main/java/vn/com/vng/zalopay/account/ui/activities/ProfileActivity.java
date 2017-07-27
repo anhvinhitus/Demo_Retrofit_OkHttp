@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 public class ProfileActivity extends UserBaseToolBarActivity implements IProfileInfoView {
 
@@ -130,6 +131,11 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void showError(String message) {
         super.showToast(message);
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.ME;
     }
 }
 

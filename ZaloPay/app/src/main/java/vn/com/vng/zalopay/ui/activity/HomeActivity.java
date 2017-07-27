@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.PromotionEvent;
 
@@ -59,6 +60,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_home_new;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.HOME;
     }
 
     @Override
