@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
+import android.support.annotation.NonNull;
+
 import vn.com.vng.zalopay.account.ui.fragment.EditAccountNameFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -16,6 +18,7 @@ public class EditAccountNameActivity extends UserBaseToolBarActivity {
         return EditAccountNameFragment.newInstance();
     }
 
+    @NonNull
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.ME_PROFILE_ZPID;

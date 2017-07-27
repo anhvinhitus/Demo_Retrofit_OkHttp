@@ -23,6 +23,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -89,6 +90,11 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
      */
     private void makeFont() {
         applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.sdk_font_medium));
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.PAYMENT_METHOD;
     }
 
     @Override

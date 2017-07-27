@@ -17,6 +17,9 @@ import timber.log.Timber;
 public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
+    @NonNull
+    protected abstract String getTrackingScreenName();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

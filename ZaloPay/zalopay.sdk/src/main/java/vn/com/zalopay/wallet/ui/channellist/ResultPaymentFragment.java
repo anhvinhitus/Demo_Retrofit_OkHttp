@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -8,6 +9,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -44,6 +46,12 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
             return mStatusResponse.zptransid;
         }
         return null;
+    }
+
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.PAYMENT_RESULT;
     }
 
     @Override
