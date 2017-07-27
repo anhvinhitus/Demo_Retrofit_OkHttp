@@ -5,6 +5,7 @@ import android.os.Bundle;
 import vn.com.vng.zalopay.bank.list.BankListFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 /**
  * Created by datnt10 on 5/25/17.
@@ -21,5 +22,10 @@ public class BankActivity extends UserBaseToolBarActivity {
         }
 
         return BankListFragment.newInstance(bundle);
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.BANK_MAIN;
     }
 }

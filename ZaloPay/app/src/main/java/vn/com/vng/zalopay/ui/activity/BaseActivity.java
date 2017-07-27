@@ -7,6 +7,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,24 +15,15 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
-import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
-import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -50,7 +42,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void setupActivityComponent(ApplicationComponent applicationComponent) {
     }
 
-    public abstract BaseFragment getFragmentToHost();
+    protected abstract BaseFragment getFragmentToHost();
+
+    protected String getTrackingScreenName() {
+        return null;
+    }
 
     protected final String TAG = getClass().getSimpleName();
     protected final EventBus mEventBus = getAppComponent().eventBus();
@@ -62,7 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.d("onCreate [%s]", TAG);
         setupActivityComponent(getAppComponent());
         setContentView(getResLayoutId());
 
@@ -118,19 +113,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ZPAnalytics.trackScreen(TAG);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+        String screenName = getTrackingScreenName();
+        if (!TextUtils.isEmpty(screenName)) {
+            ZPAnalytics.trackScreen(screenName);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        Timber.d("onDestroy [%s]", TAG);
     }
 
     @Override

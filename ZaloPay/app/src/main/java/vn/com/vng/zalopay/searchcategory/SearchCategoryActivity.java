@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.searchcategory;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 /**
  * Created by khattn on 3/10/17.
@@ -18,5 +19,10 @@ public class SearchCategoryActivity extends UserBaseToolBarActivity {
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_common_searchbox;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.SEARCH;
     }
 }

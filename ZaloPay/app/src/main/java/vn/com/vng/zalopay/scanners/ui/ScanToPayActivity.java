@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
+import vn.com.zalopay.analytics.ZPScreens;
 
 public class ScanToPayActivity extends UserBaseToolBarActivity {
 
@@ -48,6 +49,11 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.SCANQR;
     }
 
     @Override

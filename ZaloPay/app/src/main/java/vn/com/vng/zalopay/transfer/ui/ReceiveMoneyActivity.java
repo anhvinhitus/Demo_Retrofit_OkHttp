@@ -6,6 +6,7 @@ import android.view.WindowManager;
 import timber.log.Timber;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -33,5 +34,10 @@ public class ReceiveMoneyActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         return ReceiveMoneyFragment.newInstance();
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.RECEIVEMONEY;
     }
 }

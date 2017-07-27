@@ -12,6 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPScreens;
 
 
 /**
@@ -47,5 +48,10 @@ public class OnboardingActivity extends BaseToolBarActivity {
 
     public int getResLayoutId() {
         return R.layout.activity_onboarding;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.ONBOARDING;
     }
 }

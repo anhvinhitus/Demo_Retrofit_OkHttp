@@ -11,6 +11,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPScreens;
 
 public class WebViewFromQRScanActivity extends UserBaseToolBarActivity {
     @BindView(R.id.title)
@@ -40,6 +41,11 @@ public class WebViewFromQRScanActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         return WebViewFromQRScanFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.SCANQR_WEBVIEW;
     }
 
     @Override

@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPScreens;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
@@ -35,6 +37,11 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     public BaseFragment getFragmentToHost() {
         return null;
+    }
+
+    @Override
+    protected String getTrackingScreenName() {
+        return ZPScreens.LOGINZALO;
     }
 
     @Inject
