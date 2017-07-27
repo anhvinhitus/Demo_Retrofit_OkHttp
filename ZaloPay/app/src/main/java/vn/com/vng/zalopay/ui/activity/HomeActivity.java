@@ -63,11 +63,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.HOME;
-    }
-
-    @Override
     protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
         userComponent.inject(this);
         mUserComponent = userComponent;
