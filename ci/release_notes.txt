@@ -1,15 +1,2 @@
-Zalo Pay (Staging v2.16.0 - build 362) - Released on 2017-07-27 14:19
-+ [SDK] #ZPF-358 : [Android-STG-2.16-361] Thanh toán BIDV pay by card: chỉnh lại flow by vo van chuc (#1bcd153)
-+ [Change Password] Fix bug by datnt10 (#0a13ea3)
-+ [App] ZPF-349 : Cập nhật Zalo Pay ID: Zalo Pay ID trùng nhưng nhấn vào nút X thì không xóa được by sinhtt (#83d0ff8)
-+ [SDK] #ZPF-340 : [Android] Thanh toán: thêm hyperlink nạp thêm by vo van chuc (#9925646)
-+ [APP] ZPF-345: Map/Unmap account trên web: update lại danh sách thẻ by lytm (#3c4b5ac)
-+ [SDK] Cleanup by vo van chuc (#55135f9)
-+ [Link] Truyền thêm bank code vào sdk để khởi tạo đúng work flow by vo van chuc (#140d24e)
-+ [SDK]  ZPF-343: Bỏ check vào check box Điều khoản BIDV by lytm (#768e956)
-+ [SDK] Cleanup by vo van chuc (#1f3d705)
-+ [Bank] #ZPF-346 : [Android-STG-2.16-360] Danh sách thẻ map: danh sách thẻ không theo thứ tự by vo van chuc (#77bb771)
-+ [SDK] Remove delay set title by vo van chuc (#fb4f16d)
-+ [App] Clean up by vo van chuc (#d69eb66)
-+ [SDK] Refactor card detect by vo van chuc (#6deb5ff)
-+ [Bank] Remove boxing int value when sort by vo van chuc (#96ac7ca)
+Zalo Pay (Sandbox v2.16.0 - build 363) - Released on 2017-07-27 14:20
+
