@@ -771,7 +771,6 @@ public class Navigator {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
-
         if (ignorePasswordPrompts(channel)) {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
@@ -787,7 +786,8 @@ public class Navigator {
 
         if (channel == ChannelDisplay.CARD_LISTS) {
             List<MapCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUserConfig.getCurrentUser());
-            return Lists.isEmptyOrNull(mapCardLis);
+            List<BankAccount> mapBankAccountLis = CShareDataWrapper.getMapBankAccountList(mUserConfig.getCurrentUser());
+            return (Lists.isEmptyOrNull(mapCardLis) && Lists.isEmptyOrNull(mapBankAccountLis));
         }
 
         return false;
