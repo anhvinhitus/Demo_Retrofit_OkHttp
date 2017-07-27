@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +37,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkHelper;
@@ -78,10 +83,11 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private String mLinkAccountWithBankCode = "";
     private UserConfig mUserConfig;
     List<BankData> mBankMapList;
+    private EventBus mEventBus;
     private BankStore.Interactor mBankInteractor;
 
     @Inject
-    BankListPresenter(Context context, UserConfig userConfig, User user, Navigator navigator) {
+    BankListPresenter(Context context, UserConfig userConfig, User user, Navigator navigator, EventBus eventBus) {
         mContext = context;
         mUser = user;
         mNavigator = navigator;
@@ -95,12 +101,29 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         mBankInteractor = SDKApplication
                 .getApplicationComponent()
                 .bankListInteractor();
+        mEventBus = eventBus;
     }
 
     @Override
     public void destroy() {
         super.destroy();
         mBankMapList = null;
+    }
+
+    @Override
+    public void attachView(IBankListView iBankListView) {
+        super.attachView(iBankListView);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
     }
 
     void handleBundle(Fragment fragment, Bundle bundle) {
@@ -345,7 +368,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         if (mView != null) {
             mView.remove(bankData);
         }
-        if(mBankMapList != null){
+        if (mBankMapList != null) {
             mBankMapList.remove(bankData);
         }
     }
@@ -556,7 +579,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 return;
             }
 
-            if(mBankMapList != null){
+            if (mBankMapList != null) {
                 mBankMapList.remove(mBankData);
             }
 
@@ -629,4 +652,12 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshBankAccount(RefreshBankAccountEvent event) {
+        Timber.d("BankListPresenter reload  map card here");
+        if (mView != null) {
+            loadView();
+        }
+
+    }
 }

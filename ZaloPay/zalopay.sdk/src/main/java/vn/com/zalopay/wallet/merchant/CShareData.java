@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -18,6 +19,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
+import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.repository.ResourceManager;
@@ -105,12 +107,13 @@ public class CShareData extends SingletonBase {
             try {
                 if (pObject.length >= 3) {
                     UserInfo userInfo = (UserInfo) pObject[2];
+                    IReloadMapInfoListener mIReloadMapInfoListener = (IReloadMapInfoListener) pObject[1];
                     String appVersion = SdkUtils.getAppVersion(SDKApplication.getContext());
                     SDKApplication.getApplicationComponent()
                             .linkInteractor()
                             .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
                             .subscribeOn(Schedulers.io())
-                            .subscribe(aBoolean -> Timber.d("reload bank account finish"), throwable -> Timber.d("reload bank account error %s", throwable));
+                            .subscribe(new LoadBankListSubscriber(mIReloadMapInfoListener));
                 }
             } catch (Exception ex) {
                 Timber.w(ex);
@@ -206,6 +209,37 @@ public class CShareData extends SingletonBase {
             return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerifyCC());
         } else {
             return CardType.UNDEFINE;
+        }
+    }
+
+    private class LoadBankListSubscriber extends DefaultSubscriber<Boolean> {
+        IReloadMapInfoListener mIReloadMapInfoListener;
+
+        public LoadBankListSubscriber(IReloadMapInfoListener iReloadMapInfoListener) {
+            mIReloadMapInfoListener = iReloadMapInfoListener;
+        }
+
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            Timber.d("reload bank account finish");
+            if (mIReloadMapInfoListener == null) {
+                return;
+            }
+            mIReloadMapInfoListener.onComplete(null);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d("reload bank account error %s", e);
+            if (mIReloadMapInfoListener == null) {
+                return;
+            }
+            mIReloadMapInfoListener.onError(e.getMessage());
         }
     }
 }
