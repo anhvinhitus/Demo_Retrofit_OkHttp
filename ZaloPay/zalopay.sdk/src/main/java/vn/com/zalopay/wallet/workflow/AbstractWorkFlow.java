@@ -66,7 +66,6 @@ import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
@@ -1124,7 +1123,13 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         if (!TextUtils.isEmpty(userId)) {
-            String paymentCard = getCard() != null ? getCard().getCardKey() : null;
+            String paymentCard = null;
+            if (mCard != null && mCard.isValid()) {
+                paymentCard = mCard.getCardKey();
+            }
+            if (TextUtils.isEmpty(paymentCard)) {
+                paymentCard = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().getKey() : null;
+            }
             SDKApplication.getApplicationComponent()
                     .bankListInteractor().setPaymentBank(userId, paymentCard);
         }
