@@ -664,7 +664,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected void switchChannel() {
         try {
             Timber.d("start switch to cc adapter");
-            getAdapter().getPresenter().switchCardLinkAdapter(BuildConfig.channel_credit_card, getCardNumber());
+            getAdapter().getPresenter().switchWorkFlow(BuildConfig.channel_credit_card, getCardNumber());
         } catch (Exception e) {
             Timber.w(e, "Exception switch cc adapter");
         }

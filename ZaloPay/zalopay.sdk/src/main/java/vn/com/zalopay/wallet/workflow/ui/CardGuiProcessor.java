@@ -1126,6 +1126,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mCardAdapter = null;
         mBankSupportAdapter = null;
         mAdapter = null;
+        mView = null;
         if (mWebView != null) {
             mWebView.getCCWebViewClient().dispose();
             mWebView.release();

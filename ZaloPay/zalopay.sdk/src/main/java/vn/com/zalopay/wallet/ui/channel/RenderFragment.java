@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
@@ -87,7 +88,7 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
         }
         if (pKeyBoardType == KeyboardType.NUMBER && view instanceof EditText) {
             //user using the laban key for example
-            if (!SdkUtils.useDefaultKeyBoard(getContext())) {
+            if (!SdkUtils.useDefaultKeyBoard(GlobalData.getAppContext())) {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             } else {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
