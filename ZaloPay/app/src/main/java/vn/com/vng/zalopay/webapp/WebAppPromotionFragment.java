@@ -157,14 +157,10 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
     @Override
     public void showError(int errorCode) {
         Timber.d("showError errorCode [%s]", errorCode);
-        if (errorCode == WebViewClient.ERROR_CONNECT) {
-            if (NetworkHelper.isNetworkAvailable(getContext())) {
-                showErrorNoLoad();
-            } else {
-                showErrorNoConnection();
-            }
-        } else {
+        if (NetworkHelper.isNetworkAvailable(getContext())) {
             showErrorNoLoad();
+        } else {
+            showErrorNoConnection();
         }
         hideLoading();
     }

@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.webview.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -95,7 +96,7 @@ public class WebViewPromotionFragment extends UserBaseTabFragment implements ZPW
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mUrl = getUrl();
-        refreshLayout.setSwipeableChildren(R.id.webview);
+        refreshLayout.setSwipeableChildren(R.id.promotion_webview);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.back_ground_blue);
 
@@ -157,14 +158,10 @@ public class WebViewPromotionFragment extends UserBaseTabFragment implements ZPW
     @Override
     public void showError(int errorCode) {
         Timber.d("showError errorCode [%s]", errorCode);
-        if (errorCode == WebViewClient.ERROR_CONNECT) {
-            if (NetworkHelper.isNetworkAvailable(getContext())) {
-                showErrorNoLoad();
-            } else {
-                showErrorNoConnection();
-            }
-        } else {
+        if (NetworkHelper.isNetworkAvailable(getContext())) {
             showErrorNoLoad();
+        } else {
+            showErrorNoConnection();
         }
         hideLoading();
     }
