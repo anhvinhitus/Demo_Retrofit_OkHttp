@@ -3,6 +3,8 @@ package vn.com.zalopay.wallet.workflow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -746,32 +748,12 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             mPageName = Constants.PAGE_AUTHEN;
             ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
             getView().hideLoading();
+            getView().renderKeyBoard(RS.layout.screen__card);
+            getView().setVisible(R.id.order_info_line_view, false);
             //request permission read/view sms on android 6.0+
             if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
                 requestReadOtpPermission();
             }
-            getView().renderKeyBoard();
-            getView().setVisible(R.id.order_info_line_view, false);
-
-            //testing broadcast otp viettinbak
-                        /*
-                        new Handler().postDelayed(new Runnable() {
-							@Override
-							public void run()
-							{
-								//String sender = "VietinBank";
-								//String body = "123456 la OTP xac nhan cua dich vu THANH TOAN CHO MA XAC NHAN...Ma GD 161224724381";
-								String sender = "Sacombank";
-								String body = "123456 la ma xac thuc (OTP) giao dich truc tuyen, thoi gian 5 phut. Vui long KHONG cung cap OTP cho bat ki ai";
-								//send otp to channel activity
-								Intent messageIntent = new Intent();
-								messageIntent.setAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
-								messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_SENDER, sender);
-								messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_BODY,body);
-								LocalBroadcastManager.get(mContext).sendBroadcast(messageIntent);
-							}
-						},5000);
-						*/
         } else {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_undefine_error));
         }
@@ -811,9 +793,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         mStatusResponse = response;
         mTransactionID = mStatusResponse.zptransid;
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
-            /*if (mPaymentInfoHelper.payByCardMap()) {
-                detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
-            }*/
             try {
                 getPresenter().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
             } catch (Exception e) {

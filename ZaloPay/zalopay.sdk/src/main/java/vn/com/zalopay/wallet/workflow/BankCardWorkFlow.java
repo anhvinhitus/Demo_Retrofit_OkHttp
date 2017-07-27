@@ -415,7 +415,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 					*/
 
         }
-        getView().renderKeyBoard();
+        getView().renderKeyBoard(RS.layout.screen__card);
         getView().hideLoading();
     }
 

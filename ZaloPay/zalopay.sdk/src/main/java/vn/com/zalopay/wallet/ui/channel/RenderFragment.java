@@ -44,31 +44,34 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
 
     public void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup,
                                  DDynamicViewGroup pAdditionDynamicViewGroup) throws Exception {
-        try {
-            Log.d(this, "start render screen name", screenName);
-            long time = System.currentTimeMillis();
-            ResourceManager resourceManager = ResourceManager.getInstance(screenName);
-            if (resourceManager != null) {
-                mResourceRender = resourceManager.produceRendering(this);
-                if (mResourceRender != null) {
-                    mResourceRender.render();
-                    mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
-                } else {
-                    Timber.d("resource render is null");
-                }
-            } else {
-                Timber.d("resource manager is null");
-            }
-            Log.d(this, "render resource: Total time:", (System.currentTimeMillis() - time));
-        } catch (Exception e) {
-            throw e;
+        Timber.d("start render screen name %s", screenName);
+        long time = System.currentTimeMillis();
+        initResourceRender(screenName);
+        if(mResourceRender == null){
+            Timber.d("resource render is null");
+            return;
+        }
+        mResourceRender.render();
+        mResourceRender.render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
+        Timber.d("render resource: Total time: %s", (System.currentTimeMillis() - time));
+    }
+
+    private void initResourceRender(String screenName){
+        ResourceManager resourceManager = ResourceManager.getInstance(screenName);
+        if (resourceManager != null) {
+            mResourceRender = resourceManager.produceRendering(this);
         }
     }
 
-    public void renderKeyBoard() {
-        if (mResourceRender != null) {
-            mResourceRender.renderKeyBoard();
+    public void renderKeyBoard(String screenName) {
+        if(mResourceRender == null){
+            initResourceRender(screenName);
         }
+        if(mResourceRender == null){
+            Timber.d("resource render is null");
+            return;
+        }
+        mResourceRender.renderKeyBoard();
     }
 
     // fresco load Uri
