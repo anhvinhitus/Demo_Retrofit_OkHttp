@@ -52,7 +52,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private final int STATUS_NEW_PASS = 1;
     private final int STATUS_OTP = 2;
     private final int STATUS_CONFIRM_NEW_PASS = 3;
-
     @Inject
     public Context mContext;
 
@@ -131,7 +130,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             setUseProtectAccount(true);
             mView.setCheckedProtectAccount(true);
         } else {
-            showAuthenticationDialog(mContext.getString(R.string.confirm_off_protect_message), new AuthenticationCallback() {
+            showAuthenticationDialog(false, mContext.getString(R.string.confirm_off_protect_message), new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
                     setUseProtectAccount(false);
@@ -184,7 +183,8 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void showFingerAuthentication() {
-        showAuthenticationDialog(mContext.getString(R.string.confirm_on_fingerprint_message), new AuthenticationCallback() {
+
+        showAuthenticationDialog(false, mContext.getString(R.string.confirm_on_fingerprint_message), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
 
@@ -203,11 +203,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         });
     }
 
-    private void showAuthenticationDialog(String message, AuthenticationCallback callback) {
+    private void showAuthenticationDialog(boolean isShowFingerPrint, String message, AuthenticationCallback callback) {
         if (mView == null) {
             return;
         }
-        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), PasswordUtil.detectSuggestFingerprint(mView.getContext(), mUserConfig), callback);
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), isShowFingerPrint, callback);
         authenticationPassword.initialize();
         if (authenticationPassword != null && authenticationPassword.getPasswordManager() != null) {
             try {
@@ -216,16 +216,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 Timber.d("ProtectAccountPresenter setTitle password [%s]", e.getMessage());
             }
         }
-      /*  AuthenticationDialog fragment = AuthenticationDialog.newInstance();
-        fragment.setStage(Stage.PASSWORD);
-        fragment.setMessagePassword(message);
-        fragment.setAuthenticationCallback(callback);
 
-        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);*/
     }
 
     private void disableFingerprint() {
-        showAuthenticationDialog(mContext.getString(R.string.confirm_off_fingerprint_message), new AuthenticationCallback() {
+        showAuthenticationDialog(false, mContext.getString(R.string.confirm_off_fingerprint_message), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
                 setUseFingerprint(false);
