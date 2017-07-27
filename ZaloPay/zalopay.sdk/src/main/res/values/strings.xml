@@ -8,6 +8,9 @@
     <string name="sdk_website3ds_callback_url">pay/success?orderNo</string>
     <string name="sdk_website123pay_domain">123pay.vn</string>
 
+    <string name="sdk_bidv_bankscript_term_of_use">https://ebank.bidv.com.vn/EWALLET/pay.jsp</string>
+    <string name="sdk_bidv_bankscript_dknhdt">https://ebank.bidv.com.vn/DKNHDT/</string>
+
     <string name="allow_use_fingerprint_feature">1</string>
     <string name="allow_use_send_log_on_transactionfail">1</string>
     <string name="allow_link_atm">1</string>

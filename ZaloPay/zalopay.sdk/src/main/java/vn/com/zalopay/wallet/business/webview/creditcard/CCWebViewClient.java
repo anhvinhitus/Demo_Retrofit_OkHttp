@@ -1,6 +1,9 @@
 package vn.com.zalopay.wallet.business.webview.creditcard;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
@@ -12,7 +15,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -23,6 +25,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.business.entity.base.WebViewHelper.SSL_ERROR;
@@ -60,6 +63,17 @@ public class CCWebViewClient extends PaymentWebViewClient {
         return TextUtils.isEmpty(url) || url.contains(mMerchantPrefix) || url.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain));
     }
 
+    private boolean shouldOpenBrowser(String url) {
+        return TextUtils.isEmpty(url) || url.contains(GlobalData.getStringResource(RS.string.sdk_bidv_bankscript_term_of_use))
+                || url.contains(GlobalData.getStringResource(RS.string.sdk_bidv_bankscript_dknhdt));
+    }
+
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
+        Timber.d("onPageStarted %s ", url);
+    }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Timber.d("shouldOverrideUrlLoading %s ", url);
@@ -67,8 +81,15 @@ public class CCWebViewClient extends PaymentWebViewClient {
             Timber.w("Adapter is release on loading webwsite");
             return true;
         }
+
         if (shouldStopFlow(url)) {
             SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkWebsite3dsEvent());
+            return true;
+        }
+
+        if (shouldOpenBrowser(url)) {
+            view.getContext().startActivity(
+                    new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             return true;
         }
         getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
