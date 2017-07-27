@@ -36,7 +36,7 @@ public class AppInfoStore {
 
         String getTranstypeCheckSumKey(long pAppId, @TransactionType int transtype);
 
-        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank, String bankCode);
 
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode);
 
@@ -50,7 +50,7 @@ public class AppInfoStore {
     public interface Interactor {
         void setExpireTime(long appId, long expireTime);
 
-        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode);
+        MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank, String bankCode);
 
         MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int pTranstype, int pPmcID, String pBankCode);
 

@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
@@ -40,6 +41,12 @@ public class PaymentInfoHelper extends SingletonBase {
     public PaymentInfoHelper(IPaymentInfo paymentInfo) {
         super();
         this.paymentInfo = paymentInfo;
+    }
+
+    public
+    @CardType
+    String getCardTypeLink() {
+        return paymentInfo != null ? paymentInfo.getCardTypeLink() : null;
     }
 
     public long getAppId() {

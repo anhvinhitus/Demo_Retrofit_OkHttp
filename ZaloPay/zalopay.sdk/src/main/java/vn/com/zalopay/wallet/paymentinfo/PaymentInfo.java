@@ -78,4 +78,9 @@ public final class PaymentInfo implements IPaymentInfo {
     public IBuilder getBuilder() {
         return builder;
     }
+
+    @Override
+    public String getCardTypeLink() {
+        return builder != null ? builder.getCardTypeLink() : null;
+    }
 }

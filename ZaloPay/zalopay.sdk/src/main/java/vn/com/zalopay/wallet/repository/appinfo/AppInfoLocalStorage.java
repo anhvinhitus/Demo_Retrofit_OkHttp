@@ -9,7 +9,6 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
@@ -18,6 +17,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransTypeRespons
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 import static vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader.MAX_VALUE_CHANNEL;
 import static vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader.MIN_VALUE_CHANNEL;
@@ -150,10 +150,17 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     }
 
     @Override
-    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank, String bankCode) {
         MiniPmcTransType pmcTransType = null;
         try {
-            String pmc = isBankAcount ? mSharedPreferences.getBankAccountChannelConfig(pAppId, transtype, bankCode) : mSharedPreferences.getATMChannelConfig(pAppId, transtype, bankCode);
+            String pmc;
+            if(isBankAcount){
+                pmc = mSharedPreferences.getBankAccountChannelConfig(pAppId, transtype, bankCode);
+            }else if(isInternationalBank){
+                pmc = mSharedPreferences.getCreditCardChannelConfig(pAppId, transtype, bankCode);
+            }else{
+                pmc = mSharedPreferences.getATMChannelConfig(pAppId, transtype, bankCode);
+            }
             if (!TextUtils.isEmpty(pmc)) {
                 pmcTransType = GsonUtils.fromJsonString(pmc, MiniPmcTransType.class);
             }

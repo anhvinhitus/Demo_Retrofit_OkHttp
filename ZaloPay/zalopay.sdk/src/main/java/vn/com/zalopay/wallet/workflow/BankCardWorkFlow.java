@@ -77,7 +77,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 mMiniPmcTransType = SDKApplication
                         .getApplicationComponent()
                         .appInfoInteractor()
-                        .getPmcTranstype(appId, mPaymentInfoHelper.getTranstype(), bankAccount, pBankCode);
+                        .getPmcTranstype(appId, mPaymentInfoHelper.getTranstype(), bankAccount, false, pBankCode);
                 Timber.d("new pmc trans type %s", GsonUtils.toJsonString(mMiniPmcTransType));
             }
         } catch (Exception e) {
@@ -157,7 +157,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     public void autoFillOtp(String pSender, String pOtp) {
         Timber.d("sender " + pSender + " otp " + pOtp);
         try {
-            if(getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)){
+            if (getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)) {
                 return;
             }
             if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {

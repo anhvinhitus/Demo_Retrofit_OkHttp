@@ -29,6 +29,7 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
@@ -207,10 +208,11 @@ public class BankInteractor implements BankStore.Interactor {
             return bank;
         }
         //continue check bank future version
+        boolean internationalBank = CardHelper.isInternationalBank(bankCode);
         MiniPmcTransType pmcTransType = SDKApplication
                 .getApplicationComponent()
                 .appInfoInteractor()
-                .getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, isBankAccount, bankCode);
+                .getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, isBankAccount, internationalBank, bankCode);
         if (pmcTransType != null && !pmcTransType.isVersionSupport(appVersion)) {
             String message = GlobalData.getAppContext().getResources().getString(R.string.sdk_warning_version_support_linkchannel);
             message = String.format(message, bankConfig.getShortBankName());

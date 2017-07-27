@@ -39,6 +39,7 @@ import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKPayment;
@@ -205,7 +206,7 @@ public class PaymentWrapper {
         mCompositeSubscription.add(subscription);
     }
 
-    public void linkCard(@NonNull Activity activity) {
+    public void linkCard(@NonNull Activity activity, @CardType String cardCode) {
         if (mCurrentUser == null) {
             Timber.i("payWithOrder: current user is null");
             responseListener.onParameterError("Thông tin người dùng không hợp lệ");
@@ -219,7 +220,10 @@ public class PaymentWrapper {
             return;
         }
         try {
-            mPaymentInfoBuilder.setTransactionType(TransactionType.LINK);
+            mPaymentInfoBuilder
+                    .setTransactionType(TransactionType.LINK)
+                    .setCardTypeLink(cardCode);
+
             invokePayAPI(activity, mPaymentInfoBuilder);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
