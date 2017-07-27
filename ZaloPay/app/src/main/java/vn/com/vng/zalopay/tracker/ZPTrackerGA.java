@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 public class ZPTrackerGA extends DefaultTracker {
 
     private static final long INTERVAL_SEND_PAYLOAD = 20;
-    private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s]";
+    private static final String FORMAT_GOOGLE_ANALYTICS = "[Android]%s";
 
     private static boolean initialized = false;
 
