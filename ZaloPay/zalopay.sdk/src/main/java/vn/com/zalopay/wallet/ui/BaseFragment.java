@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPScreens;
 
 /*
  * Created by chucvv on 6/12/17.
@@ -32,6 +35,15 @@ public abstract class BaseFragment extends Fragment {
         onViewBound(view);
         onDataBound(view);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        String screenName = getTrackingScreenName();
+        if (!TextUtils.isEmpty(screenName)) {
+            ZPAnalytics.trackScreen(screenName);
+        }
     }
 
     @Override
