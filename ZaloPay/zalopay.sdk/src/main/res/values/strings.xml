@@ -389,6 +389,6 @@
     <string name="sdk_error_mess_exist_mapcard">Thẻ đã được lưu trước đó</string>
     <string name="sdk_error_load_resource">Lỗi đọc cấu hình ứng dụng. Vui lòng đóng ứng dụng và thử lại!</string>
     <string name="sdk_warning_no_channel_balance_error">Số dư không đủ, bạn cần</string>
-    <string name="sdk_hyperlink_charge_more">nạp thêm</string>
+    <string name="sdk_hyperlink_charge_more">Nạp thêm</string>
 
 </resources>
