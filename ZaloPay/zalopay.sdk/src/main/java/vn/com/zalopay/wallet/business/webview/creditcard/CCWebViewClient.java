@@ -95,7 +95,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            BIDVWebFlow(null, url, view);
+           // BIDVWebFlow(null, url, view);
         }
         isFirstLoad = false;
     }
