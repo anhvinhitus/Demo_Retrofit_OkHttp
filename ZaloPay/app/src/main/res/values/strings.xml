@@ -175,7 +175,7 @@
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên để tìm</string>
 
-    <string name="deposit">Nạp tiền vào tài khoản</string>
+    <string name="deposit">Nạp tiền vào tài khoản Zalo Pay</string>
 
     <string name="you.have.unread.messages">Bạn có %s thông báo chưa đọc.</string>
     <string name="not_update_zalopay_id">Chưa cập nhật Zalo Pay ID</string>
