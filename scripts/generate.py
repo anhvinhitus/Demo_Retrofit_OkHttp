@@ -1,5 +1,6 @@
 import os
 import csv
+import generate_screen as screen
 
 def read_csv(file_path):
     data = []
@@ -95,5 +96,13 @@ cat = print_convert_category(data)
 en = print_zpevents(data, ac, cat)
 print(en)
 write_file('../maven_src/zalopayanalytics/src/main/java/vn/com/zalopay/analytics/ZPEvents.java', en)
+
+data = screen.read_csv('ZaloPay-ScreenAnalytics-Data.csv')
+screen.convert_screen(data)
+
+en = screen.print_zpscreens(data)
+print(en)
+write_file('../maven_src/zalopayanalytics/src/main/java/vn/com/zalopay/analytics/ZPScreens.java', en)
+
 
 print("Done!")
