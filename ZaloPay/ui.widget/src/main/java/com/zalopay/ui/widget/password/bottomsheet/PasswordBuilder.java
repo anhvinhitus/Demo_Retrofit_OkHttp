@@ -229,4 +229,12 @@ public abstract class PasswordBuilder implements IBuilder {
         }
         return this;
     }
+
+    @Override
+    public IBuilder resetOTPContent() {
+        if (mISetDataToView != null) {
+            mISetDataToView.resetOTPContent();
+        }
+        return this;
+    }
 }

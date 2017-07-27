@@ -28,4 +28,6 @@ public interface ISetDataToView {
     void showOTPInputView();
 
     void setOTPValue(String otpValue);
+
+    void resetOTPContent();
 }
