@@ -237,7 +237,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         }
 
         if (type == Constants.LinkBank.LINK_CARD) {
-            mPaymentWrapper.linkCard((Activity) mView.getContext());
+            mPaymentWrapper.linkCard((Activity) mView.getContext(),cardCode);
         } else if (type == Constants.LinkBank.LINK_ACCOUNT) {
             if (TextUtils.isEmpty(cardCode)) {
                 return;

@@ -42,6 +42,7 @@ import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -331,18 +332,25 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return PaymentPermission.allowLinkAtm() || PaymentPermission.allowLinkCC();
     }
 
-    private MiniPmcTransType loadLinkConfig(boolean bankLink) {
-        return appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, null);
+    private MiniPmcTransType loadLinkConfig(boolean bankLink, String pBankCode) {
+        boolean internationalBank = CardHelper.isInternationalBank(pBankCode);
+        return appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, internationalBank, null);
     }
 
     private void startLink() {
-        Timber.d("start link channel");
         try {
+            if (mPaymentInfoHelper == null) {
+                onExit(mContext.getResources().getString(R.string.sdk_invalid_payment_data), true);
+                return;
+            }
+            @CardType String bankCode = mPaymentInfoHelper.getCardTypeLink();
+            boolean isBankAccountLink = mPaymentInfoHelper.isBankAccountTrans();
+            Timber.d("start link bank %s", bankCode);
             if (!allowLink() && !mPaymentInfoHelper.isBankAccountTrans()) {
                 onExit(mContext.getString(R.string.sdk_error_ban_link), true);
                 return;
             }
-            mMiniPmcTransType = loadLinkConfig(mPaymentInfoHelper.isBankAccountTrans());
+            mMiniPmcTransType = loadLinkConfig(isBankAccountLink, bankCode);
             if (mMiniPmcTransType == null) {
                 onExit(mContext.getResources().getString(R.string.sdk_config_invalid), true);
                 return;
@@ -403,7 +411,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             Timber.d("create new adapter pmc id = %s", pChannelId);
             //release old adapter
             if (mAbstractWorkFlow != null) {
-                mAbstractWorkFlow.onDetach();
+                //mAbstractWorkFlow.onDetach();
                 mAbstractWorkFlow = null;
             }
             mAbstractWorkFlow = WorkFlowFactoryCreator.createByPmc(mContext, this, miniPmcTransType, mPaymentInfoHelper, mStatusResponse);

@@ -1,12 +1,12 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -19,14 +19,16 @@ public final class PaymentInfoBuilder implements IBuilder {
     @PaymentStatus
     public int status;//order status
     @TransactionType
-    public int transactionType;
-    public UserInfo origin_user;
-    public UserInfo destination_user; // whom tranfer to
-    public LinkAccInfo link_acc_info; // info about link/unlink bank account
-    public int[] forceChannelIds;// force user go to 1 channel
-    public PaymentLocation mLocation; // user location payment
-    public BaseMap mapBank; //info about map bank after user payment success
-    public DMapCardResult mapCardResult;//notify about card map success in payment
+    private int transactionType;
+    private UserInfo origin_user;
+    private UserInfo destination_user; // whom tranfer to
+    private LinkAccInfo link_acc_info; // info about link/unlink bank account
+    private int[] forceChannelIds;// force user go to 1 channel
+    private PaymentLocation mLocation; // user location payment
+    private BaseMap mapBank; //info about map bank after user payment success
+    private DMapCardResult mapCardResult;//notify about card map success in payment
+    @CardType
+    private String mCardTypeLink;//bank code to link bank
 
     @Override
     public AbstractOrder getOrder() {
@@ -69,6 +71,17 @@ public final class PaymentInfoBuilder implements IBuilder {
     @Override
     public DMapCardResult getMapCard() {
         return mapCardResult;
+    }
+
+    @Override
+    public IBuilder setCardTypeLink(@CardType String pCardType) {
+        mCardTypeLink = pCardType;
+        return this;
+    }
+
+    @Override
+    public String getCardTypeLink() {
+        return mCardTypeLink;
     }
 
     @Override
@@ -162,5 +175,6 @@ public final class PaymentInfoBuilder implements IBuilder {
         link_acc_info = null;
         mapBank = null;
         mapCardResult = null;
+        mCardTypeLink = null;
     }
 }

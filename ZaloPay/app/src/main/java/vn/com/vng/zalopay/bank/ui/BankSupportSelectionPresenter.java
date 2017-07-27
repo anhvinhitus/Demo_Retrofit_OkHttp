@@ -90,12 +90,12 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
         } else if (bank.isBankAccount()) {
             linkAccount(bank.bankCode);
         } else {
-            linkCard();
+            linkCard(bank.bankCode);
         }
     }
 
-    private void linkCard() {
-        linkBank(Constants.LinkBank.LINK_CARD, "");
+    private void linkCard(String cardCode) {
+        linkBank(Constants.LinkBank.LINK_CARD, cardCode);
     }
 
     private void linkAccount(String cardCode) {

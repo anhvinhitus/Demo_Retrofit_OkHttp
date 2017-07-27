@@ -49,8 +49,8 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     }
 
     @Override
-    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, String bankCode) {
-        return this.mLocalStorage.getPmcTranstype(pAppId, transtype, isBankAcount, bankCode);
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank,String bankCode) {
+        return this.mLocalStorage.getPmcTranstype(pAppId, transtype, isBankAcount, isInternationalBank, bankCode);
     }
 
     @Override

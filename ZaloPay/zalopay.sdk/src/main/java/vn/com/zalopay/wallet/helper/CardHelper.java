@@ -4,14 +4,29 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
 
 public class CardHelper {
+
+    public static boolean isInternationalBank(@CardType String pBankCode) {
+        if(TextUtils.isEmpty(pBankCode)){
+            return false;
+        }
+        switch (pBankCode) {
+            case CardType.VISA:
+            case CardType.MASTER:
+            case CardType.JCB:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     public static DMapCardResult cast(MapCard saveCardInfo) {
         DMapCardResult mapCardResult = new DMapCardResult();

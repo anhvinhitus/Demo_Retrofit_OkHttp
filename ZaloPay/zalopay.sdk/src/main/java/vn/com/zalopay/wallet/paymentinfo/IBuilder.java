@@ -5,6 +5,7 @@ import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
@@ -30,6 +31,10 @@ public interface IBuilder {
     int[] getForceChannels();
 
     DMapCardResult getMapCard();
+
+    IBuilder setCardTypeLink(@CardType String pCardType);
+
+    @CardType String getCardTypeLink();
 
     IBuilder setMapCard(DMapCardResult mapCard);
 
