@@ -241,7 +241,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     @Override
     public void renderTotalAmountAndFee(double total_amount, double fee) {
         if (fee > 0) {
-            String txtFee = CurrencyUtil.formatCurrency(fee, false);
+            String txtFee = CurrencyUtil.formatCurrency(fee);
             setText(R.id.order_fee_txt, txtFee);
         } else {
             setText(R.id.order_fee_txt, getResources().getString(R.string.sdk_order_fee_free));
