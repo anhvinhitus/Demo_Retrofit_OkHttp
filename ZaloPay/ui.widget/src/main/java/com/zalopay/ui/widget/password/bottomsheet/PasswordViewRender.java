@@ -156,6 +156,11 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         public void setOTPValue(final String otpValue) {
             setOTP(otpValue);
         }
+
+        @Override
+        public void resetOTPContent() {
+            resetOTPValue();
+        }
     };
 
     public PasswordViewRender(IBuilder pBuilder) {
@@ -432,6 +437,10 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         if (otp.length() == this.getPinLength()) {
             onPasswordComplete();
         }
+    }
+
+    void resetOTPValue() {
+        mTextViewOTPInput.setText(DEFAULT_OTP_EMPTY_CHARACTER);
     }
 
     void setSpannedMessageToView(TextView tv,

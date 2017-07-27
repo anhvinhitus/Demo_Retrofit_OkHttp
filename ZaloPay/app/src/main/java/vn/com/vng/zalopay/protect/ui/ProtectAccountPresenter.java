@@ -49,10 +49,9 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private final int STATUS_OLD_PASS_INVALID = -3;
     private final int STATUS_CONFIRM_PASS_INVALID = -2;
     private final int STATUS_OTP_INVALID = -1;
-    private final int STATUS_OLD_PASS_SUCCESS = 1;
-    private final int STATUS_NEW_PASS = 2;
-    private final int STATUS_OTP = 3;
-    private final int STATUS_CONFIRM_NEW_PASS = 4;
+    private final int STATUS_NEW_PASS = 1;
+    private final int STATUS_OTP = 2;
+    private final int STATUS_CONFIRM_NEW_PASS = 3;
 
     @Inject
     public Context mContext;
@@ -287,7 +286,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     .showFPSuggestCheckBox(false)
                     .showSupportInfo(true)
                     .setNeedHashPass(true)
-                    .setConfirmClose(true)
                     .setPasswordCallBack(changePasswordCallBack)
                     .setOnCallSupportListener(() -> {
                         if (mContext == null) {
@@ -319,7 +317,8 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
         @Override
         public void onClose() {
-            if(mPassword.getBuilder().isConfirmClose()) {
+            setViewStatus(0);
+            if (mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
                         getActivity().getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
@@ -338,7 +337,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                                 } catch (Exception e) {
                                     Timber.d("Confirm close dialog error [%s]", e.getMessage());
                                 }
-                                setViewStatus(0);
+
                             }
                         });
             }
@@ -348,7 +347,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onComplete(String pHashPin) {
             switch (getViewStatus()) {
                 case STATUS_OLD_PASS_INVALID:
-                case STATUS_OLD_PASS_SUCCESS:
                     verifyPassword(pHashPin);
                     break;
                 case STATUS_NEW_PASS:
@@ -377,53 +375,25 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         }
     };
 
-    // General set error function
-    void setError(String pError) {
+    /*
+    * Functions about handle view status
+    * */
+    void setError(String pError, boolean showConfirmCloseView) {
         try {
             if (mPassword != null) {
                 mPassword.setError(pError);
                 mPassword.lockElementView(false);
+                mPassword.getBuilder().setConfirmClose(showConfirmCloseView);
             }
         } catch (Exception e) {
             Timber.d("AuthenticationPassword setError() [%s]", e.getMessage());
         }
     }
 
-    /*
-    * Functions about handle view status
-    * */
-    void onSetOldPasswordSuccess() {
-        try {
-            mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
-            mPassword.getBuilder().resetPasswordInput().clearText();
-            mPassword.lockElementView(false);
-        } catch (Exception e) {
-            Timber.d("View set old password success error [%s]", e.getMessage());
-        }
-    }
-
-    void onConfirmNewPasswordInvalid() {
-        if (mContext == null) {
-            return;
-        }
-
-        setError(mContext.getString(R.string.protect_account_confirm_new_password_invalid));
-    }
-
-    void onDisplayOTP() {
-        try {
-            mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
-            mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText();
-            mPassword.lockElementView(false);
-        } catch (Exception e) {
-            Timber.d("View otp error [%s]", e.getMessage());
-        }
-    }
-
     void onNewPassword() {
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_new_password));
-            mPassword.getBuilder().resetPasswordInput().clearText();
+            mPassword.getBuilder().resetPasswordInput().clearText().setConfirmClose(true);
             mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View set new password error [%s]", e.getMessage());
@@ -433,10 +403,28 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     void onConfirmNewPassword() {
         try {
             mPassword.setTitle(mContext.getString(R.string.protect_account_confirm_new_password));
-            mPassword.getBuilder().resetPasswordInput().clearText();
+            mPassword.getBuilder().resetPasswordInput().clearText().setConfirmClose(true);
             mPassword.lockElementView(false);
         } catch (Exception e) {
             Timber.d("View set confirm new password error [%s]", e.getMessage());
+        }
+    }
+
+    void onConfirmNewPasswordInvalid() {
+        if (mContext == null) {
+            return;
+        }
+
+        setError(mContext.getString(R.string.protect_account_confirm_new_password_invalid), true);
+    }
+
+    void onDisplayOTP() {
+        try {
+            mPassword.setTitle(mContext.getString(R.string.protect_account_otp));
+            mPassword.getBuilder().showOTPInputView().resetPasswordInput().clearText().setConfirmClose(true);
+            mPassword.lockElementView(false);
+        } catch (Exception e) {
+            Timber.d("View otp error [%s]", e.getMessage());
         }
     }
 
@@ -445,16 +433,13 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             return;
         }
 
-        setError(mContext.getString(R.string.protect_account_otp_invalid));
+        setError(mContext.getString(R.string.protect_account_otp_invalid), true);
     }
 
     void setChangePasswordViewStatus(int status) {
         setViewStatus(status);
         switch (status) {
             case STATUS_OLD_PASS_INVALID:
-                break;
-            case STATUS_OLD_PASS_SUCCESS:
-                onSetOldPasswordSuccess();
                 break;
             case STATUS_NEW_PASS:
                 onNewPassword();
@@ -523,14 +508,13 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         @Override
         public void onError(Throwable e) {
             String message = ErrorMessageFactory.create(getActivity(), e);
-            setError(message);
+            setError(message, false);
             setViewStatus(STATUS_OLD_PASS_INVALID);
         }
 
         @Override
         public void onNext(String hashPassword) {
-            setChangePasswordViewStatus(STATUS_OLD_PASS_SUCCESS);
-            setViewStatus(STATUS_NEW_PASS);
+            setChangePasswordViewStatus(STATUS_NEW_PASS);
         }
     }
 
@@ -562,7 +546,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             try {
                 String message = ErrorMessageFactory.create(getActivity(), e);
                 mPassword.showLoading(false);
-                setError(message);
+                setError(message, true);
             } catch (Exception exception) {
                 Timber.d("ChangePinSubscriber onError exception [%s]", exception.getMessage());
             }
@@ -597,10 +581,15 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         @Override
         public void onError(Throwable e) {
             try {
-                String message = ErrorMessageFactory.create(getActivity(), e);
+                String errorMessage = e.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = ErrorMessageFactory.create(getActivity(), e);
+                }
+
                 mPassword.showLoading(false);
-                setError(message);
-                setChangePasswordViewStatus(STATUS_OTP_INVALID);
+                mPassword.getBuilder().clearText().resetOTPContent();
+                setViewStatus(STATUS_OTP_INVALID);
+                setError(errorMessage, true);
             } catch (Exception exception) {
                 Timber.d("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
             }

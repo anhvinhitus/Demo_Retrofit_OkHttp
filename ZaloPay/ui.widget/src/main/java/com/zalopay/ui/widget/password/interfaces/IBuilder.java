@@ -68,5 +68,7 @@ public interface IBuilder {
 
     IBuilder lockView(boolean isLockControl);
 
+    IBuilder resetOTPContent();
+
     void release();
 }
