@@ -64,7 +64,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     protected String getFeeDesc(PaymentChannel pChannel) {
         String fee_desc = mContext.getString(R.string.sdk_channel_free_mess);
         if (pChannel.hasFee()) {
-            fee_desc = CurrencyUtil.formatCurrency(pChannel.totalfee,false);
+            fee_desc = CurrencyUtil.formatCurrency(pChannel.totalfee);
         }
         return fee_desc;
     }
