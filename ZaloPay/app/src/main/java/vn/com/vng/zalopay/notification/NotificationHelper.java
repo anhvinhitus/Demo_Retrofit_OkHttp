@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.PreferentialNotificationEvent;
+import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.promotion.PromotionHelper;
@@ -674,6 +675,7 @@ public class NotificationHelper {
     private void resetPaymentPassword() {
         refreshGatewayInfo();
         mUserConfig.removeFingerprint();
+        EventBus.getDefault().post(new RefreshBankAccountEvent(""));
     }
 
     private void showBadgePreferential() {
