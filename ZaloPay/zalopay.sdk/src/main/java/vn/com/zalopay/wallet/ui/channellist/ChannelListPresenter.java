@@ -702,8 +702,28 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
+            showSnackBarOnError();
+        }
+    }
+
+    private void showSnackBarOnError() throws Exception{
+        if(mPaymentInfoHelper == null){
+            return;
+        }
+        if(mPaymentInfoHelper.getBalance() > mPaymentInfoHelper.getAmountTotal()){
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
+        }else{
+            getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel_balance_error),
+                    mContext.getResources().getString(R.string.sdk_hyperlink_charge_more),
+                    Snackbar.LENGTH_INDEFINITE, () -> {
+                        mPaymentInfoHelper.setResult(PaymentStatus.ERROR_BALANCE);
+                        try {
+                            getViewOrThrow().callbackThenTerminate();
+                        } catch (Exception e) {
+                            Timber.w(e);
+                        }
+                    });
         }
     }
 
