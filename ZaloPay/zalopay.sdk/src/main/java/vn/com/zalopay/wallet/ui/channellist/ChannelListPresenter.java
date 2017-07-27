@@ -149,6 +149,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPaymentInfoHelper.setOrder(temOrder);
             mPaymentInfoHelper.setTranstype(tempTranstype);
             mPaymentInfoHelper.setLinkAccountInfo(null);
+            mPaymentInfoHelper.setMapCardResult(null);
             mPayProxy.setPaymentInfo(mPaymentInfoHelper);
             temOrder = null;
             //reload channels list to continue payment if user link success
