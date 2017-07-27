@@ -18,6 +18,6 @@ public class WebAppPromotionActivity extends UserBaseToolBarActivity {
 
     @Override
     protected String getTrackingScreenName() {
-        return ZPScreens.PROMOTION;
+        return ZPScreens.PROMOTION_BANNERDETAIL;
     }
 }
