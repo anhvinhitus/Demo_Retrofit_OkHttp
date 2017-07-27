@@ -34,6 +34,8 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webapp.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewPromotionProcessor;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPScreens;
 
 
 /**
@@ -293,6 +295,14 @@ public class WebViewPromotionFragment extends UserBaseTabFragment implements ZPW
     public void onRefresh() {
         if (mWebViewProcessor != null) {
             mWebViewProcessor.refreshWeb(getActivity());
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            ZPAnalytics.trackScreen(ZPScreens.PROMOTION);
         }
     }
 }

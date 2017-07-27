@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
@@ -256,5 +257,14 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @Override
     public void onStopFragment() {
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            ZPAnalytics.trackScreen(ZPScreens.ME);
+        }
     }
 }

@@ -135,7 +135,7 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
 
     @Override
     protected String getTrackingScreenName() {
-        return ZPScreens.ME;
+        return ZPScreens.ME_PROFILE;
     }
 }
 
