@@ -43,6 +43,8 @@ import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.user.UserBaseActivity;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPScreens;
 
 /**
  * Created by hieuvm on 2/22/17.
@@ -209,5 +211,13 @@ public class InternalReactFragment extends ReactBaseFragment {
     public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
         reactInstanceCaughtError();
         handleException(event.getInnerException());
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            ZPAnalytics.trackScreen(ZPScreens.TRANSACTIONLOG);
+        }
     }
 }

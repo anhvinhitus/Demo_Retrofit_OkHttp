@@ -16,6 +16,9 @@ import vn.com.vng.zalopay.ui.fragment.HomeListAppFragment;
 import vn.com.vng.zalopay.ui.fragment.HomeTopHeaderFragment;
 import vn.com.vng.zalopay.ui.toolbar.HeaderView;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPScreens;
+import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -149,6 +152,14 @@ public class ZaloPayFragment extends UserBaseTabFragment implements
             homeTopHeaderFragment = HomeTopHeaderFragment.newInstance();
             ft.replace(R.id.home_fl_top_header_content, homeTopHeaderFragment);
             ft.commit();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            ZPAnalytics.trackScreen(ZPScreens.HOME);
         }
     }
 }
