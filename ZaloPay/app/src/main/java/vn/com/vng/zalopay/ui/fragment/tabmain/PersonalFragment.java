@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -47,6 +48,8 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @Inject
     PersonalPresenter presenter;
+
+    private boolean mClickMore = true;
 
     public static PersonalFragment newInstance() {
 
@@ -176,6 +179,10 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
+        if (!mClickMore) {
+            return;
+        }
+        mClickMore = false;
         if (presenter.getAccounts() > 0) {
             ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
             navigator.startLinkCardActivity(getContext());
@@ -183,6 +190,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
             ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
             presenter.addLinkCard();
         }
+        AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
     }
 
 //    @OnClick(R.id.tab_personal_rl_bill)

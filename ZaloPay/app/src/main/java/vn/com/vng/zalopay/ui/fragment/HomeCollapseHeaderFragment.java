@@ -14,9 +14,10 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.fragment.tabmain.UserBaseTabFragment;
 import vn.com.vng.zalopay.ui.presenter.HomeCollapseHeaderPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeCollapseHeaderView;
-import vn.com.zalopay.utility.CurrencyUtil;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * Created by Datnt10 on 5/10/17.
@@ -30,6 +31,8 @@ public class HomeCollapseHeaderFragment extends UserBaseTabFragment implements I
 
     @BindView(R.id.tv_balance)
     TextView mBalanceView;
+
+    private boolean mClickMore = true;
 
     public static HomeCollapseHeaderFragment newInstance() {
         Bundle args = new Bundle();
@@ -94,8 +97,12 @@ public class HomeCollapseHeaderFragment extends UserBaseTabFragment implements I
     */
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick() {
-        navigator.startLinkCardActivity(getActivity());
-        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+        if (mClickMore) {
+            mClickMore = false;
+            navigator.startLinkCardActivity(getActivity());
+            ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+        }
+        AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
     }
 
     @OnClick(R.id.btn_scan_to_pay)

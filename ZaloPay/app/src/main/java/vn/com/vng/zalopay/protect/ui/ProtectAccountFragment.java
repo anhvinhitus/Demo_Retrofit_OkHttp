@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by hieuvm on 12/24/16.
@@ -56,6 +57,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @Inject
     ProtectAccountPresenter mPresenter;
+    private boolean mClickMore = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,13 +134,19 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnTouch(R.id.swcTouchId)
     public boolean onTouchTouchId(View view, MotionEvent event) {
-        mPresenter.useFingerprintToAuthenticate(!mSwcTouchIdView.isChecked());
+        if (mClickMore) {
+            mPresenter.useFingerprintToAuthenticate(!mSwcTouchIdView.isChecked());
+        }
+        AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
         return false;
     }
 
     @OnTouch(R.id.swcProtectAccount)
     public boolean onTouchProtectAccount(View v, MotionEvent event) {
-        mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
+        if (mClickMore) {
+            mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
+        }
+        AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
         return false;
     }
 }
