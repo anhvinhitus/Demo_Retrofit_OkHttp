@@ -30,7 +30,7 @@
                     android:background="@drawable/txt_bottom_default_style"
                     android:hint="@string/sdk_otp_hint"
                     android:imeOptions="actionDone|flagNoExtractUi"
-                    android:inputType="number|textNoSuggestions"
+                    android:inputType="text|textNoSuggestions"
                     android:maxLength="@integer/maximum_character_field_opt_length"
                     android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
                     android:paddingLeft="@dimen/zpw_padding_left_right"

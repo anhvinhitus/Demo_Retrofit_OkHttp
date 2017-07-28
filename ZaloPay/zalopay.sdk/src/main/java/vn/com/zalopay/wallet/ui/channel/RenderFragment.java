@@ -63,7 +63,7 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
         }
     }
 
-    public void renderKeyBoard(String screenName) {
+    public void renderKeyBoard(String screenName, String pBankCode) {
         if(mResourceRender == null){
             initResourceRender(screenName);
         }
@@ -71,7 +71,7 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
             Timber.d("resource render is null");
             return;
         }
-        mResourceRender.renderKeyBoard();
+        mResourceRender.renderKeyBoard(pBankCode);
     }
 
     // fresco load Uri
@@ -89,14 +89,19 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
         if (view == null) {
             return view;
         }
-        if (pKeyBoardType == KeyboardType.NUMBER && view instanceof EditText) {
+        if(!(view instanceof EditText)){
+            return view;
+        }
+        if (pKeyBoardType == KeyboardType.NUMBER) {
             //user using the laban key for example
             if (!SdkUtils.useDefaultKeyBoard(GlobalData.getAppContext())) {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             } else {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             }
-        } else if (pKeyBoardType == KeyboardType.TEXT && view instanceof EditText) {
+            return view;
+        }
+        if (pKeyBoardType == KeyboardType.TEXT) {
             ((EditText) view).setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         }
         return view;

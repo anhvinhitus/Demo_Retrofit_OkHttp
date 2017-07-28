@@ -39,7 +39,7 @@ public class ResourceRender {
         render(mResourceManager.getStaticView(), mResourceManager.getDynamicView());
     }
 
-    public void renderKeyBoard() {
+    public void renderKeyBoard(String pBankCode) {
         List<DKeyBoardConfig> keyBoardConfigs = mResourceManager.getKeyBoardConfig();
         if(keyBoardConfigs == null || keyBoardConfigs.size() <= 0){
             return;
@@ -70,7 +70,7 @@ public class ResourceRender {
                 continue;
             }
             //set keyboard by bank
-            if (BankDetector.getInstance().detected() && BankDetector.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
+            if (!TextUtils.isEmpty(pBankCode) && pBankCode.equalsIgnoreCase(keyboard.bankcode)) {
                 mView.setKeyBoard(keyboard.view, keyboard.type);
             }
         }
