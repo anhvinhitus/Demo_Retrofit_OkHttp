@@ -158,6 +158,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @OnClick(R.id.tab_personal_tv_setting)
     public void goToProtectAccount() {
         navigator.startProtectAccount(getActivity());
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_SECURITY);
     }
 
     @OnClick(R.id.personal_profile_header_info)

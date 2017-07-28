@@ -95,6 +95,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     public void onClickChangePassword(View v) {
 //        navigator.startChangePin(getActivity());
         mPresenter.processChangePassword();
+        ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_CHANGEPASSWORD);
     }
 
     @OnClick(R.id.protect_account_rl_logout)
@@ -139,6 +140,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     public boolean onTouchTouchId(View view, MotionEvent event) {
         if (mClickMore) {
             mPresenter.useFingerprintToAuthenticate(!mSwcTouchIdView.isChecked());
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_TOUCHID);
         }
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
         return false;
@@ -148,6 +150,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     public boolean onTouchProtectAccount(View v, MotionEvent event) {
         if (mClickMore) {
             mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_PRIVACY);
         }
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
         return false;

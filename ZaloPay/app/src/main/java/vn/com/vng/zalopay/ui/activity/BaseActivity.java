@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
@@ -207,6 +208,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNT_BACK);
         }else if (TAG.equals(WebAppPromotionActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_TOUCH_BACK);
+        }else if (TAG.equals(ProtectAccountActivity.class.getSimpleName())) {
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_BACK);
         }
     }
 
