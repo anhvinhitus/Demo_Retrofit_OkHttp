@@ -313,8 +313,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         this.mContext = context;
     }
 
-    ;
-
     public void onDetectCardComplete(Boolean detected) {
         Timber.d("card number %s is detected %s", getCardNumber(), detected);
         try {
@@ -533,7 +531,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected boolean isValidCardNumber() {
         try {
             boolean validateLuhn = validateCardNumberLuhn();
-            boolean isValidCardNumber = ((TextUtils.isEmpty(getCardNumber()) || !validateLuhn || !validateCardNumberLength() || mCardAdapter.getCardNumberFragment().hasError()));
+            boolean isValidCardNumber = ((TextUtils.isEmpty(getCardNumber())
+                    || !validateLuhn
+                    || !validateCardNumberLength()
+                    || mCardAdapter.getCardNumberFragment().hasError()));
             return !isValidCardNumber;
         } catch (Exception e) {
             Timber.w(e, "Exception check valid card number");
@@ -1145,12 +1146,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } else {
             //user in last view (card name)
             if (errorFragmentIndex == (mMaxPagerCount - 1)) {
-                try {
-                    showHintError(getCardNameView(), mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
-
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
+                showHintError(getCardNameView(), mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
             }
             getViewPager().setCurrentItem(errorFragmentIndex);
         }
@@ -1173,7 +1169,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             try {
                 initWebView();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e);
             }
             return;
         }
@@ -1242,12 +1238,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             int currentIndex = getViewPager().getCurrentItem();
             //prevent user move to next if input existed card in link card
             if (currentIndex == 0 && preventNextIfLinkCardExisted() && getAdapter().getPaymentInfoHelper().isLinkTrans()) {
-                try {
-                    showHintError(getCardNumberView(), warningCardExist());
-                    return;
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
+                showHintError(getCardNumberView(), warningCardExist());
             }
             //validate card number before move to next page
             if (currentIndex == 0 && !validateCardNumberLuhn()) {
@@ -1592,7 +1583,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         CardRule cardIdentifier = getSelectBankCardIdentifier();
         if (cardIdentifier != null) {
             if (cardIdentifier.isMatchMaxLengthCard(pCardNumber.length())) {
-
                 return true;
             }
         } else {
