@@ -15,6 +15,7 @@ import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     PaymentInfoHelper mPaymentHelper;
@@ -69,13 +70,14 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
 
             long appId = mPaymentHelper.getAppId();
             AbstractOrder order = mPaymentHelper.getOrder();
+            VoucherInfo voucherInfo = mPaymentHelper.getVoucher();
             UserInfo userInfo = mPaymentHelper.getUserInfo();
             PaymentLocation location = mPaymentHelper.getLocation();
             @TransactionType int transtype = mPaymentHelper.getTranstype();
             String chargeInfo = mPaymentHelper.getChargeInfo(mCard);
             String hashPassword = null;
             return DataParameter.prepareSubmitTransactionParams(mChannelId, appId, chargeInfo, hashPassword,
-                    order, userInfo, location, transtype, getDataParams());
+                    order, userInfo, location, transtype, voucherInfo,getDataParams());
         } catch (Exception e) {
             onRequestFail(e);
             Timber.w(e, "Exception do params submit order");

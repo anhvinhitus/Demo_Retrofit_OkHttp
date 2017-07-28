@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 6/16/17.
@@ -24,6 +25,7 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
     private int mChannelId;
     private UserInfo mUserInfo;
     private AbstractOrder mOrder;
+    private VoucherInfo mVoucher;
     private
     @TransactionType
     int mTranstype;
@@ -38,6 +40,11 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
         this.mUserInfo = pUserInfo;
         this.mLocation = pLocation;
         this.mTranstype = pTranstype;
+    }
+
+    public SubmitOrder voucher(VoucherInfo pVoucher) {
+        this.mVoucher = pVoucher;
+        return this;
     }
 
     public SubmitOrder order(AbstractOrder pOrder) {
@@ -64,7 +71,7 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
     public Map<String, String> buildParams() {
         Map<String, String> paramsApi = getMapTable();
         DataParameter.prepareSubmitTransactionParams(mChannelId, mAppId, mChargeInfo, mHashPassword,
-                mOrder, mUserInfo, mLocation, mTranstype, paramsApi);
+                mOrder, mUserInfo, mLocation, mTranstype, mVoucher, paramsApi);
         return paramsApi;
     }
 
@@ -76,7 +83,8 @@ public class SubmitOrder extends AbstractRequest<StatusResponse> {
                 pParams.get(ConstantParams.DEVICE_ID), pParams.get(ConstantParams.DEVICE_MODEL), pParams.get(ConstantParams.APP_VERSION), pParams.get(ConstantParams.SDK_VERSION),
                 pParams.get(ConstantParams.OS_VERSION), pParams.get(ConstantParams.CONN_TYPE), pParams.get(ConstantParams.MNO), pParams.get(ConstantParams.PMC_ID), pParams.get(ConstantParams.CHARGE_INFO),
                 pParams.get(ConstantParams.PIN), pParams.get(ConstantParams.TRANS_TYPE), pParams.get(ConstantParams.ACCESS_TOKEN),
-                pParams.get(ConstantParams.USER_ID), pParams.get(ConstantParams.LATTITUDE), pParams.get(ConstantParams.LONGITUDE), pParams.get(ConstantParams.ORDER_SOURCE));
+                pParams.get(ConstantParams.USER_ID), pParams.get(ConstantParams.LATTITUDE), pParams.get(ConstantParams.LONGITUDE),
+                pParams.get(ConstantParams.ORDER_SOURCE), pParams.get(ConstantParams.VOUCHERINFO));
 
     }
 

@@ -20,6 +20,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 public class DataParameter {
     /**
@@ -147,7 +148,7 @@ public class DataParameter {
     }
 
     public static boolean prepareSubmitTransactionParams(int channelId, long appId, String charge_info, String hashPassword, AbstractOrder order, UserInfo userInfo,
-                                                         PaymentLocation location, @TransactionType int transtype,
+                                                         PaymentLocation location, @TransactionType int transtype, VoucherInfo voucherInfo,
                                                          Map<String, String> params) {
 
         params.put(ConstantParams.PMC_ID, String.valueOf(channelId));
@@ -167,6 +168,9 @@ public class DataParameter {
         params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
 
         params.put(ConstantParams.ORDER_SOURCE, String.valueOf(order.ordersource));
+
+        String voucher = voucherInfo != null ? voucherInfo.toString() : "";
+        params.put(ConstantParams.VOUCHERINFO, voucher);
 
         params.put(ConstantParams.APP_ID, String.valueOf(appId));
         params.put(ConstantParams.APP_TRANS_ID, order.apptransid);

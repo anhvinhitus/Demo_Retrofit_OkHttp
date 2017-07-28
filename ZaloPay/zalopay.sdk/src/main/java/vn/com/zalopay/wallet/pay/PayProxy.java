@@ -377,6 +377,7 @@ public class PayProxy extends SingletonBase {
             Subscription subscription =
                     ((SubmitOrder) mRequestApi).channelId(channelId)
                             .order(mPaymentInfoHelper.getOrder())
+                            .voucher(mPaymentInfoHelper.getVoucher())
                             .password(pHashPassword)
                             .chargeInfo(chargeInfo)
                             .getObserver()

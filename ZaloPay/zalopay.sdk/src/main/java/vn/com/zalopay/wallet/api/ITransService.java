@@ -149,7 +149,8 @@ public interface ITransService {
                                            @Query(ConstantParams.USER_ID) String userID,
                                            @Query(ConstantParams.LATTITUDE) String longitude,
                                            @Query(ConstantParams.LONGITUDE) String latitude,
-                                           @Query(ConstantParams.ORDER_SOURCE) String ordersource);
+                                           @Query(ConstantParams.ORDER_SOURCE) String ordersource,
+                                           @Query(ConstantParams.VOUCHERINFO) String voucherinfo);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
     @API_NAME(https = ZPEvents.API_V001_TPE_VERIFYCARDFORMAPPING, connector = ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING)

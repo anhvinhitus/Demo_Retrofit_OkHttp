@@ -51,4 +51,5 @@ public class ConstantParams {
     public static final String LONGITUDE = "longitude";
     public static final String LATTITUDE = "latitude";
     public static final String ORDER_SOURCE = "ordersource";
+    public static final String VOUCHERINFO = "voucherinfo";
 }
