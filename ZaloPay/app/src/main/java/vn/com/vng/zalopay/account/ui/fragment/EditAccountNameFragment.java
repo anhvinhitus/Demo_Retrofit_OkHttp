@@ -110,10 +110,11 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         String btnText = v.getText().toString();
         final String accountName = mAccountNameView.getText().toString();
         if (btnText.equals(getString(R.string.check))) {
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_PRESSCHECK);
             presenter.existAccountName(accountName);
         } else {
             confirmUpdateAccount(accountName);
+            ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_TOUCH_REGISTER);
+
         }
     }
 

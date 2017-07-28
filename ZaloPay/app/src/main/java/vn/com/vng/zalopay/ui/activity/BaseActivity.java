@@ -22,6 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
@@ -211,6 +213,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_TOUCH_BACK);
         }else if (TAG.equals(ProtectAccountActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_BACK);
+        }else if (TAG.equals(ProfileActivity.class.getSimpleName())) {
+            ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK);
+        }else if (TAG.equals(UpdateProfileLevel3Activity.class.getSimpleName())) {
+            ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_IDENTITY_BACK);
         }
 
 

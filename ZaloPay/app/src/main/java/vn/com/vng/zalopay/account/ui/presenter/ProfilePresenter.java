@@ -145,7 +145,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         }
 
         mNavigator.startEditAccountActivity(mView.getContext());
-        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_LAUNCH);
     }
 
     public void logout() {

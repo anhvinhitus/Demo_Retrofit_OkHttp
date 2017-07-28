@@ -38,6 +38,8 @@ import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 6/30/16.
@@ -575,9 +577,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         if (!mEdtEmailView.validate() || !mEdtIdentityView.validate()) {
             return;
         }
-
         nextPage();
         hideKeyboard();
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_IDENTITY_INPUT);
     }
 
     @Override
