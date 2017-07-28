@@ -162,19 +162,19 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @OnClick(R.id.personal_profile_header_info)
     public void onProfileInfoClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_PROFILE);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_PROFILE);
         navigator.startProfileInfoActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_balance)
     public void onBalanceClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BALANCE);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_BALANCE);
         navigator.startBalanceManagementActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_bank)
     public void onLinkCardClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_BANK);
         navigator.startLinkCardActivity(getContext());
     }
 
@@ -185,12 +185,11 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
         }
         mClickMore = false;
         if (presenter.getAccounts() > 0) {
-            ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
             navigator.startLinkCardActivity(getContext());
         } else {
-            ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
             presenter.addLinkCard();
         }
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_BANK);
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
     }
 
@@ -213,20 +212,20 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @OnClick(R.id.tab_personal_tv_support_center)
     public void onSupportCenterClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_SUPPORTCENTER);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_SUPPORTCENTER);
         navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
     }
 
     @OnClick(R.id.tab_personal_tv_quick_feedback)
     public void onQuickFeedbackClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_FEEDBACK);
         String feedback_url = ConfigLoader.getFeedbackUrl();
         navigator.startWebViewFromQRScanActivity(getContext(), feedback_url);
     }
 
     @OnClick(R.id.tab_personal_tv_app_info)
     public void onAppInfoClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_ABOUTAPP);
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_ABOUT);
         navigator.startMiniAppActivity(getActivity(), ModuleName.ABOUT);
     }
 

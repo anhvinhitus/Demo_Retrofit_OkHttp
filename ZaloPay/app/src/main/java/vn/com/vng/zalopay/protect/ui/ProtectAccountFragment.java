@@ -15,6 +15,8 @@ import butterknife.OnTouch;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by hieuvm on 12/24/16.
@@ -98,6 +100,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     @OnClick(R.id.protect_account_rl_logout)
     public void onClickLogout() {
         mPresenter.showConfirmSignOut();
+        ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_LOGOUT);
     }
 
     @Override
