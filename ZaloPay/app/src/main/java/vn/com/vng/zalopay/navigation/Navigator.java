@@ -79,6 +79,8 @@ import vn.com.vng.zalopay.webview.ui.WebViewFromQRScanActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -204,6 +206,8 @@ public class Navigator {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_TOUCH_ADDCASH);
+
     }
 
     public void startDepositForResultActivity(Fragment fragment) {

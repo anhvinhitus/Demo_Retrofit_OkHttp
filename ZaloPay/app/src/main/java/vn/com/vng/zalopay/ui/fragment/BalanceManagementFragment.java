@@ -96,6 +96,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @OnClick(R.id.balance_management_rl_deposit)
     public void onClickDeposit() {
         navigator.startDepositActivity(getContext());
+
     }
 
     @OnClick(R.id.balance_management_rl_withdraw)

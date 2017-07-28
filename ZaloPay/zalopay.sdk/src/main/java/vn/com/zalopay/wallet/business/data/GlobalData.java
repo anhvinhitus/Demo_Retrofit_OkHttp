@@ -233,12 +233,22 @@ public class GlobalData {
             //track screen name
             String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
             ZPAnalytics.trackScreen(screenName);
-            if (paymentInfoHelper.isLinkTrans()) {
-                ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_RESULT);
-            }
+            trackEvantResult();
+
         } catch (Exception e) {
             Timber.w(e);
         }
+    }
+
+    private static void trackEvantResult() {
+        if (paymentInfoHelper.isLinkTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_RESULT);
+        } else if (paymentInfoHelper.isTopupTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_RESULT);
+        } else if (paymentInfoHelper.isWithDrawTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_RESULT);
+        }
+
     }
 
     public static void trackingTransactionEvent(int pResult, StatusResponse pResponse, String bankCode) throws Exception {
