@@ -79,7 +79,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         }
 
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
-        ZPAnalytics.trackEvent(ZPEvents.SCANQR_GETCODE);
+        ZPAnalytics.trackEvent(ZPEvents.SCANQR_RESULT);
         qrCodePresenter.handleResult(result, QRCodeResource.SCANNER);
     }
 
@@ -262,7 +262,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_scan_qr_from_image) {
-            ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TOUCHICON);
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_TOUCH_PHOTO);
             if (isPermissionGrantedAndRequest(Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_CODE.READ_EXTERNAL_STORAGE)) {
                 startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
             }

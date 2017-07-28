@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
 public class ScanToPayActivity extends UserBaseToolBarActivity {
@@ -78,9 +80,10 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
 
     @OnPageChange(value = R.id.container, callback = OnPageChange.Callback.PAGE_SELECTED)
     public void onPageSelected(int newPosition) {
-
+        if (mCurrentPosition != newPosition) {
+            trackEvent(newPosition);
+        }
         radarAnimation(newPosition);
-
         Fragment fragmentToShow = mSectionsPagerAdapter.getPage(newPosition);
         if (fragmentToShow instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToShow).onStartFragment();
@@ -102,6 +105,20 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
             } else {
                 mRadarView.clearAnimation();
             }
+        }
+    }
+
+    private void trackEvent(int position) {
+        switch (position) {
+            case ScanToPayPagerAdapter.TAB_QR:
+                // ZPAnalytics.trackEvent(ZPEvents.SCANQR_TOUCH_NFC);
+                break;
+            case ScanToPayPagerAdapter.TAB_NFC:
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_TOUCH_NFC);
+                break;
+            case ScanToPayPagerAdapter.TAB_BEACON:
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_TOUCH_BLUETOOTH);
+                break;
         }
     }
 
@@ -168,6 +185,21 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
         super.onDestroy();
     }
 
+    private void trackBackEvent(int position) {
+        switch (position) {
+            case ScanToPayPagerAdapter.TAB_QR:
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_TOUCH_BACK);
+                break;
+            case ScanToPayPagerAdapter.TAB_NFC:
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_NFC_TOUCH_BACK);
+                break;
+            case ScanToPayPagerAdapter.TAB_BEACON:
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_BLUETOOTH_TOUCH_BACK);
+                break;
+
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         /**
@@ -192,5 +224,11 @@ public class ScanToPayActivity extends UserBaseToolBarActivity {
         }
         Timber.d("Get Activity UserComponent");
         return mUserComponent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        trackBackEvent(mCurrentPosition);
     }
 }
