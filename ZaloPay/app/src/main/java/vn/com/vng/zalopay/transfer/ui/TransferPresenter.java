@@ -47,10 +47,9 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -65,21 +64,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
 
     private static String mPreviousTransferId = null;
-
-    private TransferObject mTransferObject;
-
     private final User mUser;
     private final Context applicationContext;
-
     private final ZaloPayRepository mZaloPayRepository;
     private final FriendStore.Repository mFriendRepository;
-
     private final TransferStore.Repository mTransferRepository;
     private final TransferNotificationHelper mTransferNotificationHelper;
-
     private final ZaloSdkApi mZaloSdkApi;
     private final AccountStore.Repository mAccountRepository;
-
+    private TransferObject mTransferObject;
     private PaymentWrapper paymentWrapper;
 
     private long mMinAmount = 0;
@@ -185,74 +178,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         ensureHaveProfile();
     }
 
-    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
-
-        private String toZalopayName;
-
-        ZaloPayUserSubscriber(String toZalopayName) {
-            this.toZalopayName = toZalopayName;
-        }
-
-        @Override
-        public void onStart() {
-            showLoading();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "Error!!! Get zalopay info");
-
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            hideLoading();
-            String message = ErrorMessageFactory.create(applicationContext, e);
-
-            if (e instanceof NetworkConnectionException) {
-                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
-                return;
-            } else if (e instanceof BodyException
-                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
-                    && isTransferFixedMoney()
-                    && !TextUtils.isEmpty(toZalopayName)) {
-                showDialogThenClose(
-                        String.format(mView.getContext().getString(R.string.receiver_invalid), toZalopayName),
-                        R.string.txt_close,
-                        SweetAlertDialog.ERROR_TYPE);
-                return;
-            }
-
-            if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-                ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
-            }
-
-            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
-        }
-
-        @Override
-        public void onNext(Person person) {
-            Timber.d("Get zalopay info success : displayName [%s] avatar [%s] zalopayId [%s]", person.displayName, person.avatar, person.zaloPayId);
-
-            updateTransferObject(person);
-
-            if (mView == null) {
-                return;
-            }
-
-            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
-                mView.setUserInfo(person);
-            }
-
-            hideLoading();
-            checkShowButtonTransfer();
-        }
-    }
-
     private void updateTransferObject(Person person) {
 
         mTransferObject.zalopayId = person.zaloPayId;
@@ -307,8 +232,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     void doClickTransfer(long amount) {
         Timber.d("Handle do transfer : amount [%s]", amount);
         doTransfer(amount);
-        ZPAnalytics.trackEvent(amount == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
-        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
+        if (amount > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_INPUT_AMOUNT);
+        }
+
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_CONTINUE);
     }
 
     private void doTransfer(long amount) {
@@ -330,11 +258,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         transferMoney(amount);
     }
 
-    private Item buildItem(){
-        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName:
+    private Item buildItem() {
+        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
                 mTransferObject.displayName;
-        String ext = String.format(Item.tranferExtFormat(),receiverName);
-        return new Item(TransactionType.MONEY_TRANSFER,ext);
+        String ext = String.format(Item.tranferExtFormat(), receiverName);
+        return new Item(TransactionType.MONEY_TRANSFER, ext);
     }
 
     private void transferMoney(long amount) {
@@ -353,29 +281,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 .subscribe(new CreateWalletOrderSubscriber());
 
         mSubscription.add(subscription);
-    }
-
-    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-
-        @Override
-        public void onStart() {
-            showLoading();
-        }
-
-        @Override
-        public void onNext(Order order) {
-            TransferPresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-            TransferPresenter.this.onCreateWalletOrderError(e);
-        }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
@@ -453,7 +358,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mSubscription.add(subscription);
     }
 
-
     private RecentTransaction transform(TransferObject object) {
         if (object == null || TextUtils.isEmpty(object.zalopayId) || TextUtils.isEmpty(object.displayName)) {
             return null;
@@ -481,7 +385,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private void initLimitAmount() {
         AppInfoStore.Interactor appInfo =
                 SDKApplication.getApplicationComponent()
-                .appInfoInteractor();
+                        .appInfoInteractor();
 
         mMinAmount = appInfo.minAmountTransType(TransactionType.MONEY_TRANSFER);
         mMaxAmount = appInfo.maxAmountTransType(TransactionType.MONEY_TRANSFER);
@@ -610,7 +514,131 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
     }
 
+    private void sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
+        mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                toZaloPayId, stage, amount, transId));
+    }
+
+    private void handleNavigateBackTransferWeb() {
+        if (mTransferObject.amount < mMinAmount || mTransferObject.amount > mMaxAmount) {
+            handleFailedTransferWeb(mView.getActivity(),
+                    2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+        } else {
+            handleFailedTransferWeb(mView.getActivity(),
+                    4, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+        }
+    }
+
+    private void handleCompletedTransferWeb(Activity activity) {
+        Intent data = new Intent();
+        data.putExtra("code", 1);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+    }
+
+    private void handleFailedTransferWeb(Activity activity, int code, String param) {
+        Timber.d("Handle failed transfer web : code [%s] param [%s]", code, param);
+        Intent data = new Intent();
+        data.putExtra("code", code);
+        data.putExtra("param", param);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+    }
+
+    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
+
+        private String toZalopayName;
+
+        ZaloPayUserSubscriber(String toZalopayName) {
+            this.toZalopayName = toZalopayName;
+        }
+
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Error!!! Get zalopay info");
+
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+
+            hideLoading();
+            String message = ErrorMessageFactory.create(applicationContext, e);
+
+            if (e instanceof NetworkConnectionException) {
+                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                return;
+            } else if (e instanceof BodyException
+                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
+                    && isTransferFixedMoney()
+                    && !TextUtils.isEmpty(toZalopayName)) {
+                showDialogThenClose(
+                        String.format(mView.getContext().getString(R.string.receiver_invalid), toZalopayName),
+                        R.string.txt_close,
+                        SweetAlertDialog.ERROR_TYPE);
+                return;
+            }
+
+            if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
+                ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
+            }
+
+            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
+        }
+
+        @Override
+        public void onNext(Person person) {
+            Timber.d("Get zalopay info success : displayName [%s] avatar [%s] zalopayId [%s]", person.displayName, person.avatar, person.zaloPayId);
+
+            updateTransferObject(person);
+
+            if (mView == null) {
+                return;
+            }
+
+            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
+                mView.setUserInfo(person);
+            }
+
+            hideLoading();
+            checkShowButtonTransfer();
+        }
+    }
+
+    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
+        @Override
+        public void onNext(Order order) {
+            TransferPresenter.this.onCreateWalletOrderSuccess(order);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+            TransferPresenter.this.onCreateWalletOrderError(e);
+        }
+    }
+
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
+
+        private String transactionId;
 
         @Override
         protected ILoadDataView getView() {
@@ -632,7 +660,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 handleFailedTransferWeb(mView.getActivity(), paymentError.value(), PaymentError.getErrorMessage(paymentError));
                 return;
             }
-            if(paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()){
+            if (paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
                 closeTranfer();
             }
         }
@@ -670,7 +698,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
         }
 
-        private void closeTranfer(){
+        private void closeTranfer() {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
@@ -698,38 +726,5 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             activity.setResult(Activity.RESULT_OK, data);
             activity.finish();
         }
-
-        private String transactionId;
-    }
-
-    private void sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
-        mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                toZaloPayId, stage, amount, transId));
-    }
-
-    private void handleNavigateBackTransferWeb() {
-        if (mTransferObject.amount < mMinAmount || mTransferObject.amount > mMaxAmount) {
-            handleFailedTransferWeb(mView.getActivity(),
-                    2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
-        } else {
-            handleFailedTransferWeb(mView.getActivity(),
-                    4, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
-        }
-    }
-
-    private void handleCompletedTransferWeb(Activity activity) {
-        Intent data = new Intent();
-        data.putExtra("code", 1);
-        activity.setResult(Activity.RESULT_OK, data);
-        activity.finish();
-    }
-
-    private void handleFailedTransferWeb(Activity activity, int code, String param) {
-        Timber.d("Handle failed transfer web : code [%s] param [%s]", code, param);
-        Intent data = new Intent();
-        data.putExtra("code", code);
-        data.putExtra("param", param);
-        activity.setResult(Activity.RESULT_OK, data);
-        activity.finish();
     }
 }

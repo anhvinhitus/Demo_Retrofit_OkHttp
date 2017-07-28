@@ -429,7 +429,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_LAUNCH);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_LAUNCH);
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_LAUNCH);
         }
+
 
     }
 
@@ -438,6 +441,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CANCEL);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CANCEL);
+        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_CANCEL);
         }
 
     }
@@ -447,6 +452,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CONFIRM);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CONFIRM);
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_CONFIRM);
         }
 
     }

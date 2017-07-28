@@ -467,6 +467,7 @@ public class Navigator {
     public void startZaloContactActivity(TransferHomeFragment fragment) {
         Intent intent = new Intent(fragment.getContext(), ZaloContactActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZFRIEND);
     }
 
     public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {
@@ -800,6 +801,7 @@ public class Navigator {
     public void startTransferViaAccountName(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID);
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZPID);
     }
 
     public void startEditAccountActivity(Context context) {

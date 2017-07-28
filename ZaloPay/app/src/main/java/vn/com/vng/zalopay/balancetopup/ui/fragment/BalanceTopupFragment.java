@@ -66,12 +66,13 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @OnClick(R.id.btnDeposit)
     public void onClickBtnDeposit() {
-        ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_INPUT);
         if (!mEdtAmountView.validate()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_INPUT);
             return;
         }
 
         mPresenter.deposit(mEdtAmountView.getAmount());
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_CONTINUE);
     }
 
     @OnTextChanged(value = R.id.edtAmount, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
