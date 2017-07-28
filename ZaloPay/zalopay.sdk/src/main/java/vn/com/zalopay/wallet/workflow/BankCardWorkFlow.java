@@ -263,6 +263,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     }
 
     private void handleAuthenPayerComplete(StatusResponse statusResponse) {
+        mOrderProcessing = false;
         mStatusResponse = statusResponse;
         //check result authen, otp code is 17: wrong otp, other code callback
         if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mStatusResponse)
