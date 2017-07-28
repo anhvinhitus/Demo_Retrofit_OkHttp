@@ -223,7 +223,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                             GlobalData.analyticsTrackerWrapper.trackUserCancel();
                         }
                     } catch (Exception e) {
-                        Log.e(this, e);
+                        Timber.w(e);
                     }
                 }
 
@@ -512,22 +512,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             if (mAbstractWorkFlow == null || mAbstractWorkFlow.getGuiProcessor() == null) {
                 return;
             }
-            if (!(mAbstractWorkFlow.isCardFlow() && mAbstractWorkFlow.isLinkAccFlow())) {
-                return;
-            }
             //auto show keyboard
             if (mAbstractWorkFlow.isInputStep() || mAbstractWorkFlow.shouldFocusAfterCloseQuitDialog()) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            mAbstractWorkFlow.getGuiProcessor().onFocusView();
-                            if (!mAbstractWorkFlow.isLinkAccFlow()) {
-                                mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
-                            }
-                        } catch (Exception e) {
-                            Log.e(this, e);
+                new Handler().postDelayed(() -> {
+                    try {
+                        mAbstractWorkFlow.getGuiProcessor().onFocusView();
+                        if (!mAbstractWorkFlow.isLinkAccFlow()) {
+                            mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
                         }
+                    } catch (Exception e) {
+                        Timber.w(e);
                     }
                 }, 300);
             } else if (!GlobalData.shouldNativeWebFlow()) {
