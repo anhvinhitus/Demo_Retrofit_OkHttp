@@ -100,7 +100,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
     }
 
     void loginZalo(Activity activity) {
-        ZPAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
+        ZPAnalytics.trackEvent(ZPEvents.LOGIN_TOUCH);
 
         if (AppVersionUtils.showDialogForceUpgradeApp((Activity) mView.getContext())) {
             return;

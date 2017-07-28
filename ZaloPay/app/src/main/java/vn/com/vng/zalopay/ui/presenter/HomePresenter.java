@@ -195,6 +195,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+        ZPAnalytics.trackEvent(ZPEvents.HOME_LAUNCH);
         mUserSession.beginSession();
         Timber.d("ApplicationState object [%s]", mApplicationState);
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
