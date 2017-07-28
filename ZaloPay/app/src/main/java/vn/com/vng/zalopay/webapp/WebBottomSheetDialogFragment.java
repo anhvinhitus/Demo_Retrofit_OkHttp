@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,10 +18,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by khattn on 2/21/17.
- *
  */
 
 public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment {
@@ -67,25 +69,29 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment {
     @OnClick(R.id.layoutShareOnZalo)
     void handleClickShareOnZalo() {
         NavigatorHelper.shareWebOnZalo(getContext(), mCurrentUrl);
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_SHARE_ZALO);
     }
 
     @OnClick(R.id.layoutCopyURL)
     void handleClickCopyURL() {
         setClipboard(getContext(), mCurrentUrl);
         Toast.makeText(getContext(), getContext().getResources().getText(R.string.copy_clipboard), Toast.LENGTH_SHORT).show();
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_SHARE_URLCOPY);
     }
 
     @OnClick(R.id.layoutRefresh)
     void handleClickRefreshWeb() {
-        if(mBottomSheetEventListener == null) {
+        if (mBottomSheetEventListener == null) {
             return;
         }
         mBottomSheetEventListener.onRequestRefreshPage();
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_SHARE_REFRESH);
     }
 
     @OnClick(R.id.layoutOpenInBrowser)
     void handleClickOpenInBrowser() {
         NavigatorHelper.openWebInBrowser(getContext(), mCurrentUrl);
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_SHARE_TOBROWSER);
     }
 
     private void setClipboard(Context context, String text) {
@@ -126,4 +132,9 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
     };
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_SHARE_TOUCH_CLOSE);
+    }
 }
