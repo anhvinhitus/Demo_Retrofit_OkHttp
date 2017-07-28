@@ -141,6 +141,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 mNavigator.startTransferMoneyActivity(mView.getActivity());
             } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
                 mNavigator.startReceiveMoneyActivity(mView.getActivity());
+            } else if (app.appid == PaymentAppConfig.Constants.DEPOSIT) {
+                mNavigator.startDepositActivity(mView.getActivity());
             }
         }
 
@@ -196,6 +198,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (mView == null) {
             return;
         }
+
         mView.setAppItems(resources);
         mView.setRefreshing(false);
 

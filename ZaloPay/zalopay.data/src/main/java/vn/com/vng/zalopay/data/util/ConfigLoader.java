@@ -5,7 +5,11 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.Config;
+import vn.com.vng.zalopay.domain.model.InternalApp;
 
 /**
  * Created by longlv on 2/14/17.
@@ -188,6 +193,24 @@ public class ConfigLoader {
             return Arrays.asList(6, 7, 9, 105, 106, 111);
         } else {
             return mConfig.mVibrateNotificationType;
+        }
+    }
+
+    public static List<InternalApp> listInternalApp() {
+        if (mConfig == null || mConfig.mInternalApps == null) {
+            String json = "[{\"appId\": 1001, \"order\": 2}, {\"appId\": 1002, \"order\": 3}, {\"appId\": 1003, \"order\": 6}]";
+            List<InternalApp> listInternalApp = new ArrayList<>();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (JsonArray) jsonParser.parse(json);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                long appID = jsonObject.get("appId").getAsLong();
+                int pos = jsonObject.get("order").getAsInt();
+                listInternalApp.add(new InternalApp(appID, pos));
+            }
+            return listInternalApp;
+        } else {
+            return mConfig.mInternalApps;
         }
     }
 }
