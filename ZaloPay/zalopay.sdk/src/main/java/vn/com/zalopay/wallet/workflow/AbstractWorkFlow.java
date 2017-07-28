@@ -748,7 +748,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             mPageName = Constants.PAGE_AUTHEN;
             ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
             getView().hideLoading();
-            getView().renderKeyBoard(RS.layout.screen__card);
+            getView().renderKeyBoard(RS.layout.screen__card, getDetectedBankCode());
             getView().setVisible(R.id.order_info_line_view, false);
             //request permission read/view sms on android 6.0+
             if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
@@ -1441,11 +1441,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     @Override
     public String getDetectedBankCode() {
         try {
-            if (mGuiProcessor != null) {
-                return mGuiProcessor.getDetectedBankCode();
-            }
             if (mPaymentInfoHelper != null && mPaymentInfoHelper.getMapBank() != null) {
                 return mPaymentInfoHelper.getMapBank().bankcode;
+            }
+            if (mGuiProcessor != null) {
+                return mGuiProcessor.getDetectedBankCode();
             }
         } catch (Exception e) {
             Timber.w(e);
