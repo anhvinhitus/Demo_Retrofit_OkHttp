@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.analytics.ZPScreens;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.PromotionEvent;
 
@@ -87,7 +86,9 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @OnPageChange(value = R.id.pager, callback = OnPageChange.Callback.PAGE_SELECTED)
     public void onPageSelected(int newPosition) {
-        trackEvent(newPosition);
+        if (mCurrentPosition != newPosition) {
+            trackEvent(newPosition);
+        }
         Fragment fragmentToShow = mHomePagerAdapter.getPage(newPosition);
         if (fragmentToShow instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToShow).onStartFragment();
@@ -101,8 +102,24 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mCurrentPosition = newPosition;
     }
 
-
     private void trackEvent(int position) {
+        switch (position) {
+            case HomePagerAdapter.TAB_MAIN_INDEX:
+                ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_HOME);
+                break;
+            case HomePagerAdapter.TAB_TRANSACTION_INDEX:
+                ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_PROMOTION);
+                break;
+            case HomePagerAdapter.TAB_PROMOTION_INDEX:
+                ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_PROMOTION);
+                break;
+            case HomePagerAdapter.TAB_PERSONAL_INDEX:
+                ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_ME);
+                break;
+        }
+    }
+
+ /*   private void trackEvent(int position) {
         switch (position) {
             case HomePagerAdapter.TAB_MAIN_INDEX:
                 if (EVENT_FIRST_TOUCH_HOME) {
@@ -133,7 +150,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
                 ZPAnalytics.trackEvent(ZPEvents.TOUCHTABME);
                 break;
         }
-    }
+    }*/
 
     @Override
     public void onPause() {

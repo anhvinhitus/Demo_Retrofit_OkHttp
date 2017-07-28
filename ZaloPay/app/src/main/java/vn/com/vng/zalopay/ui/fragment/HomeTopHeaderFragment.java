@@ -129,7 +129,7 @@ public class HomeTopHeaderFragment extends UserBaseTabFragment implements IHomeT
     @OnClick(R.id.header_top_rl_notification)
     public void onBtnNotificationClick() {
         navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+        ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_NOTIFICATION);
     }
 
     @OnClick(R.id.header_view_top_qrcode)
@@ -145,6 +145,7 @@ public class HomeTopHeaderFragment extends UserBaseTabFragment implements IHomeT
     @OnClick(R.id.header_view_top_search)
     public void onClickSearchOnToolbar() {
         navigator.startSearchCategoryActivity(getContext());
+        ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_SEARCH);
     }
 
     @OnClick(R.id.header_top_rl_search_view)
