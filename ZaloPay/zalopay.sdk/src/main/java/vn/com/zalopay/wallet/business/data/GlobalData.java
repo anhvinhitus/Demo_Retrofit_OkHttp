@@ -247,7 +247,10 @@ public class GlobalData {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_RESULT);
         } else if (paymentInfoHelper.isWithDrawTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_RESULT);
+        } else if (paymentInfoHelper.isMoneyTranferTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_RESULT);
         }
+
 
     }
 

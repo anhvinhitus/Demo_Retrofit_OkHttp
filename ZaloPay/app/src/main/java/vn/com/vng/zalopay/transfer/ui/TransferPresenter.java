@@ -47,10 +47,10 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.utils.TrackApptransidHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -307,8 +307,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     void doClickTransfer(long amount) {
         Timber.d("Handle do transfer : amount [%s]", amount);
         doTransfer(amount);
-        ZPAnalytics.trackEvent(amount == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
-        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
+        if (amount > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_INPUT_AMOUNT);
+        }
+
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_CONTINUE);
     }
 
     private void doTransfer(long amount) {
@@ -330,11 +333,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         transferMoney(amount);
     }
 
-    private Item buildItem(){
-        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName:
+    private Item buildItem() {
+        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
                 mTransferObject.displayName;
-        String ext = String.format(Item.tranferExtFormat(),receiverName);
-        return new Item(TransactionType.MONEY_TRANSFER,ext);
+        String ext = String.format(Item.tranferExtFormat(), receiverName);
+        return new Item(TransactionType.MONEY_TRANSFER, ext);
     }
 
     private void transferMoney(long amount) {
@@ -463,7 +466,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private void initLimitAmount() {
         AppInfoStore.Interactor appInfo =
                 SDKApplication.getApplicationComponent()
-                .appInfoInteractor();
+                        .appInfoInteractor();
 
         mMinAmount = appInfo.minAmountTransType(TransactionType.MONEY_TRANSFER);
         mMaxAmount = appInfo.maxAmountTransType(TransactionType.MONEY_TRANSFER);
@@ -614,7 +617,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 handleFailedTransferWeb(mView.getActivity(), paymentError.value(), PaymentError.getErrorMessage(paymentError));
                 return;
             }
-            if(paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()){
+            if (paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
                 closeTranfer();
             }
         }
@@ -652,7 +655,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
         }
 
-        private void closeTranfer(){
+        private void closeTranfer() {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
