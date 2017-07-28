@@ -1,13 +1,2 @@
-Zalo Pay (Sandbox v2.16.0 - build 364) - Released on 2017-07-28 08:50
-+ [Password] Update không cho click show password quá nhiều lần by lytm (#993ff9d)
-+ [SDK] #ZPF-370 : Ngân hàng SGCB: Thanh toán số tiền lớn cần nhập OTP không thể hoàn thành được do keyboard ở dạng số by vo van chuc (#0c279e2)
-+ [APP] Fix lỗi show password khi click vào thông báo map thẻ thành công VCB by lytm (#ebc2df8)
-+ [SDK] Trim bank name để fix lỗi align tên kênh giao dịch by vo van chuc (#984cc42)
-+ [SDK] Fix lỗi set giao dịch gần nhất khi thanh toán số tiền lớn (otp) dùng thẻ đã lưu by vo van chuc (#68f757a)
-+ [SDK] #ZPF-366 : [Android-STG-2.16-362] Thanh toán: thêm đơn vị VND vào phí by vo van chuc (#ae37aac)
-+ [Nạp tiền] #ZPF-365 : [Android-STG-2.16-362] Nạp tiền: edit lại nội dung chuyển tiền by vo van chuc (#2de5750)
-+ [Password] ZPF-361: Optimize lại trạng thái của các checkbox by lytm (#0d187f7)
-+ [Promotion] ZPF-347 Ưu đãi: khi không có mạng, chọn Tải lại phái báo không có kết nối mạng by datnt10 (#9f2c0e5)
-+ [App] update ui ivCheck by sinhtt (#8791050)
-+ [SDK] task#738 : [BIDV] Mở link trên trình duyệt khi user bấm vào các hiperlink của website Bidv bank by sinhtt (#f37b8eb)
-+ [SDK] #ZPF-340 : [Android] Thanh toán: thêm hyperlink nạp thêm : update text by vo van chuc (#b94056f)
+Zalo Pay (Staging v2.16.0 - build 365) - Released on 2017-07-28 08:55
+
