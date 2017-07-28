@@ -384,7 +384,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         for (InternalApp internalApp : listInternalApp) {
             listDefaultInternalApp.add(new AppResource(
                     internalApp.getAppId(),
-                    2,
+                    -1,
                     internalApp.getDisplayName(),
                     internalApp.getIconName(),
                     internalApp.getIconColor()));
