@@ -40,6 +40,8 @@ import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by hieuvm on 12/26/16.
@@ -313,7 +315,8 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         @Override
         public void onClose() {
             setViewStatus(0);
-            if (mPassword.getBuilder().isConfirmClose()) {
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_BACK);
+            if(mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
                         getActivity().getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
@@ -343,10 +346,12 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             switch (getViewStatus()) {
                 case STATUS_OLD_PASS_INVALID:
                     verifyPassword(pHashPin);
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
                     break;
                 case STATUS_NEW_PASS:
                     setChangePasswordViewStatus(STATUS_CONFIRM_NEW_PASS);
                     mNewPassword = pHashPin;
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
                     break;
                 case STATUS_CONFIRM_NEW_PASS:
                 case STATUS_CONFIRM_PASS_INVALID:
@@ -355,6 +360,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     } else {
                         setChangePasswordViewStatus(STATUS_CONFIRM_PASS_INVALID);
                     }
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_CONTINUE);
                     break;
                 case STATUS_OTP:
                 case STATUS_OTP_INVALID:
@@ -513,7 +519,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         }
     }
 
-    private class ChangePinSubscriber extends DefaultSubscriber<String> {
+        private class ChangePinSubscriber extends DefaultSubscriber<String> {
 
         @Override
         public void onStart() {
@@ -568,6 +574,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.lockElementView(false);
                 ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
                 setViewStatus(0);
+                ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_RESULT);
             } catch (Exception e) {
                 Timber.d("VerifySubscriberOTP onNext exception [%s]", e.getMessage());
             }
@@ -585,6 +592,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.getBuilder().clearText().resetOTPContent();
                 setViewStatus(STATUS_OTP_INVALID);
                 setError(errorMessage, true);
+                ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_RESULT);
             } catch (Exception exception) {
                 Timber.d("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
             }
