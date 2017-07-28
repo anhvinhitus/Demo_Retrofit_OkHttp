@@ -20,6 +20,8 @@ public interface Constants {
     String EMBEDDATA = "embeddata";
     String MAC = "mac";
     String CHARGEINFO = "chargeinfo";
+
+    String TRANSTOKEN = "zptranstoken";
     /* Object Order END */
 
     interface ChangePin {

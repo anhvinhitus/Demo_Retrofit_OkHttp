@@ -16,6 +16,8 @@ public interface IPaymentService {
 
     void pay(Activity activity, Promise promise, Order order);
 
+    void pay(Activity activity, final Promise promise, long appId, String transactionToken);
+
     void destroyVariable();
 
     void shareMessageToOtherApp(Activity activity, String message);

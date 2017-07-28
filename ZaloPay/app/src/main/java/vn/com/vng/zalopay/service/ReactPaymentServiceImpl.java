@@ -40,15 +40,23 @@ public class ReactPaymentServiceImpl implements IPaymentService {
         this.mMerchantRepository = zaloPayIAPRepository;
     }
 
-    @Override
-    public void pay(Activity activity, final Promise promise, Order order) {
-
+    private void initializePaymentWrapper(final Promise promise){
         this.mPaymentWrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new PaymentResponseListener(promise))
                 .build();
         this.mPaymentWrapper.initializeComponents();
+    }
 
+    @Override
+    public void pay(Activity activity, final Promise promise, Order order) {
+        initializePaymentWrapper(promise);
         this.mPaymentWrapper.payWithOrder(activity, order, ZPPaymentSteps.OrderSource_MerchantApp);
+    }
+
+    @Override
+    public void pay(Activity activity, Promise promise, long appId, String transactionToken) {
+        initializePaymentWrapper(promise);
+        this.mPaymentWrapper.payWithToken(activity, appId, transactionToken, ZPPaymentSteps.OrderSource_MerchantApp);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

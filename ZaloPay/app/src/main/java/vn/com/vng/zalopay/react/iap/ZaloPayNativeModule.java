@@ -53,9 +53,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
     private final NetworkService mNetworkServiceWithRetry;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private final User mUser;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private Navigator mNavigator;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
@@ -89,14 +88,29 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void payOrder(ReadableMap params, Promise promise) {
         Timber.d("payOrder start with params: %s", Helpers.readableMapToString(params));
-
+        if (params == null) {
+            if (promise != null) {
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(),
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            }
+            Timber.d("pay order with invalid params");
+            return;
+        }
         // verify params parameters
         try {
+            long appId = (long) params.getDouble(Constants.APPID); // appid
+            String transactionToken = params.getString(Constants.TRANSTOKEN);
+            if (!TextUtils.isEmpty(transactionToken) && getCurrentActivity() != null) {
+                //pay with trans token
+                mPaymentService.pay(getCurrentActivity(), promise, appId, transactionToken);
+                return;
+            }
+            //pay with order info
             Order order = new Order(
 //            long appid, String zptranstoken, String apptransid, String appuser, long apptime,
 //            String embeddata, String item, long amount, String description, String payoption, String mac
 
-                    (long) params.getDouble(Constants.APPID), // appid
+                    appId, // appid
                     "", // zptranstoken
                     params.getString(Constants.APPTRANSID), // apptransid
                     params.getString(Constants.APPUSER), // appuser
@@ -109,41 +123,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                     params.getString(Constants.MAC)
             );
 
-            if (order.appid < 0) {
-                reportInvalidParameter(promise, Constants.APPID);
-                return;
-            }
-            if (TextUtils.isEmpty(order.apptransid)) {
-                reportInvalidParameter(promise, Constants.APPTRANSID);
-                return;
-            }
-            if (TextUtils.isEmpty(order.appuser)) {
-                reportInvalidParameter(promise, Constants.APPUSER);
-                return;
-            }
-            if (order.apptime <= 0) {
-                reportInvalidParameter(promise, Constants.APPTIME);
-                return;
-            }
-            if (order.amount <= 0) {
-                reportInvalidParameter(promise, Constants.AMOUNT);
-                return;
-            }
-//            if (TextUtils.isEmpty(order.getItem())) {
-//                reportInvalidParameter(promise, Constants.ITEM);
-//                return;
-//            }
-            // allow empty description
-            if (order.description == null) {
-                reportInvalidParameter(promise, Constants.DESCRIPTION);
-                return;
-            }
-            if (TextUtils.isEmpty(order.mac)) {
-                reportInvalidParameter(promise, Constants.MAC);
-                return;
-            }
-
-            if (getCurrentActivity() != null) {
+            boolean validOrder = validateOrder(order, promise);
+            if (getCurrentActivity() != null && validOrder) {
                 mPaymentService.pay(getCurrentActivity(), promise, order);
             }
 
@@ -152,6 +133,43 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             Timber.d(e);
         }
+    }
+
+    private boolean validateOrder(Order order, Promise promise) {
+        if (order.appid < 0) {
+            reportInvalidParameter(promise, Constants.APPID);
+            return false;
+        }
+        if (TextUtils.isEmpty(order.apptransid)) {
+            reportInvalidParameter(promise, Constants.APPTRANSID);
+            return false;
+        }
+        if (TextUtils.isEmpty(order.appuser)) {
+            reportInvalidParameter(promise, Constants.APPUSER);
+            return false;
+        }
+        if (order.apptime <= 0) {
+            reportInvalidParameter(promise, Constants.APPTIME);
+            return false;
+        }
+        if (order.amount <= 0) {
+            reportInvalidParameter(promise, Constants.AMOUNT);
+            return false;
+        }
+//            if (TextUtils.isEmpty(order.getItem())) {
+//                reportInvalidParameter(promise, Constants.ITEM);
+//                return;
+//            }
+        // allow empty description
+        if (order.description == null) {
+            reportInvalidParameter(promise, Constants.DESCRIPTION);
+            return false;
+        }
+        if (TextUtils.isEmpty(order.mac)) {
+            reportInvalidParameter(promise, Constants.MAC);
+            return false;
+        }
+        return true;
     }
 
     @ReactMethod
