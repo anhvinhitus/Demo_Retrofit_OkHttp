@@ -20,10 +20,16 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 public class PaymentAppConfig {
 
     public static class Constants {
-        public static final long TRANSFER_MONEY = 1;
-        public static final long RECEIVE_MONEY = 3;
+        public static final long TRANSFER_MONEY = 1001;
+        public static final long RECEIVE_MONEY = 1002;
+        public static final long DEPOSIT = 1003;
         public static final long RED_PACKET = 6;
         public static final long SHOW_SHOW = 22;
+
+//        public static final long TRANSFER_MONEY = 1;
+//        public static final long RECEIVE_MONEY = 3;
+//        public static final long RED_PACKET = 6;
+//        public static final long SHOW_SHOW = 22;
 
         public static final String FONT_FAMILY_NAME_ZALOPAY = "zalopay";
     }
@@ -48,6 +54,12 @@ public class PaymentAppConfig {
                         AndroidApplication.instance().getString(R.string.receive_money),
                         AndroidApplication.instance().getString(R.string.app_1_receivemoney),
                         AndroidUtils.getColorFromResource(R.color.menu_font_ic_green)));
+        APP_RESOURCE_MAP.put(Constants.DEPOSIT,
+                new AppResource(Constants.DEPOSIT,
+                        PaymentAppTypeEnum.INTERNAL_APP.value,
+                        AndroidApplication.instance().getString(R.string.home_deposit),
+                        AndroidApplication.instance().getString(R.string.notify_1_receivemoney),
+                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_green)));
         APP_RESOURCE_MAP.put(Constants.RED_PACKET,
                 new AppResource(Constants.RED_PACKET,
                         PaymentAppTypeEnum.REACT_NATIVE.value,
@@ -62,6 +74,7 @@ public class PaymentAppConfig {
         APP_RESOURCE_LIST = new ArrayList<>();
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.TRANSFER_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.DEPOSIT));
 
         EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
         EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BuildConfig.ZALOPAY_APP_ID,

@@ -7,6 +7,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -15,8 +16,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.InternalApp;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
@@ -375,14 +378,30 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private List<AppResource> listAppInHomePage(List<AppResource> resources) {
-        ArrayList<AppResource> listApp = new ArrayList<>(mListDefaultApp);
+        List<InternalApp> listInternalApp = ConfigLoader.listInternalApp();
+
+        ArrayList<AppResource> listApp = new ArrayList<>();
         Timber.d("Get list app in home, app default size [%s]", listApp.size());
-        if (resources.containsAll(listApp)) {
-            resources.removeAll(listApp);
+        if (resources.containsAll(mListDefaultApp)) {
+            resources.removeAll(mListDefaultApp);
         }
-        listApp.addAll(resources);
+
+        if (listInternalApp.size() > 0) {
+            listApp.addAll(resources);
+            Iterator itr = mListDefaultApp.iterator();
+            while (itr.hasNext()) {
+                for(InternalApp internalApp : listInternalApp) {
+                    listApp.add(internalApp.getPosition(), (AppResource) itr.next());
+                }
+            }
+        } else {
+            listApp.addAll(mListDefaultApp);
+            listApp.addAll(resources);
+        }
+
         listApp.removeAll(mListExcludeApp);
         Timber.d("app show in home page: %s", listApp.size());
+
         return listApp;
     }
 
