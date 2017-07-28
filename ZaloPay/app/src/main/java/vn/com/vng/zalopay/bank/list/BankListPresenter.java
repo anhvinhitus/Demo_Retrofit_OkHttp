@@ -174,7 +174,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     }
 
     void startBankSupport(Fragment f) {
-        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_TAPADDCARD);
         mNavigator.startBankSupport(f, Constants.REQUEST_CODE_SELECT_BANK);
     }
 
@@ -193,7 +192,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             return;
         }
 
-        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+        ZPAnalytics.trackEvent(ZPEvents.LINKBANK_DELETE);
 
         if (bankData.mBaseMap instanceof MapCard) {
             confirmAndRemoveCard(Constants.LinkBank.LINK_CARD, bankData);
@@ -576,7 +575,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             if (mView == null) {
                 return;
             }
-
             mView.hideLoading();
             mView.remove(mBankData);
             mView.showNotificationDialog(mContext.getString(R.string.txt_remove_link_successfully));

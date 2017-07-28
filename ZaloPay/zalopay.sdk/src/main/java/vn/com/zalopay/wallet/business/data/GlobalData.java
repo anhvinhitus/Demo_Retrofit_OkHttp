@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.wallet.R;
@@ -32,7 +33,6 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 
 /***
  * static class contain static data.
@@ -233,13 +233,16 @@ public class GlobalData {
             //track screen name
             String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
             ZPAnalytics.trackScreen(screenName);
+            if (paymentInfoHelper.isLinkTrans()) {
+                ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_RESULT);
+            }
         } catch (Exception e) {
             Timber.w(e);
         }
     }
 
     public static void trackingTransactionEvent(int pResult, StatusResponse pResponse, String bankCode) throws Exception {
-        if(pResponse == null){
+        if (pResponse == null) {
             return;
         }
         int returnCode = pResponse.returncode;

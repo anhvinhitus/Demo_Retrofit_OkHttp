@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
+import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
@@ -174,19 +175,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void logActionLaunch() {
 
         if (TAG.equals(BankActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_LAUNCH);
+            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_LAUNCH);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_LAUNCH);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
         } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_LAUNCH);
+        } else if (TAG.equals(BankSupportSelectionActivity.class.getSimpleName())) {
+            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_LAUNCH);
         }
     }
 
     private void logActionNavigationBack() {
         if (TAG.equals(BankActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_NAVIGATEBACK);
+            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_BACK);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
