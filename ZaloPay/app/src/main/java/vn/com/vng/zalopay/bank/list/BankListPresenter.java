@@ -82,7 +82,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     private String mLinkCardWithBankCode = "";
     private String mLinkAccountWithBankCode = "";
     private UserConfig mUserConfig;
-    List<BankData> mBankMapList;
     private EventBus mEventBus;
     private BankStore.Interactor mBankInteractor;
 
@@ -107,7 +106,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     @Override
     public void destroy() {
         super.destroy();
-        mBankMapList = null;
     }
 
     @Override
@@ -158,7 +156,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
                 .subscribe(new DefaultSubscriber<List<BankData>>() {
                     @Override
                     public void onNext(List<BankData> data) {
-                        mBankMapList = data;
                         if (mView != null) {
                             mView.setData(data);
                         }
@@ -368,13 +365,14 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         if (mView != null) {
             mView.remove(bankData);
         }
-        if (mBankMapList != null) {
-            mBankMapList.remove(bankData);
-        }
     }
 
     private int getInsertPosition(BankData pBankData) {
-        if (Lists.isEmptyOrNull(mBankMapList)) {
+        if(mView == null){
+            return 0;
+        }
+        List<BankData> bankDataList = mView.getData();
+        if (Lists.isEmptyOrNull(bankDataList)) {
             return 0;
         }
         if (pBankData == null) {
@@ -389,7 +387,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             return 0;
         }
         int position = 0;
-        for (BankData bankData : mBankMapList) {
+        for (BankData bankData : bankDataList) {
             if (bankData == null) {
                 continue;
             }
@@ -577,10 +575,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
 
             if (mView == null) {
                 return;
-            }
-
-            if (mBankMapList != null) {
-                mBankMapList.remove(mBankData);
             }
 
             mView.hideLoading();

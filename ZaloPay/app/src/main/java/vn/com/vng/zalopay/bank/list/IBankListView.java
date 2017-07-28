@@ -14,6 +14,8 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 interface IBankListView extends ILoadDataView {
     void setData(List<BankData> val);
 
+    List<BankData> getData();
+
     void remove(BankData val);
 
     void insert(int position, BankData val);

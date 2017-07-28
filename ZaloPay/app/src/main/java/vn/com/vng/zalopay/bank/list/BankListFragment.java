@@ -164,6 +164,11 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     }
 
     @Override
+    public List<BankData> getData() {
+        return mAdapter != null ? mAdapter.getItems() : null;
+    }
+
+    @Override
     public void remove(BankData val) {
 
         int index = mAdapter.indexOf(val);
