@@ -33,6 +33,8 @@ import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 
 /**
@@ -295,6 +297,7 @@ public class WebAppPromotionFragment extends BaseFragment implements IWebViewLis
             @Override
             public void doClick(View v) {
                 showBottomSheetDialog();
+                ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_TOUCH_SHARE);
             }
         });
     }

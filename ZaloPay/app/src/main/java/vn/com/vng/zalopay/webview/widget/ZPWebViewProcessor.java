@@ -19,6 +19,8 @@ import java.io.InputStream;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCallback.INavigationListener {
 
@@ -213,7 +215,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
             }
             view.loadUrl(url);
         }
-
+        ZPAnalytics.trackEvent(ZPEvents.PROMOTION_TOUCH_DETAIL);
         return true;
     }
 
