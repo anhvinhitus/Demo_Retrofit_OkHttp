@@ -19,6 +19,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
 /**
@@ -147,5 +149,11 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     @Override
     public void onClickBankSupport(ZPBank card) {
         mPresenter.linkBank(card);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_TOUCH_BACK);
+        return super.onBackPressed();
     }
 }

@@ -29,6 +29,8 @@ import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.constants.BankStatus;
@@ -65,7 +67,7 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
             mView.showNetworkErrorDialog();
             return;
         }
-
+       ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_SELECT_BANK);
         if (bank.bankStatus == BankStatus.MAINTENANCE) {
             mView.showMessageDialog(bank.bankMessage, null);
         } else if (bank.bankStatus == BankStatus.UPVERSION) {

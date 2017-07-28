@@ -30,6 +30,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by hieuvm on 7/10/17.
@@ -138,6 +140,7 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
             @Override
             public void doClick(View v) {
                 mPresenter.startBankSupport(BankListFragment.this);
+                ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_ADD_ICON);
             }
         });
     }
@@ -226,6 +229,7 @@ public class BankListFragment extends BaseFragment implements IBankListView, Ban
     @Override
     public void onClickAddCard() {
         mPresenter.startBankSupport(this);
+         ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_ADD);
     }
 
     @Override
