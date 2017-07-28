@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by khattn on 3/10/17.
@@ -77,7 +79,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     private AppTypicalItemDecoration mAppTypicalItemDecoration;
     private ZPEditText mEdtSearchView;
 
-  @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -165,6 +167,13 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
         mPresenter.destroy();
         super.onDestroy();
     }
+
+    @Override
+    public boolean onBackPressed() {
+        ZPAnalytics.trackEvent(ZPEvents.SEARCH_TOUCH_BACK);
+        return super.onBackPressed();
+    }
+
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {

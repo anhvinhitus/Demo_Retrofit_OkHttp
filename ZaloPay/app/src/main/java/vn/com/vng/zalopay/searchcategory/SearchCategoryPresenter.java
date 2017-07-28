@@ -41,8 +41,9 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
@@ -60,7 +61,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     private final AppResourceStore.Repository mAppResourceRepository;
     private final FriendStore.Repository mFriendRepository;
     private final Navigator mNavigator;
-
+    private boolean mSuggest = true;
     private final List<InsideApp> mListApp;
     private PublishSubject<String> mDelaySubject;
 
@@ -132,7 +133,6 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
             mView.showResultView(false, false);
             return;
         }
-
         Subscription subscription = findAll(key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -159,6 +159,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                     }
                 });
         mSubscription.add(subscription);
+        mSuggest = false;
     }
 
 
@@ -208,6 +209,12 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         } else if (app.appType == PaymentAppTypeEnum.INTERNAL_REACT_NATIVE.getValue()) {
             handleLaunchInternalReactApp((int) app.insideAppId, app.moduleName);
         }
+        if (mSuggest) {
+            ZPAnalytics.trackEvent(ZPEvents.SEARCH_TOUCH_SUGGEST);
+        } else {
+            ZPAnalytics.trackEvent(ZPEvents.SEARCH_TOUCH_RESULT);
+        }
+
     }
 
     private void handleLaunchInternalApp(int id) {
