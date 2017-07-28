@@ -100,7 +100,7 @@ public class HomeCollapseHeaderFragment extends UserBaseTabFragment implements I
         if (mClickMore) {
             mClickMore = false;
             navigator.startLinkCardActivity(getActivity());
-            ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+            ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_LINKBANK);
         }
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
     }
@@ -111,10 +111,12 @@ public class HomeCollapseHeaderFragment extends UserBaseTabFragment implements I
         getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
         getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
         navigator.startScanToPayActivity(getActivity());
+        ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_SCANQR);
     }
 
     @OnClick(R.id.btn_balance)
     public void onClickBalance() {
         navigator.startBalanceManagementActivity(getContext());
+        ZPAnalytics.trackEvent(ZPEvents.HOME_TOUCH_BALANCE);
     }
 }

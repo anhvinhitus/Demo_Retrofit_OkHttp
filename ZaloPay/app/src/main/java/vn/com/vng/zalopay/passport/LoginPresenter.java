@@ -165,7 +165,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
     public void onGetOAuthComplete(long zaloId, String authCode, String channel) {
         Timber.d("Authentication zalo success [uid: %s authCode: %s]", zaloId, authCode);
 
-        ZPAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
+        ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         mUserConfig.saveUserInfo(zaloId, "", "", 0, 0, "");
 
         showLoadingView();
@@ -248,6 +248,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
         public void onNext(User user) {
             onAuthenticated(user);
+            ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         }
 
         public void onError(Throwable e) {
