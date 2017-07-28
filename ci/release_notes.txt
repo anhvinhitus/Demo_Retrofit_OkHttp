@@ -1,4 +1,2 @@
-Zalo Pay (Sandbox v2.16.0 - build 366) - Released on 2017-07-28 14:59
-+ [ReactModule] Hỗ trợ thêm pay by transtoken by vo van chuc (#05947f2)
-+ [App] Home: Edit string deposit by datnt10 (#516cc07)
-+ [App] Home: task#739 Đưa app nạp tiền ra home và thay đổi vị trí các app trên home page by datnt10 (#60583b0)
+Zalo Pay (Staging v2.16.0 - build 367) - Released on 2017-07-28 15:00
+
