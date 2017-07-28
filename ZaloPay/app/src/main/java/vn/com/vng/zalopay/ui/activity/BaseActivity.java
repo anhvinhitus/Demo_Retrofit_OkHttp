@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
+import vn.com.vng.zalopay.transfer.ui.SetAmountActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
@@ -195,14 +196,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_TOUCH_BACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_BACK);
         } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_BACK);
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_TOUCH_BACK);
         } else if (TAG.equals(TransferViaZaloPayNameActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZPID_TOUCH_BACK);
         } else if (TAG.equals(ZaloContactActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
+        } else if (TAG.equals(SetAmountActivity.class.getSimpleName())) {
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNT_BACK);
         }
+
     }
 
     public void showNetworkErrorDialog() {

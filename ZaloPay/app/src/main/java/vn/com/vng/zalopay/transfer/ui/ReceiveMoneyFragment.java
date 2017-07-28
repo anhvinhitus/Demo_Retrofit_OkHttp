@@ -137,11 +137,12 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         int itemId = item.getItemId();
         if (itemId == R.id.action_amount) {
             startActivityForResult(new Intent(getContext(), SetAmountActivity.class), 100);
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUT_INPUT);
             return true;
         } else if (itemId == R.id.action_amount_clear) {
             renderQRCode(0, "");
             getActivity().invalidateOptionsMenu();
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_CLEARINFO);
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_TOUCH_CLEAR);
             return true;
         }
 
