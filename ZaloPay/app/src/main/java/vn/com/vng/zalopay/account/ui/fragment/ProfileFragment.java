@@ -21,6 +21,8 @@ import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
 
@@ -232,11 +234,13 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @OnClick(R.id.layoutCmnd)
     public void onClickIdentity() {
         mPresenter.updateIdentity();
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_TOUCH_IDENTITY);
     }
 
     @OnClick(R.id.layoutEmail)
     public void onClickEmail() {
         mPresenter.updateEmail();
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_TOUCH_IDENTITY);
     }
 
     @OnClick(R.id.layoutAccountName)
