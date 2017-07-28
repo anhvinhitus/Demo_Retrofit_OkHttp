@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.transfer.ui;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -311,7 +312,7 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
             return;
         }
 
-        trackEvent(mCountReceiveSuccess++);
+        ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_RESSULT);
         mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
     }
 
@@ -391,42 +392,4 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
         return item;
     }
 
-    private void trackEvent(int count) {
-        int eventId;
-        switch (count) {
-            case 1:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_1;
-                break;
-            case 2:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_2;
-                break;
-            case 3:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_3;
-                break;
-            case 4:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_4;
-                break;
-            case 5:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_5;
-                break;
-            case 6:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_6;
-                break;
-            case 7:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_7;
-                break;
-            case 8:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_8;
-                break;
-            case 9:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_9;
-                break;
-            default:
-                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_MORE;
-                break;
-
-        }
-
-        ZPAnalytics.trackEvent(eventId);
-    }
 }

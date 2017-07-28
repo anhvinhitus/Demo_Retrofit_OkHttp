@@ -64,11 +64,10 @@ public class SetAmountFragment extends BaseFragment {
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
         trackEventSetAmount();
-
+        ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUT_INPUT_CONFIRM);
         if (!mAmountView.validate()) {
             return;
         }
-
         Intent data = new Intent();
         data.putExtra("amount", mAmountView.getAmount());
         data.putExtra("message", mNoteView.getText().toString());
@@ -109,12 +108,8 @@ public class SetAmountFragment extends BaseFragment {
     }
 
     private void trackEventSetAmount() {
-        if (mAmountView.getAmount() > 0 && mNoteView.length() > 0) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNTMESSAGE);
-        } else if (mAmountView.getAmount() > 0) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNT);
-        } else if (mNoteView.length() > 0) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETMESSAGE);
+       if (mAmountView.getAmount() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUT_INPUT);
         }
     }
 }
