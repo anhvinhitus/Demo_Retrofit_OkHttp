@@ -51,6 +51,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.PlayStoreUtils;
 
@@ -97,6 +98,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void closeModule(String moduleId) {
         Timber.d("close Module");
+        ZPAnalytics.trackEvent(ZPEvents.NOTIFICATION_TOUCH_BACK);
         if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
         }
@@ -152,6 +154,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 AndroidUtils.runOnUIThread(() -> mClickMore = true, 300);
             }
         });
+        ZPAnalytics.trackEvent(ZPEvents.NOTIFICATION_TOUCH_TRANSACTIONITEM);
     }
 
     @ReactMethod
