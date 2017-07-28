@@ -6,6 +6,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 6/5/17.
@@ -82,5 +83,17 @@ public final class PaymentInfo implements IPaymentInfo {
     @Override
     public String getCardTypeLink() {
         return builder != null ? builder.getCardTypeLink() : null;
+    }
+
+    @Override
+    public void putVoucher(VoucherInfo voucherInfo) {
+        if (builder != null) {
+            builder.setVoucher(voucherInfo);
+        }
+    }
+
+    @Override
+    public VoucherInfo getVoucher() {
+        return builder != null ? builder.getVoucher() : null;
     }
 }

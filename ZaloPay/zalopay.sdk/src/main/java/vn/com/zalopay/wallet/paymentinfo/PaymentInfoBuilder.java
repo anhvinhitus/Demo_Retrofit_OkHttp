@@ -9,13 +9,15 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 6/5/17.
  */
 
 public final class PaymentInfoBuilder implements IBuilder {
-    public AbstractOrder order;
+    private AbstractOrder order;
+    private VoucherInfo voucherInfo;
     @PaymentStatus
     public int status;//order status
     @TransactionType
@@ -38,6 +40,17 @@ public final class PaymentInfoBuilder implements IBuilder {
     @Override
     public IBuilder setOrder(AbstractOrder order) {
         this.order = order;
+        return this;
+    }
+
+    @Override
+    public VoucherInfo getVoucher() {
+        return voucherInfo;
+    }
+
+    @Override
+    public IBuilder setVoucher(VoucherInfo voucherInfo) {
+        this.voucherInfo = voucherInfo;
         return this;
     }
 

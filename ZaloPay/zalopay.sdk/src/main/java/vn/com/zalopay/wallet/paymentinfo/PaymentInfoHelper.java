@@ -26,17 +26,18 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.BaseActivity;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorLoginArray;
 
-/**
+/*
  * Created by chucvv on 6/7/17.
  */
 
 public class PaymentInfoHelper extends SingletonBase {
-    public IPaymentInfo paymentInfo;
+    private IPaymentInfo paymentInfo;
 
     public PaymentInfoHelper(IPaymentInfo paymentInfo) {
         super();
@@ -54,6 +55,20 @@ public class PaymentInfoHelper extends SingletonBase {
             return getOrder().appid;
         }
         return BuildConfig.ZALOPAY_APPID;
+    }
+
+    public VoucherInfo getVoucher() {
+        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
+            paymentInfo.getVoucher();
+        }
+        return null;
+    }
+
+    // set transaction result to notify to app
+    public void setVoucher(VoucherInfo voucherInfo) {
+        if (paymentInfo != null) {
+            paymentInfo.putVoucher(voucherInfo);
+        }
     }
 
     public String getUserId() {

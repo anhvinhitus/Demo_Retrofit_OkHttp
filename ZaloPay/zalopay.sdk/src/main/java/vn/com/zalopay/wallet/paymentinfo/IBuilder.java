@@ -8,15 +8,21 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 6/5/17.
  */
 
 public interface IBuilder {
+
     AbstractOrder getOrder();
 
     IBuilder setOrder(AbstractOrder order);
+
+    VoucherInfo getVoucher();
+
+    IBuilder setVoucher(VoucherInfo voucherInfo);
 
     @PaymentStatus
     int getStatus();
