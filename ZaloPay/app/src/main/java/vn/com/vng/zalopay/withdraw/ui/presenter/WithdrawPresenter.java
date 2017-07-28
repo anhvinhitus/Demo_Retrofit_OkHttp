@@ -43,6 +43,8 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
@@ -186,9 +188,9 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     public void withdraw(final long amount) {
         if (amount <= 0) {
             mView.showVisibleStubView();
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_AMOUNT_OTHER);
             return;
         }
-
         Subscription subscription = mBalanceRepository.balanceLocal()
                 .flatMap(new Func1<Long, Observable<Order>>() {
                     @Override
@@ -205,6 +207,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .subscribe(new CreateWalletOrderSubscriber());
 
         mSubscription.add(subscription);
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_AMOUNT);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

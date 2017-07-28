@@ -31,6 +31,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
@@ -137,6 +139,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     public void startWithdrawActivity() {
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_TOUCH_WITHDRAW);
         if (mView == null || mView.getContext() == null) {
             return;
         }
@@ -190,7 +193,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         }
         return (Activity) mView.getContext();
     }
-    
+
     public void updateZaloPayID() {
         if (!TextUtils.isEmpty(mUser.zalopayname)) {
             return;

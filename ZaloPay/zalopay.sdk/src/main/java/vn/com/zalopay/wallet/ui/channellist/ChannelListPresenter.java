@@ -393,9 +393,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             if (mSelectChannel != null) {
                 mPayProxy.setChannel(mSelectChannel).start();
-                ZPAnalytics.trackEvent(ZPEvents.USER_ACTION_NUMBER, mCountClickPmc);
                 mCountClickPmc = 0;
             }
+            trackEventConfirm();
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -422,6 +422,33 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
+    }
+
+    public void trackEventLaunch() {
+        if (mPaymentInfoHelper.isTopupTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_LAUNCH);
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_LAUNCH);
+        }
+
+    }
+
+    public void trackEventBack() {
+        if (mPaymentInfoHelper.isTopupTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CANCEL);
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CANCEL);
+        }
+
+    }
+
+    public void trackEventConfirm() {
+        if (mPaymentInfoHelper.isTopupTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CONFIRM);
+        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CONFIRM);
+        }
+
     }
 
     private void initAdapter() throws Exception {
@@ -515,7 +542,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void addMapChannelIntoAdapter(boolean active, String... bankCodes) {
         MultiValueMap<String, Object> mapChannels = active ? mActiveMapChannels : mInActiveMapChannels;
-        if(mapChannels == null || mapChannels.size() <= 0){
+        if (mapChannels == null || mapChannels.size() <= 0) {
             return;
         }
         for (String bankCode : bankCodes) {
@@ -884,6 +911,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             GlobalData.analyticsTrackerWrapper.trackUserCancel();
         }
         callback();
+        trackEventBack();
     }
 
     @Override

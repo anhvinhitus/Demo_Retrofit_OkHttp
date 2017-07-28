@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -64,6 +66,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @OnClick(R.id.btnDeposit)
     public void onClickBtnDeposit() {
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_INPUT);
         if (!mEdtAmountView.validate()) {
             return;
         }
@@ -121,6 +124,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public boolean onBackPressed() {
         getActivity().setResult(Activity.RESULT_CANCELED);
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_TOUCH_BACK);
         return super.onBackPressed();
     }
 

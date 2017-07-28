@@ -191,7 +191,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (TAG.equals(BankActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_BACK);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
+            ZPAnalytics.trackEvent(ZPEvents.BALANCE_TOUCH_BACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
         } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {

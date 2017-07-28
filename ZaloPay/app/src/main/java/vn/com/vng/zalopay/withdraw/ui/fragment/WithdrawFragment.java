@@ -32,6 +32,8 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.withdraw.ui.adapter.WithdrawAdapter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.CurrencyUtil;
 
 
@@ -239,6 +241,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
             mViewStub.setEnabled(false);
             return true;
         }
+        ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_TOUCH_BACK);
         return super.onBackPressed();
     }
 

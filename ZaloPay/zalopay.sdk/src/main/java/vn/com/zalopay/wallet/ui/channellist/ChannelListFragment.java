@@ -23,6 +23,8 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
@@ -162,6 +164,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onDataBound(View view) {
         mPresenter.onPaymentReady();
+        mPresenter.trackEventLaunch();
     }
 
     @Override
