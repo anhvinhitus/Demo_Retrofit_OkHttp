@@ -198,7 +198,9 @@ public class ConfigLoader {
 
     public static List<InternalApp> listInternalApp() {
         if (mConfig == null || mConfig.mInternalApps == null) {
-            String json = "[{\"appId\": 1001, \"order\": 2}, {\"appId\": 1002, \"order\": 3}, {\"appId\": 1003, \"order\": 6}]";
+            String json = "[{\"appId\": -1, \"order\": 2, \"display_name\": \"Chuyển Tiền\", \"icon_name\": \"app_1_transfers\", \"icon_color\": \"#4387f6\"}, " +
+                    "{\"appId\": -2, \"order\": 3, \"display_name\": \"Nhận Tiền\", \"icon_name\": \"app_1_receivemoney\", \"icon_color\": \"#129d5a\"}, " +
+                    "{\"appId\": -3, \"order\": 6, \"display_name\": \"Nạp Tiền\", \"icon_name\": \"notify_1_receivemoney\", \"icon_color\": \"#129d5a\"}]";
             List<InternalApp> listInternalApp = new ArrayList<>();
             JsonParser jsonParser = new JsonParser();
             JsonArray jsonArray = (JsonArray) jsonParser.parse(json);
@@ -206,7 +208,10 @@ public class ConfigLoader {
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
                 long appID = jsonObject.get("appId").getAsLong();
                 int pos = jsonObject.get("order").getAsInt();
-                listInternalApp.add(new InternalApp(appID, pos));
+                String displayName = jsonObject.get("display_name").getAsString();
+                String iconName = jsonObject.get("icon_name").getAsString();
+                String iconColor = jsonObject.get("icon_color").getAsString();
+                listInternalApp.add(new InternalApp(appID, pos, displayName, iconName, iconColor));
             }
             return listInternalApp;
         } else {

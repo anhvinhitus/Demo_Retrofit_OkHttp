@@ -379,18 +379,28 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private List<AppResource> listAppInHomePage(List<AppResource> resources) {
         List<InternalApp> listInternalApp = ConfigLoader.listInternalApp();
+        List<AppResource> listDefaultInternalApp = new ArrayList<>();
+
+        for (InternalApp internalApp : listInternalApp) {
+            listDefaultInternalApp.add(new AppResource(
+                    internalApp.getAppId(),
+                    2,
+                    internalApp.getDisplayName(),
+                    internalApp.getIconName(),
+                    internalApp.getIconColor()));
+        }
 
         ArrayList<AppResource> listApp = new ArrayList<>();
         Timber.d("Get list app in home, app default size [%s]", listApp.size());
-        if (resources.containsAll(mListDefaultApp)) {
-            resources.removeAll(mListDefaultApp);
+        if (resources.containsAll(listDefaultInternalApp)) {
+            resources.removeAll(listDefaultInternalApp);
         }
 
         if (listInternalApp.size() > 0) {
             listApp.addAll(resources);
-            Iterator itr = mListDefaultApp.iterator();
+            Iterator itr = listDefaultInternalApp.iterator();
             while (itr.hasNext()) {
-                for(InternalApp internalApp : listInternalApp) {
+                for (InternalApp internalApp : listInternalApp) {
                     listApp.add(internalApp.getPosition(), (AppResource) itr.next());
                 }
             }
@@ -404,6 +414,34 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         return listApp;
     }
+
+//    private List<AppResource> listAppInHomePage(List<AppResource> resources) {
+//        List<InternalApp> listInternalApp = ConfigLoader.listInternalApp();
+//
+//        ArrayList<AppResource> listApp = new ArrayList<>();
+//        Timber.d("Get list app in home, app default size [%s]", listApp.size());
+//        if (resources.containsAll(mListDefaultApp)) {
+//            resources.removeAll(mListDefaultApp);
+//        }
+//
+//        if (listInternalApp.size() > 0) {
+//            listApp.addAll(resources);
+//            Iterator itr = mListDefaultApp.iterator();
+//            while (itr.hasNext()) {
+//                for(InternalApp internalApp : listInternalApp) {
+//                    listApp.add(internalApp.getPosition(), (AppResource) itr.next());
+//                }
+//            }
+//        } else {
+//            listApp.addAll(mListDefaultApp);
+//            listApp.addAll(resources);
+//        }
+//
+//        listApp.removeAll(mListExcludeApp);
+//        Timber.d("app show in home page: %s", listApp.size());
+//
+//        return listApp;
+//    }
 
     @Override
     public Exception exception(Exception pException) {

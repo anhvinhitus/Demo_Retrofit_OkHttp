@@ -20,9 +20,9 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 public class PaymentAppConfig {
 
     public static class Constants {
-        public static final long TRANSFER_MONEY = 1001;
-        public static final long RECEIVE_MONEY = 1002;
-        public static final long DEPOSIT = 1003;
+        public static final long TRANSFER_MONEY = -1;
+        public static final long RECEIVE_MONEY = -2;
+        public static final long DEPOSIT = -3;
         public static final long RED_PACKET = 6;
         public static final long SHOW_SHOW = 22;
 

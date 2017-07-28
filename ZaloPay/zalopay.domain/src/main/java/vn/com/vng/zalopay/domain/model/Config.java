@@ -56,7 +56,7 @@ public class Config {
     @SerializedName("notification_types_vibrate")
     public List<Integer> mVibrateNotificationType;
 
-    @SerializedName("internal_app_position")
+    @SerializedName("internal_apps")
     public List<InternalApp> mInternalApps;
 
 
