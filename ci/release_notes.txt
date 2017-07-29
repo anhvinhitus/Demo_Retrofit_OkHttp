@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.16.0 - build 371) - Released on 2017-07-29 08:50
-+ [SDK] Không cache work flow, giải phóng khi switch giữa atm và cc by vo van chuc (#74206a8)
+Zalo Pay (Staging v2.16.0 - build 372) - Released on 2017-07-29 08:50
+
