@@ -251,7 +251,6 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     public void checkForSwitchChannel() {
         try {
             super.checkForSwitchChannel();
-            checkAutoMoveCardNumberFromBundle = true;
         } catch (Exception e) {
             Timber.w(e.getMessage());
         }
