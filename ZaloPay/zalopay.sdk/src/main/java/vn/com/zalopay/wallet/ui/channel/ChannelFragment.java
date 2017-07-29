@@ -372,6 +372,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         setVisible(R.id.zpw_submit_view, pIsVisible);
     }
 
+    public void visibleBIDVAccountRegisterBtn(boolean visible){
+        setVisible(R.id.bidv_register_linearlayout, visible);
+    }
+
     public void visibleCardViewNavigateButton(boolean pIsVisible) {
         setVisible(R.id.zpw_switch_card_button, pIsVisible);
     }

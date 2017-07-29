@@ -31,6 +31,7 @@ public class RS {
 
         public static final String sdk_bidv_bankscript_term_of_use = "sdk_bidv_bankscript_term_of_use";
         public static final String sdk_bidv_bankscript_dknhdt = "sdk_bidv_bankscript_dknhdt";
+        public static final String sdk_bidv_bankaccount_register_url = "sdk_bidv_bankaccount_register_url";
 
         public static final String app_service_id = "app_service_id";
         public static final String app_service_name = "app_service_name";

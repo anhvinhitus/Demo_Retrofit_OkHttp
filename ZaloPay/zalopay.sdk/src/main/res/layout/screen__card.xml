@@ -100,6 +100,14 @@
         android:visibility="gone" />
 
     <include
+        android:id="@+id/bidv_register_linearlayout"
+        layout="@layout/module__bidv_acccount_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
+
+    <include
         android:id="@+id/zpw_pay_support_buttom_view"
         layout="@layout/dialog_content"
         android:layout_width="match_parent"

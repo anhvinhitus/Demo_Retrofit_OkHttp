@@ -22,6 +22,7 @@ import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
@@ -68,6 +69,13 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected void init(AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         super.init(pAdapter, pChannelFragment);
         try {
+            getView().findViewById(R.id.bidv_register_btn).setOnClickListener(view -> {
+                try {
+                    SdkUtils.openWebPage(getActivity(),GlobalData.getStringResource(RS.string.sdk_bidv_bankaccount_register_url));
+                } catch (Exception e) {
+                    Timber.w(e);
+                }
+            });
             mOtpTokenLayoutRootView = getView().findViewById(R.id.zpw_content_input_view_root);
             mOtpTokenLayoutRootView.setVisibility(View.GONE);
             mRadioGroupAuthenSelectionView = getView().findViewById(R.id.linearlayout_selection_authen);
