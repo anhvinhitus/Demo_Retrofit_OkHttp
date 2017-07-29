@@ -91,7 +91,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private PaymentChannel mZaloPayChannel = null; //temp variable for checking active zalopay channel
     private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
-    private long mCountClickPmc = 0;
     private boolean mHasActiveChannel = false;
     private
     @TransactionType
@@ -393,7 +392,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             if (mSelectChannel != null) {
                 mPayProxy.setChannel(mSelectChannel).start();
-                mCountClickPmc = 0;
             }
             trackEventConfirm();
         } catch (Exception e) {
@@ -969,21 +967,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .track();
         }
         Timber.d("track channel id %s", pmcid);
-        mCountClickPmc++;
-        switch (pmcid) {
-            case BuildConfig.channel_credit_card:
-                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_36);
-                break;
-            case BuildConfig.channel_bankaccount:
-                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_37);
-                break;
-            case BuildConfig.channel_zalopay:
-                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_38);
-                break;
-            case BuildConfig.channel_atm:
-                ZPAnalytics.trackEvent(ZPEvents.USER_SELECT_PAYMENT_CHANNEL_39);
-                break;
-        }
     }
 
     public void showResultPayment(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception {
