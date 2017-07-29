@@ -160,7 +160,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @Override
     public boolean onBackPressed() {
         if (mPager.getCurrentItem() > 0) {
-            ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTNONE);
+           // ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTNONE);
             mPager.setCurrentItem(0);
             return true;
         }

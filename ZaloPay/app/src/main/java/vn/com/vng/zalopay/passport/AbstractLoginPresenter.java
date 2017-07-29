@@ -73,7 +73,6 @@ class AbstractLoginPresenter<View extends AbstractLoginView> extends AbstractPre
             return;
         }
 
-        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
         mView.hideLoading();
         mView.gotoHomePage();
         mView.finish();

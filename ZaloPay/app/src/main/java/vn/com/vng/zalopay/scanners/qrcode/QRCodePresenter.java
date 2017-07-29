@@ -186,11 +186,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             case ZaloPayUnknown:
                 showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
                 executeResult = true;
-                if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_ZALOPAY_UNKNOWN);
-                } else {
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_ZALOPAY_UNKNOWN);
-                }
                 break;
             case Unknown:
                 resumeScanningAfterWrongQR();
@@ -299,11 +294,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
         if (type == Constants.QRCode.RECEIVE_MONEY) {
             if (tryTransferMoney(data)) {
-                if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
-                } else {
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
-                }
+
                 return true;
             }
         }
@@ -311,21 +302,10 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean transferFixedMoney(JSONObject data, QRCodeResource qrCodeResource) {
-        if (tryTransferFixedMoney(data)) {
-            if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TYPE2);
-            } else if (qrCodeResource == QRCodeResource.HTTP_REQUEST) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_URL_TYPE2);
-            } else {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_TYPE2);
-            }
-            return true;
-        }
-        return false;
+        return tryTransferFixedMoney(data);
     }
 
     private void resumeScanningAfterWrongQR() {
-        ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
         showDialogDataInvalid();
     }
 
@@ -522,7 +502,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                     @Override
                     public void onNext(String decoded) {
                         if (TextUtils.isEmpty(decoded)) {
-                            ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
                             resumeScanningAfterWrongQR();
                         } else {
                             handleResult(decoded, QRCodeResource.PHOTO_LIBRARY);
@@ -531,7 +510,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
                     @Override
                     public void onError(Throwable e) {
-                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
                         super.onError(e);
                     }
                 });
@@ -549,9 +527,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return;
         }
 
-        if ("token".equalsIgnoreCase(param)) {
-            ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-        }
         ensureResumeScannerInUIThread();
     }
 
@@ -560,7 +535,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         if (mView == null) {
             return;
         }
-
         hideLoadingView();
         ensureResumeScannerInUIThread();
     }

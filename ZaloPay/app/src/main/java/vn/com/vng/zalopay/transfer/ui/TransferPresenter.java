@@ -120,11 +120,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (paymentWrapper == null) {
             return;
         }
-
-        if (requestCode == Constants.REQUEST_CODE_DEPOSIT && mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_BACK);
-        }
-
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -162,11 +157,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             mView.setTransferInfo(object, !isTransferFixedMoney());
         }
 
-        if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransferObject.zalopayId)) {
+     /*   if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransferObject.zalopayId)) {
             Timber.d("Change user receiver money");
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHANGERECEIVER);
         }
-
+*/
         setActivateSource();
         getUserInfo(object);
         onViewCreated();
@@ -176,6 +171,74 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         initLimitAmount();
         checkShowButtonTransfer();
         ensureHaveProfile();
+    }
+    
+    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
+
+        private String toZalopayName;
+
+        ZaloPayUserSubscriber(String toZalopayName) {
+            this.toZalopayName = toZalopayName;
+        }
+
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Error!!! Get zalopay info");
+
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+
+            hideLoading();
+            String message = ErrorMessageFactory.create(applicationContext, e);
+
+            if (e instanceof NetworkConnectionException) {
+                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                return;
+            } else if (e instanceof BodyException
+                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
+                    && isTransferFixedMoney()
+                    && !TextUtils.isEmpty(toZalopayName)) {
+                showDialogThenClose(
+                        String.format(mView.getContext().getString(R.string.receiver_invalid), toZalopayName),
+                        R.string.txt_close,
+                        SweetAlertDialog.ERROR_TYPE);
+                return;
+            }
+
+            if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
+                //ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
+            }
+
+            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
+        }
+
+        @Override
+        public void onNext(Person person) {
+            Timber.d("Get zalopay info success : displayName [%s] avatar [%s] zalopayId [%s]", person.displayName, person.avatar, person.zaloPayId);
+
+            updateTransferObject(person);
+
+            if (mView == null) {
+                return;
+            }
+
+            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
+                mView.setUserInfo(person);
+            }
+
+            hideLoading();
+            checkShowButtonTransfer();
+        }
     }
 
     private void updateTransferObject(Person person) {
@@ -722,7 +785,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             data.putExtra("amount", mTransferObject.amount);
             data.putExtra("message", mTransferObject.message);
             data.putExtra("transactionId", transactionId == null ? "" : transactionId);
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
+            //ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
             activity.setResult(Activity.RESULT_OK, data);
             activity.finish();
         }

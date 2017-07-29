@@ -73,7 +73,6 @@ public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountName
 
             if (e instanceof BodyException &&
                     ((BodyException) e).errorCode == ServerErrorMessage.USER_EXISTED) {
-                ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED);
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));
@@ -115,7 +114,6 @@ public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountName
 
             if (e instanceof BodyException &&
                     ((BodyException) e).errorCode == ServerErrorMessage.USER_EXISTED) {
-                ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED2);
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));

@@ -223,7 +223,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
         mOldPassCodeView.setError(null);
         mNewPassCodeView.setError(null);
 
-        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
+        //ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
         mPresenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
 
     }

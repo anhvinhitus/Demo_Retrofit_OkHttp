@@ -190,7 +190,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         } else {
             if (e instanceof BodyException) {
                 if (((BodyException) e).errorCode == OTP_CHANGE_PASSWORF_WRONG) {
-                    ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTWRONG);
+                 //   ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTWRONG);
                 }
             }
 
@@ -202,7 +202,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     }
 
     private void onVerifyOTPSuccess() {
-        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTOK);
+      //  ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTOK);
         mChangePinVerifyView.hideLoading();
         mView.onVerifySuccess();
     }

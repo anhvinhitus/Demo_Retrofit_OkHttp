@@ -236,7 +236,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
 
         loadGatewayInfoPaymentSDK();
-        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         LocationProvider.findLocation();
         getZaloFriend();
         warningRoot();
