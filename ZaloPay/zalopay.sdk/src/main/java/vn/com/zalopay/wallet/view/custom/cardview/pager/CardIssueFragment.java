@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 
 public class CardIssueFragment extends CreditCardFragment {
@@ -34,20 +36,22 @@ public class CardIssueFragment extends CreditCardFragment {
         }
 
         try {
-            if (getGuiProcessor() != null) {
-                cardIssueView.addTextChangedListener(getGuiProcessor().getEnabledTextWatcher());
-                cardIssueView.setOnFocusChangeListener(getGuiProcessor().getOnFocusChangeListener());
-                cardIssueView.setOnEditorActionListener(getGuiProcessor().getEditorActionListener());
+            CardGuiProcessor cardGuiProcessor = getGuiProcessor();
+            if (cardGuiProcessor == null) {
+                return v;
+            }
+            cardIssueView.addTextChangedListener(cardGuiProcessor.getEnabledTextWatcher());
+            cardIssueView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
+            cardIssueView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
-                //user touch on edittext,show keyboard
-                if (cardIssueView instanceof VPaymentEditText && ((VPaymentEditText) cardIssueView).getTextInputLayout() instanceof TextInputLayout) {
-                    (((VPaymentEditText) cardIssueView)).setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                } else
-                    cardIssueView.setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-
+            //user touch on edittext,show keyboard
+            if (cardIssueView instanceof VPaymentEditText && ((VPaymentEditText) cardIssueView).getTextInputLayout() instanceof TextInputLayout) {
+                (((VPaymentEditText) cardIssueView)).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
+            } else {
+                cardIssueView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
         } catch (Exception e) {
-            vn.com.zalopay.wallet.business.data.Log.e(this, e);
+            Timber.w(e);
         }
         return v;
     }
