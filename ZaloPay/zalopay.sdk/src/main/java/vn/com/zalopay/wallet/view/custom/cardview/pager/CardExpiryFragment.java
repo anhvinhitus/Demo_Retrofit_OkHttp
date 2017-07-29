@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 /**
  * Card expire
@@ -35,21 +37,23 @@ public class CardExpiryFragment extends CreditCardFragment {
         }
 
         try {
-            if (getGuiProcessor() != null) {
-                cardExpiryView.addTextChangedListener(getGuiProcessor().getEnabledTextWatcher());
-                cardExpiryView.setOnFocusChangeListener(getGuiProcessor().getOnFocusChangeListener());
-                cardExpiryView.setOnEditorActionListener(getGuiProcessor().getEditorActionListener());
+            CardGuiProcessor cardGuiProcessor = getGuiProcessor();
+            if (cardGuiProcessor == null) {
+                return v;
+            }
+            cardExpiryView.addTextChangedListener(cardGuiProcessor.getEnabledTextWatcher());
+            cardExpiryView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
+            cardExpiryView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
-                //user touch on edittext,show keyboard
-                if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() instanceof TextInputLayout) {
-                    (((VPaymentEditText) cardExpiryView)).setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                } else
-                    cardExpiryView.setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-
+            //user touch on edittext,show keyboard
+            if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() instanceof TextInputLayout) {
+                (((VPaymentEditText) cardExpiryView)).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
+            } else {
+                cardExpiryView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
 
         } catch (Exception e) {
-            vn.com.zalopay.wallet.business.data.Log.e(this, e);
+            Timber.w(e);
         }
 
         return v;

@@ -10,10 +10,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
+import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 /**
  * Card name fragment
@@ -39,20 +40,22 @@ public class CardNameFragment extends CreditCardFragment {
         }
 
         try {
-            if (getGuiProcessor() != null) {
-                mCardNameView.addTextChangedListener(getGuiProcessor().getEnabledTextWatcher());
-                mCardNameView.setOnFocusChangeListener(getGuiProcessor().getOnFocusChangeListener());
-                mCardNameView.setOnEditorActionListener(getGuiProcessor().getEditorActionListener());
+            CardGuiProcessor cardGuiProcessor = getGuiProcessor();
+            if (cardGuiProcessor == null) {
+                return v;
+            }
+            mCardNameView.addTextChangedListener(cardGuiProcessor.getEnabledTextWatcher());
+            mCardNameView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
+            mCardNameView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
-                //user touch on edittext,show keyboard
-                if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() instanceof TextInputLayout) {
-                    (((VPaymentEditText) mCardNameView).getTextInputLayout()).setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                } else
-                    mCardNameView.setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-
+            //user touch on edittext,show keyboard
+            if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() instanceof TextInputLayout) {
+                (((VPaymentEditText) mCardNameView).getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
+            } else {
+                mCardNameView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
 
         return v;

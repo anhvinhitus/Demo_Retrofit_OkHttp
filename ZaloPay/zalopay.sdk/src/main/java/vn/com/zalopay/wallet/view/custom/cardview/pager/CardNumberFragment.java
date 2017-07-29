@@ -17,14 +17,15 @@ import android.widget.ImageView;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.CreditCardDetector;
-import vn.com.zalopay.wallet.card.BankDetector;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 /**
  * Card number fragment
@@ -57,9 +58,12 @@ public class CardNumberFragment extends CreditCardFragment {
 
             if (bmBankSupportHelp != null) {
                 mImageViewQuestion.setImageBitmap(bmBankSupportHelp);
-
-                if (getGuiProcessor() != null) {
-                    mImageViewQuestion.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
+                try {
+                    if (getGuiProcessor() != null) {
+                        mImageViewQuestion.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
+                    }
+                } catch (Exception e) {
+                    Timber.w(e);
                 }
             }
         }
@@ -90,7 +94,11 @@ public class CardNumberFragment extends CreditCardFragment {
             //add virtual view to extend region of touched
             if (mVirtualView == null) {
                 mVirtualView = new View(GlobalData.getAppContext());
-                mVirtualView.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
+                try {
+                    mVirtualView.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
+                } catch (Exception e) {
+                    Timber.d(e);
+                }
 
             }
             // get height when iconQuestion loadconplete
@@ -134,21 +142,25 @@ public class CardNumberFragment extends CreditCardFragment {
         mRootView = (FrameLayout) v.findViewById(R.id.framelayoutContainer);
 
         try {
-            if (getGuiProcessor() != null && mCardNumberView != null) {
-                mCardNumberView.addTextChangedListener(getGuiProcessor().getCardDetectionTextWatcher());
-                mCardNumberView.setOnEditorActionListener(getGuiProcessor().getEditorActionListener());
-                mCardNumberView.setOnFocusChangeListener(getGuiProcessor().getOnFocusChangeListener());
+            CardGuiProcessor cardGuiProcessor = getGuiProcessor();
+            if (cardGuiProcessor == null) {
+                return v;
+            }
+            if (mCardNumberView == null) {
+                return v;
+            }
+            mCardNumberView.addTextChangedListener(cardGuiProcessor.getCardDetectionTextWatcher());
+            mCardNumberView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
+            mCardNumberView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
 
-                //user touch on edittext,show keyboard
-                if (mCardNumberView instanceof VPaymentEditText && mCardNumberView.getTextInputLayout() instanceof TextInputLayout) {
-                    (mCardNumberView.getTextInputLayout()).setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                } else {
-                    mCardNumberView.setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                }
-
+            //user touch on edittext,show keyboard
+            if (mCardNumberView instanceof VPaymentEditText && mCardNumberView.getTextInputLayout() instanceof TextInputLayout) {
+                (mCardNumberView.getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
+            } else {
+                mCardNumberView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
 
         return v;
@@ -206,7 +218,7 @@ public class CardNumberFragment extends CreditCardFragment {
         try {
             warning = getPaymentAdapter().getGuiProcessor().warningCardExist();
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
         if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(warning)) {
             try {

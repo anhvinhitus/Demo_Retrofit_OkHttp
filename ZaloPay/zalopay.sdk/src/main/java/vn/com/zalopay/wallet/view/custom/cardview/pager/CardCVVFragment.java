@@ -9,9 +9,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
+import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 public class CardCVVFragment extends CreditCardFragment {
 
@@ -32,21 +33,23 @@ public class CardCVVFragment extends CreditCardFragment {
         }
 
         try {
-            if (getGuiProcessor() != null) {
-                mCardCVVView.addTextChangedListener(getGuiProcessor().getEnabledTextWatcher());
-                mCardCVVView.setOnFocusChangeListener(getGuiProcessor().getOnFocusChangeListener());
-                mCardCVVView.setOnEditorActionListener(getGuiProcessor().getEditorActionListener());
+            CardGuiProcessor cardGuiProcessor = getGuiProcessor();
+            if (cardGuiProcessor == null) {
+                return v;
+            }
+            mCardCVVView.addTextChangedListener(cardGuiProcessor.getEnabledTextWatcher());
+            mCardCVVView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
+            mCardCVVView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
-                //user touch on edittext,show keyboard
-                if (mCardCVVView instanceof VPaymentEditText && ((VPaymentEditText) mCardCVVView).getTextInputLayout() instanceof TextInputLayout) {
-                    (((VPaymentEditText) mCardCVVView).getTextInputLayout()).setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-                } else
-                    mCardCVVView.setOnClickListener(getGuiProcessor().getClickOnEditTextListener());
-
+            //user touch on edittext,show keyboard
+            if (mCardCVVView instanceof VPaymentEditText && ((VPaymentEditText) mCardCVVView).getTextInputLayout() instanceof TextInputLayout) {
+                (((VPaymentEditText) mCardCVVView).getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
+            } else {
+                mCardCVVView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
 
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
         }
 
         return v;

@@ -71,15 +71,14 @@ public abstract class CreditCardFragment extends Fragment {
         }
     }
 
-    public CardGuiProcessor getGuiProcessor() {
-        if (mGuiProcessor == null || mGuiProcessor.get() == null) {
-            try {
-                mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
-                return mGuiProcessor.get();
-            } catch (Exception e) {
-                Timber.w(e);
-            }
+    public CardGuiProcessor getGuiProcessor() throws Exception{
+        if(mGuiProcessor != null && mGuiProcessor.get() != null){
+            return mGuiProcessor.get();
         }
+        if(getPaymentAdapter() == null){
+            throw new Exception("Invalid paymentflow");
+        }
+        mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
         return mGuiProcessor.get();
     }
 
