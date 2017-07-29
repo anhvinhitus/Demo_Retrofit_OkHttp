@@ -54,7 +54,6 @@ public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeVi
 
     public void sendCode(String code) {
         showLoadingView();
-        ZPAnalytics.trackEvent(ZPEvents.INPUTINVITATIONCODE);
         Subscription subscription = mPassportRepository.verifyCode(code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -84,13 +83,11 @@ public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeVi
     }
 
     private void gotoHomeScreen() {
-        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMINVITATION);
         mView.gotoMainActivity();
     }
 
     private void onInvitationCodeSuccess(User user) {
         this.hideLoadingView();
-        ZPAnalytics.trackEvent(ZPEvents.INVITATIONCODESUCCESS);
         if (AndroidApplication.instance().getUserComponent() == null) {
             AndroidApplication.instance().createUserComponent(user);
         }
@@ -105,7 +102,6 @@ public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeVi
 
         hideLoadingView();
         if (e instanceof BodyException) {
-            ZPAnalytics.trackEvent(ZPEvents.INVITATIONCODEWRONG);
             if (((BodyException) e).errorCode == ServerErrorMessage.INVITATION_CODE_INVALID) {
                 mView.showLabelError();
                 return;

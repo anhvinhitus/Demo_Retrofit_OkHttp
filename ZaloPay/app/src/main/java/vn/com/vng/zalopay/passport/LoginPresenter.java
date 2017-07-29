@@ -149,7 +149,6 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext) || errorCode == ZaloErrorCode.RESULTCODE_NETWORK_ERROR) {
             showNetworkError();
-            ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
         } else if (errorCode == ZaloErrorCode.RESULTCODE_USER_CANCEL ||
                 errorCode == ZaloErrorCode.RESULTCODE_USER_BACK ||
                 errorCode == ZaloErrorCode.RESULTCODE_USER_REJECT ||
@@ -158,7 +157,6 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
         } else {
             String msg = mApplicationContext.getString(R.string.exception_login_zalo_error);
             showErrorView(msg);
-            ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
         }
     }
 
@@ -270,15 +268,12 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
             showMessageDialog(ErrorMessageFactory.create(mApplicationContext, e));
         } else if (e instanceof InvitationCodeException) {
             mView.gotoInvitationCode();
-            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
-            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
         } else if (e instanceof RequirePhoneException) {
             mView.gotoOnboarding(profile, oauthcode);
         } else {
             Timber.d("Login error [message %s]", e.getMessage());
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
-            ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
     }
 

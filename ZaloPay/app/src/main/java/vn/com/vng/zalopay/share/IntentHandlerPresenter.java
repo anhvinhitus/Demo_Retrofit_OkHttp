@@ -30,8 +30,6 @@ import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 
 /**
@@ -121,8 +119,6 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         }
 
         if (scheme.equalsIgnoreCase("zalopay-zapi-28")) {
-
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_LAUNCH_28);
             if (host.equalsIgnoreCase("app") && "/transfer".equalsIgnoreCase(pathPrefix)) {
                 handleZaloIntegration(data);
             } else {
@@ -278,9 +274,6 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         if (sender == ownerZaloId) {
             return false;
         }
-
-        ZPAnalytics.trackEvent(ZPEvents.ZALO_NOTLOGIN);
-
         String messageFormat = context.getString(R.string.confirm_change_account_format);
         User user = mUserConfig.getCurrentUser();
         String message;
@@ -327,7 +320,6 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         }
 
         if (SDKPayment.canCloseSdk()) {
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_ISINCOMPLETED);
             try {
                 SDKPayment.closeSdk();
             } catch (Exception e) {
@@ -335,8 +327,6 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             }
             return false;
         }
-
-        ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_ISINPROGRESS);
 
         DialogHelper.showWarningDialog((Activity) context, mApplicationContext.getString(R.string.you_having_a_transaction_in_process), mApplicationContext.getString(R.string.accept),
                 new ZPWOnEventConfirmDialogListener() {
@@ -362,8 +352,6 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             }
             return false;
         }
-
-        ZPAnalytics.trackEvent(ZPEvents.ZALO_NOTLOGIN);
         startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE,
                 data, sender, accesstoken);
         return true;

@@ -191,7 +191,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
             super.start();
         } else {
             showCameraError(R.string.exception_open_camera_not_allow);
-            ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
         }
     }
 
@@ -245,8 +244,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 if (qrCodePresenter != null) {
                     qrCodePresenter.pay(data);
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOPHOTO);
             }
         }
         qrCodePresenter.onActivityResult(requestCode, resultCode, data);

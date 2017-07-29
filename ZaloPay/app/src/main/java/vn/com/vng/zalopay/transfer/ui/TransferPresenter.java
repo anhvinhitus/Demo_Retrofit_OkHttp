@@ -127,11 +127,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (paymentWrapper == null) {
             return;
         }
-
-        if (requestCode == Constants.REQUEST_CODE_DEPOSIT && mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_BACK);
-        }
-
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -169,11 +164,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             mView.setTransferInfo(object, !isTransferFixedMoney());
         }
 
-        if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransferObject.zalopayId)) {
+     /*   if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransferObject.zalopayId)) {
             Timber.d("Change user receiver money");
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHANGERECEIVER);
         }
-
+*/
         setActivateSource();
         getUserInfo(object);
         onViewCreated();
@@ -228,7 +223,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
 
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-                ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
+                //ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
             }
 
             showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
@@ -679,7 +674,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             data.putExtra("amount", mTransferObject.amount);
             data.putExtra("message", mTransferObject.message);
             data.putExtra("transactionId", transactionId == null ? "" : transactionId);
-            ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
+            //ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
             activity.setResult(Activity.RESULT_OK, data);
             activity.finish();
         }

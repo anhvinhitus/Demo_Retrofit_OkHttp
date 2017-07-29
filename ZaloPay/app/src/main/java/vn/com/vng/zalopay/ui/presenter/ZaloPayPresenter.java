@@ -52,26 +52,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     private long mLastTimeRefreshApp;
 
-    private final static SparseIntArray sActionMap;
-
-    static {
-        sActionMap = new SparseIntArray(15);
-        sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);
-        sActionMap.put(1, ZPEvents.TAPAPPICON_1_2);
-        sActionMap.put(2, ZPEvents.TAPAPPICON_1_3);
-        sActionMap.put(3, ZPEvents.TAPAPPICON_2_1);
-        sActionMap.put(4, ZPEvents.TAPAPPICON_2_2);
-        sActionMap.put(5, ZPEvents.TAPAPPICON_2_3);
-        sActionMap.put(6, ZPEvents.TAPAPPICON_3_1);
-        sActionMap.put(7, ZPEvents.TAPAPPICON_3_2);
-        sActionMap.put(8, ZPEvents.TAPAPPICON_3_3);
-        sActionMap.put(9, ZPEvents.TAPAPPICON_4_1);
-        sActionMap.put(10, ZPEvents.TAPAPPICON_4_2);
-        sActionMap.put(11, ZPEvents.TAPAPPICON_4_3);
-        sActionMap.put(12, ZPEvents.TAPAPPICON_5_1);
-        sActionMap.put(13, ZPEvents.TAPAPPICON_5_2);
-        sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
-    }
 
     @Inject
     ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
@@ -147,11 +127,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
 
         Timber.d("Tap on app at position %d", position);
-
-        int action = sActionMap.get(position, -1);
-        if (action >= 0) {
-            ZPAnalytics.trackEvent(sActionMap.get(position));
-        }
     }
 
     /*
