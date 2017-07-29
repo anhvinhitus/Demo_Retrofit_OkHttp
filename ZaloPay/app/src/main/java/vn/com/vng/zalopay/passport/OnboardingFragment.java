@@ -38,6 +38,8 @@ import vn.com.vng.zalopay.passport.widget.OnboardingPasswordRoundView;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.VNPhoneValidate;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
@@ -285,6 +287,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     private void authenticate() {
         mPresenter.authenticate(mProfile.userId, oauthcode, mInputOtpView.getInputText());
+        ZPAnalytics.trackEvent(ZPEvents.ONBOARDING_OTP_TOUCH_CONFIRM);
     }
 
     public void gotoHomePage() {
@@ -377,11 +380,13 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         isPermissionGrantedAndRequest(new String[]{Manifest.permission.RECEIVE_SMS}, RuntimePermissionFragment.PERMISSION_CODE.RECEIVE_SMS);
         setSubTitleOtp(mInputPhoneView.getInputText());
         startOTPCountDown(OnboardingPresenter.RESEND_OTP_INTERVAL);
+        ZPAnalytics.trackEvent(ZPEvents.ONBOARDING_INPUT_OTP);
     }
 
     private void onPasswordPageActive() {
         mReInputPwdView.reset();
         mInputPwdView.reset();
+        ZPAnalytics.trackEvent(ZPEvents.ONBOARDING_INPUT_PASSWORD);
     }
 
     private void onPhonePageActive(Boolean next) {
@@ -391,6 +396,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
         } else {
             mInputOtpView.setInputText("");
         }
+        ZPAnalytics.trackEvent(ZPEvents.ONBOARDING_INPUT_PHONE);
     }
 
     private void setSubTitleOtp(String phone) {
