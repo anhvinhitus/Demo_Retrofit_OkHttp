@@ -97,7 +97,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .getApplicationComponent()
                 .appInfoInteractor();
         initLimitAmount();
-        setMinWithdrawAmount(minWithdrawAmount);
     }
 
     @Override
@@ -147,13 +146,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         mView.setBalance(balance);
         Timber.d("Min denomination money : %s", minWithdrawAmount);
         mView.showEnoughView(balance < minWithdrawAmount);
-    }
-
-    void setMinWithdrawAmount(long minWithdrawAmount){
-        if (mView == null) {
-            return;
-        }
-        mView.setMinAmount(minWithdrawAmount);
     }
 
     private void getBalance() {

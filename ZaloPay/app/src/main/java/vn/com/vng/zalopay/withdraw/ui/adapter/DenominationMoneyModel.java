@@ -11,7 +11,10 @@ import butterknife.ButterKnife;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.zalopay.utility.CurrencyUtil;
+import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by hieuvm on 6/18/17.
@@ -22,7 +25,6 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
 
     private long money;
     private long balance;
-    private long minamount;
     private OnItemClickListener mOnItemClickListener;
     private final DebouncingOnClickListener viewClickListener = new DebouncingOnClickListener() {
         @Override
@@ -45,13 +47,20 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         this.balance = balance;
     }
 
-    void setMinAmount(long minAmount) {
-        this.minamount = minAmount;
-    }
-
     @Override
     protected ViewHolder createNewHolder() {
         return new ViewHolder();
+    }
+
+    public long getMinWithdrawAmount() {
+        long minAmount = SDKApplication
+                .getApplicationComponent()
+                .appInfoInteractor()
+                .minAmountTransType(TransactionType.WITHDRAW);
+        if (minAmount <= 0) {
+            minAmount = ConfigLoader.getMinMoneyWithdraw();
+        }
+        return minAmount;
     }
 
     @Override
@@ -59,7 +68,7 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         boolean isValid = balance >= money;
         if (money == 0) {
             holder.mMoneyView.setText(R.string.input_money_text);
-            isValid = balance >= minamount;
+            isValid = balance >= getMinWithdrawAmount();
 
         } else {
             holder.mMoneyView.setText(CurrencyUtil.formatCurrency(money, false));
