@@ -191,9 +191,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onDestroyView() {
         mEdtIdentityView.clearValidators();
         mEdtEmailView.clearValidators();
-        clearCacheFresco(mUriAvatar);
-        clearCacheFresco(mUriFgIdentity);
-        clearCacheFresco(mUriBgIdentity);
+//        clearCacheFresco(mUriAvatar);
+//        clearCacheFresco(mUriFgIdentity);
+//        clearCacheFresco(mUriBgIdentity);
         presenter.detachView();
         super.onDestroyView();
     }
