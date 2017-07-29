@@ -165,6 +165,11 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     }
 
     @Override
+    public void setMinAmount(long minAmount) {
+        mAdapter.setBalance(minAmount);
+    }
+
+    @Override
     public void addDenominationMoney(List<Long> val) {
         mAdapter.insertItems(val);
     }
@@ -242,14 +247,14 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     }
 
     private void initLimitAmount() {
-        long minDepositAmount = ConfigLoader.getMinMoneyWithdraw();
-        long maxDepositAmount = ConfigLoader.getMaxMoneyWithdraw();
+        long minWithdrawAmount = mPresenter.getMinWithdrawAmount();
+        long maxWithdrawAmount = mPresenter.getMaxWithdrawAmount();
         long multipleMoneyWithdraw = ConfigLoader.getMultipleMoneyWithdraw();
         String description = String.format(getString(R.string.withdraw_inputmoney_hint),
-                CurrencyUtil.formatCurrency(minDepositAmount),
+                CurrencyUtil.formatCurrency(minWithdrawAmount),
                 CurrencyUtil.formatCurrency(multipleMoneyWithdraw));
         mDescription.setText(description);
-        mEdtAmount.setMinMaxMoney(minDepositAmount, maxDepositAmount);
+        mEdtAmount.setMinMaxMoney(minWithdrawAmount, maxWithdrawAmount);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

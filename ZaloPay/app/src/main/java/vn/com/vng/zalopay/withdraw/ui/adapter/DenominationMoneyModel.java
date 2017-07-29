@@ -11,7 +11,6 @@ import butterknife.ButterKnife;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
@@ -21,14 +20,19 @@ import vn.com.zalopay.utility.CurrencyUtil;
 
 class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel.ViewHolder> {
 
-    interface OnItemClickListener {
-        void onClickDenominationMoney(long money);
-    }
-
     private long money;
     private long balance;
-
+    private long minamount;
     private OnItemClickListener mOnItemClickListener;
+    private final DebouncingOnClickListener viewClickListener = new DebouncingOnClickListener() {
+        @Override
+        public void doClick(View v) {
+            Timber.d("denomination money %s", money);
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onClickDenominationMoney(money);
+            }
+        }
+    };
 
     DenominationMoneyModel() {
     }
@@ -41,6 +45,10 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         this.balance = balance;
     }
 
+    void setMinAmount(long minAmount) {
+        this.minamount = minAmount;
+    }
+
     @Override
     protected ViewHolder createNewHolder() {
         return new ViewHolder();
@@ -51,7 +59,7 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         boolean isValid = balance >= money;
         if (money == 0) {
             holder.mMoneyView.setText(R.string.input_money_text);
-            isValid = balance >= ConfigLoader.getMinMoneyWithdraw();
+            isValid = balance >= minamount;
 
         } else {
             holder.mMoneyView.setText(CurrencyUtil.formatCurrency(money, false));
@@ -62,16 +70,6 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         holder.mMoneyView.setEnabled(isValid);
         holder.mMaskView.setVisibility(isValid ? View.GONE : View.VISIBLE);
     }
-
-    private final DebouncingOnClickListener viewClickListener = new DebouncingOnClickListener() {
-        @Override
-        public void doClick(View v) {
-            Timber.d("denomination money %s", money);
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onClickDenominationMoney(money);
-            }
-        }
-    };
 
     void setClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
@@ -85,23 +83,6 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
     @Override
     protected int getDefaultLayout() {
         return R.layout.row_withdraw_layout;
-    }
-
-    public static final class ViewHolder extends EpoxyHolder {
-
-        @BindView(R.id.tvMoney)
-        TextView mMoneyView;
-
-        @BindView(R.id.itemLayout)
-        View mItemLayout;
-
-        @BindView(R.id.mask)
-        View mMaskView;
-
-        @Override
-        protected void bindView(View itemView) {
-            ButterKnife.bind(this, itemView);
-        }
     }
 
     @Override
@@ -129,5 +110,26 @@ class DenominationMoneyModel extends EpoxyModelWithHolder<DenominationMoneyModel
         result = 31 * result + (int) (money ^ (money >>> 32));
         result = 31 * result + (int) (balance ^ (balance >>> 32));
         return result;
+    }
+
+    interface OnItemClickListener {
+        void onClickDenominationMoney(long money);
+    }
+
+    public static final class ViewHolder extends EpoxyHolder {
+
+        @BindView(R.id.tvMoney)
+        TextView mMoneyView;
+
+        @BindView(R.id.itemLayout)
+        View mItemLayout;
+
+        @BindView(R.id.mask)
+        View mMaskView;
+
+        @Override
+        protected void bindView(View itemView) {
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

@@ -38,6 +38,14 @@ public class WithdrawAdapter extends EpoxyAdapter {
         notifyModelsChanged();
     }
 
+    public void setMinAmount(long minAmount) {
+        for (EpoxyModel<?> model : models) {
+            ((DenominationMoneyModel) model).setMinAmount(minAmount);
+        }
+
+        notifyModelsChanged();
+    }
+
     public void insertItems(List<Long> items) {
         addModels(transform(items));
     }
