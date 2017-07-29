@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -140,9 +141,20 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         return ZPScreens.ME_PROFILE;
     }
 
+    /**
+     * Get eventId for given event type.
+     * Return -1 if activity does not have matching eventId
+     *
+     * @param eventType event type
+     */
     @Override
-    protected void getTrackingEventBack() {
-        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK);
+    protected int getEventId(EventType eventType) {
+        switch (eventType) {
+            case NAVIGATE_BACK:
+                return ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK;
+            default:
+                return -1;
+        }
     }
 }
 

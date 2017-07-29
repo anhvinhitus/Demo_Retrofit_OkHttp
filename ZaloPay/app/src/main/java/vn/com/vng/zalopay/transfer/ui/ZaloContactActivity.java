@@ -20,7 +20,12 @@ public class ZaloContactActivity extends UserBaseToolBarActivity {
     }
 
     @Override
-    protected void getTrackingEventBack() {
-        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
+    protected int getEventId(EventType eventType) {
+        switch (eventType) {
+            case NAVIGATE_BACK:
+                return ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK;
+            default:
+                return -1;
+        }
     }
 }

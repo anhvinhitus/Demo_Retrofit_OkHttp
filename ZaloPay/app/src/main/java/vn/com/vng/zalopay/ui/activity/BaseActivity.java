@@ -35,6 +35,10 @@ import vn.com.zalopay.analytics.ZPAnalytics;
  * *
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    public enum EventType {
+        ACTIVITY_LAUNCH,
+        NAVIGATE_BACK
+    }
 
     protected final String TAG = getClass().getSimpleName();
     protected final EventBus mEventBus = getAppComponent().eventBus();
@@ -51,11 +55,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @NonNull
     protected abstract String getTrackingScreenName();
 
-    protected void getTrackingEventBack() {
-    }
-
-    protected void getTrackingEventLaunch() {
-    }
+    /**
+     * Get eventId for given event type.
+     * Return -1 if activity does not have matching eventId
+     * @param eventType event type
+     */
+    protected abstract int getEventId(EventType eventType);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.getTrackingEventLaunch();
+
+        int eventId = getEventId(EventType.ACTIVITY_LAUNCH);
+        if (eventId > 0) {
+            ZPAnalytics.trackEvent(eventId);
+        }
     }
 
     protected int getResLayoutId() {
@@ -141,7 +150,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
 
-        this.getTrackingEventBack();
+        int eventId = getEventId(EventType.NAVIGATE_BACK);
+        if (eventId > 0) {
+            ZPAnalytics.trackEvent(eventId);
+        }
         super.onBackPressed();
     }
 
