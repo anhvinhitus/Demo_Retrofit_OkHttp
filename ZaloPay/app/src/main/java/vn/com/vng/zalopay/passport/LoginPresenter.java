@@ -1,13 +1,10 @@
 package vn.com.vng.zalopay.passport;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.LoginEvent;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -39,7 +36,6 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -141,6 +137,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
     public void onAuthError(int errorCode, String message) {
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
+        ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         if (mView == null) { // View đã bị destroy
             return;
         }
@@ -162,7 +159,6 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
     public void onGetOAuthComplete(long zaloId, String authCode, String channel) {
         Timber.d("Authentication zalo success [uid: %s authCode: %s]", zaloId, authCode);
-
         ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         mUserConfig.saveUserInfo(zaloId, "", "", 0, 0, "");
 
@@ -222,6 +218,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
     private void loginPayment(ZaloProfile profile, String oauthcode) {
         Timber.d("login payment system");
+        ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         Subscription subscriptionLogin = mPassportRepository.login(profile.userId, oauthcode)
                 .doOnNext(user -> mApplicationSession.clearMerchantSession())
                 .subscribeOn(Schedulers.io())
@@ -246,7 +243,6 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
 
         public void onNext(User user) {
             onAuthenticated(user);
-            ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         }
 
         public void onError(Throwable e) {
