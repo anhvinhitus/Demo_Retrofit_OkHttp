@@ -110,6 +110,13 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void navigateProtectAccount() {
+        if (getCurrentActivity() != null) {
+            mNavigator.startProtectAccount(getCurrentActivity());
+        }
+    }
+
+    @ReactMethod
     public void trackEvent(int eventId) {
 
         Timber.d("trackEvent eventId %s", eventId);
