@@ -1,2 +1,9 @@
-Zalo Pay (Staging v2.16.0 - build 367) - Released on 2017-07-28 15:00
-
+Zalo Pay (Sandbox v2.16.0 - build 368) - Released on 2017-07-29 07:17
++ [SDK] task#742 : Liên kết ngân hàng BIDV - BIDV Online Banking - Thêm nút Đăng Ký BIDV Online by vo van chuc (#d42bbc4)
++ [SDK] Clean up by vo van chuc (#04841c0)
++ [SDK] Clean up by vo van chuc (#d81f121)
++ [Bank] #ZPF-376: [Android-STG-2.16-365] Thứ tự thẻ map: sai thứ tự by vo van chuc (#a182a1e)
++ [SDK] Cleanup by vo van chuc (#425a1a8)
++ [SDK] #ZPF-372 : [Android-STG-2.16-365] Ngân hàng TMCP Sài Gòn: không back lại được khi thanh toán số tiền lớn by vo van chuc (#afdaf3a)
++ [App] Home: edit app internal type by datnt10 (#3b6009a)
++ [App] Home: add more properties in config "internal_apps" by datnt10 (#e3ce931)
