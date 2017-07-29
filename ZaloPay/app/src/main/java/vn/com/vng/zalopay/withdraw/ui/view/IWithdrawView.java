@@ -15,6 +15,8 @@ public interface IWithdrawView extends ILoadDataView {
 
     void setBalance(long balance);
 
+    void setMinAmount(long minAmount);
+
     void addDenominationMoney(List<Long> val);
 
     void finish(int result);

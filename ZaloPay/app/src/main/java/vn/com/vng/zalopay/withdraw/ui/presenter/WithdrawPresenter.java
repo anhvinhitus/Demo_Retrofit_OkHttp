@@ -54,18 +54,17 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  */
 public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
-    private final BalanceStore.Repository mBalanceRepository;
     protected final ZaloPayRepository mZaloPayRepository;
     protected final Navigator mNavigator;
+    private final BalanceStore.Repository mBalanceRepository;
     private final User mUser;
     private final Context mContext;
     private final EventBus mEventBus;
 
     private final List<Long> mDenominationMoney = ConfigLoader.getDenominationWithdraw();
-    private final long mConfigMinWithdrawAmount = ConfigLoader.getMinMoneyWithdraw();
-    private final long mConfigMultipleWithdrawAmount = ConfigLoader.getMultipleMoneyWithdraw();
     private long minWithdrawAmount;
     private long maxWithdrawAmount;
+    private AppInfoStore.Interactor mAppInfoInteractor;
 
     private PaymentWrapper paymentWrapper;
 
@@ -94,7 +93,11 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 })
                 .build();
         paymentWrapper.initializeComponents();
+        mAppInfoInteractor = SDKApplication
+                .getApplicationComponent()
+                .appInfoInteractor();
         initLimitAmount();
+        setMinWithdrawAmount(minWithdrawAmount);
     }
 
     @Override
@@ -142,8 +145,15 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             return;
         }
         mView.setBalance(balance);
-        Timber.d("Min denomination money : %s", mConfigMinWithdrawAmount);
-        mView.showEnoughView(balance < mConfigMinWithdrawAmount);
+        Timber.d("Min denomination money : %s", minWithdrawAmount);
+        mView.showEnoughView(balance < minWithdrawAmount);
+    }
+
+    void setMinWithdrawAmount(long minWithdrawAmount){
+        if (mView == null) {
+            return;
+        }
+        mView.setMinAmount(minWithdrawAmount);
     }
 
     private void getBalance() {
@@ -160,10 +170,25 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         mSubscription.add(subscription);
     }
 
+    public long getMinWithdrawAmount() {
+        long minAmount = mAppInfoInteractor.minAmountTransType(TransactionType.WITHDRAW);
+        if (minAmount <= 0) {
+            minAmount = ConfigLoader.getMinMoneyWithdraw();
+        }
+        return minAmount;
+    }
+
+    public long getMaxWithdrawAmount() {
+        long maxAmount = mAppInfoInteractor.maxAmountTransType(TransactionType.WITHDRAW);
+        if (maxAmount <= 0) {
+            maxAmount = ConfigLoader.getMaxMoneyWithdraw();
+        }
+        return maxAmount;
+    }
+
     private void initLimitAmount() {
-        AppInfoStore.Interactor appInfo = SDKApplication.getApplicationComponent().appInfoInteractor();
-        minWithdrawAmount = appInfo.minAmountTransType(TransactionType.WITHDRAW);
-        maxWithdrawAmount = appInfo.maxAmountTransType(TransactionType.WITHDRAW);
+        minWithdrawAmount = getMinWithdrawAmount();
+        maxWithdrawAmount = getMaxWithdrawAmount();
     }
 
     public void withdraw(final long amount) {
@@ -196,6 +221,43 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         }
     }
 
+    void onCreateWalletOrderError(Throwable e) {
+        if (mView == null) {
+            return;
+        }
+
+        mView.hideLoading();
+        if (e instanceof NetworkConnectionException) {
+            mView.showNetworkErrorDialog();
+        }
+        if (e instanceof UserInputException) {
+            mView.showInputError(ErrorMessageFactory.create(mContext, e));
+        } else {
+            Timber.e(e, "Server responses with error when client create withdraw order.");
+            mView.showError(ErrorMessageFactory.create(mContext, e));
+        }
+    }
+
+    void onCreateWalletOrderSuccess(Order order) {
+        if (mView == null) {
+            return;
+        }
+
+        paymentWrapper.withdraw((Activity) mView.getContext(), order);
+        mView.hideLoading();
+    }
+
+    void closeWithDraw() {
+        if (mView != null) {
+            mView.finish(Activity.RESULT_OK);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChange(ChangeBalanceEvent event) {
+        setBalanceAndCheckDenomination(event.balance);
+    }
+
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
 
         CreateWalletOrderSubscriber() {
@@ -224,32 +286,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
             WithdrawPresenter.this.onCreateWalletOrderError(e);
         }
-    }
-
-    void onCreateWalletOrderError(Throwable e) {
-        if (mView == null) {
-            return;
-        }
-
-        mView.hideLoading();
-        if (e instanceof NetworkConnectionException) {
-            mView.showNetworkErrorDialog();
-        }
-        if (e instanceof UserInputException) {
-            mView.showInputError(ErrorMessageFactory.create(mContext, e));
-        } else {
-            Timber.e(e, "Server responses with error when client create withdraw order.");
-            mView.showError(ErrorMessageFactory.create(mContext, e));
-        }
-    }
-
-    void onCreateWalletOrderSuccess(Order order) {
-        if (mView == null) {
-            return;
-        }
-
-        paymentWrapper.withdraw((Activity) mView.getContext(), order);
-        mView.hideLoading();
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
@@ -283,16 +319,5 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         public void onResponseSuccess(IBuilder builder) {
             closeWithDraw();
         }
-    }
-
-    void closeWithDraw() {
-        if (mView != null) {
-            mView.finish(Activity.RESULT_OK);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBalanceChange(ChangeBalanceEvent event) {
-        setBalanceAndCheckDenomination(event.balance);
     }
 }
