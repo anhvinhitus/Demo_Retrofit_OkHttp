@@ -56,8 +56,6 @@ import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
-import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
-import vn.com.zalopay.wallet.workflow.CreditCardWorkFlow;
 import vn.com.zalopay.wallet.workflow.WorkFlowFactoryCreator;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
@@ -87,8 +85,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     AppInfoStore.Interactor appInfoInteractor;
     boolean mTimerRunning = false;
     AbstractWorkFlow mAbstractWorkFlow = null;
-    BankCardWorkFlow mBankWorkFlow = null;
-    CreditCardWorkFlow mCreditCardWorkFlow = null;
     private CountDownTimer mExpireTransTimer;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAbstractWorkFlow != null) {
@@ -345,19 +341,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (pmcTransType == null) {
             return null;
         }
-        int channelId = pmcTransType.pmcid;
-        if (channelId == BuildConfig.channel_atm) {
-            if (mBankWorkFlow == null) {
-                mBankWorkFlow = (BankCardWorkFlow) WorkFlowFactoryCreator.create(mContext, this, pmcTransType, mPaymentInfoHelper, mStatusResponse);
-            }
-            return mBankWorkFlow;
-        }
-        if (channelId == BuildConfig.channel_credit_card) {
-            if (mCreditCardWorkFlow == null) {
-                mCreditCardWorkFlow = (CreditCardWorkFlow) WorkFlowFactoryCreator.create(mContext, this, pmcTransType, mPaymentInfoHelper, mStatusResponse);
-            }
-            return mCreditCardWorkFlow;
-        }
         return WorkFlowFactoryCreator.create(mContext, this, pmcTransType, mPaymentInfoHelper, mStatusResponse);
     }
 
@@ -432,10 +415,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             if (miniPmcTransType == null) {
                 return false;
             }
-            Timber.d("create new adapter pmc id = %s", pChannelId);
+            Timber.d("create new work flow pmc id = %s", pChannelId);
             //release old adapter
             if (mAbstractWorkFlow != null) {
-                mAbstractWorkFlow.onStop();
+                mAbstractWorkFlow.onDetach();
+                mAbstractWorkFlow = null;
             }
             mAbstractWorkFlow = createWorkFlow(miniPmcTransType);
             initWorkFlow();
@@ -492,14 +476,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (mAbstractWorkFlow != null) {
             mAbstractWorkFlow.onDetach();
             mAbstractWorkFlow = null;
-        }
-        if (mBankWorkFlow != null) {
-            mBankWorkFlow.onDetach();
-            mBankWorkFlow = null;
-        }
-        if (mCreditCardWorkFlow != null) {
-            mCreditCardWorkFlow.onDetach();
-            mCreditCardWorkFlow = null;
         }
         if (DialogManager.showingLoadDialog()) {
             DialogManager.closeLoadDialog();
