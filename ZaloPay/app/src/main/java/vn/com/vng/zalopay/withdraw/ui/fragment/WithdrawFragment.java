@@ -23,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -162,11 +163,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView, Wit
     public void setBalance(long balance) {
         mMoneyView.setText(CurrencyUtil.formatCurrency(balance, false));
         mAdapter.setBalance(balance);
-    }
-
-    @Override
-    public void setMinAmount(long minAmount) {
-        mAdapter.setBalance(minAmount);
     }
 
     @Override
