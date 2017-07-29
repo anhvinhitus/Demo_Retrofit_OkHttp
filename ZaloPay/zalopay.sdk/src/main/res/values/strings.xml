@@ -10,6 +10,7 @@
 
     <string name="sdk_bidv_bankscript_term_of_use">https://ebank.bidv.com.vn/EWALLET/pay.jsp</string>
     <string name="sdk_bidv_bankscript_dknhdt">https://ebank.bidv.com.vn/DKNHDT/</string>
+    <string name="sdk_bidv_bankaccount_register_url">https://ebank.bidv.com.vn/DKNHDT/dk_bidvonline.htm</string>
 
     <string name="allow_use_fingerprint_feature">1</string>
     <string name="allow_use_send_log_on_transactionfail">1</string>
@@ -393,5 +394,7 @@
     <string name="sdk_error_load_resource">Lỗi đọc cấu hình ứng dụng. Vui lòng đóng ứng dụng và thử lại!</string>
     <string name="sdk_warning_no_channel_balance_error">Số dư không đủ, bạn cần</string>
     <string name="sdk_hyperlink_charge_more">Nạp thêm</string>
+
+    <string name="sdk_bidv_register_button_text">Đăng Ký BIDV Online</string>
 
 </resources>

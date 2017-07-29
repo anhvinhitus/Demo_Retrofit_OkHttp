@@ -2,9 +2,11 @@ package vn.com.zalopay.utility;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -20,11 +22,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class SdkUtils {
-   /***
-     * hash md5 string
-     * @param s
-     * @return
-     */
+
     public static String md5(String s) {
         try {
             // Create MD5 Hash
@@ -226,6 +224,14 @@ public class SdkUtils {
         } catch (Throwable ignored) {
         }
         return null;
+    }
+
+    public static void openWebPage(Context pContext, String pUrl) {
+        Uri webpage = Uri.parse(pUrl);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(pContext.getPackageManager()) != null) {
+            pContext.startActivity(intent);
+        }
     }
 
 }

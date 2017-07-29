@@ -1,9 +1,7 @@
 package vn.com.zalopay.wallet.business.webview.creditcard;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
@@ -13,6 +11,7 @@ import android.webkit.WebView;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -88,8 +87,11 @@ public class CCWebViewClient extends PaymentWebViewClient {
         }
 
         if (shouldOpenBrowser(url)) {
-            view.getContext().startActivity(
-                    new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            try {
+                SdkUtils.openWebPage(getAdapter().getActivity(), url);
+            } catch (Exception e) {
+                Timber.w(e);
+            }
             return true;
         }
         getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
@@ -116,7 +118,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             } catch (Exception e) {
                 Log.e(this, e);
             }
-           // BIDVWebFlow(null, url, view);
+            // BIDVWebFlow(null, url, view);
         }
         isFirstLoad = false;
     }
