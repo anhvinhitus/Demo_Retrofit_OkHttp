@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.account.ui.activities;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
 /**
@@ -19,5 +21,10 @@ public class UpdateProfileLevel3Activity extends UserBaseToolBarActivity {
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.ME_PROFILE_IDENTIFY;
+    }
+
+    @Override
+    protected void getTrackingEventBack() {
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_IDENTITY_BACK);
     }
 }

@@ -22,25 +22,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
-import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
-import vn.com.vng.zalopay.bank.ui.BankActivity;
-import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
-import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
-import vn.com.vng.zalopay.transfer.ui.SetAmountActivity;
-import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
-import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
-import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.vng.zalopay.webapp.WebAppPromotionActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
 
 /**
@@ -57,6 +44,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @NonNull
     protected abstract String getTrackingScreenName();
+
+    protected void getTrackingEventBack() {
+    }
+
+    protected void getTrackingEventLaunch() {
+    }
 
     protected final String TAG = getClass().getSimpleName();
     protected final EventBus mEventBus = getAppComponent().eventBus();
@@ -76,7 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.logActionLaunch();
+        this.getTrackingEventLaunch();
     }
 
     protected int getResLayoutId() {
@@ -149,7 +142,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
 
-        this.logActionNavigationBack();
+        this.getTrackingEventBack();
         super.onBackPressed();
     }
 
@@ -177,49 +170,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected ApplicationComponent getAppComponent() {
         return AndroidApplication.instance().getAppComponent();
-    }
-
-    private void logActionLaunch() {
-
-        if (TAG.equals(BankActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_LAUNCH);
-        } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
-          //  ZPAnalytics.trackEvent(ZPEvents.ADDCASH_LAUNCH);
-        } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
-        } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_LAUNCH);
-        } else if (TAG.equals(BankSupportSelectionActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_LAUNCH);
-        }
-    }
-
-    private void logActionNavigationBack() {
-        if (TAG.equals(BankActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_BACK);
-        } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_TOUCH_BACK);
-        } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_BACK);
-        } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_TOUCH_BACK);
-        } else if (TAG.equals(TransferViaZaloPayNameActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZPID_TOUCH_BACK);
-        } else if (TAG.equals(ZaloContactActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
-        } else if (TAG.equals(SetAmountActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNT_BACK);
-        }else if (TAG.equals(WebAppPromotionActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.PROMOTION_DETAIL_TOUCH_BACK);
-        }else if (TAG.equals(ProtectAccountActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_BACK);
-        }else if (TAG.equals(ProfileActivity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK);
-        }else if (TAG.equals(UpdateProfileLevel3Activity.class.getSimpleName())) {
-            ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_IDENTITY_BACK);
-        }
-
-
     }
 
     public void showNetworkErrorDialog() {

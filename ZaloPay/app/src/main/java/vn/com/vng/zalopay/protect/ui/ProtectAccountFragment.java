@@ -155,4 +155,5 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
         return false;
     }
+
 }
