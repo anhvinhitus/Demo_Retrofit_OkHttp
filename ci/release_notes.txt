@@ -1,2 +1,10 @@
-Zalo Pay (Production v2.16.0 - build 373) - Released on 2017-07-29 08:50
-
+Zalo Pay (Staging v2.16.0 - build 374) - Released on 2017-07-29 15:51
++ [Update Profile] ZPF-350 : Cập nhật thông tin cá nhân: hình ảnh bị mất sau khi user back ra ngoài by datnt10 (#249ac7a)
++ [SDK] Clean up by vo van chuc (#ca978ca)
++ [Withdraw] Cleanup commit#fea506fecd759645c6990580c27dd319f9d3e740 by vo van chuc (#3c0267d)
++ [App] Update icon font by hieuvm (#f6a6370)
++ [ReactModule] Hỗ trợ thêm pay by transtoken : Kiểm tra key zptranstoken trước khi access by vo van chuc (#0e1a9f1)
++ [React-native] update internal resource by phucpv (#d18847b)
++ [Transfer Money] ZPF-381 Chuyển tiền bằng Zalo Pay ID: nếu tài khoản Zalo Pay ID không tồn tại bàn phím bị tắt by datnt10 (#f298ed7)
++ [Withdraw] Ưu tiên đọc min/max value từ appinfo by vo van chuc (#fea506f)
++ [ReactModule] #ZPF-380 : [AND-STG- 2.16(372)] Reset MKTT: chỉnh lại navigation của notification reset MKTT by vo van chuc (#2839670)
