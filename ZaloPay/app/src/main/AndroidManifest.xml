@@ -177,10 +177,10 @@
         <activity
             android:name=".passport.OnboardingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="portrait"
             android:label=""
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".ui.activity.HomeActivity"
@@ -246,10 +246,11 @@
 
         <activity
             android:name=".webapp.WebAppPromotionActivity"
-            android:launchMode="singleTop"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop" />
 
-        <activity android:name=".webview.ui.WebViewFromQRScanActivity"
+        <activity
+            android:name=".webview.ui.WebViewFromQRScanActivity"
             android:configChanges="orientation|screenSize" />
 
         <!-- Tích hợp Crashlytics -->
@@ -360,7 +361,8 @@
 
         <activity
             android:name=".transfer.ui.TransferViaZaloPayNameActivity"
-            android:label="@string/title.activity.transfer" />
+            android:label="@string/title.activity.transfer"
+            android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
             android:name=".transfer.ui.SetAmountActivity"
