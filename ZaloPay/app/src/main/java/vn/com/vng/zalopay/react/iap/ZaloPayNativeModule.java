@@ -99,7 +99,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         // verify params parameters
         try {
             long appId = (long) params.getDouble(Constants.APPID); // appid
-            String transactionToken = params.getString(Constants.TRANSTOKEN);
+            String transactionToken = params.hasKey(Constants.TRANSTOKEN) ?
+                    params.getString(Constants.TRANSTOKEN) : null;
             if (!TextUtils.isEmpty(transactionToken) && getCurrentActivity() != null) {
                 //pay with trans token
                 mPaymentService.pay(getCurrentActivity(), promise, appId, transactionToken);
