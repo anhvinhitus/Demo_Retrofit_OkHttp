@@ -172,7 +172,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         checkShowButtonTransfer();
         ensureHaveProfile();
     }
-    
+
     private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
 
         private String toZalopayName;

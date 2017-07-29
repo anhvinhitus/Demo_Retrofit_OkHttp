@@ -67,6 +67,12 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mUserComponent = userComponent;
     }
 
+    @NonNull
+    @Override
+    protected String getTrackingScreenName() {
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

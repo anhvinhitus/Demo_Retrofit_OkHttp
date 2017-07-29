@@ -21,6 +21,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
 public class ProfileActivity extends UserBaseToolBarActivity implements IProfileInfoView {
@@ -136,6 +138,11 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.ME_PROFILE;
+    }
+
+    @Override
+    protected void getTrackingEventBack() {
+        ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK);
     }
 }
 

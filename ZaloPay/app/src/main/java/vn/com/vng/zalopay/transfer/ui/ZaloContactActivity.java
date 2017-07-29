@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.transfer.ui;
 import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
 public class ZaloContactActivity extends UserBaseToolBarActivity {
@@ -15,5 +17,10 @@ public class ZaloContactActivity extends UserBaseToolBarActivity {
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.MONEYTRANSFER_ZFRIEND;
+    }
+
+    @Override
+    protected void getTrackingEventBack() {
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
     }
 }
