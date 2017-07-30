@@ -21,6 +21,9 @@ import java.lang.ref.WeakReference;
  */
 
 public class FrescoUtil {
+    private FrescoUtil() {
+        // private constructor for utils class
+    }
 
     public static void loadWrapContent(SimpleDraweeView draweeView, String filePath) {
 

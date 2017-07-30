@@ -14,6 +14,9 @@ import timber.log.Timber;
  */
 
 public class BottomNavigationViewHelper {
+    private BottomNavigationViewHelper() {
+        // private constructor for utils class
+    }
 
     /**
      * Function to show titles of all menu elements when bottomNavigationBar has 4 tabs.

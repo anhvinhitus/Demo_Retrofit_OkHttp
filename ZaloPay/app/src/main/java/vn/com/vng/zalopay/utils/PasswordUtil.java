@@ -11,6 +11,10 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
  */
 
 public class PasswordUtil {
+    private PasswordUtil() {
+        // private constructor for utils class
+    }
+
     public static boolean detectShowFingerPrint(Context context, UserConfig pUserConfig) {
         FingerprintManagerCompat mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
         String password = pUserConfig.getEncryptedPassword();

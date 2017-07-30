@@ -23,6 +23,9 @@ import timber.log.Timber;
  * *
  */
 public class PhotoUtil {
+    private PhotoUtil() {
+        // private constructor for utils class
+    }
 
     public static Bitmap getThumbnail(Context context, Uri uri) throws IOException {
         return getThumbnail(context, uri, 256);

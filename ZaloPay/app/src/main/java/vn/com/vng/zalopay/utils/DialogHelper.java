@@ -22,6 +22,9 @@ import vn.com.vng.zalopay.R;
  */
 
 public class DialogHelper {
+    private DialogHelper() {
+        // private constructor for utils class
+    }
 
     private static Dialog mProgressDialog;
 

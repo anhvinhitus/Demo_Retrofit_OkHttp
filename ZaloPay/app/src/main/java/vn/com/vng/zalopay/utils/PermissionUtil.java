@@ -11,6 +11,9 @@ import android.support.v4.content.ContextCompat;
  */
 
 public class PermissionUtil {
+    private PermissionUtil() {
+        // private constructor for utils class
+    }
 
     public static boolean verifyPermission(int[] grantResult) {
 

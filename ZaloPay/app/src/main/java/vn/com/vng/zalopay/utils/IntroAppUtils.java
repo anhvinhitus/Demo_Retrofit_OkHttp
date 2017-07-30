@@ -10,6 +10,9 @@ import vn.com.vng.zalopay.AndroidApplication;
  *
  */
 public class IntroAppUtils {
+    private IntroAppUtils() {
+        // private constructor for utils class
+    }
 
     private static final SharedPreferences mPreferences =
             PreferenceManager.getDefaultSharedPreferences(AndroidApplication.instance().getApplicationContext());

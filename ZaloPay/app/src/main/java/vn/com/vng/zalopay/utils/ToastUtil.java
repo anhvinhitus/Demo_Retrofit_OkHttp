@@ -16,6 +16,9 @@ import vn.com.vng.zalopay.R;
 
 
 public class ToastUtil {
+    private ToastUtil() {
+        // private constructor for utils class
+    }
 
     public static void showToast(Context context, int message) {
         showToast(context, message, Toast.LENGTH_SHORT);

@@ -28,6 +28,9 @@ import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
  */
 
 public class CShareDataWrapper {
+    private CShareDataWrapper() {
+        // private constructor for utils class
+    }
 
     private static List<MapCard> detectCCCard(List<MapCard> dMappedCards) {
         if (Lists.isEmptyOrNull(dMappedCards)) {

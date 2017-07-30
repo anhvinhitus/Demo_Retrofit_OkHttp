@@ -15,6 +15,10 @@ public class ValidateUtil {
     public static final int VALIDATE_PASSWORD_ERROR_EMPTY = 3;
     public static final int VALIDATE_PASSWORD_ERROR_NOT_MATCH = 4;
 
+    private ValidateUtil() {
+        // private constructor for utils class
+    }
+
     public static boolean isValidLengthZPName(String zaloPayName) {
         return !(zaloPayName.length() > 24 || zaloPayName.length() < 4);
     }

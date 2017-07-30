@@ -105,6 +105,9 @@ public class AndroidUtils {
 
     public static volatile Handler applicationHandler;
 
+    private AndroidUtils() {
+        // private constructor for utils class
+    }
     static {
         density = AndroidApplication.instance().getResources().getDisplayMetrics().density;
         leftBaseline = isTablet(AndroidApplication.instance()) ? 80 : 72;

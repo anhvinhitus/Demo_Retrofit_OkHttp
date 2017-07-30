@@ -30,6 +30,10 @@ public class AppVersionUtils {
     private static final String FORCE_UPDATE_APP = "force_update_app";
     private static final String SHOWED_DIALOG_UPDATE_APP = "showed_dialog_update_app";
 
+    private AppVersionUtils() {
+        // private constructor for utils class
+    }
+
     private static void showedDialogUpdateApp(String appVersion) {
         mPreferences.edit().putString(SHOWED_DIALOG_UPDATE_APP, appVersion).apply();
     }
