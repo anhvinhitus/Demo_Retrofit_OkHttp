@@ -86,7 +86,7 @@ public class MerchantRepositoryTest {
                 ListMUIResponse response = new ListMUIResponse();
                 response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
-                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse.MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
                     response.listmerchantuserinfo.add(u);
                 }
@@ -173,7 +173,7 @@ public class MerchantRepositoryTest {
                 ListMUIResponse response = new ListMUIResponse();
                 response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
-                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse.MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
                     response.listmerchantuserinfo.add(u);
                 }
@@ -271,7 +271,7 @@ public class MerchantRepositoryTest {
                 ListMUIResponse response = new ListMUIResponse();
                 response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
-                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse.MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
                     response.listmerchantuserinfo.add(u);
                 }
