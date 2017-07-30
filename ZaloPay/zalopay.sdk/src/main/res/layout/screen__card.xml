@@ -101,7 +101,7 @@
 
     <include
         android:id="@+id/bidv_register_linearlayout"
-        layout="@layout/module__bidv_acccount_register"
+        layout="@layout/module__bidv_account_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
