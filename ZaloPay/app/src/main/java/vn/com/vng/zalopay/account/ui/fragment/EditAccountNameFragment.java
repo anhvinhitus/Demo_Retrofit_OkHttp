@@ -76,6 +76,8 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     public void onTextChangeAccountName(CharSequence s) {
         mCheckView.setVisibility(View.INVISIBLE);
         boolean isValid = mAccountNameView.isValid();
+        mCheckView.setEnabled(true);
+        mAccountNameView.setShowClearButton(true);
         mBtnCheckView.setEnabled(isValid);
         mBtnCheckView.setText(R.string.check);
     }
@@ -143,6 +145,8 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         mCheckView.setSelected(isValid);
         mCheckView.setVisibility(View.VISIBLE);
         if (isValid) {
+            mCheckView.setEnabled(false);
+            mAccountNameView.setShowClearButton(false);
             mBtnCheckView.setText(R.string.register);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_VALID);
         } else {
