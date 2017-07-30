@@ -28,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public static Activity getCurrentActivity() {
         synchronized (mActivityStack) {
-            if (mActivityStack == null || mActivityStack.size() == 0) {
+            if (mActivityStack.size() == 0) {
                 return GlobalData.getMerchantActivity();
             }
             return mActivityStack.peek();
