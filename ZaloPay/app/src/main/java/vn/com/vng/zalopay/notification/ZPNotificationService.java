@@ -118,7 +118,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        mNotificationHelper = null;
         Timber.d("Finalize ZPNotificationService");
     }
 

@@ -154,11 +154,4 @@ public class ClearEditText extends TextInputEditText {
         return left < right && top < bottom  // check for empty first
                 && x >= left && x < right && y >= top && y < bottom;
     }
-
-    @Override
-    protected void finalize() throws Throwable {
-        this.mDrawableRightDelete = null;
-        super.finalize();
-    }
-
 }

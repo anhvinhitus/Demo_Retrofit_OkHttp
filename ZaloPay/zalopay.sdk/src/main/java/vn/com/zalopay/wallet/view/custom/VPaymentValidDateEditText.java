@@ -46,12 +46,6 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         init(attrs, defStyle);
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        drawableRight = null;
-        super.finalize();
-    }
-
     public void setCheckDateNow(boolean pIsCheck) {
         mIsCheckNow = pIsCheck;
     }

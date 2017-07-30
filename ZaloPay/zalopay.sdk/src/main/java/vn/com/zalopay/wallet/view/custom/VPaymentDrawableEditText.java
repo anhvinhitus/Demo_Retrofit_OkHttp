@@ -44,14 +44,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
         this.mOnClickListener = pListener;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        //drawableRightScan = null;
-        drawableRightDelete = null;
-
-        super.finalize();
-    }
-
     private void init(AttributeSet attrs, int defStyle) {
         this.addTextChangedListener(mTextFormater);
         this.setClickable(true);
