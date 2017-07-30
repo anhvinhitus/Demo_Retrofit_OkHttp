@@ -42,7 +42,7 @@ public class CShareData extends SingletonBase {
         super();
     }
 
-    public static synchronized CShareData getInstance() {
+    public static CShareData getInstance() {
         if (CShareData._object == null)
             CShareData._object = new CShareData();
 

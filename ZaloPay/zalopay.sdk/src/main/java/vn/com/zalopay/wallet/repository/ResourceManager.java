@@ -54,7 +54,7 @@ public class ResourceManager extends SingletonBase {
         super();
     }
 
-    public static synchronized ResourceManager getInstance(String pPageName) {
+    public static ResourceManager getInstance(String pPageName) {
         if (pPageName == null) {
             if (mCommonResourceManager == null) {
                 mCommonResourceManager = new ResourceManager();

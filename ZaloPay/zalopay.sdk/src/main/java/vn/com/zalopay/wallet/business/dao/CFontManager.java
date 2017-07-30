@@ -28,7 +28,7 @@ public class CFontManager extends SingletonBase {
         }
     }
 
-    public synchronized static CFontManager getInstance() {
+    public static CFontManager getInstance() {
         if (CFontManager._object == null) {
             CFontManager._object = new CFontManager();
         }
