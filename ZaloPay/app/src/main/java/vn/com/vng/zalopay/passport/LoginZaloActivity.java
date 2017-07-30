@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPScreens;
@@ -25,6 +26,13 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     private SweetAlertDialog mErrorDialog = null;
     private SweetAlertDialog mProgressDialog = null;
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.LOGINZALO, -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     protected void setupActivityComponent(ApplicationComponent applicationComponent) {
@@ -37,12 +45,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     public BaseFragment getFragmentToHost() {
         return null;
-    }
-
-    @NonNull
-    @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.LOGINZALO;
     }
 
     @Inject

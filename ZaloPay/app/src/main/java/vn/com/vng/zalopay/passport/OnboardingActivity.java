@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.passport;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -10,6 +11,7 @@ import com.jaeger.library.StatusBarUtil;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPScreens;
@@ -20,6 +22,13 @@ import vn.com.zalopay.analytics.ZPScreens;
  * *
  */
 public class OnboardingActivity extends BaseToolBarActivity {
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.ONBOARDING, -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +57,5 @@ public class OnboardingActivity extends BaseToolBarActivity {
 
     public int getResLayoutId() {
         return R.layout.activity_onboarding;
-    }
-
-    @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.ONBOARDING;
     }
 }

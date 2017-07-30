@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import vn.com.vng.zalopay.bank.list.BankListFragment;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -16,6 +17,13 @@ import vn.com.zalopay.analytics.ZPScreens;
  */
 
 public class BankActivity extends UserBaseToolBarActivity {
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.BANK_MAIN, ZPEvents.LINKBANK_LAUNCH, ZPEvents.LINKBANK_TOUCH_BACK);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -25,21 +33,5 @@ public class BankActivity extends UserBaseToolBarActivity {
         }
 
         return BankListFragment.newInstance(bundle);
-    }
-
-    @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.BANK_MAIN;
-    }
-
-    @NonNull
-    @Override
-    protected void getTrackingEventBack() {
-        ZPAnalytics.trackEvent(ZPEvents.LINKBANK_TOUCH_BACK);
-    }
-
-    @Override
-    protected void getTrackingEventLaunch() {
-        ZPAnalytics.trackEvent(ZPEvents.LINKBANK_LAUNCH);
     }
 }

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -23,6 +24,13 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
 
     @Inject
     IntentHandlerPresenter mPresenter;
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     protected void setupActivityComponent(ApplicationComponent applicationComponent) {
@@ -32,12 +40,6 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
-    }
-
-    @NonNull
-    @Override
-    protected String getTrackingScreenName() {
-        return "";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
@@ -20,6 +22,14 @@ public class WebViewActivity extends UserBaseToolBarActivity {
 
     @BindView(R.id.title)
     TextView mTitleView;
+
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -63,10 +73,5 @@ public class WebViewActivity extends UserBaseToolBarActivity {
             mLogoView.setVisibility(View.VISIBLE);
             mLogoView.setImageURI(url);
         }
-    }
-
-    @Override
-    protected String getTrackingScreenName() {
-        return null;
     }
 }

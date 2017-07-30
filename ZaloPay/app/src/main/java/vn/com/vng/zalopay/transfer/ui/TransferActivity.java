@@ -2,15 +2,24 @@ package vn.com.vng.zalopay.transfer.ui;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.zalopay.analytics.ZPScreens;
 
 public class TransferActivity extends UserBaseToolBarActivity {
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.MONEYTRANSFER_INPUTAMOUNT, -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     Constants.ActivateSource mActivateSource = Constants.ActivateSource.FromTransferActivity;
 
@@ -69,10 +78,5 @@ public class TransferActivity extends UserBaseToolBarActivity {
         }
 
         mActivateSource = object.activateSource;
-    }
-
-    @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.MONEYTRANSFER_INPUTAMOUNT;
     }
 }

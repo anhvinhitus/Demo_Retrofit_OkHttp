@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.ExternalCallSplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
@@ -26,6 +27,13 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
 
     private boolean restarted;
     private String callingPackage;
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     protected void setupActivityComponent(ApplicationComponent applicationComponent) {
@@ -35,12 +43,6 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
-    }
-
-    @NonNull
-    @Override
-    protected String getTrackingScreenName() {
-        return "";
     }
 
     @Override
