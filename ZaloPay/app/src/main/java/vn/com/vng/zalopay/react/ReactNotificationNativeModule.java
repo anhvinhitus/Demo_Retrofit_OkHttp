@@ -138,7 +138,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         mCompositeSubscription.add(subscription);
     }
 
-    private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
+    private static class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
 
@@ -269,7 +269,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         sendEvent("zalopayNotificationsAdded");
     }
 
-    private class RemoveNotifySubscriber extends DefaultSubscriber<Boolean> {
+    private static class RemoveNotifySubscriber extends DefaultSubscriber<Boolean> {
         private Promise promise;
 
         RemoveNotifySubscriber(Promise promise) {

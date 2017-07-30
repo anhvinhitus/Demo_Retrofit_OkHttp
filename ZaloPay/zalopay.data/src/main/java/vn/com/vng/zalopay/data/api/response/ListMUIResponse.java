@@ -22,7 +22,7 @@ public class ListMUIResponse extends BaseResponse {
     @SerializedName("listmerchantuserinfo")
     public List<MerchantUserSubInfo> listmerchantuserinfo;
 
-    public class MerchantUserSubInfo {
+    public static class MerchantUserSubInfo {
         @SerializedName("appid")
         public long appid;
         @SerializedName("muid")

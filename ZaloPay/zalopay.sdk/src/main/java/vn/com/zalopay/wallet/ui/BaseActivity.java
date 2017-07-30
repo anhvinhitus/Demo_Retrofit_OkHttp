@@ -103,12 +103,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment activeFragment = getActiveFragment();
-        if (activeFragment instanceof BaseFragment) {
-            if (((BaseFragment) activeFragment).onBackPressed()) {
-                return;
-            }
+        if (!(activeFragment instanceof BaseFragment)) {
+            super.onBackPressed();
+            return;
         }
-        super.onBackPressed();
+
+        if (!((BaseFragment) activeFragment).onBackPressed()) {
+            super.onBackPressed();
+            return;
+        }
     }
 
     public Fragment getActiveFragment() {

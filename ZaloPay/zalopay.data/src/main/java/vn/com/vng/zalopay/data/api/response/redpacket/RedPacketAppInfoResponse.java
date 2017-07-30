@@ -20,7 +20,7 @@ public class RedPacketAppInfoResponse {
     @SerializedName("info")
     public AppConfigResponse appConfigResponse;
 
-    public class AppConfigResponse {
+    public static class AppConfigResponse {
         @SerializedName("minamounteach")
         public long minAmountEach;
 

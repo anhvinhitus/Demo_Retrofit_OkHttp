@@ -433,8 +433,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public void setCaptchaImgB64Login(String pB64Encoded) {
-        if (TextUtils.isEmpty(pB64Encoded))
+        if (TextUtils.isEmpty(pB64Encoded)) {
             return;
+        }
+
         Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
         if (bitmap != null) {
             getLoginHolder().getImgCaptcha().setVisibility(View.VISIBLE);
@@ -446,8 +448,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setCaptchaImgLogin(String pUrl) {
-        if (TextUtils.isEmpty(pUrl))
+        if (TextUtils.isEmpty(pUrl)) {
             return;
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
@@ -512,8 +516,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public void setMessage(String pMessage) {
-        if (pMessage == null)
+        if (pMessage == null) {
             return;
+        }
 
         // set Message
         getTxtMessage().setText(pMessage);
@@ -805,7 +810,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return false;
     }
 
-    public class UnregisterHolder {
+    private static class UnregisterHolder {
         LinearLayout llUnregister;
         Spinner spnWalletType;
         Spinner spnPhoneNumber;
@@ -832,7 +837,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public class ConfirmOTPHolder {
+    private static class ConfirmOTPHolder {
         LinearLayout llConfirmOTP;
         VPaymentDrawableEditText edtConfirmOTP;
 
@@ -841,7 +846,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public class RegisterHolder {
+    private static class RegisterHolder {
         LinearLayout llRegister;
         Spinner spnWalletType;
         Spinner spnAccNumberDefault;
@@ -911,7 +916,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     // Holder: login form
-    public class LoginHolder {
+    private static class LoginHolder {
         public ImageView btnRefreshCaptcha;
         LinearLayout llLogin;
         VPaymentDrawableEditText edtUsername;

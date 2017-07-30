@@ -10,7 +10,7 @@ import java.util.List;
  * Hold list of received SMS
  */
 public class ReceiveSmsEvent {
-    public class SmsMessage {
+    public static class SmsMessage {
         public final String from;
         public final String body;
 

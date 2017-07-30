@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import vn.com.vng.zalopay.AndroidApplication;
@@ -79,14 +80,24 @@ public class RootUtils {
 
     private static boolean checkRootMethod3() {
         Process process = null;
+        BufferedReader in = null;
         try {
             process = Runtime.getRuntime().exec(new String[]{"/system/xbin/which", "su"});
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             return in.readLine() != null;
         } catch (Throwable t) {
             return false;
         } finally {
-            if (process != null) process.destroy();
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                // empty catch block
+            }
+            if (process != null) {
+                process.destroy();
+            }
         }
     }
 

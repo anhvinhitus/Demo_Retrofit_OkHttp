@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -23,13 +24,12 @@ import vn.com.vng.zalopay.ui.activity.HomeActivity;
  */
 public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    public static HashMap<String, Integer> activities;
+    public static final Map<String, Integer> activities = new HashMap<>();
     private static String mLastActivity;
 
     private final EventBus mEventBus;
 
     public AppLifeCycle() {
-        activities = new HashMap<>();
         mEventBus = EventBus.getDefault();
     }
 
@@ -69,8 +69,8 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     }
 
     public static boolean isBackGround() {
-        for (String s : activities.keySet()) {
-            if (activities.get(s) == 1) {
+        for (Map.Entry<String, Integer> s : activities.entrySet()) {
+            if (s.getValue() == 1) {
                 return false;
             }
         }

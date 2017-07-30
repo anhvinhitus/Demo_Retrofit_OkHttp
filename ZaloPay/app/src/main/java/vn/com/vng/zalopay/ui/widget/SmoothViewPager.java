@@ -33,7 +33,7 @@ public class SmoothViewPager extends ViewPager {
         }
     }
 
-    public class MyScroller extends Scroller {
+    public static class MyScroller extends Scroller {
         public MyScroller(Context context) {
             super(context, new DecelerateInterpolator());
         }

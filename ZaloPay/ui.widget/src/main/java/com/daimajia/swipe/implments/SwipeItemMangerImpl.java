@@ -169,7 +169,7 @@ public class SwipeItemMangerImpl implements SwipeItemMangerInterface {
         }
     }
 
-    protected class ValueBox {
+    protected static class ValueBox {
         OnLayoutListener onLayoutListener;
         SwipeMemory swipeMemory;
         int position;
