@@ -47,8 +47,8 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.CurrencyUtil;
-import vn.com.vng.zalopay.utils.TrackApptransidHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -408,13 +408,31 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
+        int activateSource = 0;
+        switch (mTransferObject.activateSource) {
+            case FromTransferActivity:
+                break;
+            case FromQRCodeType1:
+                activateSource = ZPPaymentSteps.OrderSource_QR;
+                break;
+            case FromQRCodeType2:
+                activateSource = ZPPaymentSteps.OrderSource_QR;
+                break;
+            case FromZalo:
+                activateSource = ZPPaymentSteps.OrderSource_Zalo;
+                break;
+            case FromWebApp_QRType2:
+                activateSource = ZPPaymentSteps.OrderSource_WebToApp;
+                break;
+        }
+
         mTransferObject.amount = order.amount;
         mTransferObject.message = order.description;
 
         paymentWrapper.transfer(mView.getActivity(), order,
                 mTransferObject.displayName, mTransferObject.avatar,
                 mTransferObject.phoneNumber, mTransferObject.zalopayName,
-                TrackApptransidHelper.transform(mTransferObject.activateSource));
+                activateSource);
         hideLoading();
     }
 
