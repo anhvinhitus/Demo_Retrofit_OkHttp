@@ -821,7 +821,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    private synchronized void loadChannels() throws Exception {
+    private void loadChannels() throws Exception {
         try {
             Timber.d("preparing channels");
             mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
