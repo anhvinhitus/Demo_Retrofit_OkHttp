@@ -35,21 +35,23 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 
-public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbackView,
-        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener,
-        FeedbackAdapter.OnClickImageListener {
+public class FeedbackFragment extends AbsPickerImageFragment
+        implements IFeedbackView,
+            FeedbackAdapter.OnClickAddListener,
+            FeedbackAdapter.OnClickDeleteListener,
+            FeedbackAdapter.OnClickImageListener {
 
     public static FeedbackFragment newInstance() {
         return new FeedbackFragment();
     }
 
     @Override
-    protected void setupFragmentComponent() {
+    protected final void setupFragmentComponent() {
         getUserComponent().inject(this);
     }
 
     @Override
-    protected int getResLayoutId() {
+    protected final int getResLayoutId() {
         return R.layout.fragment_send_feedback;
     }
 
@@ -100,7 +102,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     private String mScreenshotName;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mAdapter = new FeedbackAdapter(getContext(), this, this, this);
@@ -111,7 +113,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public final void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -139,7 +141,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     };
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public final void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -156,7 +158,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void insertScreenshot(Uri data) {
+    public final void insertScreenshot(Uri data) {
         mAdapter.insert(data, 0);
     }
 
@@ -171,7 +173,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void onDestroyView() {
+    public final void onDestroyView() {
         mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
         clearCacheFresco(mAdapter.getItems());
         mRecyclerView.setAdapter(null);
@@ -180,29 +182,29 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void onDestroy() {
+    public final void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
     }
 
     @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    public void afterTextChangedDescribe() {
+    public final void afterTextChangedDescribe() {
         mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnTextChanged(value = R.id.edtEmail, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    public void afterTextChangedEmail() {
+    public final void afterTextChangedEmail() {
         mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtDescribe})
-    public void onFocusChange(View v, boolean hasView) {
+    public final void onFocusChange(View v, boolean hasView) {
         Timber.d("onFocusChange %s", hasView);
         mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnClick(R.id.btnSend)
-    public void onClickSend() {
+    public final void onClickSend() {
 
 
         Timber.d("onClickSend: %s %s", mEdtEmail.validate(), mEdtDescribe.validate());
@@ -220,39 +222,39 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @OnClick(R.id.tvCancel)
-    public void onClickScreenshotCancel() {
+    public final void onClickScreenshotCancel() {
         mView.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.tvDelete)
-    public void onClickScreenshotDelete() {
+    public final void onClickScreenshotDelete() {
         removeScreenshot(mScreenshotPos);
         mView.setVisibility(View.GONE);
     }
 
     @Override
-    public void onClickAdd(int position) {
-        showBottomSheetDialog(IMAGE_REQUEST_CODE, position);
+    public final void onClickAdd(int position) {
+        showBottomSheetDialog(IMAGE_REQUEST_CODE);
     }
 
     @Override
-    public void onClickDelete(int position) {
+    public final void onClickDelete(int position) {
         removeScreenshot(position);
     }
 
     @Override
-    public void onClickImage(int position) {
+    public final void onClickImage(int position) {
         mView.setVisibility(View.VISIBLE);
         mScreenshotPos = position;
         mScreenshotView.setImageURI(mAdapter.getItem(mScreenshotPos));
     }
 
-    private void showBottomSheetDialog(final int requestCode, final int position) {
+    private void showBottomSheetDialog(final int requestCode) {
         CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
         dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-                startCaptureImage(requestCode, getScreenshotName(position));
+                startCaptureImage(requestCode, getScreenshotName());
             }
 
             @Override
@@ -263,14 +265,14 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         dialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
-    private String getScreenshotName(int position) {
+    private String getScreenshotName() {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss", Locale.getDefault());
         mScreenshotName = "screenshot-" + dateFormat.format(new Date()) + ".jpg";
         Timber.d("getScreenshotName: %s", mScreenshotName);
         return mScreenshotName;
     }
 
-    private void notifyImageCountChange() {
+    final void notifyImageCountChange() {
         if (mTvTitleImage == null) {
             return;
         }
@@ -280,7 +282,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         mTvTitleImage.setText(description);
     }
 
-    public void setEmail(String email) {
+    public final void setEmail(String email) {
         if (mEdtEmail == null || TextUtils.isEmpty(email)) {
             return;
         }
@@ -314,24 +316,24 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
         mEdtDescribe.setText(message);
     }
 
-    public void setTransaction(String category, String transId, String errorMessage) {
+    public final void setTransaction(String category, String transId, String errorMessage) {
         setCategory(category);
         setTransactionId(transId);
         setDescription(errorMessage);
     }
 
     @Override
-    public void showLoading() {
+    public final void showLoading() {
         showProgressDialog();
     }
 
     @Override
-    public void hideLoading() {
+    public final void hideLoading() {
         hideProgressDialog();
     }
 
     @Override
-    public void showError(String message) {
+    public final void showError(String message) {
         showToast(message);
     }
 
@@ -349,7 +351,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(Bundle outState) {
         if (!TextUtils.isEmpty(mScreenshotName)) {
             outState.putString("screenshotName", mScreenshotName);
         }
@@ -357,7 +359,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
     }
 
     @Override
-    public void finish() {
+    public final void finish() {
         getActivity().finish();
     }
 }
