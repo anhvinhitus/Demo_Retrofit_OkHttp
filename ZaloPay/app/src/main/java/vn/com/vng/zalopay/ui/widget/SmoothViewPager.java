@@ -15,7 +15,7 @@ import timber.log.Timber;
  * Override duration of the scroll
  */
 public class SmoothViewPager extends ViewPager {
-    private final int DURATION = 600; //Duration of the scroll in milliseconds
+    private static final int DURATION = 600; //Duration of the scroll in milliseconds
 
     public SmoothViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
