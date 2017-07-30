@@ -1192,7 +1192,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         SpinnerAdapter spinnerAdapter = spinner.getAdapter();
         if (spinnerAdapter != null && spinnerAdapter.getCount() > 1) {
             result = linkAccGuiProcessor.getRegisterHolder().getSpnAccNumberDefault().getSelectedItem();
-        } else result = linkAccGuiProcessor.getRegisterHolder().getEdtAccNumDefault().getText();
+        } else {
+            result = linkAccGuiProcessor.getRegisterHolder().getEdtAccNumDefault().getText();
+        }
         return (result != null && !result.toString().isEmpty()) ? mHashMapAccNum.get(result.toString()) : "null";
     }
 
