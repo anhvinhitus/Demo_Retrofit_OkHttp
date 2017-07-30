@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.workflow.ui;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.v4.view.ViewPager;
@@ -10,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,6 +83,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected WeakReference<AbstractWorkFlow> mAdapter;
     protected WeakReference<ChannelFragment> mView;
     protected PaymentWebView mWebView;
+    View mRootView;
     ScrollView mScrollViewRoot;
     int mLastPageSelected = 0;
     boolean checkAutoMoveCardNumberFromBundle = true;
@@ -448,6 +451,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (mScrollViewRoot != null) {
             OverScrollDecoratorHelper.setUpOverScroll(mScrollViewRoot);
         }
+        mRootView = getView().findViewById(R.id.supperRootView);
     }
 
     private void initWebView() throws Exception {
@@ -719,7 +723,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleInputCardView(false);
             getView().visibleSubmitButton(false);
             if(CardType.PBIDV.equals(getDetectedBankCode())){
-                getView().visibleBIDVAccountRegisterBtn(true);
+                registerKeyboardEventForBidv();
             }
         } else {
             getView().visibleWebView(false);
@@ -727,6 +731,32 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleInputCardView(true);
             getView().visibleSubmitButton(true);
         }
+    }
+
+    private void registerKeyboardEventForBidv(){
+        if(mRootView == null){
+            return;
+        }
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            try {
+                Rect r = new Rect();
+                mRootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = mRootView.getRootView().getHeight();
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    // keyboard is opened
+                    getView().visibleBIDVAccountRegisterBtn(false);
+                }
+                else {
+                    // keyboard is closed
+                    getView().visibleBIDVAccountRegisterBtn(true);
+                }
+            }catch (Exception e){
+                Timber.w(e);
+            }
+        });
     }
 
     private void showKeyBoardAndResizeButtonsIfNotSwitchChannel() throws Exception {
