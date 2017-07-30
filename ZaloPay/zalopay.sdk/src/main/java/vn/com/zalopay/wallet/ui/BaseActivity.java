@@ -54,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public static int getActivityCount() {
-        return mActivityStack != null ? mActivityStack.size() : 0;
+        return mActivityStack.size();
     }
 
     public static void release() {
@@ -75,9 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         synchronized (mActivityStack) {
-            if (mActivityStack == null) {
-                mActivityStack = new Stack<>();
-            }
             mActivityStack.push(this);
         }
         setContentView(getLayoutId());
