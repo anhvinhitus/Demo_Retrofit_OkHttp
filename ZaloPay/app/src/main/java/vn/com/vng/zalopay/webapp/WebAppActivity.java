@@ -10,19 +10,22 @@ import com.zalopay.ui.widget.IconFont;
 import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
 public class WebAppActivity extends UserBaseToolBarActivity {
-    @Override
-    public BaseFragment getFragmentToHost() {
-        return WebAppFragment.newInstance(getIntent().getExtras());
-    }
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
 
     @NonNull
     @Override
-    protected String getTrackingScreenName() {
-        return "";
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
+
+    @Override
+    public BaseFragment getFragmentToHost() {
+        return WebAppFragment.newInstance(getIntent().getExtras());
     }
 
     @BindView(R.id.title)

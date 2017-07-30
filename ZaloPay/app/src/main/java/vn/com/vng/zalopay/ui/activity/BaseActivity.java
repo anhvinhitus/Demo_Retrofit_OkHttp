@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -35,11 +36,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
  * *
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    public enum EventType {
-        ACTIVITY_LAUNCH,
-        NAVIGATE_BACK
-    }
-
     protected final String TAG = getClass().getSimpleName();
     protected final EventBus mEventBus = getAppComponent().eventBus();
     protected final Navigator navigator = getAppComponent().navigator();
@@ -53,14 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract BaseFragment getFragmentToHost();
 
     @NonNull
-    protected abstract String getTrackingScreenName();
-
-    /**
-     * Get eventId for given event type.
-     * Return -1 if activity does not have matching eventId
-     * @param eventType event type
-     */
-    protected abstract int getEventId(EventType eventType);
+    protected abstract ActivityTracker getTrackerInformation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        int eventId = getEventId(EventType.ACTIVITY_LAUNCH);
+        ActivityTracker activityTracker = getTrackerInformation();
+        int eventId = activityTracker.launchEventId;
         if (eventId > 0) {
             ZPAnalytics.trackEvent(eventId);
         }
@@ -102,7 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
     }
 
-
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
@@ -125,7 +114,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        String screenName = getTrackingScreenName();
+        ActivityTracker activityTracker = getTrackerInformation();
+        String screenName = activityTracker.activityName;
         if (!TextUtils.isEmpty(screenName)) {
             ZPAnalytics.trackScreen(screenName);
         }
@@ -150,10 +140,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
 
-        int eventId = getEventId(EventType.NAVIGATE_BACK);
+        ActivityTracker activityTracker = getTrackerInformation();
+        int eventId = activityTracker.backEventId;
         if (eventId > 0) {
             ZPAnalytics.trackEvent(eventId);
         }
+
         super.onBackPressed();
     }
 

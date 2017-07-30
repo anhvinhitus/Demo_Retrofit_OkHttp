@@ -5,11 +5,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 public class FeedbackActivity extends UserBaseToolBarActivity {
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -33,11 +41,5 @@ public class FeedbackActivity extends UserBaseToolBarActivity {
         } else {
             return super.dispatchTouchEvent(event);
         }
-    }
-
-    @NonNull
-    @Override
-    protected String getTrackingScreenName() {
-        return "";
     }
 }

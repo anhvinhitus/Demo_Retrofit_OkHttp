@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
@@ -55,6 +56,13 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     private int mCurrentPosition = 0;
 
     private UserComponent mUserComponent;
+    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     @Override
     protected int getResLayoutId() {
@@ -65,12 +73,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
         userComponent.inject(this);
         mUserComponent = userComponent;
-    }
-
-    @NonNull
-    @Override
-    protected String getTrackingScreenName() {
-        return null;
     }
 
     @Override

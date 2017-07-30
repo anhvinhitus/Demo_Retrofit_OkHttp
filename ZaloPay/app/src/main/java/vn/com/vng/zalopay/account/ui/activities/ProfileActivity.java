@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -51,6 +52,14 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
 
     @BindView(R.id.toolbar_profile_tv_title)
     TextView tvToolbarTitle;
+
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.ME_PROFILE, -1, ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK);
+
+    @NonNull
+    @Override
+    protected ActivityTracker getTrackerInformation() {
+        return mActivityTracker;
+    }
 
     public void updateUserInfo(User user) {
         if (user == null) {
@@ -134,27 +143,6 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void showError(String message) {
         super.showToast(message);
-    }
-
-    @Override
-    protected String getTrackingScreenName() {
-        return ZPScreens.ME_PROFILE;
-    }
-
-    /**
-     * Get eventId for given event type.
-     * Return -1 if activity does not have matching eventId
-     *
-     * @param eventType event type
-     */
-    @Override
-    protected int getEventId(EventType eventType) {
-        switch (eventType) {
-            case NAVIGATE_BACK:
-                return ZPEvents.ME_PROFILE_ZPID_TOUCH_BACK;
-            default:
-                return -1;
-        }
     }
 }
 
