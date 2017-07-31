@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.tranfer
 
 import android.support.test.espresso.matcher.ViewMatchers
 import org.junit.Test
-import vn.com.vng.zalopay.AbtractZaloPayTesting
 import vn.com.vng.zalopay.R
 import vn.com.vng.zalopay.sb.EZaloPayTransfer
 import vn.com.vng.zalopay.sb.Info
@@ -10,7 +9,7 @@ import vn.com.vng.zalopay.sb.Info
 /**
  * Created by cpu11843-local on 7/26/17.
  */
-class ZaloPayTransferSearch : AbtractZaloPayTesting(), IZaloPayTransfer {
+class ZaloPayTransferSearch : OZaloPayTransfer() {
     override fun initTest() {
         super.initTest()
     }
