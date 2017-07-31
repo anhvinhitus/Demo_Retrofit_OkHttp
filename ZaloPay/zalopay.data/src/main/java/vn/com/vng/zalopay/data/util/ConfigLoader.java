@@ -199,8 +199,8 @@ public class ConfigLoader {
     public static List<InternalApp> listInternalApp() {
         if (mConfig == null || mConfig.mInternalApps == null) {
             String json = "[{\"appId\": -1, \"order\": 2, \"display_name\": \"Chuyển Tiền\", \"icon_name\": \"app_1_transfers\", \"icon_color\": \"#4387f6\"}, " +
-                    "{\"appId\": -2, \"order\": 3, \"display_name\": \"Nhận Tiền\", \"icon_name\": \"app_1_receivemoney\", \"icon_color\": \"#129d5a\"}, " +
-                    "{\"appId\": -3, \"order\": 6, \"display_name\": \"Nạp Tiền\", \"icon_name\": \"notify_1_receivemoney\", \"icon_color\": \"#129d5a\"}]";
+                    "{\"appId\": -2, \"order\": 3, \"display_name\": \"Nhận Tiền\", \"icon_name\": \"app_1_receivemoney\", \"icon_color\": \"#4286F6\"}, " +
+                    "{\"appId\": -3, \"order\": 6, \"display_name\": \"Nạp Tiền\", \"icon_name\": \"app_recharge\", \"icon_color\": \"#129d5a\"}]";
             List<InternalApp> listInternalApp = new ArrayList<>();
             JsonParser jsonParser = new JsonParser();
             JsonArray jsonArray = (JsonArray) jsonParser.parse(json);
