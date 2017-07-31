@@ -2,8 +2,10 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +25,13 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -30,6 +39,8 @@ import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
@@ -40,6 +51,8 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+
+import static android.provider.CalendarContract.CalendarCache.URI;
 
 /**
  * Created by AnhHieu on 6/30/16.
@@ -61,6 +74,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private static final int AVATAR_REQUEST_CODE = 102;
 
     private static final int PERMISSION_READ_EXTERNAL_STORAGE = 1001;
+    private final String LOCAL_IMAGE = "local_image";
+    private final String PREF_PATH_TEMP_AVATAR = "pref_path_temp_avatar";
+    private final String PREF_PATH_TEMP_BGIDENTITY = "pref_path_temp_bgidentity";
+    private final String PREF_PATH_TEMP_FGIDENTITY = "pref_path_temp_fgidentity";
+    private final SharedPreferences mPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
 
     @Inject
     UpdateProfile3Presenter presenter;
@@ -101,6 +119,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private Uri mUriBgIdentity;
     private Uri mUriFgIdentity;
     private Uri mUriAvatar;
+    private String mStrBgIdentity;
+    private static String mStrFgIdentity;
+    private String mStrAvatar;
 
     @BindView(R.id.tvTerm)
     TextView tvTerm;
@@ -136,6 +157,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         focusIdentity = getArguments().getBoolean("focusIdentity", false);
+        mStrAvatar = mPreferences.getString(PREF_PATH_TEMP_AVATAR, "");
+        mStrFgIdentity = mPreferences.getString(PREF_PATH_TEMP_FGIDENTITY, "");
+        mStrBgIdentity = mPreferences.getString(PREF_PATH_TEMP_BGIDENTITY, "");
     }
 
     @Override
@@ -421,14 +445,20 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
                     mUriBgIdentity = uri;
+                    deleteFile(mStrBgIdentity);
+                    mStrBgIdentity = "";
                     loadBackgroundImage(mUriBgIdentity);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
                     mUriFgIdentity = uri;
+                    deleteFile(mStrFgIdentity);
+                    mStrFgIdentity = "";
                     loadFrontImage(mUriFgIdentity);
                     break;
                 case AVATAR_REQUEST_CODE:
                     mUriAvatar = uri;
+                    deleteFile(mStrAvatar);
+                    mStrAvatar = "";
                     loadAvatar(mUriAvatar);
                     break;
                 default:
@@ -444,7 +474,19 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return;
         }
 
-        mFgIdentityView.setImageURI(uri);
+        Uri imageURI;
+
+        if (TextUtils.isEmpty(mStrFgIdentity)) {
+            mStrFgIdentity = getImagePath(getContext(), uri);
+        }
+
+        if(LOCAL_IMAGE.equals(mStrFgIdentity)) {
+            imageURI = uri;
+        } else {
+            imageURI = Uri.fromFile(new File(mStrFgIdentity));
+        }
+
+        mFgIdentityView.setImageURI(imageURI);
         mFgIdentityView.setVisibility(View.VISIBLE);
 
         mTvFgIdentityView.setVisibility(View.GONE);
@@ -452,6 +494,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveFrontImage.setIcon(R.string.general_del);
 
         checkIfNoInput();
+
+        saveGooglePhotoImageTemporaryPath(PREF_PATH_TEMP_FGIDENTITY, mStrFgIdentity);
     }
 
     private void clearFrontImage() {
@@ -471,7 +515,20 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return;
         }
         Timber.d("Load avatar image : uri [%s]", uri);
-        mAvatarView.setImageURI(uri);
+
+        Uri imageURI;
+
+        if (TextUtils.isEmpty(mStrAvatar)) {
+            mStrAvatar = getImagePath(getContext(), uri);
+        }
+
+        if(LOCAL_IMAGE.equals(mStrAvatar)) {
+            imageURI = uri;
+        } else {
+            imageURI = Uri.fromFile(new File(mStrAvatar));
+        }
+
+        mAvatarView.setImageURI(imageURI);
         mAvatarView.setVisibility(View.VISIBLE);
 
         mTvAvatarView.setVisibility(View.GONE);
@@ -479,6 +536,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setIcon(R.string.general_del);
 
         checkIfNoInput();
+
+        saveGooglePhotoImageTemporaryPath(PREF_PATH_TEMP_AVATAR, mStrAvatar);
     }
 
     private void clearAvatar() {
@@ -500,7 +559,19 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return;
         }
 
-        mBgIdentityView.setImageURI(uri);
+        Uri imageURI;
+
+        if (TextUtils.isEmpty(mStrBgIdentity)) {
+            mStrBgIdentity = getImagePath(getContext(), uri);
+        }
+
+        if(LOCAL_IMAGE.equals(mStrBgIdentity)) {
+            imageURI = uri;
+        } else {
+            imageURI = Uri.fromFile(new File(mStrBgIdentity));
+        }
+
+        mBgIdentityView.setImageURI(imageURI);
         mBgIdentityView.setVisibility(View.VISIBLE);
 
         mTvBgIdentityView.setVisibility(View.GONE);
@@ -508,6 +579,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setIcon(R.string.general_del);
 
         checkIfNoInput();
+
+        saveGooglePhotoImageTemporaryPath(PREF_PATH_TEMP_BGIDENTITY, mStrBgIdentity);
     }
 
     private void clearBackgroundImage() {
@@ -615,6 +688,99 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 loadAvatar(mUriAvatar);
 
                 break;
+        }
+    }
+
+    private String getImagePath(Context context, Uri uri) {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            if (isGoogleOldPhotosUri(uri)) {
+                // return http path, then download file.
+                return uri.getLastPathSegment();
+            } else if (isGoogleNewPhotosUri(uri)) {
+                // copy from uri. context.getContentResolver().openInputStream(uri);
+                return copyFile(context, uri);
+            } else if (isPicasaPhotoUri(uri)) {
+                // copy from uri. context.getContentResolver().openInputStream(uri);
+                return copyFile(context, uri);
+            } else {
+                return LOCAL_IMAGE;
+            }
+        }
+        return null;
+    }
+
+    public boolean isGoogleOldPhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public boolean isGoogleNewPhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.contentprovider".equals(uri.getAuthority());
+    }
+
+    private boolean isPicasaPhotoUri(Uri uri) {
+        return uri != null
+                && !TextUtils.isEmpty(uri.getAuthority())
+                && (uri.getAuthority().startsWith("com.android.gallery3d")
+                || uri.getAuthority().startsWith("com.google.android.gallery3d"));
+    }
+
+    private String copyFile(Context context, Uri uri) {
+        String filePath;
+        InputStream inputStream = null;
+        BufferedOutputStream outStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+
+//            filePath = GoogleImagePickerUtil.getDownloadPath() + "/" + GoogleImagePickerUtil
+//                    .getWebImageName() + ".jpg";
+            File extDir = context.getExternalFilesDir(null);
+            filePath = extDir.getAbsolutePath() + "/CachedImg_" + UUID.randomUUID().toString() + ".jpg";
+            outStream = new BufferedOutputStream(new FileOutputStream
+                    (filePath));
+
+            byte[] buf = new byte[2048];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outStream.write(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+            Timber.d(e);
+            filePath = "";
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                Timber.d(e);
+            }
+            try {
+                if (outStream != null) {
+                    outStream.close();
+                }
+            } catch (IOException e) {
+                Timber.d(e);
+            }
+        }
+
+        return filePath;
+    }
+
+    private void saveGooglePhotoImageTemporaryPath(String key, String value) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    private void deleteFile(String filePath) {
+        File deleteFile = new File(filePath);
+        if (deleteFile.exists()) {
+            if (deleteFile.delete()) {
+                Timber.d("File deleted :" + filePath);
+            } else {
+                Timber.d("File not deleted :" + filePath);
+            }
         }
     }
 }
