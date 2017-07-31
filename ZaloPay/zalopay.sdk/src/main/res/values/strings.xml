@@ -63,7 +63,7 @@
     <string name="sdk_trans_confirm_quit_transfer_mess">Bạn có chắc muốn hủy chuyển tiền không?</string>
     <string name="sdk_trans_confirm_quit_topup_mess">Bạn có chắc muốn hủy nạp tiền không?</string>
     <string name="sdk_trans_confirm_quit_withdraw_mess">Bạn có chắc muốn hủy rút tiền không?</string>
-    <string name="sdk_trans_confirm_quit_load_website3ds_mess">Bạn đã chọn BACK nhưng giao dịch vẫn đang xử lý.\nBạn thật sự muốn thoát?</string>
+    <string name="sdk_trans_confirm_quit_load_website3ds_mess">Bạn đã chọn hủy nhưng giao dịch vẫn đang xử lý.\nBạn thật sự muốn thoát?</string>
 
     <string name="sdk_load_data_timeout_mess">Dữ liệu chưa tải xong, vui lòng kiểm tra lại kết nối mạng!</string>
 
