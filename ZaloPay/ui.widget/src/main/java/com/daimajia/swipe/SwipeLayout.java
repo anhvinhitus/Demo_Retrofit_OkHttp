@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import timber.log.Timber;
-
 public class SwipeLayout extends FrameLayout {
     @Deprecated
     public static final int EMPTY_LAYOUT = -1;
@@ -64,7 +62,6 @@ public class SwipeLayout extends FrameLayout {
     private boolean mClickToClose = false;
     private float mWillOpenPercentAfterOpen = 0.75f;
     private float mWillOpenPercentAfterClose = 0.25f;
-    private boolean mState = false;
 
     public enum DragEdge {
         Left,
@@ -584,22 +581,17 @@ public class SwipeLayout extends FrameLayout {
     private void safeBottomView() {
         Status status = getOpenStatus();
         List<View> bottoms = getBottomViews();
-        if (mState) {
-            return;
-        }
+
         if (status == Status.Close) {
-            Timber.d("safeBottomView   INVISIBLE");
             for (View bottom : bottoms) {
                 if (bottom != null && bottom.getVisibility() != INVISIBLE) {
                     bottom.setVisibility(INVISIBLE);
                 }
             }
         } else {
-            Timber.d("safeBottomView   VISIBLE");
             View currentBottomView = getCurrentBottomView();
             if (currentBottomView != null && currentBottomView.getVisibility() != VISIBLE) {
                 currentBottomView.setVisibility(VISIBLE);
-                mState = true;
             }
         }
     }
