@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -131,6 +132,11 @@ public abstract class UserBaseActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onForceUpdateApp(ForceUpdateAppEvent event) {
         Timber.i("Force update app in Screen %s", TAG);
+        clearUserSession(null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onSignOut(SignOutEvent event) {
         clearUserSession(null);
     }
 

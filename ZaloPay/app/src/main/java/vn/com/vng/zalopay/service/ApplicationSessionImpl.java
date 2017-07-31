@@ -13,7 +13,6 @@ import org.greenrobot.greendao.AbstractDao;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
@@ -28,7 +27,6 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
-import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -144,7 +142,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
     public void clearUserSessionWithoutSignOut() {
         Timber.d("Clear user session");
         eventBus.removeAllStickyEvents();
-        eventBus.post(new SignOutEvent());
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();
