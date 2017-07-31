@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -212,6 +211,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             try {
                 //prevent user input if wrong card
                 String newValue = s.toString().trim();
+                if (mLastLengthCardNumber == newValue.length()) {
+                    return;
+                }
                 if (!supportCard() && mLastLengthCardNumber < newValue.length()) {
                     getCardNumberView().setText(lastValue);
                     getCardNumberView().setSelection(mLastLengthCardNumber);
@@ -722,7 +724,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleWebView(true);
             getView().visibleInputCardView(false);
             getView().visibleSubmitButton(false);
-            if(CardType.PBIDV.equals(getDetectedBankCode())){
+            if (CardType.PBIDV.equals(getDetectedBankCode())) {
                 registerKeyboardEventForBidv();
             }
         } else {
@@ -733,8 +735,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    private void registerKeyboardEventForBidv(){
-        if(mRootView == null){
+    private void registerKeyboardEventForBidv() {
+        if (mRootView == null) {
             return;
         }
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
@@ -748,12 +750,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                     // keyboard is opened
                     getView().visibleBIDVAccountRegisterBtn(false);
-                }
-                else {
+                } else {
                     // keyboard is closed
                     getView().visibleBIDVAccountRegisterBtn(true);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Timber.w(e);
             }
         });
