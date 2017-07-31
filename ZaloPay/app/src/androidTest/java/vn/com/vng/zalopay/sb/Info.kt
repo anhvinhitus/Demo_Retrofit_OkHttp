@@ -13,8 +13,10 @@ object Info {
 
     val PASSWORD = "000999"
 
+    val APP_TRANSFER_POSITION: Int = 1
     val ZALOPAY_NAME_TRANSFER = "thanhntm"
     val AMOUNT_10K: Long = 10_000
     val AMOUNT_100K: Long = 100_000
     val MESSAGE_TRANSFER = "message transfer"
+    val APP_NAME_TRANSFER = "chuyển tiền"
 }
