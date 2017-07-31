@@ -44,7 +44,7 @@ public class BankCardView extends SwipeLayout {
     @BindView(R.id.tv_num_acc)
     TextView mNumberCardView;
     float border = 0;
-    private boolean mState = false;
+    private boolean mStateBottomView = false;
 
     public BankCardView(Context context) {
         this(context, null);
@@ -176,7 +176,7 @@ public class BankCardView extends SwipeLayout {
     protected void safeBottomView() {
         Status status = getOpenStatus();
         List<View> bottoms = getBottomViews();
-        if (mState) {
+        if (mStateBottomView) {
             return;
         }
         if (status == Status.Close) {
@@ -189,7 +189,7 @@ public class BankCardView extends SwipeLayout {
             View currentBottomView = getCurrentBottomView();
             if (currentBottomView != null && currentBottomView.getVisibility() != VISIBLE) {
                 currentBottomView.setVisibility(VISIBLE);
-                mState = true;
+                mStateBottomView = true;
             }
         }
     }
