@@ -316,7 +316,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         public void onClose() {
             setViewStatus(0);
             ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
-            if(mPassword.getBuilder().isConfirmClose()) {
+            if (mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
                         getActivity().getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
@@ -604,20 +604,23 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     * */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onReceiveSmsMessages(ReceiveSmsEvent event) {
-        if(getViewStatus() == STATUS_OTP || getViewStatus() == STATUS_OTP_INVALID) {
-            String pattern = "(.*)(\\d{6})(.*)";
-            // Create a Pattern object
-            Pattern r = Pattern.compile(pattern);
+        if (getViewStatus() != STATUS_OTP && getViewStatus() != STATUS_OTP_INVALID) {
+            return;
+        }
 
-            for (ReceiveSmsEvent.SmsMessage message : event.messages) {
-                Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
-                Matcher m = r.matcher(message.body);
-                if (m.find()) {
-                    Timber.d("Found OTP: %s", m.group(2));
-                    mPassword.getBuilder().setOTPValue(m.group(2));
-                }
+        String pattern = "(.*)(\\d{6})(.*)";
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
+            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
+            Matcher m = r.matcher(message.body);
+            if (m.find()) {
+                Timber.d("Found OTP: %s", m.group(2));
+                mPassword.getBuilder().setOTPValue(m.group(2));
             }
         }
+
         mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
     }
 }
