@@ -1,2 +1,6 @@
-Zalo Pay (Sandbox v2.16.0 - build 379) - Released on 2017-07-30 11:36
-
+Zalo Pay (Production v2.16.0 - build 380) - Released on 2017-07-31 13:42
++ [App] Refactor sign out by hieuvm (#8eff895)
++ [Change Password] Edit code logic by datnt10 (#a12e5f0)
++ [Change Password] Fix handling the otp screen when receiving otp sms by datnt10 (#b296af3)
++ [App] Home: change color and icon name by datnt10 (#549d309)
++ [React-native] update internal resource by phucpv (#da1220b)
