@@ -604,19 +604,20 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     * */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onReceiveSmsMessages(ReceiveSmsEvent event) {
-        String pattern = "(.*)(\\d{6})(.*)";
-        // Create a Pattern object
-        Pattern r = Pattern.compile(pattern);
+        if(getViewStatus() == STATUS_OTP || getViewStatus() == STATUS_OTP_INVALID) {
+            String pattern = "(.*)(\\d{6})(.*)";
+            // Create a Pattern object
+            Pattern r = Pattern.compile(pattern);
 
-        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
-            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
-            Matcher m = r.matcher(message.body);
-            if (m.find()) {
-                Timber.d("Found OTP: %s", m.group(2));
-                mPassword.getBuilder().setOTPValue(m.group(2));
+            for (ReceiveSmsEvent.SmsMessage message : event.messages) {
+                Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
+                Matcher m = r.matcher(message.body);
+                if (m.find()) {
+                    Timber.d("Found OTP: %s", m.group(2));
+                    mPassword.getBuilder().setOTPValue(m.group(2));
+                }
             }
         }
-
         mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
     }
 }
