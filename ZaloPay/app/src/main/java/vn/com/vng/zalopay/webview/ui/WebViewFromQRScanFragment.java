@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.webview.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -8,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -50,20 +50,19 @@ public class WebViewFromQRScanFragment extends BaseFragment implements ZPWebView
 
     @BindView(R.id.tvError)
     TextView tvError;
-    private WebBottomSheetDialogFragment mBottomSheetDialog;
-
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
-
-    @OnClick(R.id.btnRetry)
-    public void onRetryClicked() {
-        onClickRetryWebView();
-    }
+    private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     public static WebViewFromQRScanFragment newInstance(Bundle bundle) {
         WebViewFromQRScanFragment fragment = new WebViewFromQRScanFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @OnClick(R.id.btnRetry)
+    public void onRetryClicked() {
+        onClickRetryWebView();
     }
 
     @Override
@@ -127,8 +126,10 @@ public class WebViewFromQRScanFragment extends BaseFragment implements ZPWebView
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-
-                getActivity().setTitle(title);
+                Activity activity = getActivity();
+                if (activity != null && !activity.isFinishing()) {
+                    activity.setTitle(title);
+                }
             }
         });
     }
