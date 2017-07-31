@@ -1,6 +1,10 @@
-Zalo Pay (Production v2.16.0 - build 380) - Released on 2017-07-31 13:42
-+ [App] Refactor sign out by hieuvm (#8eff895)
-+ [Change Password] Edit code logic by datnt10 (#a12e5f0)
-+ [Change Password] Fix handling the otp screen when receiving otp sms by datnt10 (#b296af3)
-+ [App] Home: change color and icon name by datnt10 (#549d309)
-+ [React-native] update internal resource by phucpv (#da1220b)
+Zalo Pay (Production v2.16.0 - build 381) - Released on 2017-07-31 19:28
++ [SDK] FEZPF-403:fix bug chuyển đổi giữa nhập thẻ 16 vs 19 số by lytm (#9387ba9)
++ [Profile] ZPF-350 : Cập nhật thông tin cá nhân: hình ảnh bị mất sau khi user back ra ngoài by datnt10 (#67902fe)
++ [APP] Refactor code by lytm (#4a9679a)
++ [APP] Fix swipe card ở danh sách thẻ liên kết (device MI) by lytm (#e943edd)
++ [APP] Fix swipe card ở danh sách thẻ liên kết (device MI) (reverted from commit bbe86f5cd08cd2d79386de03632187bd0e705bd3) by lytm (#2f336bd)
++ [UI Test] test transfer from search app by sinhtt (#1f32bd9)
++ [SDK] #ZPF-401 : ZPF-401 : Đổi text BACK -> hủy trong flow website bank by vo van chuc (#91ce2be)
++ [APP] Fix swipe card ở danh sách thẻ liên kết (device MI) by lytm (#bbe86f5)
++ [Crashlytic] Fix crash setTitle on null activity by vo van chuc (#4a26c3b)
