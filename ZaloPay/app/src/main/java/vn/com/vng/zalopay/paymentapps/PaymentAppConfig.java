@@ -53,12 +53,12 @@ public class PaymentAppConfig {
                         PaymentAppTypeEnum.INTERNAL_APP.value,
                         AndroidApplication.instance().getString(R.string.receive_money),
                         AndroidApplication.instance().getString(R.string.app_1_receivemoney),
-                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_green)));
+                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_blue)));
         APP_RESOURCE_MAP.put(Constants.DEPOSIT,
                 new AppResource(Constants.DEPOSIT,
                         PaymentAppTypeEnum.INTERNAL_APP.value,
                         AndroidApplication.instance().getString(R.string.home_deposit),
-                        AndroidApplication.instance().getString(R.string.notify_1_receivemoney),
+                        AndroidApplication.instance().getString(R.string.app_recharge),
                         AndroidUtils.getColorFromResource(R.color.menu_font_ic_green)));
         APP_RESOURCE_MAP.put(Constants.RED_PACKET,
                 new AppResource(Constants.RED_PACKET,
