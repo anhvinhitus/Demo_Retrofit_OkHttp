@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -250,12 +251,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
-
-        if (mView == null) {
-            return;
-        }
-
-        ((UserBaseActivity) mView.getContext()).clearUserSession(null);
+        mEventBus.postSticky(new SignOutEvent());
     }
 
     void showConfirmSignOut() {

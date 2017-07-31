@@ -18,12 +18,10 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -32,23 +30,20 @@ import vn.com.zalopay.analytics.ZPEvents;
  * *
  */
 public class ProfilePresenter extends AbstractPresenter<IProfileView> {
-    private EventBus mEventBus;
-    private UserConfig mUserConfig;
-    private User mUser;
-    private AccountStore.Repository mAccountRepository;
-    private PassportRepository mPassportRepository;
-    private Navigator mNavigator;
+    private final EventBus mEventBus;
+    private final UserConfig mUserConfig;
+    private final User mUser;
+    private final AccountStore.Repository mAccountRepository;
+    private final Navigator mNavigator;
 
     @Inject
     ProfilePresenter(EventBus eventBus,
                      UserConfig userConfig,
                      AccountStore.Repository accountRepository,
-                     PassportRepository passportRepository,
                      Navigator navigator, User user) {
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
         this.mAccountRepository = accountRepository;
-        this.mPassportRepository = passportRepository;
         this.mNavigator = navigator;
         this.mUser = user;
     }
@@ -108,7 +103,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         mSubscription.add(subscription);
     }
 
-    void getProfileSuccess() {
+    protected void getProfileSuccess() {
         User user = mUser;
         if (user != null) {
             updateUserInfo(user);
@@ -146,24 +141,6 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
 
         mNavigator.startEditAccountActivity(mView.getContext());
         ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_LAUNCH);
-    }
-
-    public void logout() {
-        Subscription subscription = mPassportRepository.logout()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-        mSubscription.add(subscription);
-
-        if (mEventBus.isRegistered(this)) {
-            mEventBus.unregister(this);
-        }
-
-        if (mView == null) {
-            return;
-        }
-
-        ((UserBaseActivity) mView.getActivity()).clearUserSession(null);
-
     }
 
     private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
