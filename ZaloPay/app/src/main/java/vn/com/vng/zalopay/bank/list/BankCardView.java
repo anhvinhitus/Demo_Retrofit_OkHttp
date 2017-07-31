@@ -12,9 +12,10 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
@@ -43,6 +44,7 @@ public class BankCardView extends SwipeLayout {
     @BindView(R.id.tv_num_acc)
     TextView mNumberCardView;
     float border = 0;
+    private boolean mState = false;
 
     public BankCardView(Context context) {
         this(context, null);
@@ -168,5 +170,27 @@ public class BankCardView extends SwipeLayout {
         gradient.mutate();
         gradient.setCornerRadii(new float[]{border, border, border, border, 0, 0, 0, 0});
         gradient.setColors(colors);
+    }
+
+    @Override
+    protected void safeBottomView() {
+        Status status = getOpenStatus();
+        List<View> bottoms = getBottomViews();
+        if (mState) {
+            return;
+        }
+        if (status == Status.Close) {
+            for (View bottom : bottoms) {
+                if (bottom != null && bottom.getVisibility() != INVISIBLE) {
+                    bottom.setVisibility(INVISIBLE);
+                }
+            }
+        } else {
+            View currentBottomView = getCurrentBottomView();
+            if (currentBottomView != null && currentBottomView.getVisibility() != VISIBLE) {
+                currentBottomView.setVisibility(VISIBLE);
+                mState = true;
+            }
+        }
     }
 }

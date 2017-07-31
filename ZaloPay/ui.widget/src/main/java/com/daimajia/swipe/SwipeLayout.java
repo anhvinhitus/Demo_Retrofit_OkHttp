@@ -578,7 +578,7 @@ public class SwipeLayout extends FrameLayout {
     /**
      * prevent bottom view get any touch event. Especially in LayDown mode.
      */
-    private void safeBottomView() {
+    protected void safeBottomView() {
         Status status = getOpenStatus();
         List<View> bottoms = getBottomViews();
 
