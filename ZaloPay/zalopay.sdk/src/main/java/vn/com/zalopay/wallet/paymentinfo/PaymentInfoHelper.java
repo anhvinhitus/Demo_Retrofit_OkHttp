@@ -59,7 +59,7 @@ public class PaymentInfoHelper extends SingletonBase {
 
     public VoucherInfo getVoucher() {
         if (paymentInfo != null && paymentInfo.getBuilder() != null) {
-            paymentInfo.getVoucher();
+            return paymentInfo.getVoucher();
         }
         return null;
     }
