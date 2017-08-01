@@ -82,7 +82,10 @@ android {
         staging {
             assets.srcDirs += '../../paymentapps/staging'
         }
-
+        stableSandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
+        }
         internalProduction {
             assets.srcDirs += '../../paymentapps/production'
             res.srcDirs += 'src/production/res'
@@ -190,6 +193,23 @@ android {
             buildConfigField 'int', 'WS_PORT', '8484'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
+            buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
+            buildConfigField 'int', 'ENVIRONMENT', '1'
+            applicationIdSuffix ".sb1"
+            buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sblog.zalopay.com.vn/"'
+            buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
+        }
+        stableSandbox {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
+            buildConfigField 'String', 'HOST', '"https://sandboxqc.zalopay.com.vn/"'
+            buildConfigField 'String', 'TERMS_HOST', '"https://sandbox.zalopay.com.vn/terms"'
+            buildConfigField 'String', 'FAQ_HOST', '"https://sandbox.zalopay.com.vn/faq"'
+            buildConfigField 'String', 'SUPPORT_CENTER_HOST', '"https://sandbox.zalopay.com.vn/trung-tam-ho-tro"'
+            buildConfigField 'String', 'WS_HOST', '"sbnotifyv2.zalopay.vn"'
+            buildConfigField 'int', 'WS_PORT', '8484'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandboxqc.zalopay.com.vn/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandboxqc.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
