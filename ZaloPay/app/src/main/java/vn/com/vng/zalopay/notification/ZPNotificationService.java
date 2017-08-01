@@ -345,16 +345,16 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
             // session expired
             Timber.d("Session is expired");
             TokenException exception = new TokenException(authentication.code);
-            mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
         } else if (authentication.code == ServerErrorMessage.SERVER_MAINTAIN) {
             Timber.d("Server maintain");
             ServerMaintainException exception = new ServerMaintainException(authentication.code, "");
-            mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
         } else if (authentication.code == ServerErrorMessage.ZPW_ACCOUNT_SUSPENDED
                 || authentication.code == ServerErrorMessage.USER_IS_LOCKED) {
             Timber.d("Account is locked");
             AccountSuspendedException exception = new AccountSuspendedException(authentication.code, "");
-            mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
         }
     }
 

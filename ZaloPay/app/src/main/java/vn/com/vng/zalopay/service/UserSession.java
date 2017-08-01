@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.service;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -17,17 +19,23 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AppStateChangeEvent;
+import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UploadFileLogEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.network.RetryFileLogUpload;
 import vn.com.vng.zalopay.tracker.FileLogHelper;
@@ -96,7 +104,10 @@ public class UserSession {
 
     public void endSession() {
         Timber.d("endSession");
-        mEventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
+
         mLastTimeCheckPassword = 0;
         mHashPassword = null;
         mNotifyService.stop();
@@ -219,4 +230,22 @@ public class UserSession {
         mCompositeSubscription.add(subscription);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
+        signOut(ErrorMessageFactory.create(mContext, event.getThrowable(), mUser));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
+        signOut(mContext.getString(R.string.exception_token_expired_message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onForceUpdateApp(ForceUpdateAppEvent event) {
+        signOut(null);
+    }
+
+    private void signOut(@Nullable String message) {
+        mEventBus.postSticky(new SignOutEvent(message));
+    }
 }

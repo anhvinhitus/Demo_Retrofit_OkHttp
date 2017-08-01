@@ -30,7 +30,7 @@ final class RedPacketCallAdapter extends BaseCallAdapter {
         trackAPIError(request.url().encodedPath().replaceFirst("/", ""), baseResponse.err);
         if (baseResponse.err == RedPacketNetworkErrorEnum.INVALID_ACCESS_TOKEN.getValue()) {
             TokenException exception = new TokenException(baseResponse.err, baseResponse.message);
-            EventBus.getDefault().postSticky(new ThrowToLoginScreenEvent(exception));
+            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
             return Observable.error(exception);
         } else {
             return Observable.error(new BodyException(baseResponse.err, baseResponse.message));

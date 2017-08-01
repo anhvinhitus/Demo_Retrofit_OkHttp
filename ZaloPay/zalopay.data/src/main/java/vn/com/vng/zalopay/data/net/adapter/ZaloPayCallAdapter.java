@@ -75,6 +75,6 @@ class ZaloPayCallAdapter extends BaseCallAdapter {
 
     private void postThrowToLoginScreenEvent(BodyException exception) {
         Timber.d("Post ThrowToLoginScreenEvent");
-        EventBus.getDefault().postSticky(new ThrowToLoginScreenEvent(exception));
+        EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
     }
 }

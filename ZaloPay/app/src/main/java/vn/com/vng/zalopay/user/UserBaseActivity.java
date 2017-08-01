@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.user;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -117,37 +118,12 @@ public abstract class UserBaseActivity extends BaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
-        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
-        User user = getAppComponent().userConfig().getCurrentUser();
-        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
-        Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        clearUserSession(getString(R.string.exception_token_expired_message));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onForceUpdateApp(ForceUpdateAppEvent event) {
-        Timber.i("Force update app in Screen %s", TAG);
-        clearUserSession(null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onSignOut(SignOutEvent event) {
-        clearUserSession(null);
+        clearUserSession(event.getMessage());
     }
 
-    public boolean clearUserSession(String message) {
-        //Remove all sticky event in app
+    private boolean clearUserSession(@Nullable String message) {
         mEventBus.removeAllStickyEvents();
-
-        if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
-            return false;
-        }
-
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
         return true;

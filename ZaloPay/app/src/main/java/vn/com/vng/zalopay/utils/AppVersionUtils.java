@@ -122,7 +122,7 @@ public class AppVersionUtils {
 
     private static void clearSession() {
         EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-        eventBus.postSticky(new ForceUpdateAppEvent());
+        eventBus.post(new ForceUpdateAppEvent());
     }
 
     private static void showDialogUpgradeApp(final Activity activity, final boolean forceUpdate) {
