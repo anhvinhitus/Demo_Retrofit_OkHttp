@@ -188,7 +188,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
             if (mView == null) {
                 return;
             }
-            mEventBus.postSticky(new TokenPaymentExpiredEvent());
+            mEventBus.post(new TokenPaymentExpiredEvent());
         }
 
         private void closeTopup() {

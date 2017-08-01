@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.zalopay.apploader.ReactBasedActivity;
 
@@ -17,6 +18,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -125,25 +127,12 @@ public abstract class UserReactBasedActivity extends ReactBasedActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
-        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
-        User user = getAppComponent().userConfig().getCurrentUser();
-        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
+    public void onSignOut(SignOutEvent event) {
+        clearUserSession(event.getMessage());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
-        Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        clearUserSession(getString(R.string.exception_token_expired_message));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onForceUpdateApp(ForceUpdateAppEvent event) {
-        Timber.i("Force update app in Screen %s", TAG);
-        clearUserSession(null);
-    }
-
-    protected boolean clearUserSession(String message) {
+    protected boolean clearUserSession(@Nullable String message) {
+        eventBus.removeAllStickyEvents();
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
         return true;

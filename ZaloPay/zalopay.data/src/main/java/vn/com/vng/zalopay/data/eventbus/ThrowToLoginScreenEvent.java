@@ -16,10 +16,6 @@ public class ThrowToLoginScreenEvent {
         this.throwable = throwable;
     }
 
-    public String getMessage() {
-        return throwable.getMessage();
-    }
-
     public BodyException getThrowable() {
         return throwable;
     }

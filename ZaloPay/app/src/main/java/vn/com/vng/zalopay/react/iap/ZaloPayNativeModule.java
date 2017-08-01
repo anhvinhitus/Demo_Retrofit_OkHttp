@@ -195,7 +195,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void logout() {
         Timber.d("Payment app %s request to logout", mAppId);
         EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-        eventBus.postSticky(new TokenPaymentExpiredEvent());
+        eventBus.post(new TokenPaymentExpiredEvent());
     }
 
     @ReactMethod

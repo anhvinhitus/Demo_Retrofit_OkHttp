@@ -69,7 +69,7 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
     public void onResponseTokenInvalid() {
         Timber.d("onResponseTokenInvalid - cleanup and logout");
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-        applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
+        applicationComponent.eventBus().post(new TokenPaymentExpiredEvent());
     }
 
     @Override
@@ -77,7 +77,7 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
         Timber.d("onResponseAccountSuspended - cleanup and logout");
         AccountSuspendedException exception = new AccountSuspendedException(ServerErrorMessage.USER_IS_LOCKED, "");
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-        applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
+        applicationComponent.eventBus().post(new ThrowToLoginScreenEvent(exception));
     }
 
     @Override
