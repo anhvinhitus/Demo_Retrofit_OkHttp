@@ -1,18 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical"
-              tools:context=".ui.fragment.BalanceManagementFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".ui.fragment.BalanceManagementFragment">
 
-    <include layout="@layout/header_balance_manager_layout"/>
+    <include layout="@layout/header_balance_manager_layout" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <RelativeLayout
         android:id="@+id/balance_management_rl_deposit"
@@ -29,9 +29,10 @@
             android:id="@+id/icfont_recharge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:textColor="@color/menu_font_ic_green"
-            app:iconName="@string/notify_1_receivemoney"
-            app:iconSize="@dimen/font_size_balance_manager_deposit"/>
+            app:iconName="@string/app_recharge"
+            app:iconSize="@dimen/withdraw_iconfont" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -47,14 +48,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:text="@string/btn_deposit"/>
+                android:text="@string/btn_deposit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/balance_management_deposit_description"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <com.zalopay.ui.widget.IconFont
@@ -65,7 +66,7 @@
             android:layout_centerVertical="true"
             android:textColor="@color/arrow_right"
             app:iconName="@string/general_arrowright"
-            app:iconSize="@dimen/font_size_arrow_right"/>
+            app:iconSize="@dimen/font_size_arrow_right" />
     </RelativeLayout>
 
     <View
@@ -73,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginLeft="66dp"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <RelativeLayout
         android:id="@+id/balance_management_rl_withdraw"
@@ -90,9 +91,10 @@
             android:id="@+id/icfont_withdraw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:textColor="@color/menu_font_ic_yellow"
-            app:iconName="@string/notify_1_withdraw"
-            app:iconSize="@dimen/font_size_balance_manager_withdraw"/>
+            app:iconName="@string/app_withdraw"
+            app:iconSize="@dimen/withdraw_iconfont" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -108,14 +110,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:text="@string/btn_withdraw"/>
+                android:text="@string/btn_withdraw" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/balance_management_withdraw_description"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <com.zalopay.ui.widget.IconFont
@@ -126,12 +128,12 @@
             android:layout_centerVertical="true"
             android:textColor="@color/arrow_right"
             app:iconName="@string/general_arrowright"
-            app:iconSize="@dimen/font_size_arrow_right"/>
+            app:iconSize="@dimen/font_size_arrow_right" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 </LinearLayout>
 
