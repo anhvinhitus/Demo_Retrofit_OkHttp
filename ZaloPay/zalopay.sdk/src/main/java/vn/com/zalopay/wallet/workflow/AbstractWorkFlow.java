@@ -55,8 +55,12 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkCheckSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
+import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
@@ -384,8 +388,22 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         mMiniPmcTransType = null;
         mPresenter = null;
-        mEventBus.removeAllStickyEvents();
+        clearStickyEvent();
         onStop();
+    }
+
+    private void clearStickyEvent(){
+        mEventBus.removeStickyEvent(SdkSubmitOrderEvent.class);
+        mEventBus.removeStickyEvent(SdkOrderStatusEvent.class);
+        mEventBus.removeStickyEvent(SdkAuthenPayerEvent.class);
+        mEventBus.removeStickyEvent(SdkSuccessTransEvent.class);
+
+        mEventBus.removeStickyEvent(SdkParseWebsiteRenderEvent.class);
+        mEventBus.removeStickyEvent(SdkParseWebsiteCompleteEvent.class);
+        mEventBus.removeStickyEvent(SdkParseWebsiteErrorEvent.class);
+
+        mEventBus.removeStickyEvent(SdkWebsite3dsEvent.class);
+        mEventBus.removeStickyEvent(SdkWebsite3dsBackEvent.class);
     }
 
     public void detectCard(String pCardNumber) {
