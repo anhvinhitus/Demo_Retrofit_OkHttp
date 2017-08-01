@@ -266,7 +266,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         //delay waiting for destroy popup
-        new Handler().postDelayed(() -> startPayment(false),300);
+        new Handler().postDelayed(this::startPayment,300);
     }
 
     @Override
@@ -388,17 +388,24 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         trackingPaymentChannel(channel.pmcid);
     }
 
-    public void startPayment(boolean defaultPayment) {
+    public void startPayment() {
         try {
             if(mSelectChannel == null){
                 return;
             }
-            if (defaultPayment) {
-                mPayProxy.setChannel(mSelectChannel).startDefault();
-            }else{
-                mPayProxy.setChannel(mSelectChannel).start();
-            }
+            mPayProxy.setChannel(mSelectChannel).start();
             trackEventConfirm();
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+    }
+
+    public void startDefaultPayment() {
+        try {
+            if(mSelectChannel == null){
+                return;
+            }
+            mPayProxy.setChannel(mSelectChannel).startDefault();
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -711,7 +718,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         boolean hasLastPaymentChannel = selectLastPaymentChannel();
         if (hasLastPaymentChannel) {
             if (shouldAutoPayment()) {
-                startPayment(true);
+                startDefaultPayment();
             }
             return;
         }
@@ -736,7 +743,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             selectAndScrollToChannel(selectChannel, pos);
         }
         if (shouldAutoPayment()) {
-            startPayment(true);
+            startDefaultPayment();
         }
         if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
