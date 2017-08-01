@@ -122,7 +122,7 @@ public abstract class UserBaseActivity extends BaseActivity {
         clearUserSession(event.getMessage());
     }
 
-    private boolean clearUserSession(@Nullable String message) {
+    protected boolean clearUserSession(@Nullable String message) {
         mEventBus.removeAllStickyEvents();
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
