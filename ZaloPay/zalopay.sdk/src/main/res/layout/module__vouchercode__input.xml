@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/sdk_margin_left_right"
+    android:paddingRight="@dimen/sdk_margin_left_right"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/cancel_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:src="@drawable/ic_close"
+        android:tint="@color/gray"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center_horizontal"
+        android:text="@string/sdk_voucher_code_input_title" />
+
+    <EditText
+        android:id="@+id/vouchercode_input_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/text_color_grey"
+        android:background="@drawable/bg_non_background"/>
+
+    <TextView
+        android:id="@+id/error_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:textColor="@color/holo_red_light" />
+
+    <TextView
+        android:id="@+id/use_vouchercode_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_large"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center_horizontal"
+        android:text="@string/sdk_voucher_code_btn_text"
+        android:textColor="@color/colorPrimary" />
+
+</LinearLayout>

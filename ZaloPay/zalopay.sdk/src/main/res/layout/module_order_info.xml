@@ -91,6 +91,44 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/active_voucher_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/sdk_margin_left_right"
+        android:layout_marginLeft="@dimen/sdk_margin_left_right"
+        android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/active_voucher_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/sdk_voucher_title"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <ImageView
+            android:id="@+id/active_voucher_del_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/active_voucher_textview"
+            android:layout_marginLeft="3dp"
+            android:src="@android:drawable/ic_delete"/>
+
+        <TextView
+            android:id="@+id/voucher_discount_amount_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/sdk_voucher_input_text"
+            android:textSize="@dimen/zpw_text_size_medium" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/appname_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

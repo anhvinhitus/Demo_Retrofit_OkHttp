@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.List;
 
 import vn.com.vng.zalopay.data.util.NameValuePair;
@@ -20,11 +22,11 @@ public interface ChannelListContract extends IContract {
 
         void renderVoucher();
 
+        void renderActiveVoucher(String voucherCode, double discountAmount);
+
         void renderAppInfo(String appName);
 
         void renderOrderInfo(AbstractOrder order);
-
-        void renderTotalAmountAndFee(double total_amount, double fee);
 
         void renderDynamicItemDetail(List<NameValuePair> nameValuePair);
 
@@ -40,11 +42,21 @@ public interface ChannelListContract extends IContract {
 
         void showQuitConfirm();
 
+        void showConfirmDeleteVoucherDialog(ZPWOnEventConfirmDialogListener pListener);
+
         void scrollToPos(int position);
 
         void enablePaymentButton(int buttonTextId, int bgResourceId);
 
         void switchToResultScreen(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception;
+
+        void setVoucherError(String error);
+
+        void hideVoucherCodePopup();
+
+        void renderOrderAmount(double order_total_amount);
+
+        void renderOrderFee(double order_fee);
 
         ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }

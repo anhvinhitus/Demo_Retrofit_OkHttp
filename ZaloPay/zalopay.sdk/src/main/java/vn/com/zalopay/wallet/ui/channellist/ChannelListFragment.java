@@ -10,7 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -77,6 +80,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     private View voucher_relativelayout;
     private View voucher_txt;
+    private View active_voucher_relativelayout;
+    private TextView active_voucher_textview;
+    private TextView voucher_discount_amount_textview;
+    private View active_voucher_del_img;
+
+    private ViewStub vouchercode_input_stub;
+    private View vouchercode_input_popup;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -136,6 +146,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         voucher_relativelayout = view.findViewById(R.id.voucher_relativelayout);
         voucher_txt = view.findViewById(R.id.voucher_txt);
+        vouchercode_input_stub = (ViewStub) view.findViewById(R.id.vouchercode_input_stub);
+
+        active_voucher_relativelayout = view.findViewById(R.id.active_voucher_relativelayout);
+        active_voucher_textview = (TextView) view.findViewById(R.id.active_voucher_textview);
+        voucher_discount_amount_textview = (TextView) view.findViewById(R.id.voucher_discount_amount_textview);
+        active_voucher_del_img = view.findViewById(R.id.active_voucher_del_img);
 
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
         setupRecyclerView();
@@ -247,9 +263,85 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void renderVoucher() {
         voucher_relativelayout.setVisibility(View.VISIBLE);
         voucher_txt.setOnClickListener(view -> showVoucherCodeDialog());
+        active_voucher_relativelayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderActiveVoucher(String voucherCode, double discountAmount) {
+        active_voucher_relativelayout.setVisibility(View.VISIBLE);
+
+        String codeformat = getResources().getString(R.string.sdk_active_voucher_cod_format);
+        voucherCode = String.format(codeformat, voucherCode);
+        active_voucher_textview.setText(voucherCode);
+
+        String discountFormat = getResources().getString(R.string.sdk_discount_amount_voucher_format);
+        discountFormat = String.format(discountFormat, CurrencyUtil.formatCurrency(discountAmount));
+
+        voucher_discount_amount_textview.setText(discountFormat);
+        active_voucher_del_img.setOnClickListener(view -> {
+            showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                    if(mPresenter == null){
+                        return;
+                    }
+                    mPresenter.clearVoucher();
+                    renderVoucher();
+                }
+
+                @Override
+                public void onOKEvent() {
+                }
+            });
+        });
+
+        voucher_relativelayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setVoucherError(String error) {
+        if (vouchercode_input_popup == null) {
+            vouchercode_input_popup = vouchercode_input_stub.inflate();
+        }
+        TextView error_textview = (TextView) vouchercode_input_popup.findViewById(R.id.error_textview);
+        error_textview.setText(error);
+        boolean hasError = !TextUtils.isEmpty(error);
+        error_textview.setVisibility(hasError ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void hideVoucherCodePopup() {
+        if (vouchercode_input_stub == null) {
+            return;
+        }
+        if (vouchercode_input_popup == null) {
+            vouchercode_input_popup = vouchercode_input_stub.inflate();
+        }
+        vouchercode_input_popup.setVisibility(View.GONE);
     }
 
     private void showVoucherCodeDialog() {
+        if (vouchercode_input_stub == null) {
+            return;
+        }
+        if (vouchercode_input_popup == null) {
+            vouchercode_input_popup = vouchercode_input_stub.inflate();
+        }
+        vouchercode_input_popup.setVisibility(View.VISIBLE);
+
+        View closeView = vouchercode_input_popup.findViewById(R.id.cancel_img);
+        if(closeView != null){
+            closeView.setOnClickListener(view -> vouchercode_input_popup.setVisibility(View.GONE));
+        }
+
+        View useVoucherView = vouchercode_input_popup.findViewById(R.id.use_vouchercode_textview);
+        EditText vouchercode_input_edittext = (EditText) vouchercode_input_popup.findViewById(R.id.vouchercode_input_edittext);
+        if(useVoucherView == null || vouchercode_input_edittext == null){
+            return;
+        }
+        useVoucherView.setOnClickListener(view -> mPresenter.useVoucher(vouchercode_input_edittext.getText().toString()));
+        applyFont(vouchercode_input_edittext, GlobalData.getStringResource(RS.string.sdk_font_medium));
+        SdkUtils.focusAndSoftKeyboard(getActivity(), vouchercode_input_edittext);
     }
 
     @Override
@@ -262,21 +354,25 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void renderTotalAmountAndFee(double total_amount, double fee) {
-        if (fee > 0) {
-            String txtFee = CurrencyUtil.formatCurrency(fee);
+    public void renderOrderAmount(double order_total_amount) {
+        //order amount
+        boolean hasAmount = order_total_amount > 0;
+        if (hasAmount) {
+            String txtAmount = CurrencyUtil.formatCurrency(order_total_amount, false);
+            order_amount_txt.setText(txtAmount);
+            order_amount_txt.setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(order_total_amount)));
+        }
+        order_amount_linearlayout.setVisibility(hasAmount ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void renderOrderFee(double order_fee) {
+        if (order_fee > 0) {
+            String txtFee = CurrencyUtil.formatCurrency(order_fee);
             order_fee_txt.setText(txtFee);
         } else {
             order_fee_txt.setText(getResources().getString(R.string.sdk_order_fee_free));
         }
-        //order amount
-        boolean hasAmount = total_amount > 0;
-        if (hasAmount) {
-            String txtAmount = CurrencyUtil.formatCurrency(total_amount, false);
-            order_amount_txt.setText(txtAmount);
-            order_amount_txt.setTextSize(getResources().getDimension(FontHelper.getFontSizeAmount(total_amount)));
-        }
-        order_amount_linearlayout.setVisibility(hasAmount ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -293,7 +389,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         order_description_txt.setVisibility(hasDesc ? View.VISIBLE : View.GONE);
         //order amount
         order.amount_total = order.amount + order.fee;
-        renderTotalAmountAndFee(order.amount_total, order.fee);
+        renderOrderAmount(order.amount_total);
+        renderOrderFee(order.fee);
     }
 
     @Override
@@ -348,6 +445,15 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 },
                 getResources().getString(R.string.dialog_turn_off),
                 getResources().getString(R.string.dialog_turn_on));
+    }
+
+    @Override
+    public void showConfirmDeleteVoucherDialog(ZPWOnEventConfirmDialogListener pListener) {
+        DialogManager.showConfirmDialog(getActivity(),
+                null,
+                getString(R.string.sdk_delete_voucher_confirm_text),
+                getString(R.string.dialog_khong_button),
+                getString(R.string.dialog_co_button), pListener);
     }
 
     @Override
@@ -449,7 +555,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void switchToResultScreen(StatusResponse pResponse,boolean pShouldShowFingerPrintToast) throws Exception {
+    public void switchToResultScreen(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception {
         if (!(getActivity() instanceof BaseActivity) || getActivity().isFinishing()) {
             throw new IllegalStateException("Activity is finish");
         }

@@ -66,6 +66,7 @@ import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.workflow.channelloader.AbstractChannelLoader;
 
 
@@ -376,7 +377,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         double fee = channel.totalfee;
         double total_amount = mPaymentInfoHelper.getAmount() + fee;
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_TOTALAMOUNTANDFEE);
-        getViewOrThrow().renderTotalAmountAndFee(total_amount, fee);
+        getViewOrThrow().renderOrderAmount(total_amount);
+        getViewOrThrow().renderOrderFee(fee);
 
         if (mSelectChannel != null) {
             mSelectChannel.select = false;
@@ -414,10 +416,47 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Log.e(this, e);
         }
-        //useVoucher("HAPPY48");
     }
 
-    private void useVoucher(String voucherCode) {
+    void onUseVouchComplete(VoucherInfo voucherInfo) {
+        Timber.d("response use voucher %s", GsonUtils.toJsonString(voucherInfo));
+        try {
+            getViewOrThrow().hideLoading();
+            getViewOrThrow().hideVoucherCodePopup();
+            if (voucherInfo == null || mPaymentInfoHelper == null) {
+                return;
+            }
+            mPaymentInfoHelper.setVoucher(voucherInfo);
+            //re calculate order amount
+            double total_amount = mPaymentInfoHelper.getAmountTotal();
+            if (total_amount <= 0 || voucherInfo.discountamount <= 0) {
+                return;
+            }
+            total_amount = total_amount - voucherInfo.discountamount;
+            if (mPaymentInfoHelper.getOrder() != null) {
+                mPaymentInfoHelper.getOrder().amount_total = total_amount;
+            }
+            getViewOrThrow().renderOrderAmount(total_amount);
+            getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, voucherInfo.discountamount);
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+    }
+
+    public void clearVoucher() {
+        if (mPaymentInfoHelper == null) {
+            return;
+        }
+        try {
+            mPaymentInfoHelper.setVoucher(null);
+            getViewOrThrow().renderOrderAmount(mPaymentInfoHelper.getAmountTotal());
+        } catch (Exception e) {
+            Timber.w(e);
+        }
+
+    }
+
+    public void useVoucher(String voucherCode) {
         if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
             return;
         }
@@ -428,9 +467,30 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         long amount = mPaymentInfoHelper.getAmount();
         long time = System.currentTimeMillis();
         mVoucherInteractor.validateVoucher(userId, accessToken, appTrans, appId, amount, time, voucherCode)
+                .map(voucherInfo -> {
+                    if (voucherInfo != null) {
+                        voucherInfo.vouchercode = voucherCode;
+                    }
+                    return voucherInfo;
+                })
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(useVoucherResponse -> Timber.d("response use voucher %s", GsonUtils.toJsonString(useVoucherResponse)),
-                        throwable -> Timber.w(throwable, "Exception use voucher %s", voucherCode));
+                .doOnSubscribe(() -> {
+                    try {
+                        getViewOrThrow().showLoading(mContext.getResources().getString(R.string.sdk_validate_voucher_loading_text));
+                    } catch (Exception e) {
+                        Timber.w(e);
+                    }
+                })
+                .subscribe(this::onUseVouchComplete, throwable -> {
+                    Timber.w(throwable, "Exception use voucher %s", voucherCode);
+                    try {
+                        getViewOrThrow().hideLoading();
+                        String error = TransactionHelper.getMessage(mContext, throwable);
+                        getViewOrThrow().setVoucherError(error);
+                    } catch (Exception e) {
+                        Timber.d(e);
+                    }
+                });
     }
 
     public void onPaymentReady() {
