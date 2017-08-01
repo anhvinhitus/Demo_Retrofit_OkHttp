@@ -478,6 +478,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             imageURI = Uri.fromFile(new File(mStrFgIdentity));
         }
 
+        mUriFgIdentity = imageURI;
         mFgIdentityView.setImageURI(imageURI);
         mFgIdentityView.setVisibility(View.VISIBLE);
 
@@ -520,6 +521,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             imageURI = Uri.fromFile(new File(mStrAvatar));
         }
 
+        mUriAvatar = imageURI;
         mAvatarView.setImageURI(imageURI);
         mAvatarView.setVisibility(View.VISIBLE);
 
@@ -563,6 +565,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             imageURI = Uri.fromFile(new File(mStrBgIdentity));
         }
 
+        mUriBgIdentity = imageURI;
         mBgIdentityView.setImageURI(imageURI);
         mBgIdentityView.setVisibility(View.VISIBLE);
 
