@@ -120,7 +120,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private Uri mUriFgIdentity;
     private Uri mUriAvatar;
     private String mStrBgIdentity;
-    private static String mStrFgIdentity;
+    private String mStrFgIdentity;
     private String mStrAvatar;
 
     @BindView(R.id.tvTerm)
@@ -217,9 +217,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onDestroyView() {
         mEdtIdentityView.clearValidators();
         mEdtEmailView.clearValidators();
-//        clearCacheFresco(mUriAvatar);
-//        clearCacheFresco(mUriFgIdentity);
-//        clearCacheFresco(mUriBgIdentity);
+        clearCacheFresco(mUriAvatar);
+        clearCacheFresco(mUriFgIdentity);
+        clearCacheFresco(mUriBgIdentity);
         presenter.detachView();
         super.onDestroyView();
     }
@@ -445,19 +445,19 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
                     mUriBgIdentity = uri;
-                    deleteFile(mStrBgIdentity);
+                    AndroidUtils.deleteFile(mStrBgIdentity);
                     mStrBgIdentity = "";
                     loadBackgroundImage(mUriBgIdentity);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
                     mUriFgIdentity = uri;
-                    deleteFile(mStrFgIdentity);
+                    AndroidUtils.deleteFile(mStrFgIdentity);
                     mStrFgIdentity = "";
                     loadFrontImage(mUriFgIdentity);
                     break;
                 case AVATAR_REQUEST_CODE:
                     mUriAvatar = uri;
-                    deleteFile(mStrAvatar);
+                    AndroidUtils.deleteFile(mStrAvatar);
                     mStrAvatar = "";
                     loadAvatar(mUriAvatar);
                     break;
@@ -480,7 +480,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             mStrFgIdentity = getImagePath(getContext(), uri);
         }
 
-        if(LOCAL_IMAGE.equals(mStrFgIdentity)) {
+        if (LOCAL_IMAGE.equals(mStrFgIdentity)) {
             imageURI = uri;
         } else {
             imageURI = Uri.fromFile(new File(mStrFgIdentity));
@@ -522,7 +522,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             mStrAvatar = getImagePath(getContext(), uri);
         }
 
-        if(LOCAL_IMAGE.equals(mStrAvatar)) {
+        if (LOCAL_IMAGE.equals(mStrAvatar)) {
             imageURI = uri;
         } else {
             imageURI = Uri.fromFile(new File(mStrAvatar));
@@ -565,7 +565,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             mStrBgIdentity = getImagePath(getContext(), uri);
         }
 
-        if(LOCAL_IMAGE.equals(mStrBgIdentity)) {
+        if (LOCAL_IMAGE.equals(mStrBgIdentity)) {
             imageURI = uri;
         } else {
             imageURI = Uri.fromFile(new File(mStrBgIdentity));
@@ -691,17 +691,17 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-    private String getImagePath(Context context, Uri uri) {
+    public String getImagePath(Context context, Uri uri) {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             if (isGoogleOldPhotosUri(uri)) {
                 // return http path, then download file.
                 return uri.getLastPathSegment();
             } else if (isGoogleNewPhotosUri(uri)) {
                 // copy from uri. context.getContentResolver().openInputStream(uri);
-                return copyFile(context, uri);
+                return AndroidUtils.createTempImageFile(context, uri);
             } else if (isPicasaPhotoUri(uri)) {
                 // copy from uri. context.getContentResolver().openInputStream(uri);
-                return copyFile(context, uri);
+                return AndroidUtils.createTempImageFile(context, uri);
             } else {
                 return LOCAL_IMAGE;
             }
@@ -709,11 +709,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         return null;
     }
 
-    public boolean isGoogleOldPhotosUri(Uri uri) {
+    private boolean isGoogleOldPhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public boolean isGoogleNewPhotosUri(Uri uri) {
+    private boolean isGoogleNewPhotosUri(Uri uri) {
         return "com.google.android.apps.photos.contentprovider".equals(uri.getAuthority());
     }
 
@@ -724,63 +724,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 || uri.getAuthority().startsWith("com.google.android.gallery3d"));
     }
 
-    private String copyFile(Context context, Uri uri) {
-        String filePath;
-        InputStream inputStream = null;
-        BufferedOutputStream outStream = null;
-        try {
-            inputStream = context.getContentResolver().openInputStream(uri);
-
-//            filePath = GoogleImagePickerUtil.getDownloadPath() + "/" + GoogleImagePickerUtil
-//                    .getWebImageName() + ".jpg";
-            File extDir = context.getExternalFilesDir(null);
-            filePath = extDir.getAbsolutePath() + "/CachedImg_" + UUID.randomUUID().toString() + ".jpg";
-            outStream = new BufferedOutputStream(new FileOutputStream
-                    (filePath));
-
-            byte[] buf = new byte[2048];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outStream.write(buf, 0, len);
-            }
-
-        } catch (IOException e) {
-            Timber.d(e);
-            filePath = "";
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (IOException e) {
-                Timber.d(e);
-            }
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                }
-            } catch (IOException e) {
-                Timber.d(e);
-            }
-        }
-
-        return filePath;
-    }
-
     private void saveGooglePhotoImageTemporaryPath(String key, String value) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(key, value);
         editor.apply();
-    }
-
-    private void deleteFile(String filePath) {
-        File deleteFile = new File(filePath);
-        if (deleteFile.exists()) {
-            if (deleteFile.delete()) {
-                Timber.d("File deleted :" + filePath);
-            } else {
-                Timber.d("File not deleted :" + filePath);
-            }
-        }
     }
 }
