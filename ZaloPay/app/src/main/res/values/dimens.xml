@@ -176,5 +176,6 @@
     <!-- Dimen background layout -->
     <dimen name="height_background_withdraw">150dp</dimen>
     <dimen name="height_background_withdraw_header">110dp</dimen>
+    <dimen name="withdraw_iconfont">30dp</dimen>
 
 </resources>
