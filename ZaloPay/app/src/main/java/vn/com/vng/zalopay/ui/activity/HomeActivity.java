@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -37,11 +38,6 @@ import vn.zalopay.promotion.PromotionEvent;
 public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     public static final String TAG = "HomeActivity";
-
-    public static boolean EVENT_FIRST_TOUCH_HOME = true;
-    public static boolean EVENT_FIRST_TOUCH_NEARBY = true;
-    public static boolean EVENT_FIRST_TOUCH_PROMOTION = true;
-    public static boolean EVENT_FIRST_TOUCH_ME = true;
 
     @Inject
     HomePresenter mPresenter;
@@ -126,39 +122,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
                 break;
         }
     }
-
- /*   private void trackEvent(int position) {
-        switch (position) {
-            case HomePagerAdapter.TAB_MAIN_INDEX:
-                if (EVENT_FIRST_TOUCH_HOME) {
-                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABHOMEFIRST);
-                    EVENT_FIRST_TOUCH_HOME = false;
-                }
-                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABHOME);
-                break;
-            case HomePagerAdapter.TAB_TRANSACTION_INDEX:
-                if (EVENT_FIRST_TOUCH_NEARBY) {
-                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABNEARBYFIRST);
-                    EVENT_FIRST_TOUCH_NEARBY = false;
-                }
-                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABNEARBY);
-                break;
-            case HomePagerAdapter.TAB_PROMOTION_INDEX:
-                if (EVENT_FIRST_TOUCH_PROMOTION) {
-                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABPROMOTIONFIRST);
-                    EVENT_FIRST_TOUCH_PROMOTION = false;
-                }
-                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABPROMOTION);
-                break;
-            case HomePagerAdapter.TAB_PERSONAL_INDEX:
-                if (EVENT_FIRST_TOUCH_ME) {
-                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABMEFIRST);
-                    EVENT_FIRST_TOUCH_ME = false;
-                }
-                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABME);
-                break;
-        }
-    }*/
 
     @Override
     public void onPause() {
@@ -289,5 +252,13 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         }
         Timber.d("Get Activity UserComponent");
         return mUserComponent;
+    }
+
+    @Override
+    protected boolean clearUserSession(@Nullable String message) {
+        if (mViewPager != null) {
+            mViewPager.setAdapter(null);
+        }
+        return super.clearUserSession(message);
     }
 }
