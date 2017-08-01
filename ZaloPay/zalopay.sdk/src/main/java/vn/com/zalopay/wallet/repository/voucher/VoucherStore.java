@@ -27,19 +27,19 @@ public class VoucherStore {
     public interface VoucherService {
         @GET(Constants.URL_GET_VOUCHER_STATUS)
             //@API_NAME(https = ZPEvents.API_V001_TPE_GETTRANSSTATUS, connector = ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
-        Observable<VoucherStatusResponse> getVoucherStatus(@Query("userID") String userID,
+        Observable<VoucherStatusResponse> getVoucherStatus(@Query("userid") String userID,
                                                            @Query("accesstoken") String accessToken,
-                                                           @Query("voucherSig") String voucherSig);
+                                                           @Query("vouchersig") String voucherSig);
 
         @POST(Constants.URL_USE_VOUCHER)
             //@API_NAME(https = ZPEvents.API_V001_TPE_ATMAUTHENPAYER, connector = ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER)
-        Observable<UseVoucherResponse> useVoucher(@Query("userID") String userID,
+        Observable<UseVoucherResponse> useVoucher(@Query("userid") String userID,
                                                   @Query("accesstoken") String accessToken,
-                                                  @Query("appTransID") String appTransID,
-                                                  @Query("appID") long appID,
+                                                  @Query("apptransid") String appTransID,
+                                                  @Query("appid") long appID,
                                                   @Query("amount") long amount,
                                                   @Query("timestamp") long timestamp,
-                                                  @Query("voucherCode") String voucherCode);
+                                                  @Query("vouchercode") String voucherCode);
 
     }
 }

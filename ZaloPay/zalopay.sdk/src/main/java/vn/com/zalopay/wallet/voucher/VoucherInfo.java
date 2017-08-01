@@ -13,13 +13,13 @@ public class VoucherInfo {
     @Expose
     public String vouchercode;
 
-    @SerializedName("campaignID")
+    @SerializedName("campaignid")
     public int campaignid;
-    @SerializedName("discountAmount")
+    @SerializedName("discountamount")
     public long discountamount;
-    @SerializedName("useVoucherTime")
+    @SerializedName("usevouchertime")
     public long usevouchertime;
-    @SerializedName("voucherSig")
+    @SerializedName("vouchersig")
     public String vouchersig;
 
     @Override
