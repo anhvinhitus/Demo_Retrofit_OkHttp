@@ -25,12 +25,7 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -40,7 +35,6 @@ import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
@@ -51,8 +45,6 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-
-import static android.provider.CalendarContract.CalendarCache.URI;
 
 /**
  * Created by AnhHieu on 6/30/16.
