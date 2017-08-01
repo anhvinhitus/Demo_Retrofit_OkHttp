@@ -64,22 +64,6 @@ public class DataParameter {
         params.put(ConstantParams.AUTHEN_VALUE, pAuthenValue);
     }
 
-    /**
-     * Add param RemoveMapCardTask
-     *
-     * @param params
-     * @param pCard
-     */
-    public static void prepareRemoveCard(Map<String, String> params, ZPWRemoveMapCardParams pCard) {
-        putBase(params);
-        params.put(ConstantParams.USER_ID, pCard.userID);
-        params.put(ConstantParams.ACCESS_TOKEN, pCard.accessToken);
-        params.put(ConstantParams.CARD_NAME, pCard.mapCard.cardname);
-        params.put(ConstantParams.FIRST6_CARDNO, pCard.mapCard.first6cardno);
-        params.put(ConstantParams.LAST4_CARDNO, pCard.mapCard.last4cardno);
-        params.put(ConstantParams.BANK_CODE, TextUtils.isEmpty(pCard.mapCard.bankcode) ? "" : pCard.mapCard.bankcode);
-    }
-
 
     public static boolean prepareSDKReport(Map<String, String> params, String pUserId, String pAccessToken, String pTranID, String pBankCode, int pExInfo, String pException) {
         try {
