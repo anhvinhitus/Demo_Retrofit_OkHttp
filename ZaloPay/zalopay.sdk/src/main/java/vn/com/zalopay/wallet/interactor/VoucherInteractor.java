@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.interactor;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
@@ -22,7 +23,7 @@ public class VoucherInteractor implements VoucherStore.Interactor {
     static final int VOUCHER_PROCESSING_CODE = 5;
     static final int VOUCHER_STATUS_VALID_CODE = 4;
     VoucherStore.VoucherService mVoucherService;
-    int mRetryCount;
+    int mRetryCount = 0;
     long mIntervalRetry = Constants.VOUCHER_STATUS_DELAY_RETRY;
 
     public VoucherInteractor(VoucherStore.VoucherService voucherService) {
@@ -49,14 +50,14 @@ public class VoucherInteractor implements VoucherStore.Interactor {
         if (mRetryCount >= Constants.VOUCHER_STATUS_MAX_RETRY) {
             return true;
         }
-        return pResponse.returncode == VOUCHER_STATUS_VALID_CODE;
+        return pResponse.voucherstatus == VOUCHER_STATUS_VALID_CODE;
     }
 
     Observable<VoucherInfo> mapResultGetVoucherStatus(VoucherStatusResponse statusResponse, VoucherInfo voucherInfo) {
         if (statusResponse == null) {
-            return Observable.error(new RequestException(RequestException.NULL));
+            return Observable.error(new NetworkConnectionException());
         }
-        if (statusResponse.returncode == 4) {
+        if (statusResponse.voucherstatus == VOUCHER_STATUS_VALID_CODE) {
             return Observable.just(voucherInfo);
         } else {
             return Observable.error(new RequestException(-1, statusResponse.returnmessage));
@@ -64,8 +65,8 @@ public class VoucherInteractor implements VoucherStore.Interactor {
     }
 
     Observable<VoucherInfo> mapResultUseVoucher(String userId, String accessToken, UseVoucherResponse useVoucherResponse) {
-        if (useVoucherResponse == null || useVoucherResponse.data == null) {
-            return Observable.error(new RequestException(RequestException.NULL));
+        if (useVoucherResponse == null) {
+            return Observable.error(new NetworkConnectionException());
         }
         int returnCode = useVoucherResponse.returncode;
         if (isVoucherValid(returnCode)) {
@@ -104,7 +105,6 @@ public class VoucherInteractor implements VoucherStore.Interactor {
 
     @Override
     public Observable<VoucherStatusResponse> getVoucherStatus(String userID, String accessToken, String voucherSig) {
-        mRetryCount = 0;
         return mVoucherService.getVoucherStatus(userID, accessToken, voucherSig)
                 .onErrorReturn(throwable -> null)
                 .doOnSubscribe(() -> mRetryCount++)

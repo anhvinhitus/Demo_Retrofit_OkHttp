@@ -137,6 +137,6 @@ public class Constants {
 
     public static long RESULT_TYPE2_APPID = 12;
 
-    public static final String URL_USE_VOUCHER = "promotion/usevoucher";
-    public static final String URL_GET_VOUCHER_STATUS = "promotion/getvoucherstatus";
+    public static final String URL_USE_VOUCHER = "usevoucher";
+    public static final String URL_GET_VOUCHER_STATUS = "getvoucherstatus";
 }
