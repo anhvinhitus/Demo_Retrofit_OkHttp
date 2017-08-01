@@ -46,7 +46,7 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
                 }
 
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception NavigateToNext");
             }
         }
 
@@ -70,7 +70,7 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
                 }
 
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception canNavigateToPrevious");
             }
         }
         return true;
@@ -121,7 +121,6 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         if (cardFragments != null && pPos >= 0 && pPos < cardFragments.size()) {
             return cardFragments.get(pPos);
         }
-
         throw new Exception();
     }
 

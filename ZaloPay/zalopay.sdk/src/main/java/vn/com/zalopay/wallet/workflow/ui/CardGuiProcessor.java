@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -604,7 +605,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception moveCursorToLastPositionOnText");
         }
     }
 
@@ -729,6 +730,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         } else {
             getView().visibleWebView(false);
+            removeKeyboardEventForBidv();
             getView().visibleBIDVAccountRegisterBtn(false);
             getView().visibleInputCardView(true);
             getView().visibleSubmitButton(true);
@@ -739,7 +741,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (mRootView == null) {
             return;
         }
-        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
+    }
+
+    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
             try {
                 Rect r = new Rect();
                 mRootView.getWindowVisibleDisplayFrame(r);
@@ -757,7 +764,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             } catch (Exception e) {
                 Timber.w(e);
             }
-        });
+        }
+    };
+
+
+    private void removeKeyboardEventForBidv() {
+        if (mRootView == null) {
+            return;
+        }
+        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
     }
 
     private void showKeyBoardAndResizeButtonsIfNotSwitchChannel() throws Exception {
