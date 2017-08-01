@@ -118,6 +118,8 @@ public class Constants {
     public static final int LINK_THEN_PAY_RESULT_CODE = 881;
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
+    public static final int VOUCHER_STATUS_DELAY_RETRY = 1000;//ms
+    public static final int VOUCHER_STATUS_MAX_RETRY = 30;
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;
@@ -134,4 +136,7 @@ public class Constants {
     }
 
     public static long RESULT_TYPE2_APPID = 12;
+
+    public static final String URL_USE_VOUCHER = "promotion/usevoucher";
+    public static final String URL_GET_VOUCHER_STATUS = "promotion/getvoucherstatus";
 }

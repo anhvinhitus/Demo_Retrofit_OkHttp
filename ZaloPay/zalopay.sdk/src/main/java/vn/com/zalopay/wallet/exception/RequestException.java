@@ -8,6 +8,10 @@ public class RequestException extends SdkException {
     public static final int NULL = -2000;
     public int code;
 
+    public RequestException(int pCode) {
+        super(null);
+    }
+
     public RequestException(int pCode, String pMessage) {
         super(pMessage);
     }

@@ -14,11 +14,13 @@ import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.interactor.LinkSourceInteractor;
 import vn.com.zalopay.wallet.interactor.PlatformInfoInteractor;
+import vn.com.zalopay.wallet.interactor.VoucherInteractor;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.repository.bankaccount.BankAccountStore;
 import vn.com.zalopay.wallet.repository.cardmap.CardStore;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
+import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -60,5 +62,11 @@ public class InteractorModule {
         return new ChannelListInteractor(application,
                 platformInteractor, appInfoInteractor, bankInteractor,
                 eventTiming);
+    }
+
+    @Provides
+    @Singleton
+    VoucherStore.Interactor provideVoucherInteractor(VoucherStore.VoucherService voucherService) {
+        return new VoucherInteractor(voucherService);
     }
 }

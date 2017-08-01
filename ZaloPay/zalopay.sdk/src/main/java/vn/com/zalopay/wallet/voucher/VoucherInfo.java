@@ -1,5 +1,8 @@
 package vn.com.zalopay.wallet.voucher;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import vn.com.zalopay.utility.GsonUtils;
 
 /**
@@ -7,10 +10,16 @@ import vn.com.zalopay.utility.GsonUtils;
  */
 
 public class VoucherInfo {
+    @Expose
     public String vouchercode;
+
+    @SerializedName("campaignID")
     public int campaignid;
+    @SerializedName("discountAmount")
     public long discountamount;
+    @SerializedName("useVoucherTime")
     public long usevouchertime;
+    @SerializedName("voucherSig")
     public String vouchersig;
 
     @Override

@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.cache.MemoryCache;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.wallet.api.IDownloadService;
 import vn.com.zalopay.wallet.api.ITransService;
+import vn.com.zalopay.wallet.di.module.VoucherModule;
 import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.di.module.ApiServiceModule;
@@ -27,6 +28,7 @@ import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.repository.platforminfo.PlatformInfoStore;
+import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
 import vn.com.zalopay.wallet.ui.channellist.ResultPaymentPresenter;
@@ -40,6 +42,7 @@ import vn.com.zalopay.wallet.ui.channellist.ResultPaymentPresenter;
         CardRepositoryModule.class,
         BankAccountRepositoryModule.class,
         PlatformInfoRepositoryModule.class,
+        VoucherModule.class,
         InteractorModule.class})
 public interface ApplicationComponent {
 
@@ -68,6 +71,8 @@ public interface ApplicationComponent {
     ZPMonitorEventTiming monitorEventTiming();
 
     ChannelListInteractor channelListInteractor();
+
+    VoucherStore.Interactor voucherInteractor();
 
     SharedPreferencesManager sharePreferences();
 
