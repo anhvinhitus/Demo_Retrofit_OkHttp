@@ -50,10 +50,9 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
  */
 public class AndroidApplication extends Application {
 
+    private static AndroidApplication _instance;
     private ApplicationComponent appComponent;
     private UserComponent userComponent;
-
-    private static AndroidApplication _instance;
 
     public static AndroidApplication instance() {
         return _instance;
@@ -149,6 +148,7 @@ public class AndroidApplication extends Application {
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setBaseHostUrl(BuildConfig.HOST)
                 .setRetrofit(getAppComponent().retrofitApi())
+                .setVoucherRetrofit(getAppComponent().voucherRetrofitApi())
                 .build();
         SDKApplication.initialize(this, sdkConfig);
     }

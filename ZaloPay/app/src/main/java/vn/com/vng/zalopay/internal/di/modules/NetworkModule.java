@@ -166,6 +166,19 @@ public class NetworkModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @Named("voucherRetrofitApi")
+    Retrofit provideVoucherRetrofit(Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(callAdapter)
+                .baseUrl(BuildConfig.VOUCHER_HOST)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
     private static final TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
 
         /**

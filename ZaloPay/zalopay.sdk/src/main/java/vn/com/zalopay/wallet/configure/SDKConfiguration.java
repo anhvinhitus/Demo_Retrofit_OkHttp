@@ -4,9 +4,9 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 public class SDKConfiguration {
-    protected Builder mConfigBuilder;
+    private Builder mConfigBuilder;
 
-    public SDKConfiguration(Builder pConfigBuilder) {
+    SDKConfiguration(Builder pConfigBuilder) {
         this.mConfigBuilder = pConfigBuilder;
     }
 
@@ -26,6 +26,10 @@ public class SDKConfiguration {
         return mConfigBuilder.getRetrofit();
     }
 
+    public Retrofit getVoucherRetrofit(){
+        return mConfigBuilder.getVoucherRetrofit();
+    }
+
     public boolean isReleaseBuild() {
         return mConfigBuilder.isReleaseBuild();
     }
@@ -35,20 +39,24 @@ public class SDKConfiguration {
     }
 
     public static class Builder {
-        protected boolean mReleaseBuild;
-        protected String mBaseHostUrl;
-        /***
-         * this http client for get platform info and download resource
-         * connect timeout : read timeout = 30ms : 30ms.
+        /*
+         * retrofit for calling promotion apis
          */
-        protected OkHttpClient mHttpClientTimeoutLonger;
-        /***
+        Retrofit mVoucherRetrofit;
+        boolean mReleaseBuild;
+        String mBaseHostUrl;
+        /*
          * retrofit initialized from app for payment
          * connector
          */
-        protected Retrofit mRetrofit;
+        Retrofit mRetrofit;
+        /*
+         * this http client for get platform info and download resource
+         * connect timeout : read timeout = 30ms : 30ms.
+         */
+        OkHttpClient mHttpClientTimeoutLonger;
 
-        public OkHttpClient getHttpClientTimeoutLonger() {
+        OkHttpClient getHttpClientTimeoutLonger() {
             return mHttpClientTimeoutLonger;
         }
 
@@ -66,7 +74,16 @@ public class SDKConfiguration {
             return this;
         }
 
-        public boolean isReleaseBuild() {
+        Retrofit getVoucherRetrofit() {
+            return mVoucherRetrofit;
+        }
+
+        public Builder setVoucherRetrofit(Retrofit pRetrofit) {
+            mVoucherRetrofit = pRetrofit;
+            return this;
+        }
+
+        boolean isReleaseBuild() {
             return mReleaseBuild;
         }
 
@@ -75,7 +92,7 @@ public class SDKConfiguration {
             return this;
         }
 
-        public String getBaseHostUrl() {
+        String getBaseHostUrl() {
             return mBaseHostUrl;
         }
 

@@ -107,6 +107,9 @@ public interface ApplicationComponent {
     @Named("retrofitApi")
     Retrofit retrofitApi();
 
+    @Named("voucherRetrofitApi")
+    Retrofit voucherRetrofitApi();
+
     /*INJECT*/
 
     void inject(SplashScreenFragment f);

@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.di.module;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -10,12 +9,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.di.qualifier.Api;
 import vn.com.zalopay.wallet.di.qualifier.Download;
+import vn.com.zalopay.wallet.di.qualifier.Voucher;
 
 @Singleton
 @Module
 public class ConfigurationModule {
 
-    protected SDKConfiguration mConfig;
+    private SDKConfiguration mConfig;
 
     public ConfigurationModule(SDKConfiguration pConfig) {
         this.mConfig = pConfig;
@@ -23,8 +23,7 @@ public class ConfigurationModule {
 
     @Provides
     @Singleton
-    public SDKConfiguration provideSDKConfiguration()
-    {
+    public SDKConfiguration provideSDKConfiguration() {
         return mConfig;
     }
 
@@ -37,12 +36,18 @@ public class ConfigurationModule {
 
     @Provides
     @Singleton
+    @Voucher
+    public Retrofit provideVoucherRetrofit() {
+        return this.mConfig.getVoucherRetrofit();
+    }
+
+    @Provides
+    @Singleton
     @Download
     public Retrofit provideRetrofitDownloadResource() {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(mConfig.getBaseHostUrl())
                 .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.client(mConfig.getHttpClientTimeoutLonger()).build();
-        return retrofit;
+        return builder.client(mConfig.getHttpClientTimeoutLonger()).build();
     }
 }
