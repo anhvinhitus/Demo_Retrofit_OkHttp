@@ -33,6 +33,7 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -51,6 +52,7 @@ import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
@@ -59,6 +61,7 @@ import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
+import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.PaymentPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -76,6 +79,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     protected PaymentInfoHelper mPaymentInfoHelper;
     @Inject
     EventBus mBus;
+    @Inject
+    VoucherStore.Interactor mVoucherInteractor;
     @Inject
     Context mContext;
 
@@ -409,6 +414,23 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Log.e(this, e);
         }
+        //useVoucher("HAPPY48");
+    }
+
+    private void useVoucher(String voucherCode) {
+        if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
+            return;
+        }
+        String userId = mPaymentInfoHelper.getUserId();
+        String accessToken = mPaymentInfoHelper.getUserInfo().accesstoken;
+        String appTrans = mPaymentInfoHelper.getAppTransId();
+        long appId = mPaymentInfoHelper.getAppId();
+        long amount = mPaymentInfoHelper.getAmount();
+        long time = System.currentTimeMillis();
+        mVoucherInteractor.validateVoucher(userId, accessToken, appTrans, appId, amount, time, voucherCode)
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(useVoucherResponse -> Timber.d("response use voucher %s", GsonUtils.toJsonString(useVoucherResponse)),
+                        throwable -> Timber.w(throwable, "Exception use voucher %s", voucherCode));
     }
 
     public void onPaymentReady() {
@@ -422,6 +444,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             startSubscribePaymentReadyMessage();
             initAdapter();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
+            if (PaymentPermission.allowVoucher()) {
+                getViewOrThrow().renderVoucher();
+            }
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);
             getViewOrThrow().renderOrderInfo(mPaymentInfoHelper.getOrder());
             renderItemDetail();

@@ -18,6 +18,8 @@ public interface ChannelListContract extends IContract {
 
         void updateDefaultTitle();
 
+        void renderVoucher();
+
         void renderAppInfo(String appName);
 
         void renderOrderInfo(AbstractOrder order);

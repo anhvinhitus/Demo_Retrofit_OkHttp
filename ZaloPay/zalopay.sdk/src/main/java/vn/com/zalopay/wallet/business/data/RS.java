@@ -48,6 +48,7 @@ public class RS {
         public static final String allow_link_cc = "allow_link_cc";
         public static final String allow_luhn_cc = "allow_luhn_cc";
         public static final String allow_luhn_atm = "allow_luhn_atm";
+        public static final String allow_voucher = "allow_voucher";
 
         public static final String sdk_website_error_ssl_mess = "sdk_website_error_ssl_mess";
         public static final String sdk_website_errorcode_not_resolved_domain = "sdk_website_errorcode_not_resolved_domain";

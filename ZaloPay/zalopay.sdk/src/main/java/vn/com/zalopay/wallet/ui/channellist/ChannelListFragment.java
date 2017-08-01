@@ -75,6 +75,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private Button confirm_button;
     private View view_top_linearlayout;
 
+    private View voucher_relativelayout;
+    private View voucher_txt;
+
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
     }
@@ -130,6 +133,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         confirm_button = (Button) view.findViewById(R.id.confirm_button);
         confirm_button.setOnClickListener(mConfirmClick);
+
+        voucher_relativelayout = view.findViewById(R.id.voucher_relativelayout);
+        voucher_txt = view.findViewById(R.id.voucher_txt);
 
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
         setupRecyclerView();
@@ -235,6 +241,15 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             }
         }
         item_detail_linearlayout.setVisibility(hasView ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void renderVoucher() {
+        voucher_relativelayout.setVisibility(View.VISIBLE);
+        voucher_txt.setOnClickListener(view -> showVoucherCodeDialog());
+    }
+
+    private void showVoucherCodeDialog() {
     }
 
     @Override

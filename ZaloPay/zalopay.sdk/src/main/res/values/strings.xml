@@ -18,6 +18,7 @@
     <string name="allow_link_cc">1</string>
     <string name="allow_luhn_cc">1</string>
     <string name="allow_luhn_atm">1</string>
+    <string name="allow_voucher">1</string>
 
     <string name="sdk_order_processing_warning_mess">Đơn hàng đang xử lý. Vui lòng chờ trong giây lát!</string>
     <string name="sdk_trans_network_onfline_warning_mess">Mạng đã tắt, vui lòng kiểm tra trạng thái giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
@@ -371,6 +372,7 @@
     <string name="sdk_order_fee_free">Miễn phí</string>
     <string name="sdk_trans_time_title">Thời gian</string>
     <string name="sdk_trans_id_title">Mã giao dịch</string>
+    <string name="sdk_voucher_title">Mã khuyến mãi</string>
 
     <string name="sdk_withdraw_service">Rút tiền</string>
     <string name="sdk_tranfer_money_service">Chuyển tiền</string>
@@ -396,5 +398,7 @@
     <string name="sdk_hyperlink_charge_more">Nạp thêm</string>
 
     <string name="sdk_bidv_register_button_text">Đăng Ký BIDV Online</string>
+
+    <string name="sdk_voucher_input_text">Nhập</string>
 
 </resources>
