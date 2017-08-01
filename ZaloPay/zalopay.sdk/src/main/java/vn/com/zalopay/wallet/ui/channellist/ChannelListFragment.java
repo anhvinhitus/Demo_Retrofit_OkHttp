@@ -59,7 +59,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         if (!delayClick) {
             delayClick = true;
             new Handler().postDelayed(() -> delayClick = false, 1000);
-            mPresenter.startPayment();
+            mPresenter.startPayment(false);
         }
     };
     private RecyclerView channel_list_recycler;

@@ -73,6 +73,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -87,14 +95,6 @@ public class PayProxy extends SingletonBase {
             showResultScreen();
         }
         Timber.d(throwable, "trans status on error");
-    };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -440,9 +440,15 @@ public class PayProxy extends SingletonBase {
                 .subscribe(appTransStatusSubscriber, appTransStatusException);
     }
 
-    /***
-     * start payment channel
-     */
+    public void startDefault() throws Exception {
+        Log.d(this, "start default payment channel", mChannel);
+        mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
+        if (!TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
+            return;
+        }
+        start();
+    }
+
     public void start() throws Exception {
         Log.d(this, "start payment channel", mChannel);
         //map card channel clicked
@@ -456,7 +462,6 @@ public class PayProxy extends SingletonBase {
             mPaymentInfoHelper.setMapBank(null);
         }
         mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
-
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             startFlow();
         } else {

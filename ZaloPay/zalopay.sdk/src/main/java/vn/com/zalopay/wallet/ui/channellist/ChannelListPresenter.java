@@ -266,7 +266,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         //delay waiting for destroy popup
-        new Handler().postDelayed(this::startPayment, 300);
+        new Handler().postDelayed(() -> startPayment(false),300);
     }
 
     @Override
@@ -388,9 +388,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         trackingPaymentChannel(channel.pmcid);
     }
 
-    public void startPayment() {
+    public void startPayment(boolean defaultPayment) {
         try {
-            if (mSelectChannel != null) {
+            if(mSelectChannel == null){
+                return;
+            }
+            if (defaultPayment) {
+                mPayProxy.setChannel(mSelectChannel).startDefault();
+            }else{
                 mPayProxy.setChannel(mSelectChannel).start();
             }
             trackEventConfirm();
@@ -706,7 +711,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         boolean hasLastPaymentChannel = selectLastPaymentChannel();
         if (hasLastPaymentChannel) {
             if (shouldAutoPayment()) {
-                startPayment();
+                startPayment(true);
             }
             return;
         }
@@ -731,7 +736,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             selectAndScrollToChannel(selectChannel, pos);
         }
         if (shouldAutoPayment()) {
-            startPayment();
+            startPayment(true);
         }
         if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
