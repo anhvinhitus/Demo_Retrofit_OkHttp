@@ -1,12 +1,2 @@
-Zalo Pay (Production v2.16.0 - build 384) - Released on 2017-08-01 12:55
-+ [SDK] Refactor commit#3ebd0d9bd16008997fd09427b9ccd64c76512b2b by vo van chuc (#2871fd2)
-+ [SDK] #ZPF-409 : [Android-REAL-2.16-381] Thanh toán: thanh toán số lớn bỏ qua luôn bước chọn nút Xác nhận thanh toán by vo van chuc (#3ebd0d9)
-+ [Search] Update click app Nạp T by lytm (#e32eb91)
-+ [IconFont] update by lytm (#95ee0a0)
-+ [Profile] Update to level 3: update local uri value by datnt10 (#cd007f5)
-+ [App] Fix UserCompnent NPE in pager screen by hieuvm (#f08fc50)
-+ [Profile] Update to level 3: clean code by datnt10 (#ed57ad3)
-+ [Profile] Update to level 3: refactor code by datnt10 (#489d9e0)
-+ [App] JIRA#380 : Vấn đề login session by hieuvm (#3398dea)
-+ [SDK] Cleanup by vo van chuc (#d353ac2)
-+ [SDK] Remove specific sticky event by vo van chuc (#eaa9d87)
+Zalo Pay (Staging v2.16.0 - build 385) - Released on 2017-08-01 12:59
+
