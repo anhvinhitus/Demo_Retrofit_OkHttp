@@ -205,6 +205,8 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                 mNavigator.startTransferMoneyActivity((Activity) mView.getContext());
             } else if (app.appId == PaymentAppConfig.Constants.RECEIVE_MONEY) {
                 mNavigator.startReceiveMoneyActivity(mView.getContext());
+            } else if (app.appId == PaymentAppConfig.Constants.DEPOSIT) {
+                mNavigator.startDepositActivity(mView.getContext());
             }
         } else if (app.appType == PaymentAppTypeEnum.INTERNAL_REACT_NATIVE.getValue()) {
             handleLaunchInternalReactApp((int) app.insideAppId, app.moduleName);
