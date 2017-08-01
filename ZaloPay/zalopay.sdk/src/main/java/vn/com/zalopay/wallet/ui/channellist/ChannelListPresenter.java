@@ -266,7 +266,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         //delay waiting for destroy popup
-        new Handler().postDelayed(this::startPayment,300);
+        new Handler().postDelayed(this::startPayment, 300);
     }
 
     @Override
@@ -390,7 +390,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startPayment() {
         try {
-            if(mSelectChannel == null){
+            if (mSelectChannel == null) {
                 return;
             }
             mPayProxy.setChannel(mSelectChannel).start();
@@ -402,7 +402,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startDefaultPayment() {
         try {
-            if(mSelectChannel == null){
+            if (mSelectChannel == null) {
                 return;
             }
             mPayProxy.setChannel(mSelectChannel).startDefault();
@@ -435,6 +435,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     public void trackEventLaunch() {
+        if (mPaymentInfoHelper == null) {
+            return;
+        }
         if (mPaymentInfoHelper.isTopupTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_LAUNCH);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
@@ -447,6 +450,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     public void trackEventBack() {
+        if (mPaymentInfoHelper == null) {
+            return;
+        }
         if (mPaymentInfoHelper.isTopupTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CANCEL);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
@@ -458,6 +464,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     public void trackEventConfirm() {
+        if (mPaymentInfoHelper == null) {
+            return;
+        }
         if (mPaymentInfoHelper.isTopupTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CONFIRM);
         } else if (mPaymentInfoHelper.isWithDrawTrans()) {
@@ -751,14 +760,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    private void showSnackBarOnError() throws Exception{
-        if(mPaymentInfoHelper == null){
+    private void showSnackBarOnError() throws Exception {
+        if (mPaymentInfoHelper == null) {
             return;
         }
-        if(mPaymentInfoHelper.getBalance() > mPaymentInfoHelper.getAmountTotal()){
+        if (mPaymentInfoHelper.getBalance() > mPaymentInfoHelper.getAmountTotal()) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
-        }else{
+        } else {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel_balance_error),
                     mContext.getResources().getString(R.string.sdk_hyperlink_charge_more),
                     Snackbar.LENGTH_INDEFINITE, () -> {
