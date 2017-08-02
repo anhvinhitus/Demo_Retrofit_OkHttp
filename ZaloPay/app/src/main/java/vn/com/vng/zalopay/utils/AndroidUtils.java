@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -55,7 +54,6 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.util.AgentUtil;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -91,24 +89,30 @@ import vn.com.zalopay.utility.DimensionUtil;
  */
 public class AndroidUtils {
     public static final String TAG = "AndroidUtils";
-
-    private static boolean waitingForSms = false;
+    public static final int FLAG_TAG_BR = 1;
+    public static final int FLAG_TAG_BOLD = 2;
+    public static final int FLAG_TAG_COLOR = 4;
+    public static final int FLAG_TAG_ALL = FLAG_TAG_BR | FLAG_TAG_BOLD | FLAG_TAG_COLOR;
     private static final Object smsLock = new Object();
-
+    private static final String PREF_NAME = "PREF_UTILS";
+    private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
+    private final static Object _lock = new Object();
+    private static final String STR_EMPTY = "";
+    private static final int INT_EMPTY = 0;
+    private static final float FLOAT_EMPTY = 0;
     public static Integer statusBarHeight;
     public static float density = 1;
     public static Point displaySize = new Point();
     public static DisplayMetrics displayMetrics = new DisplayMetrics();
     public static int leftBaseline;
     public static boolean usingHardwareInput;
+    public static volatile Handler applicationHandler;
+    private static boolean waitingForSms = false;
     private static Boolean isTablet = null;
     private static int adjustOwnerClassGuid = 0;
+    private static String mDeviceId;
+    private static String sUserAgent = null;
 
-    public static volatile Handler applicationHandler;
-
-    private AndroidUtils() {
-        // private constructor for utils class
-    }
     static {
         density = AndroidApplication.instance().getResources().getDisplayMetrics().density;
         leftBaseline = isTablet(AndroidApplication.instance()) ? 80 : 72;
@@ -116,97 +120,17 @@ public class AndroidUtils {
         applicationHandler = new Handler(AndroidApplication.instance().getMainLooper());
     }
 
+    private AndroidUtils() {
+        // private constructor for utils class
+    }
+
     public static String getScreenType() {
-        return DimensionUtil.getScreenType(density);
-    }
-
-    public static String getCarrierName() {
-        TelephonyManager manager = (TelephonyManager) AndroidApplication.instance().
-                getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        return manager.getNetworkOperatorName();
-    }
-
-    public static String getNetworkClass() {
-        ConnectivityManager cm = (ConnectivityManager) AndroidApplication.instance()
-                .getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        if (info == null || !info.isConnected())
-            return "Unknown"; //not connected
-        if (info.getType() == ConnectivityManager.TYPE_WIFI)
-            return "WIFI";
-        if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
-            int networkType = info.getSubtype();
-            switch (networkType) {
-                case TelephonyManager.NETWORK_TYPE_GPRS:
-                    return "GPRS";
-                case TelephonyManager.NETWORK_TYPE_EDGE:
-                    return "EDGE";
-                case TelephonyManager.NETWORK_TYPE_CDMA:
-                    return "CDMA";
-                case TelephonyManager.NETWORK_TYPE_1xRTT:
-                    return "1xRTT";
-                case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
-                    return "2G";
-                case TelephonyManager.NETWORK_TYPE_UMTS:
-                    return "UMTS";
-                case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                    return "EVDO_0";
-                case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                    return "EVDO_A";
-                case TelephonyManager.NETWORK_TYPE_HSDPA:
-                    return "HSDPA";
-                case TelephonyManager.NETWORK_TYPE_HSUPA:
-                    return "HSUPA";
-                case TelephonyManager.NETWORK_TYPE_HSPA:
-                    return "HSPA";
-                case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
-                    return "EVDO_B";
-                case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
-                    return "EHRPD";
-                case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
-                    return "3G";
-                case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
-                    return "4G";
-                default:
-                    return "Unknown";
-            }
+        try {
+            return DimensionUtil.getScreenType(density);
+        } catch (Exception e) {
+            Timber.e(e, "getScreenType() exception [%s]", e.getMessage());
         }
-        return "Unknown";
-    }
-
-    public static String getAndroidVersion() {
-        String release = Build.VERSION.RELEASE;
-        int sdkVersion = Build.VERSION.SDK_INT;
-        return "Android " + sdkVersion + " (" + release + ")";
-    }
-
-    public static String getDeviceManufacturer() {
-        String model = android.os.Build.MODEL;
-        String manufacturer = android.os.Build.MANUFACTURER;
-        return (manufacturer + "/" + model);
-    }
-
-    private static final String PREF_NAME = "PREF_UTILS";
-    private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
-
-    private static String mDeviceId;
-
-    public static String getDeviceId() {
-        if (mDeviceId == null) {
-            mDeviceId = getUUID();
-        }
-        return mDeviceId;
-    }
-
-    public static String getUUID() {
-        SharedPreferences sharedPrefs = AndroidApplication.instance().getSharedPreferences(
-                PREF_NAME, Context.MODE_PRIVATE);
-        String uniqueID = sharedPrefs.getString(PREF_UNIQUE_ID, null);
-        if (TextUtils.isEmpty(uniqueID)) {
-            uniqueID = UUID.randomUUID().toString();
-            sharedPrefs.edit().putString(PREF_UNIQUE_ID, uniqueID).apply();
-        }
-        return uniqueID;
+        return STR_EMPTY;
     }
 
   /*  public static String getDeviceId() {
@@ -224,31 +148,154 @@ public class AndroidUtils {
         return deviceId;
     }*/
 
+    public static String getCarrierName() {
+        try {
+            TelephonyManager manager = (TelephonyManager) AndroidApplication.instance().
+                    getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+            return manager.getNetworkOperatorName();
+        } catch (Exception e) {
+            Timber.e(e, "getCarrierName() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
+    public static String getNetworkClass() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) AndroidApplication.instance()
+                    .getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            if (info == null || !info.isConnected())
+                return "Unknown"; //not connected
+            if (info.getType() == ConnectivityManager.TYPE_WIFI)
+                return "WIFI";
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+                int networkType = info.getSubtype();
+                switch (networkType) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                        return "GPRS";
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                        return "EDGE";
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                        return "CDMA";
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                        return "1xRTT";
+                    case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
+                        return "2G";
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                        return "UMTS";
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                        return "EVDO_0";
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                        return "EVDO_A";
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                        return "HSDPA";
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                        return "HSUPA";
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                        return "HSPA";
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
+                        return "EVDO_B";
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
+                        return "EHRPD";
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
+                        return "3G";
+                    case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
+                        return "4G";
+                    default:
+                        return "Unknown";
+                }
+            }
+            return "Unknown";
+        } catch (Exception e) {
+            Timber.e(e, "getNetworkClass() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
+    public static String getAndroidVersion() {
+        try {
+            String release = Build.VERSION.RELEASE;
+            int sdkVersion = Build.VERSION.SDK_INT;
+            return "Android " + sdkVersion + " (" + release + ")";
+        } catch (Exception e) {
+            Timber.e(e, "getAndroidVersion() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
+    public static String getDeviceManufacturer() {
+        try {
+            String model = android.os.Build.MODEL;
+            String manufacturer = android.os.Build.MANUFACTURER;
+            return (manufacturer + "/" + model);
+        } catch (Exception e) {
+            Timber.e(e, "getDeviceManufacturer() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
+    public static String getDeviceId() {
+        try {
+            if (mDeviceId == null) {
+                mDeviceId = getUUID();
+            }
+            return mDeviceId;
+        } catch (Exception e) {
+            Timber.e(e, "getDeviceId() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
+    public static String getUUID() {
+        try {
+            SharedPreferences sharedPrefs = AndroidApplication.instance().getSharedPreferences(
+                    PREF_NAME, Context.MODE_PRIVATE);
+            String uniqueID = sharedPrefs.getString(PREF_UNIQUE_ID, null);
+            if (TextUtils.isEmpty(uniqueID)) {
+                uniqueID = UUID.randomUUID().toString();
+                sharedPrefs.edit().putString(PREF_UNIQUE_ID, uniqueID).apply();
+            }
+            return uniqueID;
+        } catch (Exception e) {
+            Timber.e(e, "getUUID() exception [%s]", e.getMessage());
+        }
+        return STR_EMPTY;
+    }
+
     public static void hideKeyboarInputMethod(Activity activity) {
-        if (activity == null)
-            return;
-        // Check if no view has focus:
-        View view = activity.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        try {
+            if (activity == null)
+                return;
+            // Check if no view has focus:
+            View view = activity.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        } catch (Exception e) {
+            Timber.e(e, "hideKeyboarInputMethod exception [%s]", e.getMessage());
         }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static int getScreenWidth(Activity context) {
-        int measuredWidth;
-        WindowManager w = context.getWindowManager();
+        try {
+            int measuredWidth;
+            WindowManager w = context.getWindowManager();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Point size = new Point();
-            w.getDefaultDisplay().getSize(size);
-            measuredWidth = size.x;
-        } else {
-            Display d = w.getDefaultDisplay();
-            measuredWidth = d.getWidth();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                Point size = new Point();
+                w.getDefaultDisplay().getSize(size);
+                measuredWidth = size.x;
+            } else {
+                Display d = w.getDefaultDisplay();
+                measuredWidth = d.getWidth();
+            }
+            return measuredWidth;
+        } catch (Exception e) {
+            Timber.e(e, "getScreenWidth exception [%s]", e.getMessage());
         }
-        return measuredWidth;
+        return INT_EMPTY;
     }
 
     /**
@@ -257,123 +304,143 @@ public class AndroidUtils {
      * @return color string (format #f0f0f0)
      */
     public static String getColorFromResource(@ColorRes int colorResource) {
-        if (colorResource == 0) {
-            return null;
-        }
         try {
+            if (colorResource == 0)
+                return null;
             return "#" + Integer.toHexString(ContextCompat.getColor(AndroidApplication.instance(),
                     colorResource));
-        } catch (Resources.NotFoundException e) {
-            return null;
+        } catch (Exception e) {
+            Timber.e(e, "getColorFromResource exception [%s]", e.getMessage());
         }
+        return STR_EMPTY;
     }
 
     public static float dpToPixels(Context context, int dp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        try {
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        } catch (Exception e) {
+            Timber.e(e, "dpToPixels exception [%s]", e.getMessage());
+        }
+        return FLOAT_EMPTY;
     }
 
     public static int pixelsToDp(Context context, float pixels) {
-        float density = context.getResources().getDisplayMetrics().densityDpi;
-        return Math.round(pixels / (density / 160f));
+        try {
+            float density = context.getResources().getDisplayMetrics().densityDpi;
+            return Math.round(pixels / (density / 160f));
+        } catch (Exception e) {
+            Timber.e(e, "pixelsToDp exception [%s]", e.getMessage());
+        }
+        return INT_EMPTY;
     }
 
     public static void sendMailTo(Context context, String extraSubject, String[] to, String title) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setData(Uri.parse("mailto:"));
-        intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_SUBJECT, extraSubject);
-        intent.putExtra(Intent.EXTRA_EMAIL, to);
-        Intent mailer = Intent.createChooser(intent, title);
-        StringBuilder strContent = new StringBuilder();
-        strContent.append("To:");
-        strContent.append(Arrays.toString(to));
-        strContent.append(", title:");
-        strContent.append(title);
-        strContent.append(", extraSubject:");
-        strContent.append(extraSubject);
-//        ModuleCommon.instance().getGoogleAnalytics().sendGoogleAnalyticsHitEvents(AndroidUtils.class.getSimpleName(), "Email", "Send", strContent.toString());
         try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setData(Uri.parse("mailto:"));
+            intent.setType("message/rfc822");
+            intent.putExtra(Intent.EXTRA_SUBJECT, extraSubject);
+            intent.putExtra(Intent.EXTRA_EMAIL, to);
+            Intent mailer = Intent.createChooser(intent, title);
+            StringBuilder strContent = new StringBuilder();
+            strContent.append("To:");
+            strContent.append(Arrays.toString(to));
+            strContent.append(", title:");
+            strContent.append(title);
+            strContent.append(", extraSubject:");
+            strContent.append(extraSubject);
+//        ModuleCommon.instance().getGoogleAnalytics().sendGoogleAnalyticsHitEvents(AndroidUtils.class.getSimpleName(), "Email", "Send", strContent.toString());
             context.startActivity(mailer);
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            Timber.e(e, "sendMailTo exception [%s]", e.getMessage());
         }
     }
 
     public static String getDensityType(Context context) {
-        int densityDpi = context.getResources().getDisplayMetrics().densityDpi;
+        try {
+            int densityDpi = context.getResources().getDisplayMetrics().densityDpi;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                if (densityDpi == DisplayMetrics.DENSITY_XHIGH)
+                    return "xhdpi";
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            if (densityDpi == DisplayMetrics.DENSITY_XHIGH) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                if (densityDpi == DisplayMetrics.DENSITY_XXHIGH)
+                    return "xxhdpi";
+            }
+
+            if (densityDpi == DisplayMetrics.DENSITY_HIGH) {
+                return "hdpi";
+            } else if (densityDpi == DisplayMetrics.DENSITY_MEDIUM) {
+                return "mdpi";
+            } else if (densityDpi == DisplayMetrics.DENSITY_LOW) {
+                return "ldpi";
+            } else {
                 return "xhdpi";
             }
+        } catch (Exception e) {
+            Timber.e(e, "getDensityType exception [%s]", e.getMessage());
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            if (densityDpi == DisplayMetrics.DENSITY_XXHIGH) {
-                return "xxhdpi";
-            }
-        }
-        if (densityDpi == DisplayMetrics.DENSITY_HIGH) {
-            return "hdpi";
-        } else if (densityDpi == DisplayMetrics.DENSITY_MEDIUM) {
-            return "mdpi";
-        } else if (densityDpi == DisplayMetrics.DENSITY_LOW) {
-            return "ldpi";
-        } else {
-            return "xhdpi";
-        }
+        return STR_EMPTY;
     }
 
-    public static boolean checkInstalledOrNot(Activity activity,
-                                              String packageName) {
-        // DebugUtils.d("CommonUtils:", "checkInstalledOrNot, mactivity: "+ activity);
-        if (activity == null)
-            return false;
-        PackageManager pm = activity.getPackageManager();
-        boolean app_installed;
+    public static boolean checkInstalledOrNot(Activity activity, String packageName) {
         try {
+            if (activity == null)
+                return false;
+
+            PackageManager pm = activity.getPackageManager();
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            app_installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            // DebugUtils.d("CommonUtils:", "checkInstalledOrNot, chua cai roai ");
-            app_installed = false;
+            return true;
+        } catch (Exception e) {
+            Timber.e(e, "checkInstalledOrNot exception [%s]", e.getMessage());
         }
-        return app_installed;
+        return false;
     }
 
     public static void openAppInfo(Context context, String packageName) {
-        String SCHEME = "package";
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts(SCHEME, packageName, null);
-        intent.setData(uri);
-        context.startActivity(intent);
+        try {
+            String SCHEME = "package";
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts(SCHEME, packageName, null);
+            intent.setData(uri);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Timber.e(e, "openAppInfo exception [%s]", e.getMessage());
+        }
     }
 
     public static void openBrowser(Context context, String url) {
-        if (context == null) {
-            return;
-        }
+        try {
+            if (context == null) {
+                return;
+            }
 
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
+            if (TextUtils.isEmpty(url)) {
+                return;
+            }
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        } else {
-            ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent);
+            } else {
+                ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
+            }
+        } catch (Exception e) {
+            Timber.e(e, "openBrowser exception [%s]", e.getMessage());
         }
     }
 
     public static void openPlayStore(Context context, String packageName) {
-        Timber.tag("AndroidUtils").d("openPlayStore============packageName:" + packageName);
-        if (context == null)
-            return;
         try {
-            String appName = "context.getResources().getString(R.string.miss_browser)";
+            Timber.tag("AndroidUtils").d("openPlayStore============packageName:" + packageName);
+            if (context == null)
+                return;
 
+            String appName = "context.getResources().getString(R.string.miss_browser)";
             Uri uriUrl = Uri
                     .parse("market://details?id="
                             + packageName
@@ -388,10 +455,21 @@ public class AndroidUtils {
             } else {
                 ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
             }
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            Timber.e(e, "openPlayStore exception [%s]", e.getMessage());
             ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
         }
     }
+/*
+
+    public static boolean isKeyboardShowed(View view) {
+        if (view == null) {
+            return false;
+        }
+        InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        return inputManager.isActive(view);
+    }
+*/
 
     public static boolean isMainThread() {
         boolean ret = false;
@@ -402,21 +480,27 @@ public class AndroidUtils {
         return ret;
     }
 
-
     public static void requestAdjustResize(Activity activity, int classGuid) {
-        if (activity == null || isTablet(activity)) {
-            return;
+        try {
+            if (activity == null || isTablet(activity)) {
+                return;
+            }
+            activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            adjustOwnerClassGuid = classGuid;
+        } catch (Exception e) {
+            Timber.e(e, "requestAdjustResize exception [%s]", e.getMessage());
         }
-        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        adjustOwnerClassGuid = classGuid;
     }
 
     public static void removeAdjustResize(Activity activity, int classGuid) {
-        if (activity == null || isTablet(activity)) {
-            return;
-        }
-        if (adjustOwnerClassGuid == classGuid) {
-            activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        try {
+            if (activity == null || isTablet(activity))
+                return;
+
+            if (adjustOwnerClassGuid == classGuid)
+                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        } catch (Exception e) {
+            Timber.e(e, "removeAdjustResize exception [%s]", e.getMessage());
         }
     }
 
@@ -435,96 +519,115 @@ public class AndroidUtils {
     }
 
     public static void showKeyboard(View view) {
-        if (view == null) {
-            return;
+        try {
+            if (view == null) {
+                return;
+            }
+            InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        } catch (Exception e) {
+            Timber.e(e, "showKeyboard exception [%s]", e.getMessage());
         }
-        InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
-/*
-
-    public static boolean isKeyboardShowed(View view) {
-        if (view == null) {
-            return false;
-        }
-        InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        return inputManager.isActive(view);
-    }
-*/
 
     public static boolean isKeyboardShowed(View rootView) {
+        try {
             /* 128dp = 32dp * 4, minimum button height 32dp and generic 4 rows soft keyboard */
-        final int SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD = 128;
+            final int SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD = 128;
 
-        Rect r = new Rect();
-        rootView.getWindowVisibleDisplayFrame(r);
-        //DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+            Rect r = new Rect();
+            rootView.getWindowVisibleDisplayFrame(r);
+            //DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
             /* heightDiff = rootView height - status bar height (r.top) - visible frame height (r.bottom - r.top) */
-        int heightDiff = rootView.getBottom() - r.bottom;
+            int heightDiff = rootView.getBottom() - r.bottom;
             /* Threshold size: dp to pixels, multiply with display density */
-        return heightDiff > SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD * density;
+            return heightDiff > SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD * density;
+        } catch (Exception e) {
+            Timber.e(e, "isKeyboardShowed exception [%s]", e.getMessage());
+        }
+
+        return false;
     }
 
-
     public static void hideKeyboard(View view) {
-        if (view == null) {
-            return;
+        try {
+            if (view == null)
+                return;
+
+            InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!imm.isActive())
+                return;
+
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            Timber.e(e, "hideKeyboard exception [%s]", e.getMessage());
         }
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (!imm.isActive()) {
-            return;
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = activity.getCurrentFocus();
-        if (view == null) return;
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            View view = activity.getCurrentFocus();
+            if (view == null) return;
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            Timber.e(e, "hideKeyboard exception [%s]", e.getMessage());
+        }
     }
 
-
     public static File getCacheDir() {
-        String state = null;
         try {
-            state = Environment.getExternalStorageState();
-        } catch (Exception e) {
-
-        }
-        if (state == null || state.startsWith(Environment.MEDIA_MOUNTED)) {
-            try {
+            String state = Environment.getExternalStorageState();
+            if (state == null || state.startsWith(Environment.MEDIA_MOUNTED)) {
                 File file = AndroidApplication.instance().getExternalCacheDir();
                 if (file != null) {
                     return file;
                 }
-            } catch (Exception e) {
 
             }
-        }
-        try {
             File file = AndroidApplication.instance().getCacheDir();
             if (file != null) {
                 return file;
             }
         } catch (Exception e) {
-
+            Timber.e(e, "getCacheDir exception [%s]", e.getMessage());
         }
         return new File("");
     }
 
     public static int dp(float value) {
-        if (value == 0) {
-            return 0;
+        try {
+            if (value == 0)
+                return 0;
+
+            return (int) Math.ceil(density * value);
+        } catch (Exception e) {
+            Timber.e(e, "dp exception [%s]", e.getMessage());
         }
-        return (int) Math.ceil(density * value);
+
+        return INT_EMPTY;
     }
 
+    /*  public static boolean isTablet() {
+          if (isTablet == null) {
+
+              //Fixme
+              //     isTablet = AndroidApplication.instance().getResources().getBoolean(R.bool.isTablet);
+          }
+          return isTablet;
+      }
+  */
+
     public static float dpf2(float value) {
-        if (value == 0) {
-            return 0;
+        try {
+            if (value == 0)
+                return 0;
+
+            return density * value;
+        } catch (Exception e) {
+            Timber.e(e, "dpf2 exception [%s]", e.getMessage());
         }
-        return density * value;
+        return FLOAT_EMPTY;
     }
 
     public static void checkDisplaySize() {
@@ -544,15 +647,13 @@ public class AndroidUtils {
                 }
             }
         } catch (Exception e) {
-
+            Timber.e(e, "checkDisplaySize exception [%s]", e.getMessage());
         }
     }
 
     public static void runOnUIThread(Runnable runnable) {
         runOnUIThread(runnable, 0);
     }
-
-    private final static Object _lock = new Object();
 
     public static void runOnUIThread(Runnable runnable, long delay) {
         // synchronized (_lock) {
@@ -562,63 +663,6 @@ public class AndroidUtils {
             applicationHandler.postDelayed(runnable, delay);
         }
         // }
-    }
-
-    public static void cancelRunOnUIThread(Runnable runnable) {
-        applicationHandler.removeCallbacks(runnable);
-    }
-
-    /*  public static boolean isTablet() {
-          if (isTablet == null) {
-
-              //Fixme
-              //     isTablet = AndroidApplication.instance().getResources().getBoolean(R.bool.isTablet);
-          }
-          return isTablet;
-      }
-  */
-
-
-    public static boolean isTablet(Context context) {
-        return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
-    }
-
-
-    public static boolean isSmallTablet() {
-        float minSide = Math.min(displaySize.x, displaySize.y) / density;
-        return minSide <= 700;
-    }
-
-    public static int getMinTabletSide() {
-        if (!isSmallTablet()) {
-            int smallSide = Math.min(displaySize.x, displaySize.y);
-            int leftSide = smallSide * 35 / 100;
-            if (leftSide < dp(320)) {
-                leftSide = dp(320);
-            }
-            return smallSide - leftSide;
-        } else {
-            int smallSide = Math.min(displaySize.x, displaySize.y);
-            int maxSide = Math.max(displaySize.x, displaySize.y);
-            int leftSide = maxSide * 35 / 100;
-            if (leftSide < dp(320)) {
-                leftSide = dp(320);
-            }
-            return Math.min(smallSide, maxSide - leftSide);
-        }
-    }
-
-    public static void clearCursorDrawable(EditText editText) {
-        if (editText == null || Build.VERSION.SDK_INT < 12) {
-            return;
-        }
-        try {
-            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
-            mCursorDrawableRes.setAccessible(true);
-            mCursorDrawableRes.setInt(editText, 0);
-        } catch (Exception e) {
-
-        }
     }
 
 
@@ -644,93 +688,164 @@ public class AndroidUtils {
         return size;
     }*/
 
-    @SuppressLint("NewApi")
-    public static void clearDrawableAnimation(View view) {
-        if (Build.VERSION.SDK_INT < 21 || view == null) {
-            return;
+    public static void cancelRunOnUIThread(Runnable runnable) {
+        applicationHandler.removeCallbacks(runnable);
+    }
+
+    public static boolean isTablet(Context context) {
+        try {
+            return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
+        } catch (Exception e) {
+            Timber.e(e, "isTablet exception [%s]", e.getMessage());
         }
-        Drawable drawable;
-        if (view instanceof ListView) {
-            drawable = ((ListView) view).getSelector();
-            if (drawable != null) {
-                drawable.setState(StateSet.NOTHING);
+        return false;
+    }
+
+    public static boolean isSmallTablet() {
+        try {
+            float minSide = Math.min(displaySize.x, displaySize.y) / density;
+            return minSide <= 700;
+        } catch (Exception e) {
+            Timber.e(e, "isSmallTablet exception [%s]", e.getMessage());
+        }
+        return false;
+    }
+
+    public static int getMinTabletSide() {
+        try {
+            if (!isSmallTablet()) {
+                int smallSide = Math.min(displaySize.x, displaySize.y);
+                int leftSide = smallSide * 35 / 100;
+                if (leftSide < dp(320)) {
+                    leftSide = dp(320);
+                }
+                return smallSide - leftSide;
+            } else {
+                int smallSide = Math.min(displaySize.x, displaySize.y);
+                int maxSide = Math.max(displaySize.x, displaySize.y);
+                int leftSide = maxSide * 35 / 100;
+                if (leftSide < dp(320)) {
+                    leftSide = dp(320);
+                }
+                return Math.min(smallSide, maxSide - leftSide);
             }
-        } else {
-            drawable = view.getBackground();
-            if (drawable != null) {
-                drawable.setState(StateSet.NOTHING);
-                drawable.jumpToCurrentState();
-            }
+        } catch (Exception e) {
+            Timber.e(e, "getMinTabletSide exception [%s]", e.getMessage());
+        }
+        return INT_EMPTY;
+    }
+
+    public static void clearCursorDrawable(EditText editText) {
+        try {
+            if (editText == null || Build.VERSION.SDK_INT < 12)
+                return;
+            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.setInt(editText, 0);
+        } catch (Exception e) {
+            Timber.e(e, "clearCursorDrawable exception [%s]", e.getMessage());
         }
     }
 
-    public static final int FLAG_TAG_BR = 1;
-    public static final int FLAG_TAG_BOLD = 2;
-    public static final int FLAG_TAG_COLOR = 4;
-    public static final int FLAG_TAG_ALL = FLAG_TAG_BR | FLAG_TAG_BOLD | FLAG_TAG_COLOR;
+    @SuppressLint("NewApi")
+    public static void clearDrawableAnimation(View view) {
+        try {
+            if (Build.VERSION.SDK_INT < 21 || view == null)
+                return;
 
+            Drawable drawable;
+            if (view instanceof ListView) {
+                drawable = ((ListView) view).getSelector();
+                if (drawable != null) {
+                    drawable.setState(StateSet.NOTHING);
+                }
+            } else {
+                drawable = view.getBackground();
+                if (drawable != null) {
+                    drawable.setState(StateSet.NOTHING);
+                    drawable.jumpToCurrentState();
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e, "clearDrawableAnimation exception [%s]", e.getMessage());
+        }
+    }
 
     public static void addMediaToGallery(String fromPath) {
-        if (fromPath == null) {
-            return;
+        try {
+            if (fromPath == null)
+                return;
+
+            File f = new File(fromPath);
+            Uri contentUri = Uri.fromFile(f);
+            addMediaToGallery(contentUri);
+        } catch (Exception e) {
+            Timber.e(e, "addMediaToGallery exception [%s]", e.getMessage());
         }
-        File f = new File(fromPath);
-        Uri contentUri = Uri.fromFile(f);
-        addMediaToGallery(contentUri);
     }
 
     public static void addMediaToGallery(Uri uri) {
-        if (uri == null) {
-            return;
-        }
         try {
+            if (uri == null)
+                return;
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             mediaScanIntent.setData(uri);
             AndroidApplication.instance().sendBroadcast(mediaScanIntent);
         } catch (Exception e) {
-
+            Timber.e(e, "addMediaToGallery exception [%s]", e.getMessage());
         }
     }
 
     public static String formatFileSize(long size) {
-        if (size < 1024) {
-            return String.format("%d B", size);
-        } else if (size < 1024 * 1024) {
-            return String.format("%.1f KB", size / 1024.0f);
-        } else if (size < 1024 * 1024 * 1024) {
-            return String.format("%.1f MB", size / 1024.0f / 1024.0f);
-        } else {
-            return String.format("%.1f GB", size / 1024.0f / 1024.0f / 1024.0f);
+        try {
+            if (size < 1024) {
+                return String.format("%d B", size);
+            } else if (size < 1024 * 1024) {
+                return String.format("%.1f KB", size / 1024.0f);
+            } else if (size < 1024 * 1024 * 1024) {
+                return String.format("%.1f MB", size / 1024.0f / 1024.0f);
+            } else {
+                return String.format("%.1f GB", size / 1024.0f / 1024.0f / 1024.0f);
+            }
+        } catch (Exception e) {
+            Timber.e(e, "formatFileSize exception [%s]", e.getMessage());
         }
+
+        return STR_EMPTY;
     }
 
     public static byte[] decodeQuotedPrintable(final byte[] bytes) {
-        if (bytes == null) {
-            return null;
-        }
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        for (int i = 0; i < bytes.length; i++) {
-            final int b = bytes[i];
-            if (b == '=') {
-                try {
-                    final int u = Character.digit((char) bytes[++i], 16);
-                    final int l = Character.digit((char) bytes[++i], 16);
-                    buffer.write((char) ((u << 4) + l));
-                } catch (Exception e) {
-
-                    return null;
-                }
-            } else {
-                buffer.write(b);
-            }
-        }
-        byte[] array = buffer.toByteArray();
         try {
-            buffer.close();
-        } catch (Exception e) {
+            if (bytes == null)
+                return null;
 
+            final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            for (int i = 0; i < bytes.length; i++) {
+                final int b = bytes[i];
+                if (b == '=') {
+                    try {
+                        final int u = Character.digit((char) bytes[++i], 16);
+                        final int l = Character.digit((char) bytes[++i], 16);
+                        buffer.write((char) ((u << 4) + l));
+                    } catch (Exception e) {
+
+                        return null;
+                    }
+                } else {
+                    buffer.write(b);
+                }
+            }
+            byte[] array = buffer.toByteArray();
+            try {
+                buffer.close();
+            } catch (Exception e) {
+
+            }
+            return array;
+        } catch (Exception e) {
+            Timber.e(e, "decodeQuotedPrintable exception [%s]", e.getMessage());
         }
-        return array;
+        return null;
     }
 
     public static boolean copyFile(InputStream sourceFile, File destFile) throws IOException {
@@ -769,67 +884,24 @@ public class AndroidUtils {
         return true;
     }
 
-    public static String createTempImageFile(Context context, Uri uri) {
-        String filePath;
-        InputStream inputStream = null;
-        BufferedOutputStream outStream = null;
-        try {
-//            File extDir = context.getExternalFilesDir(null);
-            inputStream = context.getContentResolver().openInputStream(uri);
-            File extDir = context.getExternalCacheDir();
-            filePath = extDir.getAbsolutePath() + "/CachedImg_" + UUID.randomUUID().toString() + ".jpg";
-            outStream = new BufferedOutputStream(new FileOutputStream
-                    (filePath));
-
-            byte[] buf = new byte[2048];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outStream.write(buf, 0, len);
-            }
-
-        } catch (IOException e) {
-            filePath = "";
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (IOException e) {
-            }
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                }
-            } catch (IOException e) {
-            }
-        }
-
-        return filePath;
-    }
-
-
     public static int getStatusBarHeight(Context context) {
-        if (statusBarHeight != null) {
+        try {
+            if (statusBarHeight != null)
+                return statusBarHeight;
+
+            int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+            } else {
+                statusBarHeight = 0;
+            }
+
             return statusBarHeight;
+        } catch (Exception e) {
+            Timber.e(e, "getStatusBarHeight exception [%s]", e.getMessage());
         }
 
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
-        } else {
-            statusBarHeight = 0;
-        }
-
-        return statusBarHeight;
-    }
-
-    public static void animateLike(View v) {
-        ScaleAnimation scal = new ScaleAnimation(1f, 1.8f, 1, 1.8f, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
-        scal.setDuration(250);
-        scal.setFillAfter(true);
-        scal.setRepeatCount(1);
-        scal.setRepeatMode(Animation.REVERSE);
-        v.startAnimation(scal);
+        return INT_EMPTY;
     }
 
   /*  public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
@@ -848,24 +920,39 @@ public class AndroidUtils {
         }
     }*/
 
+    public static void animateLike(View v) {
+        try {
+            ScaleAnimation scal = new ScaleAnimation(1f, 1.8f, 1, 1.8f, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
+            scal.setDuration(250);
+            scal.setFillAfter(true);
+            scal.setRepeatCount(1);
+            scal.setRepeatMode(Animation.REVERSE);
+            v.startAnimation(scal);
+        } catch (Exception e) {
+            Timber.e(e, "animateLike exception [%s]", e.getMessage());
+        }
+    }
+
     public static void deleteFile(String path) {
         try {
             File oldDir = new File(path);
-            if(oldDir.exists()) {
-                deleteRecursive(oldDir);
-            }
-        } catch (Exception ex) {
+            deleteRecursive(oldDir);
+        } catch (Exception e) {
+            Timber.e(e, "deleteFile exception [%s]", e.getMessage());
         }
     }
 
     public static void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
+        try {
+            if (fileOrDirectory.isDirectory()) {
+                for (File child : fileOrDirectory.listFiles()) {
+                    deleteRecursive(child);
+                }
             }
+            fileOrDirectory.delete();
+        } catch (Exception e) {
+            Timber.e(e, "deleteRecursive exception [%s]", e.getMessage());
         }
-
-        fileOrDirectory.delete();
     }
 
     public static void writeToFile(final String fileContents, String path) throws IOException {
@@ -937,7 +1024,6 @@ public class AndroidUtils {
     public static boolean unzip(String source, String destinationDirectory) throws IOException {
         return unzip(new File(source), new File(destinationDirectory));
     }
-
 
     public static String unzip2(File zipFile, File targetDirectory) throws IOException {
         ZipInputStream zis = new ZipInputStream(
@@ -1030,28 +1116,21 @@ public class AndroidUtils {
     }
 
     private static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            Map<String, Typeface> newMap = new HashMap<>();
-            newMap.put("sans-serif", newTypeface);
-            try {
+        try {
+            if (Build.VERSION.SDK_INT >= 21) {
+                Map<String, Typeface> newMap = new HashMap<>();
+                newMap.put("sans-serif", newTypeface);
                 final Field staticField = Typeface.class.getDeclaredField("sSystemFontMap");
                 staticField.setAccessible(true);
                 staticField.set(null, newMap);
-            } catch (NoSuchFieldException e) {
-                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
-            } catch (IllegalAccessException e) {
-                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
-            }
-        } else {
-            try {
+
+            } else {
                 final Field staticField = Typeface.class.getDeclaredField(staticTypefaceFieldName);
                 staticField.setAccessible(true);
                 staticField.set(null, newTypeface);
-            } catch (NoSuchFieldException e) {
-                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
-            } catch (IllegalAccessException e) {
-                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
             }
+        } catch (Exception e) {
+            Timber.e(e, "replaceFont exception [%s]", e.getMessage());
         }
     }
 
@@ -1062,27 +1141,31 @@ public class AndroidUtils {
                                                boolean isMessageBold,
                                                @ColorInt int linkColor,
                                                ClickableSpan clickableSpan) {
-        if (tv != null) {
-            // set spannable for text view
-            int startIndex = message.indexOf("%s");
-            int endIndex = startIndex + spannedMessage.length();
-            message = String.format(message, spannedMessage);
-            Spannable span = Spannable.Factory.getInstance().newSpannable(message);
-            // set span color
-            span.setSpan(new ForegroundColorSpan(linkColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            // set span underline
-            if (isUnderline) {
-                span.setSpan(new UnderlineSpan(), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            // set bold message
-            if (isMessageBold) {
-                span.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+        try {
+            if (tv != null) {
+                // set spannable for text view
+                int startIndex = message.indexOf("%s");
+                int endIndex = startIndex + spannedMessage.length();
+                message = String.format(message, spannedMessage);
+                Spannable span = Spannable.Factory.getInstance().newSpannable(message);
+                // set span color
+                span.setSpan(new ForegroundColorSpan(linkColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                // set span underline
+                if (isUnderline) {
+                    span.setSpan(new UnderlineSpan(), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                // set bold message
+                if (isMessageBold) {
+                    span.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
 
-            span.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                span.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            tv.setText(span);
-            tv.setMovementMethod(LinkMovementMethod.getInstance());
+                tv.setText(span);
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+        } catch (Exception e) {
+            Timber.e(e, "setSpannedMessageToView exception [%s]", e.getMessage());
         }
     }
 
@@ -1093,22 +1176,25 @@ public class AndroidUtils {
                                                boolean isMessageBold,
                                                @ColorRes int linkColorResId,
                                                ClickableSpan clickableSpan) {
-        Context context = AndroidApplication.instance();
-
-        setSpannedMessageToView(tv, context.getString(message),
-                context.getString(spannedMessage),
-                isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
+        try {
+            Context context = AndroidApplication.instance();
+            setSpannedMessageToView(tv, context.getString(message),
+                    context.getString(spannedMessage),
+                    isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
+        } catch (Exception e) {
+            Timber.e(e, "setSpannedMessageToView exception [%s]", e.getMessage());
+        }
     }
 
     public static int getFrontCameraId(CameraManager cManager) {
-        if (Build.VERSION.SDK_INT < 22) {
-            Camera.CameraInfo ci = new Camera.CameraInfo();
-            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
-                Camera.getCameraInfo(i, ci);
-                if (ci.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) return i;
-            }
-        } else {
-            try {
+        try {
+            if (Build.VERSION.SDK_INT < 22) {
+                Camera.CameraInfo ci = new Camera.CameraInfo();
+                for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                    Camera.getCameraInfo(i, ci);
+                    if (ci.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) return i;
+                }
+            } else {
                 for (int j = 0; j < cManager.getCameraIdList().length; j++) {
                     String[] cameraId = cManager.getCameraIdList();
                     CameraCharacteristics characteristics = cManager.getCameraCharacteristics(cameraId[j]);
@@ -1116,9 +1202,9 @@ public class AndroidUtils {
                     if (cOrientation == CameraCharacteristics.LENS_FACING_FRONT)
                         return j;
                 }
-            } catch (Exception e) {
-                Timber.d(e, "get front camera Id");
             }
+        } catch (Exception e) {
+            Timber.e(e, "getFrontCameraId exception [%s]", e.getMessage());
         }
 
         return -1; // No front-facing camera found
@@ -1131,10 +1217,15 @@ public class AndroidUtils {
     }
 
     public static boolean isHttpRequest(String input) {
-        String URL_REGEX = "^((https?|http)://|www\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
-        Pattern pattern = Pattern.compile(URL_REGEX);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
+        try {
+            String URL_REGEX = "^((https?|http)://|www\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
+            Pattern pattern = Pattern.compile(URL_REGEX);
+            Matcher matcher = pattern.matcher(input);
+            return matcher.find();
+        } catch (Exception e) {
+            Timber.e(e, "isHttpRequest exception [%s]", e.getMessage());
+        }
+        return false;
     }
 
     public static boolean checkAndroidMVersion() {
@@ -1142,46 +1233,53 @@ public class AndroidUtils {
     }
 
     public static boolean isXiaomiDevice() {
-        return DeviceUtil.getDeviceName().toUpperCase().matches("(.*)XIAOMI(.*)");
+        try {
+            return DeviceUtil.getDeviceName().toUpperCase().matches("(.*)XIAOMI(.*)");
+        } catch (Exception e) {
+            Timber.e(e, "isXiaomiDevice() exception [%s]", e.getMessage());
+        }
+        return false;
     }
 
-    private static String sUserAgent = null;
-
     public static String getUserAgent(Context context) {
-        if (sUserAgent != null) {
-            return sUserAgent;
-        }
-
         try {
+            if (sUserAgent != null)
+                return sUserAgent;
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 sUserAgent = WebSettings.getDefaultUserAgent(context);
             } else {
-
                 final Class<?> webSettingsClassicClass = Class.forName("android.webkit.WebSettingsClassic");
                 final Constructor<?> constructor = webSettingsClassicClass.getDeclaredConstructor(Context.class, Class.forName("android.webkit.WebViewClassic"));
                 constructor.setAccessible(true);
                 final Method method = webSettingsClassicClass.getMethod("getUserAgentString");
                 sUserAgent = (String) method.invoke(constructor.newInstance(context, null));
             }
+
+            if (TextUtils.isEmpty(sUserAgent)) {
+                sUserAgent = System.getProperty("http.agent");
+            }
+
+            if (TextUtils.isEmpty(sUserAgent)) {
+                sUserAgent = AgentUtil.getUserAgent();
+            }
+
+            return sUserAgent;
         } catch (Exception e) {
-            Timber.d(e, "exception");
+            Timber.e(e, "getUserAgent exception [%s]", e.getMessage());
         }
-
-        if (TextUtils.isEmpty(sUserAgent)) {
-            sUserAgent = System.getProperty("http.agent");
-        }
-
-        if (TextUtils.isEmpty(sUserAgent)) {
-            sUserAgent = AgentUtil.getUserAgent();
-        }
-
-        return sUserAgent;
+        return STR_EMPTY;
     }
 
     public static Drawable getTintedDrawable(Context context, @DrawableRes int id, @ColorRes int color) {
-        Drawable drawable = ContextCompat.getDrawable(context, id);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable.mutate(), ContextCompat.getColor(context, color));
-        return drawable;
+        try {
+            Drawable drawable = ContextCompat.getDrawable(context, id);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable.mutate(), ContextCompat.getColor(context, color));
+            return drawable;
+        } catch (Exception e) {
+            Timber.e(e, "getTintedDrawable exception [%s]", e.getMessage());
+        }
+        return null;
     }
 }
