@@ -7,7 +7,6 @@ import org.greenrobot.greendao.internal.SqlUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.UCBDao;
 import vn.com.vng.zalopay.data.cache.model.ZFLDao;
 import vn.com.vng.zalopay.data.cache.model.ZPCDao;
@@ -94,7 +93,7 @@ public class ZPCSqlHelper {
         String sql = "SELECT * FROM (" + ubcSql + " UNION ALL " + zpcSql + ") "
                 + condition + " ORDER BY " + ColumnAlias.NORMALIZE_DISPLAY_NAME;
 
-        Timber.d("Create Sql contact : %s", sql);
+        //  Timber.d("Create Sql contact : %s", sql);
 
         return sql;
     }

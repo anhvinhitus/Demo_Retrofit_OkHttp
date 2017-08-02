@@ -181,27 +181,30 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
         @OnClick(R.id.background)
         public void onFavoriteClick(View v) {
             boolean isFavorite = !mIconFontTextView.isSelected();
-
-
-            if (isFavorite) {
-
-                if (mFavoriteView.isMaximum()) {
-                    return;
-                }
-
-                setFavorite(true);
-                mFavoriteView.add(new FavoriteData(mFavoriteData));
-
-                if (mListener != null) {
-                    mListener.onAddFavorite(mFavoriteData);
-                }
-            } else {
+            if (!isFavorite) {
                 setFavorite(false);
                 mFavoriteView.remove(new FavoriteData(mFavoriteData));
                 if (mListener != null) {
                     mListener.onRemoveFavorite(mFavoriteData);
                 }
+                return;
             }
+
+
+            if (mFavoriteView.isMaximum()) {
+                if (mListener != null) {
+                    mListener.onMaximumFavorite();
+                }
+                return;
+            }
+
+            setFavorite(true);
+            mFavoriteView.add(new FavoriteData(mFavoriteData));
+
+            if (mListener != null) {
+                mListener.onAddFavorite(mFavoriteData);
+            }
+
         }
     }
 }
