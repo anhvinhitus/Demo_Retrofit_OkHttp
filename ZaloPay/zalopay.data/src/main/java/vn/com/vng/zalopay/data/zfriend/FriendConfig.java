@@ -7,4 +7,5 @@ package vn.com.vng.zalopay.data.zfriend;
 
 public class FriendConfig {
     public static boolean sEnableSyncContact = true;
+    public static boolean sEnableDisplayFavorite = true;
 }

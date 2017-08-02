@@ -6,10 +6,8 @@ include ':zalopay.app-loader'
 include ':zalopay.sdk'
 include ':zalopay.utility'
 include ':zalopay.network'
-
 /*
 include ':greendaogenerator'
 include ':daogenerator'
 */
-
 include ':zalopay.promotion'

@@ -2,23 +2,28 @@ package vn.com.vng.zalopay.transfer.ui.friendlist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -32,9 +37,9 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  */
 
 final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListView> {
-    private FriendStore.Repository mFriendRepository;
-    private Context mContext;
-    private Navigator mNavigator;
+    protected final FriendStore.Repository mFriendRepository;
+    protected final Context mContext;
+    protected final Navigator mNavigator;
 
 
     @Inject
@@ -44,11 +49,12 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         this.mNavigator = navigator;
     }
 
-    void refreshFriendList() {
-        Subscription subscription = mFriendRepository.fetchZaloFriendCursorFullInfo()
+    void refreshFriendList(boolean isTopup) {
+        Subscription subscription = mFriendRepository.fetchZaloFriendFullInfo()
+                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isTopup))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber());
+                .subscribe(new FriendListSubscriber(false));
 
         mSubscription.add(subscription);
     }
@@ -57,59 +63,81 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         return FriendConfig.sEnableSyncContact;
     }
 
-    void getFriendList() {
-        Subscription subscription = mFriendRepository.getZaloFriendsCursor()
-                .concatWith(retrieveZaloFriendsAsNeeded())
+    void loadDataView(String keySearch, boolean isTopup) {
+        if (!TextUtils.isEmpty(keySearch)) {
+            doSearch(keySearch, isTopup);
+        } else {
+            getFriendList(isTopup);
+        }
+    }
+
+    private void getFriendList(boolean isTopup) {
+        Subscription subscription = mFriendRepository.getZaloFriendsCursor(isTopup)
+                .concatWith(retrieveZaloFriendsAsNeeded(isTopup))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber());
+                .subscribe(new FriendListSubscriber(false));
 
         mSubscription.add(subscription);
     }
 
-    private Observable<Cursor> retrieveZaloFriendsAsNeeded() {
+    private Observable<Cursor> retrieveZaloFriendsAsNeeded(boolean isTopup) {
         return mFriendRepository.shouldUpdateFriendList()
                 .filter(Boolean::booleanValue)
-                .flatMap(new Func1<Boolean, Observable<Cursor>>() {
-                    @Override
-                    public Observable<Cursor> call(Boolean aBoolean) {
-                        return mFriendRepository.fetchZaloFriendCursorFullInfo();
-                    }
-                });
+                .flatMap(aBoolean -> mFriendRepository.fetchZaloFriendFullInfo())
+                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isTopup))
+                ;
     }
 
     void syncContact() {
         Subscription subscription = mFriendRepository.syncContact()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
-    void doSearch(String s) {
-        Subscription subscription = mFriendRepository.searchZaloFriend(s)
+    void doSearch(String s, boolean isTopup) {
+        Subscription subscription = mFriendRepository.findFriends(s, isTopup)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber());
+                .subscribe(new FriendListSubscriber(true));
 
         mSubscription.add(subscription);
     }
 
-    void startTransfer(Fragment fragment, Cursor cursor) {
-        ZPProfile zaloProfile = mFriendRepository.transform(cursor);
-        if (zaloProfile == null) {
+    void clickItemContact(Fragment fragment, Cursor cursor, boolean isTopup) {
+        ZPProfile profile = mFriendRepository.transform(cursor);
+        if (profile == null) {
+            Timber.d("click contact profile is null");
             return;
         }
 
-        if (zaloProfile.status == 1) {
-
-            TransferObject object = new TransferObject(zaloProfile);
-            object.transferMode = Constants.TransferMode.TransferToZaloFriend;
-            object.activateSource = Constants.ActivateSource.FromTransferActivity;
-
-            mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+        if (isTopup) {
+            backTopup(fragment, profile);
         } else {
-            showDialogNotUsingApp(zaloProfile);
+            startTransfer(fragment, profile);
         }
+    }
+
+    private void backTopup(Fragment fragment, ZPProfile profile) {
+        Activity activity = fragment.getActivity();
+        Intent data = new Intent();
+        data.putExtra("profile", profile);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+    }
+
+    private void startTransfer(Fragment fragment, ZPProfile profile) {
+        if (profile.status != 1) {
+            Timber.d("user profile [status %s]", profile.status);
+            showDialogNotUsingApp(profile);
+            return;
+        }
+
+        TransferObject object = new TransferObject(profile);
+        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     private void showDialogNotUsingApp(ZPProfile zaloProfile) {
@@ -122,18 +150,30 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     private class FriendListSubscriber extends DefaultSubscriber<Cursor> {
+        boolean mIsSearch = false;
+
+        FriendListSubscriber(boolean isSearch) {
+            mIsSearch = isSearch;
+        }
 
         @Override
         public void onNext(Cursor cursor) {
+
+            if (cursor == null || cursor.isClosed()) {
+                return;
+            }
+
             if (mView == null) {
                 return;
             }
 
-            if (cursor != null) {
-                mView.swapCursor(cursor);
-                mView.hideLoading();
-                mView.setRefreshing(false);
-                mView.checkIfEmpty();
+            mView.swapCursor(cursor);
+            mView.hideLoading();
+            mView.setRefreshing(false);
+            mView.checkIfEmpty();
+
+            if (!mIsSearch) {
+                mView.setSubTitle(String.format("(%s)", cursor.getCount()));
             }
         }
 
@@ -144,11 +184,45 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
                 return;
             }
 
-            if (mView != null) {
-                mView.showError(ErrorMessageFactory.create(mContext, e));
-                mView.setRefreshing(false);
-                mView.hideLoading();
+            if (mView == null) {
+                return;
             }
+
+            mView.showError(ErrorMessageFactory.create(mContext, e));
+            mView.setRefreshing(false);
+            mView.hideLoading();
         }
+    }
+
+    void favorite(boolean isFavorite, FavoriteData data) {
+        Observable<Boolean> observable;
+        if (isFavorite) {
+            observable = mFriendRepository.addFavorite(data.phoneNumber, data.zaloId);
+        } else {
+            observable = mFriendRepository.removeFavorite(data.phoneNumber, data.zaloId);
+        }
+
+        Subscription subscription = observable
+                .doOnError(Timber::d)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
+    void getFavorite(int limitFavorite) {
+        Subscription subscription = mFriendRepository.getFavorites(limitFavorite)
+                .filter(data -> !Lists.isEmptyOrNull(data))
+                .doOnError(Timber::d)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<List<FavoriteData>>() {
+                    @Override
+                    public void onNext(List<FavoriteData> data) {
+                        if (mView != null) {
+                            mView.setFavorite(data);
+                        }
+                    }
+                });
+        mSubscription.add(subscription);
     }
 }

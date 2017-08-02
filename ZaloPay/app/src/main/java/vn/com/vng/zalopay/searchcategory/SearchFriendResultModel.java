@@ -59,14 +59,7 @@ public class SearchFriendResultModel extends EpoxyModelWithHolder<SearchFriendRe
         }
 
         holder.mImgAvatar.setImageURI(avatar);
-        holder.mImgZaloPay.setSelected(status == 1);
         holder.itemLayout.setOnClickListener(viewClickListener);
-
-        if (isLastPos) {
-            holder.viewSeparate.setVisibility(View.GONE);
-        } else {
-            holder.viewSeparate.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -94,12 +87,6 @@ public class SearchFriendResultModel extends EpoxyModelWithHolder<SearchFriendRe
 
         @BindView(R.id.imgAvatar)
         SimpleDraweeView mImgAvatar;
-
-        @BindView(R.id.imgZaloPay)
-        View mImgZaloPay;
-
-        @BindView(R.id.viewSeparate)
-        View viewSeparate;
 
         @BindView(R.id.itemLayout)
         View itemLayout;

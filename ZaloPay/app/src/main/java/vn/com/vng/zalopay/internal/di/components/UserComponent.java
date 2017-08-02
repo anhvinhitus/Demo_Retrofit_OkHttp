@@ -57,6 +57,7 @@ import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
+import vn.com.vng.zalopay.transfer.ui.friendlist.SyncContactFragment;
 import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
@@ -208,6 +209,8 @@ public interface UserComponent {
     void inject(WebViewFromQRScanFragment f);
 
     void inject(BankListFragment f);
+
+    void inject(SyncContactFragment f);
 
       /* inject activity */
 

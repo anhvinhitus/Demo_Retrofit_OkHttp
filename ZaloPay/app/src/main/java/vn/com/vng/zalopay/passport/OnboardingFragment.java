@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.ui.widget.validate.VNPhoneValidate;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
@@ -495,11 +496,7 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
 
     @Override
     public void resendOTPSuccess() {
-        Toast toast = new Toast(getContext());
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(View.inflate(getContext(), R.layout.layout_onboarding_toast, null));
-        toast.show();
+        ToastUtil.showCustomToast(getContext(), getString(R.string.sent_otp));
     }
 
     @Override

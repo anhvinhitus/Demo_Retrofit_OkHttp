@@ -27,8 +27,6 @@ import timber.log.Timber;
 
 public class IconFontTextView extends FontIconTextView {
 
-    private static final boolean DEBUG = true;
-
     private static final int[] LEFT_VALUE = {R.styleable.IconFontTextView_iconLeftName,
             R.styleable.IconFontTextView_iconLeftSize,
             R.styleable.IconFontTextView_iconLeftColor};
@@ -155,10 +153,6 @@ public class IconFontTextView extends FontIconTextView {
         }
 
         drawable.setText(code);
-
-        if (DEBUG) {
-            Timber.d("initCompound: [iconName:%s iconSize:%s iconColor:%s gravity:%s]", iconName, size, color, gravity);
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             updateCompoundDrawablesRelative();

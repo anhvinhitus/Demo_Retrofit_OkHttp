@@ -1,28 +1,30 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/default_padding_normal"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_gravity="bottom"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/tv_section"
         style="@style/TextView.Default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/default_padding_small"
-        android:paddingLeft="@dimen/default_padding_normal"
-        android:paddingTop="@dimen/default_padding_small"
+        android:paddingTop="8dp"
         android:textAllCaps="true"
         android:textColor="@color/txt_item_sub"
         android:textSize="@dimen/personal_general_text_sub_l"
-        tools:text="A" />
+        tools:text="A"/>
 
 </LinearLayout>

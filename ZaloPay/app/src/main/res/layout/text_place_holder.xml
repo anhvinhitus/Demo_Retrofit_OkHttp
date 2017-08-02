@@ -1,0 +1,13 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/placeHolder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dot_grey"
+    android:gravity="center"
+    android:textColor="@color/white"
+    android:textSize="18dp"
+    android:visibility="invisible"
+    tools:ignore="SpUsage"
+    tools:text="T"/>

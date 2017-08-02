@@ -28,6 +28,7 @@ public class ContactFetcher {
         String[] projectionFields = new String[]{
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
         };
         ArrayList<Contact> listContacts = new ArrayList<>();
         Cursor c = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projectionFields, null, null, ContactsContract.Contacts.DISPLAY_NAME);
@@ -37,11 +38,13 @@ public class ContactFetcher {
 
                 int idIndex = c.getColumnIndex(ContactsContract.Contacts._ID);
                 int nameIndex = c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                int photoIndex = c.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
                 do {
                     String contactId = c.getString(idIndex);
                     String contactDisplayName = c.getString(nameIndex);
-                    Contact contact = new Contact(contactId, contactDisplayName);
+                    String photoUri = c.getString(photoIndex);
+                    Contact contact = new Contact(contactId, contactDisplayName, photoUri);
                     contactsMap.put(contactId, contact);
                     listContacts.add(contact);
                 } while (c.moveToNext());
@@ -57,7 +60,7 @@ public class ContactFetcher {
     }
 
     private void matchContactNumbers(Map<String, Contact> contactsMap) throws Exception {
-        Timber.d("match Contact Numbers %s ", contactsMap.size());
+        Timber.d("match contact numbers %s ", contactsMap.size());
 
         final String[] numberProjection = new String[]{
                 Phone.NUMBER,

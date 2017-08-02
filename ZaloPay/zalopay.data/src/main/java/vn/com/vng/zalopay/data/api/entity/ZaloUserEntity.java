@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.data.api.entity;
 
 import org.json.JSONObject;
 
-import vn.com.vng.zalopay.data.util.Strings;
-
 /**
  * Created by AnhHieu on 10/10/16.
  * *
@@ -22,7 +20,6 @@ public class ZaloUserEntity {
     public String displayName;
     public String avatar;
     public boolean usingApp;
-    public String normalizeDisplayName;
 
     public ZaloUserEntity(long userId) {
         this.userId = userId;
@@ -34,7 +31,6 @@ public class ZaloUserEntity {
         displayName = jsonObject.optString(DISPLAYNAME);
         avatar = jsonObject.optString(AVATAR);
         usingApp = jsonObject.optBoolean(USINGAPP);
-        normalizeDisplayName = Strings.stripAccents(displayName);
     }
 
     @Override

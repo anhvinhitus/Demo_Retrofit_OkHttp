@@ -10,15 +10,17 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.entity.FavoriteEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
-import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
+import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
@@ -38,11 +40,11 @@ public interface FriendStore {
         ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId);
 
         @NonNull
-        List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids);
+        List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloIds);
 
-        Cursor getZaloUserCursor(boolean enableContact);
+        Cursor getZaloUserCursor(boolean enableContact, boolean isWithPhone);
 
-        Cursor searchZaloFriendList(String s, boolean enableContact);
+        Cursor findFriends(String s, boolean enableContact, boolean isWithPhone);
 
         @NonNull
         List<Long> getZaloUserWithoutZaloPayId();
@@ -50,6 +52,20 @@ public interface FriendStore {
         long getLastTimeSyncContact();
 
         void setLastTimeSyncContact(long time);
+
+        boolean addFavorite(String phoneNumber, long zaloId);
+
+        boolean removeFavorite(String phoneNumber, long zaloId);
+
+        long getUserContactBookCount();
+
+        long getZaloFriendListCount();
+
+        List<String> getAvatarContacts(int limit);
+
+        List<String> getAvatarZaloFriends(int limit);
+
+        List<FavoriteEntity> getFavorites(int limit);
     }
 
     interface ZaloRequestService {
@@ -74,11 +90,9 @@ public interface FriendStore {
 
         Observable<Boolean> fetchZaloFriends();
 
-        Observable<Cursor> getZaloFriendsCursor();
+        Observable<Cursor> getZaloFriendsCursor(boolean isWithPhone);
 
-        Observable<Cursor> getZaloFriendsCursorLocal();
-
-        Observable<Cursor> searchZaloFriend(String s);
+        Observable<Cursor> findFriends(String s, boolean isWithPhone);
 
         Observable<List<ZPProfile>> findFriends(String s);
 
@@ -93,10 +107,27 @@ public interface FriendStore {
 
         Observable<Boolean> syncContact();
 
+        Observable<Boolean> syncImmediateContact();
+
         Observable<Boolean> fetchZaloFriendFullInfo();
 
-        Observable<Cursor> fetchZaloFriendCursorFullInfo();
+        Observable<Person> getUserInfo(long zaloId);
 
-        Observable<Person> getUserInfo(long zaloid);
+        Observable<Long> getUserContactBookCount();
+
+        Observable<Long> getZaloFriendListCount();
+
+        Observable<Long> getLastTimeSyncContact();
+
+        Observable<List<String>> getAvatarContacts(int limit);
+
+        Observable<List<String>> getAvatarZaloFriends(int limit);
+
+        Observable<Boolean> addFavorite(@Nullable String phone, long zaloId);
+
+        Observable<Boolean> removeFavorite(@Nullable String phone, long zaloId);
+
+        Observable<List<FavoriteData>> getFavorites(int limit);
+
     }
 }

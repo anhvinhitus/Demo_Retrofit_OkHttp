@@ -11,9 +11,10 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
-import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
-import vn.com.vng.zalopay.data.cache.model.ContactGD;
+import vn.com.vng.zalopay.data.cache.model.ZFL;
+import vn.com.vng.zalopay.data.cache.model.ZPC;
+import vn.com.vng.zalopay.data.cache.model.UCB;
+import vn.com.vng.zalopay.data.cache.model.FavoriteZPC;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -23,9 +24,10 @@ import vn.com.vng.zalopay.data.cache.model.TransactionFragmentGD;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
-import vn.com.vng.zalopay.data.cache.model.ZaloProfileGDDao;
-import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
-import vn.com.vng.zalopay.data.cache.model.ContactGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZFLDao;
+import vn.com.vng.zalopay.data.cache.model.ZPCDao;
+import vn.com.vng.zalopay.data.cache.model.UCBDao;
+import vn.com.vng.zalopay.data.cache.model.FavoriteZPCDao;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
@@ -44,9 +46,10 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig appResourceGDDaoConfig;
     private final DaoConfig transactionLogDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
-    private final DaoConfig zaloProfileGDDaoConfig;
-    private final DaoConfig zaloPayProfileGDDaoConfig;
-    private final DaoConfig contactGDDaoConfig;
+    private final DaoConfig zFLDaoConfig;
+    private final DaoConfig zPCDaoConfig;
+    private final DaoConfig uCBDaoConfig;
+    private final DaoConfig favoriteZPCDaoConfig;
     private final DaoConfig transferRecentDaoConfig;
     private final DaoConfig notificationGDDaoConfig;
     private final DaoConfig receivePackageGDDaoConfig;
@@ -56,9 +59,10 @@ public class DaoSession extends AbstractDaoSession {
     private final AppResourceGDDao appResourceGDDao;
     private final TransactionLogDao transactionLogDao;
     private final DataManifestDao dataManifestDao;
-    private final ZaloProfileGDDao zaloProfileGDDao;
-    private final ZaloPayProfileGDDao zaloPayProfileGDDao;
-    private final ContactGDDao contactGDDao;
+    private final ZFLDao zFLDao;
+    private final ZPCDao zPCDao;
+    private final UCBDao uCBDao;
+    private final FavoriteZPCDao favoriteZPCDao;
     private final TransferRecentDao transferRecentDao;
     private final NotificationGDDao notificationGDDao;
     private final ReceivePackageGDDao receivePackageGDDao;
@@ -78,14 +82,17 @@ public class DaoSession extends AbstractDaoSession {
         dataManifestDaoConfig = daoConfigMap.get(DataManifestDao.class).clone();
         dataManifestDaoConfig.initIdentityScope(type);
 
-        zaloProfileGDDaoConfig = daoConfigMap.get(ZaloProfileGDDao.class).clone();
-        zaloProfileGDDaoConfig.initIdentityScope(type);
+        zFLDaoConfig = daoConfigMap.get(ZFLDao.class).clone();
+        zFLDaoConfig.initIdentityScope(type);
 
-        zaloPayProfileGDDaoConfig = daoConfigMap.get(ZaloPayProfileGDDao.class).clone();
-        zaloPayProfileGDDaoConfig.initIdentityScope(type);
+        zPCDaoConfig = daoConfigMap.get(ZPCDao.class).clone();
+        zPCDaoConfig.initIdentityScope(type);
 
-        contactGDDaoConfig = daoConfigMap.get(ContactGDDao.class).clone();
-        contactGDDaoConfig.initIdentityScope(type);
+        uCBDaoConfig = daoConfigMap.get(UCBDao.class).clone();
+        uCBDaoConfig.initIdentityScope(type);
+
+        favoriteZPCDaoConfig = daoConfigMap.get(FavoriteZPCDao.class).clone();
+        favoriteZPCDaoConfig.initIdentityScope(type);
 
         transferRecentDaoConfig = daoConfigMap.get(TransferRecentDao.class).clone();
         transferRecentDaoConfig.initIdentityScope(type);
@@ -105,9 +112,10 @@ public class DaoSession extends AbstractDaoSession {
         appResourceGDDao = new AppResourceGDDao(appResourceGDDaoConfig, this);
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
-        zaloProfileGDDao = new ZaloProfileGDDao(zaloProfileGDDaoConfig, this);
-        zaloPayProfileGDDao = new ZaloPayProfileGDDao(zaloPayProfileGDDaoConfig, this);
-        contactGDDao = new ContactGDDao(contactGDDaoConfig, this);
+        zFLDao = new ZFLDao(zFLDaoConfig, this);
+        zPCDao = new ZPCDao(zPCDaoConfig, this);
+        uCBDao = new UCBDao(uCBDaoConfig, this);
+        favoriteZPCDao = new FavoriteZPCDao(favoriteZPCDaoConfig, this);
         transferRecentDao = new TransferRecentDao(transferRecentDaoConfig, this);
         notificationGDDao = new NotificationGDDao(notificationGDDaoConfig, this);
         receivePackageGDDao = new ReceivePackageGDDao(receivePackageGDDaoConfig, this);
@@ -117,9 +125,10 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(AppResourceGD.class, appResourceGDDao);
         registerDao(TransactionLog.class, transactionLogDao);
         registerDao(DataManifest.class, dataManifestDao);
-        registerDao(ZaloProfileGD.class, zaloProfileGDDao);
-        registerDao(ZaloPayProfileGD.class, zaloPayProfileGDDao);
-        registerDao(ContactGD.class, contactGDDao);
+        registerDao(ZFL.class, zFLDao);
+        registerDao(ZPC.class, zPCDao);
+        registerDao(UCB.class, uCBDao);
+        registerDao(FavoriteZPC.class, favoriteZPCDao);
         registerDao(TransferRecent.class, transferRecentDao);
         registerDao(NotificationGD.class, notificationGDDao);
         registerDao(ReceivePackageGD.class, receivePackageGDDao);
@@ -131,9 +140,10 @@ public class DaoSession extends AbstractDaoSession {
         appResourceGDDaoConfig.clearIdentityScope();
         transactionLogDaoConfig.clearIdentityScope();
         dataManifestDaoConfig.clearIdentityScope();
-        zaloProfileGDDaoConfig.clearIdentityScope();
-        zaloPayProfileGDDaoConfig.clearIdentityScope();
-        contactGDDaoConfig.clearIdentityScope();
+        zFLDaoConfig.clearIdentityScope();
+        zPCDaoConfig.clearIdentityScope();
+        uCBDaoConfig.clearIdentityScope();
+        favoriteZPCDaoConfig.clearIdentityScope();
         transferRecentDaoConfig.clearIdentityScope();
         notificationGDDaoConfig.clearIdentityScope();
         receivePackageGDDaoConfig.clearIdentityScope();
@@ -153,16 +163,20 @@ public class DaoSession extends AbstractDaoSession {
         return dataManifestDao;
     }
 
-    public ZaloProfileGDDao getZaloProfileGDDao() {
-        return zaloProfileGDDao;
+    public ZFLDao getZFLDao() {
+        return zFLDao;
     }
 
-    public ZaloPayProfileGDDao getZaloPayProfileGDDao() {
-        return zaloPayProfileGDDao;
+    public ZPCDao getZPCDao() {
+        return zPCDao;
     }
 
-    public ContactGDDao getContactGDDao() {
-        return contactGDDao;
+    public UCBDao getUCBDao() {
+        return uCBDao;
+    }
+
+    public FavoriteZPCDao getFavoriteZPCDao() {
+        return favoriteZPCDao;
     }
 
     public TransferRecentDao getTransferRecentDao() {

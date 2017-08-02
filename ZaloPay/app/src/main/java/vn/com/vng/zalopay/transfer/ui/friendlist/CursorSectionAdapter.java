@@ -7,6 +7,8 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daimajia.swipe.adapters.CursorSwipeAdapter;
+
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -19,8 +21,6 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
     protected abstract void bindSeparatorView(View v, Context context, Object item);
 
     protected abstract View newSeparatorView(Context context2, Object item, ViewGroup parent);
-
-    public abstract void bindView(View view, Context context, Cursor cursor, int position);
 
     protected abstract SortedMap<Integer, Object> initializeSections(Cursor c);
 
@@ -109,8 +109,9 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
             bindSeparatorView(v, context, getItem(position));
             return v;
         } else {
-            if (!getCursor().moveToPosition(getRealItemPosition(position)))
+            if (!getCursor().moveToPosition(getRealItemPosition(position))) {
                 throw new IllegalStateException("couldn't move cursor to position " + position);
+            }
 
             View v;
             if (convertView == null) {
@@ -118,15 +119,9 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
             } else {
                 v = convertView;
             }
-            //bindView(v, context, getCursor());
-            bindView(v, context, getCursor(), position);
+            bindView(v, context, getCursor());
             return v;
         }
-    }
-
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        //empty
     }
 
     @Override

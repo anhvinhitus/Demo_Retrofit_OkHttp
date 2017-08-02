@@ -94,4 +94,13 @@
     <string name="onboarding_male">onboarding_male</string>
     <string name="onboarding_female">onboarding_female</string>
     <string name="onboarding_refresh">onboarding_refresh</string>
+    <string name="ct_list_123">ct-list_123</string>
+    <string name="ct_list_ABC">ct-list_ABC</string>
+    <string name="ct_list_danhba">ct-list_danhba</string>
+    <string name="ct_list_favi">ct-list_favi</string>
+    <string name="ct_list_fav_empty">ct-list_fav-empty</string>
+    <string name="ct_list_zalo">ct-list_zalo</string>
+    <string name="ct_list_fav_line">ct-list_fav-line</string>
+    <string name="ct_list_fav_choose">ct-list_fav-choose</string>
+    <string name="ct_list_del">ct-list_del</string>
 </resources>

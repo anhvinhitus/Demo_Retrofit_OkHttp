@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import vn.com.vng.zalopay.R;
@@ -59,6 +60,21 @@ public class ToastUtil {
         Toast toast = Toast.makeText(context, message, duration);
         toast.setGravity(gravity, 0, 0);
         toast.show();
+    }
+
+    public static void showCustomToast(Context context, CharSequence message, int duration, int gravity) {
+        Toast toast = new Toast(context);
+        toast.setGravity(gravity, 0, 0);
+        toast.setDuration(duration);
+        View customView = View.inflate(context, R.layout.custom_toast, null);
+        TextView mMessage = (TextView) customView.findViewById(R.id.tvMessage);
+        mMessage.setText(message);
+        toast.setView(customView);
+        toast.show();
+    }
+
+    public static void showCustomToast(Context context, CharSequence message) {
+        showCustomToast(context, message, Toast.LENGTH_SHORT, Gravity.CENTER);
     }
 
     public static void showToastOTPSuccess(Context context, CharSequence message) {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    app:clickToClose="true"
+    app:drag_edge="right"
+    app:rightEdgeSwipeOffset="64dp"
+    app:show_mode="pull_out">
+
+    <!-- Your secondary layout here -->
+    <FrameLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+        <com.zalopay.ui.widget.IconFontTextView
+            android:id="@+id/iconFavorite"
+            style="@style/HomePage.Title"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:drawablePadding="@dimen/spacing.small"
+            android:gravity="center"
+            android:text="@string/favorite"
+            android:textColor="@color/white"
+            app:iconTopColor="@color/white"
+            app:iconTopName="@string/general_delete_card"
+            app:iconTopSize="@dimen/font_size_delete"/>
+
+    </FrameLayout>
+
+    <!-- Your main layout here -->
+    <include
+        android:id="@+id/foreground"
+        layout="@layout/row_zalo_friend_list"/>
+
+</com.daimajia.swipe.SwipeLayout>

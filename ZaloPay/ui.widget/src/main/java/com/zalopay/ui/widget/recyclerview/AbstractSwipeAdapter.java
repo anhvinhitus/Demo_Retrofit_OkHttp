@@ -9,6 +9,7 @@ import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
+import com.zalopay.ui.widget.R;
 
 import java.util.List;
 
@@ -90,5 +91,11 @@ public abstract class AbstractSwipeAdapter<T, VH extends RecyclerView.ViewHolder
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         cleanUp();
+    }
+
+    
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
     }
 }

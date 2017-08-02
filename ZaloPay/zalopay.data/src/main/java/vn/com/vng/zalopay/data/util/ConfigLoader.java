@@ -88,6 +88,7 @@ public class ConfigLoader {
                 loadConfigInsideApp(config);
                 loadConfigSearch(config);
                 FriendConfig.sEnableSyncContact = isSyncContact();
+                FriendConfig.sEnableDisplayFavorite = isDisplayFavorite();
                 return true;
             }
         } catch (Exception e) {
@@ -117,6 +118,15 @@ public class ConfigLoader {
 
     private static boolean isSyncContact() {
         return !(mConfig != null && mConfig.friendConfig != null) || mConfig.friendConfig.enableMergeContactName != 0;
+    }
+
+    /**
+     * Chế độ bật/tắt việc hiển thị danh sách yêu thích trong ZPC
+     * Mặc định là TRUE.
+     */
+
+    private static boolean isDisplayFavorite() {
+        return !(mConfig != null && mConfig.friendConfig != null) || mConfig.friendConfig.enableDisplayFavorite != 0;
     }
 
     /**

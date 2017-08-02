@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -15,6 +16,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.views.text.ReactFontManager;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.apploader.network.NetworkService;
@@ -22,6 +24,7 @@ import com.zalopay.apploader.network.NetworkService;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +37,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
@@ -220,9 +224,54 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
+
+        if (requestCode == TOPUP_REQUEST_CODE) {
+            handleResultTopup(resultCode, data);
+            return;
+        }
+
         if (mPaymentService != null) {
             mPaymentService.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void handleResultTopup(int resultCode, Intent data) {
+        if (mPromiseTopup == null || mPromiseTopup.get() == null) {
+            return;
+        }
+
+        try {
+
+            Promise promise = mPromiseTopup.get();
+            if (resultCode != Activity.RESULT_OK || data == null) {
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), "User cancel");
+                return;
+            }
+
+            ZPProfile profile = data.getParcelableExtra("profile");
+
+            if (profile == null || TextUtils.isEmpty(profile.displayName) || TextUtils.isEmpty(profile.phonenumber)) {
+                Timber.d("Profile invalid");
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
+                return;
+            }
+            WritableMap resp = createTopupResponse(profile.phonenumber, profile.displayName, profile.avatar);
+            Helpers.promiseResolveSuccess(promise, PaymentError.ERR_CODE_SUCCESS.value(), "", resp);
+        } finally {
+            if (mPromiseTopup != null) {
+                mPromiseTopup.clear();
+                mPromiseTopup = null;
+            }
+        }
+
+    }
+
+    private WritableMap createTopupResponse(String phoneNumber, String phoneName, String avatar) {
+        WritableMap resp = Arguments.createMap();
+        resp.putString("phonenumber", phoneNumber);
+        resp.putString("phonename", phoneName);
+        resp.putString("avatar", avatar);
+        return resp;
     }
 
     /**
@@ -368,4 +417,20 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
             mNavigator.startMiniAppActivity(getCurrentActivity(), ModuleName.SUPPORT_CENTER);
         }
     }
+
+    private WeakReference<Promise> mPromiseTopup = null;
+    private static final int TOPUP_REQUEST_CODE = 100;
+
+    @ReactMethod
+    public void launchContactList(String phoneNumber, boolean isNumberPad, final Promise promise) {
+
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        mPromiseTopup = new WeakReference<>(promise);
+        mNavigator.startZaloPayContactTopup(activity, phoneNumber, isNumberPad, TOPUP_REQUEST_CODE);
+    }
+
 }

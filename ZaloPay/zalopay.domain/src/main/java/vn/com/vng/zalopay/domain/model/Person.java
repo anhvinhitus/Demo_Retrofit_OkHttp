@@ -9,18 +9,20 @@ import android.text.TextUtils;
 public class Person {
     private boolean mHasValidZaloPayId = false;
 
-    public final String zaloPayId;
-
-    public String zalopayname;
     public long zaloId;
+    public final String zaloPayId;
+    public long phonenumber;
+    public String zalopayname;
 
     public String displayName;
     public String avatar;
     public long birthDate = 0;
     public int userGender = 1;
-    public long phonenumber;
-
     public long status;
+
+    public Person() {
+        zaloPayId = null;
+    }
 
     public Person(String zaloPayId) {
         this.zaloPayId = zaloPayId;

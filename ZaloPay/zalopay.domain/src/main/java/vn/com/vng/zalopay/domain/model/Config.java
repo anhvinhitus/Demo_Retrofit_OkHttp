@@ -33,6 +33,8 @@ public class Config {
     public static class FriendConfig {
         @SerializedName("enable_merge_contact_name")
         public int enableMergeContactName = 1;
+        @SerializedName("friend_favorite")
+        public int enableDisplayFavorite = 1;
     }
 
     @SerializedName("withdraw_money")

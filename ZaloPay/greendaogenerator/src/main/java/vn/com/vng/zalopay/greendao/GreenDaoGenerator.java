@@ -8,7 +8,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 61;
+    private static final int APP_DB_VERSION = 62;
     private static final int GLOBAL_DB_VERSION = 4;
 
     /**
@@ -61,62 +61,70 @@ public class GreenDaoGenerator {
         receivePackageGD.addLongProperty("createTime");
     }
 
+    private static Entity addZaloFriendList(Schema appSchema) {
+        Entity entity = appSchema.addEntity("ZFL");
+        entity.setConstructors(false);
+        //entity.addIdProperty().primaryKey().autoincrement();
+        entity.addLongProperty("zaloId").dbName("_id").primaryKey().notNull();
+        entity.addStringProperty("userName");
+        entity.addStringProperty("avatar");
+        entity.addStringProperty("birthday");
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("normalizeDisplayName");
 
-    private static Entity addZaloProfile(Schema appSchema) {
-        Entity zaloEntity = appSchema.addEntity("ZaloProfileGD");
-        zaloEntity.setConstructors(false);
-        zaloEntity.addStringProperty("userName");
-        zaloEntity.addStringProperty("displayName");
-        zaloEntity.addStringProperty("avatar");
-        zaloEntity.addLongProperty("userGender");
-        zaloEntity.addStringProperty("birthday");
-        zaloEntity.addBooleanProperty("usingApp");
-        zaloEntity.addStringProperty("fulltextsearch");
-        return zaloEntity;
+        entity.addLongProperty("gender").notNull();
+        entity.addBooleanProperty("usingApp").notNull();
+
+        return entity;
     }
 
-    private static Entity addZaloPayProfile(Schema appSchema) {
-        Entity zaloPayEntity = appSchema.addEntity("ZaloPayProfileGD");
-        zaloPayEntity.setConstructors(false);
-        zaloPayEntity.addStringProperty("zaloPayId").unique().notNull();
-        zaloPayEntity.addLongProperty("status");
-        zaloPayEntity.addStringProperty("zaloPayName");
-        zaloPayEntity.addStringProperty("avatar");
-        zaloPayEntity.addStringProperty("displayName");
-        return zaloPayEntity;
+    private static Entity addZaloPayContact(Schema appSchema) {
+        Entity entity = appSchema.addEntity("ZPC");
+        entity.setConstructors(false);
+        entity.addIdProperty().primaryKey().autoincrement();
+        entity.addLongProperty("zaloId").unique().notNull();
+        entity.addLongProperty("zalopayId").unique().notNull();
+        entity.addStringProperty("phoneNumber").unique();
+        entity.addStringProperty("zalopayName").unique();
+        entity.addStringProperty("avatar");
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("normalizeDisplayName");
+        entity.addLongProperty("status").notNull();
+        return entity;
     }
 
-    private static Entity addContact(Schema appSchema) {
-        Entity contactEntity = appSchema.addEntity("ContactGD");
-        contactEntity.setConstructors(false);
-        contactEntity.addStringProperty("fulltextsearch");
-        contactEntity.addStringProperty("displayName");
-        return contactEntity;
+    private static Entity addContactBook(Schema appSchema) {
+        Entity entity = appSchema.addEntity("UCB");
+        entity.setConstructors(false);
+        entity.addIdProperty().primaryKey().autoincrement();
+        entity.addStringProperty("phoneNumber").unique().notNull();
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("normalizeDisplayName");
+        entity.addStringProperty("photoUri");
+        return entity;
     }
 
+    private static Entity addFavoriteZPC(Schema schema) {
+        Entity entity = schema.addEntity("FavoriteZPC");
+        entity.setConstructors(false);
+        Property phoneNumber = entity.addStringProperty("phoneNumber").getProperty();
+        Property zaloId = entity.addLongProperty("zaloId").notNull().getProperty();
+        entity.addLongProperty("createTime").notNull();
+
+        Index index = new Index();
+        index.addProperty(phoneNumber);
+        index.addProperty(zaloId);
+        index.makeUnique();
+        entity.addIndex(index);
+
+        return entity;
+    }
 
     private static void addZaloContact(Schema appSchema) {
-        Entity zaloEntity = addZaloProfile(appSchema);
-        Entity zaloPayEntity = addZaloPayProfile(appSchema);
-        Entity contactEntity = addContact(appSchema);
-
-        Property zaloIdForZalopayProfile = zaloPayEntity.addLongProperty("zaloId").notNull()
-                .primaryKey().getProperty();
-
-        Property zaloIdForZaloProfile = zaloEntity.addLongProperty("zaloId").notNull()
-                .dbName("_id").primaryKey().getProperty();
-
-        zaloPayEntity.addToOne(zaloEntity, zaloIdForZalopayProfile, "zaloInfo");
-        zaloEntity.addToOne(zaloPayEntity, zaloIdForZaloProfile, "zaloPayInfo");
-
-
-        Property phoneNumberForZalopay = zaloPayEntity.addLongProperty("phoneNumber").getProperty();
-        Property phoneNumberForContact = contactEntity.addLongProperty("phoneNumber")
-                .notNull().primaryKey().getProperty();
-
-        // zaloPayEntity.addToOne(contactEntity, phoneNumberForZalopay, "contact");
-        // contactEntity.addToOne(zaloPayEntity, phoneNumberForContact, "zaloPayInfo");
-
+        addZaloFriendList(appSchema);
+        addZaloPayContact(appSchema);
+        addContactBook(appSchema);
+        addFavoriteZPC(appSchema);
     }
 
     private static void addTransferRecent(Schema appSchema) {

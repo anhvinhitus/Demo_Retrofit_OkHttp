@@ -5,11 +5,14 @@ import java.util.ArrayList;
 public class Contact {
     public String id;
     public String name;
+    public String photoUri;
+
     public ArrayList<ContactPhone> numbers;
 
-    public Contact(String id, String name) {
+    public Contact(String id, String name, String photoUri) {
         this.id = id;
         this.name = name;
+        this.photoUri = photoUri;
         this.numbers = new ArrayList<>();
     }
 

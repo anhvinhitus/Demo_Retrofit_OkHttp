@@ -15,6 +15,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
+import vn.com.vng.zalopay.data.api.entity.FavoriteEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
@@ -22,8 +23,11 @@ import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
+import vn.com.vng.zalopay.data.zfriend.contactloader.ContactPhone;
+import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
@@ -73,7 +77,6 @@ public class FriendRepository implements FriendStore.Repository {
                 ;
     }
 
-
     @Override
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         return shouldUpdateFriendList()
@@ -88,16 +91,16 @@ public class FriendRepository implements FriendStore.Repository {
             return null;
         }
         try {
-            ZPProfile zaloProfile = new ZPProfile();
-            zaloProfile.userId = cursor.getLong(ColumnIndex.ID);
-            zaloProfile.userName = cursor.getString(ColumnIndex.USER_NAME);
-            zaloProfile.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
-            zaloProfile.avatar = cursor.getString(ColumnIndex.AVATAR);
-            zaloProfile.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
-            zaloProfile.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
-            zaloProfile.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
-            zaloProfile.status = cursor.getInt(cursor.getColumnIndex(ColumnIndex.STATUS));
-            return zaloProfile;
+            ZPProfile profile = new ZPProfile();
+            profile.userId = cursor.getLong(cursor.getColumnIndex(ColumnAlias.ZALO_ID));
+            profile.displayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.DISPLAY_NAME));
+            profile.avatar = cursor.getString(cursor.getColumnIndex(ColumnAlias.AVATAR));
+            profile.usingApp = cursor.getInt(cursor.getColumnIndex(ColumnAlias.USING_APP)) == 1;
+            profile.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnAlias.ZALOPAY_ID));
+            profile.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.NORMALIZE_DISPLAY_NAME));
+            profile.status = cursor.getInt(cursor.getColumnIndex(ColumnAlias.STATUS));
+            profile.phonenumber = cursor.getString(cursor.getColumnIndex(ColumnAlias.PHONE_NUMBER));
+            return profile;
         } catch (Exception e) {
             Timber.d(e, "Transform friend exception");
             return null;
@@ -119,30 +122,30 @@ public class FriendRepository implements FriendStore.Repository {
                 String.valueOf(System.currentTimeMillis() / 1000));
     }
 
-    @Override
-    public Observable<Cursor> getZaloFriendsCursorLocal() {
-        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableSyncContact));
+    private Observable<Cursor> getZaloFriendsCursorLocal(boolean isWithPhone) {
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableSyncContact, isWithPhone));
     }
 
     @Override
-    public Observable<Cursor> getZaloFriendsCursor() {
-        Observable<Cursor> observableFriendLocal = getZaloFriendsCursorLocal()
+    public Observable<Cursor> getZaloFriendsCursor(boolean isWithPhone) {
+        Observable<Cursor> observableFriendLocal = getZaloFriendsCursorLocal(isWithPhone)
                 .filter(cursor -> cursor != null && !cursor.isClosed() && cursor.getCount() > 0);
 
-        Observable<Cursor> observableZaloApi = fetchZaloFriendCursorFullInfo();
+        Observable<Cursor> observableZaloApi = fetchZaloFriendFullInfo()
+                .flatMap(aBoolean -> getZaloFriendsCursorLocal(isWithPhone));
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
     }
 
     @Override
-    public Observable<Cursor> searchZaloFriend(String s) {
-        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s, FriendConfig.sEnableSyncContact));
+    public Observable<Cursor> findFriends(String s, boolean isWithPhone) {
+        return makeObservable(() -> mLocalStorage.findFriends(s, FriendConfig.sEnableSyncContact, isWithPhone));
     }
 
     @Override
     public Observable<List<ZPProfile>> findFriends(String s) {
-        return searchZaloFriend(s)
+        return findFriends(s, false)
                 .map(cursor -> {
                     List<ZPProfile> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
@@ -165,7 +168,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<List<ZPProfile>> getFriendLocal() {
-        return getZaloFriendsCursorLocal()
+        return getZaloFriendsCursorLocal(false)
                 .map(cursor -> {
                     List<ZPProfile> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
@@ -278,16 +281,15 @@ public class FriendRepository implements FriendStore.Repository {
                 .filter(Boolean::booleanValue)
                 .map(aBoolean -> mLocalStorage.getLastTimeSyncContact())
                 .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= INTERVAL_SYNC_CONTACT)
-                .flatMap(aLong -> beginSync());
+                .flatMap(aLong -> syncImmediateContact());
     }
 
-    private Observable<Boolean> beginSync() {
-        Timber.d("Begin sync contact");
-        return makeObservable(() -> {
-            ArrayList<Contact> listContact = mContactFetcher.fetchAll();
-            mLocalStorage.putContacts(listContact);
-            return Boolean.TRUE;
-        }).doOnCompleted(() -> mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000));
+    @Override
+    public Observable<Boolean> syncImmediateContact() {
+        return makeObservable(mContactFetcher::fetchAll)
+                .doOnNext(mLocalStorage::putContacts)
+                .map(contacts -> Boolean.TRUE)
+                .doOnCompleted(() -> mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000));
     }
 
     @Override
@@ -299,15 +301,6 @@ public class FriendRepository implements FriendStore.Repository {
 
         return Observable.concat(fetchZaloProfile, fetchZaloPayInfo)
                 .last();
-    }
-
-    @Override
-    public Observable<Cursor> fetchZaloFriendCursorFullInfo() {
-        return fetchZaloFriendFullInfo()
-                .flatMap(aBoolean -> {
-                    Timber.d("fetch zalo friend cursor full info call");
-                    return getZaloFriendsCursorLocal();
-                });
     }
 
     @Override
@@ -342,6 +335,90 @@ public class FriendRepository implements FriendStore.Repository {
                 ;
     }
 
+    @Override
+    public Observable<Long> getUserContactBookCount() {
+        return makeObservable(mLocalStorage::getUserContactBookCount);
+    }
+
+    @Override
+    public Observable<Long> getZaloFriendListCount() {
+        return makeObservable(mLocalStorage::getZaloFriendListCount);
+    }
+
+    @Override
+    public Observable<Long> getLastTimeSyncContact() {
+        return makeObservable(mLocalStorage::getLastTimeSyncContact);
+    }
+
+    @Override
+    public Observable<List<String>> getAvatarContacts(int limit) {
+        return makeObservable(() -> mLocalStorage.getAvatarContacts(limit))
+                ;
+    }
+
+    @Override
+    public Observable<List<String>> getAvatarZaloFriends(int limit) {
+        return makeObservable(() -> mLocalStorage.getAvatarZaloFriends(limit))
+                ;
+    }
+
+    @Override
+    public Observable<Boolean> addFavorite(String phone, long zaloId) {
+        return makeObservable(() -> mLocalStorage.addFavorite(phone, zaloId));
+    }
+
+    @Override
+    public Observable<Boolean> removeFavorite(String phone, long zaloId) {
+        return makeObservable(() -> mLocalStorage.removeFavorite(phone, zaloId));
+    }
+
+    @Override
+    public Observable<List<FavoriteData>> getFavorites(int limit) {
+        return makeObservable(() -> mLocalStorage.getFavorites(limit))
+                .map(entities -> Lists.transform(entities, this::transform))
+                ;
+    }
+
+    private FavoriteData transform(FavoriteEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        FavoriteData fav = new FavoriteData();
+        fav.displayName = entity.displayName;
+        fav.avatar = entity.avatar;
+        fav.phoneNumber = entity.phoneNumber;
+        fav.zaloId = entity.zaloId;
+
+        return fav;
+    }
+
+    private Person transform(Contact entity) {
+        if (entity == null || Lists.isEmptyOrNull(entity.numbers)) {
+            return null;
+        }
+        Person person = new Person();
+        person.avatar = entity.photoUri;
+        person.displayName = entity.name;
+        ContactPhone contactPhone = entity.numbers.get(0);
+        try {
+            person.phonenumber = Long.valueOf(contactPhone.number);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        return person;
+    }
+
+    private Person transform(ZaloUserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        Person person = new Person();
+        person.avatar = entity.avatar;
+        person.displayName = entity.displayName;
+        person.zaloId = entity.userId;
+        return person;
+    }
 
     private Person transform(ZaloPayUserEntity entity) {
         if (entity == null) {
@@ -352,15 +429,19 @@ public class FriendRepository implements FriendStore.Repository {
         try {
             person.zaloId = Long.valueOf(entity.zaloid);
         } catch (NumberFormatException e) {
-            Timber.e(e, "Transform error : zalopayId [%s] zaloid [%s]", entity.userid, entity.zaloid);
+            Timber.e(e, "Transform error : zalopayId [%s] zaloId [%s]", entity.userid, entity.zaloid);
         }
 
         person.avatar = entity.avatar;
         person.displayName = entity.displayName;
         person.zalopayname = entity.zalopayname;
-        person.phonenumber = entity.phonenumber;
+        try {
+            person.phonenumber = Long.valueOf(entity.phonenumber);
+        } catch (NumberFormatException e) {
+            Timber.d(e, "parse phoneNumber number [%s]", entity.phonenumber);
+        }
         person.status = entity.status;
-
         return person;
     }
+
 }

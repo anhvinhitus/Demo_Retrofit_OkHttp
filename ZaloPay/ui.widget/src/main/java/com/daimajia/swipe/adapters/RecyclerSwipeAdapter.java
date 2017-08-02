@@ -8,6 +8,7 @@ import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
+import com.zalopay.ui.widget.R;
 
 import java.util.List;
 
@@ -69,5 +70,10 @@ public abstract class RecyclerSwipeAdapter<VH extends RecyclerView.ViewHolder> e
     @Override
     public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
     }
 }

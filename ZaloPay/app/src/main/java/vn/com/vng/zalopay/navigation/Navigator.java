@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
@@ -57,9 +58,9 @@ import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
-import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
+import vn.com.vng.zalopay.transfer.ui.friendlist.SyncContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
@@ -354,6 +355,10 @@ public class Navigator {
 
     }
 
+    public void startSyncContact(Context context) {
+        context.startActivity(new Intent(context, SyncContactActivity.class));
+    }
+
     public void startLinkAccountActivityForResult(final Activity activity, String bankCode) {
         startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_ACCOUNT, bankCode);
     }
@@ -464,10 +469,20 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startZaloContactActivity(TransferHomeFragment fragment) {
+    public void startZaloContactActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), ZaloContactActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZFRIEND);
+    }
+
+    public void startZaloPayContactTopup(Activity activity, String phoneNumber, boolean isNumberPad, int requestCode) {
+        Intent intent = new Intent(activity, ZaloContactActivity.class);
+        intent.putExtra(BundleConstants.VIEW_TOPUP, true);
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            intent.putExtra(BundleConstants.KEY_SEARCH, phoneNumber);
+        }
+        intent.putExtra(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {

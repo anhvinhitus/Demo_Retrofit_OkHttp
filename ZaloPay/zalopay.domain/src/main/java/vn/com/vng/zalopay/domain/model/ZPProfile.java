@@ -16,7 +16,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
     public String avatar;
     public boolean usingApp;
     public String normalizeDisplayName;
-    public long phonenumber;
+    public String phonenumber;
     public String zalopayname;
     public long status;
 
@@ -34,7 +34,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
         dest.writeString(this.avatar);
         dest.writeByte(this.usingApp ? (byte) 1 : (byte) 0);
         dest.writeString(this.normalizeDisplayName);
-        dest.writeLong(this.phonenumber);
+        dest.writeString(this.phonenumber);
         dest.writeString(this.zalopayname);
         dest.writeLong(this.status);
     }
@@ -50,7 +50,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
         this.avatar = in.readString();
         this.usingApp = in.readByte() != 0;
         this.normalizeDisplayName = in.readString();
-        this.phonenumber = in.readLong();
+        this.phonenumber = in.readString();
         this.zalopayname = in.readString();
         this.status = in.readLong();
     }

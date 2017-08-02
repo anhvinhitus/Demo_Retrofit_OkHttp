@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/toast_layout_root"
+             android:layout_width="228dp"
+             android:layout_height="100dp"
+             android:background="@drawable/bg_round_black_alpha"
+             android:padding="10dp">
+
+    <com.zalopay.ui.widget.IconFontTextView
+        android:id="@+id/tvMessage"
+        style="@style/TextView.Default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/spacing.small"
+        android:gravity="center"
+        android:minWidth="128dp"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_normal"
+        app:iconTopColor="@color/white"
+        app:iconTopName="general_check"
+        app:iconTopSize="36dp"
+        tools:text="@string/sent.otp"/>
+
+</FrameLayout>

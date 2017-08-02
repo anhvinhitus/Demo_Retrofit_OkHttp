@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/height_favorite_view"
+       android:orientation="vertical"
+       tools:parentTag="android.widget.LinearLayout">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="2dp">
+
+        <TextView
+            android:id="@+id/tvDescription"
+            style="@style/TextView.Item.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/favorite.friend.format"
+            android:textAllCaps="true"/>
+
+        <TextView
+            android:id="@+id/btnEdit"
+            style="@style/TextView.Item.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:background="?selector"
+            android:gravity="center"
+            android:hint="@string/done"
+            android:padding="4dp"
+            android:text="@string/edit"
+            android:textColor="@color/blue.008fe5"
+            android:textColorHint="@color/txt_item_sub"
+            tools:ignore="RtlHardcoded"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:paddingLeft="10dp"
+        tools:ignore="RtlHardcoded,RtlSymmetry">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listview"
+            style="@style/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="6dp"
+            tools:listitem="@layout/row_favorite_layout"/>
+
+        <TextView
+            android:id="@+id/emptyView"
+            style="@style/TextView.Item.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_fav_empty"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:singleLine="false"
+            android:text="@string/description.favorite.empty"
+            />
+
+    </FrameLayout>
+
+
+</merge>

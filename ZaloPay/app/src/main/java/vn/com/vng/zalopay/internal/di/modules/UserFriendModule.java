@@ -7,10 +7,10 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
-import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -25,7 +25,7 @@ public class UserFriendModule {
     @UserScope
     @Provides
     FriendStore.LocalStorage provideFriendLocalStorage(@Named("daosession") DaoSession session) {
-        return new FriendLocalStorage(session);
+        return new ZPCLocalStorage(session);
     }
 
     @UserScope

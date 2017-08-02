@@ -1,18 +1,6 @@
 package vn.com.vng.zalopay.data.friend;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.robolectric.RuntimeEnvironment;
-
 import vn.com.vng.zalopay.data.ApplicationTestCase;
-import vn.com.vng.zalopay.data.cache.model.DaoMaster;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
-import vn.com.vng.zalopay.data.zfriend.FriendRepository;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by hieuvm on 1/1/17.
@@ -20,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FriendRepositoryTest extends ApplicationTestCase {
 
-    private FriendRepository mFriendRepository;
+    /*private FriendRepository mFriendRepository;
 
     private FriendLocalStorage mFriendLocalStorage;
 
@@ -36,6 +24,6 @@ public class FriendRepositoryTest extends ApplicationTestCase {
     @Test
     public void checkWork() {
         assertEquals(true, true);
-    }
+    }*/
 
 }

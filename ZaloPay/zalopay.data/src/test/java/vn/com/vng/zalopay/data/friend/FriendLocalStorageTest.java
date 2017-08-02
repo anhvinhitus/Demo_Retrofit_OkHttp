@@ -19,9 +19,8 @@ import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
 /**
@@ -38,12 +37,12 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
 
-        mFriendLocalStorage = new FriendLocalStorage(daoSession);
+        mFriendLocalStorage = new ZPCLocalStorage(daoSession);
     }
 
     private ZaloUserEntity createZalo(long zaloId) {
         ZaloUserEntity entity = new ZaloUserEntity(zaloId);
-        entity.displayName = "displayName";
+        entity.displayName = ZALO_DISPLAY_NAME_START + zaloId;
         entity.avatar = "avatar";
         entity.usingApp = true;
         entity.userName = "userName";
@@ -65,22 +64,26 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
     private ZaloPayUserEntity createZaloPay(String zalopayId, long zaloId, long phonenumber) {
         ZaloPayUserEntity entity = new ZaloPayUserEntity();
-        entity.phonenumber = phonenumber;
+        entity.phonenumber = String.valueOf(phonenumber);
         entity.status = 1;
         entity.zaloid = String.valueOf(zaloId);
         entity.userid = zalopayId;
-        entity.zalopayname = "zalopayname";
+        entity.zalopayname = "zalopayname_" + zalopayId;
+        entity.displayName = ZALOPAY_DISPLAY_NAME_START + zalopayId;
         return entity;
     }
 
+    private static final long ZALOPAYID_START = 1000;
     private static final long ZALO_ID_START = 900;
     private static final long PHONE_START = 123456;
+    private static final String ZALO_DISPLAY_NAME_START = "zalo_";
+    private static final String ZALOPAY_DISPLAY_NAME_START = "zalopay_";
 
 
     private List<ZaloPayUserEntity> listZaloPayProfile(int length) {
         List<ZaloPayUserEntity> ret = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            ret.add(createZaloPay("zp" + i, ZALO_ID_START + i, PHONE_START + i));
+            ret.add(createZaloPay(String.valueOf(ZALOPAYID_START + i), ZALO_ID_START + i, PHONE_START + i));
         }
         return ret;
     }
@@ -90,7 +93,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
     }
 
     private Contact createContact(String name, long phone) {
-        Contact contact = new Contact("id", name);
+        Contact contact = new Contact("id", name, "");
         contact.addNumber(String.valueOf(phone), "type");
         return contact;
     }
@@ -122,7 +125,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         List<Contact> contacts = listContact();
         mFriendLocalStorage.putContacts(contacts);
 
-        Cursor cursor = mFriendLocalStorage.getZaloUserCursor(true);
+        Cursor cursor = mFriendLocalStorage.getZaloUserCursor(true, false);
 
         System.out.println("cursor : " + cursor + " " + cursor.getCount());
 
@@ -162,6 +165,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
         //Insert zalopay user
         List<ZaloPayUserEntity> entry = listZaloPayProfile(length - length_without_zalopayid);
+        System.out.println("entry " + entry);
         mFriendLocalStorage.putZaloPayUser(entry);
 
         result = mFriendLocalStorage.getZaloUserWithoutZaloPayId();
@@ -190,6 +194,10 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         List<RedPacketUserEntity> result1 = mFriendLocalStorage.getRedPacketUsersEntity(Arrays.asList(ZALO_ID_START, ZALO_ID_START + 1, ZALO_ID_START + 2));
         System.out.println("result1 size : " + result1.size());
         Assert.assertTrue(result1.size() == 3);
+
+        for (RedPacketUserEntity entity : result1) {
+            Assert.assertTrue(entity.zaloName.startsWith(ZALO_DISPLAY_NAME_START));
+        }
     }
 
 
@@ -222,7 +230,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         mFriendLocalStorage.putZaloPayUser(Collections.singletonList(zaloPay));
         mFriendLocalStorage.putContacts(Collections.singletonList(contact));
 
-        Cursor cursor = mFriendLocalStorage.searchZaloFriendList("hieu", true);
+        Cursor cursor = mFriendLocalStorage.findFriends("hieu", true, false);
 
         System.out.println("cursor : " + cursor.getCount());
         Assert.assertTrue(cursor.getCount() == 1);

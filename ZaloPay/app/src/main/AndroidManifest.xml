@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="vn.com.vng.zalopay">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="vn.com.vng.zalopay">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION"/>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <!-- Android 6.0 BLE permission -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY"/>
 
     <uses-feature
         android:name="android.hardware.nfc"
-        android:required="false" />
+        android:required="false"/>
 
     <uses-feature
         android:name="android.hardware.location.gps"
-        android:required="false" />
+        android:required="false"/>
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:required="false"/>
 
     <uses-sdk
         android:minSdkVersion="16"
-        tools:overrideLibrary="vn.com.vng.webapp.framework" />
+        tools:overrideLibrary="vn.com.vng.webapp.framework"/>
 
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="com.zing.zalo.permission.ACCESS_THIRD_PARTY_APP_AUTHORIZATION" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.zing.zalo.permission.ACCESS_THIRD_PARTY_APP_AUTHORIZATION"/>
 
     <!-- VERY IMPORTANT! Don't forget this permission, or in-app billing won't work. -->
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
 
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission-sdk-23 android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission-sdk-23 android:name="android.permission.READ_SMS"/>
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature"/>
 
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
     <application
         android:name=".AndroidApplication"
         android:allowBackup="false"
@@ -88,9 +88,9 @@
             android:theme="@style/AppTheme.NoActionBar.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
         </activity>
@@ -101,7 +101,7 @@
             android:enabled="true"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ExternalCallSplash" />
+            android:theme="@style/AppTheme.ExternalCallSplash"/>
 
         <activity
             android:name=".share.IntentHandlerActivity"
@@ -110,7 +110,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Splash" />
+            android:theme="@style/AppTheme.NoActionBar.Splash"/>
 
         <activity-alias
             android:name="vn.zalopay.apps.ZaloAppActivityAlias"
@@ -119,8 +119,8 @@
             android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
 
             <intent-filter>
-                <action android:name="vn.zalopay.intent.action.SEND_MONEY" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="vn.zalopay.intent.action.SEND_MONEY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity-alias>
 
@@ -131,14 +131,14 @@
             android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="zalopay-1" />
+                <data android:scheme="zalopay-1"/>
 
-                <data android:scheme="zalopay" />
+                <data android:scheme="zalopay"/>
             </intent-filter>
 
         </activity-alias>
@@ -150,20 +150,20 @@
             android:targetActivity=".share.IntentHandlerActivity">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
                     android:host="app"
                     android:pathPrefix="/transfer"
-                    android:scheme="zalopay-zapi-28" />
+                    android:scheme="zalopay-zapi-28"/>
 
                 <data
                     android:host="app"
                     android:pathPrefix="/mywallet"
-                    android:scheme="zalopay-zapi-29" />
+                    android:scheme="zalopay-zapi-29"/>
 
             </intent-filter>
 
@@ -172,7 +172,7 @@
         <activity
             android:name=".passport.LoginZaloActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
+            android:theme="@style/AppTheme.NoActionBar.FullScreen"/>
 
         <activity
             android:name=".passport.OnboardingActivity"
@@ -188,7 +188,7 @@
             android:label="@string/loremipsum"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"/>
 
         <activity
             android:name=".scanners.ui.ScanToPayActivity"
@@ -198,12 +198,12 @@
             android:theme="@style/AppTheme.NoActionBar.Primary"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
+                android:resource="@xml/nfc_tech_filter"/>
         </activity>
 
         <activity
@@ -212,8 +212,8 @@
             android:theme="@style/AppTheme.Payment"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="vn.com.vng.zalopay.action.SUPPORT_CENTER" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="vn.com.vng.zalopay.action.SUPPORT_CENTER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -221,28 +221,28 @@
             android:name=".ui.activity.RedPacketApplicationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:theme="@style/AppTheme.Payment.RedPacket"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:theme="@style/AppTheme.Payment"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".webview.ui.service.ServiceWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".webview.ui.WebViewActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"/>
 
         <activity
             android:name=".webapp.WebAppActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.WebApp" />
+            android:theme="@style/AppTheme.WebApp"/>
 
         <activity
             android:name=".webapp.WebAppPromotionActivity"
@@ -251,63 +251,70 @@
 
         <activity
             android:name=".webview.ui.WebViewFromQRScanActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"/>
 
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff" />
+            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff"/>
 
         <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <!-- Bắt buộc -->
         <!-- App ID của app đã đăng ký với bên server ZaloPayment -->
         <meta-data
             android:name="appID"
-            android:value="@string/appid" />
+            android:value="@string/appid"/>
         <!-- ##########################Tich hop ZaloSDK END ########################## -->
 
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity
             android:name=".ui.activity.InvitationCodeActivity"
             android:label="@string/title.activity.invitation.code"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="" />
+            android:windowSoftInputMode=""/>
 
         <activity
             android:name=".protect.ui.ProtectAccountActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.protect.account"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".transfer.ui.friendlist.SyncContactActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/title.activity.sync.contact"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
             android:name=".account.ui.activities.EditAccountNameActivity"
             android:label="@string/title.activity.update.account.name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.profile"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".ui.activity.NotificationEmptyActivity"
             android:label="@string/notification"
-            android:theme="@android:style/Theme.NoDisplay" />
+            android:theme="@android:style/Theme.NoDisplay"/>
 
         <receiver
             android:name=".receivers.NetworkReceiver"
             android:label="NetworkReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
                 <!--<action android:name="android.net.wifi.WIFI_STATE_CHANGED" />-->
             </intent-filter>
         </receiver>
@@ -317,19 +324,19 @@
             android:name=".receivers.SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
             android:label="@string/title.activity.change.pin"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name=".transfer.ui.ReceiveMoneyActivity"
             android:label="@string/title.activity.my.qr"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
             android:name=".account.ui.activities.ProfileActivity"
@@ -337,27 +344,27 @@
             <intent-filter>
                 <data
                     android:host="goToProfileInfo"
-                    android:scheme="internal-activity" />
-                <action android:name="android.intent.action.VIEW" />
+                    android:scheme="internal-activity"/>
+                <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".transfer.ui.TransferHomeActivity"
-            android:label="@string/title.activity.transfer" />
+            android:label="@string/title.activity.transfer"/>
         <activity
             android:name=".transfer.ui.ZaloContactActivity"
-            android:label="@string/title.activity.zalopay.contact" />
+            android:label="@string/title.activity.zalopay.contact"/>
 
         <activity
             android:name=".transfer.ui.TransferActivity"
-            android:label="@string/title.activity.transfer.to" />
+            android:label="@string/title.activity.transfer.to"/>
 
         <activity
             android:name=".ui.activity.BalanceManagementActivity"
-            android:label="@string/title.activity.withdraw.home" />
+            android:label="@string/title.activity.withdraw.home"/>
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"
-            android:label="@string/title.activity.withdraw" />
+            android:label="@string/title.activity.withdraw"/>
 
         <activity
             android:name=".transfer.ui.TransferViaZaloPayNameActivity"
@@ -367,23 +374,23 @@
         <activity
             android:name=".transfer.ui.SetAmountActivity"
             android:label="@string/title.activity.set.amount"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity
             android:name=".withdraw.ui.activities.WithdrawConditionActivity"
-            android:label="@string/title.activity.withdraw.condition" />
+            android:label="@string/title.activity.withdraw.condition"/>
 
         <activity
             android:name=".ui.activity.TutorialConnectInternetActivity"
-            android:label="@string/title.activity.tutorial.network.connection" />
+            android:label="@string/title.activity.tutorial.network.connection"/>
 
         <activity
             android:name=".bank.ui.NotificationLinkCardActivity"
-            android:label="@string/title.activity.tutorial.link.card" />
+            android:label="@string/title.activity.tutorial.link.card"/>
 
         <activity
             android:name=".warningrooted.WarningRootedActivity"
-            android:label="@string/title.activity.warning.root" />
+            android:label="@string/title.activity.warning.root"/>
 
         <activity
             android:name=".feedback.FeedbackActivity"
@@ -391,40 +398,40 @@
             android:label="@string/title.activity.feedback"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="vn.com.vng.zalopay.action.FEEDBACK" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="vn.com.vng.zalopay.action.FEEDBACK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
         <activity
             android:name=".searchcategory.SearchCategoryActivity"
-            android:label="@string/title.activity.search.category" />
+            android:label="@string/title.activity.search.category"/>
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity
             android:name=".bank.ui.BankActivity"
-            android:label="@string/title_activity_link_bank" />
+            android:label="@string/title_activity_link_bank"/>
 
         <activity
             android:name=".bank.ui.BankSupportSelectionActivity"
-            android:label="@string/title.activity.bank.support.selection" />
+            android:label="@string/title.activity.bank.support.selection"/>
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"
             android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
 
         <receiver android:name=".receivers.UpgradedAppReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <data android:scheme="package" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package"/>
             </intent-filter>
         </receiver>
 
@@ -434,8 +441,8 @@
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="${applicationId}" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="${applicationId}"/>
             </intent-filter>
         </receiver>
         <!-- [END gcm_receiver] -->
@@ -445,7 +452,7 @@
             android:name=".notification.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
@@ -454,7 +461,7 @@
             android:name=".notification.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
@@ -462,7 +469,7 @@
         <service
             android:name=".service.DownloadService"
             android:exported="false"
-            android:label="DownloadService" />
+            android:label="DownloadService"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -471,12 +478,12 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"/>
         </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBfiluytRKqIXKkOUtFPDVxB-lIvFB7EUI" />
+            android:value="AIzaSyBfiluytRKqIXKkOUtFPDVxB-lIvFB7EUI"/>
 
     </application>
 

@@ -15,7 +15,7 @@ public class ZaloPayUserEntity {
     @SerializedName("userid")
     public String userid;
     @SerializedName("phonenumber")
-    public long phonenumber;
+    public String phonenumber;
     @SerializedName("zalopayname")
     public String zalopayname;
     @SerializedName("status")

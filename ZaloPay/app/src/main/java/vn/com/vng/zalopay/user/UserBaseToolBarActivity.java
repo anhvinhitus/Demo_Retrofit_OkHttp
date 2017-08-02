@@ -48,6 +48,12 @@ public abstract class UserBaseToolBarActivity extends UserBaseActivity {
         }
     }
 
+    public void setSubTitle(String subTitle) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(subTitle);
+        }
+    }
+
     public Toolbar getToolbar() {
         return mToolbar;
     }

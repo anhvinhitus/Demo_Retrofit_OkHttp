@@ -50,13 +50,17 @@ public class FontIconView extends android.support.v7.widget.AppCompatCheckedText
 
     public FontIconView(Context context) {
         super(context);
-
+        if (isInEditMode()) {
+            return;
+        }
         initDefaults();
     }
 
     public FontIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        if (isInEditMode()) {
+            return;
+        }
         if (!init(context, attrs)) {
             initDefaults();
         }
@@ -64,6 +68,9 @@ public class FontIconView extends android.support.v7.widget.AppCompatCheckedText
 
     public FontIconView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        if (isInEditMode()) {
+            return;
+        }
 
         if (!init(context, attrs)) {
             initDefaults();

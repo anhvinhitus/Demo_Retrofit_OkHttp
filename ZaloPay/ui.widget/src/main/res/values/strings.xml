@@ -47,6 +47,7 @@
     <string name="settings">Settings</string>
     <string name="empty">Empty</string>
     <string name="no.data">No data</string>
+    <string name="edit">Edit</string>
     <string name="no.result.your.search">There are no results that match your search</string>
 
     <string name="copyright">\@ 2016 by VNG</string>

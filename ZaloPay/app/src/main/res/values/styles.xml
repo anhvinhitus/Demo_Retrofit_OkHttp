@@ -159,9 +159,9 @@
         <item name="tabIndicatorColor">@color/separate</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="Intro.TextView.Title" parent="android:Widget.TextView">
         <item name="android:textSize">20sp</item>
@@ -307,5 +307,10 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/personal_text_steel_grey</item>
         <item name="android:textSize">@dimen/personal_general_text_main</item>
+    </style>
+
+    <style name="searchTextHiglight">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>
