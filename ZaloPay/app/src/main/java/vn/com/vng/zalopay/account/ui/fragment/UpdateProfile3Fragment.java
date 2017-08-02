@@ -472,6 +472,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             mStrFgIdentity = getImagePath(getContext(), uri);
         }
 
+        if(mStrFgIdentity == null) {
+            clearFrontImage();
+            return;
+        }
+
         if (LOCAL_IMAGE.equals(mStrFgIdentity)) {
             imageURI = uri;
         } else {
@@ -513,6 +518,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         if (TextUtils.isEmpty(mStrAvatar)) {
             mStrAvatar = getImagePath(getContext(), uri);
+        }
+
+        if(mStrAvatar == null) {
+            clearAvatar();
+            return;
         }
 
         if (LOCAL_IMAGE.equals(mStrAvatar)) {
@@ -557,6 +567,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         if (TextUtils.isEmpty(mStrBgIdentity)) {
             mStrBgIdentity = getImagePath(getContext(), uri);
+        }
+
+        if(mStrBgIdentity == null) {
+            clearBackgroundImage();
+            return;
         }
 
         if (LOCAL_IMAGE.equals(mStrBgIdentity)) {
