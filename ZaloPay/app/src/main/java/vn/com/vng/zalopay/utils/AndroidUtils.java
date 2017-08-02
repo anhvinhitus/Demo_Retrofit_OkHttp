@@ -54,6 +54,7 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.util.AgentUtil;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -884,6 +885,48 @@ public class AndroidUtils {
         return true;
     }
 
+    public static String createTempImageFile(Context context, Uri uri) {
+        String filePath;
+        InputStream inputStream = null;
+        BufferedOutputStream outStream = null;
+        try {
+//            File extDir = context.getExternalFilesDir(null);
+            inputStream = context.getContentResolver().openInputStream(uri);
+            File extDir = context.getExternalCacheDir();
+            filePath = extDir.getAbsolutePath() + "/CachedImg_" + UUID.randomUUID().toString() + ".jpg";
+            outStream = new BufferedOutputStream(new FileOutputStream
+                    (filePath));
+
+            byte[] buf = new byte[2048];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outStream.write(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+            Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+            filePath = "";
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+            }
+            try {
+                if (outStream != null) {
+                    outStream.close();
+                }
+            } catch (IOException e) {
+                Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+            }
+        }
+
+        return filePath;
+    }
+
+
     public static int getStatusBarHeight(Context context) {
         try {
             if (statusBarHeight != null)
@@ -936,7 +979,9 @@ public class AndroidUtils {
     public static void deleteFile(String path) {
         try {
             File oldDir = new File(path);
-            deleteRecursive(oldDir);
+            if (oldDir.exists()) {
+                deleteRecursive(oldDir);
+            }
         } catch (Exception e) {
             Timber.e(e, "deleteFile exception [%s]", e.getMessage());
         }
