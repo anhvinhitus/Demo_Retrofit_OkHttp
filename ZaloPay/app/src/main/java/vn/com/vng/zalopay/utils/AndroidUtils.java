@@ -129,7 +129,7 @@ public class AndroidUtils {
         try {
             return DimensionUtil.getScreenType(density);
         } catch (Exception e) {
-            Timber.e(e, "getScreenType() exception [%s]", e.getMessage());
+            Timber.d(e, "getScreenType() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -155,7 +155,7 @@ public class AndroidUtils {
                     getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
             return manager.getNetworkOperatorName();
         } catch (Exception e) {
-            Timber.e(e, "getCarrierName() exception [%s]", e.getMessage());
+            Timber.d(e, "getCarrierName() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -208,7 +208,7 @@ public class AndroidUtils {
             }
             return "Unknown";
         } catch (Exception e) {
-            Timber.e(e, "getNetworkClass() exception [%s]", e.getMessage());
+            Timber.d(e, "getNetworkClass() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -219,7 +219,7 @@ public class AndroidUtils {
             int sdkVersion = Build.VERSION.SDK_INT;
             return "Android " + sdkVersion + " (" + release + ")";
         } catch (Exception e) {
-            Timber.e(e, "getAndroidVersion() exception [%s]", e.getMessage());
+            Timber.d(e, "getAndroidVersion() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -230,19 +230,18 @@ public class AndroidUtils {
             String manufacturer = android.os.Build.MANUFACTURER;
             return (manufacturer + "/" + model);
         } catch (Exception e) {
-            Timber.e(e, "getDeviceManufacturer() exception [%s]", e.getMessage());
+            Timber.d(e, "getDeviceManufacturer() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
 
     public static String getDeviceId() {
         try {
-            if (mDeviceId == null) {
+            if (mDeviceId == null)
                 mDeviceId = getUUID();
-            }
             return mDeviceId;
         } catch (Exception e) {
-            Timber.e(e, "getDeviceId() exception [%s]", e.getMessage());
+            Timber.d(e, "getDeviceId() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -258,7 +257,7 @@ public class AndroidUtils {
             }
             return uniqueID;
         } catch (Exception e) {
-            Timber.e(e, "getUUID() exception [%s]", e.getMessage());
+            Timber.d(e, "getUUID() exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -274,7 +273,7 @@ public class AndroidUtils {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         } catch (Exception e) {
-            Timber.e(e, "hideKeyboarInputMethod exception [%s]", e.getMessage());
+            Timber.d(e, "hideKeyboarInputMethod exception [%s]", e.getMessage());
         }
     }
 
@@ -294,7 +293,7 @@ public class AndroidUtils {
             }
             return measuredWidth;
         } catch (Exception e) {
-            Timber.e(e, "getScreenWidth exception [%s]", e.getMessage());
+            Timber.d(e, "getScreenWidth exception [%s]", e.getMessage());
         }
         return INT_EMPTY;
     }
@@ -311,7 +310,7 @@ public class AndroidUtils {
             return "#" + Integer.toHexString(ContextCompat.getColor(AndroidApplication.instance(),
                     colorResource));
         } catch (Exception e) {
-            Timber.e(e, "getColorFromResource exception [%s]", e.getMessage());
+            Timber.d(e, "getColorFromResource exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -320,7 +319,7 @@ public class AndroidUtils {
         try {
             return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
         } catch (Exception e) {
-            Timber.e(e, "dpToPixels exception [%s]", e.getMessage());
+            Timber.d(e, "dpToPixels exception [%s]", e.getMessage());
         }
         return FLOAT_EMPTY;
     }
@@ -330,7 +329,7 @@ public class AndroidUtils {
             float density = context.getResources().getDisplayMetrics().densityDpi;
             return Math.round(pixels / (density / 160f));
         } catch (Exception e) {
-            Timber.e(e, "pixelsToDp exception [%s]", e.getMessage());
+            Timber.d(e, "pixelsToDp exception [%s]", e.getMessage());
         }
         return INT_EMPTY;
     }
@@ -353,7 +352,7 @@ public class AndroidUtils {
 //        ModuleCommon.instance().getGoogleAnalytics().sendGoogleAnalyticsHitEvents(AndroidUtils.class.getSimpleName(), "Email", "Send", strContent.toString());
             context.startActivity(mailer);
         } catch (Exception e) {
-            Timber.e(e, "sendMailTo exception [%s]", e.getMessage());
+            Timber.d(e, "sendMailTo exception [%s]", e.getMessage());
         }
     }
 
@@ -380,7 +379,7 @@ public class AndroidUtils {
                 return "xhdpi";
             }
         } catch (Exception e) {
-            Timber.e(e, "getDensityType exception [%s]", e.getMessage());
+            Timber.d(e, "getDensityType exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -394,7 +393,7 @@ public class AndroidUtils {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (Exception e) {
-            Timber.e(e, "checkInstalledOrNot exception [%s]", e.getMessage());
+            Timber.d(e, "checkInstalledOrNot exception [%s]", e.getMessage());
         }
         return false;
     }
@@ -408,19 +407,17 @@ public class AndroidUtils {
             intent.setData(uri);
             context.startActivity(intent);
         } catch (Exception e) {
-            Timber.e(e, "openAppInfo exception [%s]", e.getMessage());
+            Timber.d(e, "openAppInfo exception [%s]", e.getMessage());
         }
     }
 
     public static void openBrowser(Context context, String url) {
         try {
-            if (context == null) {
+            if (context == null)
                 return;
-            }
 
-            if (TextUtils.isEmpty(url)) {
+            if (TextUtils.isEmpty(url))
                 return;
-            }
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
@@ -431,7 +428,7 @@ public class AndroidUtils {
                 ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
             }
         } catch (Exception e) {
-            Timber.e(e, "openBrowser exception [%s]", e.getMessage());
+            Timber.d(e, "openBrowser exception [%s]", e.getMessage());
         }
     }
 
@@ -457,7 +454,7 @@ public class AndroidUtils {
                 ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
             }
         } catch (Exception e) {
-            Timber.e(e, "openPlayStore exception [%s]", e.getMessage());
+            Timber.d(e, "openPlayStore exception [%s]", e.getMessage());
             ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
         }
     }
@@ -489,7 +486,7 @@ public class AndroidUtils {
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             adjustOwnerClassGuid = classGuid;
         } catch (Exception e) {
-            Timber.e(e, "requestAdjustResize exception [%s]", e.getMessage());
+            Timber.d(e, "requestAdjustResize exception [%s]", e.getMessage());
         }
     }
 
@@ -501,7 +498,7 @@ public class AndroidUtils {
             if (adjustOwnerClassGuid == classGuid)
                 activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         } catch (Exception e) {
-            Timber.e(e, "removeAdjustResize exception [%s]", e.getMessage());
+            Timber.d(e, "removeAdjustResize exception [%s]", e.getMessage());
         }
     }
 
@@ -521,13 +518,13 @@ public class AndroidUtils {
 
     public static void showKeyboard(View view) {
         try {
-            if (view == null) {
+            if (view == null)
                 return;
-            }
+
             InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         } catch (Exception e) {
-            Timber.e(e, "showKeyboard exception [%s]", e.getMessage());
+            Timber.d(e, "showKeyboard exception [%s]", e.getMessage());
         }
     }
 
@@ -544,9 +541,8 @@ public class AndroidUtils {
             /* Threshold size: dp to pixels, multiply with display density */
             return heightDiff > SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD * density;
         } catch (Exception e) {
-            Timber.e(e, "isKeyboardShowed exception [%s]", e.getMessage());
+            Timber.d(e, "isKeyboardShowed exception [%s]", e.getMessage());
         }
-
         return false;
     }
 
@@ -561,7 +557,7 @@ public class AndroidUtils {
 
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } catch (Exception e) {
-            Timber.e(e, "hideKeyboard exception [%s]", e.getMessage());
+            Timber.d(e, "hideKeyboard exception [%s]", e.getMessage());
         }
     }
 
@@ -572,7 +568,7 @@ public class AndroidUtils {
             if (view == null) return;
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } catch (Exception e) {
-            Timber.e(e, "hideKeyboard exception [%s]", e.getMessage());
+            Timber.d(e, "hideKeyboard exception [%s]", e.getMessage());
         }
     }
 
@@ -581,17 +577,15 @@ public class AndroidUtils {
             String state = Environment.getExternalStorageState();
             if (state == null || state.startsWith(Environment.MEDIA_MOUNTED)) {
                 File file = AndroidApplication.instance().getExternalCacheDir();
-                if (file != null) {
+                if (file != null)
                     return file;
-                }
-
             }
             File file = AndroidApplication.instance().getCacheDir();
             if (file != null) {
                 return file;
             }
         } catch (Exception e) {
-            Timber.e(e, "getCacheDir exception [%s]", e.getMessage());
+            Timber.d(e, "getCacheDir exception [%s]", e.getMessage());
         }
         return new File("");
     }
@@ -603,9 +597,8 @@ public class AndroidUtils {
 
             return (int) Math.ceil(density * value);
         } catch (Exception e) {
-            Timber.e(e, "dp exception [%s]", e.getMessage());
+            Timber.d(e, "dp exception [%s]", e.getMessage());
         }
-
         return INT_EMPTY;
     }
 
@@ -626,7 +619,7 @@ public class AndroidUtils {
 
             return density * value;
         } catch (Exception e) {
-            Timber.e(e, "dpf2 exception [%s]", e.getMessage());
+            Timber.d(e, "dpf2 exception [%s]", e.getMessage());
         }
         return FLOAT_EMPTY;
     }
@@ -648,7 +641,7 @@ public class AndroidUtils {
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "checkDisplaySize exception [%s]", e.getMessage());
+            Timber.d(e, "checkDisplaySize exception [%s]", e.getMessage());
         }
     }
 
@@ -697,7 +690,7 @@ public class AndroidUtils {
         try {
             return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
         } catch (Exception e) {
-            Timber.e(e, "isTablet exception [%s]", e.getMessage());
+            Timber.d(e, "isTablet exception [%s]", e.getMessage());
         }
         return false;
     }
@@ -707,7 +700,7 @@ public class AndroidUtils {
             float minSide = Math.min(displaySize.x, displaySize.y) / density;
             return minSide <= 700;
         } catch (Exception e) {
-            Timber.e(e, "isSmallTablet exception [%s]", e.getMessage());
+            Timber.d(e, "isSmallTablet exception [%s]", e.getMessage());
         }
         return false;
     }
@@ -731,7 +724,7 @@ public class AndroidUtils {
                 return Math.min(smallSide, maxSide - leftSide);
             }
         } catch (Exception e) {
-            Timber.e(e, "getMinTabletSide exception [%s]", e.getMessage());
+            Timber.d(e, "getMinTabletSide exception [%s]", e.getMessage());
         }
         return INT_EMPTY;
     }
@@ -744,7 +737,7 @@ public class AndroidUtils {
             mCursorDrawableRes.setAccessible(true);
             mCursorDrawableRes.setInt(editText, 0);
         } catch (Exception e) {
-            Timber.e(e, "clearCursorDrawable exception [%s]", e.getMessage());
+            Timber.d(e, "clearCursorDrawable exception [%s]", e.getMessage());
         }
     }
 
@@ -768,7 +761,7 @@ public class AndroidUtils {
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "clearDrawableAnimation exception [%s]", e.getMessage());
+            Timber.d(e, "clearDrawableAnimation exception [%s]", e.getMessage());
         }
     }
 
@@ -781,7 +774,7 @@ public class AndroidUtils {
             Uri contentUri = Uri.fromFile(f);
             addMediaToGallery(contentUri);
         } catch (Exception e) {
-            Timber.e(e, "addMediaToGallery exception [%s]", e.getMessage());
+            Timber.d(e, "addMediaToGallery exception [%s]", e.getMessage());
         }
     }
 
@@ -793,7 +786,7 @@ public class AndroidUtils {
             mediaScanIntent.setData(uri);
             AndroidApplication.instance().sendBroadcast(mediaScanIntent);
         } catch (Exception e) {
-            Timber.e(e, "addMediaToGallery exception [%s]", e.getMessage());
+            Timber.d(e, "addMediaToGallery exception [%s]", e.getMessage());
         }
     }
 
@@ -809,7 +802,7 @@ public class AndroidUtils {
                 return String.format("%.1f GB", size / 1024.0f / 1024.0f / 1024.0f);
             }
         } catch (Exception e) {
-            Timber.e(e, "formatFileSize exception [%s]", e.getMessage());
+            Timber.d(e, "formatFileSize exception [%s]", e.getMessage());
         }
 
         return STR_EMPTY;
@@ -837,14 +830,10 @@ public class AndroidUtils {
                 }
             }
             byte[] array = buffer.toByteArray();
-            try {
-                buffer.close();
-            } catch (Exception e) {
-
-            }
+            buffer.close();
             return array;
         } catch (Exception e) {
-            Timber.e(e, "decodeQuotedPrintable exception [%s]", e.getMessage());
+            Timber.d(e, "decodeQuotedPrintable exception [%s]", e.getMessage());
         }
         return null;
     }
@@ -872,7 +861,7 @@ public class AndroidUtils {
             destination = new FileOutputStream(destFile);
             destination.getChannel().transferFrom(source.getChannel(), 0, source.getChannel().size());
         } catch (Exception e) {
-
+            Timber.d(e, "copyFile exception [%s]", e.getMessage());
             return false;
         } finally {
             if (source != null) {
@@ -904,7 +893,7 @@ public class AndroidUtils {
             }
 
         } catch (IOException e) {
-            Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+            Timber.d(e, "createTempImageFile exception [%s]", e.getMessage());
             filePath = "";
         } finally {
             try {
@@ -912,17 +901,16 @@ public class AndroidUtils {
                     inputStream.close();
                 }
             } catch (IOException e) {
-                Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+                Timber.d(e, "createTempImageFile exception [%s]", e.getMessage());
             }
             try {
                 if (outStream != null) {
                     outStream.close();
                 }
             } catch (IOException e) {
-                Timber.e(e, "createTempImageFile exception [%s]", e.getMessage());
+                Timber.d(e, "createTempImageFile exception [%s]", e.getMessage());
             }
         }
-
         return filePath;
     }
 
@@ -941,7 +929,7 @@ public class AndroidUtils {
 
             return statusBarHeight;
         } catch (Exception e) {
-            Timber.e(e, "getStatusBarHeight exception [%s]", e.getMessage());
+            Timber.d(e, "getStatusBarHeight exception [%s]", e.getMessage());
         }
 
         return INT_EMPTY;
@@ -972,7 +960,7 @@ public class AndroidUtils {
             scal.setRepeatMode(Animation.REVERSE);
             v.startAnimation(scal);
         } catch (Exception e) {
-            Timber.e(e, "animateLike exception [%s]", e.getMessage());
+            Timber.d(e, "animateLike exception [%s]", e.getMessage());
         }
     }
 
@@ -983,7 +971,7 @@ public class AndroidUtils {
                 deleteRecursive(oldDir);
             }
         } catch (Exception e) {
-            Timber.e(e, "deleteFile exception [%s]", e.getMessage());
+            Timber.d(e, "deleteFile exception [%s]", e.getMessage());
         }
     }
 
@@ -996,7 +984,7 @@ public class AndroidUtils {
             }
             fileOrDirectory.delete();
         } catch (Exception e) {
-            Timber.e(e, "deleteRecursive exception [%s]", e.getMessage());
+            Timber.d(e, "deleteRecursive exception [%s]", e.getMessage());
         }
     }
 
@@ -1005,10 +993,11 @@ public class AndroidUtils {
         try {
             out = new FileWriter(new File(path));
             out.write(fileContents);
+        } catch (Exception e) {
+            Timber.d(e, "writeToFile exception [%s]", e.getMessage());
         } finally {
-            if (out != null) {
+            if (out != null)
                 out.close();
-            }
         }
     }
 
@@ -1018,11 +1007,12 @@ public class AndroidUtils {
         BufferedReader in = null;
         FileReader fr = null;
         try {
-
             fr = new FileReader(new File(filePath));
             in = new BufferedReader(fr);
             while ((line = in.readLine()) != null) stringBuilder.append(line);
 
+        } catch (Exception e) {
+            Timber.d(e, "readFromFile exception [%s]", e.getMessage());
         } finally {
             if (in != null) in.close();
             if (fr != null) fr.close();
@@ -1034,7 +1024,6 @@ public class AndroidUtils {
         ZipInputStream zis = new ZipInputStream(
                 new BufferedInputStream(new FileInputStream(zipFile)));
         try {
-
             ZipEntry ze;
             int count;
             byte[] buffer = new byte[1024];
@@ -1059,10 +1048,11 @@ public class AndroidUtils {
                 file.setLastModified(time);
             */
             }
+        } catch (Exception e) {
+            Timber.d(e, "unzip exception [%s]", e.getMessage());
         } finally {
             if (zis != null) zis.close();
         }
-
         return true;
     }
 
@@ -1073,10 +1063,8 @@ public class AndroidUtils {
     public static String unzip2(File zipFile, File targetDirectory) throws IOException {
         ZipInputStream zis = new ZipInputStream(
                 new BufferedInputStream(new FileInputStream(zipFile)));
-
         String dirPath = null;
         try {
-
             ZipEntry ze;
             int count;
             byte[] buffer = new byte[1024 * 2];
@@ -1139,6 +1127,7 @@ public class AndroidUtils {
                 returnString.append(line);
             }
         } catch (Exception e) {
+            Timber.d(e, "readFileFromAsset exception [%s]", e.getMessage());
         } finally {
             try {
                 if (isr != null)
@@ -1147,17 +1136,20 @@ public class AndroidUtils {
                     fIn.close();
                 if (input != null)
                     input.close();
-            } catch (Exception e2) {
+            } catch (Exception e) {
+                Timber.d(e, "readFileFromAsset exception [%s]", e.getMessage());
             }
         }
         return returnString.toString();
     }
 
-    public static void setDefaultFont(Context context,
-                                      String staticTypefaceFieldName, String fontAssetName) {
-        final Typeface regular = Typeface.createFromAsset(context.getAssets(),
-                fontAssetName);
-        replaceFont(staticTypefaceFieldName, regular);
+    public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
+        try {
+            final Typeface regular = Typeface.createFromAsset(context.getAssets(), fontAssetName);
+            replaceFont(staticTypefaceFieldName, regular);
+        } catch (Exception e) {
+            Timber.d(e, "setDefaultFont exception [%s]", e.getMessage());
+        }
     }
 
     private static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
@@ -1175,7 +1167,7 @@ public class AndroidUtils {
                 staticField.set(null, newTypeface);
             }
         } catch (Exception e) {
-            Timber.e(e, "replaceFont exception [%s]", e.getMessage());
+            Timber.d(e, "replaceFont exception [%s]", e.getMessage());
         }
     }
 
@@ -1210,7 +1202,7 @@ public class AndroidUtils {
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
             }
         } catch (Exception e) {
-            Timber.e(e, "setSpannedMessageToView exception [%s]", e.getMessage());
+            Timber.d(e, "setSpannedMessageToView exception [%s]", e.getMessage());
         }
     }
 
@@ -1227,7 +1219,7 @@ public class AndroidUtils {
                     context.getString(spannedMessage),
                     isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
         } catch (Exception e) {
-            Timber.e(e, "setSpannedMessageToView exception [%s]", e.getMessage());
+            Timber.d(e, "setSpannedMessageToView exception [%s]", e.getMessage());
         }
     }
 
@@ -1249,7 +1241,7 @@ public class AndroidUtils {
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "getFrontCameraId exception [%s]", e.getMessage());
+            Timber.d(e, "getFrontCameraId exception [%s]", e.getMessage());
         }
 
         return -1; // No front-facing camera found
@@ -1268,7 +1260,7 @@ public class AndroidUtils {
             Matcher matcher = pattern.matcher(input);
             return matcher.find();
         } catch (Exception e) {
-            Timber.e(e, "isHttpRequest exception [%s]", e.getMessage());
+            Timber.d(e, "isHttpRequest exception [%s]", e.getMessage());
         }
         return false;
     }
@@ -1281,7 +1273,7 @@ public class AndroidUtils {
         try {
             return DeviceUtil.getDeviceName().toUpperCase().matches("(.*)XIAOMI(.*)");
         } catch (Exception e) {
-            Timber.e(e, "isXiaomiDevice() exception [%s]", e.getMessage());
+            Timber.d(e, "isXiaomiDevice() exception [%s]", e.getMessage());
         }
         return false;
     }
@@ -1311,7 +1303,7 @@ public class AndroidUtils {
 
             return sUserAgent;
         } catch (Exception e) {
-            Timber.e(e, "getUserAgent exception [%s]", e.getMessage());
+            Timber.d(e, "getUserAgent exception [%s]", e.getMessage());
         }
         return STR_EMPTY;
     }
@@ -1323,7 +1315,7 @@ public class AndroidUtils {
             DrawableCompat.setTint(drawable.mutate(), ContextCompat.getColor(context, color));
             return drawable;
         } catch (Exception e) {
-            Timber.e(e, "getTintedDrawable exception [%s]", e.getMessage());
+            Timber.d(e, "getTintedDrawable exception [%s]", e.getMessage());
         }
         return null;
     }
