@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -30,7 +30,6 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
-import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -48,6 +47,9 @@ import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+import vn.com.zalopay.wallet.voucher.IInteractVoucher;
+import vn.com.zalopay.wallet.voucher.IVoucherDialogBuilder;
+import vn.com.zalopay.wallet.voucher.VoucherRender;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
@@ -57,6 +59,8 @@ import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
  */
 
 public class ChannelListFragment extends GenericFragment<ChannelListPresenter> implements ChannelListContract.IView {
+    IVoucherDialogBuilder mVoucherDialogBuilder;
+    VoucherRender mVoucherRender;
     private boolean delayClick = false;
     private View.OnClickListener mConfirmClick = view -> {
         if (!delayClick) {
@@ -67,7 +71,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     };
     private RecyclerView channel_list_recycler;
     private String mOriginTitle;
-
     private View order_amount_linearlayout;
     private TextView order_amount_txt;
     private TextView order_description_txt;
@@ -77,16 +80,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private LinearLayout item_detail_linearlayout;
     private Button confirm_button;
     private View view_top_linearlayout;
-
     private View voucher_relativelayout;
     private View voucher_txt;
     private View active_voucher_relativelayout;
     private TextView active_voucher_textview;
     private TextView voucher_discount_amount_textview;
     private View active_voucher_del_img;
-
-    private ViewStub vouchercode_input_stub;
-    private View vouchercode_input_popup;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -146,7 +145,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         voucher_relativelayout = view.findViewById(R.id.voucher_relativelayout);
         voucher_txt = view.findViewById(R.id.voucher_txt);
-        vouchercode_input_stub = (ViewStub) view.findViewById(R.id.vouchercode_input_stub);
 
         active_voucher_relativelayout = view.findViewById(R.id.active_voucher_relativelayout);
         active_voucher_textview = (TextView) view.findViewById(R.id.active_voucher_textview);
@@ -262,7 +260,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void renderVoucher() {
         voucher_relativelayout.setVisibility(View.VISIBLE);
-        voucher_txt.setOnClickListener(view -> showVoucherCodeDialog());
+        voucher_txt.setOnClickListener(view -> {
+            try {
+                showVoucherCodeInput();
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        });
         active_voucher_relativelayout.setVisibility(View.GONE);
     }
 
@@ -278,70 +282,80 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         discountFormat = String.format(discountFormat, CurrencyUtil.formatCurrency(discountAmount));
 
         voucher_discount_amount_textview.setText(discountFormat);
-        active_voucher_del_img.setOnClickListener(view -> {
-            showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
-                @Override
-                public void onCancelEvent() {
-                    if(mPresenter == null){
-                        return;
-                    }
-                    mPresenter.clearVoucher();
-                    renderVoucher();
+        active_voucher_del_img.setOnClickListener(view -> showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+                if (mPresenter == null) {
+                    return;
                 }
+                mPresenter.clearVoucher();
+                renderVoucher();
+            }
 
-                @Override
-                public void onOKEvent() {
-                }
-            });
-        });
+            @Override
+            public void onOKEvent() {
+            }
+        }));
 
-        voucher_relativelayout.setVisibility(View.GONE);
+        hideVoucherCodePopup();
     }
 
     @Override
     public void setVoucherError(String error) {
-        if (vouchercode_input_popup == null) {
-            vouchercode_input_popup = vouchercode_input_stub.inflate();
+        if (mVoucherRender == null) {
+            return;
         }
-        TextView error_textview = (TextView) vouchercode_input_popup.findViewById(R.id.error_textview);
-        error_textview.setText(error);
-        boolean hasError = !TextUtils.isEmpty(error);
-        error_textview.setVisibility(hasError ? View.VISIBLE : View.GONE);
+        mVoucherRender.setError(error);
+        mVoucherRender.hideLoading();
     }
 
     @Override
     public void hideVoucherCodePopup() {
-        if (vouchercode_input_stub == null) {
+        if (mVoucherRender == null) {
+            Timber.d("mVoucherRender is null - skip hide voucher code popup");
             return;
         }
-        if (vouchercode_input_popup == null) {
-            vouchercode_input_popup = vouchercode_input_stub.inflate();
+        try {
+            mVoucherRender.OnDismiss();
+            mVoucherRender = null;
+        } catch (Exception e) {
+            Timber.d(e);
         }
-        vouchercode_input_popup.setVisibility(View.GONE);
     }
 
-    private void showVoucherCodeDialog() {
-        if (vouchercode_input_stub == null) {
-            return;
-        }
-        if (vouchercode_input_popup == null) {
-            vouchercode_input_popup = vouchercode_input_stub.inflate();
-        }
-        vouchercode_input_popup.setVisibility(View.VISIBLE);
+    private void showVoucherCodeInput() throws Exception {
+        mVoucherDialogBuilder = VoucherRender.getBuilder();
+        View contentView = View.inflate(getContext(), R.layout.module__vouchercode__input, null);
+        mVoucherDialogBuilder
+                .setView(contentView)
+                .setInteractListener(new IInteractVoucher() {
+                    @Override
+                    public void onClose() {
+                        if (mVoucherDialogBuilder != null) {
+                            mVoucherDialogBuilder.release();
+                            mVoucherDialogBuilder = null;
+                        }
+                    }
 
-        View closeView = vouchercode_input_popup.findViewById(R.id.cancel_img);
-        if(closeView != null){
-            closeView.setOnClickListener(view -> vouchercode_input_popup.setVisibility(View.GONE));
-        }
-
-        View useVoucherView = vouchercode_input_popup.findViewById(R.id.use_vouchercode_textview);
-        EditText vouchercode_input_edittext = (EditText) vouchercode_input_popup.findViewById(R.id.vouchercode_input_edittext);
-        if(useVoucherView == null || vouchercode_input_edittext == null){
-            return;
-        }
-        useVoucherView.setOnClickListener(view -> mPresenter.useVoucher(vouchercode_input_edittext.getText().toString()));
-        applyFont(vouchercode_input_edittext, GlobalData.getStringResource(RS.string.sdk_font_medium));
-        SdkUtils.focusAndSoftKeyboard(getActivity(), vouchercode_input_edittext);
+                    @Override
+                    public void onVoucherInfoComplete(String voucherCode) {
+                        if (TextUtils.isEmpty(voucherCode)) {
+                            return;
+                        }
+                        if (mPresenter != null) {
+                            if (mVoucherRender != null) {
+                                mVoucherRender.showLoading();
+                            }
+                            mPresenter.useVoucher(voucherCode);
+                        }
+                    }
+                });
+        mVoucherRender = (VoucherRender) mVoucherDialogBuilder.build();
+        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mVoucherRender);
+        bottomSheetDialog.preventDrag(true);
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        bottomSheetDialog.show();
+        bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @Override

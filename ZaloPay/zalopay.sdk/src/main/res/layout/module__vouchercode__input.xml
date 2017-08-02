@@ -1,18 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/sdk_margin_top_bottom"
     android:paddingLeft="@dimen/sdk_margin_left_right"
     android:paddingRight="@dimen/sdk_margin_left_right"
-    android:background="@color/white">
+    android:paddingTop="@dimen/sdk_margin_top_bottom">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cancel_img"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/sdk_ic_arrow_size"
         android:layout_height="wrap_content"
         android:layout_gravity="top|left"
-        android:src="@drawable/ic_close"
-        android:tint="@color/gray"/>
+        android:padding="5dp"
+        app:actualImageScaleType="centerInside"
+        app:viewAspectRatio="1" />
+
 
     <TextView
         android:layout_width="match_parent"
@@ -21,15 +26,34 @@
         android:gravity="center_horizontal"
         android:text="@string/sdk_voucher_code_input_title" />
 
-    <EditText
-        android:id="@+id/vouchercode_input_edittext"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_large"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@color/text_color_grey"
-        android:background="@drawable/bg_non_background"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_large">
+
+        <TextView
+            android:id="@+id/vouchercode_input_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="#"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/text_color" />
+
+        <EditText
+            android:id="@+id/vouchercode_input_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_non_background"
+            android:imeOptions="actionNext|flagNoExtractUi"
+            android:inputType="textCapCharacters|textVisiblePassword"
+            android:maxLength="@integer/maximum_charactor_voucher_code"
+            android:maxLines="1"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/text_color_gray" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/error_textview"
@@ -37,17 +61,42 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_large"
         android:gravity="center_horizontal"
-        android:visibility="gone"
-        android:textColor="@color/holo_red_light" />
+        android:textColor="@color/holo_red_light"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/use_vouchercode_textview"
-        android:layout_width="match_parent"
+    <com.zalopay.ui.widget.password.indicator.LoadingIndicatorView
+        android:id="@+id/loading_view"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/pin_error_height"
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible"
+        app:indicator_color="@color/blue_gray" />
+
+    <LinearLayout
+        android:id="@+id/use_vouchercode_ll"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_large"
-        android:gravity="center_horizontal"
-        android:text="@string/sdk_voucher_code_btn_text"
-        android:textColor="@color/colorPrimary" />
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/use_vouchercode_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginBottom="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_large"
+            android:drawablePadding="5dp"
+            android:text="@string/sdk_voucher_code_btn_text"
+            android:textColor="@color/text_color" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/use_vouchercode_img"
+            android:layout_width="@dimen/sdk_ic_arrow_size"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
+    </LinearLayout>
 
 </LinearLayout>

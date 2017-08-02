@@ -48,11 +48,4 @@
         android:gravity="center"
         android:text="@string/sdk_pay_button_confirm_txt" />
 
-    <ViewStub
-        android:id="@+id/vouchercode_input_stub"
-        android:inflatedId="@+id/voucher_code_input"
-        android:layout="@layout/module__vouchercode__input"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </RelativeLayout>

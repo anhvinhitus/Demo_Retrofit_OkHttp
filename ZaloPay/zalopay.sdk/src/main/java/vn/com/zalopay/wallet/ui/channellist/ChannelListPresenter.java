@@ -421,7 +421,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     void onUseVouchComplete(VoucherInfo voucherInfo) {
         Timber.d("response use voucher %s", GsonUtils.toJsonString(voucherInfo));
         try {
-            getViewOrThrow().hideLoading();
             getViewOrThrow().hideVoucherCodePopup();
             if (voucherInfo == null || mPaymentInfoHelper == null) {
                 return;
@@ -460,31 +459,27 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
             return;
         }
+        if (TextUtils.isEmpty(voucherCode)) {
+            return;
+        }
+        String upperVoucherCode = voucherCode.toUpperCase();
         String userId = mPaymentInfoHelper.getUserId();
         String accessToken = mPaymentInfoHelper.getUserInfo().accesstoken;
         String appTrans = mPaymentInfoHelper.getAppTransId();
         long appId = mPaymentInfoHelper.getAppId();
         long amount = mPaymentInfoHelper.getAmount();
         long time = System.currentTimeMillis();
-        mVoucherInteractor.validateVoucher(userId, accessToken, appTrans, appId, amount, time, voucherCode)
+        mVoucherInteractor.validateVoucher(userId, accessToken, appTrans, appId, amount, time, upperVoucherCode)
                 .map(voucherInfo -> {
                     if (voucherInfo != null) {
-                        voucherInfo.vouchercode = voucherCode;
+                        voucherInfo.vouchercode = upperVoucherCode;
                     }
                     return voucherInfo;
                 })
                 .compose(SchedulerHelper.applySchedulers())
-                .doOnSubscribe(() -> {
-                    try {
-                        getViewOrThrow().showLoading(mContext.getResources().getString(R.string.sdk_validate_voucher_loading_text));
-                    } catch (Exception e) {
-                        Timber.w(e);
-                    }
-                })
                 .subscribe(this::onUseVouchComplete, throwable -> {
-                    Timber.w(throwable, "Exception use voucher %s", voucherCode);
+                    Timber.w(throwable, "Exception use voucher %s", upperVoucherCode);
                     try {
-                        getViewOrThrow().hideLoading();
                         String error = TransactionHelper.getMessage(mContext, throwable);
                         getViewOrThrow().setVoucherError(error);
                     } catch (Exception e) {

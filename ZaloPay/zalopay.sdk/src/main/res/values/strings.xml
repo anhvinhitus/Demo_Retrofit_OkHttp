@@ -402,8 +402,9 @@
     <string name="sdk_voucher_input_text">Nhập</string>
     <string name="sdk_validate_voucher_loading_text">Kiểm tra voucher</string>
     <string name="sdk_voucher_code_input_title">Nhập mã khuyến mãi</string>
-    <string name="sdk_voucher_code_btn_text">Sử dụng mã KM ></string>
-    <string name="sdk_active_voucher_cod_format">Mã %1$s</string>
+    <string name="sdk_voucher_code_btn_text">Sử dụng mã KM</string>
+    <string name="sdk_active_voucher_cod_format">#%1$s</string>
     <string name="sdk_discount_amount_voucher_format">- %1$s</string>
     <string name="sdk_delete_voucher_confirm_text">Bạn muốn hủy bỏ mã khuyến mãi ?</string>
+    <string name="sdk_voucher_code_empty_mess">Nhập mã khuyến mãi để tiếp tục</string>
 </resources>

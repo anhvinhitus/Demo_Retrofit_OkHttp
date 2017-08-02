@@ -13,6 +13,7 @@
         android:layout_marginBottom="@dimen/sdk_margin_top_bottom_large"
         android:layout_marginTop="@dimen/sdk_margin_top_bottom_large"
         android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +22,8 @@
             android:text="@string/sdk_currency_unit"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/sdk_text_size_amount_unit"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
+
         <TextView
             android:id="@+id/order_amount_total_txt"
             android:layout_width="wrap_content"
@@ -48,9 +50,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/sdk_margin_left_right"
         android:layout_marginRight="@dimen/sdk_margin_left_right"
+        android:ellipsize="end"
         android:gravity="center"
         android:lines="3"
-        android:ellipsize="end"
         android:textColor="@color/text_color_grey"
         android:textSize="@dimen/zpw_text_size_medium"
         android:textStyle="italic" />
@@ -85,8 +87,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorPrimary"
             android:text="@string/sdk_voucher_input_text"
+            android:textColor="@color/colorPrimary"
             android:textSize="@dimen/zpw_text_size_medium" />
     </RelativeLayout>
 
@@ -105,7 +107,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="@string/sdk_voucher_title"
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
 
@@ -113,9 +114,10 @@
             android:id="@+id/active_voucher_del_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/active_voucher_textview"
-            android:layout_marginLeft="3dp"
-            android:src="@android:drawable/ic_delete"/>
+            android:src="@drawable/ic_round_delete" />
 
         <TextView
             android:id="@+id/voucher_discount_amount_textview"
@@ -123,8 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/sdk_voucher_input_text"
+            android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
     </RelativeLayout>
 

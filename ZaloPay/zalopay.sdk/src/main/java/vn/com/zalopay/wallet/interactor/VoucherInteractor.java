@@ -86,6 +86,7 @@ public class VoucherInteractor implements VoucherStore.Interactor {
 
     @Override
     public Observable<VoucherInfo> validateVoucher(String userID, String accessToken, String appTransID, long appID, long amount, long timestamp, String voucherCode) {
+        mRetryCount = 0;
         Observable<UseVoucherResponse> useVoucherObservable = useVoucher(userID, accessToken, appTransID, appID, amount, timestamp, voucherCode);
         return useVoucherObservable
                 .onErrorReturn(throwable -> null)
@@ -108,11 +109,6 @@ public class VoucherInteractor implements VoucherStore.Interactor {
         return mVoucherService.getVoucherStatus(userID, accessToken, voucherSig)
                 .onErrorReturn(throwable -> null)
                 .doOnSubscribe(() -> mRetryCount++)
-               /* .map(statusResponse -> {
-                    statusResponse.isprocessing = true;
-                    statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
-                    return statusResponse;
-                })*/
                 .repeatWhen(observable -> observable.delay(mIntervalRetry, MILLISECONDS))
                 .takeUntil(this::shouldStopCheckVoucherStatus)
                 .filter(this::shouldStopCheckVoucherStatus);
