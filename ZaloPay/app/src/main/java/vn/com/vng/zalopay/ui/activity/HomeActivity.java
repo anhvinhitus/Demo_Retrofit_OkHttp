@@ -179,11 +179,15 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         if (event == null) {
             return;
         }
-        View contentView = View.inflate(getApplicationContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
-        builder.setView(contentView);
-        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, builder.build());
-        bottomSheetDialog.show();
-        bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+        try {
+            View contentView = View.inflate(getApplicationContext(), vn.zalopay.promotion.R.layout.layout_promotion_cash_back, null);
+            builder.setView(contentView);
+            UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, builder.build());
+            bottomSheetDialog.show();
+            bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     @Override

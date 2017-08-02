@@ -8,6 +8,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 
+import timber.log.Timber;
+
 public class UIBottomSheetDialog extends BottomSheetDialog {
     IRender mRender;
     boolean mPreventDrag = false;
@@ -15,21 +17,29 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
     public UIBottomSheetDialog(@NonNull Context context, @StyleRes int theme, @NonNull IRender pRender) {
         super(context, theme);
         mRender = pRender;
-        setContentView(mRender.getView());
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
-        configureBottomSheetBehavior(bottomSheetBehavior);
-        pRender.render(context);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if (mRender != null) {
-                    mRender.OnDismiss();
+        try {
+            setContentView(mRender.getView());
+            BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
+            configureBottomSheetBehavior(bottomSheetBehavior);
+            pRender.render(context);
+            setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    try {
+                        if (mRender != null) {
+                            mRender.OnDismiss();
+                        }
+                    } catch (Exception e) {
+                        Timber.d(e);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
-    public void setState(int state) {
+    public void setState(int state) throws Exception {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mRender.getView().getParent());
         bottomSheetBehavior.setState(state);
     }
@@ -70,10 +80,10 @@ public class UIBottomSheetDialog extends BottomSheetDialog {
     }
 
     public interface IRender {
-        void render(Context context);
+        void render(Context context) throws Exception;
 
-        View getView();
+        View getView() throws Exception;
 
-        void OnDismiss();
+        void OnDismiss() throws Exception;
     }
 }

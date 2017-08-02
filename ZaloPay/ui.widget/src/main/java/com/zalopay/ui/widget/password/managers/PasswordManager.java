@@ -81,8 +81,12 @@ public class PasswordManager {
             @Override
             public void run() {
                 if (!isShowing()) {
-                    mUiBottomSheetDialog.show();
-                    mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    try {
+                        mUiBottomSheetDialog.show();
+                        mUiBottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    } catch (Exception e) {
+                        Timber.d(e);
+                    }
                 }
             }
         });
