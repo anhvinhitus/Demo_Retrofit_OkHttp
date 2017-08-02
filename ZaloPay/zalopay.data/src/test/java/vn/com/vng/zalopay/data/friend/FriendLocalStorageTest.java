@@ -13,12 +13,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.ApplicationTestCase;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.util.DBOpenHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
@@ -33,7 +35,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
     @Before
     public void setUp() throws Exception {
-        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
+        DBOpenHelper openHelper = new DBOpenHelper(RuntimeEnvironment.application, "zalopay.db");
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
 
@@ -99,8 +101,12 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
     }
 
     private List<Contact> listContact() {
+        return listContact(30);
+    }
+
+    private List<Contact> listContact(int length) {
         List<Contact> ret = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < length; i++) {
             ret.add(createContact("contact" + i, PHONE_START + i));
         }
         return ret;
@@ -115,34 +121,41 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
     @Test
     public void getCursorAllData() {
-        List<ZaloUserEntity> zaloUser = listZaloProfile();
+        int zaloLength = 10;
+        int zalopayLength = 8;
+        int contactLength = 30;
+
+        List<ZaloUserEntity> zaloUser = listZaloProfile(zaloLength);
         mFriendLocalStorage.putZaloUser(zaloUser);
 
-        List<ZaloPayUserEntity> entry = listZaloPayProfile();
+        List<ZaloPayUserEntity> entry = listZaloPayProfile(zalopayLength);
         mFriendLocalStorage.putZaloPayUser(entry);
 
-
-        List<Contact> contacts = listContact();
+        List<Contact> contacts = listContact(contactLength);
         mFriendLocalStorage.putContacts(contacts);
 
-        Cursor cursor = mFriendLocalStorage.getZaloUserCursor(true, false);
+        System.out.println(String.format("entry count [zalo: %s, zalopay: %s, contact %s]", zaloUser.size(), entry.size(), contacts.size()));
 
-        System.out.println("cursor : " + cursor + " " + cursor.getCount());
+        Cursor cursor = mFriendLocalStorage.getZaloUserCursor(false, false);
+        Assert.assertTrue(cursor != null);
+        System.out.println("result count 1: " + cursor.getCount());
 
-     /*   if (cursor.moveToNext()) {
-            while (!cursor.isAfterLast()) {
+        Assert.assertTrue(cursor.getCount() == zaloUser.size() + contacts.size());
 
-                // System.out.println("  " + cursor.getString());
-                for (String column : cursor.getColumnNames()) {
-                    System.out.println(" columnName : [" + column + "]    value: [" + cursor.getString(cursor.getColumnIndex(column)) + "]");
-                }
-                System.out.println("----------------------------------------");
+        cursor = mFriendLocalStorage.getZaloUserCursor(true, false);
+        Assert.assertTrue(cursor != null);
+        System.out.println("result count 2: " + cursor.getCount());
+        Assert.assertTrue(cursor.getCount() == contactLength + zaloLength - zalopayLength);
 
-                cursor.moveToNext();
-            }
-        }*/
-        Assert.assertTrue(cursor.getCount() == zaloUser.size());
+        cursor = mFriendLocalStorage.getZaloUserCursor(false, true);
+        Assert.assertTrue(cursor != null);
+        System.out.println("result count 3: " + cursor.getCount());
+        Assert.assertTrue(cursor.getCount() == zalopayLength + contactLength);
 
+        cursor = mFriendLocalStorage.getZaloUserCursor(true, true);
+        Assert.assertTrue(cursor != null);
+        System.out.println("result count 4: " + cursor.getCount());
+        Assert.assertTrue(cursor.getCount() == contactLength);
 
     }
 

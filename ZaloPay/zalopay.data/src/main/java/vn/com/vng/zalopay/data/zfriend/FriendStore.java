@@ -42,9 +42,9 @@ public interface FriendStore {
         @NonNull
         List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloIds);
 
-        Cursor getZaloUserCursor(boolean enableContact, boolean isWithPhone);
+        Cursor getZaloUserCursor(boolean isSyncContact, boolean isWithPhone);
 
-        Cursor findFriends(String s, boolean enableContact, boolean isWithPhone);
+        Cursor findFriends(String s, boolean isSyncContact, boolean isWithPhone);
 
         @NonNull
         List<Long> getZaloUserWithoutZaloPayId();
