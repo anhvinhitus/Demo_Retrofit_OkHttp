@@ -163,6 +163,31 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/personal_dashline_height"
+                    android:layout_marginLeft="@dimen/personal_dashline_margin_left"
+                    android:background="@color/separate" />
+
+                <RelativeLayout
+                    android:id="@+id/tab_personal_voucher"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/personal_menu_item_height"
+                    android:background="@drawable/default_white_selector">
+
+                    <com.zalopay.ui.widget.IconFontTextView
+                        style="@style/TextView.Personal.Item"
+                        android:drawablePadding="@dimen/personal_margin_12"
+                        android:text="@string/personal_item_voucher_title"
+                        android:textSize="@dimen/personal_general_text_main"
+                        app:iconLeftColor="@color/personal_ic_bank"
+                        app:iconLeftName="@string/personal_linkbank"
+                        app:iconLeftSize="@dimen/personal_iconfont"
+                        app:iconRightColor="@color/arrow_right"
+                        app:iconRightName="@string/general_arrowright"
+                        app:iconRightSize="@dimen/font_size_arrow_right" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/personal_dashline_height"
                     android:background="@color/separate" />
 
             </LinearLayout>

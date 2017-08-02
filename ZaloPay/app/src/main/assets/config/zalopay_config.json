@@ -21,13 +21,6 @@
       "icon_color": "#f6b501"
     },
     {
-      "inside_app_id": 2,
-      "app_type": -1,
-      "app_name": "Nạp tiền",
-      "icon_name": "notify_1_receivemoney",
-      "icon_color": "#129d5a"
-    },
-    {
       "inside_app_id": 3,
       "app_type": -1,
       "app_name": "Liên kết thẻ",

@@ -66,6 +66,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
     @Override
     protected boolean doParams() {
         try {
+
             long appId = mPaymentHelper.getAppId();
             AbstractOrder order = mPaymentHelper.getOrder();
             UserInfo userInfo = mPaymentHelper.getUserInfo();

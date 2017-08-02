@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.paymentapps;
 
 import android.util.LongSparseArray;
 
-import com.zalopay.apploader.impl.BundleServiceImpl;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +79,8 @@ public class PaymentAppConfig {
                 PaymentAppTypeEnum.REACT_NATIVE.value, "TK Zalo Pay"));
         EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BuildConfig.WITHDRAW_APP_ID,
                 PaymentAppTypeEnum.REACT_NATIVE.value, "Withdraw"));
+        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BuildConfig.VOUCHER_APP_ID,
+                PaymentAppTypeEnum.REACT_NATIVE.value, "Voucher"));
 
         EXCEPT_LOAD_FONTS = new ArrayList<>();
         EXCEPT_LOAD_FONTS.add(Constants.FONT_FAMILY_NAME_ZALOPAY);

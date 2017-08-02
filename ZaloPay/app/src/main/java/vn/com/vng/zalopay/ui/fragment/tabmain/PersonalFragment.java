@@ -193,6 +193,10 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
         ZPAnalytics.trackEvent(ZPEvents.ME_TOUCH_BANK);
         AndroidUtils.runOnUIThread(() -> mClickMore = true, 200);
     }
+    @OnClick(R.id.tab_personal_voucher)
+    public void onListVoucherClick() {
+        presenter.startAppListVoucher();
+    }
 
 //    @OnClick(R.id.tab_personal_rl_bill)
 //    public void onBillClick() {

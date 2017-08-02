@@ -51,6 +51,7 @@ android {
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
         buildConfigField 'int', 'WITHDRAW_APP_ID', '2'
+        buildConfigField 'int', 'VOUCHER_APP_ID', '67'
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', "\"" + cfg.applicationId + "\""
         buildConfigField "boolean", "GA_DEBUG", "false"
         ndk {

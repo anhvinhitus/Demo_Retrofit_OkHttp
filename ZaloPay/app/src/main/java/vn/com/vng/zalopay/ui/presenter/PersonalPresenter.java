@@ -17,20 +17,25 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.BuildConfig;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by datnt10 on 3/27/17.
@@ -42,6 +47,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private BalanceStore.Repository mBalanceRepository;
     private ZaloSdkApi mZaloSdkApi;
     private Navigator mNavigator;
+    private AppResourceStore.Repository mAppResourceRepository;
 
     public int getAccounts() {
         return accounts;
@@ -58,12 +64,13 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             , EventBus eventBus
             , BalanceStore.Repository balanceRepository
             , ZaloSdkApi zaloSdkApi
-            , Navigator navigator) {
+            , Navigator navigator, AppResourceStore.Repository appResourceRepository) {
         this.mUser = user;
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
+        this.mAppResourceRepository = appResourceRepository;
     }
 
     @Override
@@ -223,5 +230,24 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
     public void addLinkCard() {
         mNavigator.startBankSupportSelectionActivityWithoutBank(getContext());
+    }
+
+    /**
+     * Test
+     */
+    public void startAppListVoucher() {
+        AppResource appResource = getAppResource(17);
+        if (appResource == null) {
+            appResource = new AppResource(17);
+        }
+        startExternalApp(appResource);
+    }
+
+    private void startExternalApp(AppResource app) {
+        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(app.appid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
+        mSubscription.add(subscription);
     }
 }
