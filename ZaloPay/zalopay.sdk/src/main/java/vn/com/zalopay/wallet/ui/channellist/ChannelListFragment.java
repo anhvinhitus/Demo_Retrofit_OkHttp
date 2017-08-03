@@ -25,8 +25,6 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
@@ -42,6 +40,7 @@ import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.GenericFragment;
@@ -61,6 +60,7 @@ import static vn.com.zalopay.wallet.helper.RenderHelper.genDynamicItemDetail;
 public class ChannelListFragment extends GenericFragment<ChannelListPresenter> implements ChannelListContract.IView {
     IVoucherDialogBuilder mVoucherDialogBuilder;
     VoucherRender mVoucherRender;
+    UIBottomSheetDialog mVoucherDialog;
     private boolean delayClick = false;
     private View.OnClickListener mConfirmClick = view -> {
         if (!delayClick) {
@@ -168,6 +168,10 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         Timber.d("set title %s", title);
     }
 
+    private boolean showingVoucherDialog() {
+        return mVoucherDialog != null && mVoucherDialog.isShowing();
+    }
+
     protected void setupRecyclerView() {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         //channel_list_recycler.setHasFixedSize(true);
@@ -221,6 +225,16 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         Timber.d("recycle activity");
         if (getActivity() != null) {
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (showingVoucherDialog()
+                && mVoucherRender != null) {
+            mVoucherRender.showKeyBoard();
+            Timber.d("show keyboard voucher dialog on resume");
         }
     }
 
@@ -282,6 +296,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         discountFormat = String.format(discountFormat, CurrencyUtil.formatCurrency(discountAmount));
 
         voucher_discount_amount_textview.setText(discountFormat);
+        ResourceManager.loadImageIntoView(active_voucher_del_img, RS.drawable.ic_round_delete);
         active_voucher_del_img.setOnClickListener(view -> showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -351,11 +366,11 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                     }
                 });
         mVoucherRender = (VoucherRender) mVoucherDialogBuilder.build();
-        UIBottomSheetDialog bottomSheetDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mVoucherRender);
-        bottomSheetDialog.preventDrag(true);
-        bottomSheetDialog.setCanceledOnTouchOutside(false);
-        bottomSheetDialog.show();
-        bottomSheetDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mVoucherDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mVoucherRender);
+        mVoucherDialog.preventDrag(true);
+        mVoucherDialog.setCanceledOnTouchOutside(false);
+        mVoucherDialog.show();
+        mVoucherDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @Override

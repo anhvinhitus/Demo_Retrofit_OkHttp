@@ -9,20 +9,19 @@
     android:paddingRight="@dimen/sdk_margin_left_right"
     android:paddingTop="@dimen/sdk_margin_top_bottom">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/cancel_img"
-        android:layout_width="@dimen/sdk_ic_arrow_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|left"
-        android:padding="5dp"
-        app:actualImageScaleType="centerInside"
-        app:viewAspectRatio="1" />
-
+        android:layout_marginLeft="@dimen/btn_cancel_round_padding"
+        android:layout_marginTop="@dimen/btn_cancel_round_padding"
+        android:padding="@dimen/btn_cancel_round_padding"
+        android:src="@drawable/cancel" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_large"
         android:gravity="center_horizontal"
         android:text="@string/sdk_voucher_code_input_title" />
 
@@ -85,16 +84,14 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginBottom="@dimen/padding_large"
             android:layout_marginTop="@dimen/padding_large"
-            android:drawablePadding="5dp"
             android:text="@string/sdk_voucher_code_btn_text"
             android:textColor="@color/text_color" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/use_vouchercode_img"
-            android:layout_width="@dimen/sdk_ic_arrow_size"
+            android:layout_width="@dimen/sdk_icon_size"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="5dp"
             app:actualImageScaleType="centerInside"
             app:viewAspectRatio="1" />
     </LinearLayout>

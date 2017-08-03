@@ -35,6 +35,7 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 public class VoucherRender implements UIBottomSheetDialog.IRender {
     IUIBottomSheetBuilder mBuilder;
     WeakReference<Context> mContext;
+    EditText mInputView;
 
     VoucherRender(IUIBottomSheetBuilder builder) {
         this.mBuilder = builder;
@@ -42,6 +43,16 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
 
     public static IVoucherDialogBuilder getBuilder() {
         return new VoucherDialogBuilder();
+    }
+
+    public void showKeyBoard() {
+        new Handler().postDelayed(() -> {
+            try {
+                SdkUtils.focusAndSoftKeyboard((Activity) getContext(), mInputView);
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        }, 100);
     }
 
     public void setError(String error) {
@@ -142,7 +153,6 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
             mContext = new WeakReference<>(context);
             View closeView = view.findViewById(R.id.cancel_img);
             if (closeView != null) {
-                ResourceManager.loadImageIntoView(closeView, RS.drawable.ic_delete);
                 closeView.setOnClickListener(view1 -> {
                     try {
                         if (mBuilder == null) {
@@ -157,18 +167,19 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
             View use_vouchercode_ll = view.findViewById(R.id.use_vouchercode_ll);
             ImageView use_vouchercode_img = (ImageView) view.findViewById(R.id.use_vouchercode_img);
             TextView useVoucherView = (TextView) view.findViewById(R.id.use_vouchercode_textview);
-            EditText vouchercode_input_edittext = (EditText) view.findViewById(R.id.vouchercode_input_edittext);
+            mInputView = (EditText) view.findViewById(R.id.vouchercode_input_edittext);
             TextView vouchercode_input_hint = (TextView) view.findViewById(R.id.vouchercode_input_hint);
 
-            use_vouchercode_ll.setOnClickListener(view12 -> onVoucherCodeInputComplete(vouchercode_input_edittext.getText().toString()));
+            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
+            use_vouchercode_ll.setOnClickListener(view12 -> onVoucherCodeInputComplete(mInputView.getText().toString()));
 
-            vouchercode_input_edittext.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            mInputView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    onVoucherCodeInputComplete(vouchercode_input_edittext.getText().toString());
+                    onVoucherCodeInputComplete(mInputView.getText().toString());
                 }
                 return false;
             });
-            vouchercode_input_edittext.addTextChangedListener(new TextWatcher() {
+            mInputView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 }
@@ -183,25 +194,19 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
                         String text = editable != null ? editable.toString() : null;
                         if (TextUtils.isEmpty(text)) {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.text_color));
-                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next);
+                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
                         } else {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.color_primary));
-                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next);
+                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue);
                         }
                     } catch (Exception e) {
                         Timber.d(e);
                     }
                 }
             });
-            applyFont(vouchercode_input_edittext, GlobalData.getStringResource(RS.string.sdk_font_medium));
+            applyFont(mInputView, GlobalData.getStringResource(RS.string.sdk_font_medium));
             applyFont(vouchercode_input_hint, GlobalData.getStringResource(RS.string.sdk_font_medium));
-            new Handler().postDelayed(() -> {
-                try {
-                    SdkUtils.focusAndSoftKeyboard((Activity) getContext(), vouchercode_input_edittext);
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
-            }, 100);
+            showKeyBoard();
         } catch (Exception e) {
             Timber.d(e, "Exception render voucher input");
         }

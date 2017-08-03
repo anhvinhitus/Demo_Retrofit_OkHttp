@@ -116,5 +116,9 @@ public class RS {
         public static final String ic_next = "ic_next.png";
         public static final String ic_bank_support_help = "ic_bank_support_help.png";
         public static final String ic_arrow = "ic_arrow.png";
+        public static final String ic_round_delete = "ic_round_delete.png";
+        public static final String ic_next_blue = "ic_next_blue.png";
+        public static final String ic_next_blue_disable = "ic_next_blue_disable.png";
+        public static final String ic_add_card = "ic_add_card.png";
     }
 }

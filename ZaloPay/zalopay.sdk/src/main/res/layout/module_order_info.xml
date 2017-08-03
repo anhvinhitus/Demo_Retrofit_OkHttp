@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -110,14 +111,14 @@
             android:textColor="@color/text_color_grey"
             android:textSize="@dimen/zpw_text_size_medium" />
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/active_voucher_del_img"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/sdk_icon_size"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/active_voucher_textview"
-            android:src="@drawable/ic_round_delete" />
+            app:actualImageScaleType="centerInside"
+            app:viewAspectRatio="1" />
 
         <TextView
             android:id="@+id/voucher_discount_amount_textview"
