@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.bank.list;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.zalopay.ui.widget.recyclerview.AbstractSwipeAdapter;
@@ -16,9 +13,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.bank.BankUtils;
-import vn.com.vng.zalopay.bank.models.BankCardStyle;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 
 /**
  * Created by hieuvm on 7/10/17.
@@ -147,6 +141,11 @@ final class BankListAdapter extends AbstractSwipeAdapter<BankData, RecyclerView.
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onListItemClick(v, getAdapterPosition());
             }
+        }
+
+        @OnClick(R.id.card)
+        public void onClickCard(View v){
+            mSwipeView.toggle();
         }
     }
 
