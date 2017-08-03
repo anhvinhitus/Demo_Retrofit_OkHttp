@@ -33,6 +33,7 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
  */
 
 public class VoucherRender implements UIBottomSheetDialog.IRender {
+    static final int VOUCHER_CODE_BOUND_NUM = 4;
     IUIBottomSheetBuilder mBuilder;
     WeakReference<Context> mContext;
     EditText mInputView;
@@ -192,7 +193,7 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
                 public void afterTextChanged(Editable editable) {
                     try {
                         String text = editable != null ? editable.toString() : null;
-                        if (TextUtils.isEmpty(text)) {
+                        if (TextUtils.isEmpty(text) || text.length() < VOUCHER_CODE_BOUND_NUM) {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.text_color));
                             ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
                         } else {

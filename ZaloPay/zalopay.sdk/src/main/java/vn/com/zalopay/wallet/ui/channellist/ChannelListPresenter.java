@@ -354,6 +354,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return null;
         }
         try {
+            if (channel.isLinkChannel()) {
+                startLinkChannel();
+                return channel;
+            }
             markSelectChannel(channel, pPosition);
         } catch (Exception e) {
             Timber.d(e.getMessage());
@@ -366,8 +370,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private void markSelectChannel(PaymentChannel channel, int position) throws Exception {
-        if (channel == null) {
-            Timber.d("channel is null");
+        if (channel == null || mPaymentInfoHelper == null) {
             return;
         }
         if (!changedChannel(channel)) {
@@ -398,29 +401,40 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startPayment() {
         try {
-            if (mSelectChannel == null) {
+            if (mSelectChannel == null || mPayProxy == null) {
                 return;
             }
-            if (mSelectChannel.isLinkChannel()) {
-                Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
-                onStartLinkThenPay(intent);
-                return;
-            }
-            mPayProxy.setChannel(mSelectChannel).start();
+            mPayProxy
+                    .setChannel(mSelectChannel)
+                    .start();
             TrackHelper.trackEventConfirm(mPaymentInfoHelper);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception start payment");
         }
     }
 
     public void startDefaultPayment() {
         try {
-            if (mSelectChannel == null) {
+            if (mSelectChannel == null || mPayProxy == null) {
                 return;
             }
-            mPayProxy.setChannel(mSelectChannel).startDefault();
+            mPayProxy
+                    .setChannel(mSelectChannel)
+                    .startDefault();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception start default payment");
+        }
+    }
+
+    public void startLinkChannel() {
+        try {
+            if (mSelectChannel == null || mPayProxy == null) {
+                return;
+            }
+            Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
+            onStartLinkThenPay(intent);
+        } catch (Exception e) {
+            Timber.w(e, "Exception start default payment");
         }
     }
 
