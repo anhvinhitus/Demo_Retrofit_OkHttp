@@ -33,7 +33,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseSupportViewListener;
+import vn.com.zalopay.wallet.listener.OnCloseSupportViewListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.IPresenter;
@@ -61,15 +61,15 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     private boolean isShowSupportView = false;
     private View.OnClickListener mSupportItemClick = view -> {
         try {
-            onCloseSupportView(new ZPWOnCloseSupportViewListener() {
+            onCloseSupportView(new OnCloseSupportViewListener() {
                 @Override
                 public void processing() {
-                    Timber.d("ZPWOnCloseSupportViewListener processing()");
+                    Timber.d("OnCloseSupportViewListener processing()");
                 }
 
                 @Override
                 public void complete() {
-                    Timber.d("ZPWOnCloseSupportViewListener complete()");
+                    Timber.d("OnCloseSupportViewListener complete()");
                     int i = view.getId();
                     if (i == R.id.question_button) {
                         onStartCenterSupport();
@@ -88,7 +88,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         return isShowSupportView;
     }
 
-    public void onCloseSupportView(ZPWOnCloseSupportViewListener listener) {
+    public void onCloseSupportView(OnCloseSupportViewListener listener) {
         if (listener != null)
             listener.processing();
         View v = findViewById(R.id.layout_spview_animation);
