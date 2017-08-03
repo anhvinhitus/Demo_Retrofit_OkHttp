@@ -37,6 +37,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
+import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -188,7 +189,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     protected void onDataBound(View view) {
         mPresenter.onPaymentReady();
-        mPresenter.trackEventLaunch();
+        TrackHelper.trackEventLaunch(GlobalData.paymentInfoHelper);
     }
 
     @Override

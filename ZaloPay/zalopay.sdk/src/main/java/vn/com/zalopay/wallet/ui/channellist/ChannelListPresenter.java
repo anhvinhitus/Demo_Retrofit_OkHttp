@@ -24,8 +24,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -53,6 +51,7 @@ import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
@@ -408,7 +407,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 return;
             }
             mPayProxy.setChannel(mSelectChannel).start();
-            trackEventConfirm();
+            TrackHelper.trackEventConfirm(mPaymentInfoHelper);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -519,49 +518,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
-    }
-
-    public void trackEventLaunch() {
-        if (mPaymentInfoHelper == null) {
-            return;
-        }
-        if (mPaymentInfoHelper.isTopupTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_LAUNCH);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_LAUNCH);
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_LAUNCH);
-        }
-
-
-    }
-
-    public void trackEventBack() {
-        if (mPaymentInfoHelper == null) {
-            return;
-        }
-        if (mPaymentInfoHelper.isTopupTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CANCEL);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CANCEL);
-        } else if (mPaymentInfoHelper.isMoneyTranferTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_CANCEL);
-        }
-
-    }
-
-    public void trackEventConfirm() {
-        if (mPaymentInfoHelper == null) {
-            return;
-        }
-        if (mPaymentInfoHelper.isTopupTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_ADDCASH_PAYMENT_METHOD_CONFIRM);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.BALANCE_WITHDRAW_PAYMENT_METHOD_CONFIRM);
-        } else if (mPaymentInfoHelper.isWithDrawTrans()) {
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_PAYMENT_METHOD_CONFIRM);
-        }
-
     }
 
     private void initAdapter() throws Exception {
@@ -1032,7 +988,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             GlobalData.analyticsTrackerWrapper.trackUserCancel();
         }
         callback();
-        trackEventBack();
+        TrackHelper.trackEventBack(mPaymentInfoHelper);
     }
 
     @Override
