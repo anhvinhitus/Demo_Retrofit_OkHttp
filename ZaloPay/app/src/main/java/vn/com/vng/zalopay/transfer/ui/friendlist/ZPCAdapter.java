@@ -144,6 +144,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         String aliasDisPlayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.NORMALIZE_DISPLAY_NAME));
         String avatar = cursor.getString(cursor.getColumnIndex(ColumnAlias.AVATAR));
         String phone = cursor.getString(cursor.getColumnIndex(ColumnAlias.PHONE_NUMBER));
+        long zaloPayId = cursor.getLong(cursor.getColumnIndex(ColumnAlias.ZALOPAY_ID));
 
         holder.bindView(zaloId, phone, displayName, aliasDisPlayName, avatar);
 
@@ -155,7 +156,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
             holder.mImgAvatar.setImageURI(avatar);
         }
 
-        if (zaloId == 0) {
+        if (zaloPayId == 0) {
             holder.mLogo.setVisibility(View.INVISIBLE);
             setShowBorder(holder.mImgAvatar, Color.TRANSPARENT, 0);
         } else {
