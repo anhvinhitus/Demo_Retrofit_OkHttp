@@ -369,7 +369,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         mVoucherRender = (VoucherRender) mVoucherDialogBuilder.build();
         mVoucherDialog = new UIBottomSheetDialog(getActivity(), vn.zalopay.promotion.R.style.CoffeeDialog, mVoucherRender);
         mVoucherDialog.preventDrag(true);
-        mVoucherDialog.setCanceledOnTouchOutside(false);
         mVoucherDialog.show();
         mVoucherDialog.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
