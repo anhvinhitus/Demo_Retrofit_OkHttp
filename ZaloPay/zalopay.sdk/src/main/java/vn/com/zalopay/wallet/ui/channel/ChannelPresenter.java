@@ -45,7 +45,6 @@ import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseSupportViewListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -178,17 +177,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private boolean canQuit() throws Exception {
         if (getViewOrThrow().visualSupportView()) {
-            getViewOrThrow().onCloseSupportView(new ZPWOnCloseSupportViewListener() {
-                @Override
-                public void processing() {
-                    Timber.d("ZPWOnCloseSupportViewListener processing()");
-                }
-
-                @Override
-                public void complete() {
-                    Timber.d("ZPWOnCloseSupportViewListener complete()");
-                }
-            });
+            getViewOrThrow().onCloseSupportView();
             return true;
         }
         //order is processing

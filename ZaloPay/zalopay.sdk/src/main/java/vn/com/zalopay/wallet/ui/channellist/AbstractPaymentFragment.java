@@ -89,7 +89,8 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     }
 
     public void onCloseSupportView(ZPWOnCloseSupportViewListener listener) {
-        listener.processing();
+        if (listener != null)
+            listener.processing();
         View v = findViewById(R.id.layout_spview_animation);
         if (v != null) {
             Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -99,9 +100,14 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         final Handler handler = new Handler();
         handler.postDelayed(() -> {
             setVisible(R.id.zpw_pay_support_buttom_view, false);
-            // call back finish hide here
-            listener.complete();
+            // callback finish close
+            if (listener != null)
+                listener.complete();
         }, 300);
+    }
+
+    public void onCloseSupportView() {
+        onCloseSupportView(null);
     }
 
     void onStartCenterSupport() {

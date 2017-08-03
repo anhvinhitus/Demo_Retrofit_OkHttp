@@ -20,7 +20,6 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseSupportViewListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 
@@ -43,17 +42,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
 
     public boolean onBackPressed() {
         if (mView.visualSupportView()) {
-            mView.onCloseSupportView(new ZPWOnCloseSupportViewListener() {
-                @Override
-                public void processing() {
-                    Timber.d("ZPWOnCloseSupportViewListener processing()");
-                }
-
-                @Override
-                public void complete() {
-                    Timber.d("ZPWOnCloseSupportViewListener complete()");
-                }
-            });
+            mView.onCloseSupportView();
             return true;
         }
         callback();
