@@ -22,6 +22,8 @@ public class InsideApp {
         public static final int BALANCE = 10;
         public static final int CHANGE_PIN = 11;
         public static final int PROTECT_ACCOUNT = 12;
+        public static final int TRANSFERS = 13;
+        public static final int  RECEIVE_MONEY = 14;
     }
 
     public long appId;

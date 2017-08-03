@@ -11,7 +11,7 @@
   },
   "friend_config": {
     "enable_merge_contact_name": 1,
-    "friend_favorite":1
+    "friend_favorite": 1
   },
   "inside_app": [
     {
@@ -20,6 +20,13 @@
       "app_name": "Rút tiền",
       "icon_name": "notify_1_withdraw",
       "icon_color": "#f6b501"
+    },
+    {
+      "inside_app_id": 2,
+      "app_type": -1,
+      "app_name": "Nạp tiền",
+      "icon_name": "app_recharge",
+      "icon_color": "#129d5a"
     },
     {
       "inside_app_id": 3,
@@ -86,6 +93,20 @@
       "app_name": "Thiết lập bảo vệ tài khoản",
       "icon_name": "personal_settingaccount",
       "icon_color": "#53718B"
+    },
+    {
+      "inside_app_id": 13,
+      "app_type": -1,
+      "app_name": "Chuyển tiền",
+      "icon_name": "app_1_transfers",
+      "icon_color": "#4387f6"
+    },
+    {
+      "inside_app_id": 14,
+      "app_type": -1,
+      "app_name": "Nhận tiền",
+      "icon_name": "app_1_receivemoney",
+      "icon_color": "#129d5a"
     }
   ],
   "quick_comment_url": "https://goo.gl/forms/FCO642guFSbpYwlt2",
@@ -148,7 +169,14 @@
     "^((.+)\\.)?zpsandbox\\.zing\\.vn"
   ],
   "number_search_app": 3,
-  "notification_types_vibrate": [6, 7, 9, 105, 106, 111],
+  "notification_types_vibrate": [
+    6,
+    7,
+    9,
+    105,
+    106,
+    111
+  ],
   "internal_apps": [
     {
       "appId": -1,

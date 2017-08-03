@@ -94,7 +94,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     }
 
     void getListAppResource() {
-        Subscription subscription = mAppResourceRepository.getListAppHome()
+        Subscription subscription = mAppResourceRepository.getListAppSearch()
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -201,12 +201,6 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         } else if (app.appType == PaymentAppTypeEnum.INTERNAL_APP.getValue()) {
             if (app.appId == 0) {
                 handleLaunchInternalApp((int) app.insideAppId);
-            } else if (app.appId == PaymentAppConfig.Constants.TRANSFER_MONEY) {
-                mNavigator.startTransferMoneyActivity((Activity) mView.getContext());
-            } else if (app.appId == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                mNavigator.startReceiveMoneyActivity(mView.getContext());
-            } else if (app.appId == PaymentAppConfig.Constants.DEPOSIT) {
-                mNavigator.startDepositActivity(mView.getContext());
             }
         } else if (app.appType == PaymentAppTypeEnum.INTERNAL_REACT_NATIVE.getValue()) {
             handleLaunchInternalReactApp((int) app.insideAppId, app.moduleName);
@@ -244,6 +238,12 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                 break;
             case InsideApp.Constants.PROTECT_ACCOUNT:
                 mNavigator.startProtectAccountActivity(mView.getContext());
+                break;
+            case InsideApp.Constants.TRANSFERS:
+                mNavigator.startTransferMoneyActivity((Activity) mView.getContext());
+                break;
+            case InsideApp.Constants.RECEIVE_MONEY:
+                mNavigator.startReceiveMoneyActivity(mView.getContext());
                 break;
         }
     }

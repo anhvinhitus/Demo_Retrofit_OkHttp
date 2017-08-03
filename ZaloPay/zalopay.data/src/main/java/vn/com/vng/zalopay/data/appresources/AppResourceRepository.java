@@ -364,6 +364,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
+    public Observable<List<AppResource>> getListAppSearch() {
+        return fetchAppResource().map(this::listAppRemoveExcludeApp);
+    }
+
+    @Override
     public Observable<List<AppResource>> fetchListAppHome() {
         return fetchAppResource()
                 .map(this::listAppInHomePage);
@@ -375,6 +380,12 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             mLocalStorage.resetResourceState(appId);
             return null;
         });
+    }
+
+    private List<AppResource> listAppRemoveExcludeApp(List<AppResource> resources) {
+        resources.removeAll(mListExcludeApp);
+        Timber.d("app show in home page: %s", resources.size());
+        return resources;
     }
 
     private List<AppResource> listAppInHomePage(List<AppResource> resources) {
