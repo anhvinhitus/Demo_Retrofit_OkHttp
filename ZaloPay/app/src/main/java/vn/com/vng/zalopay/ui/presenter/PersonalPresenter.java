@@ -17,7 +17,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -35,6 +34,7 @@ import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
@@ -233,12 +233,12 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     /**
-     * Test
+     * Start list Voucher
      */
     public void startAppListVoucher() {
-        AppResource appResource = getAppResource(17);
+        AppResource appResource = getAppResource(vn.com.vng.zalopay.BuildConfig.VOUCHER_APP_ID);
         if (appResource == null) {
-            appResource = new AppResource(17);
+            appResource = new AppResource(vn.com.vng.zalopay.BuildConfig.VOUCHER_APP_ID);
         }
         startExternalApp(appResource);
     }
