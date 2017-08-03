@@ -628,9 +628,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void showInstructRegiterBIDV() {
         try {
-            SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
+            if (getViewOrThrow() != null) {
+                SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
+            }
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
     }
 

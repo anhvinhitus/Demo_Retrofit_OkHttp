@@ -23,8 +23,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import timber.log.Timber;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
@@ -156,7 +154,9 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
             View view = menuItem.getActionView();
             view.setOnClickListener(v -> {
                 Timber.d("onClick() menu bidv");
-                mPresenter.showInstructRegiterBIDV();
+                if (mPresenter != null) {
+                    mPresenter.showInstructRegiterBIDV();
+                }
             });
         }
     }

@@ -744,6 +744,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void useWebView(boolean pIsUseWebView) throws Exception {
+        if (getView() == null) {
+            return;
+        }
         if (pIsUseWebView) {
             getView().visibleWebView(true);
             getView().visibleInputCardView(false);
