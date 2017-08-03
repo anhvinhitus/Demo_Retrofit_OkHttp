@@ -943,7 +943,7 @@ public final class TSnackbar {
 
     final class Behavior extends SwipeDismissBehavior<SnackbarLayout> {
         @Override
-        public boolean canSwipeDismissView(View child) {
+        public boolean canSwipeDismissView(@NonNull View child) {
             return child instanceof SnackbarLayout;
         }
 

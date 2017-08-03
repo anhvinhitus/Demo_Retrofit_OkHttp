@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -107,6 +108,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         applyFont(order_amount_txt, GlobalData.getStringResource(RS.string.sdk_font_medium));
     }
 
+    @NonNull
     @Override
     protected String getTrackingScreenName() {
         return ZPScreens.PAYMENT_METHOD;
