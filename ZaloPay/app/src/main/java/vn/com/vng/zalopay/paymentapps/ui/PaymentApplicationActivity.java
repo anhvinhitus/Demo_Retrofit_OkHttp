@@ -122,17 +122,23 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
                 appResource == null ? "" : appResource.appname);
     }
 
-    private void buildLaunchOptions(Bundle launchOption) {
+    private void buildLaunchOptions(@NonNull Bundle launchOption) {
         if (appResource != null) {
-            if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID|| appResource.appid == RECHARGE_MONEY_PHONE_V2_APP_ID) {
-                launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
-                launchOption.putString("zalopay_userid", String.valueOf(mUser.zaloPayId));
-            } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
-                launchOption.putString("url", BuildConfig.APP22_URL);
-            }
+            buildLaunchOptions(launchOption, appResource.appid);
         }
 
         launchOption.putInt("environment", BuildConfig.ENVIRONMENT);
+    }
+
+    private void buildLaunchOptions(Bundle launchOption, long appid) {
+        if (appid == RECHARGE_MONEY_PHONE_APP_ID
+                || appid == RECHARGE_MONEY_PHONE_V2_APP_ID) {
+            launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
+            launchOption.putString("zalopay_userid", mUser.zaloPayId);
+            launchOption.putString("user_avatar", mUser.avatar);
+        } else if (appid == PaymentAppConfig.Constants.SHOW_SHOW) {
+            launchOption.putString("url", BuildConfig.APP22_URL);
+        }
     }
 
 
