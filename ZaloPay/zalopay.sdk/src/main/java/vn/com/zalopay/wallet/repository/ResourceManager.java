@@ -2,12 +2,17 @@ package vn.com.zalopay.wallet.repository;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.WrapContentController;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,9 +34,9 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DPage;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.channel.RenderFragment;
 import vn.com.zalopay.wallet.ui.channel.ResourceRender;
 
@@ -206,27 +211,66 @@ public class ResourceManager extends SingletonBase {
     /***
      * load image into SimpleDraweeView
      * use Fresco
-     * @param pView
-     * @param pImageName
      */
-    public static void loadImageIntoView(View pView, String pImageName) {
+    public static void loadLocalSDKImage(View pView, String pImageName) {
         try {
-            String pFilePath = getAbsoluteImagePath(pImageName);
-            if (!TextUtils.isEmpty(pFilePath) && pView != null) {
-                ((SimpleDraweeView) pView).setImageURI(pFilePath);
+            String iconPath = getAbsoluteImagePath(pImageName);
+            if (TextUtils.isEmpty(iconPath)) {
+                return;
             }
+            loadLocalImage(pView, iconPath);
         } catch (Exception e) {
-            Log.e("loadImageIntoView", e);
+            Timber.w(e, "Exception load sdk image into View");
         }
     }
 
-    public static String getPathFont() {
+    public static void loadLocalImage(View pView, String pImagePath) {
+        try {
+            if (TextUtils.isEmpty(pImagePath)) {
+                return;
+            }
+            if (pView == null) {
+                return;
+            }
+            if (!(pView instanceof SimpleDraweeView)) {
+                return;
+            }
+            pImagePath = String.format("file://%s", pImagePath);
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(pImagePath)
+                    .setControllerListener(new WrapContentController((ImageView) pView))
+                    .build();
+            ((SimpleDraweeView) pView).setController(controller);
+        } catch (Exception e) {
+            Timber.w(e, "Exception load local image into View");
+        }
+    }
+
+    public static String getFontFolder() {
         try {
             return getResourceFolderPath() + PREFIX_FONT;
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Timber.w(e, "Exception get font folder");
         }
         return null;
+    }
+
+    public static void loadRemoteImage(View pView, String url) {
+        try {
+            if (TextUtils.isEmpty(url)) {
+                return;
+            }
+            if (pView == null) {
+                return;
+            }
+            if (!(pView instanceof SimpleDraweeView)) {
+                return;
+            }
+            SimpleDraweeView view = (SimpleDraweeView) pView;
+            view.setImageURI(Uri.parse(url));
+        } catch (Exception e) {
+            Timber.w(e, "Exception load remote image into View");
+        }
     }
 
     public String getString(String pKey) {

@@ -20,15 +20,14 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/icon_imageview"
-        android:layout_width="@dimen/sdk_ic_channel_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
         android:layout_toRightOf="@+id/select_imageview"
         android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
         android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
-        app:actualImageScaleType="centerInside"
-        app:viewAspectRatio="1" />
+        app:actualImageScaleType="centerInside" />
 
     <LinearLayout
         android:id="@+id/name_fee_linearlayout"

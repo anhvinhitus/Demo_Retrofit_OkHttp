@@ -2,20 +2,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/sdk_margin_left_right"
     android:paddingRight="@dimen/sdk_margin_left_right"
-    android:orientation="vertical"
     android:visibility="gone">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/success_imageview"
-        android:layout_width="@dimen/sdk_ic_success_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/zpw_padding_30"
         android:layout_marginBottom="@dimen/sdk_margin_top_bottom"
-        app:actualImageScaleType="centerInside"
-        app:viewAspectRatio="1" />
+        android:layout_marginTop="@dimen/zpw_padding_30"
+        app:actualImageScaleType="centerInside" />
 
     <LinearLayout
         android:id="@+id/success_order_amount_total_linearlayout"
@@ -48,19 +47,19 @@
         android:id="@+id/description_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center"
         android:maxLines="3"
-        android:ellipsize="end"
-        android:textColor="@color/text_color_grey"
-        android:textStyle="italic"
         android:paddingBottom="@dimen/zpw_padding_5"
-        android:textSize="@dimen/zpw_text_size_medium" />
+        android:textColor="@color/text_color_grey"
+        android:textSize="@dimen/zpw_text_size_medium"
+        android:textStyle="italic" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/sdk_margin_left_right"
         android:layout_marginBottom="@dimen/sdk_margin_left_right"
+        android:layout_marginTop="@dimen/sdk_margin_left_right"
         android:background="@drawable/dash_line" />
 
     <LinearLayout
@@ -82,13 +81,12 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/arrow_imageview"
-            android:layout_width="@dimen/sdk_ic_arrow_size"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/zpw_padding_15"
             android:layout_marginRight="@dimen/zpw_padding_15"
-            app:actualImageScaleType="fitCenter"
-            app:viewAspectRatio="1" />
+            app:actualImageScaleType="fitCenter" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/img_avatarTo"
@@ -102,8 +100,8 @@
 
     <ViewStub
         android:id="@+id/success_trans_detail_stub"
-        android:inflatedId="@+id/success_trans_detail"
-        android:layout="@layout/module__trans__detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inflatedId="@+id/success_trans_detail"
+        android:layout="@layout/module__trans__detail" />
 </LinearLayout>

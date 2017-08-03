@@ -171,7 +171,7 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
             mInputView = (EditText) view.findViewById(R.id.vouchercode_input_edittext);
             TextView vouchercode_input_hint = (TextView) view.findViewById(R.id.vouchercode_input_hint);
 
-            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
+            ResourceManager.loadLocalSDKImage(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
             use_vouchercode_ll.setOnClickListener(view12 -> onVoucherCodeInputComplete(mInputView.getText().toString()));
 
             mInputView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
@@ -195,10 +195,10 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
                         String text = editable != null ? editable.toString() : null;
                         if (TextUtils.isEmpty(text) || text.length() < VOUCHER_CODE_BOUND_NUM) {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.text_color));
-                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
+                            ResourceManager.loadLocalSDKImage(use_vouchercode_img, RS.drawable.ic_next_blue_disable);
                         } else {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.color_primary));
-                            ResourceManager.loadImageIntoView(use_vouchercode_img, RS.drawable.ic_next_blue);
+                            ResourceManager.loadLocalSDKImage(use_vouchercode_img, RS.drawable.ic_next_blue);
                         }
                     } catch (Exception e) {
                         Timber.d(e);

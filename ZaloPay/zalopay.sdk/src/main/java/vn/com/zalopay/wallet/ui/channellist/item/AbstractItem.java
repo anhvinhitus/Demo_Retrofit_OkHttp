@@ -181,7 +181,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     @Override
     public void bindViewHolder(T holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
-        ResourceManager.loadImageIntoView(holder.icon_imageview, channel.channel_icon);
+        ResourceManager.loadLocalSDKImage(holder.icon_imageview, channel.channel_icon);
         holder.name_textview.setText(channel.pmcname);
         holder.select_imageview.setVisibility(channel.select ? View.VISIBLE : View.INVISIBLE);
         renderGeneric(holder);

@@ -113,12 +113,12 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/active_voucher_del_img"
-            android:layout_width="@dimen/sdk_icon_size"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/active_voucher_textview"
-            app:actualImageScaleType="centerInside"
-            app:viewAspectRatio="1" />
+            android:layout_marginLeft="5dp"
+            app:actualImageScaleType="centerInside" />
 
         <TextView
             android:id="@+id/voucher_discount_amount_textview"

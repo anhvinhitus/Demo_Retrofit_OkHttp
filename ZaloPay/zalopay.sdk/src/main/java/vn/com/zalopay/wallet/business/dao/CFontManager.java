@@ -44,7 +44,7 @@ public class CFontManager extends SingletonBase {
         Typeface tf = fontMap.get(pFontName);
         if (tf == null) {
             try {
-                tf = Typeface.createFromFile(new File(ResourceManager.getPathFont(), pFontName + ".ttf"));
+                tf = Typeface.createFromFile(new File(ResourceManager.getFontFolder(), pFontName + ".ttf"));
                 if (tf != null) {
                     fontMap.put(pFontName, tf);
                 }

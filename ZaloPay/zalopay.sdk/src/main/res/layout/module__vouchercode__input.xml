@@ -84,16 +84,16 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginBottom="@dimen/padding_large"
             android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginRight="5dp"
             android:text="@string/sdk_voucher_code_btn_text"
             android:textColor="@color/text_color" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/use_vouchercode_img"
-            android:layout_width="@dimen/sdk_icon_size"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            app:actualImageScaleType="centerInside"
-            app:viewAspectRatio="1" />
+            app:actualImageScaleType="centerInside" />
     </LinearLayout>
 
 </LinearLayout>

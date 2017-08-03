@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.ui.channel;
 
-import android.net.Uri;
-import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Html;
 import android.text.InputType;
@@ -11,12 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
@@ -72,13 +67,6 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
             return;
         }
         mResourceRender.renderKeyBoard(pBankCode);
-    }
-
-    // fresco load Uri
-    protected SimpleDraweeView loadIntoView(@IdRes int viewId, String uri) {
-        SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
-        view.setImageURI(Uri.parse(uri));
-        return view;
     }
 
     /*
@@ -195,7 +183,7 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
             Timber.d("view not found %s", pId);
             return;
         }
-        ResourceManager.loadImageIntoView(view, pImageName);
+        ResourceManager.loadLocalSDKImage(view, pImageName);
     }
 
     public View findViewById(String pName) {

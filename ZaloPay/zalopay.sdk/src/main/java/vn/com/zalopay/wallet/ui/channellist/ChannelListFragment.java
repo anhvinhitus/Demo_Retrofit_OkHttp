@@ -275,6 +275,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void renderVoucher() {
         voucher_relativelayout.setVisibility(View.VISIBLE);
+        active_voucher_relativelayout.setVisibility(View.GONE);
+
         voucher_txt.setOnClickListener(view -> {
             try {
                 showVoucherCodeInput();
@@ -282,12 +284,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 Timber.d(e);
             }
         });
-        active_voucher_relativelayout.setVisibility(View.GONE);
     }
 
     @Override
     public void renderActiveVoucher(String voucherCode, double discountAmount) {
         active_voucher_relativelayout.setVisibility(View.VISIBLE);
+        voucher_relativelayout.setVisibility(View.GONE);
 
         String codeformat = getResources().getString(R.string.sdk_active_voucher_cod_format);
         voucherCode = String.format(codeformat, voucherCode);
@@ -297,7 +299,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         discountFormat = String.format(discountFormat, CurrencyUtil.formatCurrency(discountAmount));
 
         voucher_discount_amount_textview.setText(discountFormat);
-        ResourceManager.loadImageIntoView(active_voucher_del_img, RS.drawable.ic_round_delete);
+        ResourceManager.loadLocalSDKImage(active_voucher_del_img, RS.drawable.ic_round_delete);
         active_voucher_del_img.setOnClickListener(view -> showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {

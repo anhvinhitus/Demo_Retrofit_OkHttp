@@ -250,12 +250,15 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
             getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             setVisible(R.id.money_tranfer_useravatar_linearlayout, true);
             if (destinationUser != null) {
-                loadIntoView(R.id.img_avatarTo, destinationUser.avatar);
+                View avatarViewTo = findViewById(R.id.img_avatarTo);
+                ResourceManager.loadRemoteImage(avatarViewTo, destinationUser.avatar);
             }
             if (userInfo != null && !TextUtils.isEmpty(userInfo.avatar)) {
-                loadIntoView(R.id.img_avatarFrom, userInfo.avatar);
+                View avatarViewFrom = findViewById(R.id.img_avatarFrom);
+                ResourceManager.loadRemoteImage(avatarViewFrom, userInfo.avatar);
             }
-            loadIntoView(R.id.arrow_imageview, ResourceManager.getAbsoluteImagePath(RS.drawable.ic_arrow));
+            View nextImg = findViewById(R.id.arrow_imageview);
+            ResourceManager.loadLocalSDKImage(nextImg, RS.drawable.ic_arrow);
         }
         //inflate trans detail layout
         ViewStub success_trans_detail_stub = (ViewStub) findViewById(R.id.success_trans_detail_stub);

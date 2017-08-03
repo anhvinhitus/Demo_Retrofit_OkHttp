@@ -1,19 +1,13 @@
 package vn.com.vng.zalopay.promotion;
 
 import android.content.Context;
-import android.graphics.drawable.Animatable;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.image.ImageInfo;
-
-import java.lang.ref.WeakReference;
+import com.zalopay.ui.widget.WrapContentController;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
@@ -24,19 +18,6 @@ public class ResourceLoader implements IResourceLoader {
 
     public ResourceLoader() {
         Timber.d("create resource loader for promotion");
-    }
-
-    /***
-     * Emulate the support WRAP_CONTENT
-     * @param imageView
-     * @param imageInfo
-     */
-    protected static void updateViewSize(ImageView imageView, @Nullable ImageInfo imageInfo) {
-        if (imageInfo != null && imageView instanceof SimpleDraweeView) {
-            imageView.getLayoutParams().width = imageInfo.getWidth();
-            imageView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            ((SimpleDraweeView) imageView).setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
-        }
     }
 
     @Override
@@ -56,30 +37,6 @@ public class ResourceLoader implements IResourceLoader {
                     .build();
             if (pImageView instanceof SimpleDraweeView) {
                 ((SimpleDraweeView) pImageView).setController(controller);
-            }
-        }
-    }
-
-    public static class WrapContentController extends BaseControllerListener {
-        private WeakReference<ImageView> imageViewWeakReference;
-
-        public WrapContentController(ImageView pImageView) {
-            imageViewWeakReference = new WeakReference<>(pImageView);
-        }
-
-        @Override
-        public void onFinalImageSet(String id, @javax.annotation.Nullable Object imageInfo, @javax.annotation.Nullable Animatable animatable) {
-            super.onFinalImageSet(id, imageInfo, animatable);
-            if (imageViewWeakReference.get() != null) {
-                updateViewSize(imageViewWeakReference.get(), (ImageInfo) imageInfo);
-            }
-        }
-
-        @Override
-        public void onIntermediateImageSet(String id, @javax.annotation.Nullable Object imageInfo) {
-            super.onIntermediateImageSet(id, imageInfo);
-            if (imageViewWeakReference.get() != null) {
-                updateViewSize(imageViewWeakReference.get(), (ImageInfo) imageInfo);
             }
         }
     }

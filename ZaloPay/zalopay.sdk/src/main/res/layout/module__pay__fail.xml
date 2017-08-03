@@ -7,13 +7,12 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/fail_imageview"
-        android:layout_width="@dimen/sdk_ic_fail_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/sdk_margin_top_bottom_large"
         android:layout_marginTop="@dimen/sdk_margin_top_bottom_large"
-        app:actualImageScaleType="centerInside"
-        app:viewAspectRatio="1" />
+        app:actualImageScaleType="centerInside" />
 
     <TextView
         android:id="@+id/sdk_trans_fail_reason_message_textview"
@@ -74,13 +73,12 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_support"
-                android:layout_width="@dimen/sdk_update_info_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_horizontal"
-                app:actualImageScaleType="centerInside"
-                app:viewAspectRatio="1" />
+                app:actualImageScaleType="centerInside" />
 
             <TextView
                 android:id="@+id/zpw_payment_fail_tv_support_content"
@@ -96,13 +94,12 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_support_next"
-                android:layout_width="@dimen/sdk_update_info_next_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/zpw_margin_10"
-                app:actualImageScaleType="centerInside"
-                app:viewAspectRatio="1" />
+                app:actualImageScaleType="centerInside" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -118,13 +115,12 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_update_info"
-                android:layout_width="@dimen/sdk_update_info_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_horizontal"
-                app:actualImageScaleType="centerInside"
-                app:viewAspectRatio="1" />
+                app:actualImageScaleType="centerInside" />
 
             <TextView
                 android:id="@+id/zpw_payment_fail_tv_update_info_content"
@@ -140,13 +136,12 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_update_info_next"
-                android:layout_width="@dimen/sdk_update_info_next_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/zpw_margin_10"
-                app:actualImageScaleType="centerInside"
-                app:viewAspectRatio="1" />
+                app:actualImageScaleType="centerInside" />
         </RelativeLayout>
 
     </RelativeLayout>
