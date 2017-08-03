@@ -103,7 +103,13 @@ final class ZPCMapper {
         item.zalopayId = zalopayId;
         item.status = entity.status;
 
-        String phoneNumber = PhoneUtil.formatPhoneNumber(entity.phonenumber);
+        long phone = 0;
+        try {
+            phone = Long.valueOf(entity.phonenumber);
+        } catch (NumberFormatException ignore) {
+        }
+
+        String phoneNumber = PhoneUtil.formatPhoneNumber(phone);
         if (!TextUtils.isEmpty(phoneNumber)) {
             item.phoneNumber = phoneNumber;
         }
