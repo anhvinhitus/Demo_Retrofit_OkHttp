@@ -808,7 +808,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                         linkAccGuiProcessor.setPhoneNumList(phoneNum);
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 
-                        // MapAccount API. just using for web VCB
+                        // MapAccount API. just using for web BANKACCOUNT
                         if (GlobalData.shouldNativeWebFlow()) {
                             submitMapAccount(getAccNumValue());
                         }
@@ -832,7 +832,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     // code here confirm success. get messageResult.
                     mPageName = PAGE_VCB_OTP;
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().requestFocus();
-                    // submit MapAccount for webview VCB parse
+                    // submit MapAccount for webview BANKACCOUNT parse
                     if (!GlobalData.shouldNativeWebFlow()) {
                         submitMapAccount(getAccNumValue());
                     }

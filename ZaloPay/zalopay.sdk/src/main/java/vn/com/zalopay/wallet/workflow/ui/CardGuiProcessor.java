@@ -59,6 +59,7 @@ import vn.com.zalopay.wallet.dialog.CardSupportHelper;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
@@ -314,6 +315,28 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             Timber.w(e, "Exception show maintenance bank dialog");
         }
     }, 400);
+    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            try {
+                Rect r = new Rect();
+                mRootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = mRootView.getRootView().getHeight();
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    // keyboard is opened
+                    getView().visibleBIDVAccountRegisterBtn(false);
+                } else {
+                    // keyboard is closed
+                    getView().visibleBIDVAccountRegisterBtn(true);
+                }
+            } catch (Exception e) {
+                Timber.w(e);
+            }
+        }
+    };
 
     public CardGuiProcessor(Context context) {
         this.mContext = context;
@@ -744,30 +767,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
     }
 
-    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            try {
-                Rect r = new Rect();
-                mRootView.getWindowVisibleDisplayFrame(r);
-                int screenHeight = mRootView.getRootView().getHeight();
-                // r.bottom is the position above soft keypad or device button.
-                // if keypad is shown, the r.bottom is smaller than that before.
-                int keypadHeight = screenHeight - r.bottom;
-                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
-                    // keyboard is opened
-                    getView().visibleBIDVAccountRegisterBtn(false);
-                } else {
-                    // keyboard is closed
-                    getView().visibleBIDVAccountRegisterBtn(true);
-                }
-            } catch (Exception e) {
-                Timber.w(e);
-            }
-        }
-    };
-
-
     private void removeKeyboardEventForBidv() {
         if (mRootView == null) {
             return;
@@ -929,12 +928,35 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 });
     }
 
-    private void showWarningBankAccount() throws Exception {
-        ChannelFragment channelFragment = getView();
-        if (channelFragment == null || getAdapter().getPaymentInfoHelper() == null) {
+    private void callbackOnVCBLink() throws Exception {
+        if (getAdapter() == null) {
             return;
         }
-        if (getAdapter().getPaymentInfoHelper().isLinkTrans()) {
+        PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+        if (paymentInfoHelper == null) {
+            return;
+        }
+        if (PayProxy.shared() != null) {
+            getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKACCOUNT);
+        } else {
+            //callback bankcode to app , app will direct user to link bank account to right that bank
+            BankAccount dBankAccount = new BankAccount();
+            dBankAccount.bankcode = BankDetector.getInstance().getDetectBankCode();
+            paymentInfoHelper.setMapBank(dBankAccount);
+            getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT);
+        }
+    }
+
+    private void showWarningBankAccount() throws Exception {
+        if (getAdapter() == null) {
+            return;
+        }
+        ChannelFragment channelFragment = getView();
+        PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+        if (channelFragment == null || paymentInfoHelper == null) {
+            return;
+        }
+        if (paymentInfoHelper.isLinkTrans()) {
             channelFragment
                     .showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_warning_mess),
                             mContext.getResources().getString(R.string.dialog_linkaccount_button),
@@ -948,17 +970,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                 @Override
                                 public void onOKEvent() {
                                     try {
-                                        //callback bankcode to app , app will direct user to link bank account to right that bank
-                                        BankAccount dBankAccount = new BankAccount();
-                                        dBankAccount.bankcode = BankDetector.getInstance().getDetectBankCode();
-                                        getAdapter().getPaymentInfoHelper().setMapBank(dBankAccount);
-                                        getAdapter().getPresenter().setPaymentStatusAndCallback(PaymentStatus.DIRECT_LINK_ACCOUNT);
+                                        callbackOnVCBLink();
                                     } catch (Exception e) {
-                                        Timber.w(e, "Exception switch bank link");
+                                        Timber.d(e, "Exception callback VCB");
                                     }
                                 }
                             });
-        } else if (!BankAccountHelper.hasBankAccountOnCache(getAdapter().getPaymentInfoHelper().getUserId(), CardType.PVCB)) {
+        } else if (!BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), CardType.PVCB)) {
             channelFragment.showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_before_payment_warning_mess),
                     mContext.getResources().getString(R.string.dialog_linkaccount_button),
                     mContext.getResources().getString(R.string.dialog_retry_input_card_button),
@@ -971,9 +989,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                         @Override
                         public void onOKEvent() {
                             try {
-                                getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.VCB);
+                                getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKACCOUNT);
                             } catch (Exception e) {
-                                Timber.w(e, "Exception callback then pay VCB");
+                                Timber.w(e, "Exception callback then pay BANKACCOUNT");
                             }
                         }
                     });

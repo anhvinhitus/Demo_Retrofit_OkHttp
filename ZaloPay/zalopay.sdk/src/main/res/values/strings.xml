@@ -19,6 +19,7 @@
     <string name="allow_luhn_cc">1</string>
     <string name="allow_luhn_atm">1</string>
     <string name="allow_voucher">1</string>
+    <string name="allow_link_channel">1</string>
 
     <string name="sdk_order_processing_warning_mess">Đơn hàng đang xử lý. Vui lòng chờ trong giây lát!</string>
     <string name="sdk_trans_network_onfline_warning_mess">Mạng đã tắt, vui lòng kiểm tra trạng thái giao dịch trong phần Lịch Sử Giao Dịch sau ít phút</string>
@@ -407,4 +408,6 @@
     <string name="sdk_discount_amount_voucher_format">- %1$s</string>
     <string name="sdk_delete_voucher_confirm_text">Bạn muốn hủy bỏ mã khuyến mãi ?</string>
     <string name="sdk_voucher_code_empty_mess">Nhập mã khuyến mãi để tiếp tục</string>
+
+    <string name="sdk_default_link_channel_name">Thêm liên kết</string>
 </resources>

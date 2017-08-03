@@ -608,8 +608,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void callbackLinkThenPay(@Link_Then_Pay int bankLink) {
         try {
             Timber.d("call back link then pay");
-            Intent intent = new Intent();
-            intent.putExtra("bank", bankLink);
+            Intent intent = GlobalData.createLinkThenPayIntent(bankLink);
             setResult(Constants.LINK_THEN_PAY_RESULT_CODE, intent);
             getViewOrThrow().terminate();
         } catch (Exception e) {

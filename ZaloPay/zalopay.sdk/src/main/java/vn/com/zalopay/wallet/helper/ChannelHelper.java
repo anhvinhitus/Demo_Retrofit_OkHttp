@@ -11,10 +11,13 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class ChannelHelper {
-    public static @LayoutRes int getLayout(int channelId, boolean isLinkAccount) {
+    public static
+    @LayoutRes
+    int getLayout(int channelId, boolean isLinkAccount) {
         switch (channelId) {
             case BuildConfig.channel_zalopay:
                 return R.layout.screen__zalopay;
@@ -32,21 +35,18 @@ public class ChannelHelper {
         }
     }
 
-    /***
-     * get icon for channel
-     *
-     * @param channel
-     * @param pIconName
-     */
-    public static void inflatChannelIcon(PaymentChannel channel, String pIconName) {
-        if (channel != null) {
-            if (!TextUtils.isEmpty(pIconName))
-                channel.channel_icon = makeCardIconNameFromBankCode(pIconName);
-            else
-                channel.channel_icon = String.format("ic_%d.png", channel.pmcid);
-
-            channel.channel_next_icon = RS.drawable.ic_next;
+    public static void createChannelIcon(PaymentChannel channel, String pIconName) {
+        if (channel == null) {
+            return;
         }
+        if (channel.pmcid == Constants.DEFAULT_LINK_ID) {
+            channel.channel_icon = RS.drawable.ic_add_card;
+        } else if (!TextUtils.isEmpty(pIconName)) {
+            channel.channel_icon = makeCardIconNameFromBankCode(pIconName);
+        } else {
+            channel.channel_icon = String.format("ic_%d.png", channel.pmcid);
+        }
+        channel.channel_next_icon = RS.drawable.ic_next;
     }
 
     public static String makeCardIconNameFromBankCode(String pBankCode) {

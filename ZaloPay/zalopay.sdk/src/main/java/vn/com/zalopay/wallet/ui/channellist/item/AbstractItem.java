@@ -18,11 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.utility.CurrencyUtil;
-import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.helper.RenderHelper;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /**
  * Created by chucvv on 6/14/17.
@@ -46,7 +45,7 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     public abstract T onNewBindHolder(ViewGroup parent);
 
     @CallSuper
-    protected void onBindViewHolder(T holder, int position){
+    protected void onBindViewHolder(T holder, int position) {
         PaymentChannel channel = mDataSet.get(position);
         String fee_desc = getFeeDesc(channel);
         if (!TextUtils.isEmpty(fee_desc)) {
@@ -55,9 +54,15 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
         renderDesc(holder, fee_desc);
     }
 
-    private void adjustLine(View pLine) {
+    private void adjustLeftMergin(View pLine) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pLine.getLayoutParams();
         params.leftMargin = bankLogoSize * 2 + marginLeft * 2;
+        pLine.requestLayout();
+    }
+
+    private void adjustNoLeftMargin(View pLine) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pLine.getLayoutParams();
+        params.leftMargin = 0;
         pLine.requestLayout();
     }
 
@@ -187,10 +192,10 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
             onBindViewHolder(holder, position);
         }
         //indent line bottom
-        if (this instanceof ZaloPayItem) {
-            adjustLine(holder.line);
-        } else if (position + 1 < getItemCount()) {
-            adjustLine(holder.line);
+        if (channel.fullLine) {
+            adjustNoLeftMargin(holder.line);
+        } else {
+            adjustLeftMergin(holder.line);
         }
     }
 

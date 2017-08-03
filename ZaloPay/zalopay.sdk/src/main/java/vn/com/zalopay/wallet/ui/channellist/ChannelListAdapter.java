@@ -8,12 +8,10 @@ import com.zalopay.ui.widget.mutilview.recyclerview.EnumListBindAdapter;
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.ui.channellist.item.AbstractItem;
 import vn.com.zalopay.wallet.ui.channellist.item.InputItem;
 import vn.com.zalopay.wallet.ui.channellist.item.MapItem;
-import vn.com.zalopay.wallet.ui.channellist.item.TitleItem;
 import vn.com.zalopay.wallet.ui.channellist.item.ZaloPayItem;
 
 /**
@@ -36,10 +34,6 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
         addBinder(new InputItem(context, amount, transtype, this));
     }
 
-    public void addTitle() {
-        addBinder(new TitleItem(this));
-    }
-
     public void add(ItemType pItemType, PaymentChannel pChannel) {
         AbstractItem abstractItem = getDataBinder(pItemType);
         if (abstractItem != null) {
@@ -57,16 +51,6 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
     public List<PaymentChannel> getDataSet(ItemType pItemType) {
         AbstractItem abstractItem = getDataBinder(pItemType);
         return abstractItem != null ? abstractItem.getDataSet() : null;
-    }
-
-    public boolean hasTitle() {
-        return getDataBinder(ItemType.TITLE) instanceof TitleItem;
-    }
-
-    public void setTitle(String title) {
-        TitleItem titleItem = getDataBinder(ItemType.TITLE);
-        titleItem.setTitle(title);
-        titleItem.notifyBinderDataSetChanged();
     }
 
     public void notifyBinderItemChanged(int position) {
@@ -91,6 +75,6 @@ public class ChannelListAdapter extends EnumListBindAdapter<ChannelListAdapter.I
 
 
     public enum ItemType {
-        ZALOPAY, MAP, TITLE, INPUT
+        ZALOPAY, MAP, INPUT
     }
 }

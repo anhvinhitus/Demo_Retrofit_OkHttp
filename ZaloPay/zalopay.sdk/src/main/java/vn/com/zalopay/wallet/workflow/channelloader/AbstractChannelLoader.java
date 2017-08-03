@@ -11,8 +11,6 @@ import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.CreditCardDetector;
-import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -20,6 +18,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
@@ -87,10 +87,19 @@ public abstract class AbstractChannelLoader {
 
     protected abstract void detectChannel() throws Exception;
 
+    void createLinkChannel() {
+        PaymentChannel linkChannel = new PaymentChannel();
+        linkChannel.pmcid = Constants.DEFAULT_LINK_ID;
+        linkChannel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_default_link_channel_name);
+        linkChannel.status = PaymentChannelStatus.ENABLE;
+        ChannelHelper.createChannelIcon(linkChannel, null);
+        send(linkChannel);
+    }
+
     /***
      * get channel from pmc list
      */
-    protected void getChannelFromConfig() {
+    void getChannelFromConfig() {
         for (String pmcKey : pmcConfigList) {
             try {
                 MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfigByPmcKey(pmcKey);
@@ -98,33 +107,19 @@ public abstract class AbstractChannelLoader {
                     continue;
                 }
                 PaymentChannel channel = new PaymentChannel(activeChannel);
-                if (channel.isBankAccount()) {
-                    continue;//skip bank account
+                if (!channel.isZaloPayChannel()) {
+                    continue;//skip
                 }
                 if (channel.isEnable()) {
                     channel.calculateFee(mAmount);//calculate fee of this channel
                     channel.checkPmcOrderAmount(mAmount);//check amount is support or not
                 }
-                //check maintenance for cc
-                if (channel.isEnable() && ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
-                        || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_BANK_ACCOUNT)))) {
-                    channel.setStatus(PaymentChannelStatus.MAINTENANCE);
-                } else if (channel.isZaloPayChannel()) {
-                    boolean balanceError = mBalance < mAmount + channel.totalfee;
-                    if (balanceError) {
-                        channel.setAllowOrderAmount(false);
-                    }
-                } else if (channel.isAtmChannel()) {
-                    StringBuilder keyBuilder = new StringBuilder();
-                    keyBuilder.append(mAppId).append(Constants.UNDERLINE).append(mTranstype);
-                    long bankMinAmountSupport = mAppinfoInteractor.getBankMinAmountSupport(keyBuilder.toString());
-                    if (bankMinAmountSupport > 0 && mAmount < bankMinAmountSupport) {
-                        channel.minvalue = bankMinAmountSupport;
-                        channel.status = PaymentChannelStatus.DISABLE;
-                    }
+                boolean balanceError = mBalance < mAmount + channel.totalfee;
+                if (balanceError) {
+                    channel.setAllowOrderAmount(false);
                 }
                 //get icon
-                ChannelHelper.inflatChannelIcon(channel, null);
+                ChannelHelper.createChannelIcon(channel, null);
                 findValue(channel); //get min/max amount
                 send(channel);
             } catch (Exception e) {
@@ -162,7 +157,7 @@ public abstract class AbstractChannelLoader {
                     channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_bankaccount_name);
                     channel.isBankAccountMap = true;
 
-                    ChannelHelper.inflatChannelIcon(channel, bankAccount.bankcode);
+                    ChannelHelper.createChannelIcon(channel, bankAccount.bankcode);
                     //calculate fee
                     channel.calculateFee(mAmount);
 
@@ -233,12 +228,12 @@ public abstract class AbstractChannelLoader {
                             //populate channel name
                             channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), CreditCardDetector.getInstance().getBankName()) + mapCard.last4cardno;
                             String cardType = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
-                            ChannelHelper.inflatChannelIcon(channel, cardType);
+                            ChannelHelper.createChannelIcon(channel, cardType);
                         }
                     }
                     //this is atm
                     else {
-                        ChannelHelper.inflatChannelIcon(channel, mapCard.bankcode);
+                        ChannelHelper.createChannelIcon(channel, mapCard.bankcode);
                         BankDetector.getInstance().detectOnSync(channel.f6no);
                         if (BankDetector.getInstance().detected()) {
                             //populate channel name

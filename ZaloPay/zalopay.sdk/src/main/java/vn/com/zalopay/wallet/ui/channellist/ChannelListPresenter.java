@@ -95,7 +95,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
     private PaymentChannel mZaloPayChannel = null; //temp variable for checking active zalopay channel
-    private boolean mSetInputMethodTitle = false;
     private int mLastSelectPosition = -1;
     private boolean mHasActiveChannel = false;
     private
@@ -168,7 +167,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 }
             }
             mPaymentInfoHelper.setResult(tempPaymentStatus);
-            return;
+            if (resultCode != Constants.LINK_THEN_PAY_RESULT_CODE) {
+                return;
+            }
         }
         switch (resultCode) {
             case Activity.RESULT_OK:
@@ -207,19 +208,20 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             tempTranstype = mPaymentInfoHelper.getTranstype();
             tempPaymentStatus = mPaymentInfoHelper.getStatus();
             boolean shouldlinkThenPay = GlobalData.updatePaymentInfo(bankLink);
-            if (shouldlinkThenPay) {
-                if (mPayProxy != null) {
-                    mPayProxy.setPaymentInfo(null);
-                }
-
-                ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
-                interactor.collectPaymentInfo(GlobalData.paymentInfoHelper);
-
-                Intent intent = getChannelIntent();
-                int layoutId = bankLink == Link_Then_Pay.VCB ? R.layout.screen__link__acc : R.layout.screen__card;
-                intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
-                getViewOrThrow().startActivityForResult(intent, Constants.CHANNEL_PAYMENT_REQUEST_CODE);
+            if (!shouldlinkThenPay) {
+                return;
             }
+            if (mPayProxy != null) {
+                mPayProxy.setPaymentInfo(null);
+            }
+
+            ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+            interactor.collectPaymentInfo(GlobalData.paymentInfoHelper);
+
+            Intent intent = getChannelIntent();
+            int layoutId = bankLink == Link_Then_Pay.BANKACCOUNT ? R.layout.screen__link__acc : R.layout.screen__card;
+            intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
+            getViewOrThrow().startActivityForResult(intent, Constants.CHANNEL_PAYMENT_REQUEST_CODE);
         } catch (Exception e) {
             Timber.w(e, "Exception onStartLinkThenPay");
         }
@@ -398,6 +400,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public void startPayment() {
         try {
             if (mSelectChannel == null) {
+                return;
+            }
+            if (mSelectChannel.isLinkChannel()) {
+                Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
+                onStartLinkThenPay(intent);
                 return;
             }
             mPayProxy.setChannel(mSelectChannel).start();
@@ -580,10 +587,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             itemType = ChannelListAdapter.ItemType.MAP;
         } else {
             itemType = ChannelListAdapter.ItemType.INPUT;
-            if (!mSetInputMethodTitle) {
-                mChannelAdapter.setTitle(mPaymentInfoHelper.getPaymentMethodTitleByTrans(mContext));
-                mSetInputMethodTitle = true;
-            }
         }
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ADD_PAYMENTCHANNEL);
         mChannelAdapter.add(itemType, pChannel);
@@ -696,9 +699,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void collectChannelsToList() {
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.ZALOPAY));
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.MAP));
-        if (mChannelAdapter.hasTitle()) {
-            mChannelList.add(new Object());
-        }
         mChannelList.addAll(mChannelAdapter.getDataSet(ChannelListAdapter.ItemType.INPUT));
     }
 
@@ -728,6 +728,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
         } else {
             try {
+                makeFullLineOnLastItem();
                 makeDefaultChannel();
             } catch (Exception e) {
                 Timber.w(e.getMessage());
@@ -800,6 +801,20 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             selectAndScrollToChannel(selectChannel, selectChannel.position);
         }
         return selectChannel != null;
+    }
+
+    private void makeFullLineOnLastItem() {
+        if (mChannelList == null || mChannelList.size() <= 0) {
+            return;
+        }
+        try {
+            int lastIndex = mChannelList.size() - 1;
+            PaymentChannel lastChannel = (PaymentChannel) mChannelList.get(lastIndex);
+            lastChannel.fullLine = true;
+            mChannelAdapter.notifyBinderItemChanged(lastIndex);
+        } catch (Exception e) {
+            Timber.d(e, "Exception make full line item");
+        }
     }
 
     private void makeDefaultChannel() throws Exception {

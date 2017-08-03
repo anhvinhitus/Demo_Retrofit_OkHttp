@@ -76,4 +76,14 @@ public class PaymentPermission {
             return true;
         }
     }
+
+    public static boolean allowLinkChannel() {
+        try {
+            int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_link_channel));
+            return allow > 0;
+        } catch (Exception ex) {
+            Timber.d(ex, "Exception read allow link channel");
+            return true;
+        }
+    }
 }

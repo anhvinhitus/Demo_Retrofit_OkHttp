@@ -3,8 +3,6 @@ package vn.com.zalopay.wallet.workflow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -1436,7 +1434,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 mLinkInteractor.putCardNumber(getGuiProcessor().getCardNumber());
             }
             if (CardType.PBIDV.equals(pBankCode)) {
-                getPresenter().callbackLinkThenPay(Link_Then_Pay.BIDV);
+                getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKCARD);
             }
         } catch (Exception e) {
             Timber.w(e, "Exception check need link before payment");

@@ -9,6 +9,7 @@ public class PaymentChannel extends MiniPmcTransType {
     public String f6no;
     public boolean select = false;//status select on list view
     public int position = -1;
+    public boolean fullLine = false;
 
     public PaymentChannel() {
     }

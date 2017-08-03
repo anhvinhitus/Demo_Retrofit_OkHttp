@@ -532,7 +532,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 }
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception check exist BIDV in map card list");
+            Timber.w(e, "Exception check exist BANKCARD in map card list");
         }
         return false;
     }

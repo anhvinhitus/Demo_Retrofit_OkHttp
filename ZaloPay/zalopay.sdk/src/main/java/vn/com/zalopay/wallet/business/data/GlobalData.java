@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.data;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
@@ -58,17 +59,23 @@ public class GlobalData {
         return paymentInfoHelper != null ? paymentInfoHelper.getTranstype() : TransactionType.PAY;
     }
 
+    public static Intent createLinkThenPayIntent(@Link_Then_Pay int bankLink){
+        Intent intent = new Intent();
+        intent.putExtra("bank", bankLink);
+        return intent;
+    }
+
     public static boolean updatePaymentInfo(@Link_Then_Pay int bankLink) {
         if (paymentInfoHelper == null) {
             return false;
         }
         switch (bankLink) {
-            case Link_Then_Pay.VCB:
+            case Link_Then_Pay.BANKACCOUNT:
                 LinkAccInfo linkAccInfo = new LinkAccInfo(CardType.PVCB, ELinkAccType.LINK);
                 paymentInfoHelper.setLinkAccountInfo(linkAccInfo);
                 paymentInfoHelper.setTranstype(TransactionType.LINK);
                 break;
-            case Link_Then_Pay.BIDV:
+            case Link_Then_Pay.BANKCARD:
                 paymentInfoHelper.setTranstype(TransactionType.LINK);
                 break;
             default:

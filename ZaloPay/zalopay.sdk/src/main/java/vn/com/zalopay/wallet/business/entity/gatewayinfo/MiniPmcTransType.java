@@ -10,8 +10,6 @@ import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
@@ -221,6 +219,10 @@ public class MiniPmcTransType implements Parcelable {
 
     public boolean isZaloPayChannel() {
         return compareToChannel(BuildConfig.channel_zalopay);
+    }
+
+    public boolean isLinkChannel() {
+        return compareToChannel(Constants.DEFAULT_LINK_ID);
     }
 
     public boolean isCreditCardChannel() {
