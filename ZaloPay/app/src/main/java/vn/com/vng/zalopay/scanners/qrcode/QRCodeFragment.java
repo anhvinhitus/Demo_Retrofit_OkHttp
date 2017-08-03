@@ -246,6 +246,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 }
             }
         }
+        if(qrCodePresenter == null){
+            return;
+        }
         qrCodePresenter.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }

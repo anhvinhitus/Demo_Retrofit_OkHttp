@@ -412,6 +412,9 @@ public class NotificationHelper {
                 return;
             }
             PromotionEvent promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), PromotionEvent.class);
+            if(promotionEvent == null){
+                return;
+            }
             promotionEvent.transid = data.transid;
             promotionEvent.notificationId = data.notificationId;
             if (SDKPayment.isOpenSdk()) {

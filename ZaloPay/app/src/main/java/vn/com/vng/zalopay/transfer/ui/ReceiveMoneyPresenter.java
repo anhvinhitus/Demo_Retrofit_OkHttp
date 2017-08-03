@@ -328,6 +328,9 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
     }
 
     private boolean isEqualCurrentUser(String zalopayId) {
+        if(mUser == null){
+            return false;
+        }
         return !TextUtils.isEmpty(zalopayId) && mUser.zaloPayId.equals(zalopayId);
     }
 

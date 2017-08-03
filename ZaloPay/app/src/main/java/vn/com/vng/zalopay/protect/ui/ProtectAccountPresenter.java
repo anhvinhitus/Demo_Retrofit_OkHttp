@@ -212,7 +212,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         }
         AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), isShowFingerPrint, callback);
         authenticationPassword.initialize();
-        if (authenticationPassword != null && authenticationPassword.getPasswordManager() != null) {
+        if (authenticationPassword.getPasswordManager() != null) {
             try {
                 authenticationPassword.getPasswordManager().setTitle(mContext.getString(R.string.input_pin_to_confirm));
             } catch (Exception e) {
@@ -256,7 +256,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
     void showConfirmSignOut() {
         new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText(getActivity().getString(R.string.txt_confirm_sigout))
+                .setContentText(mContext.getString(R.string.txt_confirm_sigout))
                 .setCancelText(getActivity().getString(R.string.cancel))
                 .setTitleText(getActivity().getString(R.string.confirm))
                 .setConfirmText(getActivity().getString(R.string.txt_leftmenu_sigout))
@@ -314,7 +314,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
             if (mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
-                        getActivity().getString(R.string.notification),
+                        mContext.getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
                         getActivity().getString(R.string.txt_later),
                         getActivity().getString(R.string.txt_continue),
