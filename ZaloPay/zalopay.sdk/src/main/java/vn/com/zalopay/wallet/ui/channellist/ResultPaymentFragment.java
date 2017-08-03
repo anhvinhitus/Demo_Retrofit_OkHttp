@@ -107,12 +107,7 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     protected ResultPaymentPresenter initializePresenter() {
-        try {
-            return new ResultPaymentPresenter();
-        } catch (Exception e) {
-            Timber.w(e, "Exception initialize presenter");
-        }
-        return null;
+        return new ResultPaymentPresenter();
     }
 
     @Override
@@ -120,7 +115,6 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
         if (getActivity() != null) {
             ((ChannelListActivity) getActivity()).setToolbarTitle(pTitle);
         }
-        Timber.d("set title %s", pTitle);
     }
 
     @Override

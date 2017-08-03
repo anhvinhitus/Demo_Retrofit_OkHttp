@@ -166,7 +166,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         if (getActivity() != null) {
             ((ChannelListActivity) getActivity()).setToolbarTitle(title);
         }
-        Timber.d("set title %s", title);
     }
 
     private boolean showingVoucherDialog() {

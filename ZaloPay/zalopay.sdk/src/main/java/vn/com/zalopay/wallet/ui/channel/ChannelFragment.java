@@ -8,10 +8,8 @@ import android.provider.Settings;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
@@ -135,7 +133,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void setTitle(String title) {
-        Timber.d("pTitle %s", title);
         if (TextUtils.isEmpty(mOriginTitle) && !TextUtils.isEmpty(title)) {
             mOriginTitle = title;
         }
@@ -171,7 +168,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     public void hideLoading() {
         DialogManager.closeLoadDialog();
         setTitle(mOriginTitle);
-        Timber.w("mOriginTitle %s", mOriginTitle);
     }
 
     @Override
@@ -380,7 +376,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         setVisible(R.id.zpw_submit_view, pIsVisible);
     }
 
-    public void visibleBIDVAccountRegisterBtn(boolean visible){
+    public void visibleBIDVAccountRegisterBtn(boolean visible) {
         setVisible(R.id.bidv_register_linearlayout, visible);
     }
 
@@ -417,7 +413,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
             try {
                 mPresenter.resetCardNumberAndShowKeyBoard();
             } catch (Exception e) {
-                Timber.w(e.getMessage());
+                Timber.w(e);
             }
         });
     }

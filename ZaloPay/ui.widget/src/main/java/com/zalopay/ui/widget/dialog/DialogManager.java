@@ -122,9 +122,13 @@ public class DialogManager {
     }
 
     public static void closeShowDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-            mDialog = null;
+        try {
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+                mDialog = null;
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Exception close dialog");
         }
     }
 
