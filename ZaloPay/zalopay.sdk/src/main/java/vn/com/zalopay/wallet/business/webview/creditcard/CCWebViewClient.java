@@ -177,6 +177,9 @@ public class CCWebViewClient extends PaymentWebViewClient {
             Timber.d(pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
+                if (TextUtils.isEmpty(jsContent)) {
+                    continue;
+                }
                 jsContent = String.format(jsContent, pJsInput);
                 runScript(jsContent, pView);
             }

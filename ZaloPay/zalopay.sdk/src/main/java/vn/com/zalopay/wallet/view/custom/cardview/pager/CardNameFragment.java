@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.view.custom.cardview.pager;
 
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -49,7 +48,7 @@ public class CardNameFragment extends CreditCardFragment {
             mCardNameView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
             //user touch on edittext,show keyboard
-            if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() instanceof TextInputLayout) {
+            if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() != null) {
                 (((VPaymentEditText) mCardNameView).getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             } else {
                 mCardNameView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
@@ -77,10 +76,12 @@ public class CardNameFragment extends CreditCardFragment {
     public String getError() {
         String errorMess = null;
 
-        if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() instanceof TextInputLayout) {
+        if (mCardNameView instanceof VPaymentEditText && ((VPaymentEditText) mCardNameView).getTextInputLayout() != null) {
             errorMess = (String) (((VPaymentEditText) mCardNameView).getTextInputLayout()).getHint();
-
-            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase((((VPaymentEditText) mCardNameView).getTextInputLayout()).getTag().toString())) {
+            Object tag = (((VPaymentEditText) mCardNameView).getTextInputLayout()).getTag();
+            if (!TextUtils.isEmpty(errorMess)
+                    && tag != null
+                    && errorMess.equalsIgnoreCase(tag.toString())) {
                 errorMess = null;
             }
         }

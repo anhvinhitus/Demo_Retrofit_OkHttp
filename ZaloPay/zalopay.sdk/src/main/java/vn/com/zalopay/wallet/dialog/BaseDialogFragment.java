@@ -69,6 +69,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(getDialog() == null || getDialog().getWindow() == null){
+            return;
+        }
         if (getLayoutSize() > 0) {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, getLayoutSize());
         } else {

@@ -79,10 +79,12 @@ public class CardIssueFragment extends CreditCardFragment {
     public String getError() {
         String errorMess = null;
 
-        if (cardIssueView instanceof VPaymentEditText && ((VPaymentEditText) cardIssueView).getTextInputLayout() instanceof TextInputLayout) {
+        if (cardIssueView instanceof VPaymentEditText && ((VPaymentEditText) cardIssueView).getTextInputLayout() != null) {
             errorMess = (String) (((VPaymentEditText) cardIssueView).getTextInputLayout()).getHint();
-
-            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase((((VPaymentEditText) cardIssueView).getTextInputLayout()).getTag().toString()))
+            Object tag = (((VPaymentEditText) cardIssueView).getTextInputLayout()).getTag();
+            if (!TextUtils.isEmpty(errorMess)
+                    && tag != null
+                    && errorMess.equalsIgnoreCase(tag.toString()))
                 errorMess = null;
         }
 

@@ -42,7 +42,6 @@ public class WorkFlowFactoryCreator {
                 }
                 break;
         }
-        Log.d("createByPmc", "create adapter", adapter.getClass().getSimpleName());
         return adapter;
     }
 }

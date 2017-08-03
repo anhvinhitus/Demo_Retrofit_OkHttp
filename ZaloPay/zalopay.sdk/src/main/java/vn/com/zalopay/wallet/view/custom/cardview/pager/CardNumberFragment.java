@@ -154,7 +154,7 @@ public class CardNumberFragment extends CreditCardFragment {
             mCardNumberView.setOnFocusChangeListener(cardGuiProcessor.getOnFocusChangeListener());
 
             //user touch on edittext,show keyboard
-            if (mCardNumberView instanceof VPaymentEditText && mCardNumberView.getTextInputLayout() instanceof TextInputLayout) {
+            if (mCardNumberView instanceof VPaymentEditText && mCardNumberView.getTextInputLayout() != null) {
                 (mCardNumberView.getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             } else {
                 mCardNumberView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
@@ -205,10 +205,10 @@ public class CardNumberFragment extends CreditCardFragment {
     public String getError() {
         String errorMess = null;
 
-        if (mCardNumberView instanceof VPaymentEditText && mCardNumberView.getTextInputLayout() instanceof TextInputLayout) {
+        if (mCardNumberView != null && mCardNumberView.getTextInputLayout() != null) {
             errorMess = (String) (mCardNumberView.getTextInputLayout()).getHint();
-
-            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase((mCardNumberView.getTextInputLayout()).getTag().toString())) {
+            Object tag = mCardNumberView.getTextInputLayout().getTag();
+            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase(tag.toString())) {
                 errorMess = null;
             }
         }

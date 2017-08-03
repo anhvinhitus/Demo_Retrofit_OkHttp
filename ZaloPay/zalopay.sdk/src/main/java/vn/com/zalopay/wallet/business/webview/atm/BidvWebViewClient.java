@@ -15,8 +15,6 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -33,6 +31,8 @@ import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 
 public class BidvWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;
@@ -61,26 +61,30 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     public BidvWebViewClient(AbstractWorkFlow pAdapter) {
         super(pAdapter);
-        if (getAdapter() != null) {
-            try {
-                mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
-                mWebPaymentBridge.setWebViewClient(this);
-                mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+        if (pAdapter == null) {
+            return;
+        }
+        try {
+            mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
+            mWebPaymentBridge.setWebViewClient(this);
+            mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 
     @Override
     public void start(String pUrl) {
+        if (mWebPaymentBridge == null) {
+            return;
+        }
         mWebPaymentBridge.loadUrl(pUrl);
         mIsFirst = true;
     }
 
     @Override
     public void stop() {
-        if(mWebPaymentBridge != null){
+        if (mWebPaymentBridge != null) {
             mWebPaymentBridge.stopLoading();
         }
     }
@@ -91,7 +95,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(EJavaScriptType.HIT, false);
     }
 
-    public DAtmScriptInput genJsInput() throws Exception{
+    public DAtmScriptInput genJsInput() throws Exception {
         DAtmScriptInput input = new DAtmScriptInput();
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
             input.cardHolderName = getAdapter().getGuiProcessor().getCardName();
@@ -127,7 +131,6 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     public void matchAndRunJs(EJavaScriptType pType, boolean pIsAjax) {
         if (mCurrentBankScript == null) {
-            Log.e(this, "===matchAndRunJs===mCurrentUrl=" + mCurrentUrl + " mCurrentBankScript=NULL");
             return;
         }
         mEventID = mCurrentBankScript.eventID;
@@ -139,14 +142,14 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         } catch (Exception e) {
             Timber.w(e);
         }
+        if (input == null) {
+            return;
+        }
         input.isAjax = pIsAjax;
-
         String inputScript = GsonUtils.toJsonString(input);
-
         if (pType == EJavaScriptType.AUTO) {
             executeJs(mCurrentBankScript.autoJs, inputScript);
         }
-
         if (pType == EJavaScriptType.HIT) {
             executeJs(mCurrentBankScript.hitJs, inputScript);
         }
@@ -160,6 +163,9 @@ public class BidvWebViewClient extends PaymentWebViewClient {
             String jsContent;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
+                if (TextUtils.isEmpty(jsContent)) {
+                    continue;
+                }
                 jsContent = String.format(jsContent, pJsInput);
                 mWebPaymentBridge.runScript(jsContent);
             }
@@ -188,7 +194,6 @@ public class BidvWebViewClient extends PaymentWebViewClient {
         }
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-
         mIsLoadingFinished = false;
         view.loadUrl(url);
 
@@ -202,26 +207,16 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     private void intervalCheck() {
         if (countIntervalCheck >= MAX_INTERVAL_CHECK_COUNT) {
-            Timber.d("===intervalCheck===stop");
             return;
         }
-
         countIntervalCheck++;
-        Timber.d("===intervalCheck===" + countIntervalCheck);
         mIsRunningScript = true;
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                matchAndRunJs(EJavaScriptType.AUTO, false);
-            }
-        }, DELAY_TIME_TO_RUN_SCRIPT);
+        mHandler.postDelayed(() -> matchAndRunJs(EJavaScriptType.AUTO, false), DELAY_TIME_TO_RUN_SCRIPT);
     }
 
     public void onLoadResource(WebView view, final String url) {
-        Timber.d("===onLoadResource: ===" + url);
         if (!loadingStaticResource(url) && isMatchUrl(url)) {
             if (mIsRunningScript) {
-                Timber.d("===there're a script is runing===");
                 return;
             }
             intervalCheck();
@@ -235,12 +230,9 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Timber.d("===onPageFinished===" + url);
-
         if (!mIsRedirect) {
             mIsLoadingFinished = true;
         }
-
         if (mIsLoadingFinished && !mIsRedirect) {
             onPageFinished(url);
         } else {
@@ -268,7 +260,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
         mIsRunningScript = false;
-        Log.d(this, "onJsPaymentResult", pResult);
+        Log.d(this, "onJsPaymentResult %s", pResult);
         mLastStartPageTime++;
         final String result = pResult;
         try {
@@ -277,7 +269,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
                 countIntervalCheck = 0;
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                if (mEventID == 0 && mIsFirst && scriptOutput != null && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;
                     hit();
@@ -293,7 +285,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
                 }
             });
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
     }
 
@@ -330,12 +322,10 @@ public class BidvWebViewClient extends PaymentWebViewClient {
                 break;
         }
 
-        if (ret != null) {
-            if (!pScriptOutput.isError()) {
-                ret.returncode = 4;
-            } else {
-                ret.returncode = -4;
-            }
+        if (!pScriptOutput.isError()) {
+            ret.returncode = 4;
+        } else {
+            ret.returncode = -4;
         }
 
         return ret;

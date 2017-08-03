@@ -25,14 +25,11 @@ public class CardExpiryFragment extends CreditCardFragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup group, Bundle state) {
-
         View v = inflater.inflate(R.layout.lyt_card_expiry, group, false);
         cardExpiryView = (EditText) v.findViewById(R.id.CreditCardExpiredDate);
-
         if (cardExpiryView != null) {
             cardExpiryView.setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             ((VPaymentValidDateEditText) cardExpiryView).setCheckDateNow(true);
-
             onChangeTextHintColor(cardExpiryView);
         }
 
@@ -46,16 +43,14 @@ public class CardExpiryFragment extends CreditCardFragment {
             cardExpiryView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
             //user touch on edittext,show keyboard
-            if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() instanceof TextInputLayout) {
+            if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() != null) {
                 (((VPaymentEditText) cardExpiryView)).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             } else {
                 cardExpiryView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             }
-
         } catch (Exception e) {
             Timber.w(e);
         }
-
         return v;
     }
 
@@ -82,14 +77,15 @@ public class CardExpiryFragment extends CreditCardFragment {
     public String getError() {
         String errorMess = null;
 
-        if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() instanceof TextInputLayout) {
+        if (cardExpiryView instanceof VPaymentEditText && ((VPaymentEditText) cardExpiryView).getTextInputLayout() != null) {
             errorMess = (String) (((VPaymentEditText) cardExpiryView).getTextInputLayout()).getHint();
-
-            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase((((VPaymentEditText) cardExpiryView).getTextInputLayout()).getTag().toString())) {
+            Object tag = (((VPaymentEditText) cardExpiryView).getTextInputLayout()).getTag();
+            if (!TextUtils.isEmpty(errorMess)
+                    && tag != null
+                    && errorMess.equalsIgnoreCase(tag.toString())) {
                 errorMess = null;
             }
         }
-
         return errorMess;
     }
 

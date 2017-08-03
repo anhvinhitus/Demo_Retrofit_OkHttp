@@ -173,6 +173,9 @@ public class BankWebViewClient extends PaymentWebViewClient {
             String jsContent;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
+                if(TextUtils.isEmpty(jsContent)){
+                    continue;
+                }
                 jsContent = String.format(jsContent, pJsInput);
                 if (mWebPaymentBridge == null) {
                     initWebViewBridge();
@@ -275,7 +278,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                if (mEventID == 0 && mIsFirst
+                        && scriptOutput != null && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;
                     hit();
@@ -329,12 +333,10 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 break;
         }
 
-        if (ret != null) {
-            if (!pScriptOutput.isError()) {
-                ret.returncode = 4;
-            } else {
-                ret.returncode = -4;
-            }
+        if (!pScriptOutput.isError()) {
+            ret.returncode = 4;
+        } else {
+            ret.returncode = -4;
         }
         return ret;
     }

@@ -75,8 +75,7 @@ public class SubmitOrderTask extends BaseTask<StatusResponse> {
             PaymentLocation location = mPaymentHelper.getLocation();
             @TransactionType int transtype = mPaymentHelper.getTranstype();
             String chargeInfo = mPaymentHelper.getChargeInfo(mCard);
-            String hashPassword = null;
-            return DataParameter.prepareSubmitTransactionParams(mChannelId, appId, chargeInfo, hashPassword,
+            return DataParameter.prepareSubmitTransactionParams(mChannelId, appId, chargeInfo, null,
                     order, userInfo, location, transtype, voucherInfo,getDataParams());
         } catch (Exception e) {
             onRequestFail(e);

@@ -11,6 +11,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.BaseTask;
+import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -101,7 +102,14 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         try {
-            mAdapter.getView().showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
+            if(mAdapter == null){
+                return;
+            }
+            ChannelFragment fragment = mAdapter.getView();
+            if(fragment == null){
+                return;
+            }
+            fragment.showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
                     onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
@@ -114,7 +122,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
                 }
             });
         } catch (Exception e) {
-            Log.e(this, e);
             onPostResult(createReponse(-1, GlobalData.getAppContext().getString(GlobalData.getTransProcessingMessage(transtype))));
         }
     }

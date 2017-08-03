@@ -371,6 +371,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             Timber.d(pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
+                if (TextUtils.isEmpty(jsContent)) {
+                    continue;
+                }
                 jsContent = String.format(jsContent, pJsInput);
                 mWebPaymentBridge.runScript(jsContent);
             }
@@ -410,15 +413,14 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
      */
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
-        Timber.d("==== onJsPaymentResult: " + pResult);
+        Timber.d("onJsPaymentResult %s", pResult);
         final String result = pResult;
         try {
             getAdapter().getActivity().runOnUiThread(() -> {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = getResponse(eventType, scriptOutput);
-                Timber.d("==== onJsPaymentResult: " + mEventID + "==" + pResult);
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                if (mEventID == 0 && mIsFirst && scriptOutput != null && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;
                     hit();
@@ -431,7 +433,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 }
             });
         } catch (Exception e) {
-            Log.e(this, e);
         }
     }
 

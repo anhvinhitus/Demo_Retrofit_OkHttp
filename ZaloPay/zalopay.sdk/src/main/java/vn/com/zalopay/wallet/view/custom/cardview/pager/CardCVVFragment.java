@@ -42,7 +42,7 @@ public class CardCVVFragment extends CreditCardFragment {
             mCardCVVView.setOnEditorActionListener(cardGuiProcessor.getEditorActionListener());
 
             //user touch on edittext,show keyboard
-            if (mCardCVVView instanceof VPaymentEditText && ((VPaymentEditText) mCardCVVView).getTextInputLayout() instanceof TextInputLayout) {
+            if (mCardCVVView instanceof VPaymentEditText && ((VPaymentEditText) mCardCVVView).getTextInputLayout() != null) {
                 (((VPaymentEditText) mCardCVVView).getTextInputLayout()).setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
             } else {
                 mCardCVVView.setOnClickListener(cardGuiProcessor.getClickOnEditTextListener());
@@ -77,15 +77,16 @@ public class CardCVVFragment extends CreditCardFragment {
     @Override
     public String getError() {
         String errorMess = null;
-
-        if (mCardCVVView instanceof VPaymentEditText && ((VPaymentEditText) mCardCVVView).getTextInputLayout() instanceof TextInputLayout) {
+        if (mCardCVVView instanceof VPaymentEditText &&
+                ((VPaymentEditText) mCardCVVView).getTextInputLayout() != null) {
             errorMess = (String) (((VPaymentEditText) mCardCVVView).getTextInputLayout()).getHint();
-
-            if (!TextUtils.isEmpty(errorMess) && errorMess.equalsIgnoreCase((((VPaymentEditText) mCardCVVView).getTextInputLayout()).getTag().toString())) {
+            Object tag = (((VPaymentEditText) mCardCVVView).getTextInputLayout()).getTag();
+            if (!TextUtils.isEmpty(errorMess) &&
+                    tag != null &&
+                    errorMess.equalsIgnoreCase(tag.toString())) {
                 errorMess = null;
             }
         }
-
         return errorMess;
     }
 
