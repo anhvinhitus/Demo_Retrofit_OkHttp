@@ -108,10 +108,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         Log.i("onPageStarted: ", url);
-        if (!isRedirected) {
-            // code somethings if you want when starts
-        }
-
         isRedirected = false;
 
     }

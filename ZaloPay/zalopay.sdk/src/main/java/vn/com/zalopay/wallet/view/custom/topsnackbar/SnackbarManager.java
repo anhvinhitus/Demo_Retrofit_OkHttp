@@ -37,6 +37,7 @@ class SnackbarManager {
     private final Handler mHandler;
     private SnackbarRecord mCurrentSnackbar;
     private SnackbarRecord mNextSnackbar;
+
     private SnackbarManager() {
         mLock = new Object();
         mHandler = new Handler(Looper.getMainLooper(), message -> {
@@ -74,10 +75,8 @@ class SnackbarManager {
                 mNextSnackbar = new SnackbarRecord(duration, callback);
             }
 
-            if (mCurrentSnackbar != null && cancelSnackbarLocked(mCurrentSnackbar,
+            if (mCurrentSnackbar == null || !cancelSnackbarLocked(mCurrentSnackbar,
                     TSnackbar.Callback.DISMISS_EVENT_CONSECUTIVE)) {
-                // If we currently have a TSnackbar, try and cancel it and wait in line
-            } else {
                 // Clear out the current snackbar
                 mCurrentSnackbar = null;
                 // Otherwise, just show it now
