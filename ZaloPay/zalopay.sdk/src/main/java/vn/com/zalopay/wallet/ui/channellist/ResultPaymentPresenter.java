@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import javax.inject.Inject;
-
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.GsonUtils;
@@ -22,7 +20,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.pay.PayProxy;
+import vn.com.zalopay.wallet.listener.ZPWOnCloseSupportViewListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 
@@ -45,7 +43,17 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
 
     public boolean onBackPressed() {
         if (mView.visualSupportView()) {
-            mView.onCloseSupportView();
+            mView.onCloseSupportView(new ZPWOnCloseSupportViewListener() {
+                @Override
+                public void processing() {
+                    Timber.d("ZPWOnCloseSupportViewListener processing()");
+                }
+
+                @Override
+                public void complete() {
+                    Timber.d("ZPWOnCloseSupportViewListener complete()");
+                }
+            });
             return true;
         }
         callback();
