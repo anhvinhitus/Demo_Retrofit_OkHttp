@@ -72,6 +72,8 @@ public class RS {
 
 
         public static final String sdk_website_login_vcb_url = "sdk_website_login_vcb_url";
+        public static final String sdk_website_instruct_register_bidv_url = "sdk_website_instruct_register_bidv_url";
+
         public static final String sdk_vcb_otp_sms_type = "sdk_vcb_otp_sms_type";
         public static final String sdk_vcb_wallet_zalopay_type = "sdk_vcb_wallet_zalopay_type";
         public static final String sdk_vcb_number_retry_login = "sdk_vcb_number_retry_login";

@@ -21,11 +21,13 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.zalopay.feedback.FeedbackCollector;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -622,6 +624,14 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             return;
         }
         mAbstractWorkFlow.onClickSubmission();
+    }
+
+    public void showInstructRegiterBIDV() {
+        try {
+            SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
+        } catch (Exception e) {
+            Timber.w(e);
+        }
     }
 
     public void showFeedbackDialog() throws Exception {

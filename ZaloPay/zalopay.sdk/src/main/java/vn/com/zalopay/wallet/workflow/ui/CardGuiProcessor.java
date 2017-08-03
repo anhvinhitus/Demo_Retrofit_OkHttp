@@ -750,6 +750,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleSubmitButton(false);
             if (CardType.PBIDV.equals(getDetectedBankCode())) {
                 registerKeyboardEventForBidv();
+                getView().showMenuItem();
             }
         } else {
             getView().visibleWebView(false);

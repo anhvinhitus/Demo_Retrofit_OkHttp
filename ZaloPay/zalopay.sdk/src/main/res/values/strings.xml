@@ -281,6 +281,7 @@
     <string name="sdk_update_level_inform_content">Để nâng cao hạn mức, vui lòng cập nhật \nthông tin cá nhân (Email, CMND/Hộ Chiếu)</string>
 
     <string name="sdk_website_login_vcb_url">https://www.vietcombank.com.vn/IBanking2015/55c3c0a782b739e063efa9d5985e2ab4/Account/Login</string>
+    <string name="sdk_website_instruct_register_bidv_url">http://html.zapps.vn/pay/FAQCenter/suport_bidv.html</string>
 
     <string name="sdk_vcb_login_title">NHẬP THÔNG TIN INTERNET BANKING</string>
     <string name="sdk_vcb_unreg_title">NHẬP THÔNG TIN</string>

@@ -7,7 +7,11 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +23,8 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import timber.log.Timber;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
@@ -51,6 +57,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     int mLayoutId = R.layout.screen__card;
     private String mOriginTitle;
     private Bundle mData;
+    private boolean mShowMenuItem = false;
 
     public static BaseFragment newInstance() {
         return new ChannelFragment();
@@ -120,7 +127,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         findViewById(R.id.zpw_payment_fail_rl_support).setOnClickListener(mSupportViewClick);
         //findViewById(R.id.zpw_payment_fail_rl_update_info).setOnClickListener(updateInfoClick);
         mPresenter.pushArgument(mData);
-
+        setHasOptionsMenu(true);
         makeFont();
     }
 
@@ -141,6 +148,18 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mShowMenuItem) {
+            inflater.inflate(R.menu.bidv_menu, menu);
+            MenuItem menuItem = menu.findItem(R.id.menu_action_instruct);
+            View view = menuItem.getActionView();
+            view.setOnClickListener(v -> {
+                Timber.d("onClick() menu bidv");
+                mPresenter.showInstructRegiterBIDV();
+            });
+        }
+    }
     @Override
     protected ChannelPresenter initializePresenter() {
         return new ChannelPresenter();
@@ -416,5 +435,16 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
                 Timber.w(e);
             }
         });
+    }
+
+
+    public void showMenuItem() {
+        mShowMenuItem = true;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+    }
+
+    public void hideMenuItem() {
+        mShowMenuItem = false;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 }
