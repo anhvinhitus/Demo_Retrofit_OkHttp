@@ -50,6 +50,7 @@ import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
+import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /*
  * pre check before start payment channel
@@ -73,14 +74,6 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-        }
-    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -95,6 +88,14 @@ public class PayProxy extends SingletonBase {
             showResultScreen();
         }
         Timber.d(throwable, "trans status on error");
+    };
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -463,6 +464,13 @@ public class PayProxy extends SingletonBase {
             mPaymentInfoHelper.setMapBank(null);
         }
         mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
+        //minus discount amount
+        VoucherInfo voucherInfo = mPaymentInfoHelper.getVoucher();
+        if (voucherInfo != null) {
+            double amountTotal = mPaymentInfoHelper.getAmountTotal();
+            amountTotal = amountTotal - voucherInfo.discountamount;
+            mPaymentInfoHelper.setAmountTotal(amountTotal);
+        }
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
             startFlow();
         } else {

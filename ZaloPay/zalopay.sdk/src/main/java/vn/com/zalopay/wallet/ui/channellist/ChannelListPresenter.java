@@ -452,9 +452,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 return;
             }
             total_amount = total_amount - voucherInfo.discountamount;
-            if (mPaymentInfoHelper.getOrder() != null) {
-                mPaymentInfoHelper.getOrder().amount_total = total_amount;
-            }
             getViewOrThrow().renderOrderAmount(total_amount);
             getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, voucherInfo.discountamount);
         } catch (Exception e) {

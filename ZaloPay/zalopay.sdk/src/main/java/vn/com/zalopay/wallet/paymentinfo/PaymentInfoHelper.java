@@ -131,6 +131,12 @@ public class PaymentInfoHelper extends SingletonBase {
         return 0;
     }
 
+    public void setAmountTotal(double amountTotal) {
+        if (getOrder() != null) {
+            getOrder().amount_total = amountTotal;
+        }
+    }
+
     public AbstractOrder getOrder() {
         return paymentInfo != null ? paymentInfo.getOrder() : null;
     }
