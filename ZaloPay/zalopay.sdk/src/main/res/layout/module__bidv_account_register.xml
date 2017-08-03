@@ -7,15 +7,14 @@
     <Button
         android:id="@+id/bidv_register_btn"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:layout_marginLeft="@dimen/padding_small"
-        android:layout_marginRight="@dimen/padding_small"
+        android:layout_height="@dimen/zpw_submit_button_height"
+        android:layout_marginBottom="@dimen/padding_large"
+        android:layout_marginLeft="@dimen/padding_large"
+        android:layout_marginRight="@dimen/padding_large"
         android:background="@drawable/bg_btn_blue_border_selector"
         android:text="@string/sdk_bidv_register_button_text"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white"
-        android:textSize="@dimen/zpw_submit_button_text_size" />
-
+        android:textSize="@dimen/zpw_submit_button_text_size"/>
 </LinearLayout>
