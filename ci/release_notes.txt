@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 382) - Released on 2017-08-03 09:49
-+ [Gradle] Up version 2.17.0 by vo van chuc (#62e735a)
+Zalo Pay (Sandbox v2.17.0 - build 388) - Released on 2017-08-03 09:55
++ [Gradle] Up versionCode by vo van chuc (#2ea8618)
