@@ -60,7 +60,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     private final MerchantStore.Repository mMerchantRepository;
     private final AppResourceStore.Repository mAppResourceRepository;
     private final FriendStore.Repository mFriendRepository;
-    private final Navigator mNavigator;
+    final Navigator mNavigator;
     private boolean mSuggest = true;
     private final List<InsideApp> mListApp;
     private PublishSubject<String> mDelaySubject;
@@ -102,7 +102,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         mSubscription.add(subscription);
     }
 
-    private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
+    class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {
@@ -110,7 +110,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         }
     }
 
-    private void onGetAppResourceSuccess(List<AppResource> resources) {
+    void onGetAppResourceSuccess(List<AppResource> resources) {
         Timber.d("get app resource success - size [%s]", resources.size());
 
         if (mView == null) {
@@ -205,12 +205,8 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         } else if (app.appType == PaymentAppTypeEnum.INTERNAL_REACT_NATIVE.getValue()) {
             handleLaunchInternalReactApp((int) app.insideAppId, app.moduleName);
         }
-        if (mSuggest) {
-            ZPAnalytics.trackEvent(ZPEvents.SEARCH_TOUCH_SUGGEST);
-        } else {
-            ZPAnalytics.trackEvent(ZPEvents.SEARCH_TOUCH_RESULT);
-        }
 
+        ZPAnalytics.trackEvent(mSuggest ? ZPEvents.SEARCH_TOUCH_SUGGEST : ZPEvents.SEARCH_TOUCH_RESULT);
     }
 
     private void handleLaunchInternalApp(int id) {
