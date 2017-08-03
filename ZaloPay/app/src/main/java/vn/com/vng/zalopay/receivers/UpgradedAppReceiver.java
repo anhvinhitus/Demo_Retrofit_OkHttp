@@ -17,6 +17,10 @@ public class UpgradedAppReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (intent == null || intent.getData() == null) {
+            return;
+        }
+
         Timber.d("on upgraded app receiver, data[%s]", intent);
         Uri packageName = intent.getData();
         if (packageName.toString().equals("package:" + context.getPackageName())) {
