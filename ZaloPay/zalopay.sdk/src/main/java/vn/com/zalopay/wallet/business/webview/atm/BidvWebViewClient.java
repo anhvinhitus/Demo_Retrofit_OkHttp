@@ -157,7 +157,7 @@ public class BidvWebViewClient extends PaymentWebViewClient {
             Timber.d(pJsFileName);
             Timber.d(pJsInput);
 
-            String jsContent = null;
+            String jsContent;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
                 jsContent = String.format(jsContent, pJsInput);

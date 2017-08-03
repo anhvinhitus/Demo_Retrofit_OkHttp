@@ -19,8 +19,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -36,6 +34,8 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_VCB_CONFIRM_LINK;
@@ -416,7 +416,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             getAdapter().getActivity().runOnUiThread(() -> {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
-                StatusResponse response = genResponse(eventType, scriptOutput);
+                StatusResponse response = getResponse(eventType, scriptOutput);
                 Timber.d("==== onJsPaymentResult: " + mEventID + "==" + pResult);
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
@@ -452,21 +452,14 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         return mEventID == 1;
     }
 
-    public StatusResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
-        StatusResponse ret = null;
-        switch (pEventType) {
-            default:
-                ret = new StatusResponse();
-                ret.returnmessage = pScriptOutput.message;
-                break;
-        }
+    public StatusResponse getResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
+        StatusResponse ret = new StatusResponse();
+        ret.returnmessage = pScriptOutput.message;
 
-        if (ret != null) {
-            if (!pScriptOutput.isError()) {
-                ret.returncode = 4;
-            } else {
-                ret.returncode = -4;
-            }
+        if (!pScriptOutput.isError()) {
+            ret.returncode = 4;
+        } else {
+            ret.returncode = -4;
         }
 
         return ret;
