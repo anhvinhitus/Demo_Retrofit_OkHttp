@@ -38,7 +38,7 @@ public class PromotionHelper {
                 }
                 break;
             case ActionType.VOUCHER_LIST:
-                mNavigator.startAppVoucher((Activity) pContext);
+                mNavigator.startVoucherApp((Activity) pContext);
                 break;
             default:
                 Timber.d("undefine action on promotion");
