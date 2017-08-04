@@ -67,6 +67,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
@@ -390,7 +391,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         onStop();
     }
 
-    private void clearStickyEvent(){
+    private void clearStickyEvent() {
         mEventBus.removeStickyEvent(SdkSubmitOrderEvent.class);
         mEventBus.removeStickyEvent(SdkOrderStatusEvent.class);
         mEventBus.removeStickyEvent(SdkAuthenPayerEvent.class);
@@ -1148,6 +1149,15 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.w(e);
         }
+        //update password fingerprint
+        try {
+            if (GlobalData.mShowFingerPrintToast) {
+                ToastHelper.showToastUpdatePassword(getActivity());
+            }
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+
         if (mPaymentInfoHelper.isLinkTrans()) {
             saveMapCardToLocal();
         }

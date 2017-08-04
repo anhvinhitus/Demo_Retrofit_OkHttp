@@ -545,21 +545,22 @@ public class PayProxy extends SingletonBase {
 
             mStatusResponse.zptransid = mTransId;
 
-            boolean successTrans = TransactionHelper.isTransactionSuccess(mStatusResponse);
-            // save/update password & active fingerPrint & show toast for first times
-            if (shouldShowFingerPrintToast() && successTrans) {
-                ToastHelper.showToastUpdatePassword(getActivity());
+            if (TransactionHelper.isTransactionSuccess(mStatusResponse)) {
+                // save/update password & active fingerPrint & show toast for first times
+                if (shouldShowFingerPrintToast()) {
+                    ToastHelper.showToastUpdatePassword(getActivity());
+                }
+
+                // no show success screen if this is payment for redpacket
+                if (mPaymentInfoHelper != null
+                        && mPaymentInfoHelper.isRedPacket()) {
+                    String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
+                    GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
+                    getView().callbackThenTerminate();
+                    return;
+                }
             }
 
-            // no show success screen if this is payment for redpacket
-            if (successTrans
-                    && mPaymentInfoHelper != null
-                    && mPaymentInfoHelper.isRedPacket()) {
-                String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
-                GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
-                getView().callbackThenTerminate();
-                return;
-            }
             // show screen result payment
             if (getPresenter() != null) {
                 getPresenter().showResultPayment(mStatusResponse);
@@ -586,6 +587,9 @@ public class PayProxy extends SingletonBase {
                  */
                 mStatusResponse.zptransid = mTransId;
                 intent.putExtra(Constants.STATUS_RESPONSE, mStatusResponse);
+
+                // get status to control finger print toast
+                GlobalData.mShowFingerPrintToast = shouldShowFingerPrintToast();
             }
             intent.putExtra(Constants.PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));

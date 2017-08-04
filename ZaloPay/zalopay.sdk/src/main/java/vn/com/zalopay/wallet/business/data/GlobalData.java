@@ -48,6 +48,7 @@ public class GlobalData {
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
+    public static boolean mShowFingerPrintToast = false;
 
     public static String getUserId() {
         return paymentInfoHelper != null ? paymentInfoHelper.getUserId() : "";
