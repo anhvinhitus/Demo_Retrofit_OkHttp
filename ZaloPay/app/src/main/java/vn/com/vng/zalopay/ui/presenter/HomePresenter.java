@@ -72,8 +72,10 @@ import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IResourceLoader;
+import vn.zalopay.promotion.VoucherRender;
+import vn.zalopay.promotion.model.CashBackEvent;
 import vn.zalopay.promotion.model.PromotionEvent;
-import vn.zalopay.promotion.PromotionType;
+import vn.zalopay.promotion.model.VoucherEvent;
 
 /**
  * Created by longlv on 3/21/17.
@@ -378,37 +380,41 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onCashBackEvent(PromotionEvent event) {
+    public void onPromotionEvent(PromotionEvent event) {
         mEventBus.removeStickyEvent(PromotionEvent.class);
         if (mPromotionBuilder != null) {
+            //cashback callback 2 times. the second time just update event with new transid
             mPromotionBuilder.setPromotion(event);
             return;
         }
-        if (mView != null && event != null) {
-            switch (event.type) {
-                case PromotionType.CASHBACK:
-                    mPromotionBuilder = CashBackRender.getBuilder()
-                            .setPromotion(event)
-                            .setResourceProvider(mPromotionResourceLoader)
-                            .setInteractPromotion(new IInteractPromotion() {
-
-                                @Override
-                                public void onUserInteract(PromotionEvent pPromotionEvent) {
-                                    mPromotionHelper.navigate(mView.getActivity(), pPromotionEvent);
-                                }
-
-                                @Override
-                                public void onClose() {
-                                    mPromotionBuilder.release();
-                                    mPromotionBuilder = null;
-                                }
-                            });
-                    mView.showCashBackView(mPromotionBuilder, event);
-                    break;
-                default:
-                    Timber.d("undefine promotion type");
-            }
+        if (mView == null) {
+            return;
         }
+        if (event instanceof CashBackEvent) {
+            mPromotionBuilder = CashBackRender.getBuilder();
+        } else if (event instanceof VoucherEvent) {
+            mPromotionBuilder = VoucherRender.getBuilder();
+        }
+        if (mPromotionBuilder == null) {
+            return;
+        }
+        mPromotionBuilder
+                .setPromotion(event)
+                .setResourceProvider(mPromotionResourceLoader)
+                .setInteractPromotion(new IInteractPromotion() {
+
+                    @Override
+                    public void onUserInteract(PromotionEvent pPromotionEvent) {
+                        mPromotionHelper.navigate(mView.getActivity(), pPromotionEvent);
+                    }
+
+                    @Override
+                    public void onClose() {
+                        mPromotionBuilder.release();
+                        mPromotionBuilder = null;
+                    }
+                });
+        mView.showCashBackView(mPromotionBuilder, event);
     }
 
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
