@@ -467,6 +467,7 @@
     <string name="protect_account_otp_invalid">Mã OTP không đúng</string>
     <string name="protect_account_password_changed">Đổi mật khẩu thanh toán thành công</string>
     <string name="protect_account_confirm_close_dialog">Bạn có muốn tiếp tục đổi mật khẩu thanh toán không?</string>
+    <!-- ZPC -->
  	<string name="description.favorite.empty">Trượt ngang qua trái tại tên bạn bè và chọn \nƯa thích để thêm mới</string>
     <string name="done">Xong</string>
     <string name="edit">Sửa</string>
@@ -474,5 +475,7 @@
     <string name="not.sync.contact">Chưa cập nhật danh bạ</string>
     <string name="favorite">Ưa thích</string>
     <string name="friend.favorite.maximum.format">Danh sách bạn bè ưa thích chỉ chứa tối đa %s người</string>
+    <string name="friend.favorite.added">Đã thêm vào bạn bè ưa thích</string>
+    <string name="friend.favorite.removed">Đã xoá khỏi bạn bè ưa thích</string>
 </resources>
 

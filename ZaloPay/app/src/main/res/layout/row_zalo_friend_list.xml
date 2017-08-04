@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLayout"
@@ -17,17 +16,15 @@
         android:layout_marginEnd="@dimen/padding_large"
         android:layout_marginLeft="@dimen/padding_large"
         android:layout_marginRight="@dimen/padding_large"
-        android:layout_marginStart="@dimen/padding_large"
-        >
+        android:layout_marginStart="@dimen/padding_large">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
             style="@style/AvatarDraweeView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
-        <include layout="@layout/text_place_holder"/>
+        <include layout="@layout/text_place_holder" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/logo"
@@ -36,32 +33,43 @@
             android:layout_gravity="bottom|right"
             app:actualImageResource="@drawable/dot_zp"
             tools:background="@drawable/dot_zp"
-            tools:ignore="RtlHardcoded"/>
+            tools:ignore="RtlHardcoded" />
 
     </FrameLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tvDisplayName"
             style="@style/TextView.Item.Main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="A.Hoanh"/>
+            tools:text="A.Hoanh" />
 
         <TextView
             android:id="@+id/tvPhone"
             style="@style/TextView.Item.Sub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDisplayName"
             android:layout_marginTop="2dp"
-            tools:text="0966 888 888"/>
+            tools:text="0966 888 888" />
 
-    </LinearLayout>
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/zpcontactlist_if_favorite_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/personal_margin_12"
+            android:textColor="@color/yellow.f8d41c"
+            android:visibility="gone"
+            app:iconName="@string/ct_list_fav_choose"
+            app:iconSize="15dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>
 

@@ -10,6 +10,7 @@ import android.widget.Space;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.IconFontTextView;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.transfer.widget.FavoriteView;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by hieuvm on 7/23/17.
@@ -141,6 +143,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
     }
 
     static class SwipeHolder extends ViewHolder {
+        private Context mContext;
 
         @BindView(R.id.swipe)
         SwipeLayout mSwipeLayout;
@@ -151,6 +154,9 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
         @BindView(R.id.iconFavorite)
         IconFontTextView mIconFontTextView;
 
+        @BindView(R.id.zpcontactlist_if_favorite_star)
+        IconFont mFavoriteStar;
+
         private final OnFavoriteListener mListener;
         private final FavoriteData mFavoriteData;
         private final FavoriteView mFavoriteView;
@@ -158,6 +164,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
 
         SwipeHolder(View view, FavoriteView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
             super(view);
+            mContext = view.getContext();
             mListener = listener;
             mFavoriteData = new FavoriteData();
             mFavoriteView = favoriteView;
@@ -183,8 +190,10 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
             mIconFontTextView.setSelected(isFavorite);
             if (isFavorite) {
                 mIconFontTextView.setIcon(IconFontTextView.Top, mIconFontTextView.getContext().getString(R.string.ct_list_fav_choose), mColorYellow);
+                mFavoriteStar.setVisibility(View.VISIBLE);
             } else {
                 mIconFontTextView.setIcon(IconFontTextView.Top, mIconFontTextView.getContext().getString(R.string.ct_list_fav_line), Color.WHITE);
+                mFavoriteStar.setVisibility(View.GONE);
             }
         }
 
@@ -197,6 +206,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
                 if (mListener != null) {
                     mListener.onRemoveFavorite(mFavoriteData);
                 }
+                ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_removed));
                 return;
             }
 
@@ -209,11 +219,13 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
             }
 
             setFavorite(true);
-            mFavoriteView.add(new FavoriteData(mFavoriteData));
+//            mFavoriteView.add(new FavoriteData(mFavoriteData));
+            mFavoriteView.addLast(new FavoriteData(mFavoriteData));
 
             if (mListener != null) {
                 mListener.onAddFavorite(mFavoriteData);
             }
+            ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_added));
 
         }
     }

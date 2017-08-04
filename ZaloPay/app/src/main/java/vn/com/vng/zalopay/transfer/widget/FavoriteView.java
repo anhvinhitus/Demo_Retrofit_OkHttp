@@ -107,6 +107,12 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
         checkItemCount();
     }
 
+    public void addLast(FavoriteData person) {
+        mAdapter.insert(person, mAdapter.getItemCount());
+        AndroidUtils.runOnUIThread(mScrollRunnable);
+        checkItemCount();
+    }
+
     private Runnable mScrollRunnable = this::scrollToTop;
 
     private void scrollToTop() {
