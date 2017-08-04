@@ -67,6 +67,7 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.CardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
@@ -1152,7 +1153,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             boolean shouldShowFFToast = getPresenter().mShowFingerPrintToast;
             if (shouldShowFFToast) {
-                getView().showToast(R.layout.layout_update_password_toast);
+                ToastHelper.showToastUpdatePassword(getActivity());
             }
         } catch (Exception e) {
             Timber.d(e.getMessage());

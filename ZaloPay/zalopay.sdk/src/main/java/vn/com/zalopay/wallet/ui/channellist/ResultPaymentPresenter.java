@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
+import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
@@ -139,7 +140,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         }
         //update password fingerprint
         if (mShowFingerPrintToast) {
-            getViewOrThrow().showToast(R.layout.layout_update_password_toast);
+            ToastHelper.showToastUpdatePassword(getViewOrThrow().getActivity());
         }
     }
 

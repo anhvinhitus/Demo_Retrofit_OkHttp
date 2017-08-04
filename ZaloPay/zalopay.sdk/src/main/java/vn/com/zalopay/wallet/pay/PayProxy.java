@@ -40,6 +40,7 @@ import vn.com.zalopay.wallet.exception.InvalidStateException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -541,17 +542,25 @@ public class PayProxy extends SingletonBase {
                 return;
             }
             mStatusResponse.zptransid = mTransId;
-            //redpacket return callback without show result screen
-            if (TransactionHelper.isTransactionSuccess(mStatusResponse)
-                    && mPaymentInfoHelper != null
-                    && mPaymentInfoHelper.isRedPacket()) {
-                String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
-                GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
-                getView().callbackThenTerminate();
-                return;
+            if (TransactionHelper.isTransactionSuccess(mStatusResponse)) {
+                // save pass & active fingerPrint
+                if (shouldShowFingerPrintToast()) {
+                    ToastHelper.showToastUpdatePassword(getActivity());
+                }
+
+                // check condition show Result Payment
+                if (mPaymentInfoHelper != null &&
+                        mPaymentInfoHelper.isRedPacket()) {
+                    String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
+                    GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
+                    getView().callbackThenTerminate();
+                    return;
+                }
+
+                // TODO: refactor this
+                boolean showFingerPrintToast = shouldShowFingerPrintToast(); // check again. this don't need. remove this, remove showFingerPrintToast below
+                getPresenter().showResultPayment(mStatusResponse, showFingerPrintToast); // don't need show toast in this
             }
-            boolean showFingerPrintToast = shouldShowFingerPrintToast();
-            getPresenter().showResultPayment(mStatusResponse, showFingerPrintToast);
         } catch (Exception e) {
             Timber.d("show result screen error - skip to show channel activity");
             startChannelActivity();

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
@@ -13,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 
@@ -308,14 +306,6 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         updateToolBar();
         enablePaymentButton();
         setTitle(pToolBarTitle);
-    }
-
-    public void showToast(int layout) {
-        Toast toast = new Toast(getContext());
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(View.inflate(getContext(), layout, null));
-        toast.show();
     }
 
     public void setTextPaymentButton(String pText) {
