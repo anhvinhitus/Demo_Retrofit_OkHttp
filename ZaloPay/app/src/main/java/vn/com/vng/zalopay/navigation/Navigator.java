@@ -353,7 +353,6 @@ public class Navigator {
         if (PasswordUtil.detectShowFingerPrint(context, mUserConfig)) {
             AndroidUtils.runOnUIThread(() -> {
                 AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-                dialog.setStage(Stage.FINGERPRINT_DECRYPT);
                 dialog.setAuthenticationCallback(callback);
                 dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
             }, 300);
@@ -709,7 +708,6 @@ public class Navigator {
             AuthenticationDialog dialog = AuthenticationDialog.newInstance();
             dialog.setPendingIntent(pendingIntent);
             dialog.setFinishActivity(isFinish);
-            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
             dialog.setAuthenticationCallback(new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
@@ -746,7 +744,6 @@ public class Navigator {
 
         if (PasswordUtil.detectShowFingerPrint(context, mUserConfig)) {
             AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
             dialog.setAuthenticationCallback(new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {

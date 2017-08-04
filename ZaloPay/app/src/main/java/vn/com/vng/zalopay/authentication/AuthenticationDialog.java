@@ -1,8 +1,6 @@
 package vn.com.vng.zalopay.authentication;
 
 import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,13 +27,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 
-public class AuthenticationDialog extends DialogFragment implements IAuthenticationView, GridPasswordView.OnPasswordChangedListener {
+public class AuthenticationDialog extends DialogFragment implements IAuthenticationView {
 
 
     public static AuthenticationDialog newInstance() {
@@ -53,13 +49,10 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         this.pendingIntent = intent;
     }
 
-    public void setStage(Stage stage) {
-        mStage = stage;
-    }
-
     public void setAuthenticationCallback(AuthenticationCallback callback) {
         this.mCallback = callback;
     }
+
     /**
      * Finish Activity sau khi XÁC THỰC THÀNH CÔNG
      */
@@ -76,15 +69,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @BindView(R.id.fingerprint_decrypt_container)
     View mFingerprintDecrypt;
 
-    @BindView(R.id.backup_container)
-    View mBackupContent;
-
-    @BindView(R.id.password)
-    GridPasswordViewFitWidth mPassword;
-
-    @BindView(R.id.hintPassword)
-    TextView mHintPassword;
-
     @BindView(R.id.fingerprint_status_decrypt)
     TextView mTvDecryptView;
 
@@ -93,16 +77,10 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     private Unbinder mUnbinder;
 
     private AuthenticationCallback mCallback;
-
-    @BindView(R.id.password_description)
-    TextView mPasswordDescriptionView;
-
     @Inject
     AuthenticationPresenter mPresenter;
 
     private Intent pendingIntent;
-
-    private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
     private boolean isFinish = false; //
 
@@ -126,6 +104,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         View v = inflater.inflate(R.layout.fingerprint_dialog_container, container, false);
         mUnbinder = ButterKnife.bind(this, v);
         setupFragmentComponent();
+        initView();
         return v;
     }
 
@@ -164,42 +143,16 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        mPresenter.setStage(mStage);
         mPresenter.onViewCreated();
-        mPassword.setOnPasswordChangedListener(this);
-
-        if (!TextUtils.isEmpty(mMessagePassword)) {
-            mPasswordDescriptionView.setText(mMessagePassword);
-        }
         mMessageOrigin = mTvDecryptView.getText();
-    }
-
-
-    @Override
-    public void onTextChanged(String s) {
-        //empty
-    }
-
-    @Override
-    public void onInputFinish(String s) {
-        Timber.d("onInputFinish: %s", s);
-        mPresenter.verify(s);
     }
 
     @OnClick(R.id.second_dialog_button)
     public void onOnClickButtonSecond(View v) {
-        if (mPresenter.getStage() == Stage.PASSWORD) {
-            cancel();
-            return;
+        if (mCallback != null) {
+            mCallback.onShowPassword();
         }
-        else
-        {
-            if (mCallback != null) {
-                mCallback.onShowPassword();
-            }
-            cancel();
-            return;
-        }
+        cancel();
     }
 
     private void cancel() {
@@ -231,53 +184,18 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @Override
     public void onDestroyView() {
-        mPassword.setOnPasswordChangedListener(null);
         mPresenter.detachView();
         mUnbinder.unbind();
         super.onDestroyView();
     }
 
-    private final Runnable mShowKeyboardRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mPassword != null) {
-                mPassword.forceInputViewGetFocus();
-            }
-        }
-    };
-
-    public void updateStage(Stage mStage) {
-        switch (mStage) {
-            case FINGERPRINT_DECRYPT:
-                mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(isAuthPayment ? View.GONE : View.VISIBLE);
-                mSecondDialogButton.setText(R.string.use_password);
-                mSecondDialogButton.setVisibility(View.VISIBLE);
-                mFingerprintDecrypt.setVisibility(View.VISIBLE);
-                mTvDecryptView.setText(isAuthPayment ? R.string.fingerprint_description_pay : R.string.fingerprint_status_decrypt);
-                mBackupContent.setVisibility(View.GONE);
-                break;
-
-            case PASSWORD:
-                mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(View.INVISIBLE);
-                mSecondDialogButton.setText(R.string.txt_close);
-                mFingerprintDecrypt.setVisibility(View.GONE);
-                mBackupContent.setVisibility(View.VISIBLE);
-                break;
-        }
-    }
-
-    @Override
-    public void clearPassword() {
-        mPassword.clearPassword();
-    }
-
-    @Override
-    public void showKeyboard() {
-        if (mPassword != null) {
-            mPassword.postDelayed(mShowKeyboardRunnable, 250);
-        }
+    public void initView() {
+        mCancelButton.setText(R.string.cancel);
+        mCancelButton.setVisibility(isAuthPayment ? View.GONE : View.VISIBLE);
+        mSecondDialogButton.setText(R.string.use_password);
+        mSecondDialogButton.setVisibility(View.VISIBLE);
+        mFingerprintDecrypt.setVisibility(View.VISIBLE);
+        mTvDecryptView.setText(isAuthPayment ? R.string.fingerprint_description_pay : R.string.fingerprint_status_decrypt);
     }
 
     @Override
@@ -295,12 +213,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void setErrorVerifyPassword(String error) {
-        if (mHintPassword != null) {
-            mHintPassword.setText(error);
-        }
-    }
 
     @Override
     public void showNetworkErrorDialog() {
@@ -383,12 +295,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     public void setContentPayment(boolean isAuthPayment) {
         this.isAuthPayment = isAuthPayment;
-    }
-
-    private String mMessagePassword;
-
-    public void setMessagePassword(String message) {
-        mMessagePassword = message;
     }
 
     @Override

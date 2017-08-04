@@ -450,7 +450,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         }
         if (PasswordUtil.detectShowFingerPrint((Activity) mView.getContext(), mUserConfig)) {
             AuthenticationDialog dialog = AuthenticationDialog.newInstance();
-            dialog.setStage(Stage.FINGERPRINT_DECRYPT);
             dialog.setAuthenticationCallback(new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
