@@ -75,6 +75,14 @@ public class PayProxy extends SingletonBase {
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
     private Action1<Throwable> appTransStatusException = throwable -> markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
+    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            Log.e(this, e);
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
+    };
     private Action1<Throwable> transStatusException = throwable -> {
         if (networkException(throwable)) {
             return;
@@ -89,14 +97,6 @@ public class PayProxy extends SingletonBase {
             showResultScreen();
         }
         Timber.d(throwable, "trans status on error");
-    };
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-        }
     };
     private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
@@ -538,15 +538,14 @@ public class PayProxy extends SingletonBase {
 
     private void showResultScreen() {
         try {
-            if (mStatusResponse == null) {
+            if (mStatusResponse == null)
                 return;
-            }
+
             mStatusResponse.zptransid = mTransId;
             if (TransactionHelper.isTransactionSuccess(mStatusResponse)) {
-                // save pass & active fingerPrint
-                if (shouldShowFingerPrintToast()) {
+                // save/update password & active fingerPrint & show toast for first times
+                if (shouldShowFingerPrintToast())
                     ToastHelper.showToastUpdatePassword(getActivity());
-                }
 
                 // check condition show Result Payment
                 if (mPaymentInfoHelper != null &&
@@ -557,9 +556,9 @@ public class PayProxy extends SingletonBase {
                     return;
                 }
 
-                // TODO: refactor this
-                boolean showFingerPrintToast = shouldShowFingerPrintToast(); // check again. this don't need. remove this, remove showFingerPrintToast below
-                getPresenter().showResultPayment(mStatusResponse, showFingerPrintToast); // don't need show toast in this
+                // show screen result payment
+                if (getPresenter() != null)
+                    getPresenter().showResultPayment(mStatusResponse);
             }
         } catch (Exception e) {
             Timber.d("show result screen error - skip to show channel activity");
@@ -583,8 +582,6 @@ public class PayProxy extends SingletonBase {
                  */
                 mStatusResponse.zptransid = mTransId;
                 intent.putExtra(Constants.STATUS_RESPONSE, mStatusResponse);
-                boolean showFingerPrintToast = shouldShowFingerPrintToast();
-                intent.putExtra(Constants.SHOWFFTOAST, showFingerPrintToast);
             }
             intent.putExtra(Constants.PMC_CONFIG, mChannel);
             intent.putExtra(Constants.CHANNEL_CONST.layout, ChannelHelper.getLayout(mChannel.pmcid, mPaymentInfoHelper.bankAccountLink()));

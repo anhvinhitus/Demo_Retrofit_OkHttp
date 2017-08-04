@@ -118,10 +118,7 @@ public class AuthenActor {
                 Log.e(this, e);
             }
         }
-        if (useFPPassword && !TextUtils.isEmpty(popupPassword) && shouldUseFPPassword()) {
-            return PaymentFingerPrint.shared().putPassword(popupPassword);
-        }
-        return false;
+        return useFPPassword && !TextUtils.isEmpty(popupPassword) && shouldUseFPPassword() && PaymentFingerPrint.shared().putPassword(popupPassword);
     }
 
     public AuthenActor plant(PayProxy payProxy) {

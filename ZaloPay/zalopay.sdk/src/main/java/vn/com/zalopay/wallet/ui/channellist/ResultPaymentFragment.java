@@ -27,7 +27,6 @@ import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPaymentPresenter> implements IContract {
 
     public StatusResponse mStatusResponse;
-    boolean mShowFingerPrintToast;
 
     public static BaseFragment newInstance() {
         return new ResultPaymentFragment();
@@ -92,7 +91,7 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     protected void onDataBound(View view) {
-        mPresenter.showResultPayment(mStatusResponse, mShowFingerPrintToast);
+        mPresenter.showResultPayment(mStatusResponse);
     }
 
     @Override
@@ -101,7 +100,6 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
         Bundle bundle = getArguments();
         if (bundle != null) {
             mStatusResponse = bundle.getParcelable(Constants.STATUS_RESPONSE);
-            mShowFingerPrintToast = bundle.getBoolean(Constants.SHOWFFTOAST);
         }
     }
 

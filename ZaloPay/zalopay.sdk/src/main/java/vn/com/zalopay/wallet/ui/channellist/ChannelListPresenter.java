@@ -1054,7 +1054,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         Timber.d("track channel id %s", pmcid);
     }
 
-    public void showResultPayment(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception {
-        getViewOrThrow().switchToResultScreen(pResponse, pShouldShowFingerPrintToast);
+    public void showResultPayment(StatusResponse pResponse) throws Exception {
+        getViewOrThrow().switchToResultScreen(pResponse);
     }
 }

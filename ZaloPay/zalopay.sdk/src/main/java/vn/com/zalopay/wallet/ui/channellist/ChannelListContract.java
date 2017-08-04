@@ -48,7 +48,7 @@ public interface ChannelListContract extends IContract {
 
         void enablePaymentButton(int buttonTextId, int bgResourceId);
 
-        void switchToResultScreen(StatusResponse pResponse, boolean pShouldShowFingerPrintToast) throws Exception;
+        void switchToResultScreen(StatusResponse pResponse) throws Exception;
 
         void setVoucherError(String error);
 

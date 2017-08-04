@@ -19,7 +19,6 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
-import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
@@ -33,7 +32,6 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     protected PaymentInfoHelper mPaymentInfoHelper;
     Context mContext;
     StatusResponse mStatusResponse;
-    boolean mShowFingerPrintToast = false;
 
     public ResultPaymentPresenter() {
         Timber.d("call constructor ResultPaymentPresenter");
@@ -109,10 +107,9 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                 mPaymentInfoHelper.getMapBank().getKey() : "";
     }
 
-    void showResultPayment(StatusResponse pResponse, boolean pShowFingerPrintToast) {
+    void showResultPayment(StatusResponse pResponse) {
         try {
             mStatusResponse = pResponse;
-            mShowFingerPrintToast = pShowFingerPrintToast;
             GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
             boolean success = TransactionHelper.isTransactionSuccess(pResponse);
             if (success) {
@@ -137,10 +134,6 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                     .bankListInteractor()
                     .setPaymentBank(userId, paymentCard);
             Timber.d("update recently payment bank for auto select %s", paymentCard);
-        }
-        //update password fingerprint
-        if (mShowFingerPrintToast) {
-            ToastHelper.showToastUpdatePassword(getViewOrThrow().getActivity());
         }
     }
 
