@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.widget.ListView;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
@@ -57,6 +59,13 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         this.mNavigator = navigator;
     }
 
+    public Fragment getFragment() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getFragment();
+    }
+
     private boolean isPhoneBook() {
         return mViewType == ZpcViewType.ZPC_PhoneBook;
     }
@@ -75,7 +84,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         return FriendConfig.sEnableSyncContact;
     }
 
-    public void initialize(@Nullable String keySearch, @ZpcViewType int viewType) {
+    public void initialize(@Nullable String keySearch, @ZpcViewType int viewType, ListView listView) {
         mViewType = viewType;
         if (!TextUtils.isEmpty(keySearch)) {
             doSearch(keySearch);
@@ -95,6 +104,53 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         if (isEnableSyncContact()) {
             mView.requestReadContactsPermission();
         }
+    }
+
+    public OnFavoriteListener getListener() {
+        OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
+            @Override
+            public void onRemoveFavorite(FavoriteData favoriteData) {
+                if (mView == null) {
+                    return;
+                }
+
+                if (favoriteData == null) {
+                    return;
+                }
+
+                favorite(false, favoriteData);
+                mView.closeAllSwipeItems();
+            }
+
+            @Override
+            public void onAddFavorite(FavoriteData favoriteData) {
+                if (favoriteData == null) {
+                    return;
+                }
+
+                favorite(true, favoriteData);
+            }
+
+            @Override
+            public void onMaximumFavorite() {
+                if (mView == null) {
+                    return;
+                }
+
+                mView.showNotificationDialog();
+            }
+
+            @Override
+            public void onSelectFavorite(FavoriteData favoriteData) {
+                if (favoriteData == null) {
+                    return;
+                }
+
+                clickItemContact(getFragment(), favoriteData);
+            }
+        };
+
+        return mOnFavoriteListener;
     }
 
     private void getFriendList() {
@@ -146,7 +202,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     public void clickItemContact(Fragment fragment, FavoriteData favoriteData) {
-        if(favoriteData == null) {
+        if (favoriteData == null) {
             Timber.d("click contact favorite data is null");
             return;
         }

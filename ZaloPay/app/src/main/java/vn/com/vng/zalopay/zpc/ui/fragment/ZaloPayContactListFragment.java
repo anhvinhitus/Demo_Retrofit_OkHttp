@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -103,29 +104,22 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private boolean mIsNumberPad = false;
+    private OnFavoriteListener mOnFavoriteListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        mAdapter = new ZPCFavoriteAdapter(getContext(), mOnFavoriteListener);
-        mAdapter.setOnSwipeLayoutListener(mSwipeListener);
-
         initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
-    }
-
-    @SuppressWarnings("ResourceType")
-    private void initArgs(Bundle bundle) {
-        mViewType = bundle.getInt(BundleConstants.ZPC_VIEW_TYPE, ZpcViewType.ZPC_All);
-        mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
-        mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mOnFavoriteListener = mPresenter.getListener();
+        mAdapter = new ZPCFavoriteAdapter(getContext(), mOnFavoriteListener);
+        mAdapter.setOnSwipeLayoutListener(mSwipeListener);
 
         mListView.setDivider(null);
         mListView.setAdapter(mAdapter);
@@ -150,7 +144,14 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType);
+        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType, mListView);
+    }
+
+    @SuppressWarnings("ResourceType")
+    private void initArgs(Bundle bundle) {
+        mViewType = bundle.getInt(BundleConstants.ZPC_VIEW_TYPE, ZpcViewType.ZPC_All);
+        mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
+        mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
     }
 
     @Override
@@ -282,9 +283,33 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
     };
 
-    protected void closeAllSwipeItems(AbsListView listView) {
+    @Override
+    public void closeAllSwipeItems(AbsListView listView) {
         Timber.d("close all items");
         closeAllExcept(listView, null);
+    }
+
+    @Override
+    public void showNotificationDialog() {
+        if (mAdapter == null || mAdapter.getMaxFavorite() < 0) {
+            return;
+        }
+
+        showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
+    }
+
+    @Override
+    public void closeAllSwipeItems() {
+        if (mListView == null) {
+            return;
+        }
+
+        closeAllSwipeItems(mListView);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     protected void closeAllExcept(AbsListView listView, @Nullable SwipeLayout layout) {
@@ -389,9 +414,11 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void setMaxFavorite(int maxFavorite) {
-        if (mAdapter != null) {
-            mAdapter.setMaxFavorite(maxFavorite);
+        if (mAdapter == null) {
+            return;
         }
+
+        mAdapter.setMaxFavorite(maxFavorite);
     }
 
     @Override
@@ -401,45 +428,47 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void setFavorite(List<FavoriteData> persons) {
-        if (mAdapter != null) {
-            mAdapter.setFavorite(persons);
+        if (mAdapter == null) {
+            return;
         }
+
+        mAdapter.setFavorite(persons);
     }
 
-    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
-        @Override
-        public void onRemoveFavorite(FavoriteData f) {
-
-            if (mPresenter != null) {
-                mPresenter.favorite(false, f);
-            }
-
-            closeAllSwipeItems(mListView);
-        }
-
-        @Override
-        public void onAddFavorite(FavoriteData f) {
-            if (mPresenter != null) {
-                mPresenter.favorite(true, f);
-            }
-        }
-
-        @Override
-        public void onMaximumFavorite() {
-            if (!isAdded()) {
-                return;
-            }
-
-            if (mAdapter == null) {
-                return;
-            }
-
-            showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
-        }
-
-        @Override
-        public void onSelectFavorite(FavoriteData favoriteData) {
-            mPresenter.clickItemContact(ZaloPayContactListFragment.this, favoriteData);
-        }
-    };
+//    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
+//        @Override
+//        public void onRemoveFavorite(FavoriteData f) {
+//
+//            if (mPresenter != null) {
+//                mPresenter.favorite(false, f);
+//            }
+//
+//            closeAllSwipeItems(mListView);
+//        }
+//
+//        @Override
+//        public void onAddFavorite(FavoriteData f) {
+//            if (mPresenter != null) {
+//                mPresenter.favorite(true, f);
+//            }
+//        }
+//
+//        @Override
+//        public void onMaximumFavorite() {
+//            if (!isAdded()) {
+//                return;
+//            }
+//
+//            if (mAdapter == null) {
+//                return;
+//            }
+//
+//            showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
+//        }
+//
+//        @Override
+//        public void onSelectFavorite(FavoriteData favoriteData) {
+//            mPresenter.clickItemContact(ZaloPayContactListFragment.this, favoriteData);
+//        }
+//    };
 }

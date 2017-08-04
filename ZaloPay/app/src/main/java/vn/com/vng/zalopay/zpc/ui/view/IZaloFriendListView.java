@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.zpc.ui.view;
 
 import android.database.Cursor;
+import android.support.v4.app.Fragment;
+import android.widget.AbsListView;
 
 import java.util.List;
 
@@ -26,4 +28,12 @@ public interface IZaloFriendListView extends ILoadDataView {
     void setMaxFavorite(int maxFavorite);
 
     void requestReadContactsPermission();
+
+    void closeAllSwipeItems(AbsListView listView);
+
+    void showNotificationDialog();
+
+    void closeAllSwipeItems();
+
+    Fragment getFragment();
 }

@@ -8,11 +8,11 @@ import vn.com.vng.zalopay.domain.model.FavoriteData;
  */
 
 public interface OnFavoriteListener {
-    void onRemoveFavorite(FavoriteData f);
+    void onRemoveFavorite(FavoriteData favoriteData);
 
-    void onAddFavorite(FavoriteData f);
+    void onAddFavorite(FavoriteData favoriteData);
 
     void onMaximumFavorite();
 
-    void onSelectFavorite(FavoriteData f);
+    void onSelectFavorite(FavoriteData favoriteData);
 }
