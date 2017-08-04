@@ -14,9 +14,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscription;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
@@ -74,42 +74,6 @@ public class PayProxy extends SingletonBase {
     private boolean transStatusStart = false;
     private int showRetryDialogCount = 1;
     private int retryPassword = 1;
-    private Action1<Throwable> appTransStatusException = throwable -> markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
-    private Action1<StatusResponse> transStatusSubscriber = statusResponse -> {
-        try {
-            processStatus(statusResponse);
-        } catch (Exception e) {
-            Log.e(this, e);
-            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-        }
-    };
-    private Action1<Throwable> transStatusException = throwable -> {
-        if (networkException(throwable)) {
-            return;
-        }
-        try {
-            if (showRetryDialogCount < Constants.MAX_RETRY_GETSTATUS) {
-                askToRetryGetStatus();
-            } else {
-                moveToResultScreen();
-            }
-        } catch (Exception e) {
-            showResultScreen();
-        }
-        Timber.d(throwable, "trans status on error");
-    };
-    private Action1<StatusResponse> appTransStatusSubscriber = statusResponse -> {
-        if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-            markTransFail(mContext.getResources().getString(R.string.sdk_error_not_submit_order));
-        } else {
-            try {
-                processStatus(statusResponse);
-            } catch (Exception e) {
-                Log.e(this, e);
-                markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-            }
-        }
-    };
 
     private PayProxy() {
         super();
@@ -127,6 +91,47 @@ public class PayProxy extends SingletonBase {
             PayProxy._object = new PayProxy();
         }
         return PayProxy._object;
+    }
+
+    private void onTransStatusError(Throwable throwable) {
+        if (networkException(throwable)) {
+            return;
+        }
+        try {
+            if (showRetryDialogCount < Constants.MAX_RETRY_GETSTATUS) {
+                askToRetryGetStatus();
+            } else {
+                moveToResultScreen();
+            }
+        } catch (Exception e) {
+            showResultScreen();
+        }
+        Timber.d(throwable, "trans status on error");
+    }
+
+    private void onTransStatusSuccess(StatusResponse statusResponse) {
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
+    }
+
+    private void onAppTransStatusError(Throwable throwable) {
+        markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
+        Timber.d(throwable, "on app trans status on error");
+    }
+
+    private void onAppTransStatusSuccess(StatusResponse statusResponse) {
+        if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
+            markTransFail(mContext.getResources().getString(R.string.sdk_error_not_submit_order));
+            return;
+        }
+        try {
+            processStatus(statusResponse);
+        } catch (Exception e) {
+            markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
+        }
     }
 
     private void onOrderSubmitedFailed(Throwable throwable) {
@@ -161,10 +166,6 @@ public class PayProxy extends SingletonBase {
         mContext = activity.getApplicationContext();
         mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
         return this;
-    }
-
-    public AuthenActor getAuthenActor() {
-        return mAuthenActor;
     }
 
     public BaseActivity getActivity() throws Exception {
@@ -425,7 +426,7 @@ public class PayProxy extends SingletonBase {
                         Log.e(this, e);
                     }
                 })
-                .subscribe(transStatusSubscriber, transStatusException);
+                .subscribe(this::onTransStatusSuccess, this::onTransStatusError);
     }
 
     private Subscription appTransStatus() {
@@ -437,14 +438,14 @@ public class PayProxy extends SingletonBase {
                     try {
                         getView().setTitle(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
                     } catch (Exception e) {
-                        Log.e(this, e);
+                        Timber.w(e);
                     }
                 })
-                .subscribe(appTransStatusSubscriber, appTransStatusException);
+                .subscribe(this::onAppTransStatusSuccess, this::onAppTransStatusError);
     }
 
     public void startDefault() throws Exception {
-        Log.d(this, "start default payment channel", mChannel);
+        Timber.d("start default payment channel %s", GsonUtils.toJsonString(mChannel));
         mPaymentInfoHelper.getOrder().plusChannelFee(mChannel.totalfee);
         if (!TransactionHelper.needUserPasswordPayment(mChannel, mPaymentInfoHelper.getOrder())) {
             return;
@@ -453,7 +454,7 @@ public class PayProxy extends SingletonBase {
     }
 
     public void start() throws Exception {
-        Log.d(this, "start payment channel", mChannel);
+        Timber.d("start payment channel %s", GsonUtils.toJsonString(mChannel));
         //map card channel clicked
         if (mChannel.isMapValid()) {
             BaseMap mapBank = mChannel.isBankAccountMap ? new BankAccount() : new MapCard();
@@ -538,27 +539,30 @@ public class PayProxy extends SingletonBase {
 
     private void showResultScreen() {
         try {
-            if (mStatusResponse == null)
+            if (mStatusResponse == null) {
                 return;
+            }
 
             mStatusResponse.zptransid = mTransId;
-            if (TransactionHelper.isTransactionSuccess(mStatusResponse)) {
-                // save/update password & active fingerPrint & show toast for first times
-                if (shouldShowFingerPrintToast())
-                    ToastHelper.showToastUpdatePassword(getActivity());
 
-                // check condition show Result Payment
-                if (mPaymentInfoHelper != null &&
-                        mPaymentInfoHelper.isRedPacket()) {
-                    String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
-                    GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
-                    getView().callbackThenTerminate();
-                    return;
-                }
+            boolean successTrans = TransactionHelper.isTransactionSuccess(mStatusResponse);
+            // save/update password & active fingerPrint & show toast for first times
+            if (shouldShowFingerPrintToast() && successTrans) {
+                ToastHelper.showToastUpdatePassword(getActivity());
+            }
 
-                // show screen result payment
-                if (getPresenter() != null)
-                    getPresenter().showResultPayment(mStatusResponse);
+            // no show success screen if this is payment for redpacket
+            if (successTrans
+                    && mPaymentInfoHelper != null
+                    && mPaymentInfoHelper.isRedPacket()) {
+                String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
+                GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
+                getView().callbackThenTerminate();
+                return;
+            }
+            // show screen result payment
+            if (getPresenter() != null) {
+                getPresenter().showResultPayment(mStatusResponse);
             }
         } catch (Exception e) {
             Timber.d("show result screen error - skip to show channel activity");
