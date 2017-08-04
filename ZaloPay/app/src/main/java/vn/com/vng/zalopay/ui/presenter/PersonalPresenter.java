@@ -23,19 +23,15 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-
-import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by datnt10 on 3/27/17.
@@ -235,19 +231,10 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     /**
      * Start list Voucher
      */
-    public void startAppListVoucher() {
-        AppResource appResource = getAppResource(vn.com.vng.zalopay.BuildConfig.VOUCHER_APP_ID);
-        if (appResource == null) {
-            appResource = new AppResource(vn.com.vng.zalopay.BuildConfig.VOUCHER_APP_ID);
+    public void startAppVoucher() {
+        Subscription subscription = mNavigator.startAppVoucher(mView.getActivity());
+        if (subscription != null) {
+            mSubscription.add(subscription);
         }
-        startExternalApp(appResource);
-    }
-
-    private void startExternalApp(AppResource app) {
-        Subscription subscription = mAppResourceRepository.isAppResourceAvailable(app.appid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
-        mSubscription.add(subscription);
     }
 }

@@ -24,7 +24,11 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -41,6 +45,7 @@ import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -68,6 +73,7 @@ import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.PasswordUtil;
@@ -90,6 +96,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /*
 * Navigator
@@ -104,11 +111,13 @@ public class Navigator {
     private SharedPreferences mPreferences;
 
     AuthenticationPassword mAuthenticationPassword;
+    private AppResourceStore.Repository mAppResourceRepository;
 
     @Inject
-    public Navigator(UserConfig userConfig, SharedPreferences preferences) {
+    public Navigator(UserConfig userConfig, SharedPreferences preferences, AppResourceStore.Repository appResourceRepository) {
         this.mUserConfig = userConfig;
         this.mPreferences = preferences;
+        this.mAppResourceRepository = appResourceRepository;
     }
 
     public void startLoginActivity(Activity act, int requestCode, Uri data, long zaloid, String authCode) {
@@ -967,6 +976,21 @@ public class Navigator {
     public void startBrowser(Context context, String url) {
         AndroidUtils.openBrowser(context, url);
     }
+
+    /**
+     * Start list Voucher
+     */
+    public Subscription startAppVoucher(Activity pActivity) {
+        AppResource appResource = getAppResource(BuildConfig.VOUCHER_APP_ID);
+        if (appResource == null) {
+            appResource = new AppResource(BuildConfig.VOUCHER_APP_ID);
+        }
+        return mAppResourceRepository.isAppResourceAvailable(appResource.appid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new StartPaymentAppSubscriber(this, pActivity, appResource));
+    }
+
 
     interface ChannelDisplay {
         int PROFILE = 1;

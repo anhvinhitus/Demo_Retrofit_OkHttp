@@ -195,7 +195,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     }
     @OnClick(R.id.tab_personal_voucher)
     public void onListVoucherClick() {
-        presenter.startAppListVoucher();
+        presenter.startAppVoucher();
     }
 
 //    @OnClick(R.id.tab_personal_rl_bill)
