@@ -941,6 +941,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void loadChannels() throws Exception {
         try {
             Timber.d("preparing channels");
+            if(mPaymentInfoHelper == null){
+                getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
+                return;
+            }
             mChannelLoader = AbstractChannelLoader.createChannelInjector(mPaymentInfoHelper.getAppId(),
                     mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getAmount(), mPaymentInfoHelper.getBalance(),
                     mPaymentInfoHelper.getTranstype());
