@@ -426,24 +426,28 @@ public class NotificationHelper {
             }
             promotionEvent.transid = data.transid;
             promotionEvent.notificationId = data.notificationId;
-            if (SDKPayment.isOpenSdk()) {
-                PromotionEvent finalPromotionEvent = promotionEvent;
-                CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
-                    @Override
-                    public void onReceiverNotAvailable() {
-                        mEventBus.postSticky(finalPromotionEvent);//notification come late and user enter sdk for another payment
-                    }
-
-                    @Override
-                    public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
-                        mPromotionHelper.navigate(pContext, pPromotionEvent);
-                    }
-                }, mResourceLoader);
-                Timber.d("post promotion event from notification to sdk");
-            } else {
+            if (!SDKPayment.isOpenSdk()) {
                 mEventBus.postSticky(promotionEvent);
                 Timber.d("post promotion event from notification to subscriber");
+                return;
             }
+            PromotionEvent finalPromotionEvent = promotionEvent;
+            CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
+                @Override
+                public void onReceiverNotAvailable() {
+                    mEventBus.postSticky(finalPromotionEvent);//notification come late and user enter sdk for another payment
+                }
+
+                @Override
+                public void onNavigateToAction(Context pContext, PromotionEvent pPromotionEvent) {
+                    try {
+                        mPromotionHelper.navigate(pContext, pPromotionEvent);
+                    } catch (Exception e) {
+                        Timber.w(e, "Exception navigate promotion in notification helper");
+                    }
+                }
+            }, mResourceLoader);
+            Timber.d("post promotion event from notification to sdk");
         } catch (Exception ex) {
             Timber.w(ex, "Extract PromotionEvent data error");
         }

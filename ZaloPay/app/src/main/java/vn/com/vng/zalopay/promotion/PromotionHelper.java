@@ -22,22 +22,26 @@ public class PromotionHelper {
         Timber.d("create PromotionHelper for promotion");
     }
 
-    public void navigate(Context pContext, PromotionEvent pPromotionEvent) {
-        if (pPromotionEvent != null && pPromotionEvent.actions != null && !pPromotionEvent.actions.isEmpty()) {
-            switch (pPromotionEvent.actions.get(0).action) {
-                case ActionType.TRANSACTION_DETAIL:
-                    if (pPromotionEvent.notificationId > 0) {
-                        mNavigator.startTransactionDetail(pContext, String.valueOf(pPromotionEvent.transid), String.valueOf(pPromotionEvent.notificationId));
-                    } else {
-                        mNavigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
-                    }
-                    break;
-                case ActionType.VOUCHER_LIST:
-                    //start voucher list app
-                    break;
-                default:
-                    Timber.d("undefine action on promotion");
-            }
+    public void navigate(Context pContext, PromotionEvent pPromotionEvent) throws Exception {
+        if (pPromotionEvent == null || pPromotionEvent.actions == null || pPromotionEvent.actions.isEmpty()) {
+            return;
+        }
+        if (mNavigator == null) {
+            return;
+        }
+        switch (pPromotionEvent.actions.get(0).action) {
+            case ActionType.TRANSACTION_DETAIL:
+                if (pPromotionEvent.notificationId > 0) {
+                    mNavigator.startTransactionDetail(pContext, String.valueOf(pPromotionEvent.transid), String.valueOf(pPromotionEvent.notificationId));
+                } else {
+                    mNavigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
+                }
+                break;
+            case ActionType.VOUCHER_LIST:
+                mNavigator.startAppVoucher((Activity) pContext);
+                break;
+            default:
+                Timber.d("undefine action on promotion");
         }
     }
 }

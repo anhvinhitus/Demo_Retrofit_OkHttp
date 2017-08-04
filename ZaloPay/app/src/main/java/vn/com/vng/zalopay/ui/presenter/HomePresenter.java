@@ -405,7 +405,11 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
                     @Override
                     public void onUserInteract(PromotionEvent pPromotionEvent) {
-                        mPromotionHelper.navigate(mView.getActivity(), pPromotionEvent);
+                        try {
+                            mPromotionHelper.navigate(mView.getActivity(), pPromotionEvent);
+                        } catch (Exception e) {
+                            Timber.w(e, "Exception navigate promotion on home page");
+                        }
                     }
 
                     @Override
