@@ -93,10 +93,9 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
-import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /*
 * Navigator
@@ -978,10 +977,10 @@ public class Navigator {
     }
 
     /**
-     * Start list Voucher
+     * Start list Voucher App
      */
-    public Subscription startAppVoucher(Activity pActivity) {
-        AppResource appResource = getAppResource(BuildConfig.VOUCHER_APP_ID);
+    public Subscription startVoucherApp(Activity pActivity) {
+        AppResource appResource = PaymentAppConfig.getAppResource(BuildConfig.VOUCHER_APP_ID);
         if (appResource == null) {
             appResource = new AppResource(BuildConfig.VOUCHER_APP_ID);
         }

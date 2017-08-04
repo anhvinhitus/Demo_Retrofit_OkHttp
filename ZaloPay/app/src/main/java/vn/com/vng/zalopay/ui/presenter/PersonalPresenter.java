@@ -231,8 +231,8 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     /**
      * Start list Voucher
      */
-    public void startAppVoucher() {
-        Subscription subscription = mNavigator.startAppVoucher(mView.getActivity());
+    public void startVoucherApp() {
+        Subscription subscription = mNavigator.startVoucherApp(mView.getActivity());
         if (subscription != null) {
             mSubscription.add(subscription);
         }
