@@ -54,6 +54,11 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
             public void onAddFavorite(FavoriteData favorite) {
 
             }
+
+            @Override
+            public void onFavoriteItemClick(FavoriteData favorite) {
+                mListener.onSelectFavorite(favorite);
+            }
         });
 
     }

@@ -40,9 +40,11 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by AnhHieu on 10/10/16.
@@ -431,6 +433,11 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             }
 
             showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
+        }
+
+        @Override
+        public void onSelectFavorite(FavoriteData favoriteData) {
+            mPresenter.clickItemContact(ZaloPayContactListFragment.this, favoriteData);
         }
     };
 }

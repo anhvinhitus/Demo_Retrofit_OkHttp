@@ -13,4 +13,6 @@ interface OnFavoriteListener {
     void onAddFavorite(FavoriteData f);
 
     void onMaximumFavorite();
+
+    void onSelectFavorite(FavoriteData f);
 }

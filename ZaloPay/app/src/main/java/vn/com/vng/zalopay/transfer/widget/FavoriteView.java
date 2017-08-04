@@ -29,6 +29,8 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
         void onRemoveFavorite(FavoriteData favorite);
 
         void onAddFavorite(FavoriteData favorite);
+
+        void onFavoriteItemClick(FavoriteData favorite);
     }
 
     @BindView(R.id.tvDescription)
@@ -157,6 +159,14 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
         if (mListener != null) {
             mListener.onRemoveFavorite(person);
         }
+    }
+
+    @Override
+    public void onFavoriteItemClick(FavoriteData favoriteData) {
+        if (mListener == null) {
+            return;
+        }
+        mListener.onFavoriteItemClick(favoriteData);
     }
 
     public void setOnEditFavoriteListener(OnEditFavoriteListener listener) {

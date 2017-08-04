@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnFavoriteItemClickListener;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 import java.util.List;
@@ -31,6 +32,7 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
 
     interface OnClickFavoriteListener {
         void onRemoveFavorite(FavoriteData favorite);
+        void onFavoriteItemClick(FavoriteData favoriteData);
     }
 
     private boolean mEditMode = false;
@@ -47,9 +49,22 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         return new ViewHolder(mInflater.inflate(R.layout.row_favorite_layout, parent, false), mOnItemClickListener);
     }
 
-    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+    private OnFavoriteItemClickListener mOnItemClickListener = new OnFavoriteItemClickListener() {
+
         @Override
         public void onListItemClick(View anchor, int position) {
+            FavoriteData data = getItem(position);
+            if (data == null) {
+                return;
+            }
+
+            if (mListener != null) {
+                mListener.onFavoriteItemClick(data);
+            }
+        }
+
+        @Override
+        public void onRemoveItemClick(View anchor, int position) {
             FavoriteData data = getItem(position);
             if (data == null) {
                 return;
@@ -59,12 +74,31 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
                 mListener.onRemoveFavorite(data);
             }
         }
-
-        @Override
-        public boolean onListItemLongClick(View anchor, int position) {
-            return false;
-        }
     };
+
+//    @Override
+//    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        return new ViewHolder(mInflater.inflate(R.layout.row_favorite_layout, parent, false), mOnItemClickListener);
+//    }
+//
+//    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+//        @Override
+//        public void onListItemClick(View anchor, int position) {
+//            FavoriteData data = getItem(position);
+//            if (data == null) {
+//                return;
+//            }
+//
+//            if (mListener != null) {
+//                mListener.onRemoveFavorite(data);
+//            }
+//        }
+//
+//        @Override
+//        public boolean onListItemLongClick(View anchor, int position) {
+//            return false;
+//        }
+//    };
 
     void setEditMode(boolean isEdit) {
         mEditMode = isEdit;
@@ -87,16 +121,23 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         View mEdit;
         @BindView(R.id.tvDisplayName)
         TextView mTvDisplayName;
-        private OnItemClickListener mListener;
+        private OnFavoriteItemClickListener mListener;
+//        private OnItemClickListener mListener;
 
         @BindView(R.id.placeHolder)
         TextView mPlaceHolder;
 
-        public ViewHolder(View itemView, OnItemClickListener listener) {
+        public ViewHolder(View itemView, OnFavoriteItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mListener = listener;
         }
+
+//        public ViewHolder(View itemView, OnItemClickListener listener) {
+//            super(itemView);
+//            ButterKnife.bind(this, itemView);
+//            mListener = listener;
+//        }
 
         public void bindView(FavoriteData profile, boolean isEdit) {
 
@@ -116,8 +157,17 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         @OnClick(R.id.edit)
         public void onClickEdit(View v) {
             if (mListener != null) {
-                mListener.onListItemClick(v, getAdapterPosition());
+                mListener.onRemoveItemClick(v, getAdapterPosition());
+//                mListener.onListItemClick(v, getAdapterPosition());
             }
+        }
+
+        @OnClick(R.id.imgAvatar)
+        public void onClickItem(View v) {
+            if (mListener == null) {
+                return;
+            }
+            mListener.onListItemClick(v, getAdapterPosition());
         }
     }
 }

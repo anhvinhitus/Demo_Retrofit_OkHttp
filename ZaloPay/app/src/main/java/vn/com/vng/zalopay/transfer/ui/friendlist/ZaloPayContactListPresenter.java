@@ -143,6 +143,29 @@ final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendLis
         }
     }
 
+    void clickItemContact(Fragment fragment, FavoriteData favoriteData) {
+        if(favoriteData == null) {
+            Timber.d("click contact favorite data is null");
+            return;
+        }
+
+        ZPProfile profile = new ZPProfile();
+        profile.avatar = favoriteData.avatar;
+        profile.displayName = favoriteData.displayName;
+        profile.phonenumber = favoriteData.phoneNumber;
+
+        if (profile == null) {
+            Timber.d("click contact profile is null");
+            return;
+        }
+
+        if (isPhoneBook()) {
+            backTopup(fragment, profile);
+        } else {
+            startTransfer(fragment, profile);
+        }
+    }
+
     private void backTopup(Fragment fragment, ZPProfile profile) {
         Activity activity = fragment.getActivity();
         Intent data = new Intent();
