@@ -394,11 +394,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         for (InternalApp internalApp : listInternalApp) {
             listDefaultInternalApp.add(new AppResource(
-                    internalApp.getAppId(),
+                    internalApp.appId,
                     -1,
-                    internalApp.getDisplayName(),
-                    internalApp.getIconName(),
-                    internalApp.getIconColor()));
+                    internalApp.displayName,
+                    internalApp.iconName,
+                    internalApp.iconColor));
         }
 
         ArrayList<AppResource> listApp = new ArrayList<>();
@@ -412,7 +412,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             Iterator itr = listDefaultInternalApp.iterator();
             while (itr.hasNext()) {
                 for (InternalApp internalApp : listInternalApp) {
-                    listApp.add(internalApp.getPosition(), (AppResource) itr.next());
+                    listApp.add(internalApp.position, (AppResource) itr.next());
                 }
             }
         } else {
