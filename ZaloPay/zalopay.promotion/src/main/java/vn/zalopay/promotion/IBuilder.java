@@ -4,6 +4,8 @@ import android.view.View;
 
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 
+import vn.zalopay.promotion.model.PromotionEvent;
+
 public interface IBuilder {
 
     IResourceLoader getResourceProvider();

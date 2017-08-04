@@ -32,4 +32,5 @@ dependencies {
 
     testCompile tests.junit
     compile project(path: ':ui.widget')
+    compile project(':zalopay.utility')
 }

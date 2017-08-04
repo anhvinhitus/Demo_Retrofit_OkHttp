@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.ui.view;
 import android.app.Activity;
 
 import vn.zalopay.promotion.IBuilder;
-import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.model.PromotionEvent;
 
 /**
  * Created by AnhHieu on 3/26/16.

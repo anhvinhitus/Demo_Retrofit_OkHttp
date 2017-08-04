@@ -63,8 +63,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -74,7 +72,7 @@ import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IResourceLoader;
-import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.model.PromotionEvent;
 import vn.zalopay.promotion.PromotionType;
 
 /**

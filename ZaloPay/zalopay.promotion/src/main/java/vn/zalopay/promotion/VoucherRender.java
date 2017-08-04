@@ -5,17 +5,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import timber.log.Timber;
-import vn.com.zalopay.utility.CurrencyUtil;
-import vn.zalopay.promotion.model.CashBackEvent;
 import vn.zalopay.promotion.model.PromotionEvent;
+import vn.zalopay.promotion.model.VoucherEvent;
 
-public class CashBackRender extends PromotionRender {
-    public CashBackRender(IBuilder pBuilder) {
+public class VoucherRender extends PromotionRender {
+    public VoucherRender(IBuilder pBuilder) {
         super(pBuilder);
     }
 
     public static IBuilder getBuilder() {
-        return new CashBackBuilder();
+        return new VoucherBuilder();
     }
 
     @Override
@@ -24,7 +23,7 @@ public class CashBackRender extends PromotionRender {
             return;
         }
         final PromotionEvent promotionEvent = mBuilder.getPromotion();
-        if (!(promotionEvent instanceof CashBackEvent)) {
+        if (!(promotionEvent instanceof VoucherEvent)) {
             return;
         }
         View view = mBuilder.getView();
@@ -33,10 +32,12 @@ public class CashBackRender extends PromotionRender {
         }
         try {
             renderView(pContext, view, promotionEvent);
-            TextView tvCashBackAmount = (TextView) view.findViewById(R.id.promotion_cash_back_tv_amount);
-            tvCashBackAmount.setText(CurrencyUtil.formatCurrency(((CashBackEvent) promotionEvent).amount, false));
+            TextView tvVoucherCode = (TextView) view.findViewById(R.id.promotion_cash_back_tv_amount);
+            tvVoucherCode.setTextSize(pContext.getResources().getDimension(R.dimen.textsize_normal));
+            tvVoucherCode.setText(((VoucherEvent) promotionEvent).vouchercode);
+            view.findViewById(R.id.currency_unit_tv).setVisibility(View.GONE);
         } catch (Exception e) {
-            Timber.w(e, "Exception render cash back view");
+            Timber.w(e, "Exception render voucher view");
         }
     }
 }

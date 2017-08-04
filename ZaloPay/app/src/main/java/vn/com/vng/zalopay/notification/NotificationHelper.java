@@ -64,7 +64,9 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
-import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.model.CashBackEvent;
+import vn.zalopay.promotion.model.PromotionEvent;
+import vn.zalopay.promotion.model.VoucherEvent;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -206,8 +208,9 @@ public class NotificationHelper {
             case NotificationType.LINK_ACCOUNT:
                 CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 break;
-            case NotificationType.PROMOTION:
-                postPromotion(notify);
+            case NotificationType.CASHBACK:
+            case NotificationType.VOUCHER:
+                postPromotion(notify, notificationType);
                 break;
             case NotificationType.PREFERENTIAL:
                 skipStorage = true;
@@ -219,7 +222,7 @@ public class NotificationHelper {
             this.putNotification(notify);
         }
 
-        if(ConfigLoader.getListVibrateNotificationType().contains(notificationType)) {
+        if (ConfigLoader.getListVibrateNotificationType().contains(notificationType)) {
             vibrate();
         }
     }
@@ -350,13 +353,11 @@ public class NotificationHelper {
 
     private void postNotification(NotificationData notify) {
         if (notify == null) {
-            Timber.d("post notification is null");
             return;
         }
-        switch ((int) notify.notificationtype) {
-            case NotificationType.PROMOTION:
-                postPromotion(notify);//post update again promotion notification with new notification id inserted in local db
-                break;
+        if (notify.notificationtype == NotificationType.CASHBACK) {
+            //re post update again promotion notification with new notification id inserted in local db
+            postPromotion(notify, NotificationType.CASHBACK);
         }
     }
 
@@ -405,23 +406,32 @@ public class NotificationHelper {
         mEventBus.post(event);
     }
 
-    private void postPromotion(NotificationData data) {
+    private void postPromotion(NotificationData data, int notificationType) {
         try {
             JsonObject embeddata = data.getEmbeddata();
             if (embeddata == null) {
                 return;
             }
-            PromotionEvent promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), PromotionEvent.class);
-            if(promotionEvent == null){
+            PromotionEvent promotionEvent = null;
+            switch (notificationType) {
+                case NotificationType.CASHBACK:
+                    promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), CashBackEvent.class);
+                    break;
+                case NotificationType.VOUCHER:
+                    promotionEvent = GsonUtils.fromJsonString(embeddata.toString(), VoucherEvent.class);
+                    break;
+            }
+            if (promotionEvent == null) {
                 return;
             }
             promotionEvent.transid = data.transid;
             promotionEvent.notificationId = data.notificationId;
             if (SDKPayment.isOpenSdk()) {
+                PromotionEvent finalPromotionEvent = promotionEvent;
                 CShareDataWrapper.notifyPromotionEventToSdk(promotionEvent, new IPromotionResult() {
                     @Override
                     public void onReceiverNotAvailable() {
-                        mEventBus.postSticky(promotionEvent);//notification come late and user enter sdk for another payment
+                        mEventBus.postSticky(finalPromotionEvent);//notification come late and user enter sdk for another payment
                     }
 
                     @Override
@@ -685,21 +695,21 @@ public class NotificationHelper {
         mEventBus.post(new PreferentialNotificationEvent());
     }
 
+    private void vibrate() {
+        if (mContext == null) {
+            return;
+        }
+
+        Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);// Vibrate for 500 milliseconds
+    }
+
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
 
         @Override
         public void onNext(Integer integer) {
             showNotificationSystem(integer);
         }
-    }
-
-    private void vibrate() {
-        if(mContext == null) {
-            return;
-        }
-
-        Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);// Vibrate for 500 milliseconds
     }
 
 }

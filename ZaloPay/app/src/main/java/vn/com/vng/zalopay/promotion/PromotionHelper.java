@@ -8,7 +8,7 @@ import com.zalopay.apploader.internal.ModuleName;
 import timber.log.Timber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.zalopay.promotion.ActionType;
-import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.model.PromotionEvent;
 
 /**
  * Created by chucvv on 5/27/17.
@@ -31,6 +31,9 @@ public class PromotionHelper {
                     } else {
                         mNavigator.startMiniAppActivity((Activity) pContext, ModuleName.NOTIFICATIONS);
                     }
+                    break;
+                case ActionType.VOUCHER_LIST:
+                    //start voucher list app
                     break;
                 default:
                     Timber.d("undefine action on promotion");

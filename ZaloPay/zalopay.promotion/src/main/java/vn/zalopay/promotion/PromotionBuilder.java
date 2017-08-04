@@ -2,10 +2,12 @@ package vn.zalopay.promotion;
 
 import android.view.View;
 
+import vn.zalopay.promotion.model.PromotionEvent;
+
 public abstract class PromotionBuilder implements IBuilder {
-    protected PromotionEvent promotionEvent;
-    protected IInteractPromotion promotionListener;
-    protected IResourceLoader resourceProvider;
+    private PromotionEvent promotionEvent;
+    private IInteractPromotion promotionListener;
+    private IResourceLoader resourceProvider;
     protected View mView;
 
     @Override

@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.zalopay.promotion.IBuilder;
-import vn.zalopay.promotion.PromotionEvent;
+import vn.zalopay.promotion.model.PromotionEvent;
 
 public class HomeActivity extends AbstractReactActivity implements IHomeView {
 

@@ -37,11 +37,15 @@ public class NotificationType {
     public static final int NOTIFICATION_ALL_USER = 114;
     public static final int UNLINK_ACCOUNT = 115;
     public static final int LINK_ACCOUNT = 116;
-    public static final int PROMOTION = 117;
+    public static final int CASHBACK = 117;
     public static final int PREFERENTIAL = 118;
+    public static final int VOUCHER = 119;
 
     public static boolean shouldMarkRead(long notificationType) {
-        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION || notificationType == PROMOTION;
+        return notificationType == ORDER_PAYMENT
+                || notificationType == APP_P2P_NOTIFICATION
+                || notificationType == CASHBACK
+                || notificationType == VOUCHER;
     }
 
     public static boolean needReloadBalanceAndTransaction(int notificationType) {
@@ -60,7 +64,7 @@ public class NotificationType {
             case NotificationType.MERCHANT_TRANSFER:
             case NotificationType.DEPOSIT_FROM_WEB_VCB_SUCCESS:
             case NotificationType.MONEY_TRANSFER:
-            case NotificationType.PROMOTION://need reload balance and transaction history on promotion (cashback)
+            case NotificationType.CASHBACK://need reload balance and transaction history on promotion (cashback)
                 return true;*/
             case NotificationType.UPDATE_PROFILE_LEVEL_OK: //Notification Profile -> don't need reload
             case NotificationType.UPDATE_PROFILE_LEVEL_FAILED:
@@ -72,6 +76,7 @@ public class NotificationType {
             case NotificationType.MERCHANT_BILL:
             case NotificationType.LINK_ACCOUNT: //Balance & transaction not change
             case NotificationType.UNLINK_ACCOUNT://Balance & transaction not change
+            case NotificationType.VOUCHER:
                 return false;
             default:
                 return true;

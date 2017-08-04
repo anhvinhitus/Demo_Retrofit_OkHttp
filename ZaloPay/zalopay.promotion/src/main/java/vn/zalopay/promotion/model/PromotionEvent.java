@@ -1,9 +1,12 @@
-package vn.zalopay.promotion;
+package vn.zalopay.promotion.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
+import vn.zalopay.promotion.PromotionAction;
+import vn.zalopay.promotion.PromotionType;
 
 public class PromotionEvent {
     @SerializedName("type")
@@ -12,9 +15,6 @@ public class PromotionEvent {
 
     @SerializedName("title")
     public String title;
-
-    @SerializedName("amount")
-    public long amount;
 
     @SerializedName("campaign")
     public String campaign;

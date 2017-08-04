@@ -180,7 +180,12 @@ public class CShareData extends SingletonBase {
             }
 
             if (successPayment && !TextUtils.isEmpty(transactionID)) {
-                SdkPromotion promotion = SdkPromotion.shared()
+                SdkPromotion promotion = SdkPromotion.shared();
+                if(promotion.showing()){
+                    Timber.d("There are a showing promotion popup - skip render again");
+                    return;
+                }
+                promotion
                         .plant(sdkCurrentActivity)
                         .setTransId(transactionID);
                 promotion.handlePromotion(pObject);
