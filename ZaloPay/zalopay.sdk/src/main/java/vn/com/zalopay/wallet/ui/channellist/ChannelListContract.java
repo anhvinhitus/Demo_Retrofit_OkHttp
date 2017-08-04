@@ -22,7 +22,7 @@ public interface ChannelListContract extends IContract {
 
         void renderVoucher();
 
-        void renderActiveVoucher(String voucherCode, double discountAmount);
+        void renderActiveVoucher(String voucherCode, double totalAmount, double discountAmount);
 
         void renderAppInfo(String appName);
 

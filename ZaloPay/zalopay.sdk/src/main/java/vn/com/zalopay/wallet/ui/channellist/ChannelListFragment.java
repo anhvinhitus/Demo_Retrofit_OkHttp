@@ -85,9 +85,11 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private View voucher_relativelayout;
     private View voucher_txt;
     private View active_voucher_relativelayout;
+    private View origin_amount_total_relativelayout;
     private TextView active_voucher_textview;
     private TextView voucher_discount_amount_textview;
     private View active_voucher_del_img;
+    private TextView origin_amount_total_txt;
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -149,10 +151,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         voucher_relativelayout = view.findViewById(R.id.voucher_relativelayout);
         voucher_txt = view.findViewById(R.id.voucher_txt);
 
+        origin_amount_total_relativelayout = view.findViewById(R.id.origin_amount_total_relativelayout);
         active_voucher_relativelayout = view.findViewById(R.id.active_voucher_relativelayout);
         active_voucher_textview = (TextView) view.findViewById(R.id.active_voucher_textview);
         voucher_discount_amount_textview = (TextView) view.findViewById(R.id.voucher_discount_amount_textview);
         active_voucher_del_img = view.findViewById(R.id.active_voucher_del_img);
+        origin_amount_total_txt = (TextView) view.findViewById(R.id.origin_amount_total_txt);
 
         channel_list_recycler = (RecyclerView) view.findViewById(R.id.channel_list_recycler);
         setupRecyclerView();
@@ -276,6 +280,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void renderVoucher() {
         voucher_relativelayout.setVisibility(View.VISIBLE);
         active_voucher_relativelayout.setVisibility(View.GONE);
+        origin_amount_total_relativelayout.setVisibility(View.GONE);
 
         voucher_txt.setOnClickListener(view -> {
             try {
@@ -287,8 +292,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void renderActiveVoucher(String voucherCode, double discountAmount) {
+    public void renderActiveVoucher(String voucherCode, double totalAmount, double discountAmount) {
         active_voucher_relativelayout.setVisibility(View.VISIBLE);
+        origin_amount_total_relativelayout.setVisibility(View.VISIBLE);
         voucher_relativelayout.setVisibility(View.GONE);
 
         String codeformat = getResources().getString(R.string.sdk_active_voucher_cod_format);
@@ -297,6 +303,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
         String discountFormat = getResources().getString(R.string.sdk_discount_amount_voucher_format);
         discountFormat = String.format(discountFormat, CurrencyUtil.formatCurrency(discountAmount));
+
+        origin_amount_total_txt.setText(CurrencyUtil.formatCurrency(totalAmount));
 
         voucher_discount_amount_textview.setText(discountFormat);
         ResourceManager.loadLocalSDKImage(active_voucher_del_img, RS.drawable.ic_round_delete);

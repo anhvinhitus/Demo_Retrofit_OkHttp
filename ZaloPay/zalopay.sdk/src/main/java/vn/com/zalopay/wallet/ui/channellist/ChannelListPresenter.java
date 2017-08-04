@@ -202,6 +202,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (bankLink == Link_Then_Pay.NONE) {
                 return;
             }
+            if (mPaymentInfoHelper == null) {
+                getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
+                return;
+            }
             //backup data and fake data for link type
             temOrder = mPaymentInfoHelper.takeOrder();
             tempTranstype = mPaymentInfoHelper.getTranstype();
@@ -214,8 +218,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 mPayProxy.setPaymentInfo(null);
             }
 
+            mPaymentInfoHelper.setMapBank(null);
+
             ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
-            interactor.collectPaymentInfo(GlobalData.paymentInfoHelper);
+            interactor.collectPaymentInfo(mPaymentInfoHelper);
 
             Intent intent = getChannelIntent();
             int layoutId = bankLink == Link_Then_Pay.BANKACCOUNT ? R.layout.screen__link__acc : R.layout.screen__card;
@@ -448,9 +454,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (total_amount <= 0 || voucherInfo.discountamount <= 0) {
                 return;
             }
-            total_amount = total_amount - voucherInfo.discountamount;
-            getViewOrThrow().renderOrderAmount(total_amount);
-            getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, voucherInfo.discountamount);
+            double paymentAmount = total_amount - voucherInfo.discountamount;
+            getViewOrThrow().renderOrderAmount(paymentAmount);
+            getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, total_amount, voucherInfo.discountamount);
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -941,7 +947,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private void loadChannels() throws Exception {
         try {
             Timber.d("preparing channels");
-            if(mPaymentInfoHelper == null){
+            if (mPaymentInfoHelper == null) {
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
                 return;
             }

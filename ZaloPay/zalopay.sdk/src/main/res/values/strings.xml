@@ -409,6 +409,7 @@
     <string name="sdk_discount_amount_voucher_format">- %1$s</string>
     <string name="sdk_delete_voucher_confirm_text">Bạn muốn hủy bỏ mã khuyến mãi ?</string>
     <string name="sdk_voucher_code_empty_mess">Nhập mã khuyến mãi để tiếp tục</string>
+    <string name="sdk_voucher_origin_amount_total">Trước khuyến mãi</string>
 
     <string name="sdk_default_link_channel_name">Thêm liên kết mới</string>
 </resources>
