@@ -286,7 +286,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".transfer.ui.friendlist.SyncContactActivity"
+            android:name=".zpc.ui.activity.SyncContactActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.sync.contact"
             android:theme="@style/AppTheme.NoActionBar"
@@ -352,7 +352,7 @@
             android:name=".transfer.ui.TransferHomeActivity"
             android:label="@string/title.activity.transfer"/>
         <activity
-            android:name=".transfer.ui.ZaloPayContactActivity"
+            android:name=".zpc.ui.activity.ZaloPayContactActivity"
             android:label="@string/title.activity.zalopay.contact"/>
 
         <activity

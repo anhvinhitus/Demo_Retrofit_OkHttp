@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.fragment;
 
 import android.Manifest;
 import android.app.Activity;
@@ -40,11 +40,13 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
-import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
+import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
+import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
+import vn.com.vng.zalopay.zpc.model.ZpcViewType;
+import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
  * Created by AnhHieu on 10/10/16.

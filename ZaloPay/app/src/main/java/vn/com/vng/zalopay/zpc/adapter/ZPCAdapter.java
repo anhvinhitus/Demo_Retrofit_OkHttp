@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -52,7 +52,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         mPrimaryColor = ContextCompat.getColor(context, R.color.colorPrimary);
     }
 
-    void setKeySearch(String keySearch) {
+    public void setKeySearch(String keySearch) {
         mKeySearch = keySearch == null ? "" : Strings.stripAccents(keySearch.toLowerCase());
     }
 

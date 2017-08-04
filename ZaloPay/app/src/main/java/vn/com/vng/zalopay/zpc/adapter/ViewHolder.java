@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.adapter;
 
 import android.view.View;
 import android.widget.TextView;

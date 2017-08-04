@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="72dp"
-              android:layout_height="wrap_content"
-              android:background="?selector"
-              android:gravity="center"
-              android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="72dp"
+    android:layout_height="wrap_content"
+    android:background="?selector"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="40dp"
@@ -18,10 +17,9 @@
             android:id="@+id/imgAvatar"
             style="@style/AvatarDraweeView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
-        <include layout="@layout/text_place_holder"/>
+        <include layout="@layout/text_place_holder" />
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/edit"
@@ -33,7 +31,7 @@
             android:textColor="@color/gray.5e5e5e"
             android:visibility="invisible"
             app:iconName="@string/ct_list_del"
-            app:iconSize="13dp"/>
+            app:iconSize="13dp" />
 
     </FrameLayout>
 
@@ -48,5 +46,5 @@
         android:paddingRight="2dp"
         android:singleLine="true"
         android:textSize="12sp"
-        tools:text="Vu Manh Hieu"/>
+        tools:text="Vu Manh Hieu" />
 </LinearLayout>

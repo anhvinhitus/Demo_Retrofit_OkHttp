@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:paddingBottom="2dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="2dp">
@@ -43,7 +42,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="86dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="@dimen/personal_margin_12"
         tools:ignore="RtlHardcoded,RtlSymmetry">
 
         <android.support.v7.widget.RecyclerView

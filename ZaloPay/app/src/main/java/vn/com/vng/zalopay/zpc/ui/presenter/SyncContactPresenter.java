@@ -1,12 +1,10 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.presenter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.zalopay.ui.widget.util.TimeUtils;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,18 +14,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
 
 /**
  * Created by hieuvm on 7/21/17.
  * *
  */
 
-final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
+public final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
 
     protected final Context mContext;
     private final FriendStore.Repository mFriendRepository;
@@ -38,7 +36,7 @@ final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
         mFriendRepository = friendRepository;
     }
 
-    void loadView() {
+    public void loadView() {
         getContactCount();
         getLastTimeUpdate();
     }
@@ -75,7 +73,7 @@ final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
         mSubscription.add(subscription);
     }
 
-    void syncContact() {
+    public void syncContact() {
         Subscription subscription = mFriendRepository.syncImmediateContact()
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())

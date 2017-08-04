@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.fragment;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -11,11 +11,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.vng.zalopay.widget.ImageGroupView;
+import vn.com.vng.zalopay.zpc.ui.presenter.SyncContactPresenter;
+import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
 
 /**
  * Created by hieuvm on 7/21/17.

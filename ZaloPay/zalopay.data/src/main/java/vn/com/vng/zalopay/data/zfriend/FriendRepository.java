@@ -429,7 +429,7 @@ public class FriendRepository implements FriendStore.Repository {
         try {
             person.zaloId = Long.valueOf(entity.zaloid);
         } catch (NumberFormatException e) {
-            Timber.e(e, "Transform error : zalopayId [%s] zaloId [%s]", entity.userid, entity.zaloid);
+            Timber.d(e, "Transform error : zalopayId [%s] zaloId [%s]", entity.userid, entity.zaloid);
         }
 
         person.avatar = entity.avatar;

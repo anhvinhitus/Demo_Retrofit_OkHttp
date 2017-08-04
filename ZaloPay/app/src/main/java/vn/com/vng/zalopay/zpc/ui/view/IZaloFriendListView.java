@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.view;
 
 import android.database.Cursor;
 
@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * *
  */
 
-interface IZaloFriendListView extends ILoadDataView {
+public interface IZaloFriendListView extends ILoadDataView {
     void swapCursor(Cursor cursor);
 
     void setRefreshing(boolean var);

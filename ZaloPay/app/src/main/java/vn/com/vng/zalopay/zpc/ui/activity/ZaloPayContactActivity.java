@@ -1,11 +1,11 @@
-package vn.com.vng.zalopay.transfer.ui;
+package vn.com.vng.zalopay.zpc.ui.activity;
 
 import android.support.annotation.NonNull;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.tracker.ActivityTracker;
-import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloPayContactListFragment;
+import vn.com.vng.zalopay.zpc.ui.fragment.ZaloPayContactListFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.zalopay.analytics.ZPEvents;

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.model;
 
 /**
  * Created by hieuvm on 11/23/16.

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.view;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * *
  */
 
-interface ISyncContactView extends ILoadDataView {
+public interface ISyncContactView extends ILoadDataView {
 
     void setContactBookCount(long count);
 

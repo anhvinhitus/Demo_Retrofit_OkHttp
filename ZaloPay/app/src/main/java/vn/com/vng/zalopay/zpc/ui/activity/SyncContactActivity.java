@@ -1,10 +1,11 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.ui.activity;
 
 import android.support.annotation.NonNull;
 
 import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.vng.zalopay.zpc.ui.fragment.SyncContactFragment;
 
 /**
  * Created by hieuvm on 7/21/17.

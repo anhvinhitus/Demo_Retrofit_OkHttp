@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -23,13 +23,14 @@ import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.transfer.widget.FavoriteView;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 
 /**
  * Created by hieuvm on 7/23/17.
  * *
  */
 
-final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder> {
+public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder> {
     private static final int VIEW_TYPE_COUNT = 3;
     private final int mHeaderViewType = 2;
     private final FavoriteView mFavoriteView;
@@ -37,7 +38,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
     protected OnFavoriteListener mListener;
     protected SwipeLayout.SwipeListener mSwipeItemListener;
 
-    ZPCFavoriteAdapter(Context context, OnFavoriteListener listener) {
+    public ZPCFavoriteAdapter(Context context, OnFavoriteListener listener) {
         super(context, R.layout.row_swipe_contact_layout);
         mListener = listener;
         mEmptyView = new Space(context);
@@ -63,11 +64,11 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
 
     }
 
-    void setMaxFavorite(int max) {
+    public void setMaxFavorite(int max) {
         mFavoriteView.setMaximum(max);
     }
 
-    int getMaxFavorite(){
+    public int getMaxFavorite(){
         return mFavoriteView.getMaximum();
     }
 
@@ -81,7 +82,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
     };
 
 
-    void setOnSwipeLayoutListener(SwipeLayout.SwipeListener listener) {
+    public void setOnSwipeLayoutListener(SwipeLayout.SwipeListener listener) {
         mSwipeItemListener = listener;
     }
 
@@ -115,9 +116,9 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
         } else {
             View view = super.getView(position - 1, convertView, parent);
             if (view instanceof FavoriteView) {
-                Timber.w("Loi view type [position %s viewType %s]", position, viewType);
+                Timber.d("Loi view type [position %s viewType %s]", position, viewType);
                 if (convertView != null) {
-                    Timber.w("convertView [%s]", convertView.getClass());
+                    Timber.d("convertView [%s]", convertView.getClass());
                 }
             }
             return view;
@@ -143,7 +144,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
         return VIEW_TYPE_COUNT;
     }
 
-    void setFavorite(@NonNull List<FavoriteData> persons) {
+    public void setFavorite(@NonNull List<FavoriteData> persons) {
         mFavoriteView.setData(persons);
     }
 
@@ -230,6 +231,7 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
             if (mListener != null) {
                 mListener.onAddFavorite(mFavoriteData);
             }
+            mSwipeLayout.close();
             ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_added));
 
         }

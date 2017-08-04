@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.friendlist;
+package vn.com.vng.zalopay.zpc.listener;
 
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 
@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.domain.model.FavoriteData;
  * *
  */
 
-interface OnFavoriteListener {
+public interface OnFavoriteListener {
     void onRemoveFavorite(FavoriteData f);
 
     void onAddFavorite(FavoriteData f);
