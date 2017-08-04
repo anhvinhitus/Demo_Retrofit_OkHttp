@@ -22,4 +22,8 @@ interface IZaloFriendListView extends ILoadDataView {
     void setSubTitle(String subTitle);
 
     void setFavorite(List<FavoriteData> persons);
+
+    void setMaxFavorite(int maxFavorite);
+
+    void requestReadContactsPermission();
 }

@@ -457,7 +457,7 @@
     <string name="already.update">Đã cập nhật</string>
     <string name="description.sync.contact.list">Bạn bè từ danh bạ điện thoại và danh bạ Zalo sẽ tự động thêm vào danh bạ Zalo Pay</string>
     <string name="last.sync.contact">Lần cập nhật cuối</string>
-    <string name="favorite.friend.format">Bạn bè yêu thích (%1$s/%2$s)</string>
+    <string name="favorite.friend.format">Bạn bè ưa thích (%1$s/%2$s)</string>
     <!-- Protect account -->
     <string name="protect_account_current_password">Nhập mật khẩu thanh toán hiện tại</string>
     <string name="protect_account_new_password">Nhập mật khẩu thanh toán mới</string>

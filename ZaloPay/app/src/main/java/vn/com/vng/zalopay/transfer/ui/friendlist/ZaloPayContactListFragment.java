@@ -49,11 +49,13 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  * *
  */
 
-public class ZaloFriendListFragment extends RuntimePermissionFragment implements IZaloFriendListView, SwipeRefreshLayout.OnRefreshListener, OnFavoriteListener {
+public class ZaloPayContactListFragment extends RuntimePermissionFragment implements IZaloFriendListView,
+        SwipeRefreshLayout.OnRefreshListener,
+        OnFavoriteListener {
 
 
-    public static ZaloFriendListFragment newInstance(Bundle args) {
-        ZaloFriendListFragment fragment = new ZaloFriendListFragment();
+    public static ZaloPayContactListFragment newInstance(Bundle args) {
+        ZaloPayContactListFragment fragment = new ZaloPayContactListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,10 +67,8 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_zalo_friend_list;
+        return R.layout.fragment_zalopay_contact_list;
     }
-
-    private static final int MAX_FAVORITE = 10;
 
     @BindView(R.id.listview)
     ListView mListView;
@@ -82,7 +82,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     ZPCFavoriteAdapter mAdapter;
 
     @Inject
-    ZaloFriendListPresenter mPresenter;
+    ZaloPayContactListPresenter mPresenter;
 
     @BindView(R.id.tv_empty)
     TextView mTvEmptyView;
@@ -96,7 +96,8 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @BindView(R.id.switchKeyboard)
     IconFont mSwitchKeyboardView;
 
-    private boolean mIsTopup = false;
+    @ZpcViewType
+    private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private boolean mIsNumberPad = false;
 
@@ -107,13 +108,13 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
         mAdapter = new ZPCFavoriteAdapter(getContext(), this);
         mAdapter.setOnSwipeLayoutListener(mSwipeListener);
-        mAdapter.setMaxFavorite(MAX_FAVORITE);
 
         initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
     }
 
+    @SuppressWarnings("ResourceType")
     private void initArgs(Bundle bundle) {
-        mIsTopup = bundle.getBoolean(BundleConstants.VIEW_TOPUP, false);
+        mViewType = bundle.getInt(BundleConstants.ZPC_VIEW_TYPE, ZpcViewType.ZPC_All);
         mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
         mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
     }
@@ -146,11 +147,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.loadDataView(mEdtSearchView.getText().toString(), mIsTopup);
-        mPresenter.getFavorite(MAX_FAVORITE);
-        if (mPresenter.isEnableSyncContact()) {
-            isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS);
-        }
+        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType);
     }
 
     @Override
@@ -201,7 +198,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(BundleConstants.VIEW_TOPUP, mIsTopup);
+        outState.putInt(BundleConstants.ZPC_VIEW_TYPE, mViewType);
         //  outState.putBoolean(BundleConstants.NUMBER_KEYBOARD, mIsNumberPad);
     }
 
@@ -240,7 +237,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
         String keySearch = Strings.trim(editable.toString());
         mSwipeRefreshView.setEnabled(editable.length() == 0);
         mSwitchKeyboardView.setVisibility(editable.length() == 0 ? View.VISIBLE : View.GONE);
-        mPresenter.doSearch(keySearch, mIsTopup);
+        mPresenter.doSearch(keySearch);
     }
 
     @OnItemClick(R.id.listview)
@@ -248,7 +245,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
         Timber.d("onItemClick: position %s", position);
         Object item = mAdapter.getItem(position - 1);
         if (item instanceof Cursor) {
-            mPresenter.clickItemContact(this, (Cursor) item, mIsTopup);
+            mPresenter.clickItemContact(this, (Cursor) item);
         }
     }
 
@@ -337,7 +334,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Override
     public void onRefresh() {
-        mPresenter.refreshFriendList(mIsTopup);
+        mPresenter.refreshFriendList();
     }
 
     @Override
@@ -387,6 +384,18 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     }
 
     @Override
+    public void setMaxFavorite(int maxFavorite) {
+        if (mAdapter != null) {
+            mAdapter.setMaxFavorite(maxFavorite);
+        }
+    }
+
+    @Override
+    public void requestReadContactsPermission() {
+        isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS);
+    }
+
+    @Override
     public void setFavorite(List<FavoriteData> persons) {
         if (mAdapter != null) {
             mAdapter.setFavorite(persons);
@@ -407,6 +416,6 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Override
     public void onMaximumFavorite() {
-        showNotificationDialog(getString(R.string.friend_favorite_maximum_format, MAX_FAVORITE));
+        showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
     }
 }

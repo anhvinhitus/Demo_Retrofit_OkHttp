@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -36,22 +37,31 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  * *
  */
 
-final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListView> {
+final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> {
+
+    private static final int MAX_FAVORITE = 10;
+
     protected final FriendStore.Repository mFriendRepository;
     protected final Context mContext;
     protected final Navigator mNavigator;
 
+    @ZpcViewType
+    private int mViewType = ZpcViewType.ZPC_All;
 
     @Inject
-    ZaloFriendListPresenter(Context context, Navigator navigator, FriendStore.Repository friendRepository) {
+    ZaloPayContactListPresenter(Context context, Navigator navigator, FriendStore.Repository friendRepository) {
         this.mFriendRepository = friendRepository;
         this.mContext = context;
         this.mNavigator = navigator;
     }
 
-    void refreshFriendList(boolean isTopup) {
+    private boolean isPhoneBook() {
+        return mViewType == ZpcViewType.ZPC_PhoneBook;
+    }
+
+    void refreshFriendList() {
         Subscription subscription = mFriendRepository.fetchZaloFriendFullInfo()
-                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isTopup))
+                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber(false));
@@ -59,21 +69,35 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         mSubscription.add(subscription);
     }
 
-    boolean isEnableSyncContact() {
+    private boolean isEnableSyncContact() {
         return FriendConfig.sEnableSyncContact;
     }
 
-    void loadDataView(String keySearch, boolean isTopup) {
+    void initialize(@Nullable String keySearch, @ZpcViewType int viewType) {
+        mViewType = viewType;
         if (!TextUtils.isEmpty(keySearch)) {
-            doSearch(keySearch, isTopup);
+            doSearch(keySearch);
         } else {
-            getFriendList(isTopup);
+            getFriendList();
+        }
+        getFavorite(MAX_FAVORITE);
+        initView();
+    }
+
+    private void initView() {
+        if (mView == null) {
+            return;
+        }
+        mView.setMaxFavorite(MAX_FAVORITE);
+
+        if (isEnableSyncContact()) {
+            mView.requestReadContactsPermission();
         }
     }
 
-    private void getFriendList(boolean isTopup) {
-        Subscription subscription = mFriendRepository.getZaloFriendsCursor(isTopup)
-                .concatWith(retrieveZaloFriendsAsNeeded(isTopup))
+    private void getFriendList() {
+        Subscription subscription = mFriendRepository.getZaloFriendsCursor(isPhoneBook())
+                .concatWith(retrieveZaloFriendsAsNeeded(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber(false));
@@ -96,8 +120,8 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         mSubscription.add(subscription);
     }
 
-    void doSearch(String s, boolean isTopup) {
-        Subscription subscription = mFriendRepository.findFriends(s, isTopup)
+    void doSearch(String s) {
+        Subscription subscription = mFriendRepository.findFriends(s, isPhoneBook())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber(true));
@@ -105,14 +129,14 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         mSubscription.add(subscription);
     }
 
-    void clickItemContact(Fragment fragment, Cursor cursor, boolean isTopup) {
+    void clickItemContact(Fragment fragment, Cursor cursor) {
         ZPProfile profile = mFriendRepository.transform(cursor);
         if (profile == null) {
             Timber.d("click contact profile is null");
             return;
         }
 
-        if (isTopup) {
+        if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
             startTransfer(fragment, profile);
@@ -209,7 +233,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         mSubscription.add(subscription);
     }
 
-    void getFavorite(int limitFavorite) {
+    private void getFavorite(int limitFavorite) {
         Subscription subscription = mFriendRepository.getFavorites(limitFavorite)
                 .filter(data -> !Lists.isEmptyOrNull(data))
                 .doOnError(Timber::d)

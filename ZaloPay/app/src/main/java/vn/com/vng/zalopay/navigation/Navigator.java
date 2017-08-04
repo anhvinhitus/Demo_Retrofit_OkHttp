@@ -59,8 +59,9 @@ import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
-import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
+import vn.com.vng.zalopay.transfer.ui.ZaloPayContactActivity;
 import vn.com.vng.zalopay.transfer.ui.friendlist.SyncContactActivity;
+import vn.com.vng.zalopay.transfer.ui.friendlist.ZpcViewType;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
@@ -470,14 +471,19 @@ public class Navigator {
     }
 
     public void startZaloContactActivity(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), ZaloContactActivity.class);
+        Intent intent = getIntentZaloPayContactList(fragment.getContext(), ZpcViewType.ZPC_All);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZFRIEND);
     }
 
+    private Intent getIntentZaloPayContactList(Context context, @ZpcViewType int viewType) {
+        Intent intent = new Intent(context, ZaloPayContactActivity.class);
+        intent.putExtra(BundleConstants.ZPC_VIEW_TYPE, viewType);
+        return intent;
+    }
+
     public void startZaloPayContactTopup(Activity activity, String phoneNumber, boolean isNumberPad, int requestCode) {
-        Intent intent = new Intent(activity, ZaloContactActivity.class);
-        intent.putExtra(BundleConstants.VIEW_TOPUP, true);
+        Intent intent = getIntentZaloPayContactList(activity, ZpcViewType.ZPC_PhoneBook);
         if (!TextUtils.isEmpty(phoneNumber)) {
             intent.putExtra(BundleConstants.KEY_SEARCH, phoneNumber);
         }

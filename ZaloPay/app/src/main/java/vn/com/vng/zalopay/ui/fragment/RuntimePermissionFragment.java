@@ -54,7 +54,10 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Timber.d("Permissions result: requestCode [%s] permissions [%s] results[%s]", requestCode, Arrays.toString(permissions), Arrays.toString(grantResults));
-        permissionGranted(requestCode, PermissionUtil.verifyPermission(grantResults));
+
+        if (isAdded()) {
+            permissionGranted(requestCode, PermissionUtil.verifyPermission(grantResults));
+        }
     }
 
     public interface PERMISSION_CODE {

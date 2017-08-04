@@ -60,6 +60,10 @@ final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder
         mFavoriteView.setMaximum(max);
     }
 
+    int getMaxFavorite(){
+        return mFavoriteView.getMaximum();
+    }
+
     private SwipeLayout.SwipeListener mSwipeListener = new SimpleSwipeListener() {
         @Override
         public void onStartOpen(SwipeLayout layout) {

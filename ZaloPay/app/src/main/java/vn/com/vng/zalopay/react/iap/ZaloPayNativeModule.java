@@ -235,37 +235,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-    private void handleResultTopup(int resultCode, Intent data) {
-        if (mPromiseTopup == null || mPromiseTopup.get() == null) {
-            return;
-        }
-
-        try {
-
-            Promise promise = mPromiseTopup.get();
-            if (resultCode != Activity.RESULT_OK || data == null) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), "User cancel");
-                return;
-            }
-
-            ZPProfile profile = data.getParcelableExtra("profile");
-
-            if (profile == null || TextUtils.isEmpty(profile.displayName) || TextUtils.isEmpty(profile.phonenumber)) {
-                Timber.d("Profile invalid");
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
-                return;
-            }
-            WritableMap resp = createTopupResponse(profile.phonenumber, profile.displayName, profile.avatar);
-            Helpers.promiseResolveSuccess(promise, PaymentError.ERR_CODE_SUCCESS.value(), "", resp);
-        } finally {
-            if (mPromiseTopup != null) {
-                mPromiseTopup.clear();
-                mPromiseTopup = null;
-            }
-        }
-
-    }
-
     private WritableMap createTopupResponse(String phoneNumber, String phoneName, String avatar) {
         WritableMap resp = Arguments.createMap();
         resp.putString("phonenumber", phoneNumber);
@@ -426,11 +395,43 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
         Activity activity = getCurrentActivity();
         if (activity == null) {
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Current activity is null");
             return;
         }
 
         mPromiseTopup = new WeakReference<>(promise);
         mNavigator.startZaloPayContactTopup(activity, phoneNumber, isNumberPad, TOPUP_REQUEST_CODE);
+    }
+
+    private void handleResultTopup(int resultCode, Intent data) {
+        if (mPromiseTopup == null || mPromiseTopup.get() == null) {
+            return;
+        }
+
+        try {
+
+            Promise promise = mPromiseTopup.get();
+            if (resultCode != Activity.RESULT_OK || data == null) {
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), "User cancel");
+                return;
+            }
+
+            ZPProfile profile = data.getParcelableExtra("profile");
+
+            if (profile == null || TextUtils.isEmpty(profile.displayName) || TextUtils.isEmpty(profile.phonenumber)) {
+                Timber.d("Profile invalid");
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
+                return;
+            }
+            WritableMap resp = createTopupResponse(profile.phonenumber, profile.displayName, profile.avatar);
+            Helpers.promiseResolveSuccess(promise, PaymentError.ERR_CODE_SUCCESS.value(), "", resp);
+        } finally {
+            if (mPromiseTopup != null) {
+                mPromiseTopup.clear();
+                mPromiseTopup = null;
+            }
+        }
+
     }
 
 }

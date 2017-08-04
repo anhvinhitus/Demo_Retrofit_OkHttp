@@ -87,6 +87,10 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
         mMaximum = maximum;
     }
 
+    public int getMaximum() {
+        return mMaximum;
+    }
+
     public void setData(List<FavoriteData> personList) {
         mAdapter.setData(personList);
         checkItemCount();

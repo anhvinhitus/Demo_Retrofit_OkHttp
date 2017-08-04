@@ -58,7 +58,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
 import vn.com.vng.zalopay.transfer.ui.friendlist.SyncContactFragment;
-import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
+import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloPayContactListFragment;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
@@ -168,7 +168,7 @@ public interface UserComponent {
 
     void inject(EditAccountNameFragment f);
 
-    void inject(ZaloFriendListFragment f);
+    void inject(ZaloPayContactListFragment f);
 
     void inject(NotificationLinkCardFragment f);
 
