@@ -58,10 +58,7 @@ public class PaymentInfoHelper extends SingletonBase {
     }
 
     public VoucherInfo getVoucher() {
-        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
-            return paymentInfo.getVoucher();
-        }
-        return null;
+        return paymentInfo != null ? paymentInfo.getVoucher() : null;
     }
 
     // set transaction result to notify to app
