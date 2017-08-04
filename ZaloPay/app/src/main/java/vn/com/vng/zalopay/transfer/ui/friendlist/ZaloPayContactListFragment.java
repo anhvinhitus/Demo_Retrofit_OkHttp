@@ -50,8 +50,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  */
 
 public class ZaloPayContactListFragment extends RuntimePermissionFragment implements IZaloFriendListView,
-        SwipeRefreshLayout.OnRefreshListener,
-        OnFavoriteListener {
+        SwipeRefreshLayout.OnRefreshListener {
 
 
     public static ZaloPayContactListFragment newInstance(Bundle args) {
@@ -106,7 +105,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mAdapter = new ZPCFavoriteAdapter(getContext(), this);
+        mAdapter = new ZPCFavoriteAdapter(getContext(), mOnFavoriteListener);
         mAdapter.setOnSwipeLayoutListener(mSwipeListener);
 
         initArgs(savedInstanceState == null ? getArguments() : savedInstanceState);
@@ -173,7 +172,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         inflater.inflate(R.menu.menu_contact_list, menu);
         MenuItem menuItem = menu.findItem(R.id.action_update);
         if (menuItem != null) {
-            menuItem.setIcon(new FontIconDrawable(getString(R.string.personal_setting), Color.WHITE, AndroidUtils.dp(20)));
+            menuItem.setIcon(new FontIconDrawable(getString(R.string.personal_setting), Color.WHITE,
+                    getResources().getDimensionPixelSize(R.dimen.menu_overflow_size)));
         }
     }
 
@@ -250,7 +250,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     }
 
     @OnClick(R.id.switchKeyboard)
-    public void onSwitchKeyboard(View view) {
+    public void onSwitchKeyboard() {
         mIsNumberPad = !mIsNumberPad;
         setKeyboard(mIsNumberPad);
     }
@@ -402,20 +402,35 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
     }
 
-    @Override
-    public void onRemoveFavorite(FavoriteData f) {
-        mPresenter.favorite(false, f);
-        closeAllSwipeItems(mListView);
-      /*  mAdapter.notifyDataSetChanged();*/
-    }
+    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
+        @Override
+        public void onRemoveFavorite(FavoriteData f) {
 
-    @Override
-    public void onAddFavorite(FavoriteData f) {
-        mPresenter.favorite(true, f);
-    }
+            if (mPresenter != null) {
+                mPresenter.favorite(false, f);
+            }
 
-    @Override
-    public void onMaximumFavorite() {
-        showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
-    }
+            closeAllSwipeItems(mListView);
+        }
+
+        @Override
+        public void onAddFavorite(FavoriteData f) {
+            if (mPresenter != null) {
+                mPresenter.favorite(true, f);
+            }
+        }
+
+        @Override
+        public void onMaximumFavorite() {
+            if (!isAdded()) {
+                return;
+            }
+
+            if (mAdapter == null) {
+                return;
+            }
+
+            showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
+        }
+    };
 }
