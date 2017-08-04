@@ -268,8 +268,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
 
         int position = data.getIntExtra(Constants.SELECTED_PMC_POSITION, -1);
-        PaymentChannel channel = onSelectedChannel(position);
-        if (channel == null) {
+        boolean started = onSelectedChannel(position);
+        if (!started) {
             return;
         }
         //delay waiting for destroy popup
@@ -325,11 +325,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return offline;
     }
 
-    private PaymentChannel onSelectedChannel(int pPosition) {
+    private boolean onSelectedChannel(int pPosition) {
         Log.d(this, "select at position", pPosition);
         if (mChannelList == null || mChannelList.size() <= 0) {
             Timber.d("channel list is empty");
-            return null;
+            return false;
         }
         PaymentChannel channel = null;
         if (pPosition >= 0) {
@@ -340,29 +340,29 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         if (channel == null) {
             Timber.d("channel is null");
-            return null;
+            return false;
         }
         if (!changedChannel(channel)) {
             Timber.d("click same channel");
-            return null;
+            return false;
         }
         //check networking
         if (networkOffline()) {
-            return null;
+            return false;
+        }
+        if (channel.isLinkChannel()) {
+            startLinkChannel();
+            return true;
         }
         if (!mPayProxy.validate(channel)) {
-            return null;
+            return false;
         }
         try {
-            if (channel.isLinkChannel()) {
-                startLinkChannel();
-                return channel;
-            }
             markSelectChannel(channel, pPosition);
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
-        return channel;
+        return true;
     }
 
     private boolean changedChannel(PaymentChannel selectChannel) {
@@ -428,9 +428,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startLinkChannel() {
         try {
-            if (mSelectChannel == null || mPayProxy == null) {
-                return;
-            }
             Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
             onStartLinkThenPay(intent);
         } catch (Exception e) {
@@ -795,6 +792,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
 
         PaymentChannel selectChannel = null;
+        boolean hasLinkChannel = false;
         int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
@@ -803,6 +801,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
             PaymentChannel channel = (PaymentChannel) object;
             if (!channel.meetPaymentCondition()) {
+                continue;
+            }
+            if (channel.isLinkChannel()) {
+                hasLinkChannel = true;
                 continue;
             }
             mHasActiveChannel = true;
@@ -816,7 +818,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (shouldAutoPayment()) {
             startDefaultPayment();
         }
-        if (!mHasActiveChannel) {
+        if (!mHasActiveChannel && !hasLinkChannel) {
             getViewOrThrow().disableConfirmButton();
             showSnackBarOnError();
         }
