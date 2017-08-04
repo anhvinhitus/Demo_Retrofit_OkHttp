@@ -76,13 +76,4 @@ public class ToastUtil {
     public static void showCustomToast(Context context, CharSequence message) {
         showCustomToast(context, message, Toast.LENGTH_SHORT, Gravity.CENTER);
     }
-
-    public static void showToastOTPSuccess(Context context, CharSequence message) {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_toast_opt_success, null);
-        toast.setView(view);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
 }

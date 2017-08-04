@@ -568,7 +568,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mPassword.showLoading(false);
                 mPassword.close();
                 mPassword.lockElementView(false);
-                ToastUtil.showToastOTPSuccess(getActivity(), mContext.getString(R.string.protect_account_password_changed));
+                ToastUtil.showCustomToast(getActivity(), mContext.getString(R.string.protect_account_password_changed));
                 setViewStatus(0);
                 ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_RESULT);
             } catch (Exception e) {
