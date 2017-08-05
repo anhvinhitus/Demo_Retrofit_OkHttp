@@ -97,17 +97,21 @@ public class GlobalData {
 
     @BankFunctionCode
     public static int updateBankFuncByPayType() {
+        if (paymentInfoHelper == null) {
+            return bankFunction;
+        }
         if (paymentInfoHelper.payByBankAccountMap()) {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (paymentInfoHelper.payByCardMap()) {
             bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
-        } else {
-            bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
         return bankFunction;
     }
 
     public static void updateBankFuncByTranstype() {
+        if(paymentInfoHelper == null){
+            return;
+        }
         if (paymentInfoHelper.isBankAccountTrans()) {
             bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
             return;
@@ -134,9 +138,7 @@ public class GlobalData {
     public static boolean shouldUpdateBankFuncbyPayType() {
         return bankFunction == BankFunctionCode.PAY ||
                 bankFunction == BankFunctionCode.PAY_BY_CARD_TOKEN ||
-                bankFunction == BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN ||
-                bankFunction == BankFunctionCode.PAY_BY_CARD ||
-                bankFunction == BankFunctionCode.PAY_BY_BANK_ACCOUNT;
+                bankFunction == BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
     }
 
     @BankFunctionCode
@@ -145,10 +147,6 @@ public class GlobalData {
             bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (pChannel.isMapCardChannel()) {
             bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
-        } else if (pChannel.isBankAccount()) {
-            bankFunction = BankFunctionCode.PAY_BY_BANK_ACCOUNT;
-        } else {
-            bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
         return bankFunction;
     }
@@ -233,14 +231,16 @@ public class GlobalData {
             //track screen name
             String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
             ZPAnalytics.trackScreen(screenName);
-            trackEvantResult();
-
+            trackPaymentResult();
         } catch (Exception e) {
             Timber.w(e);
         }
     }
 
-    private static void trackEvantResult() {
+    private static void trackPaymentResult() {
+        if (paymentInfoHelper == null) {
+            return;
+        }
         if (paymentInfoHelper.isLinkTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_RESULT);
         } else if (paymentInfoHelper.isTopupTrans()) {
@@ -250,8 +250,6 @@ public class GlobalData {
         } else if (paymentInfoHelper.isMoneyTranferTrans()) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_RESULT);
         }
-
-
     }
 
     public static void trackingTransactionEvent(int pResult, StatusResponse pResponse, String bankCode) throws Exception {
