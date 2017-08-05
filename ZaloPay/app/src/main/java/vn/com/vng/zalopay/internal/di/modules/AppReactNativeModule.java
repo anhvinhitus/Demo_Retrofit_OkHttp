@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
-import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 
 /**
@@ -28,21 +27,14 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
  */
 @Module
 public class AppReactNativeModule {
-
-    @Singleton
-    @Provides
-    LocalResourceRepository providesLocalResourceRepository(@Named("daosession") DaoSession daoSession) {
-        return new LocalResourceRepositoryImpl(new LocalResourceFactory(daoSession));
-    }
-
     @Provides
     @Singleton
     BundleService providesBundleService(Context context,
-                                        LocalResourceRepository localResourceRepository,
+                                        @Named("daosession") DaoSession daoSession,
                                         AppResourceStore.Repository appResourceRepository,
                                         Gson gson) {
         return new BundleServiceImpl((Application) context,
-                localResourceRepository,
+                new LocalResourceRepositoryImpl(daoSession),
                 appResourceRepository,
                 gson, BuildConfig.ZALOPAY_APP_ID);
     }
