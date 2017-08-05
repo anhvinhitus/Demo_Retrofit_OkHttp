@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.zfriend;
+package vn.com.vng.zalopay.data.zpc;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
-import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
+import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ZPProfile;

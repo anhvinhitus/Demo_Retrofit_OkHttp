@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.zfriend;
+package vn.com.vng.zalopay.data.zpc;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -23,10 +23,10 @@ import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
-import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
-import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
-import vn.com.vng.zalopay.data.zfriend.contactloader.ContactPhone;
+import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
+import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
+import vn.com.vng.zalopay.data.zpc.contactloader.ContactFetcher;
+import vn.com.vng.zalopay.data.zpc.contactloader.ContactPhone;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;

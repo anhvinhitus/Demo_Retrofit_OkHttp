@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Item;
 import vn.com.vng.zalopay.domain.model.Order;

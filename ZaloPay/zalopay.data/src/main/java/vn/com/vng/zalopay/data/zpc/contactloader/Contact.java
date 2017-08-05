@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.zfriend.contactloader;
+package vn.com.vng.zalopay.data.zpc.contactloader;
 
 import java.util.ArrayList;
 

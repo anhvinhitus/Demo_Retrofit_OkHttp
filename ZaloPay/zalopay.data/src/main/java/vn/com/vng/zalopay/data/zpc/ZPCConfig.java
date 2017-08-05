@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.zfriend;
+package vn.com.vng.zalopay.data.zpc;
 
 /**
  * Created by hieuvm on 3/30/17.

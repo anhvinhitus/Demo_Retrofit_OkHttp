@@ -7,11 +7,11 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
-import vn.com.vng.zalopay.data.zfriend.ZPCRepository;
-import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
-import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
-import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
+import vn.com.vng.zalopay.data.zpc.ZPCRepository;
+import vn.com.vng.zalopay.data.zpc.FriendRequestService;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCLocalStorage;
+import vn.com.vng.zalopay.data.zpc.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 

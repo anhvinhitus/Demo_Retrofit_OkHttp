@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;

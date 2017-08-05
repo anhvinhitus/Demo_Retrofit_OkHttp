@@ -20,9 +20,9 @@ import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.DBOpenHelper;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
-import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
-import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCLocalStorage;
+import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 
 /**
  * Created by hieuvm on 1/1/17.

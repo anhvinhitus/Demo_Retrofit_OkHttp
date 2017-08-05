@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;

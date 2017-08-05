@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.zfriend;
+package vn.com.vng.zalopay.data.zpc;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -21,8 +21,8 @@ import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
-import vn.com.vng.zalopay.data.zfriend.contactloader.ContactPhone;
+import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
+import vn.com.vng.zalopay.data.zpc.contactloader.ContactPhone;
 
 /**
  * Created by hieuvm on 7/20/17.

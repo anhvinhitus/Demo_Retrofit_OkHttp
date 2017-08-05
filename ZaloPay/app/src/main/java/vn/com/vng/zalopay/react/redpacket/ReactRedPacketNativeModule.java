@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
-import vn.com.vng.zalopay.data.zfriend.ZPCStore;
+import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;

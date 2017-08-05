@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
+import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
 
 /**
  * Created by AnhHieu on 10/7/16.

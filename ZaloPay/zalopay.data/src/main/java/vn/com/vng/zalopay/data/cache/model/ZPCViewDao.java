@@ -3,8 +3,8 @@ package vn.com.vng.zalopay.data.cache.model;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.internal.SqlUtils;
 
-import vn.com.vng.zalopay.data.zfriend.ZPCAlias.TableAlias;
-import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
+import vn.com.vng.zalopay.data.zpc.ZPCAlias.TableAlias;
+import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
 
 /**
  * Created by hieuvm on 7/20/17.

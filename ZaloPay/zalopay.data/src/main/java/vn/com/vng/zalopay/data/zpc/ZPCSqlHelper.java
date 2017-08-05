@@ -1,8 +1,6 @@
-package vn.com.vng.zalopay.data.zfriend;
+package vn.com.vng.zalopay.data.zpc;
 
 import android.text.TextUtils;
-
-import org.greenrobot.greendao.internal.SqlUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,7 @@ import vn.com.vng.zalopay.data.cache.model.UCBDao;
 import vn.com.vng.zalopay.data.cache.model.ZFLDao;
 import vn.com.vng.zalopay.data.cache.model.ZPCDao;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
+import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
 
 /**
  * Created by hieuvm on 7/25/17.
