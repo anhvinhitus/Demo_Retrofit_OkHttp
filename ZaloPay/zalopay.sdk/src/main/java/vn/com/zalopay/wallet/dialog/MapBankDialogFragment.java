@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListAdapter;
@@ -132,7 +132,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
             if (object instanceof PaymentChannel) {
                 PaymentChannel channel = (PaymentChannel) object;
                 channel.position = i;
-                if (BankAccountHelper.isBankAccount(mBankCode) && validBankMap(channel, mBankCode)) {
+                if (BankHelper.isBankAccount(mBankCode) && validBankMap(channel, mBankCode)) {
                     channelList.add(channel);
                 } else if (validCardMap(channel, mBankCode)) {
                     channelList.add(channel);
@@ -206,7 +206,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         }
         for (int i = 0; i < mChannelList.size(); i++) {
             PaymentChannel channel = mChannelList.get(i);
-            if (BankAccountHelper.isBankAccount(mBankCode) && !TextUtils.isEmpty(mBankCode) && mBankCode.equals(channel.bankcode)) {
+            if (BankHelper.isBankAccount(mBankCode) && !TextUtils.isEmpty(mBankCode) && mBankCode.equals(channel.bankcode)) {
                 return channel;
             } else if (channel.compareToCardNumber(pCardNumber) && !TextUtils.isEmpty(mBankCode) && mBankCode.equals(channel.bankcode)) {
                 return channel;

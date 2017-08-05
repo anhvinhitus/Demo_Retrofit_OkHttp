@@ -3,8 +3,6 @@ package vn.com.zalopay.wallet.workflow;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -37,7 +35,7 @@ import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -73,7 +71,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 }
                 Timber.d("start reload pmc trans type %s", pBankCode);
                 long appId = mPaymentInfoHelper.getAppId();
-                boolean bankAccount = BankAccountHelper.isBankAccount(pBankCode);
+                boolean bankAccount = BankHelper.isBankAccount(pBankCode);
                 mMiniPmcTransType = SDKApplication
                         .getApplicationComponent()
                         .appInfoInteractor()

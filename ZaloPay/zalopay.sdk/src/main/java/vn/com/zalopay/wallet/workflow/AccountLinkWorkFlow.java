@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -47,7 +48,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -96,6 +97,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     LinkAccGuiProcessor linkAccGuiProcessor;
     LinkAccWebViewClient mWebViewProcessor = null;
+    boolean isNativeFlow = true;
     private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -214,7 +216,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     }
 
     void loadBankAccountSuccess() throws Exception {
-        if (BankAccountHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
+        if (BankHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
             } else {
@@ -286,6 +288,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     public void init() throws Exception {
         linkAccGuiProcessor = new LinkAccGuiProcessor(mContext, this, getPresenter().getViewOrThrow());
         this.mGuiProcessor = linkAccGuiProcessor;
+        this.isNativeFlow = PaymentPermission.allowVCBNativeFlow();
         // set button always above keyboard.
         LayoutUtils.setButtonAlwaysAboveKeyboards(
                 linkAccGuiProcessor.getLlRoot_linear_layout(),
@@ -411,7 +414,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
             getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
             // enable web parse. disable webview
-            if (GlobalData.shouldNativeWebFlow()) {
+            if (isNativeFlow) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
                 getView().setVisible(R.id.ll_test_rootview, true);
             }
@@ -446,7 +449,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_link_account_service),
                     mStatusResponse, true, mContext.getResources().getString(R.string.sdk_link_acc_fail_title));
             // enable web parse. disable webview
-            if (GlobalData.shouldNativeWebFlow()) {
+            if (isNativeFlow) {
                 getView().setVisible(R.id.zpw_threesecurity_webview, false);
                 getView().setVisible(R.id.ll_test_rootview, true);
             }
@@ -468,7 +471,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 false, null, mContext.getResources().getString(R.string.sdk_unlink_acc_success_title));
         getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
         // enable web parse. disable webview
-        if (GlobalData.shouldNativeWebFlow()) {
+        if (isNativeFlow) {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
@@ -482,7 +485,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
             getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mStatusResponse, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
-            if (GlobalData.shouldNativeWebFlow()) {
+            if (isNativeFlow) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
             }
@@ -495,7 +498,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     public void autoFillOtp(String pSender, String pOtp) {
         Timber.d("sender %s otp %s", pSender, pOtp);
         try {
-            if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
+            if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !isNativeFlow) {
                 Timber.d("user is not in otp phase, skip auto fill otp");
                 return;
             }
@@ -521,7 +524,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        if (GlobalData.shouldNativeWebFlow()) {
+                        if (isNativeFlow) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
                             Timber.d("fill otp into website vcb directly");
                         } else {
@@ -674,7 +677,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 hideLoadingDialog(); // close process dialog
                 mPageName = PAGE_VCB_LOGIN;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
-                if (GlobalData.shouldNativeWebFlow()) {
+                if (isNativeFlow) {
                     Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
@@ -721,7 +724,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                             }
                             return null;
                         case WRONG_CAPTCHA:
-                            if (!GlobalData.shouldNativeWebFlow()) {
+                            if (!isNativeFlow) {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText(null);
@@ -738,7 +741,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 } catch (Exception e) {
                     Timber.w(e);
                 }
-                if (!GlobalData.shouldNativeWebFlow()) {
+                if (!isNativeFlow) {
                     linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                 }
                 return null;
@@ -753,7 +756,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
-                if (GlobalData.shouldNativeWebFlow()) {
+                if (isNativeFlow) {
                     Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
@@ -809,7 +812,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 
                         // MapAccount API. just using for web BANKACCOUNT
-                        if (GlobalData.shouldNativeWebFlow()) {
+                        if (isNativeFlow) {
                             submitMapAccount(getAccNumValue());
                         }
                     }
@@ -833,7 +836,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     mPageName = PAGE_VCB_OTP;
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().requestFocus();
                     // submit MapAccount for webview BANKACCOUNT parse
-                    if (!GlobalData.shouldNativeWebFlow()) {
+                    if (!isNativeFlow) {
                         submitMapAccount(getAccNumValue());
                     }
                     try {
@@ -866,7 +869,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                                     } catch (Exception e) {
                                         Timber.w(e.getMessage());
                                     }
-                                    if (!GlobalData.shouldNativeWebFlow()) {
+                                    if (!isNativeFlow) {
                                         showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
@@ -948,7 +951,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 }
                 COUNT_UNREGISTER++;
 
-                if (GlobalData.shouldNativeWebFlow()) {
+                if (isNativeFlow) {
                     Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
                 }
@@ -1014,7 +1017,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                             checkBankAccount();
                         } else {
                             hideLoadingDialog();
-                            if (!GlobalData.shouldNativeWebFlow()) {
+                            if (!isNativeFlow) {
                                 try {
                                     getView().showConfirmDialog(response.message,
                                             getActivity().getString(R.string.dialog_retry_button),
@@ -1134,8 +1137,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     protected void startParseBankWebsite(final String pUrl) {
         if (mWebViewProcessor == null) {
             // Check show WebView in BankList
-            boolean nativeFlow = GlobalData.shouldNativeWebFlow();
-            if (nativeFlow) {
+            if (isNativeFlow) {
                 // show webview && hide web parse
                 try {
                     mWebViewProcessor = new LinkAccWebViewClient(this,
@@ -1149,8 +1151,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
             try {
-                getView().setVisible(R.id.zpw_threesecurity_webview, nativeFlow);
-                getView().setVisible(R.id.ll_test_rootview, !nativeFlow);
+                getView().setVisible(R.id.zpw_threesecurity_webview, isNativeFlow);
+                getView().setVisible(R.id.ll_test_rootview, !isNativeFlow);
             } catch (Exception e) {
                 Timber.w(e);
             }

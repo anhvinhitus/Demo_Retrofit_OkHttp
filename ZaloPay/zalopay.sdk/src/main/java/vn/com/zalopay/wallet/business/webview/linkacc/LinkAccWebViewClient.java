@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
@@ -147,7 +148,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         Timber.d("load page finish %s", url);
         if (!isRedirected) {
             Timber.d("load page finish on the first %s", url);
-            if (GlobalData.shouldNativeWebFlow() && url.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_auto_select_service))) {
+            if (PaymentPermission.allowVCBNativeFlow() && url.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_auto_select_service))) {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
@@ -313,11 +314,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                if (GlobalData.shouldNativeWebFlow() && shouldRequestReadOtpPermission()) {
+                if (PaymentPermission.allowVCBNativeFlow() && shouldRequestReadOtpPermission()) {
                     getAdapter().requestReadOtpPermission();
                 }
 
-                if (GlobalData.shouldNativeWebFlow() && !shouldExecuteJs()) { //prevent load js on web flow
+                if (PaymentPermission.allowVCBNativeFlow() && !shouldExecuteJs()) { //prevent load js on web flow
                     return;
                 }
 

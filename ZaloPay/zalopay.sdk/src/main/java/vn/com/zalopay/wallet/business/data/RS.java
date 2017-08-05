@@ -82,7 +82,7 @@ public class RS {
         public static final String sdk_vcb_bankscript_generate_captcha = "sdk_vcb_bankscript_generate_captcha";
         public static final String sdk_vcb_bankscript_register_complete = "sdk_vcb_bankscript_register_complete";
         public static final String sdk_vcb_bankscript_unregister_complete = "sdk_vcb_bankscript_unregister_complete";
-        public static final String sdk_vcb_flow_type = "sdk_vcb_flow_type";
+        public static final String allow_vcb_native_flow = "allow_vcb_native_flow";
         public static final String sdk_vcb_bankscript_auto_select_service = "sdk_vcb_bankscript_auto_select_service";
         public static final String prefix_numberphone_vcb = "prefix_numberphone_vcb";
         public static final String suffix_numberphone_vcb = "suffix_numberphone_vcb";

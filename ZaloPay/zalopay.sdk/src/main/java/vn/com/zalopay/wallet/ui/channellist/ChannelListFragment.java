@@ -544,7 +544,11 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
                     @Override
                     public void onOKEvent() {
-                        PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
+                        try {
+                            PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
+                        } catch (Exception e) {
+                            Timber.d(e);
+                        }
                         terminate();
                     }
                 });

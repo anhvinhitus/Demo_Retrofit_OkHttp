@@ -373,6 +373,10 @@ public class PayProxy extends SingletonBase {
                 mAuthenActor.closeAuthen();
                 return;
             }
+            if (mPaymentInfoHelper == null) {
+                markTransFail(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+                return;
+            }
             Timber.d("start submit order");
             int channelId = mPaymentInfoHelper.isWithDrawTrans() ? BuildConfig.channel_zalopay : mChannel.pmcid;
             String chargeInfo = mPaymentInfoHelper.getChargeInfo(null);
@@ -389,7 +393,7 @@ public class PayProxy extends SingletonBase {
                             .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e);
             markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
         }
     }
@@ -477,18 +481,15 @@ public class PayProxy extends SingletonBase {
             startFlow();
         } else {
             String bankCode = mPaymentInfoHelper.getMapBank().bankcode;
-            if (!isBankMaintenance(bankCode) && isBankSupport(bankCode)) {
+            if (!isBankMaintenance(bankCode)
+                    && isBankSupport(bankCode)) {
                 startFlow();
             }
         }
     }
 
     private boolean isBankMaintenance(String pBankCode) {
-        if (GlobalData.shouldUpdateBankFuncbyPayType()) {
-            GlobalData.updateBankFuncByPayType();
-        }
-
-        int bankFunction = GlobalData.getCurrentBankFunction();
+        int bankFunction = GlobalData.updateBankFuncByChannel(mChannel);
         BankConfig bankConfig = mBankInteractor.getBankConfig(pBankCode);
         if (bankConfig == null || !bankConfig.isBankMaintenence(bankFunction)) {
             return false;

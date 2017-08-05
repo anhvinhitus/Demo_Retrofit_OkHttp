@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.helper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import java.util.concurrent.TimeoutException;
@@ -18,6 +19,7 @@ import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -37,6 +39,18 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
  */
 
 public class TransactionHelper {
+
+    public static String getTransProcessingMessage(@TransactionType int pTranstype) {
+        int resId  = (pTranstype == TransactionType.LINK) ? R.string.sdk_fail_trans_status_link : R.string.sdk_fail_trans_status;
+        return GlobalData.getAppContext().getResources().getString(resId);
+    }
+
+    public static Intent createLinkIntent(@CardType String bankLink) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.BANKLINK_TYPE_EXTRA, bankLink);
+        return intent;
+    }
+
     public static String getMessage(Context context, Throwable throwable) {
         if (throwable == null) {
             return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
@@ -188,7 +202,7 @@ public class TransactionHelper {
     }
 
     public static boolean isTransactionProcessing(Context pContext, String pMessage, @TransactionType int transType) {
-        return pMessage.equalsIgnoreCase(pContext.getString(GlobalData.getTransProcessingMessage(transType)))
+        return pMessage.equalsIgnoreCase(TransactionHelper.getTransProcessingMessage(transType))
                 || pMessage.equalsIgnoreCase(pContext.getString(R.string.sdk_expire_transaction_mess))
                 || pMessage.equals(pContext.getString(R.string.sdk_error_generic_submitorder));
     }

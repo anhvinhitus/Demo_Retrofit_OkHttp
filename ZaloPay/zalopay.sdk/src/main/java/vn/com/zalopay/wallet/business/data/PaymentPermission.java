@@ -7,6 +7,17 @@ import timber.log.Timber;
  * which config from bundle
  */
 public class PaymentPermission {
+
+    public static boolean allowVCBNativeFlow() {
+        try {
+            int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_vcb_native_flow));
+            return allow > 0;
+        } catch (Exception ex) {
+            Timber.w(ex, "Exception read allow VCB");
+            return true;
+        }
+    }
+
     public static boolean allowLuhnCC() {
         try {
             int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_luhn_cc));

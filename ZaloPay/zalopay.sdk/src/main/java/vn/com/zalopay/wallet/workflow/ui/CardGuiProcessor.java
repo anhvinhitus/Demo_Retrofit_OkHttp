@@ -48,17 +48,15 @@ import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.BankListDialogFragment;
 import vn.com.zalopay.wallet.dialog.CardSupportHelper;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -866,7 +864,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
 
             //user input bank account
-            if (!TextUtils.isEmpty(bankCode) && BankAccountHelper.isBankAccount(bankCode)) {
+            if (!TextUtils.isEmpty(bankCode) && BankHelper.isBankAccount(bankCode)) {
                 showWarningBankAccount();
             }
 
@@ -915,11 +913,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
                     @Override
                     public void onOKEvent() {
-                        PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(), BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                         try {
+                            PlayStoreUtils.openPlayStoreForUpdate(GlobalData.getMerchantActivity(),
+                                    BuildConfig.PACKAGE_IN_PLAY_STORE, "Zalo Pay", "force-app-update", "bank-future");
                             getAdapter().getPresenter().callback();
                         } catch (Exception e) {
-                            Log.e(this, e);
+                            Timber.w(e);
                         }
                     }
                 });
@@ -1001,7 +1000,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             //user input bank account
-            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode)) {
+            if (!TextUtils.isEmpty(pBankCode) && BankHelper.isBankAccount(pBankCode)) {
                 showWarningBankAccount();
             }
             if (getAdapter().isCCFlow() && getBankCardFinder().detected()) {

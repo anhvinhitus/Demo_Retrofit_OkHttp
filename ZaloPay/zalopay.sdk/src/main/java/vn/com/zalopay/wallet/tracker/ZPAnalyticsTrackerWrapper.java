@@ -11,20 +11,22 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 
 
-/**
+/*
  * Created by lytm on 04/05/2017.
  */
 
 public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     ZPApptransidLog mZPApptransidLog;
+    String mUserId;
 
-    public ZPAnalyticsTrackerWrapper(long pAppId, String pAppTransID, @TransactionType int transactionType, int ordersource) {
+    public ZPAnalyticsTrackerWrapper(String pUserId, long pAppId, String pAppTransID, @TransactionType int transactionType, int ordersource) {
         super();
+        mUserId = pUserId;
         initialize(pAppId, pAppTransID, transactionType, ordersource);
     }
 
@@ -102,11 +104,11 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
             int returnCode = -100;
             if (TransactionHelper.timeoutException(throwable)) {
                 returnCode = -1010;
-                Timber.w(throwable, "Exception apiId %s PC response null user id %s", apiId, GlobalData.getUserId());
+                Timber.w(throwable, "Exception apiId %s PC response null user id %s", apiId, mUserId);
             } else if (throwable instanceof HttpException) {
                 HttpException httpException = (HttpException) throwable;
                 returnCode = httpException.code();
-                Timber.w(throwable, "Exception apiId %s http error %s user id %s", apiId, httpException.getMessage(), GlobalData.getUserId());
+                Timber.w(throwable, "Exception apiId %s http error %s user id %s", apiId, httpException.getMessage(), mUserId);
             }
             trackApiTiming(apiId, startTime, endTime, returnCode);
         } catch (Exception e) {

@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
@@ -178,7 +178,7 @@ public abstract class AbstractChannelLoader {
         if (pChannel == null) {
             return;
         }
-        if (BankAccountHelper.isBankAccount(pChannel.bankcode)) {
+        if (BankHelper.isBankAccount(pChannel.bankcode)) {
             pChannel.pmcid = BuildConfig.channel_bankaccount;
         } else if (BuildConfig.CC_CODE.equals(pChannel.bankcode)) {
             pChannel.pmcid = BuildConfig.channel_credit_card;

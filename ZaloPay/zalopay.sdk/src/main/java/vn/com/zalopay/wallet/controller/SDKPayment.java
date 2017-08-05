@@ -13,7 +13,6 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -164,7 +163,12 @@ public class SDKPayment {
     }
 
     private static void startGateway(PaymentInfoHelper paymentInfoHelper) {
-        Activity merchantActivity = GlobalData.getMerchantActivity();
+        Activity merchantActivity = null;
+        try {
+            merchantActivity = GlobalData.getMerchantActivity();
+        } catch (Exception e) {
+            Timber.d(e);
+        }
         if (merchantActivity == null || merchantActivity.isFinishing()) {
             Timber.w("merchant activity is null");
             terminateSession(GlobalData.getAppContext().getResources().getString(R.string.sdk_invalid_payment_data), PaymentError.DATA_INVALID);
@@ -180,11 +184,12 @@ public class SDKPayment {
             intent = new Intent(merchantActivity, ChannelListActivity.class);
         }
         //init tracker event
+        String userId = paymentInfoHelper.getUserId();
         long appId = paymentInfoHelper.getAppId();
         String appTransId = paymentInfoHelper.getAppTransId();
         int orderSource = paymentInfoHelper.getOrderSource();
         int transtype = paymentInfoHelper.getTranstype();
-        GlobalData.initializeAnalyticTracker(appId, appTransId, transtype, orderSource);
+        GlobalData.initializeAnalyticTracker(userId, appId, appTransId, transtype, orderSource);
 
         // here start background task to collect data
         ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();

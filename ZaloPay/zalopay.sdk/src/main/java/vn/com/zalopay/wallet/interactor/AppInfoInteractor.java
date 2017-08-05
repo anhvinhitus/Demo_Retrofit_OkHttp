@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
@@ -68,7 +68,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
         String pmcConfig;
         if (pTranstype == TransactionType.WITHDRAW) {
             pmcConfig = this.mLocalStorage.sharePref().getZaloPayChannelConfig(pAppId, pTranstype, pBankCode);
-        } else if (BankAccountHelper.isBankAccount(pBankCode)) {
+        } else if (BankHelper.isBankAccount(pBankCode)) {
             pmcConfig = this.mLocalStorage.sharePref().getBankAccountChannelConfig(pAppId, pTranstype, pBankCode);
         } else if (BuildConfig.CC_CODE.equals(pBankCode)) {
             pmcConfig = this.mLocalStorage.sharePref().getCreditCardChannelConfig(pAppId, pTranstype, pBankCode);

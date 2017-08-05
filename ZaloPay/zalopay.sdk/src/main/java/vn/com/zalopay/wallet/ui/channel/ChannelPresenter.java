@@ -43,7 +43,7 @@ import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
-import vn.com.zalopay.wallet.helper.CardHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -332,7 +332,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     private MiniPmcTransType loadLinkConfig(boolean bankLink, String pBankCode) {
-        boolean internationalBank = CardHelper.isInternationalBank(pBankCode);
+        boolean internationalBank = BankHelper.isInternationalBank(pBankCode);
         return appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, internationalBank, null);
     }
 
@@ -499,7 +499,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                         Timber.w(e);
                     }
                 }, 300);
-            } else if (!GlobalData.shouldNativeWebFlow()) {
+            } else if (!PaymentPermission.allowVCBNativeFlow()) {
                 mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
         } catch (Exception e) {
@@ -607,7 +607,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     public void callbackLink(@CardType String bankLink) {
         try {
             Timber.d("call back link %s", bankLink);
-            Intent intent = GlobalData.createLinkIntent(bankLink);
+            Intent intent = TransactionHelper.createLinkIntent(bankLink);
             setResult(Constants.LINK_ACCOUNT_RESULT_CODE, intent);
             getViewOrThrow().terminate();
         } catch (Exception e) {

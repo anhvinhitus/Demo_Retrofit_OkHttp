@@ -29,7 +29,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static Activity getCurrentActivity() {
         synchronized (mActivityStack) {
             if (mActivityStack.size() == 0) {
-                return GlobalData.getMerchantActivity();
+                try {
+                    return GlobalData.getMerchantActivity();
+                } catch (Exception e) {
+                    Timber.w(e);
+                }
             }
             return mActivityStack.peek();
         }

@@ -28,8 +28,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.helper.CardHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
@@ -148,7 +147,7 @@ public class BankInteractor implements BankStore.Interactor {
                     supportBank.add(masterCard);
                     continue;
                 }
-                boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
+                boolean isBankAccount = BankHelper.isBankAccount(bankCode);
                 ZPBank zpBank = prepareBankFromConfig(appVersion, bankCode, isBankAccount);
                 if (zpBank == null) {
                     continue;
@@ -208,7 +207,7 @@ public class BankInteractor implements BankStore.Interactor {
             return bank;
         }
         //continue check bank future version
-        boolean internationalBank = CardHelper.isInternationalBank(bankCode);
+        boolean internationalBank = BankHelper.isInternationalBank(bankCode);
         MiniPmcTransType pmcTransType = SDKApplication
                 .getApplicationComponent()
                 .appInfoInteractor()

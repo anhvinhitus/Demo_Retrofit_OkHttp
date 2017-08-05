@@ -34,6 +34,7 @@ import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
@@ -62,7 +63,7 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
 import vn.com.zalopay.wallet.exception.RequestException;
-import vn.com.zalopay.wallet.helper.CardHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.ToastHelper;
@@ -252,7 +253,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                     .linkInteractor()
                     .getCard(mPaymentInfoHelper.getUserId(), cardKey);
             if (mapCard != null) {
-                DMapCardResult mapCardResult = CardHelper.cast(mapCard);
+                DMapCardResult mapCardResult = BankHelper.cast(mapCard);
                 mPaymentInfoHelper.setMapCardResult(mapCardResult);
                 Timber.d("send map card to app %s", GsonUtils.toJsonString(mapCardResult));
             }
@@ -1099,9 +1100,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception cancel trans timer");
         }
         try {
-            if (isCardFlow() && mGuiProcessor != null) {
-                mGuiProcessor.useWebView(false);
-            }
+            mGuiProcessor.useWebView(false);
         } catch (Exception e) {
             Timber.w(e, "Exception hide webview");
         }
@@ -1153,7 +1152,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 ToastHelper.showToastUpdatePassword(getActivity());
             }
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
 
         if (mPaymentInfoHelper.isLinkTrans()) {
@@ -1201,12 +1200,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         //hide webview
-        if (mGuiProcessor != null && (isCardFlow() || (mPaymentInfoHelper.isBankAccountTrans() && GlobalData.shouldNativeWebFlow()))) {
-            try {
-                mGuiProcessor.useWebView(false);
-            } catch (Exception e) {
-                Timber.w(e, "Exception hide webview");
-            }
+        try {
+            mGuiProcessor.useWebView(false);
+        } catch (Exception e) {
+            Timber.w(e, "Exception hide webview");
         }
 
         mPageName = Constants.PAGE_FAIL;
@@ -1317,7 +1314,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         getView().showRetryDialog(message, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                showTransactionFailView(mContext.getResources().getString(GlobalData.getTransProcessingMessage(mPaymentInfoHelper.getTranstype())));
+                showTransactionFailView(TransactionHelper.getTransProcessingMessage(mPaymentInfoHelper.getTranstype()));
             }
 
             @Override

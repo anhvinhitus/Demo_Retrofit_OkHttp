@@ -48,7 +48,7 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
@@ -159,7 +159,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPaymentInfoHelper.setLinkAccountInfo(null);
             mPaymentInfoHelper.setMapCardResult(null);
             mPaymentInfoHelper.setCardTypeLink(null);
-            mPayProxy.setPaymentInfo(mPaymentInfoHelper);
             temOrder = null;
             //reload channels list to continue payment if user link success
             if (resultCode == Activity.RESULT_OK
@@ -202,7 +201,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
             String bankCode = data.getStringExtra(Constants.BANKLINK_TYPE_EXTRA);
             Timber.d("onStartLinkThenPay flow %s", bankCode);
-            boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
+            boolean isBankAccount = BankHelper.isBankAccount(bankCode);
             if (mPaymentInfoHelper == null) {
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
                 return;
@@ -213,10 +212,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             tempPaymentStatus = mPaymentInfoHelper.getStatus();
 
             GlobalData.updatePaymentInfo(isBankAccount);
-            if (mPayProxy != null) {
-                mPayProxy.setPaymentInfo(null);
-            }
-
             mPaymentInfoHelper.setMapBank(null);
             mPaymentInfoHelper.setCardTypeLink(bankCode);
 

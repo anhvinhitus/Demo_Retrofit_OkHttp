@@ -5,14 +5,14 @@ import android.content.Context;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
@@ -60,10 +60,7 @@ public class ValidationActor extends SingletonBase {
         mChannel = channel;
         //channel is maintenance
         if (mChannel.isMaintenance()) {
-            if (GlobalData.shouldUpdateBankFuncbyPayType()) {
-                GlobalData.updateBankFuncByPmc(mChannel);
-            }
-            int bankFunction = GlobalData.getCurrentBankFunction();
+            int bankFunction = GlobalData.updateBankFuncByChannel(mChannel);
             BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
             if (bankConfig != null && bankConfig.isBankMaintenence(bankFunction)) {
                 getView().showInfoDialog(bankConfig.getMaintenanceMessage(bankFunction));
@@ -71,11 +68,13 @@ public class ValidationActor extends SingletonBase {
             }
         }
         //check bank future
-        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(SDKApplication.getContext())) && !mChannel.isNewAtmChannel()) {
+        if (!mChannel.isVersionSupport(SdkUtils.getAppVersion(SDKApplication.getContext()))
+                && !mChannel.isNewAtmChannel()) {
             warningSupportVersion();
+            return false;
         }
         if (!mChannel.meetPaymentCondition()) {
-            Log.d(this, "select channel not support", mChannel);
+            Timber.d("select channel not meet condition %s", GsonUtils.toJsonString(mChannel));
             return false;
         }
         return true;

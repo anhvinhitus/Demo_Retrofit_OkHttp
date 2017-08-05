@@ -2,17 +2,42 @@ package vn.com.zalopay.wallet.helper;
 
 import android.text.TextUtils;
 
+import java.util.List;
+
+import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.CardTypeUtils;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
-public class CardHelper {
+public class BankHelper {
+
+    public static boolean hasBankAccountOnCache(String pUserId, String pBankCode) {
+        try {
+            List<BankAccount> bankAccountList = SDKApplication.getApplicationComponent()
+                    .linkInteractor()
+                    .getBankAccountList(pUserId);
+            BankAccount bankAccount = new BankAccount();
+            bankAccount.bankcode = pBankCode;
+            return bankAccountList != null && bankAccountList.size() > 0 && bankAccountList.contains(bankAccount);
+
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        return false;
+    }
+
+    public static boolean isBankAccount(String pBankCode) {
+        return CardType.PVCB.equals(pBankCode);
+    }
 
     public static boolean isInternationalBank(@CardType String pBankCode) {
         if(TextUtils.isEmpty(pBankCode)){
