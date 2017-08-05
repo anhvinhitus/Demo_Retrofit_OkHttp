@@ -12,6 +12,10 @@ import timber.log.Timber;
  */
 public class NetworkHelper {
     public static boolean isNetworkAvailable(Context context) {
+        if(context == null){
+            Timber.d("check network status with context null");
+            return true;
+        }
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
