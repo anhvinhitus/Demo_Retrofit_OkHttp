@@ -20,14 +20,12 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -41,7 +39,8 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
  * *
  */
 
-public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> {
+public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView>
+                                               implements OnFavoriteListener {
 
     private static final int MAX_FAVORITE = 10;
 
@@ -75,7 +74,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
                 .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber(false));
+                .subscribe(new ContactListSubscriber(false, mView));
 
         mSubscription.add(subscription);
     }
@@ -106,59 +105,12 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
     }
 
-    public OnFavoriteListener getListener() {
-        OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
-            @Override
-            public void onRemoveFavorite(FavoriteData favoriteData) {
-                if (mView == null) {
-                    return;
-                }
-
-                if (favoriteData == null) {
-                    return;
-                }
-
-                favorite(false, favoriteData);
-                mView.closeAllSwipeItems();
-            }
-
-            @Override
-            public void onAddFavorite(FavoriteData favoriteData) {
-                if (favoriteData == null) {
-                    return;
-                }
-
-                favorite(true, favoriteData);
-            }
-
-            @Override
-            public void onMaximumFavorite() {
-                if (mView == null) {
-                    return;
-                }
-
-                mView.showNotificationDialog();
-            }
-
-            @Override
-            public void onSelectFavorite(FavoriteData favoriteData) {
-                if (favoriteData == null) {
-                    return;
-                }
-
-                clickItemContact(getFragment(), favoriteData);
-            }
-        };
-
-        return mOnFavoriteListener;
-    }
-
     private void getFriendList() {
         Subscription subscription = mFriendRepository.getZaloFriendsCursor(isPhoneBook())
                 .concatWith(retrieveZaloFriendsAsNeeded(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber(false));
+                .subscribe(new ContactListSubscriber(false, mView));
 
         mSubscription.add(subscription);
     }
@@ -182,12 +134,12 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         Subscription subscription = mFriendRepository.findFriends(s, isPhoneBook())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FriendListSubscriber(true));
+                .subscribe(new ContactListSubscriber(true, mView));
 
         mSubscription.add(subscription);
     }
 
-    public void clickItemContact(Fragment fragment, Cursor cursor) {
+    public void onSelectContactItem(Fragment fragment, Cursor cursor) {
         ZPProfile profile = mFriendRepository.transform(cursor);
         if (profile == null) {
             Timber.d("click contact profile is null");
@@ -201,9 +153,9 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
     }
 
-    public void clickItemContact(Fragment fragment, FavoriteData favoriteData) {
+    private void onSelectContactItem(Fragment fragment, FavoriteData favoriteData) {
         if (favoriteData == null) {
-            Timber.d("click contact favorite data is null");
+            Timber.d("click contact updateFavouriteData data is null");
             return;
         }
 
@@ -211,11 +163,6 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         profile.avatar = favoriteData.avatar;
         profile.displayName = favoriteData.displayName;
         profile.phonenumber = favoriteData.phoneNumber;
-
-        if (profile == null) {
-            Timber.d("click contact profile is null");
-            return;
-        }
 
         if (isPhoneBook()) {
             backTopup(fragment, profile);
@@ -254,66 +201,6 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
     }
 
-    private class FriendListSubscriber extends DefaultSubscriber<Cursor> {
-        boolean mIsSearch = false;
-
-        FriendListSubscriber(boolean isSearch) {
-            mIsSearch = isSearch;
-        }
-
-        @Override
-        public void onNext(Cursor cursor) {
-
-            if (cursor == null || cursor.isClosed()) {
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            mView.swapCursor(cursor);
-            mView.hideLoading();
-            mView.setRefreshing(false);
-            mView.checkIfEmpty();
-
-            if (!mIsSearch) {
-                mView.setSubTitle(String.format("(%s)", cursor.getCount()));
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "Get friend zalo error");
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            mView.showError(ErrorMessageFactory.create(mContext, e));
-            mView.setRefreshing(false);
-            mView.hideLoading();
-        }
-    }
-
-    public void favorite(boolean isFavorite, FavoriteData data) {
-        Observable<Boolean> observable;
-        if (isFavorite) {
-            observable = mFriendRepository.addFavorite(data.phoneNumber, data.zaloId);
-        } else {
-            observable = mFriendRepository.removeFavorite(data.phoneNumber, data.zaloId);
-        }
-
-        Subscription subscription = observable
-                .doOnError(Timber::d)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-    }
-
     private void getFavorite(int limitFavorite) {
         Subscription subscription = mFriendRepository.getFavorites(limitFavorite)
                 .filter(data -> !Lists.isEmptyOrNull(data))
@@ -329,5 +216,56 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
                     }
                 });
         mSubscription.add(subscription);
+    }
+
+    @Override
+    public void onRemoveFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        Subscription subscription =
+            mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                .doOnError(Timber::d)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+
+        if (mView == null) {
+            return;
+        }
+        mView.closeAllSwipeItems();
+    }
+
+    @Override
+    public void onAddFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        Subscription subscription =
+                mFriendRepository.addFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                        .doOnError(Timber::d)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
+    @Override
+    public void onMaximumFavorite() {
+        if (mView == null) {
+            return;
+        }
+
+        mView.showNotificationDialog();
+    }
+
+    @Override
+    public void onSelectFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        onSelectContactItem(getFragment(), favoriteData);
     }
 }

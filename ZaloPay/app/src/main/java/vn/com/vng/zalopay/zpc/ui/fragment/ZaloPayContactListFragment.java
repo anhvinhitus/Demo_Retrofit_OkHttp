@@ -45,7 +45,6 @@ import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
 import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
-import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
@@ -104,7 +103,6 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private boolean mIsNumberPad = false;
-    private OnFavoriteListener mOnFavoriteListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,8 +115,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        mOnFavoriteListener = mPresenter.getListener();
-        mAdapter = new ZPCFavoriteAdapter(getContext(), mOnFavoriteListener);
+        mAdapter = new ZPCFavoriteAdapter(getContext(), mPresenter);
         mAdapter.setOnSwipeLayoutListener(mSwipeListener);
 
         mListView.setDivider(null);
@@ -250,7 +247,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         Timber.d("onItemClick: position %s", position);
         Object item = mAdapter.getItem(position - 1);
         if (item instanceof Cursor) {
-            mPresenter.clickItemContact(this, (Cursor) item);
+            mPresenter.onSelectContactItem(this, (Cursor) item);
         }
     }
 
@@ -468,7 +465,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 //
 //        @Override
 //        public void onSelectFavorite(FavoriteData favoriteData) {
-//            mPresenter.clickItemContact(ZaloPayContactListFragment.this, favoriteData);
+//            mPresenter.onSelectContactItem(ZaloPayContactListFragment.this, favoriteData);
 //        }
 //    };
 }
