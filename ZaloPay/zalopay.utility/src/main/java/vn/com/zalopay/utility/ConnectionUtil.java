@@ -19,7 +19,7 @@ public class ConnectionUtil {
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             online = netInfo != null && netInfo.isConnectedOrConnecting();
         } catch (Exception e) {
-            Log.e("isOnline", e.getMessage());
+            Log.d("isOnline", e.getMessage());
             online = true;
         }
         return online;
