@@ -10,9 +10,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBaseFragment;
 import com.zalopay.apploader.ReactNativeHostable;
-import com.zalopay.apploader.network.NetworkService;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.pgsqlite.SQLitePluginPackage;
 
@@ -22,26 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.ws.connection.NotificationService;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
-import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
-import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPScreens;

@@ -14,7 +14,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -28,10 +28,10 @@ import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
 public final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
 
     protected final Context mContext;
-    private final FriendStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mFriendRepository;
 
     @Inject
-    SyncContactPresenter(Context context, FriendStore.Repository friendRepository) {
+    SyncContactPresenter(Context context, ZPCStore.Repository friendRepository) {
         mContext = context;
         mFriendRepository = friendRepository;
     }

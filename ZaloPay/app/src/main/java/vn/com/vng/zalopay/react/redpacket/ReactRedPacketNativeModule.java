@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
@@ -53,7 +53,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     protected final RedPacketStore.Repository mRedPacketRepository;
     private final User mUser;
-    private final FriendStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mFriendRepository;
     private final BalanceStore.Repository mBalanceRepository;
     private final IRedPacketPayService mPaymentService;
 
@@ -64,7 +64,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
                                       RedPacketStore.Repository redPackageRepository,
-                                      FriendStore.Repository friendRepository,
+                                      ZPCStore.Repository friendRepository,
                                       BalanceStore.Repository balanceRepository,
                                       IRedPacketPayService payService,
                                       User user,

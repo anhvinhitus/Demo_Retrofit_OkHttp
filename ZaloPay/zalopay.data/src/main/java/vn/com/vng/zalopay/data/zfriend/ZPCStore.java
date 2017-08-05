@@ -27,7 +27,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by huuhoa on 7/4/16.
  * Declaration for friend local storage, friend request service, friend repository
  */
-public interface FriendStore {
+public interface ZPCStore {
     interface LocalStorage extends SqlBaseScope {
 
         void putContacts(@Nullable List<Contact> contacts);

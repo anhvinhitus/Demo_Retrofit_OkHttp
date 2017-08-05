@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Item;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -68,7 +68,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private final User mUser;
     private final Context applicationContext;
     private final ZaloPayRepository mZaloPayRepository;
-    private final FriendStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mFriendRepository;
     private final TransferStore.Repository mTransferRepository;
     private final TransferNotificationHelper mTransferNotificationHelper;
     private final ZaloSdkApi mZaloSdkApi;
@@ -86,7 +86,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
                       Context applicationContext, ZaloSdkApi zaloSdkApi,
-                      FriendStore.Repository friendRepository,
+                      ZPCStore.Repository friendRepository,
                       AccountStore.Repository mAccountRepository
     ) {
 

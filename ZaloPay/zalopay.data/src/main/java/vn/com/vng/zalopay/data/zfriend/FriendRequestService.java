@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.RequestService
  */
-public class FriendRequestService implements FriendStore.ZaloRequestService {
+public class FriendRequestService implements ZPCStore.ZaloRequestService {
     private final int OFFSET_FRIEND_LIST = 50;
 
     private ZaloSdkApi mSDKApi;

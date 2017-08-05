@@ -38,22 +38,22 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.Repository
  */
-public class FriendRepository implements FriendStore.Repository {
+public class ZPCRepository implements ZPCStore.Repository {
 
     private static final int MAX_LENGTH_CHECK_LIST_ZALO_ID = 50;
     private static final int TIME_RELOAD = 5 * 60;
     private static final int TIMEOUT_REQUEST_FRIEND = 10;
     private static final int INTERVAL_SYNC_CONTACT = 259200;
 
-    private final FriendStore.RequestService mRequestService;
-    private final FriendStore.ZaloRequestService mZaloRequestService;
-    private final FriendStore.LocalStorage mLocalStorage;
+    private final ZPCStore.RequestService mRequestService;
+    private final ZPCStore.ZaloRequestService mZaloRequestService;
+    private final ZPCStore.LocalStorage mLocalStorage;
     private final User mUser;
     private final ContactFetcher mContactFetcher;
 
-    public FriendRepository(User user, FriendStore.ZaloRequestService zaloRequestService,
-                            FriendStore.RequestService requestService,
-                            FriendStore.LocalStorage localStorage, ContactFetcher contactFetcher) {
+    public ZPCRepository(User user, ZPCStore.ZaloRequestService zaloRequestService,
+                         ZPCStore.RequestService requestService,
+                         ZPCStore.LocalStorage localStorage, ContactFetcher contactFetcher) {
         mRequestService = requestService;
         mLocalStorage = localStorage;
         mZaloRequestService = zaloRequestService;
@@ -123,7 +123,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<Cursor> getZaloFriendsCursorLocal(boolean isWithPhone) {
-        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableSyncContact, isWithPhone));
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor(ZPCConfig.sEnableSyncContact, isWithPhone));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> findFriends(String s, boolean isWithPhone) {
-        return makeObservable(() -> mLocalStorage.findFriends(s, FriendConfig.sEnableSyncContact, isWithPhone));
+        return makeObservable(() -> mLocalStorage.findFriends(s, ZPCConfig.sEnableSyncContact, isWithPhone));
     }
 
     @Override
@@ -277,7 +277,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Boolean> syncContact() {
-        return Observable.just(FriendConfig.sEnableSyncContact)
+        return Observable.just(ZPCConfig.sEnableSyncContact)
                 .filter(Boolean::booleanValue)
                 .map(aBoolean -> mLocalStorage.getLastTimeSyncContact())
                 .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= INTERVAL_SYNC_CONTACT)

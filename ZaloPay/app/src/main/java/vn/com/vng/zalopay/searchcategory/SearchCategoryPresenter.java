@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.SearchUtil;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.InsideApp;
@@ -59,7 +59,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
 
     private final MerchantStore.Repository mMerchantRepository;
     private final AppResourceStore.Repository mAppResourceRepository;
-    private final FriendStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mFriendRepository;
     final Navigator mNavigator;
     private boolean mSuggest = true;
     private final List<InsideApp> mListApp;
@@ -69,7 +69,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
     SearchCategoryPresenter(User user,
                             MerchantStore.Repository mMerchantRepository,
                             AppResourceStore.Repository appResourceRepository,
-                            FriendStore.Repository friendRepository,
+                            ZPCStore.Repository friendRepository,
                             Navigator navigator) {
         super(user);
         this.mMerchantRepository = mMerchantRepository;

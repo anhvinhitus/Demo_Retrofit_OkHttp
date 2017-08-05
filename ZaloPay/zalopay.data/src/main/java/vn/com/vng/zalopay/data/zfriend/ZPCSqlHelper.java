@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
  * *
  */
 
-public class ZPCSqlHelper {
+class ZPCSqlHelper {
 
     private static String createWhereCondition(String condition) {
         if (!TextUtils.isEmpty(condition)) {
@@ -125,11 +125,5 @@ public class ZPCSqlHelper {
                 + "NULL AS " + ColumnAlias.ZALOPAY_NAME + ", "
                 + "0 AS " + ColumnAlias.USING_APP
                 + " FROM " + table;
-    }
-
-    public static String appendColumn(String tableAlias, String column) {
-        StringBuilder builder = new StringBuilder();
-        SqlUtils.appendColumn(builder, tableAlias, column);
-        return builder.toString();
     }
 }

@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.data.ApplicationTestCase;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
@@ -21,7 +20,7 @@ import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.DBOpenHelper;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.data.zfriend.ZPCLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
@@ -31,7 +30,7 @@ import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
 public class FriendLocalStorageTest extends ApplicationTestCase {
 
-    private FriendStore.LocalStorage mFriendLocalStorage;
+    private ZPCStore.LocalStorage mFriendLocalStorage;
 
     @Before
     public void setUp() throws Exception {

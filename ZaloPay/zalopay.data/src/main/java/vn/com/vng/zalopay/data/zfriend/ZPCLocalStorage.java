@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
  * *
  */
 
-public class ZPCLocalStorage extends SqlBaseScopeImpl implements FriendStore.LocalStorage {
+public class ZPCLocalStorage extends SqlBaseScopeImpl implements ZPCStore.LocalStorage {
 
     private final ZPCDao mZPCDao;
     private final ZFLDao mZFLDao;

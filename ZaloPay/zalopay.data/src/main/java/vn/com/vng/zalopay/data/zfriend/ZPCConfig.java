@@ -5,7 +5,7 @@ package vn.com.vng.zalopay.data.zfriend;
  * ZaloPay friend config
  */
 
-public class FriendConfig {
+public class ZPCConfig {
     public static boolean sEnableSyncContact = true;
     public static boolean sEnableDisplayFavorite = true;
 }

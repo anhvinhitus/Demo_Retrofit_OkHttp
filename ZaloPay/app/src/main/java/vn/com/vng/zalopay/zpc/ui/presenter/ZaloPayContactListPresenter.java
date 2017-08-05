@@ -21,8 +21,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.zfriend.FriendConfig;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.ZPCConfig;
+import vn.com.vng.zalopay.data.zfriend.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
@@ -44,7 +44,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
     private static final int MAX_FAVORITE = 10;
 
-    protected final FriendStore.Repository mFriendRepository;
+    protected final ZPCStore.Repository mFriendRepository;
     protected final Context mContext;
     protected final Navigator mNavigator;
 
@@ -52,7 +52,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     private int mViewType = ZpcViewType.ZPC_All;
 
     @Inject
-    ZaloPayContactListPresenter(Context context, Navigator navigator, FriendStore.Repository friendRepository) {
+    ZaloPayContactListPresenter(Context context, Navigator navigator, ZPCStore.Repository friendRepository) {
         this.mFriendRepository = friendRepository;
         this.mContext = context;
         this.mNavigator = navigator;
@@ -80,7 +80,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private boolean isEnableSyncContact() {
-        return FriendConfig.sEnableSyncContact;
+        return ZPCConfig.sEnableSyncContact;
     }
 
     public void initialize(@Nullable String keySearch, @ZpcViewType int viewType, ListView listView) {

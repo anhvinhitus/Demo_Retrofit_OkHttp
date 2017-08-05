@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
-import vn.com.vng.zalopay.data.zfriend.FriendConfig;
+import vn.com.vng.zalopay.data.zfriend.ZPCConfig;
 import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.domain.model.InternalApp;
 
@@ -87,8 +87,8 @@ public class ConfigLoader {
                 loadConfigPhoneFormat(config);
                 loadConfigInsideApp(config);
                 loadConfigSearch(config);
-                FriendConfig.sEnableSyncContact = isSyncContact();
-                FriendConfig.sEnableDisplayFavorite = isDisplayFavorite();
+                ZPCConfig.sEnableSyncContact = isSyncContact();
+                ZPCConfig.sEnableDisplayFavorite = isDisplayFavorite();
                 return true;
             }
         } catch (Exception e) {

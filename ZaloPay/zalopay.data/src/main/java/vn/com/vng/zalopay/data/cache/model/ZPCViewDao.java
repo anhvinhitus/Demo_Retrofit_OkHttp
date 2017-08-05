@@ -6,8 +6,6 @@ import org.greenrobot.greendao.internal.SqlUtils;
 import vn.com.vng.zalopay.data.zfriend.ZPCAlias.TableAlias;
 import vn.com.vng.zalopay.data.zfriend.ZPCAlias.ColumnAlias;
 
-import static vn.com.vng.zalopay.data.zfriend.ZPCSqlHelper.appendColumn;
-
 /**
  * Created by hieuvm on 7/20/17.
  * *
@@ -87,5 +85,9 @@ public class ZPCViewDao {
         return builder.toString();
     }
 
-
+    private static String appendColumn(String tableAlias, String column) {
+        StringBuilder builder = new StringBuilder();
+        SqlUtils.appendColumn(builder, tableAlias, column);
+        return builder.toString();
+    }
 }

@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.zfriend.FriendConfig;
+import vn.com.vng.zalopay.data.zfriend.ZPCConfig;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.transfer.widget.FavoriteView;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -96,7 +96,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
     }
 
     private View getHeaderView() {
-        if (FriendConfig.sEnableDisplayFavorite) {
+        if (ZPCConfig.sEnableDisplayFavorite) {
             if (isSearching()) {
                 return mEmptyView;
             }
@@ -176,7 +176,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
             mFavoriteView = favoriteView;
             mColorYellow = ContextCompat.getColor(view.getContext(), R.color.yellow_f8d41c);
             mSwipeLayout.addSwipeListener(swipeListener);
-            mSwipeLayout.setSwipeEnabled(FriendConfig.sEnableDisplayFavorite);
+            mSwipeLayout.setSwipeEnabled(ZPCConfig.sEnableDisplayFavorite);
         }
 
         @Override
