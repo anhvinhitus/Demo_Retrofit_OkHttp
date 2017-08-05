@@ -116,7 +116,7 @@ public class Constants {
     public static final int BANK_SELECT_REQUEST_CODE = 1002;
     public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
     public static final int MAP_POPUP_RESULT_CODE = 880;
-    public static final int LINK_THEN_PAY_RESULT_CODE = 881;
+    public static final int LINK_ACCOUNT_RESULT_CODE = 881;
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
     public static final int VOUCHER_STATUS_DELAY_RETRY = 1000;//ms
@@ -142,4 +142,6 @@ public class Constants {
 
     public static final String URL_USE_VOUCHER = "usevoucher";
     public static final String URL_GET_VOUCHER_STATUS = "getvoucherstatus";
+
+    public static final String BANKLINK_TYPE_EXTRA = "bank_data_after_link";
 }

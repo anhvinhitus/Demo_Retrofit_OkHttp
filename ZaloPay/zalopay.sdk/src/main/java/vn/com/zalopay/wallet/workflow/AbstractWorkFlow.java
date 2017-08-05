@@ -48,9 +48,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
@@ -1423,23 +1421,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception check exist map card on cache");
         }
         return false;
-    }
-
-    public void needLinkCardBeforePayment(String pBankCode) {
-        //save card number to show again when user go to link card again
-        try {
-            if (getGuiProcessor() == null) {
-                return;
-            }
-            if (getGuiProcessor().isCardLengthMatchIdentifier(getGuiProcessor().getCardNumber())) {
-                mLinkInteractor.putCardNumber(getGuiProcessor().getCardNumber());
-            }
-            if (CardType.PBIDV.equals(pBankCode)) {
-                getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKCARD);
-            }
-        } catch (Exception e) {
-            Timber.w(e, "Exception check need link before payment");
-        }
     }
 
     /*

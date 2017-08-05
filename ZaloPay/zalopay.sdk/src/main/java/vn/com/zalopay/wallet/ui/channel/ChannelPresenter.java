@@ -34,7 +34,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -601,18 +600,18 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             setCallBack(Activity.RESULT_OK);
             getViewOrThrow().terminate();
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
     }
 
-    public void callbackLinkThenPay(@Link_Then_Pay int bankLink) {
+    public void callbackLink(@CardType String bankLink) {
         try {
-            Timber.d("call back link then pay");
-            Intent intent = GlobalData.createLinkThenPayIntent(bankLink);
-            setResult(Constants.LINK_THEN_PAY_RESULT_CODE, intent);
+            Timber.d("call back link %s", bankLink);
+            Intent intent = GlobalData.createLinkIntent(bankLink);
+            setResult(Constants.LINK_ACCOUNT_RESULT_CODE, intent);
             getViewOrThrow().terminate();
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
     }
 
@@ -626,9 +625,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void showInstructRegiterBIDV() {
         try {
-            if (getViewOrThrow() != null) {
-                SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
-            }
+            SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
         } catch (Exception e) {
             Timber.d(e);
         }

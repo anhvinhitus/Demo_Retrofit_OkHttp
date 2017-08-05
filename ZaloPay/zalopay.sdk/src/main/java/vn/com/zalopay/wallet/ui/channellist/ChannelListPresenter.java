@@ -40,7 +40,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -148,10 +147,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             onStartLinkThenPay(data);
             return;
         }
-        if (requestCode != Constants.CHANNEL_PAYMENT_REQUEST_CODE) {
-            if (data != null) {
-                onStartLinkThenPay(data);
-            }
+        if (resultCode == Constants.LINK_ACCOUNT_RESULT_CODE) {
+            onStartLinkThenPay(data);
             return;
         }
         //restore the previous info
@@ -165,7 +162,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPayProxy.setPaymentInfo(mPaymentInfoHelper);
             temOrder = null;
             //reload channels list to continue payment if user link success
-            if (resultCode == Activity.RESULT_OK && mPaymentInfoHelper.getStatus() == PaymentStatus.SUCCESS) {
+            if (resultCode == Activity.RESULT_OK
+                    && mPaymentInfoHelper.getStatus() == PaymentStatus.SUCCESS) {
                 try {
                     mChannelList.clear();
                     mChannelAdapter.clearDataset();
@@ -175,9 +173,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 }
             }
             mPaymentInfoHelper.setResult(tempPaymentStatus);
-            if (resultCode != Constants.LINK_THEN_PAY_RESULT_CODE) {
-                return;
-            }
+            return;
         }
         switch (resultCode) {
             case Activity.RESULT_OK:
@@ -196,11 +192,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             case Constants.MAP_POPUP_RESULT_CODE:
                 selectChannelFromPopup(data);
                 break;
-            case Constants.LINK_THEN_PAY_RESULT_CODE:
-                if (data != null) {
-                    onStartLinkThenPay(data);
-                }
-                break;
         }
     }
 
@@ -209,12 +200,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (data == null) {
                 return;
             }
-            String bankCode = data.getStringExtra("bank_data_after_link");
+            String bankCode = data.getStringExtra(Constants.BANKLINK_TYPE_EXTRA);
             Timber.d("onStartLinkThenPay flow %s", bankCode);
-            @Link_Then_Pay int bankLink = Link_Then_Pay.BANKCARD;
-            if (BankAccountHelper.isBankAccount(bankCode)) {
-                bankLink = Link_Then_Pay.BANKACCOUNT;
-            }
+            boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
             if (mPaymentInfoHelper == null) {
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
                 return;
@@ -224,10 +212,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             tempTranstype = mPaymentInfoHelper.getTranstype();
             tempPaymentStatus = mPaymentInfoHelper.getStatus();
 
-            boolean shouldLinkThenPay = GlobalData.updatePaymentInfo(bankLink);
-            if (!shouldLinkThenPay) {
-                return;
-            }
+            GlobalData.updatePaymentInfo(isBankAccount);
             if (mPayProxy != null) {
                 mPayProxy.setPaymentInfo(null);
             }
@@ -239,7 +224,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             interactor.collectPaymentInfo(mPaymentInfoHelper);
 
             Intent intent = getChannelIntent();
-            int layoutId = bankLink == Link_Then_Pay.BANKACCOUNT ? R.layout.screen__link__acc : R.layout.screen__card;
+            int layoutId = isBankAccount ? R.layout.screen__link__acc : R.layout.screen__card;
             intent.putExtra(Constants.CHANNEL_CONST.layout, layoutId);
             getViewOrThrow().startActivityForResult(intent, Constants.CHANNEL_PAYMENT_REQUEST_CODE);
         } catch (Exception e) {
@@ -449,8 +434,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startBankSelection() {
         try {
-            /*Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
-            onStartLinkThenPay(intent);*/
             Intent bankSelectIntent = new Intent(BuildConfig.BANK_SELECT_ACTION);
             getViewOrThrow().startActivityForResult(bankSelectIntent, Constants.BANK_SELECT_REQUEST_CODE);
         } catch (Exception e) {

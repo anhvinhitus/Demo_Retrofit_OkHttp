@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.constants.Link_Then_Pay;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
@@ -44,11 +44,11 @@ public class GlobalData {
     public static int cardChannelType = CardChannel.ATM;
     public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
     public static PaymentInfoHelper paymentInfoHelper;
+    public static boolean mShowFingerPrintToast = false;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
-    public static boolean mShowFingerPrintToast = false;
 
     public static String getUserId() {
         return paymentInfoHelper != null ? paymentInfoHelper.getUserId() : "";
@@ -60,29 +60,21 @@ public class GlobalData {
         return paymentInfoHelper != null ? paymentInfoHelper.getTranstype() : TransactionType.PAY;
     }
 
-    public static Intent createLinkThenPayIntent(@Link_Then_Pay int bankLink){
+    public static Intent createLinkIntent(@CardType String bankLink) {
         Intent intent = new Intent();
-        intent.putExtra("bank", bankLink);
+        intent.putExtra(Constants.BANKLINK_TYPE_EXTRA, bankLink);
         return intent;
     }
 
-    public static boolean updatePaymentInfo(@Link_Then_Pay int bankLink) {
+    public static void updatePaymentInfo(boolean isBankAccount) {
         if (paymentInfoHelper == null) {
-            return false;
+            return;
         }
-        switch (bankLink) {
-            case Link_Then_Pay.BANKACCOUNT:
-                LinkAccInfo linkAccInfo = new LinkAccInfo(CardType.PVCB, ELinkAccType.LINK);
-                paymentInfoHelper.setLinkAccountInfo(linkAccInfo);
-                paymentInfoHelper.setTranstype(TransactionType.LINK);
-                break;
-            case Link_Then_Pay.BANKCARD:
-                paymentInfoHelper.setTranstype(TransactionType.LINK);
-                break;
-            default:
-                return false;
+        paymentInfoHelper.setTranstype(TransactionType.LINK);
+        if (isBankAccount) {
+            LinkAccInfo linkAccInfo = new LinkAccInfo(CardType.PVCB, ELinkAccType.LINK);
+            paymentInfoHelper.setLinkAccountInfo(linkAccInfo);
         }
-        return true;
     }
 
     /***

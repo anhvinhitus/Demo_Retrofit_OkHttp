@@ -537,63 +537,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         return false;
     }
 
-    public boolean preventPaymentBidvCard(String pBankCode, String pCardNumber) throws Exception {
-
-        //have some card bidv in map card list and have this card
-        if ((existBIDVinMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber)
-                && existBIDVinMapCardList(pCardNumber)) && getPresenter() != null) {
-
-            getPresenter().showMapBankDialog(true);
-            return true;
-        }
-        //have some card bidv in map card list and but don't have this card
-        if (existBIDVinMapCardList() && getGuiProcessor().isCardLengthMatchIdentifier(pCardNumber) && !existBIDVinMapCardList(pCardNumber)) {
-            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                            try {
-                                getGuiProcessor().clearCardNumberAndShowKeyBoard();
-                            } catch (Exception e) {
-                                Timber.w(e.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void onOKEvent() {
-                            needLinkCardBeforePayment(pBankCode);
-                        }
-                    });
-
-            return true;
-        }
-        //have no any card in map card list
-        if (!existBIDVinMapCardList()) {
-            getView().showConfirmDialog(GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_linkcard_before_payment),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_linkcard_button),
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_retry_input_card_button),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                            try {
-                                getGuiProcessor().clearCardNumberAndShowKeyBoard();
-                            } catch (Exception e) {
-                                Timber.w(e);
-                            }
-                        }
-
-                        @Override
-                        public void onOKEvent() {
-                            needLinkCardBeforePayment(pBankCode);
-                        }
-                    });
-            return true;
-        }
-        return false;
-    }
-
     public boolean paymentBIDV() {
         BankDetector atmCardCheck = null;
         try {

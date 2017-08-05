@@ -50,7 +50,6 @@ import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.constants.Link_Then_Pay;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -61,6 +60,7 @@ import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.BankSupportAdapter;
@@ -865,15 +865,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
 
-            //bidv card must paid by mapcard
-            if (!paymentInfoHelper.isLinkTrans() && (getAdapter() instanceof BankCardWorkFlow)
-                    && ((BankCardWorkFlow) getAdapter()).paymentBIDV()
-                    && ((BankCardWorkFlow) getAdapter()).preventPaymentBidvCard(bankCode, getCardNumber())) {
-                return;
-            }
-
             //user input bank account
-            if (!TextUtils.isEmpty(bankCode) && BankAccountHelper.isBankAccount(bankCode) && getAdapter() != null && getActivity() != null) {
+            if (!TextUtils.isEmpty(bankCode) && BankAccountHelper.isBankAccount(bankCode)) {
                 showWarningBankAccount();
             }
 
@@ -932,7 +925,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 });
     }
 
-    private void callbackOnVCBLink() throws Exception {
+    void callbackOnVCBLink() throws Exception {
         if (getAdapter() == null) {
             return;
         }
@@ -940,8 +933,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (paymentInfoHelper == null) {
             return;
         }
-        if (PayProxy.shared() != null) {
-            getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKACCOUNT);
+        if (BaseActivity.getActivityCount() >= 2) {
+            getAdapter().getPresenter().callbackLink(CardType.PVCB);
         } else {
             //callback bankcode to app , app will direct user to link bank account to right that bank
             BankAccount dBankAccount = new BankAccount();
@@ -960,48 +953,28 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (channelFragment == null || paymentInfoHelper == null) {
             return;
         }
-        if (paymentInfoHelper.isLinkTrans()) {
-            channelFragment
-                    .showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_warning_mess),
-                            mContext.getResources().getString(R.string.dialog_linkaccount_button),
-                            mContext.getResources().getString(R.string.dialog_retry_input_card_button),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-                                    clearCardNumberAndShowKeyBoard();
-                                }
-
-                                @Override
-                                public void onOKEvent() {
-                                    try {
-                                        callbackOnVCBLink();
-                                    } catch (Exception e) {
-                                        Timber.d(e, "Exception callback VCB");
-                                    }
-                                }
-                            });
-        } else if (!BankAccountHelper.hasBankAccountOnCache(paymentInfoHelper.getUserId(), CardType.PVCB)) {
-            channelFragment.showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_before_payment_warning_mess),
-                    mContext.getResources().getString(R.string.dialog_linkaccount_button),
-                    mContext.getResources().getString(R.string.dialog_retry_input_card_button),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                            clearCardNumberAndShowKeyBoard();
-                        }
-
-                        @Override
-                        public void onOKEvent() {
-                            try {
-                                getAdapter().getPresenter().callbackLinkThenPay(Link_Then_Pay.BANKACCOUNT);
-                            } catch (Exception e) {
-                                Timber.w(e, "Exception callback then pay BANKACCOUNT");
-                            }
-                        }
-                    });
-        } else if (getAdapter().getPresenter() != null) {
-            getAdapter().getPresenter().showMapBankDialog(false);
+        if (!paymentInfoHelper.isLinkTrans()) {
+            return;
         }
+        channelFragment
+                .showConfirmDialog(mContext.getResources().getString(R.string.sdk_vcb_link_warning_mess),
+                        mContext.getResources().getString(R.string.dialog_linkaccount_button),
+                        mContext.getResources().getString(R.string.dialog_retry_input_card_button),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+                                clearCardNumberAndShowKeyBoard();
+                            }
+
+                            @Override
+                            public void onOKEvent() {
+                                try {
+                                    callbackOnVCBLink();
+                                } catch (Exception e) {
+                                    Timber.d(e, "Exception callback VCB");
+                                }
+                            }
+                        });
     }
 
     /*
@@ -1028,8 +1001,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             //user input bank account
-            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode)
-                    && getAdapter() != null && getActivity() != null) {
+            if (!TextUtils.isEmpty(pBankCode) && BankAccountHelper.isBankAccount(pBankCode)) {
                 showWarningBankAccount();
             }
             if (getAdapter().isCCFlow() && getBankCardFinder().detected()) {
