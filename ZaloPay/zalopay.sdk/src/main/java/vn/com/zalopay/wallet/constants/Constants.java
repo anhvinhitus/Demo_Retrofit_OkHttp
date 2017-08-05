@@ -113,6 +113,7 @@ public class Constants {
     public static final String SELECTED_PMC_POSITION = "pmc_name";
     public static final int MAP_POPUP_REQUEST_CODE = 1000;
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
+    public static final int BANK_SELECT_REQUEST_CODE = 1002;
     public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
     public static final int MAP_POPUP_RESULT_CODE = 880;
     public static final int LINK_THEN_PAY_RESULT_CODE = 881;

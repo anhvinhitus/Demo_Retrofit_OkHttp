@@ -50,6 +50,12 @@ public class PaymentInfoHelper extends SingletonBase {
         return paymentInfo != null ? paymentInfo.getCardTypeLink() : null;
     }
 
+    public void setCardTypeLink(String cardTypeLink) {
+        if (paymentInfo != null) {
+            paymentInfo.setCardLinkType(cardTypeLink);
+        }
+    }
+
     public long getAppId() {
         if (getOrder() != null) {
             return getOrder().appid;

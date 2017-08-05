@@ -86,6 +86,13 @@ public final class PaymentInfo implements IPaymentInfo {
     }
 
     @Override
+    public void setCardLinkType(String cardTypeLink) {
+        if (builder != null) {
+            builder.setCardTypeLink(cardTypeLink);
+        }
+    }
+
+    @Override
     public void putVoucher(VoucherInfo voucherInfo) {
         if (builder != null) {
             builder.setVoucher(voucherInfo);

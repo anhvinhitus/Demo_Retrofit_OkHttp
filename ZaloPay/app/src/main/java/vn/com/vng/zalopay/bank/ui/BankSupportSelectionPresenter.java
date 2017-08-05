@@ -67,7 +67,7 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
             mView.showNetworkErrorDialog();
             return;
         }
-       ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_SELECT_BANK);
+        ZPAnalytics.trackEvent(ZPEvents.LINKBANK_ADD_SELECT_BANK);
         if (bank.bankStatus == BankStatus.MAINTENANCE) {
             mView.showMessageDialog(bank.bankMessage, null);
         } else if (bank.bankStatus == BankStatus.UPVERSION) {

@@ -417,7 +417,12 @@
 
         <activity
             android:name=".bank.ui.BankSupportSelectionActivity"
-            android:label="@string/title.activity.bank.support.selection"/>
+            android:label="@string/title.activity.bank.support.selection">
+            <intent-filter>
+                <action android:name="vn.zalopay.intent.action.BANK_SELECT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"

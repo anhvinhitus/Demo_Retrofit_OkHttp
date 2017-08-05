@@ -48,5 +48,8 @@ public interface IPaymentInfo {
     String getCardTypeLink();
 
     void putVoucher(VoucherInfo voucherInfo);
+
     VoucherInfo getVoucher();
+
+    void setCardLinkType(String cardTypeLink);
 }

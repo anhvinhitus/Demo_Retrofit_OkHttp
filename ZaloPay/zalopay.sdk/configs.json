@@ -13,6 +13,7 @@
     "channel_bankaccount": "37",
     "channel_credit_card": "36",
     "channel_atm": "39",
-    "cc_code": "123PCC"
+    "cc_code": "123PCC",
+    "bank_select_action": "vn.zalopay.intent.action.BANK_SELECT"
   }
 }

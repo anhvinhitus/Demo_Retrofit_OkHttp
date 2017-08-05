@@ -10,6 +10,7 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import timber.log.Timber;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -158,7 +159,7 @@ public class SDKPayment {
                 }
             }
         }
-        Log.d("pay", "payment info", paymentInfoHelper);
+        Timber.d("payment info %s", GsonUtils.toJsonString(paymentInfoHelper));
         startGateway(paymentInfoHelper);
     }
 
@@ -201,7 +202,6 @@ public class SDKPayment {
 
     /***
      * show dialog and dispose sdk in error cases
-     * @param pMessage
      */
     private static void terminateSession(final String pMessage, @PaymentError int pPayError) {
         DialogManager.closeLoadDialog();

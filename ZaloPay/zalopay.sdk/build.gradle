@@ -36,6 +36,7 @@ android {
         buildConfigField 'int', 'REDPACKET_APPID', configJson.configs.redpacket_appid
         buildConfigField 'String', 'PACKAGE_IN_PLAY_STORE', '"' + configJson.configs.package_playstore + '"'
         buildConfigField 'String', 'CC_CODE', '"' + configJson.configs.cc_code + '"'
+        buildConfigField 'String', 'BANK_SELECT_ACTION', '"' + configJson.configs.bank_select_action + '"'
 
         buildConfigField 'int', 'transaction_expire_time', configJson.configs.transaction_expire_time
 

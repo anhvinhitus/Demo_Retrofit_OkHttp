@@ -49,6 +49,7 @@ import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
+import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
@@ -143,7 +144,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult resultCode %s", resultCode);
+        if (requestCode == Constants.BANK_SELECT_REQUEST_CODE) {
+            onStartLinkThenPay(data);
+            return;
+        }
         if (requestCode != Constants.CHANNEL_PAYMENT_REQUEST_CODE) {
+            if (data != null) {
+                onStartLinkThenPay(data);
+            }
             return;
         }
         //restore the previous info
@@ -153,6 +161,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPaymentInfoHelper.setTranstype(tempTranstype);
             mPaymentInfoHelper.setLinkAccountInfo(null);
             mPaymentInfoHelper.setMapCardResult(null);
+            mPaymentInfoHelper.setCardTypeLink(null);
             mPayProxy.setPaymentInfo(mPaymentInfoHelper);
             temOrder = null;
             //reload channels list to continue payment if user link success
@@ -197,10 +206,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     private void onStartLinkThenPay(Intent data) {
         try {
-            Timber.d("onStartLinkThenPay flow");
-            @Link_Then_Pay int bankLink = data.getIntExtra("bank", Link_Then_Pay.NONE);
-            if (bankLink == Link_Then_Pay.NONE) {
+            if (data == null) {
                 return;
+            }
+            String bankCode = data.getStringExtra("bank_data_after_link");
+            Timber.d("onStartLinkThenPay flow %s", bankCode);
+            @Link_Then_Pay int bankLink = Link_Then_Pay.BANKCARD;
+            if (BankAccountHelper.isBankAccount(bankCode)) {
+                bankLink = Link_Then_Pay.BANKACCOUNT;
             }
             if (mPaymentInfoHelper == null) {
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
@@ -210,8 +223,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             temOrder = mPaymentInfoHelper.takeOrder();
             tempTranstype = mPaymentInfoHelper.getTranstype();
             tempPaymentStatus = mPaymentInfoHelper.getStatus();
-            boolean shouldlinkThenPay = GlobalData.updatePaymentInfo(bankLink);
-            if (!shouldlinkThenPay) {
+
+            boolean shouldLinkThenPay = GlobalData.updatePaymentInfo(bankLink);
+            if (!shouldLinkThenPay) {
                 return;
             }
             if (mPayProxy != null) {
@@ -219,6 +233,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
 
             mPaymentInfoHelper.setMapBank(null);
+            mPaymentInfoHelper.setCardTypeLink(bankCode);
 
             ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
             interactor.collectPaymentInfo(mPaymentInfoHelper);
@@ -332,7 +347,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private boolean onSelectedChannel(int pPosition) {
-        Log.d(this, "select at position", pPosition);
+        Timber.d("select at position %s", pPosition);
         if (mChannelList == null || mChannelList.size() <= 0) {
             Timber.d("channel list is empty");
             return false;
@@ -357,7 +372,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return false;
         }
         if (channel.isLinkChannel()) {
-            startLinkChannel();
+            startBankSelection();
             return true;
         }
         if (!mPayProxy.validate(channel)) {
@@ -432,10 +447,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void startLinkChannel() {
+    public void startBankSelection() {
         try {
-            Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
-            onStartLinkThenPay(intent);
+            /*Intent intent = GlobalData.createLinkThenPayIntent(Link_Then_Pay.BANKCARD);
+            onStartLinkThenPay(intent);*/
+            Intent bankSelectIntent = new Intent(BuildConfig.BANK_SELECT_ACTION);
+            getViewOrThrow().startActivityForResult(bankSelectIntent, Constants.BANK_SELECT_REQUEST_CODE);
         } catch (Exception e) {
             Timber.w(e, "Exception start default payment");
         }
