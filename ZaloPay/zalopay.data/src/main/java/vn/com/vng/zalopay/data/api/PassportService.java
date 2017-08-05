@@ -23,7 +23,7 @@ public interface PassportService {
     @API_NAME(https = ZPEvents.API_UM_LOGINVIAZALO, connector = ZPEvents.CONNECTOR_UM_LOGINVIAZALO)
     @FormUrlEncoded
     @POST(Constants.UM_API.LOGINVIAZALO)
-    Observable<LoginResponse> login(@Field("appid") long appid, @Field("zaloid") long zaloid, @Field("oauthcode") String oauthcode);
+    Observable<LoginResponse> loginViaZalo(@Field("appid") long appid, @Field("zaloid") long zaloid, @Field("oauthcode") String oauthcode);
 
 
     @API_NAME(https = ZPEvents.API_UM_REMOVEACCESSTOKEN, connector = ZPEvents.CONNECTOR_UM_REMOVEACCESSTOKEN)
