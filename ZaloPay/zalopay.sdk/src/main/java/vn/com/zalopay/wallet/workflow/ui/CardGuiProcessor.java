@@ -24,7 +24,6 @@ import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import timber.log.Timber;
@@ -79,8 +78,8 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 
 public abstract class CardGuiProcessor extends SingletonBase implements ViewPager.OnPageChangeListener {
     protected Context mContext;
-    protected WeakReference<AbstractWorkFlow> mAdapter;
-    protected WeakReference<ChannelFragment> mView;
+    protected AbstractWorkFlow mAdapter;
+    protected ChannelFragment mView;
     protected PaymentWebView mWebView;
     View mRootView;
     ScrollView mScrollViewRoot;
@@ -380,10 +379,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public ChannelFragment getView() throws Exception {
-        if (mView == null || mView.get() == null) {
+        if (mView == null) {
             throw new IllegalAccessException("View is invalid");
         }
-        return mView.get();
+        return mView;
     }
 
     public abstract boolean checkEnableSubmitButton();
@@ -424,9 +423,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected void init(AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         try {
-            mAdapter = new WeakReference<>(pAdapter);
-            mView = new WeakReference<>(pChannelFragment);
-            if (mAdapter.get().isChannelHasInputCard()) {
+            mAdapter = pAdapter;
+            mView = pChannelFragment;
+            if (mAdapter.isChannelHasInputCard()) {
                 initForInputCard();
                 if (GlobalData.analyticsTrackerWrapper != null) {
                     GlobalData.analyticsTrackerWrapper
@@ -525,10 +524,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected AbstractWorkFlow getAdapter() throws Exception {
-        if (mAdapter == null || mAdapter.get() == null) {
+        if (mAdapter == null) {
             throw new IllegalAccessException("Adapter is invalid");
         }
-        return mAdapter.get();
+        return mAdapter;
     }
 
     View getCurrentFocusView() {

@@ -83,7 +83,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     final SdkErrorReporter mSdkErrorReporter;
     private final DPaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
-    protected WeakReference<ChannelPresenter> mPresenter = null;
+    protected ChannelPresenter mPresenter = null;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
     protected EventBus mEventBus;
@@ -187,7 +187,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public AbstractWorkFlow(Context pContext, String pPageName, ChannelPresenter pPresenter,
                             MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
         mContext = pContext;
-        mPresenter = new WeakReference<>(pPresenter);
+        mPresenter = pPresenter;
         mMiniPmcTransType = pMiniPmcTransType;
         mCard = new DPaymentCard();
         mPaymentInfoHelper = paymentInfoHelper;
@@ -487,10 +487,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     public ChannelPresenter getPresenter() throws Exception {
-        if (mPresenter == null || mPresenter.get() == null) {
+        if (mPresenter == null) {
             throw new IllegalAccessException("Presenter is invalid");
         }
-        return mPresenter.get();
+        return mPresenter;
     }
 
     public ChannelActivity getActivity() throws Exception {

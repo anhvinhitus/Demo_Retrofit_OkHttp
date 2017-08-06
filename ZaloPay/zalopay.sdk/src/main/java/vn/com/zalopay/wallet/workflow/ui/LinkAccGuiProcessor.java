@@ -140,8 +140,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
     public LinkAccGuiProcessor(Context pContext, AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         super(pContext);
-        mAdapter = new WeakReference<>(pAdapter);
-        mView = new WeakReference<>(pChannelFragment);
+        mAdapter = pAdapter;
+        mView = pChannelFragment;
         init();
     }
 
