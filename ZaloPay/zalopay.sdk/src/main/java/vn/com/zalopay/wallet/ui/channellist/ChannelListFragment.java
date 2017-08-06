@@ -208,7 +208,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showLoading(String pTitle) {
         if (getActivity() != null) {
             setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
+            DialogManager.showProcessDialog(getActivity(), () -> {
+                try {
+                    showError(getResources().getString(R.string.sdk_loading_timeout));
+                } catch (Exception e) {
+                    Timber.d(e, "Exception show timeout loading dialog");
+                }
+            });
         }
     }
 

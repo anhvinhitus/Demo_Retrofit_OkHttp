@@ -114,7 +114,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public boolean onBackPressed() {
-        if(!existPresenter()){
+        if (!existPresenter()) {
             return false;
         }
         return mPresenter.onBackPressed();
@@ -187,7 +187,13 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void showLoading(String pTitle) {
-        showLoading(pTitle, () -> showError(getResources().getString(R.string.sdk_loading_timeout)));
+        showLoading(pTitle, () -> {
+            try {
+                showError(getResources().getString(R.string.sdk_loading_timeout));
+            } catch (Exception e) {
+                Timber.d(e, "Exception show timeout loading dialog");
+            }
+        });
     }
 
     @Override
