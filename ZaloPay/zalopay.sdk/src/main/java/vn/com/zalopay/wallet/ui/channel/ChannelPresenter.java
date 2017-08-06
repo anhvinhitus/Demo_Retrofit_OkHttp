@@ -104,9 +104,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 break;
             case 2:
                 try {
-                    mAbstractWorkFlow.handleEventLoadSiteError(new Object());
+                    if (mAbstractWorkFlow != null) {
+                        mAbstractWorkFlow.handleEventLoadSiteError(new Object());
+                    }
                 } catch (Exception e) {
-                    Timber.w(e.getMessage());
+                    Timber.w(e);
                 }
                 break;
         }
@@ -240,9 +242,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             return canQuit();
         } catch (Exception e) {
-            Log.e(this, e);
-            return false;
+            Timber.w(e);
         }
+        return false;
     }
 
     private void reFillBidvCardNumber() {
@@ -259,7 +261,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void onUserInteraction() {
-        if (mTimerRunning && !mAbstractWorkFlow.isFinalScreen()) {
+        if (mTimerRunning && mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen()) {
             Timber.d("user tap on UI restart payment transaction countdown");
             startTransactionExpiredTimer();
         }
@@ -275,6 +277,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void startPayment() {
         try {
+            if (mPaymentInfoHelper == null) {
+                mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
+            }
             if (mPaymentInfoHelper == null) {
                 callback();
                 return;
@@ -713,7 +718,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnNetworkChanged(SdkNetworkEvent message) {
-        if (mAbstractWorkFlow.isFinalScreen()) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.isFinalScreen()) {
             Timber.d("onNetworkMessageEvent user is on fail screen...");
             return;
         }

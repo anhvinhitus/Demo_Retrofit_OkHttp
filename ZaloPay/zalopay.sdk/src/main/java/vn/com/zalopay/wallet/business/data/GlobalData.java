@@ -46,6 +46,10 @@ public class GlobalData {
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
 
+    public static PaymentInfoHelper getPaymentInfoHelper() {
+        return paymentInfoHelper;
+    }
+
     public static
     @TransactionType
     int transtype() {

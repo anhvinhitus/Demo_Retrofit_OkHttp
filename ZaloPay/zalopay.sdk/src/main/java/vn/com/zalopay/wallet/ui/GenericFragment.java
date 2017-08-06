@@ -12,6 +12,10 @@ public abstract class GenericFragment<P extends IPresenter> extends BaseFragment
 
     protected P mPresenter;
 
+    public boolean existPresenter() {
+        return mPresenter != null;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

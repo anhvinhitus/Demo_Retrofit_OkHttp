@@ -35,7 +35,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
 
     public ResultPaymentPresenter() {
         Timber.d("call constructor ResultPaymentPresenter");
-        mPaymentInfoHelper = GlobalData.paymentInfoHelper;
+        mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
         mContext = GlobalData.getAppContext();
     }
 
@@ -83,6 +83,10 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     }
 
     void showFeedbackDialog() throws Exception {
+        if (!validPaymentInfo()) {
+            getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+            return;
+        }
         FeedBackCollector feedBackCollector = FeedBackCollector.shared();
         String transTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
         int errorCode = mStatusResponse != null ? mStatusResponse.returncode : Constants.NULL_ERRORCODE;
@@ -107,9 +111,20 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                 mPaymentInfoHelper.getMapBank().getKey() : "";
     }
 
+    boolean validPaymentInfo() {
+        if (mPaymentInfoHelper == null) {
+            mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
+        }
+        return mPaymentInfoHelper != null && mStatusResponse != null;
+    }
+
     void showResultPayment(StatusResponse pResponse) {
         try {
             mStatusResponse = pResponse;
+            if (!validPaymentInfo()) {
+                getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+                return;
+            }
             GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
             boolean success = TransactionHelper.isTransactionSuccess(pResponse);
             if (success) {
@@ -124,7 +139,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     }
 
     private void doOnSuccessPayment() throws Exception {
-        renderSuccessPaymentView(mStatusResponse);
+        renderSuccessPaymentView();
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         String paymentCard = getPaymentCardKey();
@@ -133,20 +148,32 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                     .getApplicationComponent()
                     .bankListInteractor()
                     .setPaymentBank(userId, paymentCard);
-            Timber.d("update recently payment bank for auto select %s", paymentCard);
+            Timber.d("update recently payment bank for auto select %s", GsonUtils.toJsonString(paymentCard));
         }
     }
 
     private void doOnFailurePayment() throws Exception {
-        renderFailurePaymentView(mStatusResponse);
+        renderFailurePaymentView();
         SDKApplication
                 .sdkErrorReporter()
                 .sdkReportErrorOnTransactionFail(this,
                         GsonUtils.toJsonString(mStatusResponse));
     }
 
-    private void renderSuccessPaymentView(StatusResponse pResponse) throws Exception {
+    private void renderSuccessPaymentView() throws Exception {
         try {
+            if (mView == null) {
+                Timber.w("mView is null");
+                return;
+            }
+            if (mPaymentInfoHelper == null) {
+                Timber.w("payment info is null");
+                return;
+            }
+            if (mStatusResponse == null) {
+                Timber.w("status response is null");
+                return;
+            }
             String pageName = Constants.PAGE_SUCCESS;
             mView.renderByResource(pageName);
             AppInfo appInfo = TransactionHelper.getAppInfoCache(mPaymentInfoHelper.getAppId());
@@ -159,16 +186,28 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
             UserInfo receiverInfo = mPaymentInfoHelper.getMoneyTransferReceiverInfo();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            String transId = pResponse.zptransid;
+            String transId = mStatusResponse.zptransid;
             mView.renderSuccess(isLink, transId, userInfo, mPaymentInfoHelper.getOrder(), appName, null, isLink, isTransfer, receiverInfo, title);
         } catch (Exception e) {
             Timber.w(e, "Exception render success info");
         }
     }
 
-    private void renderFailurePaymentView(StatusResponse pResponse) throws Exception {
+    private void renderFailurePaymentView() throws Exception {
         try {
-            String message = pResponse.returnmessage;
+            if (mView == null) {
+                Timber.w("mView is null");
+                return;
+            }
+            if (mPaymentInfoHelper == null) {
+                Timber.w("payment info is null");
+                return;
+            }
+            if (mStatusResponse == null) {
+                Timber.w("status response is null");
+                return;
+            }
+            String message = mStatusResponse.returnmessage;
             if (TextUtils.isEmpty(message)) {
                 message = mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
             }
@@ -192,8 +231,8 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
             }
             String title = mPaymentInfoHelper.getFailTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            String transId = pResponse.zptransid;
-            mView.renderFail(isLink, message, transId, mPaymentInfoHelper.getOrder(), appName, pResponse, true, title);
+            String transId = mStatusResponse.zptransid;
+            mView.renderFail(isLink, message, transId, mPaymentInfoHelper.getOrder(), appName, mStatusResponse, true, title);
         } catch (Exception e) {
             Timber.w(e, "Exception render fail info");
         }

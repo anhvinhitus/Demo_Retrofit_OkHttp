@@ -118,6 +118,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public boolean onBackPressed() {
+        if (!existPresenter()) {
+            return false;
+        }
         if (mPresenter.quitWithoutConfirm()) {
             return false;
         }
@@ -193,8 +196,12 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     protected void onDataBound(View view) {
+        if (!existPresenter()) {
+            Timber.w("invalid presenter");
+            return;
+        }
         mPresenter.onPaymentReady();
-        TrackHelper.trackEventLaunch(GlobalData.paymentInfoHelper);
+        TrackHelper.trackEventLaunch(GlobalData.getPaymentInfoHelper());
     }
 
     @Override
@@ -246,7 +253,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void callbackThenTerminate() {
-        if (mPresenter != null) {
+        if (existPresenter()) {
             mPresenter.callback();
         }
         terminate();
@@ -311,7 +318,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         active_voucher_del_img.setOnClickListener(view -> showConfirmDeleteVoucherDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                if (mPresenter == null) {
+                if (!existPresenter()) {
                     return;
                 }
                 mPresenter.clearVoucher();
@@ -497,7 +504,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showQuitConfirm() {
-        String mess = mPresenter.getQuitMessage();
+        String mess = existPresenter() ? mPresenter.getQuitMessage() : null;
         if (TextUtils.isEmpty(mess)) {
             terminate();
         }
@@ -508,7 +515,9 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
                 getString(R.string.dialog_co_button), new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-                        mPresenter.setPaymentStatusAndCallback(PaymentStatus.USER_CLOSE);
+                        if (existPresenter()) {
+                            mPresenter.setPaymentStatusAndCallback(PaymentStatus.USER_CLOSE);
+                        }
                         terminate();
                     }
 

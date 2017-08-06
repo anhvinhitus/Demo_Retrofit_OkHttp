@@ -55,18 +55,25 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     public boolean onBackPressed() {
+        if (!existPresenter()) {
+            return false;
+        }
         return mPresenter.onBackPressed();
     }
 
     @Override
     public void onPaymentButtonClick() {
-        mPresenter.onPaymentButtonClick();
+        if (existPresenter()) {
+            mPresenter.onPaymentButtonClick();
+        }
     }
 
     @Override
     public void onStartFeedbackSupport() {
         try {
-            mPresenter.showFeedbackDialog();
+            if (existPresenter()) {
+                mPresenter.showFeedbackDialog();
+            }
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -91,6 +98,10 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     protected void onDataBound(View view) {
+        if (!existPresenter()) {
+            Timber.w("invalid presenter");
+            return;
+        }
         mPresenter.showResultPayment(mStatusResponse);
     }
 
@@ -165,7 +176,7 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     public void callbackThenTerminate() {
-        if (mPresenter != null) {
+        if (existPresenter()) {
             mPresenter.callback();
         }
         terminate();

@@ -27,7 +27,6 @@ import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -49,8 +48,6 @@ import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
  */
 
 public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> implements ChannelContract.IView {
-
-    private final View.OnClickListener updateInfoClick = v -> mPresenter.setPaymentStatusAndCallback(PaymentStatus.LEVEL_UPGRADE_CMND_EMAIL);
     @LayoutRes
     int mLayoutId = R.layout.screen__card;
     private String mOriginTitle;
@@ -78,6 +75,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     @Override
     public void onStartFeedbackSupport() {
         try {
+            if (!existPresenter()) {
+                Timber.w("invalid presenter");
+                return;
+            }
             mPresenter.showFeedbackDialog();
         } catch (Exception e) {
             Timber.w(e);
@@ -94,6 +95,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     public void onUserInteraction() {
+        if (!existPresenter()) {
+            Timber.w("invalid presenter");
+            return;
+        }
         mPresenter.onUserInteraction();
     }
 
@@ -109,6 +114,9 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public boolean onBackPressed() {
+        if(!existPresenter()){
+            return false;
+        }
         return mPresenter.onBackPressed();
     }
 
@@ -154,12 +162,15 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
             View view = menuItem.getActionView();
             view.setOnClickListener(v -> {
                 Timber.d("onClick() menu bidv");
-                if (mPresenter != null) {
-                    mPresenter.showInstructRegiterBIDV();
+                if (!existPresenter()) {
+                    Timber.w("invalid presenter");
+                    return;
                 }
+                mPresenter.showInstructRegiterBIDV();
             });
         }
     }
+
     @Override
     protected ChannelPresenter initializePresenter() {
         return new ChannelPresenter();
@@ -167,6 +178,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     protected void onDataBound(View view) {
+        if (!existPresenter()) {
+            Timber.w("invalid presenter");
+            return;
+        }
         mPresenter.startPayment();
     }
 
@@ -206,12 +221,12 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void callbackThenTerminate() {
-        if (mPresenter != null) {
-            try {
+        try {
+            if (existPresenter()) {
                 mPresenter.setCallBack(Activity.RESULT_OK);
-            } catch (Exception e) {
-                Log.e(this, e);
             }
+        } catch (Exception e) {
+            Timber.d(e);
         }
         terminate();
     }
@@ -299,22 +314,24 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     @Override
     public void changeBgPaymentButton(boolean finalStep) {
         View view = findViewById(R.id.zpsdk_btn_submit);
-        if (view != null) {
-            if (finalStep) {
-                view.setBackgroundResource(R.drawable.bg_btn_green_border_selector);
-            } else {
-                view.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
-            }
+        if (view == null) {
+            return;
+        }
+        if (finalStep) {
+            view.setBackgroundResource(R.drawable.bg_btn_green_border_selector);
+        } else {
+            view.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
         }
     }
 
     @Override
     public void disablePaymentButton() {
         View view = findViewById(R.id.zpsdk_btn_submit);
-        if (view != null) {
-            view.setEnabled(false);
-            view.setBackgroundResource(R.drawable.zpw_bg_button_disable);
+        if (view == null) {
+            return;
         }
+        view.setEnabled(false);
+        view.setBackgroundResource(R.drawable.zpw_bg_button_disable);
     }
 
     @Override
@@ -332,7 +349,11 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.sdk_system_maintenance_mess);
         }
-        showInfoDialog(message, () -> mPresenter.setPaymentStatusAndCallback(PaymentStatus.SERVICE_MAINTENANCE));
+        showInfoDialog(message, () -> {
+            if (existPresenter()) {
+                mPresenter.setPaymentStatusAndCallback(PaymentStatus.SERVICE_MAINTENANCE);
+            }
+        });
     }
 
     @Override
@@ -437,14 +458,8 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         });
     }
 
-
     public void showMenuItem() {
         mShowMenuItem = true;
-        ActivityCompat.invalidateOptionsMenu(getActivity());
-    }
-
-    public void hideMenuItem() {
-        mShowMenuItem = false;
         ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 }

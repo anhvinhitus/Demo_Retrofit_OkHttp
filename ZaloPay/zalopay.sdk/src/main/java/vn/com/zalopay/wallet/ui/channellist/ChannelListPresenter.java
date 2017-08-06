@@ -114,14 +114,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public ChannelListPresenter() {
         Timber.d("call constructor ChannelListPresenter");
-        mPaymentInfoHelper = GlobalData.paymentInfoHelper;
+        mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
         SDKApplication.getApplicationComponent().inject(this);
         mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_START_CHANNEL_LIST_PRESENTER);
     }
 
     private void loadAppInfoOnComplete(AppInfo appInfo) {
         try {
-            Log.d(this, "load app info success", appInfo);
+            Timber.d("load app info success %s", GsonUtils.toJsonString(appInfo));
             if (appInfo == null || !appInfo.isAllow()) {
                 getViewOrThrow().showAppInfoNotFoundDialog();
                 return;
@@ -258,7 +258,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPayProxy == null) {
             return false;
         }
-
         int orderState = mPayProxy.orderProcessing();
         return orderState == OrderState.SUBMIT || orderState == OrderState.QUERY_STATUS;
     }
@@ -507,6 +506,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
             if (mPaymentInfoHelper == null) {
+                mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
+            }
+            if (mPaymentInfoHelper == null) {
                 callback();
                 getViewOrThrow().terminate();
                 return;
@@ -525,7 +527,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .setChannelListPresenter(this)
                     .setPaymentInfo(mPaymentInfoHelper);
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
     }
 
