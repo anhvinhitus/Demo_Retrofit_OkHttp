@@ -29,10 +29,6 @@ public interface ILinkSourceInteractor {
 
     void putCard(String userid, MapCard mapCard);
 
-    void putCardNumber(String cardNumber);
-
-    String getCardNumber();
-
     MapCard getCard(String userid, String cardKey);
 
     List<BankAccount> getBankAccountList(String userid);

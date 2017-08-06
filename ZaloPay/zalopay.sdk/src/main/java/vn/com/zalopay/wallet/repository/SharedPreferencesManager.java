@@ -61,18 +61,6 @@ public class SharedPreferencesManager {
         return sharedPreferences != null && sharedPreferences.edit().putBoolean(pKey, pValue).commit();
     }
 
-    public String pickCachedCardNumber() {
-        String cardNumber = getString(SharePrefConstants.sdk_conf_cache_card_info);
-        if (!TextUtils.isEmpty(cardNumber)) {
-            setCachedCardNumber(null);
-        }
-        return cardNumber;
-    }
-
-    public boolean setCachedCardNumber(String pCardNumber) {
-        return setString(SharePrefConstants.sdk_conf_cache_card_info, pCardNumber);
-    }
-
     public boolean setMaintenanceWithDraw(String pMessage) {
         return setString(SharePrefConstants.sdk_conf_maintenance_withdraw, pMessage);
     }

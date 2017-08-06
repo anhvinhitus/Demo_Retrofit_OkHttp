@@ -193,14 +193,4 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
         mCardMapLocalStorage.setCard(userId, mapCard);
         mCardMapLocalStorage.setCardKeyList(userId, mapCardKeyList);
     }
-
-    @Override
-    public void putCardNumber(String cardNumber) {
-        mCardMapLocalStorage.sharePref().setCachedCardNumber(cardNumber);
-    }
-
-    @Override
-    public String getCardNumber() {
-        return mCardMapLocalStorage.sharePref().pickCachedCardNumber();
-    }
 }

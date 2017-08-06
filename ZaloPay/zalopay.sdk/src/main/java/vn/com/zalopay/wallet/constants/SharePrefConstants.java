@@ -5,7 +5,6 @@ package vn.com.zalopay.wallet.constants;
  */
 
 public class SharePrefConstants {
-    public static final String sdk_conf_cache_card_info = "cache_card_for_show_in_linkcard";
     public static final String sdk_conf_maintenance_withdraw = "zpw_conf_gwinfo_maintenance_withdraw";
     public static final String sdk_conf_enable_deposite = "gwinfo_enable_deposite";
     public static final String sdk_conf_platform_expired_time = "gwinfo_expired_time";

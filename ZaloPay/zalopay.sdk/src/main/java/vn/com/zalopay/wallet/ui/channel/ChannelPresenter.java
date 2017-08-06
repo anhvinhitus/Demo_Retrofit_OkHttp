@@ -247,19 +247,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return false;
     }
 
-    private void reFillBidvCardNumber() {
-        try {
-            String pCardNumber = SDKApplication.getApplicationComponent()
-                    .sharePreferences()
-                    .pickCachedCardNumber();
-            if (!TextUtils.isEmpty(pCardNumber)) {
-                mAbstractWorkFlow.getGuiProcessor().setCardInfo(pCardNumber);
-            }
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-    }
-
     public void onUserInteraction() {
         if (mTimerRunning && mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen()) {
             Timber.d("user tap on UI restart payment transaction countdown");
@@ -375,7 +362,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             if (mAbstractWorkFlow instanceof AccountLinkWorkFlow) {
                 ((AccountLinkWorkFlow) mAbstractWorkFlow).startFlow();
             } else {
-                reFillBidvCardNumber();
                 showKeyBoard();
             }
         } catch (Exception e) {
