@@ -9,6 +9,8 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 public interface ISyncContactView extends ILoadDataView {
 
+    void hideContactBookCount();
+
     void setContactBookCount(long count);
 
     void setFriendListCount(long count);
@@ -16,4 +18,8 @@ public interface ISyncContactView extends ILoadDataView {
     void setLastTimeSyncContact(String timestamp);
 
     void showSyncContactSuccess();
+
+    void showAvatarArrow();
+
+    void hideAvatarArrow();
 }

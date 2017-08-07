@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="?selector"
-        >
+        android:background="?selector">
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/avatarContact"
@@ -25,7 +24,7 @@
             android:gravity="center"
             android:textColor="@color/blue.008fe5"
             app:iconName="@string/ct_list_danhba"
-            app:iconSize="32dp"/>
+            app:iconSize="32dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/friend.from.contact.book"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvPermission"
@@ -48,8 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="@string/you.have.not.yet.enabled.access"
-                />
+                android:text="@string/you.have.not.yet.enabled.access" />
         </LinearLayout>
 
 
@@ -65,14 +63,29 @@
             android:layout_marginRight="16dp"
             android:text="0"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
+
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/avatarArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:textColor="@color/arrow_right"
+            app:iconName="@string/general_arrowright"
+            app:iconSize="12dp" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="?selector"
-        >
+        android:background="?selector">
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/avatarZaloGroup"
@@ -85,7 +98,7 @@
             android:gravity="center"
             android:textColor="@color/blue.008fe5"
             app:iconName="@string/ct_list_zalo"
-            app:iconSize="32dp"/>
+            app:iconSize="32dp" />
 
         <TextView
             style="@style/TextView.Item.Sub"
@@ -95,7 +108,7 @@
             android:layout_toEndOf="@+id/avatarZaloGroup"
             android:layout_toRightOf="@+id/avatarZaloGroup"
             android:text="@string/friend.from.zalo"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/countZfl"
@@ -109,7 +122,7 @@
             android:layout_marginRight="16dp"
             android:text="0"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
     </RelativeLayout>
 
     <View
@@ -117,7 +130,7 @@
         android:layout_height="@dimen/separate"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <TextView
         style="@style/TextView.Item.Sub"
@@ -129,14 +142,14 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:singleLine="false"
-        android:text="@string/description.sync.contact.list"/>
+        android:text="@string/description.sync.contact.list" />
 
     <TextView
         style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/last.sync.contact"/>
+        android:text="@string/last.sync.contact" />
 
     <TextView
         android:id="@+id/tvTimeUpdate"
@@ -144,7 +157,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        tools:text="10/07/2017 16:30"/>
+        tools:text="10/07/2017 16:30" />
 
     <Button
         android:id="@+id/btnUpdate"
@@ -154,6 +167,6 @@
         android:layout_marginTop="28dp"
         android:background="@drawable/btn_round_selector"
         android:drawablePadding="8dp"
-        android:text="@string/btn_update"/>
+        android:text="@string/btn_update" />
 
 </LinearLayout>

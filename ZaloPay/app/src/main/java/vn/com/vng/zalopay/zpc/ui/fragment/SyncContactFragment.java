@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFont;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -23,6 +25,21 @@ import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
  */
 
 public class SyncContactFragment extends RuntimePermissionFragment implements ISyncContactView {
+
+    @BindView(R.id.countUcb)
+    TextView mCountUcbView;
+    @BindView(R.id.avatarArrow)
+    IconFont mAvatarArrow;
+    @BindView(R.id.countZfl)
+    TextView mCountZflView;
+    @BindView(R.id.btnUpdate)
+    Button mBtnUpdate;
+    @BindView(R.id.tvTimeUpdate)
+    TextView mTimeView;
+    @BindView(R.id.tvPermission)
+    View mPermissionView;
+    @Inject
+    SyncContactPresenter mPresenter;
 
     public static SyncContactFragment newInstance() {
 
@@ -56,23 +73,6 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
     protected int getResLayoutId() {
         return R.layout.fragment_sync_contact;
     }
-
-
-    @BindView(R.id.countUcb)
-    TextView mCountUcbView;
-    @BindView(R.id.countZfl)
-    TextView mCountZflView;
-    @BindView(R.id.btnUpdate)
-    Button mBtnUpdate;
-    @BindView(R.id.tvTimeUpdate)
-    TextView mTimeView;
-
-    @BindView(R.id.tvPermission)
-    View mPermissionView;
-
-
-    @Inject
-    SyncContactPresenter mPresenter;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -111,8 +111,24 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
     }
 
     @Override
+    public void hideContactBookCount() {
+        mCountUcbView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void setContactBookCount(long count) {
+        mCountUcbView.setVisibility(View.VISIBLE);
         mCountUcbView.setText(String.valueOf(count));
+    }
+
+    @Override
+    public void showAvatarArrow() {
+        mAvatarArrow.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideAvatarArrow() {
+        mAvatarArrow.setVisibility(View.GONE);
     }
 
     @Override

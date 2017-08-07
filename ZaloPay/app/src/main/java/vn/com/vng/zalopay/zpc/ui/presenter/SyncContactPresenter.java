@@ -52,7 +52,16 @@ public final class SyncContactPresenter extends AbstractPresenter<ISyncContactVi
                             return;
                         }
 
-                        mView.setContactBookCount(data.first);
+                        // control number contact book hide/show
+                        if (data.first > 0) {
+                            mView.setContactBookCount(data.first);
+                            mView.hideAvatarArrow();
+                        } else {
+                            mView.hideContactBookCount();
+                            mView.showAvatarArrow();
+                        }
+
+                        // control number friend list (Zalo)
                         mView.setFriendListCount(data.second);
                     }
                 });
@@ -80,11 +89,17 @@ public final class SyncContactPresenter extends AbstractPresenter<ISyncContactVi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
+                    public void onStart() {
+                        mView.showLoading();
+                    }
+
+                    @Override
                     public void onNext(Boolean time) {
                         if (mView == null) {
                             return;
                         }
 
+                        mView.hideLoading();
                         mView.showSyncContactSuccess();
                         loadView();
                     }
@@ -93,6 +108,7 @@ public final class SyncContactPresenter extends AbstractPresenter<ISyncContactVi
                     public void onError(Throwable e) {
                         String message = ErrorMessageFactory.create(mContext, e);
                         if (mView != null) {
+                            mView.hideLoading();
                             mView.showError(message);
                         }
                     }
